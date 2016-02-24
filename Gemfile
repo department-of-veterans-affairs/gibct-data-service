@@ -1,32 +1,45 @@
 source 'https://rubygems.org'
 
+#ruby=ruby-2.3.0
+#ruby-gemset=ingest
+
+# For heroku staging
+ruby "2.3.0"
+gem 'rails_12factor', '~> 0.0.3', group: :production
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5.1'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', platforms: [:ruby,:mswin,:mingw, :mswin, :x64_mingw]
-gem 'activerecord-jdbcsqlite3-adapter', platforms: :jruby
+
+# Use postgresql as the database for Active Record
+gem 'pg', '~> 0.15'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
+
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+# Use devise for authentication
+# Use cancancan for authorization
+gem 'bcrypt', '~> 3.1.7'
+gem 'devise', '~> 3.5', '>= 3.5.6'
+gem 'cancancan', '~> 1.13', '>= 1.13.1'
 
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem "puma", "~> 2.16.0"
+gem 'puma', '~> 2.16'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -51,6 +64,10 @@ group :development, :test do
   gem 'capybara'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
   gem 'simplecov'
+  gem 'factory_girl_rails', '~> 4.6'
+  gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
+  gem 'faker', '~> 1.6', '>= 1.6.2'
+  gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
 
 group :development do

@@ -24,19 +24,54 @@ require "rspec/rails"
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-# ActiveRecord::Migration.maintain_test_schema!
+# Uncommented (MPH)
+ActiveRecord::Migration.maintain_test_schema!
 
 require "capybara"
 Capybara.default_driver = :sniffybara
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
+
+  # Allow short form of factory girl calls. (MPH)
+  config.include FactoryGirl::Syntax::Methods
+
+  # database_cleaner configuration (MPH)
+  # Clear the entire DB before tests begin
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  # Run each test in a transaction (MPH)
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  # Only runs before examples which have been flagged :js => true. 
+  # By default, they are generally used for Capybara tests which use a 
+  # javascript headless webkit such as Selenium. For these types of tests, 
+  # transactions won’t work, so this code overrides the setting and 
+  # chooses the “truncation” strategy instead. (MPH)
+  config.before(:each, :js => true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  # Cause database_cleaner to start before each test. (MPH)
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  # Cause database_cleaner to clean database with selected strategy after
+  # each test. (MPH)
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
