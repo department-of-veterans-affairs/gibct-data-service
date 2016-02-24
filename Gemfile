@@ -41,12 +41,12 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 2.16'
 
+# Used to colorize output for rake tasks
+gem "rainbow"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-
-  # Used to colorize output for rake tasks
-  gem "rainbow"
 
   # Linters
   gem 'rubocop', '~> 0.36.0', require: false

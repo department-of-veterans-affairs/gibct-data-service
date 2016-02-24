@@ -53,12 +53,12 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
   end
 
-  # Only runs before examples which have been flagged :js => true. 
-  # By default, they are generally used for Capybara tests which use a 
-  # javascript headless webkit such as Selenium. For these types of tests, 
-  # transactions won’t work, so this code overrides the setting and 
+  # Only runs before examples which have been flagged :js => true.
+  # By default, they are generally used for Capybara tests which use a
+  # javascript headless webkit such as Selenium. For these types of tests,
+  # transactions won’t work, so this code overrides the setting and
   # chooses the “truncation” strategy instead. (MPH)
-  config.before(:each, :js => true) do
+  config.before(:each, js: true) do
     DatabaseCleaner.strategy = :truncation
   end
 
