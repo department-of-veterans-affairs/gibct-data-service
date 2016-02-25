@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224011908) do
+ActiveRecord::Schema.define(version: 20160225052319) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ope_school_files", force: :cascade do |t|
+    t.string   "file_name",   null: false
+    t.datetime "uploaded_on", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "ope_school_files", ["file_name"], name: "index_ope_school_files_on_file_name", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
