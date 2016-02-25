@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: ff7e58167f99a847f258b480930db85ffacdb4c5
+  revision: 2dd4500d078ee7472042ddab6657b8a2d7560bc5
   specs:
     sniffybara (0.0.0)
       poltergeist
@@ -52,14 +52,12 @@ GEM
     bcrypt (3.1.10)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    brakeman (3.1.5)
+    brakeman (3.2.0)
       erubis (~> 2.6)
-      fastercsv (~> 1.5)
       haml (>= 3.0, < 5.0)
       highline (>= 1.6.20, < 2.0)
-      multi_json (~> 1.2)
-      ruby2ruby (>= 2.1.1, < 2.3.0)
-      ruby_parser (~> 3.7.0)
+      ruby2ruby (~> 2.3.0)
+      ruby_parser (~> 3.8.1)
       safe_yaml (>= 1.0)
       sass (~> 3.0)
       slim (>= 1.3.6, < 4.0)
@@ -102,7 +100,6 @@ GEM
       railties (>= 3.0.0)
     faker (1.6.3)
       i18n (~> 0.5)
-    fastercsv (1.5.5)
     ffi (1.9.10)
     formatador (0.2.5)
     globalid (0.3.6)
@@ -245,10 +242,10 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
     ruby-progressbar (1.7.5)
-    ruby2ruby (2.2.0)
+    ruby2ruby (2.3.0)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
-    ruby_parser (3.7.3)
+    ruby_parser (3.8.1)
       sexp_processor (~> 4.1)
     rubyzip (1.2.0)
     safe_yaml (1.0.4)
@@ -345,7 +342,6 @@ DEPENDENCIES
   rails (= 4.2.5.1)
   rails_12factor (~> 0.0.3)
   rainbow
-  rspec
   rspec-rails
   rubocop (~> 0.36.0)
   sass-rails (~> 5.0)
