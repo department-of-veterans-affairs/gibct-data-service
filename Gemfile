@@ -58,9 +58,11 @@ group :development, :test do
   gem 'bundler-audit'
 
   # Testing tools
-  gem 'rspec'
   gem 'rspec-rails'
-  gem 'guard-rspec'
+
+  # Added to remove irb: context errors on rails c (MPH)
+  gem 'guard-rspec', require: false
+  
   gem 'capybara'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
   gem 'simplecov'
@@ -79,5 +81,5 @@ group :development do
   
   # Include the IANA Time Zone Database on Windows, where Windows doens't ship with a timezone database.
   # POSIX systems should have this already, so we're not going to bring it in on other platforms
-  gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 end

@@ -1,13 +1,22 @@
 language: ruby
-rvm:
-  - 2.3.0
+
+addons:
+  postgresql: "9.4"
+
+services:
+  - postgresql
+
+before_script:
+  - rake db:create
+  - rake db:migrate
 
 branches:
     only:
         - master
 
 script:
-  - bundle exec rake
+  - git branch
+  - bundle exec rspec
 
 bundler_args: "--without development"
 cache:
