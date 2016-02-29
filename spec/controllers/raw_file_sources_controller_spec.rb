@@ -89,7 +89,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		end
 	end
 
-	describe "Get edit" do
+	describe "GET edit" do
 		login_user
 		render_views
 
@@ -114,7 +114,47 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		end
 	end
 
-	describe "Delete destroy" do
+	describe "PUT update" do
+		login_user
+		render_views
+
+		context "with a valid source" do
+			before(:each) do
+				@rfs = create :raw_file_source
+			end
+
+			it "replaces the existing raw file source" do
+				expect{
+					put :update, id: @rfs.id, raw_file_source: { name: @rfs.name }
+				}.to change(RawFileSource, :count).by(0)
+			end
+
+			it "redirects to the show raw file source" do
+				put :update, id: @rfs.id, raw_file_source: { name: @rfs.name }
+      	expect(response).to redirect_to RawFileSource.last
+    	end
+		end
+
+		context "with an invalid source" do
+			before(:each) do
+				@rfs1 = create :raw_file_source
+				@rfs2 = create :raw_file_source
+			end
+
+			it "does not create a new raw file source" do
+				expect{
+					put :update, id: @rfs2.id, raw_file_source: { name: @rfs1.name }
+				}.to change(RawFileSource, :count).by(0)
+			end
+
+			it "re-renders the edit method" do
+				put :update, id: @rfs2.id, raw_file_source: { name: @rfs1.name }
+      	expect(response).to render_template :edit
+    	end
+		end
+	end
+
+	describe "DELETE destroy" do
 		login_user
 		render_views
 
