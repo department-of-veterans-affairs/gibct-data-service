@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 require 'support/controller_macros'
 require 'support/devise'
 require 'support/shared_examples_for_authentication'

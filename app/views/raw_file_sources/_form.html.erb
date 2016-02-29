@@ -1,0 +1,11 @@
+<%= form_for(@raw_file_source) do |f| %>
+  <div class="form-group">
+    <%= f.label(:name) %>
+    <%= f.text_field(:name, class: "form-control", placeholder: "Source Name") %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", :back, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
