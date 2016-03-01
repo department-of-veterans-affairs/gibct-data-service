@@ -5,7 +5,7 @@ class RawFileSourcesController < ApplicationController
 	before_action :set_source, only: [:show, :edit, :update, :destroy]
 
 	def index
-		@raw_file_sources = RawFileSource.all.order(:name)
+		@raw_file_sources = RawFileSource.all.order(:build_order)
 
 		respond_to do |format|
 			format.html
