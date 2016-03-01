@@ -22,7 +22,7 @@ puts "Adding raw file sources ... "
 	'sec702 school', 'accredit', 'hcm', 'complaint', 'vsoc', '8keys',
 	'mou', 'arf', 'sva'
 ].each_with_index do |source, i|
-	RawFileSource.create(name: source, build_order: i)
+	RawFileSource.create(name: source, build_order: i + 1)
 end
 
 puts "Done ... Woo Hoo!"
