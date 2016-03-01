@@ -16,7 +16,7 @@ branches:
 
 script:
   - git branch
-  - bundle exec rspec
+  - bundle exec rake
 
 bundler_args: "--without development"
 cache:
