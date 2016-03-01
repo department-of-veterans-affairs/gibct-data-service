@@ -1,7 +1,9 @@
+require 'rails_helper'
+
 RSpec.describe User, type: :model do
   describe "When creating" do
     context "with a factory" do
-      it "the factory is valid" do
+      it "that factory is valid" do
         expect(create(:user)).to be_valid
       end
     end

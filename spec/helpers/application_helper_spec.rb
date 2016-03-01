@@ -1,10 +1,26 @@
+require 'rails_helper'
+
 RSpec.describe ApplicationHelper, type: :helper do
 	let(:fullpath) { "/abc/def/ghi" }
 	let(:rootpath) { "/" }
 	let(:fullpath_link) { %Q(<li><a href="#{fullpath}">abc</a></li>) }
 	let(:fullpath_active_link) { 
-		%Q(<li class="active"><a href="#{fullpath}">abc <span class="sr-only">(current)</span></a></li>) 
+		%Q(<li class="active"><a href="#{fullpath}">abc <span class="sr-only">(current)</span></a></li>)
 	}
+  let(:controller_inactive) {
+    '<li class="dropdown"><a href="#" class="dropdown-toggle" '\
+    'data-toggle="dropdown" role="button" aria-haspopup="true" '\
+    'aria-expanded="false">Raw File Sources <span class="caret"></span></a>'\
+    '<ul class="dropdown-menu"><li><a href="/raw_file_sources">'\
+    'List</a></li></ul></li>'
+  }
+  let(:controller_active) {
+    '<li class="dropdown active"><a href="#" class="dropdown-toggle" '\
+    'data-toggle="dropdown" role="button" aria-haspopup="true" '\
+    'aria-expanded="false">Raw File Sources <span class="caret"></span></a>'\
+    '<ul class="dropdown-menu"><li><a href="/raw_file_sources">'\
+    'List</a></li></ul></li>'
+  }
 
 	describe "get_path" do
   	it "extracts the path from a full path" do
@@ -42,5 +58,19 @@ RSpec.describe ApplicationHelper, type: :helper do
   	it "returns an active nav-bar link if the current_path matches the path" do
   		expect(helper.draw_link(fullpath, "abc", fullpath)).to eq(fullpath_active_link)
   	end
+  end
+
+  describe "draw_controller" do
+    it "returns a regular dropdown if the controller_name doesn't match the controller" do
+      allow(controller).to receive(:controller_name).and_return("foo")
+
+      expect(helper.draw_controller('raw_file_sources', :index)).to eq(controller_inactive)
+    end
+
+    it "returns an active dropdown if the controller_name doesn't match the controller" do
+      allow(controller).to receive(:controller_name).and_return("raw_file_sources")
+
+      expect(helper.draw_controller('raw_file_sources', :index)).to eq(controller_active)
+    end
   end
 end
