@@ -21,3 +21,8 @@
 
 en:
   hello: "Hello world"
+  helpers:
+    submit:
+      model_name:
+      create: "Create"
+      update: "Confirm changes"

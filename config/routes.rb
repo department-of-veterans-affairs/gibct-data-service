@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :raw_file_sources
   root 'dashboard#index'
 
   devise_for :users
