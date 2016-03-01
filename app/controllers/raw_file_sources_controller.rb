@@ -78,6 +78,6 @@ class RawFileSourcesController < ApplicationController
   end
 
   def source_params
-    params.require(:raw_file_source).permit(:name)
+    params.require(:raw_file_source).permit(:name, :build_order)
   end
 end

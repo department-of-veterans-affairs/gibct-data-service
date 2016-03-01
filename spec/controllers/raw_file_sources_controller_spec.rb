@@ -143,12 +143,14 @@ RSpec.describe RawFileSourcesController, type: :controller do
 
 			it "does not create a new raw file source" do
 				expect{
-					put :update, id: @rfs2.id, raw_file_source: { name: @rfs1.name }
+					put :update, id: @rfs2.id, 
+						raw_file_source: { name: @rfs1.name, build_order: @rfs2.build_order }
 				}.to change(RawFileSource, :count).by(0)
 			end
 
 			it "re-renders the edit method" do
-				put :update, id: @rfs2.id, raw_file_source: { name: @rfs1.name }
+				put :update, id: @rfs2.id, 
+					raw_file_source: { name: @rfs1.name, build_order: @rfs2.build_order }
       	expect(response).to render_template :edit
     	end
 		end

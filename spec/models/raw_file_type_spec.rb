@@ -19,5 +19,18 @@ RSpec.describe RawFileSource, type: :model do
       	expect(build(:raw_file_source, name: subject.name)).not_to be_valid
       end
     end
+
+    context "build_order" do
+      subject { create :raw_file_source }
+
+      it "are required" do
+        expect { create(:raw_file_source, :no_order) }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "are unique" do
+        expect(build(:raw_file_source, build_order: subject.build_order)).not_to be_valid
+      end
+
+    end
   end
 end

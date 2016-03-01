@@ -17,9 +17,10 @@ ActiveRecord::Schema.define(version: 20160228235519) do
   enable_extension "plpgsql"
 
   create_table "raw_file_sources", force: :cascade do |t|
-    t.string   "name",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",        null: false
+    t.integer  "build_order", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "raw_file_sources", ["name"], name: "index_raw_file_sources_on_name", unique: true, using: :btree
