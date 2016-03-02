@@ -1,7 +1,7 @@
 class FakesController < ApplicationController
   include Alertable
 end
- 
+
 describe FakesController, type: :controller do
   let(:label) { "a message" }
   let(:label_only) { "<p>a message</p>" }

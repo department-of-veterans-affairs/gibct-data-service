@@ -4,7 +4,7 @@ FactoryGirl.define do
     build_order { (RawFileSource.all.maximum(:build_order) || 0) + 1 }
 
     trait :no_name do
-    	name nil
+      name nil
     end
 
     trait :no_order do
