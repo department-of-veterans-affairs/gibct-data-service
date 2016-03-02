@@ -12,7 +12,7 @@ module Alertable
     def pretty_error(label = "", errors = [])
       msg = errors.inject("<ul>") do |m, error|
         m + "<li>#{error}</li>"
-      end
+      end + "</ul>"
 
       pstr = ""
       pstr += "<p>#{label}</p>" if label.present?
