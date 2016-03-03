@@ -26,7 +26,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		end
 
 		it "displays raw file sources" do
-			expect(response.body).to match /file_source_/im
+			expect(response.body).to match /raw_file_sources/im
 		end
 	end
 
@@ -138,7 +138,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		context "with an invalid source" do
 			before(:each) do
 				@rfs1 = create :raw_file_source
-				@rfs2 = create :raw_file_source
+				@rfs2 = create :weams_file_source
 			end
 
 			it "does not create a new raw file source" do

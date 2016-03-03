@@ -12,6 +12,10 @@
 !/log/.keep
 /tmp
 /coverage
+/data/*
+
+# Ignore seeds
+/db/seeds.rb
 
 # TODO Comment out these rules if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
@@ -37,12 +41,13 @@ bower.json
 
 *.rbc
 capybara-*.html
+
 .rspec
 .env
-/db/seeds.rb
+.byebug_history
+.DS_Store
 
 /public/system
-/coverage/
 /spec/tmp
 **.orig
 rerun.txt

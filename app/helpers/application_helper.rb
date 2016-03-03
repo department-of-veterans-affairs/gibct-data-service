@@ -1,5 +1,13 @@
 module ApplicationHelper
 	#############################################################################
+	## pretty_controller_name
+	## Converts a controller name to a singularized title.
+	#############################################################################
+	def pretty_controller_name(name = "")
+		name.split('_').map(&:capitalize).join(' ').singularize
+	end
+
+	#############################################################################
 	## get_path
 	## Returns the portion of a path that is between the opening / and the
 	## first non [/ or \w] encountered, which conveniently would be a ?.

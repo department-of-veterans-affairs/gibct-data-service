@@ -30,7 +30,6 @@ RSpec.describe RawFileSource, type: :model do
       it "are unique" do
         expect(build(:raw_file_source, build_order: subject.build_order)).not_to be_valid
       end
-
     end
   end
 end
