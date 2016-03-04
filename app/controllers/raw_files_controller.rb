@@ -22,23 +22,25 @@ class RawFilesController < ApplicationController
 
 	def create
 		@raw_file = Object::const_get(params[:raw_file][:type]).new()
-		source_name = @raw_file.class_to_source
 
+		source_name = @raw_file.class_to_source
 		@raw_file.raw_file_source = RawFileSource.find_by(name: source_name)
+
 		@raw_file.upload_date = DateTime.current
 		@raw_file.name = @raw_file.to_server_name
 
-		upload_file
-
-		saved = @raw_file.save
+		completed = false
+		if @raw_file.valid? && upload_file(params[:raw_file][:upload])
+			completed = @raw_file.save
+		end
 
 		respond_to do |format|
-			if saved
+			if completed
 				format.html { redirect_to @raw_file, notice: "#{@raw_file.name} saved."}
 			else
       	label = "Errors prohibited this file from being saved:"
       	errors = @raw_file.errors.full_messages
-				flash.alert = FileSourcesController.pretty_error(label, errors).html_safe
+				flash.alert = RawFilesController.pretty_error(label, errors).html_safe
 
         format.html { render :new }
  			end
@@ -54,8 +56,8 @@ class RawFilesController < ApplicationController
 	end
 
 	def send_csv_file
-		path = Rails.root.join('data', @raw_file.name)
-		send_file(path, filename: @raw_file.name)
+		@path = Rails.root.join('data', @raw_file.name)
+		send_file(@path, filename: @raw_file.name)
 	end
 
   private
@@ -63,18 +65,24 @@ class RawFilesController < ApplicationController
   	@raw_file = RawFile.find(params[:id])
   end
 
-  def upload_file
-  	upload = params[:raw_file][:upload]
+  def upload_file(uploaded_file)	
+  	last_file = RawFile.where(type: @raw_file.type).order(:upload_date).last
 
-		if last_file = RawFile.where(type: @raw_file.type).order(:upload_date).last
-			last_file_name = Rails.root.join('data', last_file.name)
+		begin
+			raise StandardError.new("File upload object is nil") if uploaded_file.nil?
 
-			File.delete(last_file_name) if File.exist?(last_file_name)
-		end
-		
-		csv = Rails.root.join('data', @raw_file.name)
-  	File.open(csv, 'wb') do |file|
-    	file.write(upload.read)
+  		csv = Rails.root.join('data', @raw_file.name)
+  		File.open(csv, 'wb') { |file| file.write(uploaded_file.read) }
+
+  		if last_file.present?
+				last_file_name = Rails.root.join('data', last_file.name)
+				File.delete(last_file_name) if File.exist?(last_file_name)
+			end
+  	rescue StandardError => e
+  		@raw_file.errors[:base] << e.message
+  		return false
  		end
+
+ 		return true
   end
 end

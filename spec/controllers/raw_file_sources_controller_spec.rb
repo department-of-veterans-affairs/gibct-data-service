@@ -64,7 +64,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 				}.to change(RawFileSource, :count).by(1)
 			end
 
-			it "redirects to the new file source" do
+			it "redirects to the show page" do
 				post :create, raw_file_source: @rfs
       	expect(response).to redirect_to RawFileSource.last
     	end
@@ -129,7 +129,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 				}.to change(RawFileSource, :count).by(0)
 			end
 
-			it "redirects to the show raw file source" do
+			it "redirects to the show page" do
 				put :update, id: @rfs.id, raw_file_source: { name: @rfs.name }
       	expect(response).to redirect_to RawFileSource.last
     	end

@@ -8,6 +8,7 @@ FactoryGirl.define do
     end
 
     upload_date { DateTime.current }
+    type { 'WeamsFile' }
     association :raw_file_source, factory: :weams_file_source
 
     after(:build) do |w, e|

@@ -18,7 +18,7 @@
   </td>
   <td>
   	<% if File.exist?(csv) %>
-  		<%= link_to 'Download', send_csv_file_path(raw_file) %>
+  		<%= link_to 'Download', send_csv_file_raw_file_path(raw_file) %>
   	<% end %>
   </td>
 </tr>
