@@ -1,0 +1,2 @@
+class WeamsFile < RawFile
+end

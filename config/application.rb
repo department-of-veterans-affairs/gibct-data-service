@@ -26,5 +26,8 @@ module GibctDataService
 
     # Bootstrap support. (mph)
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
+
+    # STI Subdirectoty support. (mph)
+    config.autoload_paths += %W(#{config.root}/app/models/raw_files)
   end
 end

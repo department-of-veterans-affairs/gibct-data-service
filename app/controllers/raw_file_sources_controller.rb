@@ -73,10 +73,18 @@ class RawFileSourcesController < ApplicationController
   end
 
   private
+  #############################################################################
+  ## set_source
+  ## Obtains the model instance from the id parameter.
+  #############################################################################  
   def set_source
   	@raw_file_source = RawFileSource.find(params[:id])
   end
 
+  #############################################################################
+  ## source_params
+  ## Strong parameters
+  #############################################################################  
   def source_params
     params.require(:raw_file_source).permit(:name, :build_order)
   end

@@ -73,4 +73,14 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.draw_controller('raw_file_sources', :index)).to eq(controller_active)
     end
   end
+
+  describe "pretty_controller_name" do
+    it "returns a controller name as a singular title" do
+      expect(helper.pretty_controller_name("raw_file_sources")).to eq("Raw File Source")
+    end
+
+    it "returns a blank if the name is blank or " do
+      expect(helper.pretty_controller_name).to be_blank
+    end
+  end
 end

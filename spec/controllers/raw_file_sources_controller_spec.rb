@@ -26,7 +26,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		end
 
 		it "displays raw file sources" do
-			expect(response.body).to match /file_source_/im
+			expect(response.body).to match /raw_file_sources/im
 		end
 	end
 
@@ -64,7 +64,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 				}.to change(RawFileSource, :count).by(1)
 			end
 
-			it "redirects to the new file source" do
+			it "redirects to the show page" do
 				post :create, raw_file_source: @rfs
       	expect(response).to redirect_to RawFileSource.last
     	end
@@ -129,7 +129,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 				}.to change(RawFileSource, :count).by(0)
 			end
 
-			it "redirects to the show raw file source" do
+			it "redirects to the show page" do
 				put :update, id: @rfs.id, raw_file_source: { name: @rfs.name }
       	expect(response).to redirect_to RawFileSource.last
     	end
@@ -138,7 +138,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		context "with an invalid source" do
 			before(:each) do
 				@rfs1 = create :raw_file_source
-				@rfs2 = create :raw_file_source
+				@rfs2 = create :weams_file_source
 			end
 
 			it "does not create a new raw file source" do
@@ -164,7 +164,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 			@rfs = create :raw_file_source
 		end
 
-		it "creates a new raw file source" do
+		it "deletes a raw file source" do
 			expect{
 				delete :destroy, id: @rfs
 			}.to change(RawFileSource, :count).by(-1)

@@ -16,8 +16,8 @@ User.create(email: 'rick@va.gov', password: 'rickrick')
 puts "Destroy previous file sources ... "
 RawFileSource.destroy_all
 
-puts "Adding raw file sources ... "
-[ 'weams', 'ipeds', 'crosswalk', 'scorecard', 'ipeds hd', 'ipeds ic',
+puts "Mapping STI types to raw file sources ... "
+[ 'school_file', 'weams_file', 'ipeds', 'crosswalk', 'scorecard', 'ipeds hd', 'ipeds ic',
 	'ipeds ic sc ay', 'ipeds ic sc py', 'p911 tf', 'p911 yr', 'sec702',
 	'sec702 school', 'accredit', 'hcm', 'complaint', 'vsoc', '8keys',
 	'mou', 'arf', 'sva'

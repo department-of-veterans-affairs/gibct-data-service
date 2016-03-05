@@ -1,0 +1,54 @@
+<h1>Raw Files</h1>
+<div class="row row-space-6">
+	<div class="col-xs-8">
+		These are the CSV files from which the database will be constructed.
+		Each CSV represents data take from one of the raw file sources (e.g.,
+		WEAMS, IPEDS, etc.). As the CSV file is uploaded, it will be 
+		validated and, if successful, uploaded and stored in a table for 
+		use during the build process.
+	</div>
+
+	<div class="col-xs-4">
+		<% if list_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">
+					<%= link_to 'List Raw Files', 
+						raw_files_path, class: "btn btn-success btn-xs", 
+						role: "button" %>
+				</div>
+			</div>
+		<% end %>
+
+		<% if edit_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">		
+					<%= link_to "Edit #{@raw_file.name}", 
+						edit_raw_file_path(@raw_file), 
+						class: "btn btn-primary btn-xs", 
+						role: "button" %>
+				</div>
+			</div>
+		<% end %>
+
+		<% if new_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">
+					<%= link_to 'New Raw File', 
+						new_raw_file_path, class: "btn btn-info btn-xs", 
+						role: "button" %>
+				</div>
+			</div>
+		<% end %>
+
+		<% if download_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">
+					<%= link_to "Download #{@raw_file.name}", 
+						send_csv_file_raw_file_path(@raw_file), 
+						class: "btn btn-warning btn-xs", role: "button" %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
+	
