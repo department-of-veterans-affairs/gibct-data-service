@@ -2,7 +2,13 @@ require 'rails_helper'
 require "support/shared_examples_for_raw_file_sti"
 
 RSpec.describe RawFile, type: :model do
-  it_behaves_like "a raw file sti model", :raw_file
+  # it_behaves_like "a raw file sti model", :raw_file
+
+  describe "when creating or building" do
+  	it "is not valid" do
+  		expect(build :raw_file).not_to be_valid
+  	end
+  end
 
   describe "STI derived classes" do
 		before(:all) do

@@ -3,9 +3,12 @@ require 'csv'
 class RawFile < ActiveRecord::Base
 	attr_accessor :upload
 
+	STI = ['WeamsFile', 'SchoolFile']
+
 	belongs_to :raw_file_source, inverse_of: :raw_files
 
-	validates :name, :upload_date, :type, :raw_file_source_id, presence: true
+	validates :name, :upload_date, :raw_file_source_id, presence: true
+	validates :type, inclusion: { in: STI  }
 
 	#############################################################################
 	## inherited

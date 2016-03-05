@@ -164,7 +164,7 @@ RSpec.describe RawFileSourcesController, type: :controller do
 			@rfs = create :raw_file_source
 		end
 
-		it "creates a new raw file source" do
+		it "deletes a raw file source" do
 			expect{
 				delete :destroy, id: @rfs
 			}.to change(RawFileSource, :count).by(-1)
