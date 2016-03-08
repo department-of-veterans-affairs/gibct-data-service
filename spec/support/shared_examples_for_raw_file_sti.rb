@@ -31,9 +31,17 @@ RSpec.shared_examples "a raw file sti model" do |model|
 		end
 	end
 
-	describe "when getting the model name" do
+	describe "when finding out about itself" do
 		it "always returns the RawFile model name" do
 			expect(build(model).class.model_name).to eq('RawFile')
+		end
+
+		it "knows if its the last instance" do
+			rf = create :weams_file
+			create :weams_file, raw_file_source: rf.raw_file_source
+
+			expect(WeamsFile.first).not_to be_latest
+			expect(WeamsFile.last).to be_latest
 		end
 	end
 

@@ -13,7 +13,7 @@ puts "Add new users ... "
 User.create(email: 'marc@va.gov', password: 'marcmarc')
 User.create(email: 'rick@va.gov', password: 'rickrick')
 
-puts "Destroy previous file sources ... "
+puts "Destroy previous file sources and CSV files ... "
 RawFileSource.destroy_all
 
 puts "Mapping STI types to raw file sources ... "
@@ -23,6 +23,11 @@ puts "Mapping STI types to raw file sources ... "
 	'mou', 'arf', 'sva'
 ].each_with_index do |source, i|
 	RawFileSource.create(name: source, build_order: i + 1)
+end
+
+puts "Creating CSV file storage for each source ... "
+RawFileSource.all.each do |source|
+	source.create_csv_file(data: 0)
 end
 
 puts "Done ... Woo Hoo!"

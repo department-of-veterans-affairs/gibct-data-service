@@ -1,7 +1,7 @@
 <%= render partial: 'introduction', 
 		locals: { 
 			new_link: false, edit_link: true, 
-			list_link: true, download_link: File.exist?(@csv)
+			list_link: true, download_link: @raw_file.latest?
 		} 
 %>
 

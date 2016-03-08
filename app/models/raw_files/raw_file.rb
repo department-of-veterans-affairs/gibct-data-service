@@ -4,11 +4,18 @@ class RawFile < ActiveRecord::Base
 	attr_accessor :upload
 
 	STI = ['WeamsFile', 'SchoolFile']
+	DELIMITERS = [',', '|', ' ']
 
 	belongs_to :raw_file_source, inverse_of: :raw_files
 
 	validates :name, :upload_date, :raw_file_source_id, presence: true
 	validates :type, inclusion: { in: STI  }
+
+	#############################################################################
+	## last_instance
+	## Returns the last upload date of this raw file type.
+	#############################################################################
+	scope :last_upload, -> { maximum(:upload_date) }
 
 	#############################################################################
 	## inherited
@@ -61,5 +68,13 @@ class RawFile < ActiveRecord::Base
 		server_name = ""
 		server_name += upload_date.strftime("%y%m%d%H%M%S%L") if upload_date.present?
 		server_name += "_#{class_to_source}.csv" 
+	end
+
+	#############################################################################
+	## latest?
+	## True if this instance is the last uploaded for its type.
+	#############################################################################
+	def latest?
+		upload_date == self.class.last_upload
 	end
 end

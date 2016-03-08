@@ -1,4 +1,4 @@
-<%= form_for(@raw_file) do |f| %>
+<%= form_for(@raw_file, multipart: true) do |f| %>
   <div class="form-group">
     <%= f.label(:type) %>
     <%= f.select(:type, options_for_select(RawFile.types, selected: @raw_file.type), 

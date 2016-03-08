@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :raw_file_source do
-    name "raw_file"
+    sequence :name do |i| "raw_file_#{i}" end
+
     build_order { (RawFileSource.maximum(:build_order) || 0) + 1 }
 
     trait :no_name do
@@ -17,6 +18,10 @@ FactoryGirl.define do
 
     factory :weams_file_source do
       name "weams_file"
+    end
+
+    after(:create) do |w, e|
+      w.create_csv_file!(data: "0")
     end
   end
 end

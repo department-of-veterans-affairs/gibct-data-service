@@ -68,6 +68,15 @@ RSpec.describe RawFileSourcesController, type: :controller do
 				post :create, raw_file_source: @rfs
       	expect(response).to redirect_to RawFileSource.last
     	end
+
+    	it "creates a new csv file record" do
+				expect{
+					post :create, raw_file_source: @rfs
+				}.to change(CsvFile, :count).by(1)
+
+				rfs_id = CsvFile.first.raw_file_source_id
+				expect(RawFileSource.find_by(id: rfs_id)).to eq(RawFileSource.first)
+			end
 		end
 
 		context "with an invalid source" do
@@ -80,6 +89,12 @@ RSpec.describe RawFileSourcesController, type: :controller do
 				expect{
 					post :create, raw_file_source: @rfs
 				}.to change(RawFileSource, :count).by(0)
+			end
+
+			it "does not create a new csv file" do
+				expect{
+					post :create, raw_file_source: @rfs
+				}.to change(CsvFile, :count).by(0)
 			end
 
 			it "re-renders the new method" do
@@ -181,7 +196,12 @@ RSpec.describe RawFileSourcesController, type: :controller do
 		render_views
 
 		before(:each) do
-			@rfs = create :raw_file_source
+			@rfs = create :weams_file_source
+
+			@wf = @rfs.raw_files.build(upload_date: DateTime.current, type: "WeamsFile")
+			@wf.name = @wf.to_server_name
+			@wf.save!
+
 			get :show, id: @rfs.id
 		end
 
@@ -194,9 +214,11 @@ RSpec.describe RawFileSourcesController, type: :controller do
 			expect(response.content_type).to eq("text/html")
 		end		
 
-		it "shows the source id and name" do
+		it "shows the source properties" do
 			expect(response.body).to match Regexp.new(@rfs.id.to_s)
 			expect(response.body).to match Regexp.new(@rfs.name)
+			expect(response.body).to match Regexp.new(@rfs.build_order.to_s)
+			expect(response.body).to match Regexp.new(@wf.name)
 		end
 	end
 end

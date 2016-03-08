@@ -27,3 +27,24 @@
 		<%= @raw_file_source.build_order %>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-xs-8 section-margin-24">
+		<h4><small>CSV File Uploads</small></h4>
+		<small>
+			<table class="table table-hover table-condensed table-bordered table-responsive">
+			<thead>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Uploaded</th>
+				<th>Valid</th>
+			</thead>
+			<tbody>
+				<%= render partial: "raw_file",
+				 collection: @raw_file_source.raw_files.order(upload_date: :desc),
+				 as: :raw_file %>
+			</tbody>
+		</table>
+		</small>
+	</div>
+</div>

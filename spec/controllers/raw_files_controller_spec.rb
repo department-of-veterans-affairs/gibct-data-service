@@ -10,8 +10,13 @@ RSpec.describe RawFilesController, type: :controller do
 	## generate_create_attributes
 	## Generates attributes used in create methods.
 	#############################################################################
-	def generate_create_attributes(use_upload = true)
+	def generate_create_attributes(use_upload = true, use_weams = true)
 		rf = attributes_for :weams_file
+
+		if use_weams
+			rfs = create :weams_file_source
+			rf[:weams_file_source_id] = rfs.id
+		end
 
 		if use_upload
 			raw_file = File.new(Rails.root.join('spec/test_data', 'weams_test.csv'))
@@ -83,39 +88,25 @@ RSpec.describe RawFilesController, type: :controller do
 		login_user
 		render_views
 		
-		let(:csv_file) { Rails.root.join('data', WeamsFile.last.name) }
-		let(:csv_dir) { Rails.root.join('data') }
-
-		after(:each) do
-			File.delete(csv_file) if WeamsFile.last.present? && File.exist?(csv_file)
-		end
-
 		context "having valid form input" do
 			before(:each) do
-				create :weams_file_source
 				@rf = generate_create_attributes
 			end
 
 			it "creates a new raw_file record" do
-				expect{ post :create, raw_file: @rf }.to change(RawFile, :count).by(1)
+				expect{ post :create, raw_file: @rf }.to change(WeamsFile, :count).by(1)
 			end	
 
-			it "adds a new csv file to the server" do
-				expect{ post :create, raw_file: @rf }.to change{ Dir.entries(csv_dir).length }.by(1)
+			it "updates its source's csv_file data" do
+				expect{ post :create, raw_file: @rf }.to change{ CsvFile.first.updated_at }
 			end
 
-			it "deletes the existing older csv file from the server" do
+			it "modifies the data in the csv_file" do
+				old_data = RawFileSource.find(@rf[:weams_file_source_id]).csv_file.data
 				post :create, raw_file: @rf
-				old_weams_file = Rails.root.join('data', WeamsFile.last.name)
+				new_data = RawFileSource.find(@rf[:weams_file_source_id]).csv_file.data
 
-				post :create, raw_file: generate_create_attributes
-				expect(File.exists?(old_weams_file)).not_to be_truthy
-				expect(File.exists?(csv_file)).to be_truthy				
-			end
-
-			it "creates a timestamped csv_file" do
-				post :create, raw_file: @rf
-				expect(File.exist?(csv_file)).to be_truthy
+				expect(old_data).not_to eq(new_data)
 			end
 
 			it "redirects to the show page" do
@@ -127,26 +118,12 @@ RSpec.describe RawFilesController, type: :controller do
 		context "having invalid form input" do
 			context "with a non-valid raw_file_source" do
 				before(:each) do
-					@rf = generate_create_attributes(false)
+					@rf = generate_create_attributes(true, false)
+					@rf[:type] = "blah blah"
 				end
 
 				it "does not create a new raw_file record" do
 					expect{ post :create, raw_file: @rf }.to change(RawFile, :count).by(0)
-				end
-
-				it "does not add a new csv file to the server" do
-					post :create, raw_file: @rf
-					expect{ post :create, raw_file: @rf }.to change{ Dir.entries(csv_dir).length }.by(0)
-				end
-
-				it "does not delete the last raw file" do
-					create :weams_file_source
-					post :create, raw_file: generate_create_attributes
-					last_file = Rails.root.join('data', WeamsFile.last.name)
-
-					RawFileSource.last.destroy
-					post :create, raw_file: @rf
-					expect(File.exist?(last_file)).to be_truthy
 				end
 
 				it "re-renders the new method" do
@@ -157,7 +134,6 @@ RSpec.describe RawFilesController, type: :controller do
 	
 			context "with a invalid upload file" do
 				before(:each) do
-					create :weams_file_source
 					@rf = generate_create_attributes(false)
 				end
 
@@ -165,18 +141,12 @@ RSpec.describe RawFilesController, type: :controller do
 					expect{ post :create, raw_file: @rf}.to change(RawFile, :count).by(0)
 				end
 
-				it "does not add a new csv file to the server" do
+				it "does not modify the data in the csv_file" do
+					old_data = RawFileSource.find(@rf[:weams_file_source_id]).csv_file.data
 					post :create, raw_file: @rf
-					expect{ post :create, raw_file: @rf }.to change{ Dir.entries(csv_dir).length }.by(0)
-				end
+					new_data = RawFileSource.find(@rf[:weams_file_source_id]).csv_file.data
 
-				it "does not delete the last raw file" do
-					post :create, raw_file: generate_create_attributes
-					last_file = Rails.root.join('data', WeamsFile.last.name)
-
-					RawFileSource.last.destroy
-					post :create, raw_file: @rf
-					expect(File.exist?(last_file)).to be_truthy
+					expect(old_data).to eq(new_data)
 				end
 
 				it "re-renders the new method" do
@@ -198,10 +168,6 @@ RSpec.describe RawFilesController, type: :controller do
 
 		it "populates a raw_file" do
 			expect(assigns(:raw_file)).to eq(@rf)
-		end
-
-		it "gets the server file name of the latest (weams) raw file" do
-			expect(assigns(:csv)).to eq(Rails.root.join('data', @rf.name))
 		end
 
 		it "renders the new page" do
@@ -245,124 +211,91 @@ RSpec.describe RawFilesController, type: :controller do
 		login_user
 		render_views
 		
-		let(:csv_file) { Rails.root.join('data', WeamsFile.last.name) }
-		let(:csv_dir) { Rails.root.join('data') }
+		before(:each) do
+			post :create, raw_file: generate_create_attributes
 
-		after(:each) do
-			File.delete(csv_file) if WeamsFile.last.present? && File.exist?(csv_file)
+			@rf_record = WeamsFile.first
+			@rf = generate_create_attributes(true, false)
+
+			@old_csv = @rf_record.raw_file_source.csv_file
+			@old_csv.data = "0"
+			@old_csv.save!
 		end
 
 		context "having valid form input" do
-			let(:last_weams_file_id) { WeamsFile.last.id }
-			
-			before(:each) do
-				create :weams_file_source
-
-				post :create, raw_file: generate_create_attributes
-				@old_weams_file = Rails.root.join('data', WeamsFile.last.name)
-
-				@rf = generate_create_attributes
-			end
-
 			it "doesn't create a new raw_file record" do
 				expect{ 
-					put :update, id: last_weams_file_id, 
+					put :update, id: @rf_record.id, 
 					raw_file: { type: @rf[:type], upload: @rf[:upload] } 
 				}.to change(RawFile, :count).by(0)
 			end	
 
-			it "deletes the existing older csv file from the server" do
-				put :update, id: last_weams_file_id, 
+			it "changes the csv_file data" do
+				put :update, id: @rf_record.id, 
 					raw_file: { type: @rf[:type], upload: @rf[:upload] } 
 
-				expect(File.exists?(@old_weams_file)).not_to be_truthy
-				expect(File.exists?(csv_file)).to be_truthy				
-			end
-
-			it "creates a timestamped csv_file" do
-				put :update, id: last_weams_file_id, 
-					raw_file: { type: @rf[:type], upload: @rf[:upload] } 
-
-				expect(File.exist?(csv_file)).to be_truthy
-			end
+				@new_csv = WeamsFile.find(@rf_record.id).raw_file_source.csv_file				
+				expect(@old_csv.data).not_to eq(@new_csv.data)
+			end	
 
 			it "redirects to the show page" do
-				put :update, id: last_weams_file_id, 
+				put :update, id: @rf_record.id, 
 					raw_file: { type: @rf[:type], upload: @rf[:upload] } 
 
-      	expect(response).to redirect_to WeamsFile.last
+      	expect(response).to redirect_to @rf_record
     	end		
 		end
 
 		context "having invalid form input" do
-			let(:last_file_id) { WeamsFile.last.id }
-			
-			before(:each) do
-				create :weams_file_source
-
-				post :create, raw_file: generate_create_attributes
-				@old_weams_file = Rails.root.join('data', WeamsFile.last.name)
-			end
-
 			context "with a non-valid raw_file_source" do
 				before(:each) do
-					@rf = generate_create_attributes
 					@rf[:type] = "SomeNonsense"
 				end
 
-				it "does not create a new raw_file record" do
+				it "doesn't create a new raw_file record" do
 					expect{ 
-						post :update, id: last_file_id, raw_file: @rf 
+						put :update, id: @rf_record.id, 
+						raw_file: { type: @rf[:type], upload: @rf[:upload] } 
 					}.to change(RawFile, :count).by(0)
-				end
+				end	
 
-				it "does not add a new csv file to the server" do
-					expect{ 
-						post :update, id: last_file_id, raw_file: @rf 
-					}.to change{ Dir.entries(csv_dir).length }.by(0)
-				end
+				it "does not change the csv_file data" do
+					put :update, id: @rf_record.id, 
+						raw_file: { type: @rf[:type], upload: @rf[:upload] } 
 
-				it "does not delete the last raw file" do
-					post :create, raw_file: generate_create_attributes
-					last_file = Rails.root.join('data', WeamsFile.last.name)
+					@new_csv = WeamsFile.find(@rf_record.id).raw_file_source.csv_file				
+					expect(@new_csv.data).to eq("0")
+				end	
 
-					RawFileSource.last.destroy
-					post :create, raw_file: @rf
-					expect(File.exist?(last_file)).to be_truthy
-				end
+				it "re-renders the edit method" do
+					put :update, id: @rf_record.id, 
+						raw_file: { type: @rf[:type], upload: @rf[:upload] }       		
 
-				it "re-renders the new method" do
-					post :create, raw_file: @rf
-      		expect(response).to render_template :new
+					expect(response).to render_template :edit
     		end
 			end 	
 	
 			context "with a invalid upload file" do
-				before(:each) do
-					@rf = generate_create_attributes(false)
-				end
-
 				it "does not create a new raw_file record" do
-					expect{ post :create, raw_file: @rf}.to change(RawFile, :count).by(0)
+					expect{ 
+						put :update, id: @rf_record.id, 
+						raw_file: { type: @rf[:type], upload: nil } 
+					}.to change(RawFile, :count).by(0)
 				end
 
-				it "does not add a new csv file to the server" do
-					post :create, raw_file: @rf
-					expect{ post :create, raw_file: @rf }.to change{ Dir.entries(csv_dir).length }.by(0)
-				end
+				it "does not change the csv_file data" do
+					put :update, id: @rf_record.id, 
+						raw_file: { type: @rf[:type], upload: nil } 
 
-				it "does not delete the last raw file" do
-					rf = generate_create_attributes
-					post :create, raw_file: rf
+					@new_csv = WeamsFile.find(@rf_record.id).raw_file_source.csv_file				
+					expect(@new_csv.data).to eq("0")
+				end	
 
-					rf[:upload] = nil
-					post :update, id: last_file_id, raw_file: rf
-					expect(File.exist?(csv_file)).to be_truthy
-				end
+				it "re-renders the edit method" do
+					put :update, id: @rf_record.id, 
+						raw_file: { type: @rf[:type], upload: nil }       		
 
-				it "re-renders the new method" do
-					post :create, raw_file: @rf
-      		expect(response).to render_template :new
+					expect(response).to render_template :edit
     		end
 			end 	
 		end
@@ -372,34 +305,36 @@ RSpec.describe RawFilesController, type: :controller do
 		login_user
 		render_views
 
-		let(:csv_dir) { Rails.root.join('data') }
-
 		before(:each) do
-			create :weams_file_source
 			@rf = generate_create_attributes
 
 			post :create, raw_file: @rf
-			@last_weams = WeamsFile.last
-		end
-
-		after(:each) do
-			File.delete(csv_file) if WeamsFile.last.present? && File.exist?(csv_file)
+			@rf_record = WeamsFile.last
 		end
 
 		context "with a valid id" do
 			it "deletes a raw file record" do
-				expect{ delete :destroy, id: @last_weams.id }.to change(WeamsFile, :count).by(-1)
+				expect{ delete :destroy, id: @rf_record.id }.to change(WeamsFile, :count).by(-1)
 			end
 
-			it "deletes a raw file csv" do
-				csv_file = Rails.root.join('data', WeamsFile.last.name)
+			it "deletes csv data if the latest" do
+				raw_file_source = @rf_record.raw_file_source
 
-				delete :destroy, id: @last_weams.id
-				expect(File.exist?(csv_file)).not_to be_truthy
+				delete :destroy, id: @rf_record.id
+				expect(raw_file_source.csv_file.data).to eq("0")
+			end
+
+			it "does not delete csv data if not the latest" do
+				raw_file_source = @rf_record.raw_file_source
+
+				post :create, raw_file: generate_create_attributes(true, false)
+
+				delete :destroy, id: @rf_record.id
+				expect(raw_file_source.csv_file.data).not_to eq("0")
 			end
 
 			it "redirects to the index page" do
-				delete :destroy, id: @last_weams.id
+				delete :destroy, id: @rf_record.id
 	      expect(response).to redirect_to raw_files_path
 	  	end
 	  end
@@ -408,62 +343,47 @@ RSpec.describe RawFilesController, type: :controller do
 	describe "when downloading files" do
 		login_user
 
-		let(:csv_file) { Rails.root.join('data', WeamsFile.last.name) }
-		let(:csv_dir) { Rails.root.join('data') }
-
 		before(:each) do
-			create :weams_file_source
-
 			post :create, raw_file: generate_create_attributes
-			@last_weams = WeamsFile.last
-		end
-
-		after(:each) do
-			File.delete(csv_file) if File.exist?(csv_file)
+			@rf_record = WeamsFile.last
 		end
 		
 		describe "the GET send_csv_file" do
-			it "assigns a path to the server raw file" do
-				get :send_csv_file, id: @last_weams.id	
-			
-				expect(assigns(:path)).to eq(Rails.root.join('data', @last_weams.name))					
-			end
-
 			it "downloads a csv file" do
-				get :send_csv_file, id: @last_weams.id	
+				get :send_csv_file, id: @rf_record.id	
 			
-				expect(response.header['Content-Type']).to eq('text/csv')			
+				expect(response.header['Content-Type']).to eq('application/octet-stream')			
 			end
 		end
 
-		describe "displaying links" do
+		describe "links to downlad raw file" do
 			render_views
 
 			context "on the show page" do
-				it "don't appear if raw file doesn't exist" do
-					File.delete(csv_file) if File.exist?(csv_file)
-					get :show, id: @last_weams.id
+				it "do not appear if this is not the latest raw file" do
+					post :create, raw_file: generate_create_attributes(true, false)
+					get :show, id: @rf_record.id
 
-					expect(response.body).not_to match Regexp.new("Download #{@last_weams.name}")
+					expect(response.body).not_to match Regexp.new("Download #{@rf_record.name}")
+				end
+		
+				it "puts a download link if the latest raw file" do
+					get :show, id: @rf_record.id
+					expect(response.body).to match Regexp.new("Download #{@rf_record.name}")
 				end
 			end
 
-			it "puts a download link if the latest raw file exists" do
-				get :show, id: @last_weams.id
-				expect(response.body).to match Regexp.new("Download #{@last_weams.name}")
-			end
-
 			context "on the index page" do
-				it "puts a download link if the latest raw file exists" do
+				it "puts a download link if it is the latest raw file" do
 					get :index
 					expect(response.body).to match Regexp.new("Download")
 				end
 
-				it "doesn't put a download link if the latest raw file doesn't exist" do
-					File.delete(csv_file) if File.exist?(csv_file)
+				it "does not put a download link if it is the latest raw file" do
+					post :create, raw_file: generate_create_attributes(true, false)
 					get :index
 
-					expect(response.body).not_to match Regexp.new("Download #{@last_weams.name}")
+					expect(response.body).not_to match Regexp.new("^.+#{@rf_record.name}.+Download$")
 				end
 			end
 		end

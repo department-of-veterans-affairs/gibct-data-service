@@ -6,6 +6,7 @@ class CreateRawFiles < ActiveRecord::Migration
     	t.string :name, null: false
     	t.datetime :upload_date, null: false
     	t.boolean :is_valid, default: false
+      t.string :delimiter, null: false, default: ","
 
     	# STI
     	t.string :type, null: false

@@ -17,7 +17,7 @@
   	<%= link_to 'Destroy', raw_file, method: :delete, data: { confirm: 'Are you sure?' } %>
   </td>
   <td>
-  	<% if File.exist?(csv) %>
+  	<% if raw_file.latest? %>
   		<%= link_to 'Download', send_csv_file_raw_file_path(raw_file) %>
   	<% end %>
   </td>
