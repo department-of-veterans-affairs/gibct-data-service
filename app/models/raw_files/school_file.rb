@@ -1,0 +1,2 @@
+class SchoolFile < RawFile
+end

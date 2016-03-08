@@ -1,0 +1,19 @@
+<%= form_for(@raw_file, multipart: true) do |f| %>
+  <div class="form-group">
+    <%= f.label(:type) %>
+    <%= f.select(:type, options_for_select(RawFile.types, selected: @raw_file.type), 
+      { include_blank: "Select File Type" },
+    	{ class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:upload, "Upload (*.csv, *.txt)") %>
+    <%= f.file_field(:upload, class: "form-control", 
+      required: true, accept: "text/csv, text/plain") %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", :back, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

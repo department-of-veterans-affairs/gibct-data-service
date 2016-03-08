@@ -25,6 +25,10 @@
   url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
 
-.row-space-10 {
-	margin: 5px 0;
+.row-space-6 {
+	padding: 3px 0;
+}
+
+.section-margin-24 {
+	margin: 12px 0;
 }
