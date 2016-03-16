@@ -124,8 +124,8 @@ class CsvFile < ActiveRecord::Base
 	## True if this instance is the last uploaded for its type.
 	#############################################################################
 	def latest?
-		str1 = upload_date.strftime("%y%m%d%H%M%S%7N")
-		str2 = self.class.last_upload_date.strftime("%y%m%d%H%M%S%7N")
+		str1 = upload_date.strftime("%y%m%d%H%M%S%6N")
+		str2 = self.class.last_upload_date.strftime("%y%m%d%H%M%S%6N")
 		str1 == str2
 	end
 
