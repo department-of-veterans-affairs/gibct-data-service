@@ -70,8 +70,11 @@ class CsvFile < ActiveRecord::Base
 	## clear_data
 	#############################################################################
 	def clear_data
+		puts "@@@@@@@@@@@@ in Clear Data"
 		if latest?
+		puts "@@@@@@@@@@@@ in Clear Data latest"
 			if store = CsvStorage.find_by(csv_file_type: type)
+		puts "@@@@@@@@@@@@ in Clear Data latest set data store nil"
 				store.data_store = nil
 				store.save!
 			end
