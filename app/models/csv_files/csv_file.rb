@@ -7,7 +7,7 @@ class CsvFile < ActiveRecord::Base
 	validates :type, inclusion: { in: STI  }
 
 	before_save :set_name, :upload_file, :populate
-	before_destroy :clear_data, if: :latest?
+	before_destroy :clear_data
 
 	#############################################################################
 	## last_upload_date
@@ -70,12 +70,14 @@ class CsvFile < ActiveRecord::Base
 	## clear_data
 	#############################################################################
 	def clear_data
-		if store = CsvStorage.find_by(csv_file_type: type)
-			store.data_store = nil
-			store.save!
-		end
+		if latest?
+			if store = CsvStorage.find_by(csv_file_type: type)
+				store.data_store = nil
+				store.save!
+			end
 
-		Weam.destroy_all
+			Weam.destroy_all
+		end
 	end
 
 	#############################################################################
