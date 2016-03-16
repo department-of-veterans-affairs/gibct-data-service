@@ -13,7 +13,7 @@ class CsvFile < ActiveRecord::Base
 	## last_upload_date
 	## Gets the date on which the last file was uploaded
 	#############################################################################
-	scope :last_upload_date, -> { maximum(:upload_date) }
+	scope :last_upload_date, -> { maximum(:upload_date).in_time_zone('Eastern Time (US & Canada)') }
 
 	#############################################################################
 	## last_upload
