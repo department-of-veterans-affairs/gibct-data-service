@@ -28,4 +28,17 @@ RSpec.describe Weam, type: :model do
     	end
     end
   end
+
+  describe "va highest degree offered" do
+    {
+      "10" => " ", "11" => "4-year", "12" => "4-year", 
+      "13" => "4-year", "14" => "2-year", "15" => "NCD",
+      "16" => "NCD", "17" => "NCD", "18" => "NCD", "19" => "NCD"
+    }.each_pair do |facility_code, degree|
+      it "returns '#{degree}' based on facility_code #{facility_code}" do
+        weam = build :weam, facility_code: facility_code
+        expect(weam.va_highest_degree_offered).to eq(degree)
+      end
+    end
+  end
 end
