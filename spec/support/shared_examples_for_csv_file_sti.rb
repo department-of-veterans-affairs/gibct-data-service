@@ -83,7 +83,8 @@ RSpec.shared_examples "a csv file sti model" do |model|
 			csv1 = create(model)
 			csv2 = create(model)
 
-			expect(csv1.class.last_upload_date).to eq(csv2.upload_date)
+			expect(CsvFile.count).to eq(2)
+			expect(csv1.class.last_upload_date.to_i).to eq(csv2.upload_date.to_i)
 		end
 
 		it "knows the last uploaded csv file" do
