@@ -41,4 +41,15 @@ RSpec.describe Weam, type: :model do
       end
     end
   end
+
+  describe "weams_type" do
+    {
+      flight: "Flight", foreign: "Foreign", correspondence: "Correspondence",
+      ojt: "OJT", public: "Public", for_profit: "For Profit", private: "Private"
+    }.each_pair do |weam, type|
+      it "knows if its a #{type} institution" do
+        expect(build(:weam, weam).weams_type).to eq(type)
+      end
+    end
+  end
 end

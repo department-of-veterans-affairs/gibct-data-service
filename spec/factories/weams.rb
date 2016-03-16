@@ -17,5 +17,57 @@ FactoryGirl.define do
     flight_indicator { ['Yes', 'No'].sample }
     
     bah { Faker::Number.number(4).to_s }
+
+    trait :foreign do
+      country { "CAN" }
+      ojt_indicator { 'Yes' }
+      correspondence_indicator { 'Yes' }
+      flight_indicator { 'Yes' } 
+    end
+
+    trait :flight do
+      country { "USA" }
+      ojt_indicator { 'Yes' }
+      correspondence_indicator { 'Yes' }
+      flight_indicator { 'Yes' } 
+    end
+
+    trait :correspondence do
+      country { "USA" }
+      ojt_indicator { 'Yes' }
+      correspondence_indicator { 'Yes' }
+      flight_indicator { 'No' } 
+    end
+
+    trait :ojt do
+      country { "USA" }
+      ojt_indicator { 'Yes' }
+      correspondence_indicator { 'No' }
+      flight_indicator { 'No' } 
+    end
+
+    trait :public do
+      sequence :facility_code do |n| "1" + n.to_s(32).rjust(7, "0") end
+      country { "USA" }
+      ojt_indicator { 'No' }
+      correspondence_indicator { 'No' }
+      flight_indicator { 'No' } 
+    end
+
+    trait :for_profit do
+      sequence :facility_code do |n| "2" + n.to_s(32).rjust(7, "0") end
+      country { "USA" }
+      ojt_indicator { 'No' }
+      correspondence_indicator { 'No' }
+      flight_indicator { 'No' } 
+    end
+
+    trait :private do
+      sequence :facility_code do |n| "3" + n.to_s(32).rjust(7, "0") end
+      country { "USA" }
+      ojt_indicator { 'No' }
+      correspondence_indicator { 'No' }
+      flight_indicator { 'No' } 
+    end
   end
 end
