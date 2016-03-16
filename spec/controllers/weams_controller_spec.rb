@@ -223,7 +223,6 @@ RSpec.describe WeamsController, type: :controller do
 
 					new_weam = Weam.find(@weam.id)
 					expect(new_weam.institution).to eq(@weam.institution)
-					expect(new_weam.updated_at).to eq(@weam.created_at)			
 				end
 			end 	
 	
@@ -243,7 +242,6 @@ RSpec.describe WeamsController, type: :controller do
 
 					new_weam = Weam.find(@weam.id)
 					expect(new_weam.facility_code).to eq(@weam.facility_code)
-					expect(new_weam.updated_at).to eq(@weam.created_at)			
 				end
 			end 
 
@@ -264,7 +262,6 @@ RSpec.describe WeamsController, type: :controller do
 
 					new_weam = Weam.find(@weam.id)
 					expect(new_weam.facility_code).to eq(@weam.facility_code)
-					expect(new_weam.updated_at).to eq(@weam.created_at)			
 				end
 			end 	
 		end
