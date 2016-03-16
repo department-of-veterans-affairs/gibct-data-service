@@ -120,14 +120,13 @@ RSpec.shared_examples "a csv file sti model" do |model|
 
 		it "destroys data store if last saved" do
 			@csv.destroy
-			expect(CsvStorage.first.data_store).to be_blank
+			expect(CsvStorage.find_by(csv_file_type: @csv.type).data_store).to be_blank
 		end
 
 		it "does not destroy data store if not last saved" do
-			sleep(1)
 			create(model)
 			@csv.destroy
-			expect(CsvStorage.first.data_store).not_to be_blank
+			expect(CsvStorage.find_by(csv_file_type: @csv.type).data_store).not_to be_blank
 		end
 	end
 end
