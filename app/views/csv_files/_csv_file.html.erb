@@ -1,0 +1,18 @@
+<tr>
+	<td><%= csv_file.id %></td>
+	<td><%= csv_file.name %></td>
+	<td><%= csv_file.humanize_type %></td>
+	<td><%= csv_file.humanize_date %></td>
+
+  <td>
+  	<%= link_to 'Show', csv_file %>
+  </td>
+  <td>
+  	<%= link_to 'Destroy', csv_file, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+  <td>
+  	<% if csv_file.latest? %>
+      <%= link_to 'Download', send_csv_file_path(csv_file) %>
+  	<% end %>
+  </td>
+</tr>

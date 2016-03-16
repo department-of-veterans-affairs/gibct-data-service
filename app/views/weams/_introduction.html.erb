@@ -1,0 +1,50 @@
+<h1>Weams Data</h1>
+<div class="row row-space-6">
+	<div class="col-xs-8">
+		From this data, the GI Bill Comparison Tool's database is built.
+	</div>
+
+	<div class="col-xs-4">
+		<% if list_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">
+					<%= link_to 'List Weams Data', 
+						weams_path, class: "btn btn-success btn-xs", 
+						role: "button" %>
+				</div>
+			</div>
+		<% end %>
+
+		<% if edit_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">		
+					<%= link_to "Edit #{@weam.institution}", 
+						edit_weam_path(@weam), 
+						class: "btn btn-primary btn-xs", 
+						role: "button" %>
+				</div>
+			</div>
+		<% end %>
+
+		<% if new_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">
+					<%= link_to 'New Weam Entry', 
+						new_weam_path, class: "btn btn-info btn-xs", 
+						role: "button" %>
+				</div>
+			</div>
+		<% end %>
+
+		<% if destroy_link %>
+			<div class="row row-space-6">
+				<div class="col-xs-12">
+					<%= link_to "Destroy #{@weam.institution}", @weam, 
+						method: :delete, data: { confirm: 'Are you sure?' },
+						class: "btn btn-warning btn-xs", role: "button" %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
+	

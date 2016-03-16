@@ -21,11 +21,27 @@
       </ul>
 
       <ul class="nav navbar-nav">
-        <%= draw_controller("raw_file_sources", :index, :new).html_safe %>
+        <%= draw_controller("csv_types", :index).html_safe %>
       </ul>
 
       <ul class="nav navbar-nav">
-        <%= draw_controller("raw_files", :index, :new).html_safe %>
+        <%= draw_controller("csv_files", :index, :new).html_safe %>
+      </ul>
+
+      <ul class="nav navbar-nav"%>
+        <% if  %w(weams).include?(controller_name) %>
+          <li class="dropdown active">
+        <% else %>
+          <li class="dropdown">
+        <% end %>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+            role="button" aria-haspopup="true" aria-expanded="false">
+            Intermediate Csv Data <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="<%= weams_path %>">Weams</a></li>
+          </ul>
+        </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
