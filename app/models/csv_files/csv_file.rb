@@ -70,9 +70,6 @@ class CsvFile < ActiveRecord::Base
 	## clear_data
 	#############################################################################
 	def clear_data
-		puts "@@@@@@@@@@@@ latest: #{latest?}"
-		puts "@@@@@@@@@@@@ instance: #{ upload_date.strftime("%y%m%d%H%M%S%9N") }"
-		puts "@@@@@@@@@@@@ class: #{ self.class.last_upload_date.strftime("%y%m%d%H%M%S%9N") }"
 		if latest?
 			if store = CsvStorage.find_by(csv_file_type: type)
 				store.data_store = nil
@@ -127,8 +124,8 @@ class CsvFile < ActiveRecord::Base
 	## True if this instance is the last uploaded for its type.
 	#############################################################################
 	def latest?
-		str1 = upload_date.strftime("%y%m%d%H%M%S%9N")
-		str2 = self.class.last_upload_date.strftime("%y%m%d%H%M%S%9N")
+		str1 = upload_date.strftime("%y%m%d%H%M%S%7N")
+		str2 = self.class.last_upload_date.strftime("%y%m%d%H%M%S%7N")
 		str1 == str2
 	end
 
