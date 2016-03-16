@@ -1,8 +1,0 @@
-<% csv = Rails.root.join('data', raw_file.name) %>
-
-<tr>
-	<td><%= raw_file.id %></td>
-	<td><%= link_to raw_file.name, raw_file_path(raw_file) %></td>
-	<td><%= raw_file.upload_date.strftime("%B %d, %Y") %></td>
-	<td><%= raw_file.is_valid %></td>
-</tr>

@@ -1,2 +1,0 @@
-class SchoolFile < RawFile
-end

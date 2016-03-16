@@ -1,0 +1,125 @@
+<%= render partial: 'introduction', 
+		locals: { 
+			new_link: false, edit_link: true, 
+			list_link: true, destroy_link: true
+		} 
+%>
+
+<h2><small>Weam Institution: <%= @weam.institution %></small></h2>
+	
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Id: </strong>
+	</div>
+	<div class="col-xs-8">
+		<%= @weam.id %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Facility Code: </strong>
+	</div>
+	<div class="col-xs-8">
+		<%= @weam.facility_code %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Institution: </strong>
+	</div>
+	<div class="col-xs-8">
+		<%= @weam.institution %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>City: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.city %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>State: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.state %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Zip: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.zip %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Country: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.country %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>BAH: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.bah %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>POE: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.poe %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>YR: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.yr %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>OJT: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.ojt_indicator %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Correspondence: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.correspondence_indicator %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<strong>Flight: </strong>
+	</div>
+	<div class="col-xs-3">
+		<%= @weam.flight_indicator %>
+	</div>
+</div>

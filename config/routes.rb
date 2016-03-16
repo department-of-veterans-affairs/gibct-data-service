@@ -1,16 +1,13 @@
 Rails.application.routes.draw do
+  resources :weams
   root 'dashboard#index'
 
-  resources :raw_file_sources
-  resources :weams_raw_files, controller: 'raw_files', type: 'WeamsRawFile' 
+  get 'dashboard' => 'dashboard#index', as: :dashboard
 
-  resources :raw_files do
-    member do
-      get :send_csv_file
-    end
-  end
+  resources :csv_types, only: [:show, :index]
+  resources :csv_files, only: [:show, :index, :new, :create, :destroy]
 
-  # get 'raw_files/send_csv_file/:id' => 'raw_files#send_csv_file', as: :send_csv_file
+  get 'csv_files/:id/send_csv_file' => 'csv_files#send_csv_file', as: :send_csv_file
 
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
