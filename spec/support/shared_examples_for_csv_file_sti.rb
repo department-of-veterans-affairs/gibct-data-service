@@ -95,10 +95,10 @@ RSpec.shared_examples "a csv file sti model" do |model|
 		end
 
 		it "knows if its the last instance" do
-			csv = create(model)
-			create(model)
+			csv1 = create(model)
+			csv2 = create(model)
 
-			expect(csv.class.first).not_to be_latest
+			expect(csv1.class.first).not_to be_latest
 		end
 	end
 
@@ -124,6 +124,7 @@ RSpec.shared_examples "a csv file sti model" do |model|
 		end
 
 		it "does not destroy data store if not last saved" do
+			sleep(1)
 			create(model)
 			@csv.destroy
 			expect(CsvStorage.first.data_store).not_to be_blank
