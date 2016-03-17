@@ -1,0 +1,25 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: true, edit_link: false, 
+      list_link: false, download_link: false 
+    } 
+%>
+
+<h2><small>Uploaded Csv Files</small></h2>
+
+<div class="row">
+  <div class="col-xs-10">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Id</th>
+        <th>Name</th>
+        <th>CSV File Type</th>
+        <th>Uploaded Date</th>
+        <th colspan="3">Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: "csv_file", collection: @csv_files, as: :csv_file %>
+      </tbody>
+    </table>
+  </div>
+</div>

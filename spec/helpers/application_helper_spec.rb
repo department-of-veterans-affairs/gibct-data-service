@@ -3,22 +3,24 @@ require 'rails_helper'
 RSpec.describe ApplicationHelper, type: :helper do
 	let(:fullpath) { "/abc/def/ghi" }
 	let(:rootpath) { "/" }
+
 	let(:fullpath_link) { %Q(<li><a href="#{fullpath}">abc</a></li>) }
 	let(:fullpath_active_link) { 
 		%Q(<li class="active"><a href="#{fullpath}">abc <span class="sr-only">(current)</span></a></li>)
 	}
+
   let(:controller_inactive) {
     '<li class="dropdown"><a href="#" class="dropdown-toggle" '\
     'data-toggle="dropdown" role="button" aria-haspopup="true" '\
-    'aria-expanded="false">Raw File Sources <span class="caret"></span></a>'\
-    '<ul class="dropdown-menu"><li><a href="/raw_file_sources">'\
+    'aria-expanded="false">Dashboard <span class="caret"></span></a>'\
+    '<ul class="dropdown-menu"><li><a href="/dashboard">'\
     'List</a></li></ul></li>'
   }
   let(:controller_active) {
     '<li class="dropdown active"><a href="#" class="dropdown-toggle" '\
     'data-toggle="dropdown" role="button" aria-haspopup="true" '\
-    'aria-expanded="false">Raw File Sources <span class="caret"></span></a>'\
-    '<ul class="dropdown-menu"><li><a href="/raw_file_sources">'\
+    'aria-expanded="false">Dashboard <span class="caret"></span></a>'\
+    '<ul class="dropdown-menu"><li><a href="/dashboard">'\
     'List</a></li></ul></li>'
   }
 
@@ -64,19 +66,19 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "returns a regular dropdown if the controller_name doesn't match the controller" do
       allow(controller).to receive(:controller_name).and_return("foo")
 
-      expect(helper.draw_controller('raw_file_sources', :index)).to eq(controller_inactive)
+      expect(helper.draw_controller('dashboard', :index)).to eq(controller_inactive)
     end
 
-    it "returns an active dropdown if the controller_name doesn't match the controller" do
-      allow(controller).to receive(:controller_name).and_return("raw_file_sources")
+    it "returns an active dropdown if the controller_name match the controller" do
+      allow(controller).to receive(:controller_name).and_return("dashboard")
 
-      expect(helper.draw_controller('raw_file_sources', :index)).to eq(controller_active)
+      expect(helper.draw_controller('dashboard', :index)).to eq(controller_active)
     end
   end
 
   describe "pretty_controller_name" do
     it "returns a controller name as a singular title" do
-      expect(helper.pretty_controller_name("raw_file_sources")).to eq("Raw File Source")
+      expect(helper.pretty_controller_name("csv_types")).to eq("Csv Type")
     end
 
     it "returns a blank if the name is blank or " do

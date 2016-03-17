@@ -1,0 +1,35 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: false, 
+      list_link: true, download_link: @csv_file.latest?
+    } 
+%>
+
+<h2><small>CSV File: <%= @csv_file.name %></small></h2>
+  
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @csv_file.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Type: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @csv_file.type %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Upload Date: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @csv_file.humanize_date %>
+  </div>
+</div>

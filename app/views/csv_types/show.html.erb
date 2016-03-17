@@ -1,0 +1,42 @@
+<%= render partial: 'introduction', 
+    locals: { new_link: false, edit_link: false, list_link: true } %>
+
+<h2><small>CSV File Type: <%= @humanized_csv_type %></small></h2>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Last CSV Uploaded On: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @last_csv.try(:humanize_date) || '-' %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Last CSV Name: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @last_csv.blank? ? "-" : @last_csv.try(:name) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-10">
+    <h4><small><%= @humanized_csv_type %> Uploads</small></h4>
+    <small>
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Id</th>
+        <th>Name</th>
+        <th>CSV File Type</th>
+        <th>Uploaded Date</th>
+        <th colspan="4">Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: "csv_files/csv_file", 
+          collection: @csv_files.order(upload_date: :desc), as: :csv_file %>
+      </tbody>
+    </table>
+    </small>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<h1>CSV File Types</h1>
+<div class="row row-space-6">
+  <div class="col-xs-8">
+    There are several types of csv files that are used in the construction
+    of the comparison tool database, for example, the weams file. Each of
+    these types have their own unique fields that are incorporated into the
+    database.
+  </div>
+
+  <div class="col-xs-4">
+    <% if list_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">
+          <%= link_to 'List Csv File Types', 
+            csv_types_path, class: "btn btn-success btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if edit_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">   
+          <%= link_to "Edit #{@csv_type.name}", 
+            edit_csv_type_path(@csv_type), 
+            class: "btn btn-primary btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if new_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">
+          <%= link_to 'New Raw File Type', 
+            new_csv_type_path, class: "btn btn-primary btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+  

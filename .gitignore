@@ -45,7 +45,8 @@ capybara-*.html
 .rspec
 .env
 .byebug_history
-.DS_Store
+**.DS_Store
+
 
 /public/system
 /spec/tmp

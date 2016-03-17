@@ -36,6 +36,9 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'devise', '~> 3.5', '>= 3.5.6'
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 
+# Pagination
+gem 'will_paginate', '~> 3.1'
+
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
