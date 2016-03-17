@@ -1,0 +1,80 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: true, 
+      list_link: true, destroy_link: true
+    } 
+%>
+
+<h2><small>Crosswalk</small></h2>
+  
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @va_crosswalk.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Facility Code: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @va_crosswalk.facility_code %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Institution: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @va_crosswalk.institution %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>OPE: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @va_crosswalk.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>IPEDS: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @va_crosswalk.cross %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>City: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @va_crosswalk.city %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>State: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @va_crosswalk.state %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Notes: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @va_crosswalk.notes %>
+  </div>
+</div>

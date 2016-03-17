@@ -2,9 +2,10 @@ class CsvFilesController < ApplicationController
   include Alertable
 
   # Kluge for brakeman
-  STI = { 
-    "WeamsCsvFile" => WeamsCsvFile
-  }
+  # STI = { 
+  #   "WeamsCsvFile" => WeamsCsvFile,
+  #   "VaCrosswalkCsvFile" => VaCrosswalkCsvFile
+  # }
 
   before_action :authenticate_user! 
 	before_action :set_csv_file, only: [:show, :destroy, :send_csv_file]
@@ -36,7 +37,8 @@ class CsvFilesController < ApplicationController
   #############################################################################
   def create
     begin
-      @csv_file = STI[csv_file_params[:type]].new
+      @csv_file = CsvFile.new(type: csv_file_params[:type])
+      # @csv_file = STI[csv_file_params[:type]].new
       @csv_file.delimiter = csv_file_params[:delimiter]
       @csv_file.upload = csv_file_params[:upload]
     rescue StandardError => e 

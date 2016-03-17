@@ -1,0 +1,19 @@
+<tr>
+	<td><%= va_crosswalk.id %></td>
+  <td><%= va_crosswalk.facility_code %></td>
+  <td><%= va_crosswalk.institution %></td>
+  <td><%= va_crosswalk.city %></td>
+  <td><%= va_crosswalk.state %></td>
+  <td><%= va_crosswalk.ope %></td>
+  <td><%= va_crosswalk.cross %></td>
+  <td><%= va_crosswalk.notes %></td>
+  <td>
+    <%= link_to 'Show', va_crosswalk %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_va_crosswalk_path(va_crosswalk) %>
+  </td>
+  <td>
+  	<%= link_to 'Destroy', va_crosswalk, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>
