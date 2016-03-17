@@ -1,4 +1,4 @@
-# Gibct Data Service 
+# Gibct Data Service
 [![Build Status](https://travis-ci.org/department-of-veterans-affairs/gibct-data-service.svg?branch=master)](https://travis-ci.org/department-of-veterans-affairs/gibct-data-service)
 
 The GIBCT Data Service is a tool to compile and construct the database from several independent sources. These sources, in the form of CSVs or APIs, are imported into the tool and compiled to produce the GI Bill Comparison Tool database, as well as a csv containing the stakeholder-relevant data for each school in the database.
@@ -8,6 +8,7 @@ The GIBCT Data Service is a tool to compile and construct the database from seve
 1. Install Ruby 2.3. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.3](https://github.com/rbenv/rbenv#installing-ruby-versions)).
 1. Install Bundler to manager dependencies: `gem install bundler`
 1. Setup the database: `bundle exec rake db:migrate`
+1. Load test users: `bundle exec rake db:seed` (User: `marc@va.gov`, Password: `marcmarc`)
 1. Start the application: `bundle exec rails s`
 
 ## Commands
