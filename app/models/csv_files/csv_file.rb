@@ -1,6 +1,7 @@
 class CsvFile < ActiveRecord::Base
   attr_accessor :upload
 
+  # Required for validation, and lists all allowed derived csv file tables.
   STI = { 
     'WeamsCsvFile' => Weam, 
     'VaCrosswalkCsvFile' => VaCrosswalk
