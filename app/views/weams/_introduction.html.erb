@@ -39,7 +39,7 @@
     <% if destroy_link %>
       <div class="row row-space-6">
         <div class="col-xs-12">
-          <%= link_to "Destroy #{@weam.institution}", @weam, 
+          <%= link_to "Remove #{@weam.institution}", @weam, 
             method: :delete, data: { confirm: 'Are you sure?' },
             class: "btn btn-warning btn-xs", role: "button" %>
         </div>

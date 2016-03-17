@@ -29,7 +29,7 @@
     <% if new_link %>
       <div class="row row-space-6">
         <div class="col-xs-12">
-          <%= link_to 'New Crosswalk Entry', 
+          <%= link_to 'New Crosswalk', 
             new_va_crosswalk_path, class: "btn btn-info btn-xs", 
             role: "button" %>
         </div>
@@ -39,7 +39,7 @@
     <% if destroy_link %>
       <div class="row row-space-6">
         <div class="col-xs-12">
-          <%= link_to "Destroy #{@va_crosswalk.institution}", @weam, 
+          <%= link_to "Remove #{@va_crosswalk.institution}", @weam, 
             method: :delete, data: { confirm: 'Are you sure?' },
             class: "btn btn-warning btn-xs", role: "button" %>
         </div>
