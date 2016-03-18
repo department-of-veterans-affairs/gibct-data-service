@@ -5,7 +5,7 @@ RSpec.describe WeamsCsvFile, type: :model do
 	it_behaves_like "a csv file sti model", :weams_csv_file
 
 	describe "when creating an instance" do
-  	it "saves uploaded data to the weams table" do
+  	it "saves uploaded data to the eight key table" do
   		csv = build :weams_csv_file
   		expect{ csv.save }.to change(Weam, :count).by(2)
   	end

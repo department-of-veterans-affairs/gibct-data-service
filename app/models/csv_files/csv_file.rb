@@ -4,7 +4,8 @@ class CsvFile < ActiveRecord::Base
   # Required for validation, and lists all allowed derived csv file tables.
   STI = { 
     'WeamsCsvFile' => Weam, 
-    'VaCrosswalkCsvFile' => VaCrosswalk
+    'VaCrosswalkCsvFile' => VaCrosswalk,
+    'EightKeyCsvFile' => EightKey
   }
 
   DELIMITERS = [',', '|', ' ']

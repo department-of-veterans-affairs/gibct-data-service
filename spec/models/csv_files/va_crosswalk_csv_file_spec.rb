@@ -5,7 +5,7 @@ RSpec.describe VaCrosswalkCsvFile, type: :model do
   it_behaves_like "a csv file sti model", :va_crosswalk_csv_file
 
   describe "when creating an instance" do
-    it "saves uploaded data to the weams table" do
+    it "saves uploaded data to the va crosswalk table" do
       csv = build :va_crosswalk_csv_file
       expect{ csv.save }.to change(VaCrosswalk, :count).by(2)
     end

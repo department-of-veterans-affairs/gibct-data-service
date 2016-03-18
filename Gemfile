@@ -47,6 +47,9 @@ gem 'puma', '~> 2.16'
 # Used to colorize output for rake tasks
 gem "rainbow"
 
+# Carmen for state names
+gem 'carmen-rails', '~> 1.0', '>= 1.0.1'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
