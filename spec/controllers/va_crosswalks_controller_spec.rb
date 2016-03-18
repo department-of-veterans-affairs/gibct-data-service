@@ -278,12 +278,12 @@ RSpec.describe VaCrosswalksController, type: :controller do
     end
 
     context "with a valid id" do
-      it "populates a csv_file" do
+      it "assigns a csv_file" do
         delete :destroy, id: @va_crosswalk.id
         expect(assigns(:va_crosswalk)).to eq(@va_crosswalk)
       end
 
-      it "deletes a raw file record" do
+      it "deletes an va_crosswalk record" do
         expect{ delete :destroy, id: @va_crosswalk.id }.to change(VaCrosswalk, :count).by(-1)
       end
     end
