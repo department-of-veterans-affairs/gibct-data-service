@@ -5,7 +5,8 @@ class CsvFile < ActiveRecord::Base
   STI = { 
     'WeamsCsvFile' => Weam, 
     'VaCrosswalkCsvFile' => VaCrosswalk,
-    'EightKeyCsvFile' => EightKey
+    'EightKeyCsvFile' => EightKey,
+    'ScorecardCsvFile' => Scorecard
   }
 
   DELIMITERS = [',', '|', ' ']

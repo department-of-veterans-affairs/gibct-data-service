@@ -32,7 +32,7 @@ class WeamsCsvFile < CsvFile
 			# Headers must contain at least the HEADER_MAP. Subtracting Array A from
 			# B = all elements in A not in B. This should be empty.
 			headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
-				header.strip
+				header.try(:strip)
 			end
 
 			if (HEADER_MAP.keys - headers).present?

@@ -25,8 +25,11 @@ class EightKeyCsvFile < CsvFile
       store = CsvStorage.find_by!(csv_file_type: "EightKeyCsvFile")
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
-       headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
-        header.strip
+      # Get rid of the first line it contains garbage.
+      CSV.parse_line(lines.shift)
+
+      headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
+        header.try(:strip)
       end
 
       # Headers must contain at least the HEADER_MAP. Subtracting Array A from

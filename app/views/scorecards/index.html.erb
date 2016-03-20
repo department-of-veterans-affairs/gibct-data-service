@@ -1,0 +1,44 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: true, edit_link: false, 
+      list_link: false, destroy_link: false
+    } 
+%>
+
+<h2><small>Scorecard Data</small></h2>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Id</th>
+        <th>Institution</th>
+        <th>OPE</th>
+        <th>IPEDS</th>        
+        <th>URL</th>
+        <th>Degree</th>
+        <th>Locale</th>
+        <th>Enrollment</th>
+        <th>Retention (All)</th>
+        <th>Retention (OTB)</th>
+        <th>Salary</th>        
+        <th>Repayment Rate</th>
+        <th>Avg. Debt</th>        
+        <th>C150_4</th>        
+        <th>C200_l4</th>        
+        <th colspan="3">Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: "scorecard", collection: @scorecards, as: :scorecard %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-offset-3 col-xs-6">
+    <div class="digg_pagination">
+      <%= will_paginate @va_crosswalk %>
+    </div>
+  </div>
+</div>
