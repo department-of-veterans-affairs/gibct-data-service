@@ -44,7 +44,7 @@ class EightKeyCsvFile < CsvFile
       lines.shift
 
       headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
-        header.strip
+        header.try(:strip)
       end
 
       # Headers must contain at least the HEADER_MAP. Subtracting Array A from

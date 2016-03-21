@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160318040652) do
+ActiveRecord::Schema.define(version: 20160318125149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,29 @@ ActiveRecord::Schema.define(version: 20160318040652) do
   add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
   add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
   add_index "eight_keys", ["state"], name: "index_eight_keys_on_state", using: :btree
+
+  create_table "scorecards", force: :cascade do |t|
+    t.string   "cross",                       null: false
+    t.string   "ope",                         null: false
+    t.string   "institution"
+    t.string   "insturl"
+    t.string   "pred_degree_awarded"
+    t.string   "locale"
+    t.string   "undergrad_enrollment"
+    t.string   "retention_all_students_ba"
+    t.string   "retention_all_students_otb"
+    t.string   "salary_all_students"
+    t.string   "repayment_rate_all_students"
+    t.string   "avg_stu_loan_debt"
+    t.string   "c150_4_pooled_supp"
+    t.string   "c200_l4_pooled_supp"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
+  add_index "scorecards", ["institution"], name: "index_scorecards_on_institution", using: :btree
+  add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

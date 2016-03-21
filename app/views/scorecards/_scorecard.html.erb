@@ -1,0 +1,26 @@
+<tr>
+	<td><%= scorecard.id %></td>
+  <td><%= scorecard.institution %></td>
+  <td><%= scorecard.ope %></td>
+  <td><%= scorecard.cross %></td>
+  <td><%= scorecard.insturl %></td>
+  <td><%= scorecard.pred_degree_awarded %></td>
+  <td><%= scorecard.locale %></td>
+  <td><%= scorecard.undergrad_enrollment %></td>
+  <td><%= scorecard.retention_all_students_ba %></td>
+  <td><%= scorecard.retention_all_students_otb %></td>
+  <td><%= scorecard.salary_all_students %></td>
+  <td><%= scorecard.repayment_rate_all_students %></td>
+  <td><%= scorecard.avg_stu_loan_debt %></td>
+  <td><%= scorecard.c150_4_pooled_supp %></td>
+  <td><%= scorecard.c200_l4_pooled_supp %></td>
+  <td>
+    <%= link_to 'Show', scorecard %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_scorecard_path(scorecard) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', scorecard, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

@@ -1,14 +1,21 @@
 require "csv"
 
-class VaCrosswalkCsvFile < CsvFile
+class ScorecardCsvFile < CsvFile
   HEADER_MAP = {
-    "Facility Code" => :facility_code,
-    "Institution Name" => :institution,
-    "City" => :city,
-    "State" => :state,
-    "IPEDS" => :cross,
-    "OPE" => :ope,
-    "NOTES" => :notes
+    "UNITID" => :cross,
+    "OPEID" => :ope,
+    "INSTNM" => :institution,
+    "INSTURL" => :insturl,
+    "PREDDEG" => :pred_degree_awarded,
+    "LOCALE" => :locale,
+    "UGDS" => :undergrad_enrollment,
+    "RET_FT4" => :retention_all_students_ba,
+    "RET_FTL4" => :retention_all_students_otb,
+    "md_earn_wne_p10" => :salary_all_students,
+    "RPY_3YR_RT_SUPP" => :repayment_rate_all_students,
+    "GRAD_DEBT_MDN_SUPP" => :avg_stu_loan_debt,
+    "C150_4_POOLED_SUPP" => :c150_4_pooled_supp,
+    "C200_L4_POOLED_SUPP" => :c200_l4_pooled_supp,
   }
 
   #############################################################################
@@ -20,7 +27,7 @@ class VaCrosswalkCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     begin
-      store = CsvStorage.find_by!(csv_file_type: "VaCrosswalkCsvFile")
+      store = CsvStorage.find_by!(csv_file_type: "ScorecardCsvFile")
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
       # Headers must contain at least the HEADER_MAP. Subtracting Array A from
@@ -29,11 +36,12 @@ class VaCrosswalkCsvFile < CsvFile
         header.try(:strip)
       end
 
-      if (HEADER_MAP.keys - headers).present?
-        raise StandardError.new("Missing headers in #{name}") 
+      missing_headers = HEADER_MAP.keys - headers
+      if (missing_headers).present?
+        raise StandardError.new("Missing headers in #{name}: #{missing_headers.inspect}") 
       end
 
-      VaCrosswalk.destroy_all
+      Scorecard.destroy_all
 
       lines.each do |line|
         values = CSV.parse_line(line, col_sep: delimiter)
@@ -48,7 +56,7 @@ class VaCrosswalkCsvFile < CsvFile
           hash
         end
 
-        VaCrosswalk.create!(@row)
+        Scorecard.create!(@row)
       end
 
       rc = true

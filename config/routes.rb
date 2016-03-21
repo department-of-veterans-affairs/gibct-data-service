@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :scorecards
   resources :eight_keys
   resources :va_crosswalks
   resources :weams
