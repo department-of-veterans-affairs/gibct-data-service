@@ -13,7 +13,7 @@ class VaCrosswalkCsvFile < CsvFile
 
   #############################################################################
   ## populate
-  ## Reloads the weams table with the data in the csv data store
+  ## Reloads the va crosswalks table with the data in the csv data store
   #############################################################################  
   def populate
     old_logger = ActiveRecord::Base.logger

@@ -1,0 +1,24 @@
+<%= form_for(@arf_gibill) do |f| %>
+  <div class="form-group">
+    <%= f.label(:facility_code) %>
+    <%= f.text_field :facility_code, 
+      { value: "#{@arf_gibill.facility_code}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:institution) %>
+    <%= f.text_field :institution, 
+      { value: "#{@arf_gibill.institution}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:total_count_of_students, "Total Students") %>
+    <%= f.text_field :total_count_of_students, 
+      { value: "#{@arf_gibill.total_count_of_students}", class: "form-control", required: false } %>
+  </div>
+  
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

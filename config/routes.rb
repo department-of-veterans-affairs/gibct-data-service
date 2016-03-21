@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :arf_gibills
   resources :accreditations
   resources :scorecards
   resources :eight_keys

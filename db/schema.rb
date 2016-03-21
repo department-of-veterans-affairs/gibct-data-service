@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160320200850) do
+ActiveRecord::Schema.define(version: 20160321023157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,17 @@ ActiveRecord::Schema.define(version: 20160320200850) do
   add_index "accreditations", ["campus_name"], name: "index_accreditations_on_campus_name", using: :btree
   add_index "accreditations", ["institution_ipeds_unitid"], name: "index_accreditations_on_institution_ipeds_unitid", using: :btree
   add_index "accreditations", ["institution_name"], name: "index_accreditations_on_institution_name", using: :btree
+
+  create_table "arf_gibills", force: :cascade do |t|
+    t.string   "facility_code",           null: false
+    t.string   "institution",             null: false
+    t.string   "total_count_of_students", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "arf_gibills", ["facility_code"], name: "index_arf_gibills_on_facility_code", unique: true, using: :btree
+  add_index "arf_gibills", ["institution"], name: "index_arf_gibills_on_institution", using: :btree
 
   create_table "csv_files", force: :cascade do |t|
     t.string   "name",                      null: false

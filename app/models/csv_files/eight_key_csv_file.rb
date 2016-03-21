@@ -12,7 +12,7 @@ class EightKeyCsvFile < CsvFile
 
   #############################################################################
   ## populate
-  ## Reloads the weams table with the data in the csv data store
+  ## Reloads the eight keys table with the data in the csv data store
   #############################################################################  
   def populate
     old_logger = ActiveRecord::Base.logger
