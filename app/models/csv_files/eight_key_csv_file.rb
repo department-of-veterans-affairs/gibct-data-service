@@ -41,7 +41,7 @@ class EightKeyCsvFile < CsvFile
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
       # Get rid of the first line it contains garbage.
-      CSV.parse_line(lines.shift)
+      lines.shift
 
       headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
         header.strip
