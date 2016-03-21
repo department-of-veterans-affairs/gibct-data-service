@@ -92,7 +92,7 @@ class AccreditationsController < ApplicationController
   end
 
   #############################################################################
-  ## set_eight_key
+  ## set_accreditation
   ## Obtains the model instance from the id parameter.
   #############################################################################  
   def set_accreditation
@@ -100,7 +100,7 @@ class AccreditationsController < ApplicationController
   end
 
   #############################################################################
-  ## eight_key_params
+  ## accreditation_params
   ## Strong parameters
   #############################################################################  
   def accreditation_params
