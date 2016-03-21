@@ -1,0 +1,15 @@
+<tr>
+	<td><%= arf_gibill.id %></td>
+  <td><%= arf_gibill.facility_code %></td>
+  <td><%= arf_gibill.institution %></td>
+  <td><%= arf_gibill.total_count_of_students %></td>
+  <td>
+    <%= link_to 'Show', arf_gibill %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_arf_gibill_path(arf_gibill) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', arf_gibill, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

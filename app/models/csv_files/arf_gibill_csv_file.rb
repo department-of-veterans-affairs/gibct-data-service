@@ -1,33 +1,22 @@
 require "csv"
 
-class ScorecardCsvFile < CsvFile
+class ArfGibillCsvFile < CsvFile
   HEADER_MAP = {
-    "UNITID" => :cross,
-    "OPEID" => :ope,
-    "INSTNM" => :institution,
-    "INSTURL" => :insturl,
-    "PREDDEG" => :pred_degree_awarded,
-    "LOCALE" => :locale,
-    "UGDS" => :undergrad_enrollment,
-    "RET_FT4" => :retention_all_students_ba,
-    "RET_FTL4" => :retention_all_students_otb,
-    "md_earn_wne_p10" => :salary_all_students,
-    "RPY_3YR_RT_SUPP" => :repayment_rate_all_students,
-    "GRAD_DEBT_MDN_SUPP" => :avg_stu_loan_debt,
-    "C150_4_POOLED_SUPP" => :c150_4_pooled_supp,
-    "C200_L4_POOLED_SUPP" => :c200_l4_pooled_supp,
+    "FACILITY CODE" => :facility_code,
+    "SCHOOL NAME" => :institution,
+    "TOTAL COUNT OF STUDENTS" => :total_count_of_students
   }
 
   #############################################################################
   ## populate
-  ## Reloads the scorecards table with the data in the csv data store
+  ## Reloads the arf_gibills table with the data in the csv data store
   #############################################################################  
   def populate
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
 
     begin
-      store = CsvStorage.find_by!(csv_file_type: "ScorecardCsvFile")
+      store = CsvStorage.find_by!(csv_file_type: "ArfGibillCsvFile")
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
       # Headers must contain at least the HEADER_MAP. Subtracting Array A from
@@ -36,12 +25,11 @@ class ScorecardCsvFile < CsvFile
         header.try(:strip)
       end
 
-      missing_headers = HEADER_MAP.keys - headers
-      if (missing_headers).present?
-        raise StandardError.new("Missing headers in #{name}: #{missing_headers.inspect}") 
+      if (HEADER_MAP.keys - headers).present?
+        raise StandardError.new("Missing headers in #{name}") 
       end
 
-      Scorecard.destroy_all
+      ArfGibill.destroy_all
 
       lines.each do |line|
         values = CSV.parse_line(line, col_sep: delimiter)
@@ -56,7 +44,7 @@ class ScorecardCsvFile < CsvFile
           hash
         end
 
-        Scorecard.create!(@row)
+        ArfGibill.create!(@row)
       end
 
       rc = true
