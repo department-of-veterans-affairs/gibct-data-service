@@ -1,0 +1,21 @@
+<tr>
+	<td><%= accreditation.id %></td>
+  <td><%= accreditation.institution_name %></td>
+  <td><%= accreditation.ope %></td>
+  <td><%= accreditation.institution_ipeds_unitid %></td>
+  <td><%= accreditation.campus_name %></td>
+  <td><%= accreditation.campus_ipeds_unitid %></td>
+  <td><%= accreditation.csv_accreditation_type %></td>
+  <td><%= accreditation.agency_name %></td>
+  <td><%= accreditation.last_action %></td>
+  <td><%= accreditation.periods %></td>
+  <td>
+    <%= link_to 'Show', accreditation %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_accreditation_path(accreditation) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', accreditation, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

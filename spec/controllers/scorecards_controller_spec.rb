@@ -211,7 +211,7 @@ RSpec.describe ScorecardsController, type: :controller do
           put :update, id: @scorecard.id, scorecard: @scorecard_attributes 
 
           new_scorecard = Scorecard.find(@scorecard.id)
-          expect(new_scorecard.institution).to eq(@scorecard.institution)
+          expect(new_scorecard.ope).to eq(@scorecard.ope)
         end
       end 
 
@@ -230,7 +230,7 @@ RSpec.describe ScorecardsController, type: :controller do
           put :update, id: @scorecard.id, scorecard: @scorecard_attributes 
 
           new_scorecard = Scorecard.find(@scorecard.id)
-          expect(new_scorecard.institution).to eq(@scorecard.institution)
+          expect(new_scorecard.cross).to eq(@scorecard.cross)
         end
       end   
     end

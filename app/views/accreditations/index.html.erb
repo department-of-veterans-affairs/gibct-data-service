@@ -1,0 +1,39 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: true, edit_link: false, 
+      list_link: false, destroy_link: false
+    } 
+%>
+
+<h2><small>Accreditation Data</small></h2>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Id</th>
+        <th>Institution Name</th>
+        <th>OPE</th>
+        <th>Institution IPEDS</th>
+        <th>Campus Name</th>
+        <th>Campus IPEDS</th>
+        <th>Accreditation Type</th>
+        <th>Agency Name</th>
+        <th>Last Action</th>
+        <th>Periods</th>
+        <th colspan="3">Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: "accreditation", collection: @accreditations, as: :accreditation %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-offset-3 col-xs-6">
+    <div class="digg_pagination">
+      <%= will_paginate @va_crosswalk %>
+    </div>
+  </div>
+</div>
