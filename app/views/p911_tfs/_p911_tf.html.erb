@@ -1,0 +1,16 @@
+<tr>
+	<td><%= p911_tf.id %></td>
+  <td><%= p911_tf.facility_code %></td>
+  <td><%= p911_tf.institution %></td>
+  <td><%= p911_tf.p911_tuition_fees %></td>
+  <td><%= p911_tf.p911_recipients %></td>
+  <td>
+    <%= link_to 'Show', p911_tf %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_p911_tf_path(p911_tf) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', p911_tf, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>
