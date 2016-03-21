@@ -263,26 +263,7 @@ RSpec.describe P911TfsController, type: :controller do
           new_p911_tf = P911Tf.find(@p911_tf.id)
           expect(new_p911_tf.facility_code).to eq(@p911_tf.facility_code)
         end
-      end  
-
-      context "with no total count of students" do
-        before(:each) do
-          @p911_tf = create :p911_tf
-
-          @p911_tf_attributes = @p911_tf.attributes
-          @p911_tf_attributes.delete("id")
-          @p911_tf_attributes.delete("updated_at")
-          @p911_tf_attributes.delete("created_at")
-          @p911_tf_attributes["total_count_of_students"] = nil
-        end
-
-        it "does not update a p911_tf entry" do
-          put :update, id: @p911_tf.id, p911_tf: @p911_tf_attributes 
-
-          new_p911_tf = P911Tf.find(@p911_tf.id)
-          expect(new_p911_tf.facility_code).to eq(@p911_tf.facility_code)
-        end
-      end  
+      end   
     end
   end
 

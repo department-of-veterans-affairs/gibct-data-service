@@ -39,9 +39,10 @@ class P911YrCsvFile < CsvFile
         values = CSV.parse_line(line, col_sep: delimiter)
         @row = HEADER_MAP.keys.inject({}) do |hash, header|
           idx = headers.find_index(header)
-          value = values[idx].gsub(",", "")
+          value = values[idx]
 
           if value.present?
+            value = value.gsub(/[,\$]/, "")
             hash[HEADER_MAP[header]] = value.encode("UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
           else
             hash[HEADER_MAP[header]] = ""
@@ -50,7 +51,7 @@ class P911YrCsvFile < CsvFile
           hash
         end
 
-        P911Yr.create!(@row)
+        P911Yr.create!(@row) unless @row.values.join.blank?
       end
 
       rc = true
