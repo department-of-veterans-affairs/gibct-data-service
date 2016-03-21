@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321081117) do
+ActiveRecord::Schema.define(version: 20160321133753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,18 @@ ActiveRecord::Schema.define(version: 20160321081117) do
 
   add_index "p911_tfs", ["facility_code"], name: "index_p911_tfs_on_facility_code", unique: true, using: :btree
   add_index "p911_tfs", ["institution"], name: "index_p911_tfs_on_institution", using: :btree
+
+  create_table "p911_yrs", force: :cascade do |t|
+    t.string   "facility_code",      null: false
+    t.string   "institution",        null: false
+    t.string   "p911_yellow_ribbon", null: false
+    t.string   "p911_yr_recipients", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
+  add_index "p911_yrs", ["institution"], name: "index_p911_yrs_on_institution", using: :btree
 
   create_table "scorecards", force: :cascade do |t|
     t.string   "cross",                       null: false

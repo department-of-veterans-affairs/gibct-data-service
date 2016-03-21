@@ -63,7 +63,7 @@ RSpec.describe P911TfsController, type: :controller do
       get :new
     end
 
-    it "assigns a blank ARF record" do
+    it "assigns a blank Post 911 TF record" do
       expect(assigns(:p911_tf)).to be_a_new(P911Tf)
     end
 
@@ -83,7 +83,7 @@ RSpec.describe P911TfsController, type: :controller do
         @p911_tf = attributes_for :p911_tf
       end
 
-      it "creates a arf entry" do
+      it "creates a Post 911 TF entry" do
         expect{ post :create, p911_tf: @p911_tf }.to change(P911Tf, :count).by(1)
         expect(P911Tf.find_by(facility_code: @p911_tf[:facility_code])).not_to be_nil
       end 
@@ -112,8 +112,8 @@ RSpec.describe P911TfsController, type: :controller do
 
       context "with a duplicate facility code" do
         before(:each) do
-          arf = create :p911_tf
-          @p911_tf = attributes_for :p911_tf, facility_code: arf.facility_code
+          p911_tf = create :p911_tf
+          @p911_tf = attributes_for :p911_tf, facility_code: p911_tf.facility_code
           end
 
         it "does not create a new csv file" do
