@@ -1,0 +1,30 @@
+<%= form_for(@p911_tf) do |f| %>
+  <div class="form-group">
+    <%= f.label(:facility_code) %>
+    <%= f.text_field :facility_code, 
+      { value: "#{@p911_tf.facility_code}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:institution) %>
+    <%= f.text_field :institution, 
+      { value: "#{@p911_tf.institution}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:p911_tuition_fees, "Tuition and Fees Cost") %>
+    <%= f.text_field :p911_tuition_fees, 
+      { value: "#{@p911_tf.p911_tuition_fees}", class: "form-control", required: false } %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label(:p911_recipients, "Number of Recipients (Trainees)") %>
+    <%= f.text_field :p911_recipients, 
+      { value: "#{@p911_tf.p911_recipients}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

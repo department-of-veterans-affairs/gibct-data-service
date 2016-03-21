@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+  resources :p911_tfs
   resources :arf_gibills
   resources :accreditations
   resources :scorecards
   resources :eight_keys
   resources :va_crosswalks
   resources :weams
+  
   root 'dashboard#index'
 
   get 'dashboard' => 'dashboard#index', as: :dashboard
