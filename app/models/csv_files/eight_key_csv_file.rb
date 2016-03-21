@@ -19,13 +19,31 @@ class EightKeyCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     # TODO: Remove Kludgy fix for state rows that group states in eight-keys.csv
-    states = Carmen::Country.coded("US").subregions.map(&:name).map(&:downcase)
+    states = [
+      "alaska", "alabama", "arkansas", "american samoa", "arizona", "california", 
+      "colorado", "connecticut", "district of columbia", "delaware", "florida", 
+      "georgia", "guam", "hawaii", "iowa", "idaho", "illinois", "indiana", 
+      "kansas", "kentucky", "louisiana", "massachusetts", "maryland", "maine", 
+      "michigan", "minnesota", "missouri", "northern mariana islands", 
+      "mississippi", "montana", "north carolina", "north dakota", "nebraska", 
+      "new hampshire", "new jersey", "new mexico", "nevada", "new york", 
+      "ohio", "oklahoma", "oregon", "pennsylvania", "puerto rico", 
+      "rhode island", "south carolina", "south dakota", "tennessee", "texas", 
+      "united states minor outlying islands", "utah", "virginia", 
+      "virgin islands", "vermont", "washington", "wisconsin", "west virginia", 
+      "wyoming", "armed forces americas (except canada)", 
+      "armed forces africa, canada, europe, middle east", 
+      "armed forces pacific"
+    ]
 
     begin
       store = CsvStorage.find_by!(csv_file_type: "EightKeyCsvFile")
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
-       headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
+      # Get rid of the first line it contains garbage.
+      CSV.parse_line(lines.shift)
+
+      headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
         header.strip
       end
 
