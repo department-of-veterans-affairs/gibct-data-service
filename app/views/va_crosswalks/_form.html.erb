@@ -1,0 +1,49 @@
+<%= form_for(@va_crosswalk) do |f| %>
+  <div class="form-group">
+    <%= f.label(:facility_code) %>
+    <%= f.text_field :facility_code, 
+      { value: "#{@va_crosswalk.facility_code}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:institution) %>
+    <%= f.text_field :institution, 
+      { value: "#{@va_crosswalk.institution}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:ope) %>
+    <%= f.text_field :ope, 
+      { value: "#{@va_crosswalk.ope}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:cross, "IPEDS") %>
+    <%= f.text_field :cross, 
+      { value: "#{@va_crosswalk.cross}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:city) %>
+    <%= f.text_field :city, 
+      { value: "#{@va_crosswalk.city}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:state) %>
+    <%= f.text_field :state, 
+      { value: "#{@va_crosswalk.state}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:notes) %>
+    <%= f.text_field :notes, 
+      { value: "#{@va_crosswalk.notes}", class: "form-control", required: false } %>
+  </div>
+
+    
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

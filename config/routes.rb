@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :va_crosswalks
   resources :weams
   root 'dashboard#index'
 

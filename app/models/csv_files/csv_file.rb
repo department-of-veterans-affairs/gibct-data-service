@@ -2,10 +2,14 @@ class CsvFile < ActiveRecord::Base
   attr_accessor :upload
 
   # Required for validation, and lists all allowed derived csv file tables.
-  STI = %W(WeamsCsvFile)
+  STI = { 
+    'WeamsCsvFile' => Weam, 
+    'VaCrosswalkCsvFile' => VaCrosswalk
+  }
+
   DELIMITERS = [',', '|', ' ']
 
-  validates :type, inclusion: { in: STI  }
+  validates :type, inclusion: { in: STI.keys  }
 
   before_save :set_name, :upload_file, :populate
   before_destroy :clear_data
@@ -77,7 +81,7 @@ class CsvFile < ActiveRecord::Base
         store.save!
       end
 
-      Weam.destroy_all
+      STI[type].destroy_all
     end
   end
 
