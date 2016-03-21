@@ -25,10 +25,10 @@ RSpec.describe CsvFilesController, type: :controller do
   end
 
   #############################################################################
-  ## Define constant WeamsRawFile before any test.
+  ## Define constant WeamsCsvFile before any test.
   #############################################################################
   before(:all) do
-    class WeamsRawFile < CsvFile; end 
+    class WeamsCsvFile < CsvFile; end 
   end
 
   it_behaves_like "an authenticating controller", :index, "csv_files"

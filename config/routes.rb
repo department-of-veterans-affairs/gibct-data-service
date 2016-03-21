@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :p911_yrs
   resources :p911_tfs
   resources :arf_gibills
   resources :accreditations

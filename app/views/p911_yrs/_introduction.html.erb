@@ -1,0 +1,50 @@
+<h1>Post 911 Yellow Ribbon Data</h1>
+<div class="row row-space-6">
+  <div class="col-xs-8">
+    From this data, the GI Bill Comparison Tool's database is built.
+  </div>
+
+  <div class="col-xs-4">
+    <% if list_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">
+          <%= link_to 'List Post 911 YR Data', 
+            p911_yrs_path, class: "btn btn-success btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if edit_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">   
+          <%= link_to "Edit #{@p911_yr.institution}", 
+            edit_p911_yr_path(@p911_yr), 
+            class: "btn btn-primary btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if new_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">
+          <%= link_to 'New Post 911 YR Entry', 
+            new_p911_yr_path, class: "btn btn-info btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if destroy_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">
+          <%= link_to "Remove #{@p911_yr.institution}", @p911_yr, 
+            method: :delete, data: { confirm: 'Are you sure?' },
+            class: "btn btn-warning btn-xs", role: "button" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+  

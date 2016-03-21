@@ -1,0 +1,53 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: true, 
+      list_link: true, destroy_link: true
+    } 
+%>
+
+<h2><small>ARF: <%= @p911_yr.institution %></small></h2>
+  
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @p911_yr.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Facility Code: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @p911_yr.facility_code %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Institution: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @p911_yr.institution %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Post 911 YR Total Cost: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @p911_yr.p911_yellow_ribbon %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Post 911 YR Recipients: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @p911_yr.p911_yr_recipients %>
+  </div>
+</div>

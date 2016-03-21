@@ -1,0 +1,16 @@
+<tr>
+	<td><%= p911_yr.id %></td>
+  <td><%= p911_yr.facility_code %></td>
+  <td><%= p911_yr.institution %></td>
+  <td><%= p911_yr.p911_yellow_ribbon %></td>
+  <td><%= p911_yr.p911_yr_recipients %></td>
+  <td>
+    <%= link_to 'Show', p911_yr %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_p911_yr_path(p911_yr) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', p911_yr, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

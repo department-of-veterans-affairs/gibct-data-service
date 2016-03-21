@@ -32,8 +32,8 @@ RSpec.describe CsvTypesController, type: :controller do
   describe "GET #show" do
     login_user
 
-    let(:weams_csv_file_type) { CsvFile.types[0][1] }
-    let(:weams_csv_file_type_humanized) { CsvFile.types[0][0] }
+    let(:weams_csv_file_type) { CsvFile.types.last[1] }
+    let(:weams_csv_file_type_humanized) { CsvFile.types.last[0] }
 
     before(:each) do
       @csv_files = create_list :weams_csv_file, 10
