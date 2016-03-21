@@ -11,10 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160318125149) do
+ActiveRecord::Schema.define(version: 20160320200850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accreditations", force: :cascade do |t|
+    t.string   "institution_name"
+    t.string   "ope"
+    t.string   "institution_ipeds_unitid"
+    t.string   "campus_name"
+    t.string   "campus_ipeds_unitid"
+    t.string   "csv_accreditation_type"
+    t.string   "agency_name",              null: false
+    t.string   "last_action"
+    t.string   "periods"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "accreditations", ["campus_ipeds_unitid"], name: "index_accreditations_on_campus_ipeds_unitid", using: :btree
+  add_index "accreditations", ["campus_name"], name: "index_accreditations_on_campus_name", using: :btree
+  add_index "accreditations", ["institution_ipeds_unitid"], name: "index_accreditations_on_institution_ipeds_unitid", using: :btree
+  add_index "accreditations", ["institution_name"], name: "index_accreditations_on_institution_name", using: :btree
 
   create_table "csv_files", force: :cascade do |t|
     t.string   "name",                      null: false

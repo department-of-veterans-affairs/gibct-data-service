@@ -1,0 +1,100 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: true, 
+      list_link: true, destroy_link: true
+    } 
+%>
+
+<h2><small>Accreditation</small></h2>
+  
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Institution Name: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.institution_name %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>OPE: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Institution IPEDS: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.institution_ipeds_unitid %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Campus Name: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.campus_name %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Campus IPEDS: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.campus_ipeds_unitid %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Association Type: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.csv_accreditation_type %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Agency Name: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.agency_name %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Last Action: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.last_action %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Periods: </strong>
+  </div>
+  <div class="col-xs-7">
+    <%= @accreditation.periods %>
+  </div>
+</div>
+
+

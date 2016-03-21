@@ -1,0 +1,64 @@
+<%= form_for(@accreditation) do |f| %>
+  <div class="form-group">
+    <%= f.label(:institution_name) %>
+    <%= f.text_field :institution_name, 
+      { value: "#{@accreditation.institution_name}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:ope) %>
+    <%= f.text_field :ope, 
+      { value: "#{@accreditation.ope}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:cross, "Institution IPEDS") %>
+    <%= f.text_field :institution_ipeds_unitid, 
+      { value: "#{@accreditation.institution_ipeds_unitid}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:campus_name) %>
+    <%= f.text_field :campus_name, 
+      { value: "#{@accreditation.campus_name}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:campus_ipeds_unitid, "Campus IPEDS") %>
+    <%= f.text_field :campus_ipeds_unitid, 
+      { value: "#{@accreditation.campus_ipeds_unitid}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:csv_accreditation_type, "Accreditation Type") %>
+    <%= f.select(:csv_accreditation_type, options_for_select(Accreditation::ACCREDITATION_TYPES, 
+      selected: @accreditation.csv_accreditation_type), 
+      { include_blank: "Select Accreditation Type" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:agency_name) %>
+    <%= f.text_field :agency_name, 
+      { value: "#{@accreditation.agency_name}", class: "form-control", required: true } %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label(:last_action) %>
+    <%= f.select(:last_action, options_for_select(Accreditation::LAST_ACTIONS, 
+      selected: @accreditation.last_action), 
+      { include_blank: "Select Last Action" },
+      { class: "form-control", required: false }) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label(:periods) %>
+    <%= f.text_field :periods, 
+      { value: "#{@accreditation.periods}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
