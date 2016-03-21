@@ -278,12 +278,12 @@ RSpec.describe WeamsController, type: :controller do
     end
 
     context "with a valid id" do
-      it "populates a csv_file" do
+      it "assigns a csv_file" do
         delete :destroy, id: @weam.id
         expect(assigns(:weam)).to eq(@weam)
       end
 
-      it "deletes a raw file record" do
+      it "deletes a weams file record" do
         expect{ delete :destroy, id: @weam.id }.to change(Weam, :count).by(-1)
       end
     end

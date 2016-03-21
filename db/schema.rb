@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160316164659) do
+ActiveRecord::Schema.define(version: 20160318040652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,23 @@ ActiveRecord::Schema.define(version: 20160316164659) do
   end
 
   add_index "csv_storages", ["csv_file_type"], name: "index_csv_storages_on_csv_file_type", unique: true, using: :btree
+
+  create_table "eight_keys", force: :cascade do |t|
+    t.string   "institution", null: false
+    t.string   "city"
+    t.string   "state"
+    t.string   "cross"
+    t.string   "ope"
+    t.string   "notes"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "eight_keys", ["city"], name: "index_eight_keys_on_city", using: :btree
+  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
+  add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
+  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
+  add_index "eight_keys", ["state"], name: "index_eight_keys_on_state", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
