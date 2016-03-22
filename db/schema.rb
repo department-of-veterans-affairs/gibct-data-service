@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321133753) do
+ActiveRecord::Schema.define(version: 20160322013226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,18 @@ ActiveRecord::Schema.define(version: 20160321133753) do
   add_index "va_crosswalks", ["institution"], name: "index_va_crosswalks_on_institution", using: :btree
   add_index "va_crosswalks", ["ope"], name: "index_va_crosswalks_on_ope", using: :btree
   add_index "va_crosswalks", ["state"], name: "index_va_crosswalks_on_state", using: :btree
+
+  create_table "vsocs", force: :cascade do |t|
+    t.string   "facility_code",    null: false
+    t.string   "institution",      null: false
+    t.string   "vetsuccess_name"
+    t.string   "vetsuccess_email"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "vsocs", ["facility_code"], name: "index_vsocs_on_facility_code", unique: true, using: :btree
+  add_index "vsocs", ["institution"], name: "index_vsocs_on_institution", using: :btree
 
   create_table "weams", force: :cascade do |t|
     t.string   "facility_code",            null: false
