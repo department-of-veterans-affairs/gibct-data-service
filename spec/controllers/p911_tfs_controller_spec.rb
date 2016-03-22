@@ -93,7 +93,7 @@ RSpec.describe P911TfsController, type: :controller do
       context "with no institution name" do
         before(:each) do
           @p911_tf = attributes_for :p911_tf, institution: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, p911_tf: @p911_tf }.to change(P911Tf, :count).by(0)
