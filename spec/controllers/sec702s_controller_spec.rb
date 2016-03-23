@@ -266,4 +266,32 @@ RSpec.describe Sec702sController, type: :controller do
       end   
     end
   end
+
+  #############################################################################
+  ## destroy
+  #############################################################################
+  describe "DELETE destroy" do
+    login_user
+
+    before(:each) do
+      @sec702 = create :sec702
+    end
+
+    context "with a valid id" do
+      it "assigns a csv_file" do
+        delete :destroy, id: @sec702.id
+        expect(assigns(:sec702)).to eq(@sec702)
+      end
+
+      it "deletes a sec702s file record" do
+        expect{ delete :destroy, id: @sec702.id }.to change(Sec702, :count).by(-1)
+      end
+    end
+
+    context "with an invalid id" do
+      it "raises an error" do
+        expect{ delete :destroy, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end
