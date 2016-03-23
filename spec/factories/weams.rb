@@ -4,7 +4,7 @@ FactoryGirl.define do
     institution { Faker::University.name }
 
     city { Faker::Address.city }
-    state { Faker::Address.state_abbr }
+    sequence :state do |n| DS_ENUM::State::STATES.keys[n % DS_ENUM::State::STATES.keys.length] end
     zip { Faker::Address.zip }
     country { Faker::Address.country_code }
 

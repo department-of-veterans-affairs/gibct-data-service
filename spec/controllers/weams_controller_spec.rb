@@ -93,7 +93,7 @@ RSpec.describe WeamsController, type: :controller do
       context "with no institution name" do
         before(:each) do
           @weam = attributes_for :weam, institution: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, weam: @weam }.to change(Weam, :count).by(0)

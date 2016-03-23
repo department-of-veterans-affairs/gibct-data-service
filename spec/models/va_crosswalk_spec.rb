@@ -21,10 +21,14 @@ RSpec.describe VaCrosswalk, type: :model do
     end
 
     context "institution names" do
-      subject { create :va_crosswalk }
-
       it "are required" do
         expect(build :va_crosswalk, institution: nil).not_to be_valid
+      end
+    end
+
+    context "state" do
+      it "must be valid" do
+        expect(build :va_crosswalk, state: "ZZ").not_to be_valid
       end
     end
   end

@@ -21,8 +21,6 @@ RSpec.describe Vsoc, type: :model do
     end
 
     context "institution names" do
-      subject { create :vsoc }
-
       it "are required" do
         expect(build :vsoc, institution: nil).not_to be_valid
       end

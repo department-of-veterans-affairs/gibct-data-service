@@ -4,7 +4,7 @@ FactoryGirl.define do
     institution { Faker::University.name }
 
     city { Faker::Address.city }
-    state { Faker::Address.state_abbr }
+    sequence :state do |n| DS_ENUM::State::STATES.keys[n % DS_ENUM::State::STATES.keys.length] end
     sequence :ope do |n| n.to_s(32).rjust(8, "0") end
     sequence :cross do |n| n.to_s(32).rjust(6, "0") end
 
