@@ -1,0 +1,18 @@
+<tr>
+	<td><%= sva.id %></td>
+  <td><%= sva.institution %></td>
+  <td><%= sva.cross %></td>
+  <td><%= sva.city %></td>
+  <td><%= sva.state %></td>
+  <td><%= sva.student_veteran_link %></td>
+
+  <td>
+    <%= link_to 'Show', sva %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_sva_path(sva) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', sva, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

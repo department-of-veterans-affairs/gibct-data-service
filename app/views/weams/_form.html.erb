@@ -73,7 +73,7 @@
       { class: "form-control", required: false }) %>
   </div>
 
-    <div class="form-group">
+  <div class="form-group">
     <%= f.label(:correspondence_indicator) %>
     <%= f.select(:correspondence_indicator, options_for_select([['Yes', 'Yes'], ['No', 'No']], 
       selected: @weam.correspondence_indicator), 
@@ -81,7 +81,7 @@
       { class: "form-control", required: false }) %>
   </div>
 
-    <div class="form-group">
+  <div class="form-group">
     <%= f.label(:flight_indicator) %>
     <%= f.select(:flight_indicator, options_for_select([['Yes', 'Yes'], ['No', 'No']], 
       selected: @weam.flight_indicator), 
