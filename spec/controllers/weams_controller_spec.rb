@@ -103,7 +103,7 @@ RSpec.describe WeamsController, type: :controller do
       context "with no facility code" do
         before(:each) do
           @weam = attributes_for :weam, facility_code: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, weam: @weam }.to change(Weam, :count).by(0)
@@ -114,7 +114,7 @@ RSpec.describe WeamsController, type: :controller do
         before(:each) do
           w = create :weam
           @weam = attributes_for :weam, facility_code: w.facility_code
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, weam: @weam }.to change(Weam, :count).by(0)

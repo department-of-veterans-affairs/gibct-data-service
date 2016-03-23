@@ -1,0 +1,37 @@
+<%= form_for(@sva) do |f| %>
+  <div class="form-group">
+    <%= f.label(:institution) %>
+    <%= f.text_field :institution, 
+      { value: "#{@sva.institution}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:cross, "IPEDS_6") %>
+    <%= f.text_field :cross, 
+      { value: "#{@sva.cross}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:city) %>
+    <%= f.text_field :city, 
+      { value: "#{@sva.city}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:state) %>
+    <%= f.text_field :state, 
+      { value: "#{@sva.state}", class: "form-control", required: false } %>
+  </div>
+
+
+  <div class="form-group">
+    <%= f.label(:student_veteran_link) %>
+    <%= f.text_field :student_veteran_link, 
+      { value: "#{@sva.student_veteran_link}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

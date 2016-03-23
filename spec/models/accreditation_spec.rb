@@ -37,13 +37,13 @@ RSpec.describe Accreditation, type: :model do
     context "institution" do
       subject { create :accreditation }
 
-      it "gets institution_name if it is not nil" do
-        expect(subject.institution).to eq(subject.institution_name)
+      it "gets campus_name if it is not nil" do
+        expect(subject.institution).to eq(subject.campus_name)
       end
 
-      it "gets the campus name if the institution name is nil" do
-        subject.institution_name = nil
-        expect(subject.institution).to eq(subject.campus_name)
+      it "gets the institution name if the campus name is nil" do
+        subject.campus_name = nil
+        expect(subject.institution).to eq(subject.institution_name)
       end
     end
 

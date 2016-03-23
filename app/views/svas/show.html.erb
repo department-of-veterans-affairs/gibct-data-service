@@ -1,0 +1,63 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: true, 
+      list_link: true, destroy_link: true
+    } 
+%>
+
+<h2><small>Student Veteran Association Institution: <%= @sva.institution %></small></h2>
+  
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @sva.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Institution: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @sva.institution %>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Ipeds_6: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @sva.cross %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>City: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @sva.city %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>State: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @sva.state %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Student Veteran Link: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @sva.student_veteran_link %>
+  </div>
+</div>

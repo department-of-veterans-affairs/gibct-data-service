@@ -26,7 +26,7 @@ class Accreditation < ActiveRecord::Base
   ## Gets the name of the institution.
   #############################################################################
   def institution
-    institution_name || campus_name
+    campus_name || institution_name
   end
 
   #############################################################################
@@ -34,7 +34,7 @@ class Accreditation < ActiveRecord::Base
   ## Gets the ipeds id.
   #############################################################################
   def cross
-    institution_ipeds_unitid || campus_ipeds_unitid
+    campus_ipeds_unitid || institution_ipeds_unitid
   end
 
   #############################################################################

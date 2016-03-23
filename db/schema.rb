@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322013226) do
+ActiveRecord::Schema.define(version: 20160322031347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,19 @@ ActiveRecord::Schema.define(version: 20160322013226) do
   add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
   add_index "scorecards", ["institution"], name: "index_scorecards_on_institution", using: :btree
   add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
+
+  create_table "svas", force: :cascade do |t|
+    t.string   "institution",          null: false
+    t.string   "cross"
+    t.string   "city"
+    t.string   "state"
+    t.string   "student_veteran_link"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "svas", ["cross"], name: "index_svas_on_cross", using: :btree
+  add_index "svas", ["institution"], name: "index_svas_on_institution", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

@@ -154,7 +154,7 @@ RSpec.describe AccreditationsController, type: :controller do
         @accreditation_attributes.delete("id")
         @accreditation_attributes.delete("updated_at")
         @accreditation_attributes.delete("created_at")
-        @accreditation_attributes["institution_name"] += "x"
+        @accreditation_attributes["campus_name"] += "x"
       end
 
       it "assigns the accreditation record" do
@@ -168,7 +168,7 @@ RSpec.describe AccreditationsController, type: :controller do
         }.to change(Accreditation, :count).by(0)
 
         new_accreditation = Accreditation.find(@accreditation.id)
-        expect(new_accreditation.institution).not_to eq(@accreditation.institution)
+        expect(new_accreditation.campus_name).not_to eq(@accreditation.campus_name)
         expect(new_accreditation.updated_at).not_to eq(@accreditation.created_at)
       end 
     end
