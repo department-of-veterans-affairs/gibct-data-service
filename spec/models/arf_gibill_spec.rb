@@ -21,8 +21,6 @@ RSpec.describe ArfGibill, type: :model do
     end
 
     context "institution names" do
-      subject { create :arf_gibill }
-
       it "are required" do
         expect(build :arf_gibill, institution: nil).not_to be_valid
       end

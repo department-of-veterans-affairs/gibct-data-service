@@ -27,6 +27,12 @@ RSpec.describe Weam, type: :model do
     		expect(build :weam, institution: nil).not_to be_valid
     	end
     end
+
+    context "state" do
+      it "must be valid" do
+        expect(build :weam, state: "ZZ").not_to be_valid
+      end
+    end
   end
 
   describe "va highest degree offered" do

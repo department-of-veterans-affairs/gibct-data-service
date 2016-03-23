@@ -1,24 +1,21 @@
 require "csv"
 
-class SvaCsvFile < CsvFile
+class Sec702CsvFile < CsvFile
   HEADER_MAP = {
-    "School" => :institution,
-    "IPEDS_6" => :cross,
-    "City" => :city,
     "State" => :state,
-    "Website" => :student_veteran_link
+    "Sec702" => :sec_702
   }
 
   #############################################################################
   ## populate
-  ## Reloads the sva table with the data in the csv data store
+  ## Reloads the weams table with the data in the csv data store
   #############################################################################  
   def populate
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
 
     begin
-      store = CsvStorage.find_by!(csv_file_type: "SvaCsvFile")
+      store = CsvStorage.find_by!(csv_file_type: "Sec702CsvFile")
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
       # Headers must contain at least the HEADER_MAP. Subtracting Array A from
@@ -31,7 +28,7 @@ class SvaCsvFile < CsvFile
         raise StandardError.new("Missing headers in #{name}") 
       end
 
-      Sva.destroy_all
+      Sec702.destroy_all
 
       lines.each do |line|
         values = CSV.parse_line(line, col_sep: delimiter)
@@ -46,9 +43,10 @@ class SvaCsvFile < CsvFile
           hash
         end
 
-        # Gets the abbreviated name from the full state name
-        @row[:state] = DS_ENUM::State[@row[:state]]
-        Sva.create!(@row)
+        # Normalize truth and false strings to yes and no, but nil is still nil
+        @row[:sec_702] = DS_ENUM::Truth.value_to_truth(@row[:sec_702]) if @row[:sec_702].present?
+
+        Sec702.create!(@row)
       end
 
       rc = true

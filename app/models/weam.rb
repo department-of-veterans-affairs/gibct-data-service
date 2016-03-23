@@ -1,8 +1,7 @@
 class Weam < ActiveRecord::Base
   validates :facility_code, presence: true, uniqueness: true
   validates :institution, presence: true
-
-  TRUTHY = %w(Y y Yes yes True true T t 1)
+  validates :state, inclusion: { in: DS_ENUM::State.get_names }, allow_blank: true
 
   #############################################################################
   ## va_highest_degree_offered
@@ -28,11 +27,11 @@ class Weam < ActiveRecord::Base
   def weams_type
     if (country != "USA" && country != "US")
       "Foreign"
-    elsif TRUTHY.include?(flight_indicator)
+    elsif DS_ENUM::Truth.truthy?(flight_indicator)
       "Flight" 
-    elsif TRUTHY.include?(correspondence_indicator)
+    elsif DS_ENUM::Truth.truthy?(correspondence_indicator)
       "Correspondence" 
-    elsif TRUTHY.include?(ojt_indicator)
+    elsif DS_ENUM::Truth.truthy?(ojt_indicator)
       "OJT" 
     else 
       ["Public", "For Profit", "Private"].fetch(facility_code[0].to_i - 1)

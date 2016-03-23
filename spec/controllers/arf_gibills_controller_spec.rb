@@ -166,7 +166,7 @@ RSpec.describe ArfGibillsController, type: :controller do
   end
 
   #############################################################################
-  ## edit
+  ## update
   #############################################################################
   describe "PUT update" do
     login_user

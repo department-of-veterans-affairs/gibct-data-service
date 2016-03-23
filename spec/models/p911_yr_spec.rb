@@ -21,8 +21,6 @@ RSpec.describe P911Yr, type: :model do
     end
 
     context "institution names" do
-      subject { create :p911_yr }
-
       it "are required" do
         expect(build :p911_yr, institution: nil).not_to be_valid
       end

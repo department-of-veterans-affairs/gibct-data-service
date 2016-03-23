@@ -31,8 +31,11 @@
 
   <div class="form-group">
     <%= f.label(:state) %>
-    <%= f.text_field :state, 
-      { value: "#{@va_crosswalk.state}", class: "form-control", required: false } %>
+    <%= f.select(:state, 
+      options_for_select(DS_ENUM::State.get_as_options, 
+      selected: @va_crosswalk.state), 
+      { include_blank: "Select a state" },
+      { class: "form-control", required: false }) %>
   </div>
 
   <div class="form-group">
