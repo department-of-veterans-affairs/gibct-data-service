@@ -56,7 +56,7 @@ class ScorecardCsvFile < CsvFile
           hash
         end
 
-        Scorecard.create!(@row)
+        Scorecard.create!(@row) unless @row.values.join.blank?
       end
 
       rc = true

@@ -1,0 +1,32 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: true, edit_link: false, 
+      list_link: false, destroy_link: false
+    } 
+%>
+
+<h2><small>Section 702 School Data</small></h2>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Id</th>
+        <th>Facility Code</th>
+        <th>Sec 702?</th>
+        <th colspan="3">Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: "sec702_school", collection: @sec702_schools, as: :sec702_school %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-offset-3 col-xs-6">
+    <div class="digg_pagination">
+      <%= will_paginate @sec702_school %>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160323132547) do
+ActiveRecord::Schema.define(version: 20160324024659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,15 @@ ActiveRecord::Schema.define(version: 20160323132547) do
   add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
   add_index "scorecards", ["institution"], name: "index_scorecards_on_institution", using: :btree
   add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
+
+  create_table "sec702_schools", force: :cascade do |t|
+    t.string   "facility_code", null: false
+    t.string   "sec_702",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "sec702_schools", ["facility_code"], name: "index_sec702_schools_on_facility_code", unique: true, using: :btree
 
   create_table "sec702s", force: :cascade do |t|
     t.string   "state",      null: false

@@ -63,7 +63,7 @@ RSpec.describe ScorecardsController, type: :controller do
       get :new
     end
 
-    it "assigns a blank eight key record" do
+    it "assigns a blank scorecard record" do
       expect(assigns(:scorecard)).to be_a_new(Scorecard)
     end
 

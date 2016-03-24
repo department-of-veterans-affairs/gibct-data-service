@@ -48,7 +48,7 @@ class SvaCsvFile < CsvFile
 
         # Gets the abbreviated name from the full state name
         @row[:state] = DS_ENUM::State[@row[:state]]
-        Sva.create!(@row)
+        Sva.create!(@row) unless @row.values.join.blank?
       end
 
       rc = true

@@ -10,6 +10,7 @@ class CsvFile < ActiveRecord::Base
     'P911YrCsvFile' => P911Yr,
     'ScorecardCsvFile' => Scorecard,
     'Sec702CsvFile' => Sec702,
+    'Sec702SchoolCsvFile' => Sec702School,
     'SvaCsvFile' => Sva,
     'VaCrosswalkCsvFile' => VaCrosswalk,
     'VsocCsvFile' => Vsoc,

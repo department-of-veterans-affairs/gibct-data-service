@@ -98,7 +98,7 @@ class SvasController < ApplicationController
   end
 
   #############################################################################
-  ## csv_file_params
+  ## sva_params
   ## Strong parameters
   #############################################################################  
   def sva_params

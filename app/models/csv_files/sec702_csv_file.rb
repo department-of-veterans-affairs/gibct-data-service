@@ -46,7 +46,7 @@ class Sec702CsvFile < CsvFile
         # Normalize truth and false strings to yes and no, but nil is still nil
         @row[:sec_702] = DS_ENUM::Truth.value_to_truth(@row[:sec_702]) if @row[:sec_702].present?
 
-        Sec702.create!(@row)
+        Sec702.create!(@row) unless @row.values.join.blank?
       end
 
       rc = true

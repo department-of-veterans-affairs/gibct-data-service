@@ -99,7 +99,7 @@ class VaCrosswalksController < ApplicationController
   end
 
   #############################################################################
-  ## csv_file_params
+  ## va_crosswalk_params
   ## Strong parameters
   #############################################################################  
   def va_crosswalk_params

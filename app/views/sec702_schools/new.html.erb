@@ -1,0 +1,14 @@
+<%= render partial: 'introduction', 
+		locals: { 
+			new_link: false, edit_link: false, 
+			list_link: false, destroy_link: false
+		} 
+%>
+
+<h2><small>Create New Section 702 School Data</small></h2>
+
+<div class="row">
+	<div class="col-xs-8">
+		<%= render 'form' %>
+	</div>
+</div>

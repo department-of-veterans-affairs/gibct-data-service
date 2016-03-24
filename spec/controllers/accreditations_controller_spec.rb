@@ -63,7 +63,7 @@ RSpec.describe AccreditationsController, type: :controller do
       get :new
     end
 
-    it "assigns a blank eight key record" do
+    it "assigns a blank accreditation record" do
       expect(assigns(:accreditation)).to be_a_new(Accreditation)
     end
 
@@ -83,7 +83,7 @@ RSpec.describe AccreditationsController, type: :controller do
         @accreditation = attributes_for :accreditation
       end
 
-      it "creates an scorecard entry" do
+      it "creates an accreditation entry" do
         expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(1)
         expect(Accreditation.find_by(institution_name: @accreditation[:institution_name])).not_to be_nil
       end 
