@@ -99,7 +99,7 @@ class Sec702sController < ApplicationController
   end
 
   #############################################################################
-  ## csv_file_params
+  ## sec702_params
   ## Strong parameters
   #############################################################################  
   def sec702_params

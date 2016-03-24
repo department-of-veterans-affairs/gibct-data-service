@@ -54,7 +54,7 @@ class WeamsCsvFile < CsvFile
 					hash
 				end
 
-				Weam.create!(@row)
+				Weam.create!(@row) unless @row.values.join.blank?
 			end
 
 			rc = true

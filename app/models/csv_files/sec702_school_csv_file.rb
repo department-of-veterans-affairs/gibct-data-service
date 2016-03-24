@@ -1,26 +1,21 @@
 require "csv"
 
-class VaCrosswalkCsvFile < CsvFile
+class Sec702SchoolCsvFile < CsvFile
   HEADER_MAP = {
     "Facility Code" => :facility_code,
-    "Institution Name" => :institution,
-    "City" => :city,
-    "State" => :state,
-    "IPEDS" => :cross,
-    "OPE" => :ope,
-    "NOTES" => :notes
+    "Section_702" => :sec_702
   }
 
   #############################################################################
   ## populate
-  ## Reloads the va crosswalks table with the data in the csv data store
+  ## Reloads the weams table with the data in the csv data store
   #############################################################################  
   def populate
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
 
     begin
-      store = CsvStorage.find_by!(csv_file_type: "VaCrosswalkCsvFile")
+      store = CsvStorage.find_by!(csv_file_type: "Sec702SchoolCsvFile")
       lines = store.data_store.lines.map(&:strip).reject(&:blank?)
 
       # Headers must contain at least the HEADER_MAP. Subtracting Array A from
@@ -33,7 +28,7 @@ class VaCrosswalkCsvFile < CsvFile
         raise StandardError.new("Missing headers in #{name}") 
       end
 
-      VaCrosswalk.destroy_all
+      Sec702School.destroy_all
 
       lines.each do |line|
         values = CSV.parse_line(line, col_sep: delimiter)
@@ -48,7 +43,10 @@ class VaCrosswalkCsvFile < CsvFile
           hash
         end
 
-        VaCrosswalk.create!(@row) unless @row.values.join.blank?
+        # Normalize truth and false strings to yes and no, but nil is still nil
+        @row[:sec_702] = DS_ENUM::Truth.value_to_truth(@row[:sec_702]) if @row[:sec_702].present?
+
+        Sec702School.create!(@row) unless @row.values.join.blank?
       end
 
       rc = true

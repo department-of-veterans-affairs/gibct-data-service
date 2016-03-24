@@ -54,7 +54,7 @@ class EightKeyCsvFile < CsvFile
 
         # TODO: Remove Kludgy fix for state rows that group states
         unless DS_ENUM::State.get_full_names.map(&:downcase).include?(@row[:institution].try(:downcase))
-          EightKey.create!(@row) 
+          EightKey.create!(@row) unless @row.values.join.blank?
         end
       end
 

@@ -1,0 +1,14 @@
+<tr>
+	<td><%= sec702_school.id %></td>
+  <td><%= sec702_school.facility_code %></td>
+  <td><%= sec702_school.sec_702 %></td>
+  <td>
+    <%= link_to 'Show', sec702_school %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_sec702_school_path(sec702_school) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', sec702_school, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

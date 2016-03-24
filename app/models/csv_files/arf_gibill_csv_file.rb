@@ -44,7 +44,7 @@ class ArfGibillCsvFile < CsvFile
           hash
         end
 
-        ArfGibill.create!(@row)
+        ArfGibill.create!(@row) unless @row.values.join.blank?
       end
 
       rc = true

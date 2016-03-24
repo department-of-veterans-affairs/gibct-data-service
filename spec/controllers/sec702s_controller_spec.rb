@@ -63,7 +63,7 @@ RSpec.describe Sec702sController, type: :controller do
       get :new
     end
 
-    it "assigns a blank crosswalk record" do
+    it "assigns a blank sec702 record" do
       expect(assigns(:sec702)).to be_a_new(Sec702)
     end
 
@@ -145,10 +145,6 @@ RSpec.describe Sec702sController, type: :controller do
     end
 
     context "with an invalid id" do
-      before(:each) do
-        @sec702 = create :sec702
-      end
-
       it "with an invalid id it raises an error" do
         expect{ get :edit, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -283,7 +279,7 @@ RSpec.describe Sec702sController, type: :controller do
         expect(assigns(:sec702)).to eq(@sec702)
       end
 
-      it "deletes a sec702s file record" do
+      it "deletes a sec702s record" do
         expect{ delete :destroy, id: @sec702.id }.to change(Sec702, :count).by(-1)
       end
     end

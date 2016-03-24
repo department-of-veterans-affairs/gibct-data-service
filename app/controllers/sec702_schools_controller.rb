@@ -1,17 +1,17 @@
-class WeamsController < ApplicationController
+class Sec702SchoolsController < ApplicationController
   include Alertable
 
   before_action :authenticate_user! 
-  before_action :set_weam, only: [:show, :edit, :destroy, :update]
+  before_action :set_sec702_school, only: [:show, :edit, :destroy, :update]
 
-	#############################################################################
+  #############################################################################
   ## index
   #############################################################################
   def index
-		@weams = Weam.paginate(:page => params[:page])
-	end
+    @sec702_schools = Sec702School.paginate(:page => params[:page])
+  end
 
-	#############################################################################
+  #############################################################################
   ## show
   #############################################################################
   def show
@@ -24,7 +24,7 @@ class WeamsController < ApplicationController
   ## new
   #############################################################################
   def new
-    @weam = Weam.new
+    @sec702_school = Sec702School.new
         
     respond_to do |format|
       format.html
@@ -35,15 +35,15 @@ class WeamsController < ApplicationController
   ## create
   #############################################################################
   def create
-    @weam = Weam.create(weam_params)
+    @sec702_school = Sec702School.create(sec702_school_params)
 
     respond_to do |format|
-      if @weam.persisted?
-        format.html { redirect_to @weam, notice: "#{@weam.institution} created."}
+      if @sec702_school.persisted?
+        format.html { redirect_to @sec702_school, notice: "#{@sec702_school.facility_code} created."}
       else
         label = "Errors prohibited this file from being saved:"
-        errors = @weam.errors.full_messages
-        flash.alert = WeamsController.pretty_error(label, errors).html_safe
+        errors = @sec702_school.errors.full_messages
+        flash.alert = Sec702SchoolsController.pretty_error(label, errors).html_safe
 
         format.html { render :new }
       end
@@ -63,15 +63,15 @@ class WeamsController < ApplicationController
   ## update
   #############################################################################
   def update
-    rc = @weam.update(weam_params)
+    rc = @sec702_school.update(sec702_school_params)
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @weam, notice: "#{@weam.institution} updated."}
+        format.html { redirect_to @sec702_school, notice: "#{@sec702_school.facility_code} updated."}
       else
         label = "Errors prohibited this file from being saved:"
-        errors = @weam.errors.full_messages
-        flash.alert = WeamsController.pretty_error(label, errors).html_safe
+        errors = @sec702_school.errors.full_messages
+        flash.alert = Sec702SchoolsController.pretty_error(label, errors).html_safe
 
         format.html { render :edit }
       end
@@ -82,31 +82,30 @@ class WeamsController < ApplicationController
   ## destroy
   #############################################################################
   def destroy
-    @weam.destroy
+    @sec702_school.destroy
 
     respond_to do |format|
-      format.html { redirect_to weams_url, 
-          notice: "#{@weam.institution} was successfully destroyed." }
+      format.html { redirect_to sec702_schools_url, 
+          notice: "#{@sec702_school.facility_code} was successfully destroyed." }
     end
   end
 
   #############################################################################
-  ## set_weam
+  ## set_sec702_school
   ## Obtains the model instance from the id parameter.
   #############################################################################  
-  def set_weam
-  	@weam = Weam.find(params[:id])
+  def set_sec702_school
+    @sec702_school = Sec702School.find(params[:id])
   end
 
   #############################################################################
-  ## weam_params
+  ## sec702_school_params
   ## Strong parameters
   #############################################################################  
-  def weam_params
-    params.require(:weam).permit(
-    	:facility_code, :institution, :type, :city, :state, :zip, :country, :bah,
-    	:accredited, :poe, :yr, :ojt_indicator, :correspondence_indicator,
-    	:flight_indicator
+  def sec702_school_params
+    params.require(:sec702_school).permit(
+      :facility_code, :sec_702
     )
   end
 end
+
