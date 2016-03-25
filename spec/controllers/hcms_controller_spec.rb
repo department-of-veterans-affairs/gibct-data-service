@@ -105,7 +105,7 @@ RSpec.describe HcmsController, type: :controller do
       context "with no ope" do
         before(:each) do
           @hcm = attributes_for :hcm, ope: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(0)
@@ -117,7 +117,7 @@ RSpec.describe HcmsController, type: :controller do
       context "with no monitor method" do
         before(:each) do
           @hcm = attributes_for :hcm, monitor_method: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(0)
@@ -125,11 +125,11 @@ RSpec.describe HcmsController, type: :controller do
       end   
     end
 
-      context "having invalid form input" do
+    context "having invalid form input" do
       context "with no reason" do
         before(:each) do
           @hcm = attributes_for :hcm, reason: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(0)

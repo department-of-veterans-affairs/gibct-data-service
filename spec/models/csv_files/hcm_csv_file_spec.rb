@@ -1,7 +1,7 @@
 require 'rails_helper'
 require "support/shared_examples_for_csv_file_sti"
 
-RSpec.describe MouCsvFile, type: :model do
+RSpec.describe HcmCsvFile, type: :model do
   it_behaves_like "a csv file sti model", :hcm_csv_file
 
   describe "when creating an instance" do

@@ -93,7 +93,7 @@ RSpec.describe MousController, type: :controller do
       context "with no institution name" do
         before(:each) do
           @mou = attributes_for :mou, institution: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, mou: @mou }.to change(Mou, :count).by(0)
@@ -105,7 +105,7 @@ RSpec.describe MousController, type: :controller do
       context "with no ope" do
         before(:each) do
           @mou = attributes_for :mou, ope: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, mou: @mou }.to change(Mou, :count).by(0)
