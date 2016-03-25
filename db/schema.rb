@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325030726) do
+ActiveRecord::Schema.define(version: 20160325040215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -175,6 +175,17 @@ ActiveRecord::Schema.define(version: 20160325030726) do
   end
 
   add_index "sec702s", ["state"], name: "index_sec702s_on_state", unique: true, using: :btree
+
+  create_table "settlements", force: :cascade do |t|
+    t.string   "cross",                  null: false
+    t.string   "institution",            null: false
+    t.string   "settlement_description", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
+  add_index "settlements", ["institution"], name: "index_settlements_on_institution", using: :btree
 
   create_table "svas", force: :cascade do |t|
     t.string   "institution",          null: false
