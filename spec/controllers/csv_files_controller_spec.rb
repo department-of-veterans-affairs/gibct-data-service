@@ -98,7 +98,7 @@ RSpec.describe CsvFilesController, type: :controller do
 
       it "updates the associated data table" do
         expect{ post :create, csv_file: @csv }.to change(Weam, :count).by(2)
-        expect(Weam.find_by(facility_code: "00000146")).not_to be_blank
+        expect(Weam.find_by(facility_code: "39P00132")).not_to be_blank
       end
     end
 

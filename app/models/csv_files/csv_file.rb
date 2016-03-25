@@ -135,6 +135,92 @@ class CsvFile < ActiveRecord::Base
   end
 
   #############################################################################
+  ## clean_line
+  ## Removes nasty non utf binary stuff.
+  #############################################################################
+  def clean_line(l)
+    l.try(:encode, "UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
+      .try(:chop)
+  end
+
+  #############################################################################
+  ## get_headers
+  ## Interprets the current line as a string containing csv headers.
+  #############################################################################
+  def get_headers(header_line)
+    headers = CSV.parse_line(header_line, col_sep: delimiter).map do |header|
+      header.try(:strip).try(:downcase)
+    end
+
+    header_map = self.class::HEADER_MAP
+
+    # Headers must contain at least the HEADER_MAP. Subtracting Array A from
+    # B = all elements in A not in B. This should be empty.
+    missing_headers = header_map.keys - headers
+    if (missing_headers).present?
+      raise StandardError.new("Missing headers in #{name}: #{missing_headers.inspect}") 
+    end
+
+    headers
+  end
+
+  #############################################################################
+  ## get_row
+  ## Interprets the current line as a csv row, and returns those values
+  ## corresponding to the header rows we use.
+  #############################################################################
+  def get_row(line, headers)
+    values = CSV.parse_line(line, col_sep: delimiter)
+
+    # Grab these constants from the derived tables.
+    header_map = self.class::HEADER_MAP
+    disallowed_chars = self.class::DISALLOWED_CHARS
+
+     # Map the header indexes to the values we need
+    header_map.keys.inject({}) do |hash, header|
+      i = headers.find_index(header)
+
+      key = header_map[header]
+
+      # Get the value, strip out bad chars, and normalize common values
+      hash[key] = (values[i] || "").gsub(disallowed_chars, "").strip
+      hash
+    end
+  end
+
+  #############################################################################
+  ## write_data
+  ## Reads the associated csv data store and writes those lines to the 
+  ## intermediate csv file in preparation for building the database.
+  #############################################################################
+  def write_data
+    table = STI[self.class.name]
+    table.destroy_all
+
+    normalize_map = self.class::NORMALIZE
+
+    lines = CsvStorage.find_by!(csv_file_type: self.class.name).data_store.lines
+    lines.shift(self.class::SKIP_LINES_BEFORE_HEADER)
+
+    headers = get_headers(clean_line(lines.shift))
+
+    lines.shift(self.class::SKIP_LINES_AFTER_HEADER)
+    lines.each do |line|
+      line = clean_line(line) || ""
+      row = get_row(line, headers)
+
+      unless row.values.join.blank?
+        normalize_map.keys.each do |key|
+          row[key] = normalize_map[key].call(row[key]) 
+        end
+
+        # Allow a block, if given to determine if row is created
+        table.create!(row) if !block_given? || yield(row)
+      end
+    end
+  end
+
+  #############################################################################
   ## latest?
   ## True if this instance is the last uploaded for its type.
   #############################################################################

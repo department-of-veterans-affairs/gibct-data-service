@@ -2,59 +2,46 @@ require "csv"
 
 class VaCrosswalkCsvFile < CsvFile
   HEADER_MAP = {
-    "Facility Code" => :facility_code,
-    "Institution Name" => :institution,
-    "City" => :city,
-    "State" => :state,
-    "IPEDS" => :cross,
-    "OPE" => :ope,
-    "NOTES" => :notes
+    "facility code" => :facility_code,
+    "institution name" => :institution,
+    "city" => :city,
+    "state" => :state,
+    "ipeds" => :cross,
+    "ope" => :ope,
+    "notes" => :notes
   }
+
+  SKIP_LINES_BEFORE_HEADER = 0
+  SKIP_LINES_AFTER_HEADER = 0
+
+  NORMALIZE = {
+    ope: ->(ope) do 
+      ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
+    end,
+
+    cross: ->(cross) do 
+      cross.present? && cross.downcase != 'none' ? cross.rjust(6, "0") : ""
+    end,
+
+    state: ->(state) { state.length != 2 ? DS_ENUM::State[state] : state.upcase }
+  }
+
+  DISALLOWED_CHARS = /[^\w@\- \.\/]/
 
   #############################################################################
   ## populate
-  ## Reloads the va crosswalks table with the data in the csv data store
+  ## Reloads the accreditation table with the data in the csv data store
   #############################################################################  
   def populate
     old_logger = ActiveRecord::Base.logger
     ActiveRecord::Base.logger = nil
 
     begin
-      store = CsvStorage.find_by!(csv_file_type: "VaCrosswalkCsvFile")
-      lines = store.data_store.lines.map(&:strip).reject(&:blank?)
-
-      # Headers must contain at least the HEADER_MAP. Subtracting Array A from
-      # B = all elements in A not in B. This should be empty.
-      headers = CSV.parse_line(lines.shift, col_sep: delimiter).map do |header|
-        header.try(:strip)
-      end
-
-      if (HEADER_MAP.keys - headers).present?
-        raise StandardError.new("Missing headers in #{name}") 
-      end
-
-      VaCrosswalk.destroy_all
-
-      lines.each do |line|
-        values = CSV.parse_line(line, col_sep: delimiter)
-        @row = HEADER_MAP.keys.inject({}) do |hash, header|
-          idx = headers.find_index(header)
-          if values[idx].present?
-            hash[HEADER_MAP[header]] = values[idx].encode("UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
-          else
-            hash[HEADER_MAP[header]] = ""
-          end
-          
-          hash
-        end
-
-        VaCrosswalk.create!(@row) unless @row.values.join.blank?
-      end
-
+      write_data
+ 
       rc = true
     rescue StandardError => e
       errors[:base] << e.message
-      errors[:base] << @row if @row
       rc = false
     ensure
       ActiveRecord::Base.logger = old_logger    
