@@ -19,7 +19,7 @@ class EightKeyCsvFile < CsvFile
     end,
 
     cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(6, "0") : ""
+      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
     end
   }
 

@@ -1,0 +1,62 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: true, 
+      list_link: true, destroy_link: true
+    } 
+%>
+
+<h2><small>Mou</small></h2>
+  
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @mou.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Institution: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @mou.institution %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>OPE: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @mou.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>City: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @mou.city %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>State: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @mou.state %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Status: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @mou.status %>
+  </div>
+</div>

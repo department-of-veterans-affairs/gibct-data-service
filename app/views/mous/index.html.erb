@@ -1,0 +1,35 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: true, edit_link: false, 
+      list_link: false, destroy_link: false
+    } 
+%>
+
+<h2><small>Mou Data</small></h2>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Id</th>
+        <th>Institution</th>
+        <th>OPE</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Status</th>
+        <th colspan="3">Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: "mou", collection: @mous, as: :mou %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-offset-3 col-xs-6">
+    <div class="digg_pagination">
+      <%= will_paginate @mous %>
+    </div>
+  </div>
+</div>

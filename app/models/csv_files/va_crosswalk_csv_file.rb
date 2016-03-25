@@ -20,7 +20,7 @@ class VaCrosswalkCsvFile < CsvFile
     end,
 
     cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(6, "0") : ""
+      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
     end,
 
     state: ->(state) { state.length != 2 ? DS_ENUM::State[state] : state.upcase }

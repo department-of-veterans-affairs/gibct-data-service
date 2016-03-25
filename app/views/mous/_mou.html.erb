@@ -1,0 +1,17 @@
+<tr>
+	<td><%= mou.id %></td>
+  <td><%= mou.institution %></td>
+  <td><%= mou.ope %></td>
+  <td><%= mou.city %></td>
+  <td><%= mou.state %></td>
+  <td><%= mou.status %></td>
+  <td>
+    <%= link_to 'Show', mou %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_mou_path(mou) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', mou, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>
