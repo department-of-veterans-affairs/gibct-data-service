@@ -4,7 +4,7 @@ FactoryGirl.define do
       use_type true
     end
     
-    delimiter '|'
+    delimiter ','
     csv_data_file = File.new(Rails.root.join('spec/test_data', 'weams_test.csv'))
 
     upload ActionDispatch::Http::UploadedFile.new(
