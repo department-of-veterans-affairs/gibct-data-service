@@ -1,0 +1,18 @@
+<tr>
+	<td><%= hcm.id %></td>
+  <td><%= hcm.institution %></td>
+  <td><%= hcm.ope %></td>
+  <td><%= hcm.city %></td>
+  <td><%= hcm.state %></td>
+  <td><%= hcm.monitor_method %></td>
+  <td><%= hcm.reason %></td>
+  <td>
+    <%= link_to 'Show', hcm %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_hcm_path(hcm) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', hcm, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

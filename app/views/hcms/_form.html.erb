@@ -1,35 +1,41 @@
-<%= form_for(@mou) do |f| %>
+<%= form_for(@hcm) do |f| %>
   <div class="form-group">
     <%= f.label(:institution) %>
     <%= f.text_field :institution, 
-      { value: "#{@mou.institution}", class: "form-control", required: true } %>
+      { value: "#{@hcm.institution}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:ope) %>
     <%= f.text_field :ope, 
-      { value: "#{@mou.ope}", class: "form-control", required: true } %>
+      { value: "#{@hcm.ope}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:city) %>
     <%= f.text_field :city, 
-      { value: "#{@mou.city}", class: "form-control", required: false } %>
+      { value: "#{@hcm.city}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:state) %>
     <%= f.select(:state, 
       options_for_select(DS_ENUM::State.get_as_options, 
-      selected: @mou.state), 
+      selected: @hcm.state), 
       { include_blank: "Select a state" },
       { class: "form-control", required: false }) %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:status) %>
-    <%= f.text_field :status, 
-      { value: "#{@mou.status}", class: "form-control", required: false } %>
+    <%= f.label(:monitor_method) %>
+    <%= f.text_field :monitor_method, 
+      { value: "#{@hcm.monitor_method}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:reason) %>
+    <%= f.text_field :reason, 
+      { value: "#{@hcm.reason}", class: "form-control", required: true } %>
   </div>
 
   <div class="actions">
