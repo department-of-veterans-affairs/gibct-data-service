@@ -1,22 +1,22 @@
 require "csv"
 
-class SvaCsvFile < CsvFile
+class MouCsvFile < CsvFile
   HEADER_MAP = {
-    "school" => :institution,
-    "ipeds_6" => :cross,
+    "institution name" => :institution,
     "city" => :city,
     "state" => :state,
-    "website" => :student_veteran_link
+    "ope id" => :ope,
+    "status" => :status
   }
 
-  SKIP_LINES_BEFORE_HEADER = 0
+  SKIP_LINES_BEFORE_HEADER = 1
   SKIP_LINES_AFTER_HEADER = 0
 
   NORMALIZE = {
-    cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
+    ope: ->(ope) do 
+      ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
     end,
-    
+
     state: ->(state) { state.length != 2 ? DS_ENUM::State[state] : state.upcase }
   }
 
@@ -31,6 +31,7 @@ class SvaCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     begin
+ 
       write_data
  
       rc = true

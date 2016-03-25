@@ -1,0 +1,40 @@
+<%= form_for(@mou) do |f| %>
+  <div class="form-group">
+    <%= f.label(:institution) %>
+    <%= f.text_field :institution, 
+      { value: "#{@mou.institution}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:ope) %>
+    <%= f.text_field :ope, 
+      { value: "#{@mou.ope}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:city) %>
+    <%= f.text_field :city, 
+      { value: "#{@mou.city}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:state) %>
+    <%= f.select(:state, 
+      options_for_select(DS_ENUM::State.get_as_options, 
+      selected: @mou.state), 
+      { include_blank: "Select a state" },
+      { class: "form-control", required: false }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:status) %>
+    <%= f.text_field :status, 
+      { value: "#{@mou.status}", class: "form-control", required: false } %>
+  </div>
+
+    
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

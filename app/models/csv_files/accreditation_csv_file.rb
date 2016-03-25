@@ -20,11 +20,11 @@ class AccreditationCsvFile < CsvFile
     end,
 
     institution_ipeds_unitid: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(6, "0") : ""
+      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
     end,
 
     campus_ipeds_unitid: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(6, "0") : ""
+      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
     end
   }
 
