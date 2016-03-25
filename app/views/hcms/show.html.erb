@@ -1,0 +1,71 @@
+<%= render partial: 'introduction', 
+    locals: { 
+      new_link: false, edit_link: true, 
+      list_link: true, destroy_link: true
+    } 
+%>
+
+<h2><small>Hcm</small></h2>
+  
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @hcm.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Institution: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @hcm.institution %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>OPE: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @hcm.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>City: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @hcm.city %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>State: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @hcm.state %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Monitor Method: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @hcm.monitor_method %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Reason: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @hcm.reason %>
+  </div>
+</div>
