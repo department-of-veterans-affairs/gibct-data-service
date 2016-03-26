@@ -15,7 +15,7 @@ FactoryGirl.define do
         "#{Accreditation::ACCREDITATIONS[key].sample} #{Faker::Lorem.word}" 
     }
 
-    last_action { "#{Accreditation::LAST_ACTIONS.sample}" }
+    accreditation_status { "#{Accreditation::LAST_ACTIONS.sample}" }
     periods { 
         "#{Faker::Date.between(15.years.ago, Date.today)} - " + 
         "#{['Current', Faker::Date.between(1.years.ago, Date.today)].sample}" 

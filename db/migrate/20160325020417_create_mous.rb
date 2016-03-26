@@ -5,7 +5,7 @@ class CreateMous < ActiveRecord::Migration
       t.string :institution, null: false
       t.string :city
       t.string :state
-      t.string :status
+      t.string :dod_mou
 
       t.timestamps null: false
 

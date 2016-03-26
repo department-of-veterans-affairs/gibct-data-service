@@ -44,10 +44,10 @@
   </div>
   
   <div class="form-group">
-    <%= f.label(:last_action) %>
-    <%= f.select(:last_action, options_for_select(Accreditation::LAST_ACTIONS, 
-      selected: @accreditation.last_action), 
-      { include_blank: "Select Last Action" },
+    <%= f.label(:accreditation_status) %>
+    <%= f.select(:accreditation_status, options_for_select(Accreditation::LAST_ACTIONS, 
+      selected: @accreditation.accreditation_status), 
+      { include_blank: "Select Status" },
       { class: "form-control", required: false }) %>
   </div>
   

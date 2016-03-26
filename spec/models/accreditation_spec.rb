@@ -26,11 +26,11 @@ RSpec.describe Accreditation, type: :model do
 
     context "last action" do
       it "are not required" do
-        expect(build :accreditation, last_action: nil).to be_valid
+        expect(build :accreditation, accreditation_status: nil).to be_valid
       end
 
       it "must be from a list of values" do
-        expect(build :accreditation, last_action: "blah-blah").not_to be_valid
+        expect(build :accreditation, accreditation_status: "blah-blah").not_to be_valid
       end
     end
 
@@ -61,8 +61,8 @@ RSpec.describe Accreditation, type: :model do
     end
 
     context "accreditation_status" do
-      it "gets the accreditation status (last_action)" do
-        expect(subject.accreditation_status).to eq(subject.last_action)
+      it "gets the accreditation status (accreditation_status)" do
+        expect(subject.accreditation_status).to eq(subject.accreditation_status)
       end
     end
 

@@ -1,14 +1,14 @@
-class ArfGibillsController < ApplicationController
+class IpedsIcsController < ApplicationController
   include Alertable
 
   before_action :authenticate_user! 
-  before_action :set_arf_gibill, only: [:show, :edit, :destroy, :update]
+  before_action :set_ipeds_ic, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @arf_gibills = ArfGibill.paginate(:page => params[:page])
+    @ipeds_ics = IpedsIc.paginate(:page => params[:page])
   end
 
   #############################################################################
@@ -24,7 +24,7 @@ class ArfGibillsController < ApplicationController
   ## new
   #############################################################################
   def new
-    @arf_gibill = ArfGibill.new
+    @ipeds_ic = IpedsIc.new
         
     respond_to do |format|
       format.html
@@ -35,15 +35,15 @@ class ArfGibillsController < ApplicationController
   ## create
   #############################################################################
   def create
-    @arf_gibill = ArfGibill.create(arf_gibill_params)
+    @ipeds_ic = IpedsIc.create(ipeds_ic_params)
 
     respond_to do |format|
-      if @arf_gibill.persisted?
-        format.html { redirect_to @arf_gibill, notice: "#{@arf_gibill.institution} created."}
+      if @ipeds_ic.persisted?
+        format.html { redirect_to @ipeds_ic, notice: "#{@ipeds_ic.cross} created."}
       else
         label = "Errors prohibited this file from being saved:"
-        errors = @arf_gibill.errors.full_messages
-        flash.alert = ArfGibillsController.pretty_error(label, errors).html_safe
+        errors = @ipeds_ic.errors.full_messages
+        flash.alert = IpedsIcsController.pretty_error(label, errors).html_safe
 
         format.html { render :new }
       end
@@ -63,15 +63,15 @@ class ArfGibillsController < ApplicationController
   ## update
   #############################################################################
   def update
-    rc = @arf_gibill.update(arf_gibill_params)
+    rc = @ipeds_ic.update(ipeds_ic_params)
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @arf_gibill, notice: "#{@arf_gibill.institution} updated."}
+        format.html { redirect_to @ipeds_ic, notice: "#{@ipeds_ic.cross} updated."}
       else
         label = "Errors prohibited this file from being saved:"
-        errors = @arf_gibill.errors.full_messages
-        flash.alert = ArfGibillsController.pretty_error(label, errors).html_safe
+        errors = @ipeds_ic.errors.full_messages
+        flash.alert = IpedsIcsController.pretty_error(label, errors).html_safe
 
         format.html { render :edit }
       end
@@ -82,29 +82,29 @@ class ArfGibillsController < ApplicationController
   ## destroy
   #############################################################################
   def destroy
-    @arf_gibill.destroy
+    @ipeds_ic.destroy
 
     respond_to do |format|
-      format.html { redirect_to arf_gibills_url, 
-          notice: "#{@arf_gibill.institution} was successfully destroyed." }
+      format.html { redirect_to ipeds_ics_url, 
+          notice: "#{@ipeds_ic.cross} was successfully destroyed." }
     end
   end
 
   #############################################################################
-  ## set_arf_gibill
+  ## set_ipeds_ic
   ## Obtains the model instance from the id parameter.
   #############################################################################  
-  def set_arf_gibill
-    @arf_gibill = ArfGibill.find(params[:id])
+  def set_ipeds_ic
+    @ipeds_ic = IpedsIc.find(params[:id])
   end
 
   #############################################################################
-  ## arf_gibill_params
+  ## ipeds_ic_params
   ## Strong parameters
   #############################################################################  
-  def arf_gibill_params
-    params.require(:arf_gibill).permit(
-      :facility_code, :institution, :gibill
+  def ipeds_ic_params
+    params.require(:ipeds_ic).permit(
+      :cross, :vet2, :vet3, :vet4, :vet5, :calsys, :distnced
     )
   end
 end
