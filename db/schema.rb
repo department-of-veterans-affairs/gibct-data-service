@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325040215) do
+ActiveRecord::Schema.define(version: 20160325061140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20160325040215) do
     t.string   "campus_ipeds_unitid"
     t.string   "csv_accreditation_type"
     t.string   "agency_name",              null: false
-    t.string   "last_action"
+    t.string   "accreditation_status"
     t.string   "periods"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
@@ -36,11 +36,11 @@ ActiveRecord::Schema.define(version: 20160325040215) do
   add_index "accreditations", ["institution_name"], name: "index_accreditations_on_institution_name", using: :btree
 
   create_table "arf_gibills", force: :cascade do |t|
-    t.string   "facility_code",           null: false
-    t.string   "institution",             null: false
-    t.string   "total_count_of_students", null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "facility_code", null: false
+    t.string   "institution",   null: false
+    t.string   "gibill",        null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "arf_gibills", ["facility_code"], name: "index_arf_gibills_on_facility_code", unique: true, using: :btree
@@ -98,12 +98,26 @@ ActiveRecord::Schema.define(version: 20160325040215) do
   add_index "hcms", ["institution"], name: "index_hcms_on_institution", using: :btree
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
+  create_table "ipeds_ics", force: :cascade do |t|
+    t.string   "cross",      null: false
+    t.string   "vet3",       null: false
+    t.string   "vet4",       null: false
+    t.string   "vet5",       null: false
+    t.string   "vet2",       null: false
+    t.string   "calsys",     null: false
+    t.string   "distnced",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "ipeds_ics", ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
+
   create_table "mous", force: :cascade do |t|
     t.string   "ope",         null: false
     t.string   "institution", null: false
     t.string   "city"
     t.string   "state"
-    t.string   "status"
+    t.string   "dod_mou"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end

@@ -1,0 +1,66 @@
+<%= form_for(@ipeds_ic) do |f| %>
+  <div class="form-group">
+    <%= f.label(:cross) %>
+    <%= f.text_field :cross, 
+      { value: "#{@ipeds_ic.cross}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:vet2) %>
+    <%= f.select(:vet2, 
+      options_for_select(DS_ENUM::IpedsCodes.vetx_codes, 
+      selected: @ipeds_ic.vet2), 
+      { include_blank: "Select a code" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:vet3) %>
+    <%= f.select(:vet3, 
+      options_for_select(DS_ENUM::IpedsCodes.vetx_codes, 
+      selected: @ipeds_ic.vet3), 
+      { include_blank: "Select a code" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:vet4) %>
+    <%= f.select(:vet4, 
+      options_for_select(DS_ENUM::IpedsCodes.vetx_codes, 
+      selected: @ipeds_ic.vet4), 
+      { include_blank: "Select a code" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:vet5) %>
+    <%= f.select(:vet5, 
+      options_for_select(DS_ENUM::IpedsCodes.vetx_codes, 
+      selected: @ipeds_ic.vet5), 
+      { include_blank: "Select a code" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:calsys) %>
+    <%= f.select(:calsys, 
+      options_for_select(DS_ENUM::IpedsCodes.calsys_codes, 
+      selected: @ipeds_ic.calsys), 
+      { include_blank: "Select a code" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:distnced) %>
+    <%= f.select(:distnced, 
+      options_for_select(DS_ENUM::IpedsCodes.distncedx_codes, 
+      selected: @ipeds_ic.distnced), 
+      { include_blank: "Select a code" },
+      { class: "form-control", required: true }) %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

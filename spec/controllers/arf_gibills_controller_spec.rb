@@ -123,7 +123,7 @@ RSpec.describe ArfGibillsController, type: :controller do
 
       context "with no total count of students" do
         before(:each) do
-          @arf_gibill = attributes_for :arf_gibill, total_count_of_students: nil
+          @arf_gibill = attributes_for :arf_gibill, gibill: nil
           end
 
         it "does not create a new csv file" do
@@ -283,7 +283,7 @@ RSpec.describe ArfGibillsController, type: :controller do
           @arf_gibill_attributes.delete("id")
           @arf_gibill_attributes.delete("updated_at")
           @arf_gibill_attributes.delete("created_at")
-          @arf_gibill_attributes["total_count_of_students"] = nil
+          @arf_gibill_attributes["gibill"] = nil
         end
 
         it "does not update a arf_gibill entry" do

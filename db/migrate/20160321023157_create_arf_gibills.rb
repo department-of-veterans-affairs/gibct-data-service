@@ -3,7 +3,7 @@ class CreateArfGibills < ActiveRecord::Migration
     create_table :arf_gibills do |t|
       t.string :facility_code, null: false
       t.string :institution, null: false
-      t.string :total_count_of_students, null: false
+      t.string :gibill, null: false
 
       t.timestamps null: false
 

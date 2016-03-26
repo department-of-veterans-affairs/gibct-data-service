@@ -7,7 +7,7 @@ class AccreditationCsvFile < CsvFile
     "campus_ipeds_unitid" => :campus_ipeds_unitid,
     "accreditation_type" => :csv_accreditation_type,
     "agency_name" => :agency_name,
-    "last action" => :last_action,
+    "last action" => :accreditation_status,
     "periods" => :periods
   }
 

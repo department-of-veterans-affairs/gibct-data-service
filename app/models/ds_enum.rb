@@ -1,5 +1,44 @@
 module DS_ENUM
   #############################################################################
+  ## IpedsCodes
+  ## Provides coding for Ipeds csvs.
+  #############################################################################
+  class IpedsCodes
+    ###########################################################################
+    ## vetx_codes
+    ## Coding for vetx fields in ipeds ic.
+    ###########################################################################
+    def self.vetx_codes
+      [
+        ["not applicable", -2], ['not reported', 1],
+        ['implied no', 0], ['yes', 1]
+      ]
+    end
+
+    ###########################################################################
+    ## calsys_codes
+    ## Coding for calsys field in ipeds ic.
+    ###########################################################################
+    def self.calsys_codes
+      [
+        ["not applicable", -2], ['semester', 1], ['quarter', 2], 
+        ['trimester', 3], ['Four-one-four plan', 4], ['Other academic year', 5],
+        ['Differs by program', 6], ['Continuous', 7]
+      ]
+    end
+
+    ###########################################################################
+    ## distncedx_codes
+    ## Coding for distncedx_codes field in ipeds ic.
+    ###########################################################################
+    def self.distncedx_codes
+      [
+        ["not applicable", -2], ['not reported', -1], ['yes', 1], ['no', 2]
+      ]
+    end
+  end
+
+  #############################################################################
   ## Truth
   ## Normalalize truth values accross csvs.
   #############################################################################

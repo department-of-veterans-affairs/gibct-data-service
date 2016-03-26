@@ -19,7 +19,7 @@ class Accreditation < ActiveRecord::Base
   validates :agency_name, presence: true
 
   validates :csv_accreditation_type, inclusion: { in: ACCREDITATION_TYPES }
-  validates :last_action, inclusion: { in: LAST_ACTIONS }, allow_blank: true
+  validates :accreditation_status, inclusion: { in: LAST_ACTIONS }, allow_blank: true
 
   #############################################################################
   ## institution
@@ -35,14 +35,6 @@ class Accreditation < ActiveRecord::Base
   #############################################################################
   def cross
     campus_ipeds_unitid || institution_ipeds_unitid
-  end
-
-  #############################################################################
-  ## accreditation_status
-  ## Gets the accrediation_status (as understood by the GIBCT).
-  #############################################################################
-  def accreditation_status
-    last_action
   end
 
   #############################################################################

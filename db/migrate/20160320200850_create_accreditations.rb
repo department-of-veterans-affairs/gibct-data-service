@@ -9,7 +9,7 @@ class CreateAccreditations < ActiveRecord::Migration
       t.string :campus_ipeds_unitid
       t.string :csv_accreditation_type
       t.string :agency_name, null: false
-      t.string :last_action
+      t.string :accreditation_status
       t.string :periods
 
       t.timestamps null: false

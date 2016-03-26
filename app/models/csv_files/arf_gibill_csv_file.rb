@@ -4,7 +4,7 @@ class ArfGibillCsvFile < CsvFile
   HEADER_MAP = {
     "facility code" => :facility_code,
     "school name" => :institution,
-    "total count of students" => :total_count_of_students
+    "total count of students" => :gibill
   }
 
   SKIP_LINES_BEFORE_HEADER = 0

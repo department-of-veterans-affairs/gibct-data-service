@@ -1,23 +1,23 @@
 require "csv"
 
-class MouCsvFile < CsvFile
+class IpedsIcCsvFile < CsvFile
   HEADER_MAP = {
-    "institution name" => :institution,
-    "city" => :city,
-    "state" => :state,
-    "ope id" => :ope,
-    "status" => :dod_mou
+    "unitid" => :cross,
+    "vet2" => :vet2,
+    "vet3" => :vet3,
+    "vet4" => :vet4,
+    "vet5" => :vet5,
+    "calsys" => :calsys,
+    "distnced" => :distnced
   }
 
-  SKIP_LINES_BEFORE_HEADER = 1
+  SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
 
   NORMALIZE = {
-    ope: ->(ope) do 
-      ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
-    end,
-
-    state: ->(state) { state.length != 2 ? DS_ENUM::State[state] : state.upcase }
+    cross: ->(cross) do 
+      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
+    end
   }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
@@ -31,8 +31,7 @@ class MouCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     begin
- 
-      write_data
+      write_data 
  
       rc = true
     rescue StandardError => e
