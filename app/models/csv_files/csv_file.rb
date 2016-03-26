@@ -7,6 +7,7 @@ class CsvFile < ActiveRecord::Base
     'ArfGibillCsvFile' => ArfGibill,
     'EightKeyCsvFile' => EightKey,
     'HcmCsvFile' => Hcm,
+    'IpedsHdCsvFile' => IpedsHd,
     'IpedsIcCsvFile' => IpedsIc,
     'MouCsvFile' => Mou,
     'P911TfCsvFile' => P911Tf,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325061140) do
+ActiveRecord::Schema.define(version: 20160326053957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,15 @@ ActiveRecord::Schema.define(version: 20160325061140) do
 
   add_index "hcms", ["institution"], name: "index_hcms_on_institution", using: :btree
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
+
+  create_table "ipeds_hds", force: :cascade do |t|
+    t.string   "cross",      null: false
+    t.string   "veturl"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "ipeds_hds", ["cross"], name: "index_ipeds_hds_on_cross", using: :btree
 
   create_table "ipeds_ics", force: :cascade do |t|
     t.string   "cross",      null: false
