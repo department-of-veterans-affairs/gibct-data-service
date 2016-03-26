@@ -1,0 +1,14 @@
+<tr>
+	<td><%= ipeds_hd.id %></td>
+  <td><%= ipeds_hd.cross %></td>
+  <td><%= ipeds_hd.veturl %></td>
+  <td>
+    <%= link_to 'Show', ipeds_hd %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_ipeds_hd_path(ipeds_hd) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', ipeds_hd, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>
