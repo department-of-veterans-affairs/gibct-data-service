@@ -9,6 +9,7 @@ class CsvFile < ActiveRecord::Base
     'HcmCsvFile' => Hcm,
     'IpedsHdCsvFile' => IpedsHd,
     'IpedsIcCsvFile' => IpedsIc,
+    'IpedsIcAyCsvFile' => IpedsIcAy,
     'MouCsvFile' => Mou,
     'P911TfCsvFile' => P911Tf,
     'P911YrCsvFile' => P911Yr,
