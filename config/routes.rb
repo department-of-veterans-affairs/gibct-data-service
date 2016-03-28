@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :ipeds_ic_ays
   resources :ipeds_hds
   resources :ipeds_ics
   resources :settlements

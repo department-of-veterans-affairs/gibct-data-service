@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160326053957) do
+ActiveRecord::Schema.define(version: 20160328014501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,17 @@ ActiveRecord::Schema.define(version: 20160326053957) do
   end
 
   add_index "ipeds_hds", ["cross"], name: "index_ipeds_hds_on_cross", using: :btree
+
+  create_table "ipeds_ic_ays", force: :cascade do |t|
+    t.string   "cross",      null: false
+    t.string   "chg2ay3"
+    t.string   "chg3ay3"
+    t.string   "chg4ay3"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "ipeds_ic_ays", ["cross"], name: "index_ipeds_ic_ays_on_cross", using: :btree
 
   create_table "ipeds_ics", force: :cascade do |t|
     t.string   "cross",      null: false
