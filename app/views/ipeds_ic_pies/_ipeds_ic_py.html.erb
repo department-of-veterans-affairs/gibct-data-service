@@ -1,0 +1,15 @@
+<tr>
+	<td><%= ipeds_ic_py.id %></td>
+  <td><%= ipeds_ic_py.cross %></td>
+  <td><%= ipeds_ic_py.chg1py3 %></td>
+  <td><%= ipeds_ic_py.chg5py3 %></td>
+  <td>
+    <%= link_to 'Show', ipeds_ic_py %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_ipeds_ic_py_path(ipeds_ic_py) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', ipeds_ic_py, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>
