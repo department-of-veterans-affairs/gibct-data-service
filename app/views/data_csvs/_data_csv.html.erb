@@ -1,0 +1,16 @@
+<tr>
+	<td><%= data_csv.id %></td>
+  <td><%= data_csv.facility_code %></td>
+  <td><%= data_csv.institution %></td>
+  <td><%= data_csv.ope %></td>
+  <td><%= data_csv.cross %></td>
+  <td>
+    <%= link_to 'Show', data_csv %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_data_csv_path(data_csv) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', data_csv, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

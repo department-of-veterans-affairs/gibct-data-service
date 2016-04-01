@@ -12,7 +12,7 @@ class Sec702SchoolCsvFile < CsvFile
   NORMALIZE = {
     sec_702: ->(sec_702) do 
       sec_702 = 'Yes' if sec_702 =='Ye' 
-      DS_ENUM::Truth.value_to_truth(sec_702) if sec_702.present? 
+      DS::Truth.value_to_truth(sec_702) if sec_702.present? 
     end
   }
 

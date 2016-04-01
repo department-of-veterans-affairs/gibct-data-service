@@ -98,7 +98,7 @@ class CsvFile < ActiveRecord::Base
         store.save!
       end
 
-      STI[type].destroy_all
+      STI[type].delete_all
     end
   end
 
@@ -202,7 +202,7 @@ class CsvFile < ActiveRecord::Base
   #############################################################################
   def write_data
     table = STI[self.class.name]
-    table.destroy_all
+    table.delete_all
 
     normalize_map = self.class::NORMALIZE
 
@@ -212,17 +212,20 @@ class CsvFile < ActiveRecord::Base
     headers = get_headers(clean_line(lines.shift))
 
     lines.shift(self.class::SKIP_LINES_AFTER_HEADER)
-    lines.each do |line|
-      line = clean_line(line) || ""
-      row = get_row(line, headers)
 
-      unless row.values.join.blank?
-        normalize_map.keys.each do |key|
-          row[key] = normalize_map[key].call(row[key]) 
+    ActiveRecord::Base.transaction do
+      lines.each do |line|
+        line = clean_line(line) || ""
+        row = get_row(line, headers)
+
+        unless row.values.join.blank?
+          normalize_map.keys.each do |key|
+            row[key] = normalize_map[key].call(row[key]) 
+          end
+
+          # Allow a block, if given to determine if row is created
+          table.create!(row) if !block_given? || yield(row)
         end
-
-        # Allow a block, if given to determine if row is created
-        table.create!(row) if !block_given? || yield(row)
       end
     end
   end

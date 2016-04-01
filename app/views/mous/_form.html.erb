@@ -20,7 +20,7 @@
   <div class="form-group">
     <%= f.label(:state) %>
     <%= f.select(:state, 
-      options_for_select(DS_ENUM::State.get_as_options, 
+      options_for_select(DS::State.get_as_options, 
       selected: @mou.state), 
       { include_blank: "Select a state" },
       { class: "form-control", required: false }) %>

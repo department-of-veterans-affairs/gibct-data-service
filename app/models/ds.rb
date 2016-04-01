@@ -1,4 +1,4 @@
-module DS_ENUM
+module DS
   #############################################################################
   ## IpedsCodes
   ## Provides coding for Ipeds csvs.
@@ -50,7 +50,7 @@ module DS_ENUM
     ## Returns true if value is a truthy value (converts to true).
     ###########################################################################
     def self.truthy?(value)
-      TRUTHS.include?(value)
+      TRUTHS.include?(value.try(:strip))
     end
 
     ###########################################################################

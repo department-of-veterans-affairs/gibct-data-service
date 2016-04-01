@@ -8,7 +8,7 @@ class VaCrosswalksController < ApplicationController
   ## index
   #############################################################################
   def index
-    @va_crosswalks = VaCrosswalk.paginate(:page => params[:page])
+    @va_crosswalks = VaCrosswalk.order(:facility_code).paginate(:page => params[:page])
   end
 
   #############################################################################
@@ -104,7 +104,7 @@ class VaCrosswalksController < ApplicationController
   #############################################################################  
   def va_crosswalk_params
     params.require(:va_crosswalk).permit(
-      :facility_code, :institution, :city, :state, :ope, :cross, :notes
+      :facility_code, :institution, :ope, :cross
     )
   end
 end

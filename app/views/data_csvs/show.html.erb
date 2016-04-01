@@ -5,14 +5,14 @@
     } 
 %>
 
-<h2><small>Crosswalk</small></h2>
+<h2><small>DataCsv Institution: <%= @data_csv.institution %></small></h2>
   
 <div class="row">
   <div class="col-xs-2">
     <strong>Id: </strong>
   </div>
   <div class="col-xs-8">
-    <%= @va_crosswalk.id %>
+    <%= @data_csv.id %>
   </div>
 </div>
 
@@ -21,7 +21,7 @@
     <strong>Facility Code: </strong>
   </div>
   <div class="col-xs-8">
-    <%= @va_crosswalk.facility_code %>
+    <%= @data_csv.facility_code %>
   </div>
 </div>
 
@@ -30,7 +30,7 @@
     <strong>Institution: </strong>
   </div>
   <div class="col-xs-8">
-    <%= @va_crosswalk.institution %>
+    <%= @data_csv.institution %>
   </div>
 </div>
 
@@ -39,7 +39,7 @@
     <strong>OPE: </strong>
   </div>
   <div class="col-xs-3">
-    <%= @va_crosswalk.ope %>
+    <%= @data_csv.ope %>
   </div>
 </div>
 
@@ -48,6 +48,6 @@
     <strong>IPEDS: </strong>
   </div>
   <div class="col-xs-3">
-    <%= @va_crosswalk.cross %>
+    <%= @data_csv.cross %>
   </div>
 </div>
