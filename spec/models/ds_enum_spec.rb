@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe DS_ENUM do
+RSpec.describe DS do
   describe "Truth" do
-    subject { DS_ENUM::Truth }
+    subject { DS::Truth }
 
     it "nil is not truthy" do
       expect(subject.truthy?(nil)).to eq(false)
@@ -39,7 +39,7 @@ RSpec.describe DS_ENUM do
   end
 
   describe "State" do
-    subject { DS_ENUM::State }
+    subject { DS::State }
 
     it "gets a list of state abbreviations" do
       expect(subject.get_names.class.name).to eq("Array")

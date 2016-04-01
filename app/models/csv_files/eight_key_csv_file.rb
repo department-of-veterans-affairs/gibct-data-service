@@ -36,7 +36,7 @@ class EightKeyCsvFile < CsvFile
     begin
       # Write only if the row does not contain the state name only
       write_data do |row|
-        !DS_ENUM::State.get_full_names.map(&:downcase)
+        !DS::State.get_full_names.map(&:downcase)
           .include?(row[:institution].try(:downcase))
       end
  

@@ -1,28 +1,28 @@
-<%= form_for(@va_crosswalk) do |f| %>
+<%= form_for(@data_csv) do |f| %>
   <div class="form-group">
     <%= f.label(:facility_code) %>
     <%= f.text_field :facility_code, 
-      { value: "#{@va_crosswalk.facility_code}", class: "form-control", required: true } %>
+      { value: "#{@data_csv.facility_code}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:institution) %>
     <%= f.text_field :institution, 
-      { value: "#{@va_crosswalk.institution}", class: "form-control", required: false } %>
+      { value: "#{@data_csv.institution}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:ope) %>
     <%= f.text_field :ope, 
-      { value: "#{@va_crosswalk.ope}", class: "form-control", required: false } %>
+      { value: "#{@data_csv.ope}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:cross, "IPEDS") %>
+    <%= f.label(:cross) %>
     <%= f.text_field :cross, 
-      { value: "#{@va_crosswalk.cross}", class: "form-control", required: false } %>
+      { value: "#{@data_csv.cross}", class: "form-control", required: false } %>
   </div>
-    
+
   <div class="actions">
     <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
     <%= f.submit class: "btn btn-primary" %>

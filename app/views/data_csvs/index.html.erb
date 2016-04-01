@@ -5,7 +5,7 @@
     } 
 %>
 
-<h2><small>Weams Data</small></h2>
+<h2><small>Data Csv</small></h2>
 
 <small>
 <div class="row">
@@ -15,25 +15,12 @@
         <th>Id</th>
         <th>Facility Code</th>
         <th>Institution</th>
-        <th>City</th>
-        <th>State</th>
-        <th>Zip</th>
-        <th>Country</th>
-        <th>Bah</th>
-        <th>Accredited</th>
-        <th>Poe</th>
-        <th>Yr</th>
-        <th>Poo Status</th>
-        <th>Applicable Law Code</th>
-        <th>Institution of Higher Learning</th>
-        <th>OJT</th>
-        <th>Correspondence</th>
-        <th>Flight</th>
-        <th>Non-college Degree</th>
+        <th>OPE</th>
+        <th>IPEDS</th>
         <th colspan="3">Actions</th>
       </thead>
       <tbody>
-        <%= render partial: "weam", collection: @weams, as: :weam %>
+        <%= render partial: "data_csv", collection: @data_csvs, as: :data_csv %>
       </tbody>
     </table>
   </div>
@@ -43,7 +30,7 @@
 <div class="row">
   <div class="col-xs-offset-3 col-xs-6">
     <div class="digg_pagination">
-      <%= will_paginate @weams %>
+      <%= will_paginate @data_csvs %>
     </div>
   </div>
 </div>

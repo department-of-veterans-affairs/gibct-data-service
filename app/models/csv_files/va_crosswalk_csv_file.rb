@@ -4,11 +4,8 @@ class VaCrosswalkCsvFile < CsvFile
   HEADER_MAP = {
     "facility code" => :facility_code,
     "institution name" => :institution,
-    "city" => :city,
-    "state" => :state,
     "ipeds" => :cross,
-    "ope" => :ope,
-    "notes" => :notes
+    "ope" => :ope
   }
 
   SKIP_LINES_BEFORE_HEADER = 0
@@ -22,8 +19,6 @@ class VaCrosswalkCsvFile < CsvFile
     cross: ->(cross) do 
       cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
     end,
-
-    state: ->(state) { state.length != 2 ? DS_ENUM::State[state] : state.upcase }
   }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/

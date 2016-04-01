@@ -20,7 +20,7 @@
   <div class="form-group">
     <%= f.label(:state) %>
      <%= f.select(:state, 
-      options_for_select(DS_ENUM::State.get_as_options, 
+      options_for_select(DS::State.get_as_options, 
       selected: @weam.state), 
       { include_blank: "Select a state" },
       { class: "form-control", required: false }) %>
@@ -69,16 +69,51 @@
   </div>
 
   <div class="form-group">
+    <%= f.label(:poo_status) %>
+    <%= f.select(:poo_status, 
+      options_for_select(['APRVD', 'CREATD', 'SUSP', 'WTHDRN'], 
+      selected: @weam.poo_status), 
+      { include_blank: "Select a Status" },
+      { class: "form-control", required: false }) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:applicable_law_code) %>
+    <%= f.select(:applicable_law_code, 
+      options_for_select([
+        'Educational Institution is Approved For All Chapters', 
+        'Educational Institution is Approved for All Chapters Except Chapter 31', 
+        'Educational Institution is Approved for All Chapters Except Chapter 35', 
+        'Educational Institution is Approved for Chapter 31 Only',
+        'Educational Institution is Approved For Chapters 30 & 35 Only',
+        'Educational Institution is Approved For Chapters 30, 32, 35 Only',
+        'Educational Institution is not Approved'
+      ], 
+      selected: @weam.applicable_law_code), 
+      { include_blank: "Select an Applicable Law Code" },
+      { class: "form-control", required: false }) %>
+  </div>
+
+  <div class="form-group">
     <%= f.label(:ojt_indicator) %>
-    <%= f.select(:ojt_indicator, options_for_select([['Yes', 'Yes'], ['No', 'No']], 
+    <%= f.select(:ojt_indicator, options_for_select(['Yes', 'No'], 
       selected: @weam.ojt_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
   </div>
 
   <div class="form-group">
+    <%= f.label(:institution_of_higher_learning_indicator) %>
+    <%= f.select(:institution_of_higher_learning_indicator, 
+      options_for_select(['Yes', 'No'], 
+      selected: @weam.institution_of_higher_learning_indicator), 
+      { include_blank: "Select Yes or No" },
+      { class: "form-control", required: false }) %>
+  </div>
+
+  <div class="form-group">
     <%= f.label(:correspondence_indicator) %>
-    <%= f.select(:correspondence_indicator, options_for_select([['Yes', 'Yes'], ['No', 'No']], 
+    <%= f.select(:correspondence_indicator, options_for_select(['Yes', 'No'], 
       selected: @weam.correspondence_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -86,12 +121,22 @@
 
   <div class="form-group">
     <%= f.label(:flight_indicator) %>
-    <%= f.select(:flight_indicator, options_for_select([['Yes', 'Yes'], ['No', 'No']], 
+    <%= f.select(:flight_indicator, options_for_select(['Yes', 'No'], 
       selected: @weam.flight_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
   </div>
-  
+
+
+  <div class="form-group">
+    <%= f.label(:non_college_degree_indicator) %>
+    <%= f.select(:non_college_degree_indicator, 
+      options_for_select(['Yes', 'No'], 
+      selected: @weam.non_college_degree_indicator), 
+      { include_blank: "Select Yes or No" },
+      { class: "form-control", required: false }) %>
+  </div>
+
   <div class="actions">
     <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
     <%= f.submit class: "btn btn-primary" %>

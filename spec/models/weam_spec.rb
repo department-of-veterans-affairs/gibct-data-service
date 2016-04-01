@@ -4,7 +4,11 @@ RSpec.describe Weam, type: :model do
   describe "When creating" do
     context "with a factory" do
       it "that factory is valid" do
-        expect(create(:weam)).to be_valid
+        expect(build(:weam)).to be_valid
+      end
+
+      it "that factory is approved" do
+        expect(build(:weam)).to be_approved
       end
     end
 
@@ -56,6 +60,31 @@ RSpec.describe Weam, type: :model do
       it "knows if its a #{type} institution" do
         expect(build(:weam, weam).weams_type).to eq(type)
       end
+    end
+  end
+
+  describe "when approving" do
+    [
+      :non_approved_indicators, :non_approved_applicable_law_code_title_31,
+      :non_approved_applicable_law_code_not_approved, :non_approved_poo
+    ].each do |non_approved|
+      it "will be non-approved when #{non_approved} are present" do
+        expect(build :weam, non_approved).not_to be_approved
+      end
+    end
+
+    it "can return only those approved weams records" do
+      approved = create :weam
+
+      [
+        :non_approved_indicators, :non_approved_applicable_law_code_title_31,
+        :non_approved_applicable_law_code_not_approved, :non_approved_poo
+      ].each do |non_approved|
+        create :weam, non_approved
+      end
+
+      expect(Weam.approved.count).to eq(1)
+      expect(Weam.approved.first).to eq(approved)
     end
   end
 end

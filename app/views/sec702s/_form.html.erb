@@ -2,7 +2,7 @@
   <div class="form-group">
     <%= f.label(:state) %>
     <%= f.select(:state, 
-      options_for_select(DS_ENUM::State.get_as_options, 
+      options_for_select(DS::State.get_as_options, 
       selected: @sec702.state), 
       { include_blank: "Select a state" },
       { class: "form-control", required: true }) %>
@@ -11,7 +11,7 @@
   <div class="form-group">
     <%= f.label(:sec_702) %>
     <%= f.select(:sec_702, 
-      options_for_select([DS_ENUM::Truth.yes, DS_ENUM::Truth.no], 
+      options_for_select([DS::Truth.yes, DS::Truth.no], 
       selected: @sec702.sec_702), 
       { include_blank: "Select yes or no" },
       { class: "form-control", required: false }) %>

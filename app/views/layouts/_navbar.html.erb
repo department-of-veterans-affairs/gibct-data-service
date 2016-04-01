@@ -62,6 +62,10 @@
         </li>
       </ul>
 
+      <ul class="nav navbar-nav">
+        <%= draw_controller("data_csvs", :index, :new).html_safe %>
+      </ul>
+
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></li>
       </ul>

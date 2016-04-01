@@ -17,7 +17,7 @@ class MouCsvFile < CsvFile
       ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
     end,
 
-    state: ->(state) { state.length != 2 ? DS_ENUM::State[state] : state.upcase }
+    state: ->(state) { state.length != 2 ? DS::State[state] : state.upcase }
   }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
