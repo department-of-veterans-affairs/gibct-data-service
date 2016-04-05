@@ -107,4 +107,23 @@ class DataCsv < ActiveRecord::Base
 
     run_bulk_query(query_str)
   end
+
+
+  ###########################################################################
+  ## update_with_accreditation
+  ## Updates the DataCsv table with data from the eight_keys table.
+  ###########################################################################
+  def self.update_with_accreditation
+    names = Accreditation::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = accreditations.#{name}) }.join(', ')
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += %(AND accreditations.periods LIKE '%current%' )
+    query_str += "AND accreditations.csv_accreditation_type = 'institutional' "
+    query_str += 'AND accreditations.cross IS NOT NULL'
+
+    run_bulk_query(query_str)
+  end
 end

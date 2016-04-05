@@ -98,17 +98,7 @@ RSpec.describe AccreditationsController, type: :controller do
         it "does not create a new csv file" do
           expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(0)
         end
-      end 
-
-      context "with no csv_accreditation_type" do
-        before(:each) do
-          @accreditation = attributes_for :accreditation, csv_accreditation_type: nil
-          end
-
-        it "does not create a new csv file" do
-          expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(0)
-        end
-      end   
+      end  
     end
   end
 
@@ -209,25 +199,6 @@ RSpec.describe AccreditationsController, type: :controller do
 
           new_accreditation = Accreditation.find(@accreditation.id)
           expect(new_accreditation.agency_name).to eq(@accreditation.agency_name)
-        end
-      end 
-
-      context "with no csv_accreditation_type" do
-        before(:each) do
-          @accreditation = create :accreditation
-
-          @accreditation_attributes = @accreditation.attributes
-          @accreditation_attributes.delete("id")
-          @accreditation_attributes.delete("updated_at")
-          @accreditation_attributes.delete("created_at")
-          @accreditation_attributes["csv_accreditation_type"] = nil
-        end
-
-        it "does not update a accreditation entry" do
-          put :update, id: @accreditation.id, accreditation: @accreditation_attributes 
-
-          new_accreditation = Accreditation.find(@accreditation.id)
-          expect(new_accreditation.csv_accreditation_type).to eq(@accreditation.csv_accreditation_type)
         end
       end   
     end

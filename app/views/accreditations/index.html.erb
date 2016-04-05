@@ -7,19 +7,24 @@
 
 <h2><small>Accreditation Data</small></h2>
 
+<small>
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-hover table-condensed table-bordered table-responsive">
       <thead>
         <th>Id</th>
         <th>Institution Name</th>
-        <th>OPE</th>
-        <th>Institution IPEDS</th>
         <th>Campus Name</th>
-        <th>Campus IPEDS</th>
-        <th>Accreditation Type</th>
+        <th>Institution</th>
+        <th>Ope</th>
+        <th>Ope 6</th>
+        <th>Institution Ipeds</th>
+        <th>Campus Ipeds</th>
+        <th>Ipeds</th>
+        <th>Csv Accreditation Type</th>
         <th>Agency Name</th>
         <th>Last Action</th>
+        <th>Accreditation Type</th>
         <th>Periods</th>
         <th colspan="3">Actions</th>
       </thead>
@@ -29,9 +34,10 @@
     </table>
   </div>
 </div>
+</small>
 
 <div class="row">
-  <div class="col-xs-offset-3 col-xs-6">
+  <div class="col-xs-offset-2 col-xs-10">
     <div class="digg_pagination">
       <%= will_paginate @accrediation %>
     </div>

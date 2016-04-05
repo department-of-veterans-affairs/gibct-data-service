@@ -32,6 +32,10 @@ class CreateDataCsvs < ActiveRecord::Migration
       # Eight Keys
       t.boolean :eight_keys, default: nil
       
+      # Accreditations
+      t.string :accreditation_status, default: nil
+      t.string :accreditation_type, default: nil
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

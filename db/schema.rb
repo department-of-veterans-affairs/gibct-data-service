@@ -18,11 +18,15 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "accreditations", force: :cascade do |t|
     t.string   "institution_name"
-    t.string   "ope"
-    t.string   "institution_ipeds_unitid"
     t.string   "campus_name"
+    t.string   "institution"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "institution_ipeds_unitid"
     t.string   "campus_ipeds_unitid"
+    t.string   "cross"
     t.string   "csv_accreditation_type"
+    t.string   "accreditation_type"
     t.string   "agency_name",              null: false
     t.string   "accreditation_status"
     t.string   "periods"
@@ -30,10 +34,10 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.datetime "updated_at",               null: false
   end
 
-  add_index "accreditations", ["campus_ipeds_unitid"], name: "index_accreditations_on_campus_ipeds_unitid", using: :btree
-  add_index "accreditations", ["campus_name"], name: "index_accreditations_on_campus_name", using: :btree
-  add_index "accreditations", ["institution_ipeds_unitid"], name: "index_accreditations_on_institution_ipeds_unitid", using: :btree
-  add_index "accreditations", ["institution_name"], name: "index_accreditations_on_institution_name", using: :btree
+  add_index "accreditations", ["cross"], name: "index_accreditations_on_cross", using: :btree
+  add_index "accreditations", ["institution"], name: "index_accreditations_on_institution", using: :btree
+  add_index "accreditations", ["ope"], name: "index_accreditations_on_ope", using: :btree
+  add_index "accreditations", ["ope6"], name: "index_accreditations_on_ope6", using: :btree
 
   create_table "arf_gibills", force: :cascade do |t|
     t.string   "facility_code", null: false
@@ -90,6 +94,8 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
     t.boolean  "eight_keys"
+    t.string   "accreditation_status"
+    t.string   "accreditation_type"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
   end

@@ -107,7 +107,7 @@ RSpec.describe DataCsv, type: :model do
     context "with eight_keys" do
       let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
  
-      let!(:eight_key_ipeds) { create :eight_key, ope: nil, cross: crosswalk.cross }
+      let!(:eight_key) { create :eight_key, ope: nil, cross: crosswalk.cross }
       let!(:eight_key_with_nil_cross) { create :eight_key, ope: nil, cross: nil }
 
       before(:each) do
@@ -117,7 +117,7 @@ RSpec.describe DataCsv, type: :model do
       end
 
       it "is matched by ipeds" do
-        data = DataCsv.find_by(cross: eight_key_ipeds.cross)
+        data = DataCsv.find_by(cross: eight_key.cross)
         expect(data).not_to be_nil
         expect(data.eight_keys).to be_truthy
       end
@@ -125,6 +125,55 @@ RSpec.describe DataCsv, type: :model do
       it "null ipeds are not matched" do
         d = DataCsv.find_by(facility_code: unmatched.facility_code)
         expect(d.eight_keys).to be_falsy
+      end
+    end
+
+    context "with accreditations" do
+      let!(:not_institutional) { create :weam }
+      let!(:not_current) { create :weam }
+
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let(:crosswalk_for_not_institutional) { create :va_crosswalk, facility_code: not_institutional.facility_code }
+      let(:crosswalk_for_not_current) { create :va_crosswalk, facility_code: not_current.facility_code }
+ 
+      let!(:accreditation) { create :accreditation, ope: nil, campus_ipeds_unitid: crosswalk.cross }
+      let!(:accreditation_with_nil_cross) { create :accreditation, ope: nil, campus_ipeds_unitid: nil }
+      let!(:accreditation_not_institutional) { 
+        create :accreditation, :not_institutional, campus_ipeds_unitid: crosswalk_for_not_institutional.cross 
+      }
+      let!(:accreditation_not_current) { 
+        create :accreditation, :not_current, campus_ipeds_unitid: crosswalk_for_not_current.cross 
+      }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_accreditation
+      end
+
+      it "is matched by ipeds" do
+        data = DataCsv.find_by(cross: accreditation.cross)
+        expect(data).not_to be_nil
+        expect(data.accreditation_status).to eq(accreditation.accreditation_status)
+        expect(data.accreditation_type).to eq(accreditation.accreditation_type)
+      end
+
+      it "null ipeds are not matched" do
+        data = DataCsv.find_by(facility_code: unmatched.facility_code)
+        expect(data.accreditation_status).to be_nil
+        expect(data.accreditation_type).to be_nil
+      end
+
+      it "accreditation_type is nil if csv_accreditation_type is not institutional" do
+        data = DataCsv.find_by(cross: accreditation_not_institutional.cross)
+        expect(data.accreditation_status).to be_nil
+        expect(data.accreditation_type).to be_nil
+      end
+
+      it "accreditation_type is nil if periods is not current" do
+        data = DataCsv.find_by(cross: accreditation_not_current.cross)
+        expect(data.accreditation_status).to be_nil
+        expect(data.accreditation_type).to be_nil
       end
     end
   end

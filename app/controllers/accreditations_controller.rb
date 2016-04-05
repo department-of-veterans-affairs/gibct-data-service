@@ -106,8 +106,8 @@ class AccreditationsController < ApplicationController
   def accreditation_params
     params.require(:accreditation).permit(
       :institution_name, :ope, :institution_ipeds_unitid, :campus_name,
-      :campus_ipeds_unitid, :csv_accreditation_type, :agency_name,
-      :accreditation_status, :periods
+      :campus_ipeds_unitid, :agency_name, :accreditation_status, :periods,
+      :csv_accreditation_type
     )
   end
 end
