@@ -2,21 +2,19 @@
 	<td><%= weam.id %></td>
   <td><%= weam.facility_code %></td>
   <td><%= weam.institution %></td>
+  <td><%= weam.type %></td>
+  <td><%= weam.approved ? 'Yes' : 'No' %></td>
   <td><%= weam.city %></td>
   <td><%= weam.state %></td>
   <td><%= weam.zip %></td>
   <td><%= weam.country %></td>
   <td><%= weam.bah %></td>
-  <td><%= weam.accredited %></td>
-  <td><%= weam.poe %></td>
-  <td><%= weam.yr %></td>  
-  <td><%= weam.poo_status %></td>  
-  <td><%= weam.applicable_law_code %></td>  
-  <td><%= weam.institution_of_higher_learning_indicator %></td>
-  <td><%= weam.ojt_indicator %></td>
-  <td><%= weam.correspondence_indicator %></td>
-  <td><%= weam.flight_indicator %></td>
-  <td><%= weam.non_college_degree_indicator %></td>
+  <td><%= weam.accredited ? 'Yes' : 'No' %></td>
+  <td><%= weam.poe ? 'Yes' : 'No' %></td>
+  <td><%= weam.yr ? 'Yes' : 'No' %></td>  
+  <td><%= weam.va_highest_degree_offered %></td>  
+  <td><%= weam.flight ? 'Yes' : 'No' %></td>  
+  <td><%= weam.correspondence ? 'Yes' : 'No' %></td>
   <td>
     <%= link_to 'Show', weam %>
   </td>

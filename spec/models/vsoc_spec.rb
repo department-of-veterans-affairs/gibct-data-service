@@ -19,11 +19,5 @@ RSpec.describe Vsoc, type: :model do
         expect(build :vsoc, facility_code: nil).not_to be_valid
       end
     end
-
-    context "institution names" do
-      it "are required" do
-        expect(build :vsoc, institution: nil).not_to be_valid
-      end
-    end
   end
 end

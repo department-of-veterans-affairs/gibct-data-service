@@ -1,4 +1,7 @@
 class DataCsv < ActiveRecord::Base
+  # GIBCT uses field called type, must kludge to prevent STI
+  self.inheritance_column = "inheritance_type"
+
   validates :facility_code, presence: true, uniqueness: true
   validates :institution, presence: true
 
@@ -34,7 +37,7 @@ class DataCsv < ActiveRecord::Base
     names = Weam::USE_COLUMNS.map(&:to_s).join(', ')
 
     query_str = "INSERT INTO data_csvs (#{names}) ("
-    query_str += Weam.select(names).approved.to_sql + ")"    
+    query_str += Weam.select(names).where(approved: true).to_sql + ")"    
 
     run_bulk_query(query_str, true, true)
   end
@@ -51,6 +54,58 @@ class DataCsv < ActiveRecord::Base
 
     query_str += ' FROM va_crosswalks '
     query_str += 'WHERE data_csvs.facility_code = va_crosswalks.facility_code'    
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_sva
+  ## Updates the DataCsv table with data from the sva table.
+  ###########################################################################
+  def self.update_with_sva
+    names = Sva::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += "student_veteran = TRUE, "
+    query_str += names.map { |name| %("#{name}" = svas.#{name}) }.join(', ')
+
+    query_str += ' FROM svas '
+    query_str += 'WHERE data_csvs.cross = svas.cross '
+    query_str += 'AND svas.cross IS NOT NULL'    
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_vsoc
+  ## Updates the DataCsv table with data from the vsoc table.
+  ###########################################################################
+  def self.update_with_vsoc
+    names = Vsoc::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = vsocs.#{name}) }.join(', ')
+
+    query_str += ' FROM vsocs '
+    query_str += 'WHERE data_csvs.facility_code = vsocs.facility_code'    
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_eight_key
+  ## Updates the DataCsv table with data from the eight_keys table.
+  ###########################################################################
+  def self.update_with_eight_key
+    names = EightKey::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = eight_keys.#{name}) }.join(', ')
+    query_str += "eight_keys = TRUE "
+
+    query_str += ' FROM eight_keys '
+    query_str += 'WHERE data_csvs.cross = eight_keys.cross '
+    query_str += 'AND eight_keys.cross IS NOT NULL'
 
     run_bulk_query(query_str)
   end

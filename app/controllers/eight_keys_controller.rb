@@ -104,7 +104,7 @@ class EightKeysController < ApplicationController
   #############################################################################  
   def eight_key_params
     params.require(:eight_key).permit(
-      :institution, :city, :state, :ope, :cross, :notes
+      :institution, :ope, :cross
     )
   end
 end

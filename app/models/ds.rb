@@ -1,16 +1,61 @@
 module DS
   #############################################################################
-  ## IpedsCodes
+  ## OpeId
+  ## Provides coding for Ope ids in csvs.
+  #############################################################################
+  class OpeId
+    ###########################################################################
+    ## pad
+    ## Pads ope ids to 8 characters by left-padding 0s
+    ###########################################################################
+    def self.pad(id)
+      return id if id.blank? || id.downcase == "none"
+      id.ljust(8, '0')
+    end
+
+    ###########################################################################
+    ## to_ope6
+    ## Converts an opeid to an ope 6 id.
+    ###########################################################################
+    def self.to_ope6(id)
+      return id if id.blank? || id.downcase == "none" || id.length < 6
+
+      id = pad(id)[1, 5]
+    end
+
+    ###########################################################################
+    ## to_location
+    ## Converts an opeid to an ope 6 id.
+    ###########################################################################
+    def self.to_location(id)
+      return id if id.blank? || id.downcase == "none" || id.length < 6
+
+      id = pad(id)
+      id[0] + id[-2, 2]
+    end
+  end
+
+  #############################################################################
+  ## IpedsId
   ## Provides coding for Ipeds csvs.
   #############################################################################
-  class IpedsCodes
+  class IpedsId
+    ###########################################################################
+    ## pad
+    ## Pads ope ids to 8 characters by left-padding 0s
+    ###########################################################################
+    def self.pad(id)
+      return id if id.blank? || id.downcase == "none"
+      id.ljust(6, '0')
+    end
+
     ###########################################################################
     ## vetx_codes
     ## Coding for vetx fields in ipeds ic.
     ###########################################################################
     def self.vetx_codes
       [
-        ["not applicable", -2], ['not reported', 1],
+        ['not applicable', -2], ['not reported', 1],
         ['implied no', 0], ['yes', 1]
       ]
     end
@@ -21,7 +66,7 @@ module DS
     ###########################################################################
     def self.calsys_codes
       [
-        ["not applicable", -2], ['semester', 1], ['quarter', 2], 
+        ['not applicable', -2], ['semester', 1], ['quarter', 2], 
         ['trimester', 3], ['Four-one-four plan', 4], ['Other academic year', 5],
         ['Differs by program', 6], ['Continuous', 7]
       ]
@@ -33,7 +78,7 @@ module DS
     ###########################################################################
     def self.distncedx_codes
       [
-        ["not applicable", -2], ['not reported', -1], ['yes', 1], ['no', 2]
+        ['not applicable', -2], ['not reported', -1], ['yes', 1], ['no', 2]
       ]
     end
   end
@@ -43,14 +88,16 @@ module DS
   ## Normalalize truth values accross csvs.
   #############################################################################
   class Truth
-    TRUTHS = %w(Y y Yes yes True true T t 1 YES)
+    TRUTHS = ['yes', 'true', 't', 'y', '1', 'ye', 'tr', 'tru']
 
     ###########################################################################
     ## truthy?
     ## Returns true if value is a truthy value (converts to true).
     ###########################################################################
-    def self.truthy?(value)
-      TRUTHS.include?(value.try(:strip))
+    def self.truthy?(value, nil_is_nil = true)
+      return value if nil_is_nil && value.blank?
+      
+      TRUTHS.include?(value.try(:to_s).try(:strip).try(:downcase))
     end
 
     ###########################################################################
@@ -129,7 +176,9 @@ module DS
     ## full name).
     ###########################################################################
     def self.[](state_name)
-      STATES[state_name] || STATES.key(state_name)
+      STATES[state_name.try(:upcase)] ||
+      STATES.key(state_name.try(:capitalize)) || 
+      state_name
     end
 
     ###########################################################################

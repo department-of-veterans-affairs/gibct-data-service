@@ -4,21 +4,11 @@ class SvaCsvFile < CsvFile
   HEADER_MAP = {
     "school" => :institution,
     "ipeds_6" => :cross,
-    "city" => :city,
-    "state" => :state,
     "website" => :student_veteran_link
   }
 
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
-
-  NORMALIZE = {
-    cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
-    end,
-    
-    state: ->(state) { state.length != 2 ? DS::State[state] : state.upcase }
-  }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
 

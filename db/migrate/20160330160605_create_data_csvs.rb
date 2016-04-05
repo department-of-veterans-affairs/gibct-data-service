@@ -1,29 +1,37 @@
 class CreateDataCsvs < ActiveRecord::Migration
   def change
     create_table :data_csvs do |t|
-      # weams
       t.string :facility_code, null: false
       t.string :institution, null: false
       t.string :city
       t.string :state
       t.string :zip
       t.string :country
-      t.string :accredited
+      t.string :va_highest_degree_offered
+      t.string :type # BEWARE!!!!
       t.integer :bah
-      t.string :poe
-      t.string :yr
-      t.string :poo_status
-      t.string :applicable_law_code
-      t.string :institution_of_higher_learning_indicator
-      t.string :ojt_indicator
-      t.string :correspondence_indicator
-      t.string :flight_indicator
-      t.string :non_college_degree_indicator
+      t.boolean :poe
+      t.boolean :yr
+      t.boolean :flight
+      t.boolean :correspondence
+      t.boolean :accredited
 
       # va_crosswalks
-      t.string :ope 
-      t.string :cross 
+      t.string :ope, default: nil
+      t.string :ope6, default: nil
+      t.string :cross, default: nil
 
+      # svas
+      t.boolean :student_veteran, default: false
+      t.string :student_veteran_link, default: nil
+      
+      # vsocs
+      t.string :vetsuccess_name, default: nil
+      t.string :vetsuccess_email, default: nil
+
+      # Eight Keys
+      t.string :eight_keys, default: nil
+      
       t.timestamps null: false
 
       t.index :facility_code, unique: true

@@ -68,27 +68,30 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "csv_storages", ["csv_file_type"], name: "index_csv_storages_on_csv_file_type", unique: true, using: :btree
 
   create_table "data_csvs", force: :cascade do |t|
-    t.string   "facility_code",                            null: false
-    t.string   "institution",                              null: false
+    t.string   "facility_code",                             null: false
+    t.string   "institution",                               null: false
     t.string   "city"
     t.string   "state"
     t.string   "zip"
     t.string   "country"
-    t.string   "accredited"
+    t.string   "va_highest_degree_offered"
+    t.string   "type"
     t.integer  "bah"
-    t.string   "poe"
-    t.string   "yr"
-    t.string   "poo_status"
-    t.string   "applicable_law_code"
-    t.string   "institution_of_higher_learning_indicator"
-    t.string   "ojt_indicator"
-    t.string   "correspondence_indicator"
-    t.string   "flight_indicator"
-    t.string   "non_college_degree_indicator"
+    t.boolean  "poe"
+    t.boolean  "yr"
+    t.boolean  "flight"
+    t.boolean  "correspondence"
+    t.boolean  "accredited"
     t.string   "ope"
+    t.string   "ope6"
     t.string   "cross"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.boolean  "student_veteran",           default: false
+    t.string   "student_veteran_link"
+    t.string   "vetsuccess_name"
+    t.string   "vetsuccess_email"
+    t.string   "eight_keys"
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
   end
 
   add_index "data_csvs", ["cross"], name: "index_data_csvs_on_cross", using: :btree
@@ -97,21 +100,18 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "data_csvs", ["ope"], name: "index_data_csvs_on_ope", using: :btree
 
   create_table "eight_keys", force: :cascade do |t|
-    t.string   "institution", null: false
-    t.string   "city"
-    t.string   "state"
+    t.string   "institution"
     t.string   "cross"
     t.string   "ope"
-    t.string   "notes"
+    t.string   "ope6"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
 
-  add_index "eight_keys", ["city"], name: "index_eight_keys_on_city", using: :btree
   add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
   add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
   add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
-  add_index "eight_keys", ["state"], name: "index_eight_keys_on_state", using: :btree
+  add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "hcms", force: :cascade do |t|
     t.string   "ope",            null: false
@@ -261,10 +261,8 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "settlements", ["institution"], name: "index_settlements_on_institution", using: :btree
 
   create_table "svas", force: :cascade do |t|
-    t.string   "institution",          null: false
+    t.string   "institution"
     t.string   "cross"
-    t.string   "city"
-    t.string   "state"
     t.string   "student_veteran_link"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
@@ -296,6 +294,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "institution"
     t.string   "cross"
     t.string   "ope"
+    t.string   "ope6"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -304,10 +303,11 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "va_crosswalks", ["facility_code"], name: "index_va_crosswalks_on_facility_code", unique: true, using: :btree
   add_index "va_crosswalks", ["institution"], name: "index_va_crosswalks_on_institution", using: :btree
   add_index "va_crosswalks", ["ope"], name: "index_va_crosswalks_on_ope", using: :btree
+  add_index "va_crosswalks", ["ope6"], name: "index_va_crosswalks_on_ope6", using: :btree
 
   create_table "vsocs", force: :cascade do |t|
     t.string   "facility_code",    null: false
-    t.string   "institution",      null: false
+    t.string   "institution"
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
     t.datetime "created_at",       null: false
@@ -324,25 +324,28 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "state"
     t.string   "zip"
     t.string   "country"
-    t.string   "accredited"
+    t.string   "va_highest_degree_offered"
+    t.string   "type"
     t.integer  "bah"
-    t.string   "poe"
-    t.string   "yr"
+    t.boolean  "poe"
+    t.boolean  "yr"
+    t.boolean  "flight"
+    t.boolean  "correspondence"
+    t.boolean  "accredited"
     t.string   "poo_status"
     t.string   "applicable_law_code"
-    t.string   "institution_of_higher_learning_indicator"
-    t.string   "ojt_indicator"
-    t.string   "correspondence_indicator"
-    t.string   "flight_indicator"
-    t.string   "non_college_degree_indicator"
+    t.boolean  "institution_of_higher_learning_indicator"
+    t.boolean  "ojt_indicator"
+    t.boolean  "correspondence_indicator"
+    t.boolean  "flight_indicator"
+    t.boolean  "non_college_degree_indicator"
+    t.boolean  "approved",                                 null: false
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end
 
-  add_index "weams", ["city"], name: "index_weams_on_city", using: :btree
-  add_index "weams", ["country"], name: "index_weams_on_country", using: :btree
+  add_index "weams", ["approved"], name: "index_weams_on_approved", using: :btree
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
-  add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
 end

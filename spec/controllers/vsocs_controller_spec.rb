@@ -90,16 +90,6 @@ RSpec.describe VsocsController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @vsoc = attributes_for :vsoc, institution: nil
-        end
-
-        it "does not create a new csv file" do
-          expect{ post :create, vsoc: @vsoc }.to change(Vsoc, :count).by(0)
-        end
-      end   
-  
       context "with no facility code" do
         before(:each) do
           @vsoc = attributes_for :vsoc, facility_code: nil
@@ -206,25 +196,6 @@ RSpec.describe VsocsController, type: :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
-
-      context "with no institution name" do
-        before(:each) do
-          @vsoc = create :vsoc
-
-          @vsoc_attributes = @vsoc.attributes
-          @vsoc_attributes.delete("id")
-          @vsoc_attributes.delete("updated_at")
-          @vsoc_attributes.delete("created_at")
-          @vsoc_attributes["institution"] = nil
-        end
-
-        it "does not update a vsoc entry" do
-          put :update, id: @vsoc.id, vsoc: @vsoc_attributes 
-
-          new_vsoc = Vsoc.find(@vsoc.id)
-          expect(new_vsoc.institution).to eq(@vsoc.institution)
-        end
-      end   
   
       context "with no facility code" do
         before(:each) do

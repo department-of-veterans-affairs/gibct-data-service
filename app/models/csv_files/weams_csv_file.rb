@@ -24,44 +24,6 @@ class WeamsCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
 
-  # Kludge for csv.parse omitting last character of line at EOF
-  NORMALIZE = {
-    poe: ->(poe) do 
-      DS::Truth.value_to_truth(poe) if poe.present? 
-    end,
-
-    yr: ->(yr) do 
-      DS::Truth.value_to_truth(yr) if yr.present? 
-    end,
-
-    institution_of_higher_learning_indicator: ->(institution_of_higher_learning_indicator) do 
-      DS::Truth.value_to_truth(institution_of_higher_learning_indicator) if institution_of_higher_learning_indicator.present? 
-    end,
-
-    ojt_indicator: ->(ojt_indicator) do 
-      DS::Truth.value_to_truth(ojt_indicator) if ojt_indicator.present? 
-    end,
-
-    correspondence_indicator: ->(correspondence_indicator) do 
-      DS::Truth.value_to_truth(correspondence_indicator) if correspondence_indicator.present? 
-    end,
-
-    flight_indicator: ->(flight_indicator) do 
-      DS::Truth.value_to_truth(flight_indicator) if flight_indicator.present? 
-    end,
-
-    non_college_degree_indicator: ->(non_college_degree_indicator) do 
-      DS::Truth.value_to_truth(non_college_degree_indicator) if non_college_degree_indicator.present? 
-    end,
-
-    accredited: ->(accredited) do 
-      accredited = 'Yes' if accredited == 'Ye'
-      DS::Truth.value_to_truth(accredited) if accredited.present? 
-    end,   
-
-    state: ->(state) { state.length != 2 ? DS::State[state] : state.upcase }
-  }
-
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
 
   #############################################################################
@@ -74,10 +36,10 @@ class WeamsCsvFile < CsvFile
 
     begin
       write_data
- 
+  
       rc = true
     rescue StandardError => e
-      errors[:base] << e.message
+      self.errors[:base] << e.message
       rc = false
     ensure
       ActiveRecord::Base.logger = old_logger    

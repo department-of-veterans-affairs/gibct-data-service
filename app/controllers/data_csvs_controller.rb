@@ -8,7 +8,7 @@ class DataCsvsController < ApplicationController
   ## index
   #############################################################################
   def index
-    @data_csvs = DataCsv.order(:facility_code).paginate(:page => params[:page])
+    @data_csvs = DataCsv.order(:facility_code, :ope6, :cross).paginate(:page => params[:page])
   end
 
   #############################################################################

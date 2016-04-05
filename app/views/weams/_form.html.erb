@@ -46,7 +46,7 @@
 
   <div class="form-group">
     <%= f.label(:accredited) %>
-    <%= f.select(:accredited, options_for_select([['Yes', 'Y'], ['No', 'N']], 
+    <%= f.select(:accredited, options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.accredited), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -54,7 +54,7 @@
 
   <div class="form-group">
     <%= f.label(:poe) %>
-    <%= f.select(:poe, options_for_select([['Yes', 'Y'], ['No', 'N']], 
+    <%= f.select(:poe, options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.poe), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -62,7 +62,7 @@
 
   <div class="form-group">
     <%= f.label(:yr) %>
-    <%= f.select(:yr, options_for_select([['Yes', 'Y'], ['No', 'N']], 
+    <%= f.select(:yr, options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.yr), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -72,7 +72,7 @@
     <%= f.label(:poo_status) %>
     <%= f.select(:poo_status, 
       options_for_select(['APRVD', 'CREATD', 'SUSP', 'WTHDRN'], 
-      selected: @weam.poo_status), 
+      selected: @weam.poo_status.try(:upcase)), 
       { include_blank: "Select a Status" },
       { class: "form-control", required: false }) %>
   </div>
@@ -81,22 +81,22 @@
     <%= f.label(:applicable_law_code) %>
     <%= f.select(:applicable_law_code, 
       options_for_select([
-        'Educational Institution is Approved For All Chapters', 
-        'Educational Institution is Approved for All Chapters Except Chapter 31', 
-        'Educational Institution is Approved for All Chapters Except Chapter 35', 
-        'Educational Institution is Approved for Chapter 31 Only',
-        'Educational Institution is Approved For Chapters 30 & 35 Only',
-        'Educational Institution is Approved For Chapters 30, 32, 35 Only',
-        'Educational Institution is not Approved'
+        'Educational Institution Is Approved For All Chapters', 
+        'Educational Institution Is Approved For All Chapters Except Chapter 31', 
+        'Educational Institution Is Approved For All Chapters Except Chapter 35', 
+        'Educational Institution Is Approved For Chapter 31 Only',
+        'Educational Institution Is Approved For Chapters 30 & 35 Only',
+        'Educational Institution Is Approved For Chapters 30, 32, 35 Only',
+        'Educational Institution Is Not Approved'
       ], 
-      selected: @weam.applicable_law_code), 
+      selected: @weam.applicable_law_code.try(:split, ' ').try(:map, &:capitalize).try(:join, ' ')), 
       { include_blank: "Select an Applicable Law Code" },
       { class: "form-control", required: false }) %>
   </div>
 
   <div class="form-group">
     <%= f.label(:ojt_indicator) %>
-    <%= f.select(:ojt_indicator, options_for_select(['Yes', 'No'], 
+    <%= f.select(:ojt_indicator, options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.ojt_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -105,7 +105,7 @@
   <div class="form-group">
     <%= f.label(:institution_of_higher_learning_indicator) %>
     <%= f.select(:institution_of_higher_learning_indicator, 
-      options_for_select(['Yes', 'No'], 
+      options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.institution_of_higher_learning_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -113,7 +113,7 @@
 
   <div class="form-group">
     <%= f.label(:correspondence_indicator) %>
-    <%= f.select(:correspondence_indicator, options_for_select(['Yes', 'No'], 
+    <%= f.select(:correspondence_indicator, options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.correspondence_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -121,7 +121,7 @@
 
   <div class="form-group">
     <%= f.label(:flight_indicator) %>
-    <%= f.select(:flight_indicator, options_for_select(['Yes', 'No'], 
+    <%= f.select(:flight_indicator, options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.flight_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>
@@ -131,7 +131,7 @@
   <div class="form-group">
     <%= f.label(:non_college_degree_indicator) %>
     <%= f.select(:non_college_degree_indicator, 
-      options_for_select(['Yes', 'No'], 
+      options_for_select([['Yes', true], ['No', false]], 
       selected: @weam.non_college_degree_indicator), 
       { include_blank: "Select Yes or No" },
       { class: "form-control", required: false }) %>

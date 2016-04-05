@@ -6,26 +6,10 @@
   </div>
 
   <div class="form-group">
-    <%= f.label(:cross, "IPEDS_6") %>
+    <%= f.label(:cross, "Ipeds 6") %>
     <%= f.text_field :cross, 
       { value: "#{@sva.cross}", class: "form-control", required: false } %>
   </div>
-
-  <div class="form-group">
-    <%= f.label(:city) %>
-    <%= f.text_field :city, 
-      { value: "#{@sva.city}", class: "form-control", required: false } %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label(:state) %>
-    <%= f.select(:state, 
-      options_for_select(DS::State.get_as_options, 
-      selected: @sva.state), 
-      { include_blank: "Select a state" },
-      { class: "form-control", required: false }) %>
-  </div>
-
 
   <div class="form-group">
     <%= f.label(:student_veteran_link) %>

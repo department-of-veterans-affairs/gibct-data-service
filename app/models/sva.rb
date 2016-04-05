@@ -1,4 +1,10 @@
 class Sva < ActiveRecord::Base
-  validates :institution, presence: true
-  validates :state, inclusion: { in: DS::State.get_names }, allow_blank: true
+  USE_COLUMNS = [:student_veteran_link]
+
+  def cross=(value)
+    value = value.try(:strip).try(:downcase)
+    value = nil if value.blank? || value == 'none' 
+
+    write_attribute(:cross, DS::IpedsId.pad(value))
+  end
 end

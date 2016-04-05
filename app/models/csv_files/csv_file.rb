@@ -204,13 +204,10 @@ class CsvFile < ActiveRecord::Base
     table = STI[self.class.name]
     table.delete_all
 
-    normalize_map = self.class::NORMALIZE
-
     lines = CsvStorage.find_by!(csv_file_type: self.class.name).data_store.lines
     lines.shift(self.class::SKIP_LINES_BEFORE_HEADER)
 
     headers = get_headers(clean_line(lines.shift))
-
     lines.shift(self.class::SKIP_LINES_AFTER_HEADER)
 
     ActiveRecord::Base.transaction do
@@ -218,12 +215,8 @@ class CsvFile < ActiveRecord::Base
         line = clean_line(line) || ""
         row = get_row(line, headers)
 
+        # Allow a block, if given to determine if row is created
         unless row.values.join.blank?
-          normalize_map.keys.each do |key|
-            row[key] = normalize_map[key].call(row[key]) 
-          end
-
-          # Allow a block, if given to determine if row is created
           table.create!(row) if !block_given? || yield(row)
         end
       end

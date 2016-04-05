@@ -5,10 +5,10 @@
     } 
 %>
 
-<h2><small>Weam Institution: <%= @weam.institution %></small></h2>
+<h2><small>Institution: <%= @weam.institution %></small></h2>
   
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
   <div class="col-xs-8">
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Facility Code: </strong>
   </div>
   <div class="col-xs-8">
@@ -26,7 +26,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Institution: </strong>
   </div>
   <div class="col-xs-8">
@@ -35,110 +35,183 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Type: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.type %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Approved: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.approved ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>City: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @weam.city %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>State: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @weam.state %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Zip: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @weam.zip %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Country: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @weam.country %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>BAH: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @weam.bah %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Accredited: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.accredited ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>POE: </strong>
   </div>
-  <div class="col-xs-3">
-    <%= @weam.poe %>
+  <div class="col-xs-8">
+    <%= @weam.poe ? 'Yes' : 'No' %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>YR: </strong>
   </div>
-  <div class="col-xs-3">
-    <%= @weam.yr %>
+  <div class="col-xs-8">
+    <%= @weam.yr ? 'Yes' : 'No' %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>Institution of Higer Learning: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @weam.institution_of_higher_learning_indicator %>
+    <strong>Highest Degree Offered: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.va_highest_degree_offered %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>OJT: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @weam.ojt_indicator %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-2">
-    <strong>Correspondence: </strong>
-  </div>
-  <div class="col-xs-3">
-    <%= @weam.correspondence_indicator %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-2">
     <strong>Flight: </strong>
   </div>
-  <div class="col-xs-3">
-    <%= @weam.flight_indicator %>
+  <div class="col-xs-8">
+    <%= @weam.flight ? 'Yes' : 'No' %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>Non-college Degree: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @weam.non_college_degree_indicator %>
+    <strong>Correspondence: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.correspondence ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>POO Status: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.poo_status.try(:upcase) %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Applicable Law Code: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.applicable_law_code.try(:split, ' ')
+      .try(:map, &:capitalize).try(:join, ' ') %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Institution of Higer Learning Indicator: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.institution_of_higher_learning_indicator ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>OJT Indicator: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.ojt_indicator ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Correspondence Indicator: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.correspondence_indicator ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Flight Indicator: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.flight_indicator ? 'Yes' : 'No' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Non-college Degree Indicator: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @weam.non_college_degree_indicator ? 'Yes' : 'No' %>
   </div>
 </div>
 

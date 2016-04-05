@@ -90,16 +90,25 @@ RSpec.describe EightKeysController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @eight_key = attributes_for :eight_key, institution: nil
-          end
+      before(:each) do
+        @eight_key = attributes_for :eight_key
+      end
 
-        it "does not create a new csv file" do
-          expect{ post :create, eight_key: @eight_key }.to change(EightKey, :count).by(0)
+      it "does not create a new eight_key entry" do
+        class E
+          def full_messages
+            []
+          end
         end
-      end   
+
+        dbl_eight_key = instance_double('EightKey', save: false, persisted?: false, errors: E.new)
+        allow(EightKey).to receive(:new).and_return(dbl_eight_key)
+
+        expect{ post :create, eight_key: @eight_key }.to change(EightKey, :count).by(0)
+        expect(EightKey.find_by(ope6: @eight_key[:ope6])).to be_nil
+      end 
     end
+
   end
 
   #############################################################################
@@ -186,24 +195,35 @@ RSpec.describe EightKeysController, type: :controller do
         end
       end
 
-      context "with no institution name" do
+      context "having invalid form input" do
         before(:each) do
           @eight_key = create :eight_key
 
           @eight_key_attributes = @eight_key.attributes
+
           @eight_key_attributes.delete("id")
           @eight_key_attributes.delete("updated_at")
           @eight_key_attributes.delete("created_at")
-          @eight_key_attributes["institution"] = nil
+          @eight_key_attributes["institution"] += "x"
         end
 
-        it "does not update a eight_key entry" do
-          put :update, id: @eight_key.id, eight_key: @eight_key_attributes 
+        it "does not create a new eight_key entry" do
+          class E
+            def full_messages
+              []
+            end
+          end
 
-          new_eight_key = EightKey.find(@eight_key.id)
-          expect(new_eight_key.institution).to eq(@eight_key.institution)
-        end
-      end   
+          dbl_eight_key = instance_double('EightKey', update: false, persisted?: false, errors: E.new)
+          allow(EightKey).to receive(:find).and_return(dbl_eight_key)
+
+          expect{ 
+            put :update, id: @eight_key.id, eight_key: @eight_key_attributes 
+          }.to change(EightKey, :count).by(0)
+
+          expect(EightKey.find_by(id: @eight_key.id).institution).to eq(@eight_key.institution)
+        end 
+      end
     end
   end
 
