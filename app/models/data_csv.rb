@@ -100,9 +100,7 @@ class DataCsv < ActiveRecord::Base
     names = EightKey::USE_COLUMNS.map(&:to_s)
 
     query_str = 'UPDATE data_csvs SET '
-    query_str += names.map { |name| %("#{name}" = eight_keys.#{name}) }.join(', ')
     query_str += "eight_keys = TRUE "
-
     query_str += ' FROM eight_keys '
     query_str += 'WHERE data_csvs.cross = eight_keys.cross '
     query_str += 'AND eight_keys.cross IS NOT NULL'

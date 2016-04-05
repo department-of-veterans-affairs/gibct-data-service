@@ -30,7 +30,7 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.string :vetsuccess_email, default: nil
 
       # Eight Keys
-      t.string :eight_keys, default: nil
+      t.boolean :eight_keys, default: nil
       
       t.timestamps null: false
 

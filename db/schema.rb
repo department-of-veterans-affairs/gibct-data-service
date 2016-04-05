@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "student_veteran_link"
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
-    t.string   "eight_keys"
+    t.boolean  "eight_keys"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
   end
