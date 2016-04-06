@@ -217,6 +217,7 @@ class CsvFile < ActiveRecord::Base
 
         # Allow a block, if given to determine if row is created
         unless row.values.join.blank?
+          Rails.logger.error "@@@@@@@@@@@ #{row.inspect}"
           table.create!(row) if !block_given? || yield(row)
         end
       end

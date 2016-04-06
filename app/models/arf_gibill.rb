@@ -1,6 +1,6 @@
 class ArfGibill < ActiveRecord::Base
   validates :facility_code, presence: true, uniqueness: { message: "%{value} has already been used" }
-  validates :gibill, numericality: { only_integer: true }
+  validates :gibill, numericality: { only_integer: true, message: "'%{value}' is not a fixnum" }
   
   USE_COLUMNS = [:gibill]
 
@@ -10,5 +10,15 @@ class ArfGibill < ActiveRecord::Base
   #############################################################################
   def facility_code=(value)
     write_attribute(:facility_code, value.try(:strip).try(:upcase))
+  end
+
+  #############################################################################
+  ## gibill=
+  ## Sets strings to nil, otherwise saves the number
+  #############################################################################
+  def gibill=(value)
+    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+
+    write_attribute(:gibill, value)
   end
 end

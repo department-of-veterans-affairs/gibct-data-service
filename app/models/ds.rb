@@ -205,4 +205,27 @@ module DS
       STATES.map { |name, full_name| [full_name, name] }
     end
   end
+
+  #############################################################################
+  ## Number
+  ## Number tests and conversions.
+  #############################################################################
+  class Number
+    ###########################################################################
+    ## is_i?
+    ## Returns true if the number is a fixnum or a fixnum string
+    ###########################################################################
+    def self.is_i?(value)
+      value.is_a?(Fixnum) || (value =~ /\A[-+]?\d+\z/).present?
+    end
+
+    ###########################################################################
+    ## is_f?
+    ## Returns true if the number is a float, integer, integer string or a 
+    ## fixnum string
+    ###########################################################################
+    def self.is_f?(value)
+      value.is_a?(Float) || is_i?(value) || (value =~ /\A[-+]?\d*\.\d+\z/).present?
+    end
+  end
 end

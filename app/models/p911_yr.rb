@@ -1,8 +1,8 @@
 class P911Yr < ActiveRecord::Base
   validates :facility_code, presence: true, uniqueness: true
 
-  validates :p911_yr_recipients, numericality: { only_integer: true }
-  validates :p911_yellow_ribbon, numericality: true
+  validates :p911_yr_recipients, numericality: { only_integer: true, message: "'%{value}' is not a fixnum" }
+  validates :p911_yellow_ribbon, numericality: { message: "'%{value}' is not a float" }
 
   USE_COLUMNS = [:p911_yr_recipients, :p911_yellow_ribbon]
 
@@ -13,4 +13,25 @@ class P911Yr < ActiveRecord::Base
   def facility_code=(value)
     write_attribute(:facility_code, value.try(:strip).try(:upcase))
   end
+
+  #############################################################################
+  ## p911_yr_recipients=
+  ## Sets strings to nil, otherwise saves the number
+  #############################################################################
+  def p911_yr_recipients=(value)
+    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+
+    write_attribute(:p911_yr_recipients, value)
+  end
+
+  #############################################################################
+  ## p911_yellow_ribbon=
+  ## Sets strings to nil, otherwise saves the number
+  #############################################################################
+  def p911_yellow_ribbon=(value)
+    value = nil if !DS::Number.is_f?(value) # Will cause a save error
+
+    write_attribute(:p911_yellow_ribbon, value)
+  end
+
 end

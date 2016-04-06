@@ -8,17 +8,17 @@
   <div class="form-group">
     <%= f.label(:ope) %>
     <%= f.text_field :ope, 
-      { value: "#{@scorecard.ope}", class: "form-control", required: false } %>
+      { value: "#{@scorecard.ope}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:cross, "IPEDS") %>
+    <%= f.label(:cross, "Ipeds") %>
     <%= f.text_field :cross, 
-      { value: "#{@scorecard.cross}", class: "form-control", required: false } %>
+      { value: "#{@scorecard.cross}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:insturl, "URL") %>
+    <%= f.label(:insturl, "Url") %>
     <%= f.text_field :insturl, 
       { value: "#{@scorecard.insturl}", class: "form-control", required: false } %>
   </div>

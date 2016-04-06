@@ -100,7 +100,7 @@ RSpec.describe ScorecardsController, type: :controller do
         end
       end   
 
-      context "with no ipeds" do
+      context "with no cross" do
         before(:each) do
           @scorecard = attributes_for :scorecard, cross: nil
           end
@@ -196,7 +196,7 @@ RSpec.describe ScorecardsController, type: :controller do
         end
       end
 
-      context "with no ope id" do
+      context "with no ope" do
         before(:each) do
           @scorecard = create :scorecard
 
@@ -215,7 +215,7 @@ RSpec.describe ScorecardsController, type: :controller do
         end
       end 
 
-      context "with no ipeds id" do
+      context "with no cross" do
         before(:each) do
           @scorecard = create :scorecard
 

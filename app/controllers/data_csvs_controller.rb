@@ -111,7 +111,11 @@ class DataCsvsController < ApplicationController
       :non_college_degree_indicator, :ope, :cross, :student_veteran,
       :student_veteran_link, :vetsuccess_name, :vetsuccess_email, :eight_keys,
       :accreditation_status, :accreditation_type, :gibill, :p911_tuition_fees,
-      :p911_recipients, :p911_yellow_ribbon, :p911_yr_recipients, :dodmou
+      :p911_recipients, :p911_yellow_ribbon, :p911_yr_recipients, :dodmou,
+      :insturl, :pred_degree_awarded, :locale, :undergrad_enrollment,
+      :retention_all_students_ba, :retention_all_students_otb,
+      :graduation_rate_all_students, :transfer_out_rate_all_students,
+      :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt
     )
   end
 end

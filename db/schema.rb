@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "csv_storages", ["csv_file_type"], name: "index_csv_storages_on_csv_file_type", unique: true, using: :btree
 
   create_table "data_csvs", force: :cascade do |t|
-    t.string   "facility_code",                             null: false
-    t.string   "institution",                               null: false
+    t.string   "facility_code",                                  null: false
+    t.string   "institution",                                    null: false
     t.string   "city"
     t.string   "state"
     t.string   "zip"
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "ope"
     t.string   "ope6"
     t.string   "cross"
-    t.boolean  "student_veteran",           default: false
+    t.boolean  "student_veteran",                default: false
     t.string   "student_veteran_link"
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
@@ -102,8 +102,19 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.float    "p911_yellow_ribbon"
     t.integer  "p911_yr_recipients"
     t.boolean  "dodmou"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.string   "insturl"
+    t.integer  "pred_degree_awarded"
+    t.integer  "locale"
+    t.integer  "undergrad_enrollment"
+    t.float    "retention_all_students_ba"
+    t.float    "retention_all_students_otb"
+    t.float    "graduation_rate_all_students"
+    t.float    "transfer_out_rate_all_students"
+    t.float    "salary_all_students"
+    t.float    "repayment_rate_all_students"
+    t.float    "avg_stu_loan_debt"
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
   end
 
   add_index "data_csvs", ["cross"], name: "index_data_csvs_on_cross", using: :btree
@@ -221,22 +232,25 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "p911_yrs", ["institution"], name: "index_p911_yrs_on_institution", using: :btree
 
   create_table "scorecards", force: :cascade do |t|
-    t.string   "cross",                       null: false
-    t.string   "ope",                         null: false
+    t.string   "cross",                          null: false
+    t.string   "ope",                            null: false
+    t.string   "ope6",                           null: false
     t.string   "institution"
     t.string   "insturl"
-    t.string   "pred_degree_awarded"
-    t.string   "locale"
-    t.string   "undergrad_enrollment"
-    t.string   "retention_all_students_ba"
-    t.string   "retention_all_students_otb"
-    t.string   "salary_all_students"
-    t.string   "repayment_rate_all_students"
-    t.string   "avg_stu_loan_debt"
-    t.string   "c150_4_pooled_supp"
-    t.string   "c200_l4_pooled_supp"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.integer  "pred_degree_awarded"
+    t.integer  "locale"
+    t.integer  "undergrad_enrollment"
+    t.float    "retention_all_students_ba"
+    t.float    "retention_all_students_otb"
+    t.float    "graduation_rate_all_students"
+    t.float    "transfer_out_rate_all_students"
+    t.float    "salary_all_students"
+    t.float    "repayment_rate_all_students"
+    t.float    "avg_stu_loan_debt"
+    t.float    "c150_4_pooled_supp"
+    t.float    "c200_l4_pooled_supp"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
   add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree

@@ -223,4 +223,44 @@ RSpec.describe DS do
       end
     end
   end
+
+  describe "Number" do
+    context "is_i?" do
+      it "is true when a number is a fixnum" do
+        expect(DS::Number.is_i?(16013)).to be_truthy
+      end
+
+      it "is true when a number is a fixnum string" do
+        expect(DS::Number.is_i?('16013')).to be_truthy
+      end
+
+      it "is false when a number is not a fixnum" do
+        expect(DS::Number.is_i?(16013.00)).to be_falsy
+        expect(DS::Number.is_i?(nil)).to be_falsy
+      end 
+
+      it "is false when a number is not a fixnum string" do
+        expect(DS::Number.is_i?('16013.00')).to be_falsy
+      end         
+    end
+
+    context "is_f?" do
+      it "is true when a number is a float" do
+        expect(DS::Number.is_f?(16013.00)).to be_truthy
+      end
+
+      it "is true when a number is an integer" do
+        expect(DS::Number.is_f?(16013)).to be_truthy
+      end
+
+      it "is true when a number is a float string" do
+        expect(DS::Number.is_f?('16013.00')).to be_truthy
+      end
+
+      it "is false when a number is not a float or float string" do
+        expect(DS::Number.is_f?('abc')).to be_falsy
+        expect(DS::Number.is_f?(nil)).to be_falsy
+      end        
+    end
+  end
 end
