@@ -18,6 +18,15 @@ class Weam < ActiveRecord::Base
   ]
 
   #############################################################################
+  ## bah=
+  ## Strips whitespace and sets strings to nil, otherwise saves the number
+  #############################################################################
+  def bah=(value)
+    value = value.to_i if DS::Number.is_i?(value)
+    write_attribute(:bah, value)
+  end
+
+  #############################################################################
   ## poe=
   ## Converts truthy/falsy strings to booleans
   #############################################################################

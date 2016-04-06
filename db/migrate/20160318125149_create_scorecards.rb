@@ -3,18 +3,21 @@ class CreateScorecards < ActiveRecord::Migration
     create_table :scorecards do |t|
       t.string :cross, null: false
       t.string :ope, null: false
+      t.string :ope6, null: false
       t.string :institution
       t.string :insturl
-      t.string :pred_degree_awarded
-      t.string :locale
-      t.string :undergrad_enrollment
-      t.string :retention_all_students_ba
-      t.string :retention_all_students_otb
-      t.string :salary_all_students
-      t.string :repayment_rate_all_students
-      t.string :avg_stu_loan_debt
-      t.string :c150_4_pooled_supp
-      t.string :c200_l4_pooled_supp
+      t.integer :pred_degree_awarded
+      t.integer :locale
+      t.integer :undergrad_enrollment
+      t.float :retention_all_students_ba
+      t.float :retention_all_students_otb
+      t.float :graduation_rate_all_students
+      t.float :transfer_out_rate_all_students, default: nil
+      t.float :salary_all_students
+      t.float :repayment_rate_all_students
+      t.float :avg_stu_loan_debt
+      t.float :c150_4_pooled_supp
+      t.float :c200_l4_pooled_supp
 
       t.timestamps null: false
 

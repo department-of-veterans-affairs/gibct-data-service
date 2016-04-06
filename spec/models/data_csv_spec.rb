@@ -265,5 +265,27 @@ RSpec.describe DataCsv, type: :model do
         end
       end
     end
+
+    context "with scorecards" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:scorecard) { create :scorecard, ope: crosswalk.ope, cross: crosswalk.cross }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_scorecard
+      end
+
+      it "is matched by cross" do
+        data = DataCsv.find_by(cross: scorecard.cross)
+        expect(data).not_to be_nil
+      end
+
+      Scorecard::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(scorecard[column])
+        end
+      end
+    end
   end
 end

@@ -39,16 +39,29 @@ class CreateDataCsvs < ActiveRecord::Migration
       # Arf Gibill
       t.integer :gibill, default: nil
 
-      # P911 TF
+      # P911 Tf
       t.float :p911_tuition_fees, default: nil
       t.integer :p911_recipients, default: nil
 
-      # P911 YR
+      # P911 Yr
       t.float :p911_yellow_ribbon, default: nil
       t.integer :p911_yr_recipients, default: nil
 
-      # DOD MOU
-      t.boolean :dodmou
+      # Dod Mou
+      t.boolean :dodmou, default: nil
+
+      # Scorecard
+      t.string :insturl, default: nil
+      t.integer :pred_degree_awarded, default: nil
+      t.integer :locale, default: nil
+      t.integer :undergrad_enrollment, default: nil
+      t.float :retention_all_students_ba, default: nil
+      t.float :retention_all_students_otb, default: nil
+      t.float :graduation_rate_all_students, default: nil
+      t.float :transfer_out_rate_all_students, default: nil
+      t.float :salary_all_students, default: nil
+      t.float :repayment_rate_all_students, default: nil
+      t.float :avg_stu_loan_debt, default: nil
 
       t.timestamps null: false
 

@@ -158,7 +158,7 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_p911_yr
-  ## Updates the DataCsv table with data from the p911_tfs table.
+  ## Updates the DataCsv table with data from the p911_yrs table.
   ###########################################################################
   def self.update_with_p911_yr
     names = P911Yr::USE_COLUMNS.map(&:to_s)
@@ -173,7 +173,7 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_mou
-  ## Updates the DataCsv table with data from the p911_tfs table.
+  ## Updates the DataCsv table with data from the mous table.
   ###########################################################################
   def self.update_with_mou
     names = Mou::USE_COLUMNS.map(&:to_s)
@@ -182,6 +182,21 @@ class DataCsv < ActiveRecord::Base
     query_str += names.map { |name| %("#{name}" = mous.#{name}) }.join(', ')
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6'
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_scorecard
+  ## Updates the DataCsv table with data from the scorecards table.
+  ###########################################################################
+  def self.update_with_scorecard
+    names = Scorecard::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = scorecards.#{name}) }.join(', ')
+    query_str += ' FROM scorecards '
+    query_str += 'WHERE data_csvs.cross = scorecards.cross'
 
     run_bulk_query(query_str)
   end

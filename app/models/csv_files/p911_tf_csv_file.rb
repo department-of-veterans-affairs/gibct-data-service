@@ -18,8 +18,8 @@ class P911TfCsvFile < CsvFile
   ## Reloads the accreditation table with the data in the csv data store
   #############################################################################  
   def populate
-    old_logger = ActiveRecord::Base.logger
-    ActiveRecord::Base.logger = nil
+    # old_logger = ActiveRecord::Base.logger
+    # ActiveRecord::Base.logger = nil
 
     begin
       # Write only if the row does not contain the state name only
@@ -30,7 +30,7 @@ class P911TfCsvFile < CsvFile
       errors[:base] << e.message
       rc = false
     ensure
-      ActiveRecord::Base.logger = old_logger    
+      # ActiveRecord::Base.logger = old_logger    
     end
 
     return rc
