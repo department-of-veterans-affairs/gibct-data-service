@@ -84,6 +84,7 @@ RSpec.describe DataCsv, type: :model do
     end
 
     context "with vsocs" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
       let!(:vsoc) { create :vsoc, facility_code: approved.facility_code }
 
       before(:each) do
@@ -174,6 +175,94 @@ RSpec.describe DataCsv, type: :model do
         data = DataCsv.find_by(cross: accreditation_not_current.cross)
         expect(data.accreditation_status).to be_nil
         expect(data.accreditation_type).to be_nil
+      end
+    end
+
+    context "with arf_gibills" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:arf_gibill) { create :arf_gibill, facility_code: approved.facility_code }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_arf_gibill
+      end
+
+      it "is matched by facility_code" do
+        data = DataCsv.find_by(facility_code: arf_gibill.facility_code)
+        expect(data).not_to be_nil
+      end
+
+      ArfGibill::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(arf_gibill[column])
+        end
+      end
+    end
+
+    context "with p911_tfs" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:p911_tf) { create :p911_tf, facility_code: approved.facility_code }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_p911_tf
+      end
+
+      it "is matched by facility_code" do
+        data = DataCsv.find_by(facility_code: p911_tf.facility_code)
+        expect(data).not_to be_nil
+      end
+
+      P911Tf::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(p911_tf[column])
+        end
+      end
+    end
+
+    context "with p911_tfs" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:p911_yr) { create :p911_yr, facility_code: approved.facility_code }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_p911_yr
+      end
+
+      it "is matched by facility_code" do
+        data = DataCsv.find_by(facility_code: p911_yr.facility_code)
+        expect(data).not_to be_nil
+      end
+
+      P911Yr::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(p911_yr[column])
+        end
+      end
+    end
+
+    context "with mous" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:mou) { create :mou, ope: crosswalk.ope }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_mou
+      end
+
+      it "is matched by ope6" do
+        data = DataCsv.find_by(ope6: mou.ope6)
+        expect(data).not_to be_nil
+      end
+
+      Mou::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(mou[column])
+        end
       end
     end
   end

@@ -10,7 +10,7 @@ class EightKeyCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 1
   SKIP_LINES_AFTER_HEADER = 0
 
-  DISALLOWED_CHARS = /[^\w@\- \.\/]/
+  DISALLOWED_CHARS = /[^\dA-Za-z \-\.]/
 
   #############################################################################
   ## populate

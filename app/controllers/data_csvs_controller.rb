@@ -108,7 +108,10 @@ class DataCsvsController < ApplicationController
       :accredited, :poe, :yr, :poo_status, :applicable_law_codes, 
       :institution_of_higher_learning_indicator, :ojt_indicator, 
       :correspondence_indicator, :flight_indicator, 
-      :non_college_degree_indicator, :ope, :cross
+      :non_college_degree_indicator, :ope, :cross, :student_veteran,
+      :student_veteran_link, :vetsuccess_name, :vetsuccess_email, :eight_keys,
+      :accreditation_status, :accreditation_type, :gibill, :p911_tuition_fees,
+      :p911_recipients, :p911_yellow_ribbon, :p911_yr_recipients, :dodmou
     )
   end
 end

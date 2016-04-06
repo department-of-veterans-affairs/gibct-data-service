@@ -3,22 +3,12 @@ require "csv"
 class MouCsvFile < CsvFile
   HEADER_MAP = {
     "institution name" => :institution,
-    "city" => :city,
-    "state" => :state,
     "ope id" => :ope,
-    "status" => :dod_mou
+    "status" => :status
   }
 
   SKIP_LINES_BEFORE_HEADER = 1
   SKIP_LINES_AFTER_HEADER = 0
-
-  NORMALIZE = {
-    ope: ->(ope) do 
-      ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
-    end,
-
-    state: ->(state) { state.length != 2 ? DS::State[state] : state.upcase }
-  }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
 

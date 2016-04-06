@@ -8,19 +8,19 @@
   <div class="form-group">
     <%= f.label(:institution) %>
     <%= f.text_field :institution, 
-      { value: "#{@p911_yr.institution}", class: "form-control", required: true } %>
+      { value: "#{@p911_yr.institution}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:p911_yellow_ribbon, "Total Cost") %>
     <%= f.text_field :p911_yellow_ribbon, 
-      { value: "#{@p911_yr.p911_yellow_ribbon}", class: "form-control", required: false } %>
+      { value: "#{@p911_yr.p911_yellow_ribbon}", class: "form-control", required: true } %>
   </div>
   
   <div class="form-group">
     <%= f.label(:p911_yr_recipients, "Number of YR Recipients (Trainees)") %>
     <%= f.text_field :p911_yr_recipients, 
-      { value: "#{@p911_yr.p911_yr_recipients}", class: "form-control", required: false } %>
+      { value: "#{@p911_yr.p911_yr_recipients}", class: "form-control", required: true } %>
   </div>
 
   <div class="actions">

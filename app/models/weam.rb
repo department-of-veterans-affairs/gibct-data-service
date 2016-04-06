@@ -4,6 +4,7 @@ class Weam < ActiveRecord::Base
 
   validates :facility_code, presence: true, uniqueness: true
   validates :institution, presence: true
+  validates :bah, numericality: { only_integer: true }, allow_blank: true
 
   before_save :set_derived_fields
 

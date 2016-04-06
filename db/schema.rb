@@ -41,8 +41,8 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "arf_gibills", force: :cascade do |t|
     t.string   "facility_code", null: false
-    t.string   "institution",   null: false
-    t.string   "gibill",        null: false
+    t.string   "institution"
+    t.integer  "gibill",        null: false
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -96,6 +96,12 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.boolean  "eight_keys"
     t.string   "accreditation_status"
     t.string   "accreditation_type"
+    t.integer  "gibill"
+    t.float    "p911_tuition_fees"
+    t.integer  "p911_recipients"
+    t.float    "p911_yellow_ribbon"
+    t.integer  "p911_yr_recipients"
+    t.boolean  "dodmou"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
   end
@@ -179,10 +185,10 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "mous", force: :cascade do |t|
     t.string   "ope",         null: false
-    t.string   "institution", null: false
-    t.string   "city"
-    t.string   "state"
-    t.string   "dod_mou"
+    t.string   "ope6",        null: false
+    t.string   "institution"
+    t.string   "status"
+    t.boolean  "dodmou"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
@@ -192,9 +198,9 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "p911_tfs", force: :cascade do |t|
     t.string   "facility_code",     null: false
-    t.string   "institution",       null: false
-    t.string   "p911_tuition_fees", null: false
-    t.string   "p911_recipients",   null: false
+    t.string   "institution"
+    t.float    "p911_tuition_fees", null: false
+    t.integer  "p911_recipients",   null: false
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end
@@ -204,9 +210,9 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "p911_yrs", force: :cascade do |t|
     t.string   "facility_code",      null: false
-    t.string   "institution",        null: false
-    t.string   "p911_yellow_ribbon", null: false
-    t.string   "p911_yr_recipients", null: false
+    t.string   "institution"
+    t.float    "p911_yellow_ribbon", null: false
+    t.integer  "p911_yr_recipients", null: false
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end

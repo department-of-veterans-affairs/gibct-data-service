@@ -104,7 +104,7 @@ class MousController < ApplicationController
   #############################################################################  
   def mou_params
     params.require(:mou).permit(
-      :institution, :city, :state, :ope, :dod_mou
+      :institution, :ope, :dodmou
     )
   end
 end

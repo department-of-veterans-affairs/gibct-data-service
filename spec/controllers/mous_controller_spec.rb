@@ -90,18 +90,6 @@ RSpec.describe MousController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @mou = attributes_for :mou, institution: nil
-        end
-
-        it "does not create a new csv file" do
-          expect{ post :create, mou: @mou }.to change(Mou, :count).by(0)
-        end
-      end   
-    end
-
-    context "having invalid form input" do
       context "with no ope" do
         before(:each) do
           @mou = attributes_for :mou, ope: nil
@@ -195,25 +183,6 @@ RSpec.describe MousController, type: :controller do
           expect{ 
             put :update, id: 0, mou: @mou_attributes 
           }.to raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-
-      context "with no institution name" do
-        before(:each) do
-          @mou = create :mou
-
-          @mou_attributes = @mou.attributes
-          @mou_attributes.delete("id")
-          @mou_attributes.delete("updated_at")
-          @mou_attributes.delete("created_at")
-          @mou_attributes["institution"] = nil
-        end
-
-        it "does not update a mou entry" do
-          put :update, id: @mou.id, mou: @mou_attributes 
-
-          new_mou = Mou.find(@mou.id)
-          expect(new_mou.institution).to eq(@mou.institution)
         end
       end
 

@@ -12,7 +12,7 @@ RSpec.describe Weam, type: :model do
       end
     end
 
-    describe "facility codes" do
+    describe "facility_code" do
     	subject { create :weam }
 
     	it "are unique" do
@@ -24,10 +24,20 @@ RSpec.describe Weam, type: :model do
     	end
     end
 
-    describe "institution names" do
+    describe "institution" do
     	it "are required" do
     		expect(build :weam, institution: nil).not_to be_valid
     	end
+    end
+
+    describe "bah" do
+      it "must be an integer" do
+        expect(build :weam, bah: 10.0).not_to be_valid
+      end
+
+      it "may be blank" do
+        expect(build :weam, bah: nil).to be_valid
+      end
     end
 
     describe "correspondence" do

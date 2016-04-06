@@ -36,6 +36,20 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.string :accreditation_status, default: nil
       t.string :accreditation_type, default: nil
 
+      # Arf Gibill
+      t.integer :gibill, default: nil
+
+      # P911 TF
+      t.float :p911_tuition_fees, default: nil
+      t.integer :p911_recipients, default: nil
+
+      # P911 YR
+      t.float :p911_yellow_ribbon, default: nil
+      t.integer :p911_yr_recipients, default: nil
+
+      # DOD MOU
+      t.boolean :dodmou
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

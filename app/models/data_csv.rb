@@ -108,10 +108,9 @@ class DataCsv < ActiveRecord::Base
     run_bulk_query(query_str)
   end
 
-
   ###########################################################################
   ## update_with_accreditation
-  ## Updates the DataCsv table with data from the eight_keys table.
+  ## Updates the DataCsv table with data from the accreditations table.
   ###########################################################################
   def self.update_with_accreditation
     names = Accreditation::USE_COLUMNS.map(&:to_s)
@@ -123,6 +122,66 @@ class DataCsv < ActiveRecord::Base
     query_str += %(AND accreditations.periods LIKE '%current%' )
     query_str += "AND accreditations.csv_accreditation_type = 'institutional' "
     query_str += 'AND accreditations.cross IS NOT NULL'
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_arf_gibill
+  ## Updates the DataCsv table with data from the arf_gibills table.
+  ###########################################################################
+  def self.update_with_arf_gibill
+    names = ArfGibill::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = arf_gibills.#{name}) }.join(', ')
+    query_str += ' FROM arf_gibills '
+    query_str += 'WHERE data_csvs.facility_code = arf_gibills.facility_code'
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_p911_tf
+  ## Updates the DataCsv table with data from the p911_tfs table.
+  ###########################################################################
+  def self.update_with_p911_tf
+    names = P911Tf::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = p911_tfs.#{name}) }.join(', ')
+    query_str += ' FROM p911_tfs '
+    query_str += 'WHERE data_csvs.facility_code = p911_tfs.facility_code'
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_p911_yr
+  ## Updates the DataCsv table with data from the p911_tfs table.
+  ###########################################################################
+  def self.update_with_p911_yr
+    names = P911Yr::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = p911_yrs.#{name}) }.join(', ')
+    query_str += ' FROM p911_yrs '
+    query_str += 'WHERE data_csvs.facility_code = p911_yrs.facility_code'
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_mou
+  ## Updates the DataCsv table with data from the p911_tfs table.
+  ###########################################################################
+  def self.update_with_mou
+    names = Mou::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = mous.#{name}) }.join(', ')
+    query_str += ' FROM mous '
+    query_str += 'WHERE data_csvs.ope6 = mous.ope6'
 
     run_bulk_query(query_str)
   end
