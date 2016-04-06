@@ -90,20 +90,10 @@ RSpec.describe ArfGibillsController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @arf_gibill = attributes_for :arf_gibill, institution: nil
-          end
-
-        it "does not create a new csv file" do
-          expect{ post :create, arf_gibill: @arf_gibill }.to change(ArfGibill, :count).by(0)
-        end
-      end   
-  
       context "with no facility code" do
         before(:each) do
           @arf_gibill = attributes_for :arf_gibill, facility_code: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, arf_gibill: @arf_gibill }.to change(ArfGibill, :count).by(0)
@@ -114,7 +104,7 @@ RSpec.describe ArfGibillsController, type: :controller do
         before(:each) do
           arf = create :arf_gibill
           @arf_gibill = attributes_for :arf_gibill, facility_code: arf.facility_code
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, arf_gibill: @arf_gibill }.to change(ArfGibill, :count).by(0)
@@ -124,7 +114,17 @@ RSpec.describe ArfGibillsController, type: :controller do
       context "with no total count of students" do
         before(:each) do
           @arf_gibill = attributes_for :arf_gibill, gibill: nil
-          end
+        end
+
+        it "does not create a new csv file" do
+          expect{ post :create, arf_gibill: @arf_gibill }.to change(ArfGibill, :count).by(0)
+        end
+      end
+
+      context "with non-integer numericality" do
+        before(:each) do
+          @arf_gibill = attributes_for :arf_gibill, gibill: 'abc'
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, arf_gibill: @arf_gibill }.to change(ArfGibill, :count).by(0)
@@ -216,25 +216,6 @@ RSpec.describe ArfGibillsController, type: :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
-
-      context "with no institution name" do
-        before(:each) do
-          @arf_gibill = create :arf_gibill
-
-          @arf_gibill_attributes = @arf_gibill.attributes
-          @arf_gibill_attributes.delete("id")
-          @arf_gibill_attributes.delete("updated_at")
-          @arf_gibill_attributes.delete("created_at")
-          @arf_gibill_attributes["institution"] = nil
-        end
-
-        it "does not update a arf_gibill entry" do
-          put :update, id: @arf_gibill.id, arf_gibill: @arf_gibill_attributes 
-
-          new_arf_gibill = ArfGibill.find(@arf_gibill.id)
-          expect(new_arf_gibill.institution).to eq(@arf_gibill.institution)
-        end
-      end   
   
       context "with no facility code" do
         before(:each) do
@@ -290,9 +271,28 @@ RSpec.describe ArfGibillsController, type: :controller do
           put :update, id: @arf_gibill.id, arf_gibill: @arf_gibill_attributes 
 
           new_arf_gibill = ArfGibill.find(@arf_gibill.id)
-          expect(new_arf_gibill.facility_code).to eq(@arf_gibill.facility_code)
+          expect(new_arf_gibill.gibill).to eq(@arf_gibill.gibill)
         end
       end  
+
+      context "with non-integer total count of students" do
+        before(:each) do
+          @arf_gibill = create :arf_gibill
+
+          @arf_gibill_attributes = @arf_gibill.attributes
+          @arf_gibill_attributes.delete("id")
+          @arf_gibill_attributes.delete("updated_at")
+          @arf_gibill_attributes.delete("created_at")
+          @arf_gibill_attributes["gibill"] = 'abc'
+        end
+
+        it "does not update a arf_gibill entry" do
+          put :update, id: @arf_gibill.id, arf_gibill: @arf_gibill_attributes 
+
+          new_arf_gibill = ArfGibill.find(@arf_gibill.id)
+          expect(new_arf_gibill.gibill).to eq(@arf_gibill.gibill)
+        end
+      end 
     end
   end
 

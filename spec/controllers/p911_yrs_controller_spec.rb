@@ -89,21 +89,11 @@ RSpec.describe P911YrsController, type: :controller do
       end 
     end
 
-    context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @p911_yr = attributes_for :p911_yr, institution: nil
-        end
-
-        it "does not create a new csv file" do
-          expect{ post :create, p911_yr: @p911_yr }.to change(P911Yr, :count).by(0)
-        end
-      end   
-  
+    context "having invalid form input" do 
       context "with no facility code" do
         before(:each) do
           @p911_yr = attributes_for :p911_yr, facility_code: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, p911_yr: @p911_yr }.to change(P911Yr, :count).by(0)
@@ -114,12 +104,32 @@ RSpec.describe P911YrsController, type: :controller do
         before(:each) do
           p911_yr = create :p911_yr
           @p911_yr = attributes_for :p911_yr, facility_code: p911_yr.facility_code
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, p911_yr: @p911_yr }.to change(P911Yr, :count).by(0)
         end
-      end   
+      end  
+
+      context "with missing or non-numeric p911_yr_recipients" do
+        it "does not create a new csv file" do
+          p911_yr = attributes_for :p911_yr, p911_yr_recipients: 'abc'
+          expect{ post :create, p911_yr: p911_yr }.to change(P911Yr, :count).by(0)
+         
+          p911_yr[:p911_yr_recipients] = nil
+          expect{ post :create, p911_yr: p911_yr }.to change(P911Yr, :count).by(0)
+        end
+      end
+
+      context "with missing or non-numeric p911_yellow_ribbon" do
+        it "does not create a new csv file" do
+          p911_yr = attributes_for :p911_yr, p911_yellow_ribbon: 'abc'
+          expect{ post :create, p911_yr: p911_yr }.to change(P911Yr, :count).by(0)
+         
+          p911_yr[:p911_yellow_ribbon] = nil
+          expect{ post :create, p911_yr: p911_yr }.to change(P911Yr, :count).by(0)
+        end
+      end 
     end
   end
 
@@ -206,25 +216,6 @@ RSpec.describe P911YrsController, type: :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
-
-      context "with no institution name" do
-        before(:each) do
-          @p911_yr = create :p911_yr
-
-          @p911_yr_attributes = @p911_yr.attributes
-          @p911_yr_attributes.delete("id")
-          @p911_yr_attributes.delete("updated_at")
-          @p911_yr_attributes.delete("created_at")
-          @p911_yr_attributes["institution"] = nil
-        end
-
-        it "does not update a p911_yr entry" do
-          put :update, id: @p911_yr.id, p911_yr: @p911_yr_attributes 
-
-          new_p911_yr = P911Yr.find(@p911_yr.id)
-          expect(new_p911_yr.institution).to eq(@p911_yr.institution)
-        end
-      end   
   
       context "with no facility code" do
         before(:each) do
@@ -264,6 +255,56 @@ RSpec.describe P911YrsController, type: :controller do
           expect(new_p911_yr.facility_code).to eq(@p911_yr.facility_code)
         end
       end   
+
+      context "with missing or non-numeric p911_yr_recipients" do
+        before(:each) do
+          @p911_yr = create :p911_yr
+
+          @p911_yr_attributes = @p911_yr.attributes
+          @p911_yr_attributes.delete("id")
+          @p911_yr_attributes.delete("updated_at")
+          @p911_yr_attributes.delete("created_at")
+        end
+
+        it "does not update a p911_yr entry" do
+          @p911_yr_attributes["p911_recipients"] = nil
+          put :update, id: @p911_yr.id, p911_yr: @p911_yr_attributes 
+
+          new_p911_yr = P911Yr.find(@p911_yr.id)
+          expect(new_p911_yr.p911_yr_recipients).to eq(@p911_yr.p911_yr_recipients)
+
+          @p911_yr_attributes["p911_recipients"] = 'abc'
+          put :update, id: @p911_yr.id, p911_yr: @p911_yr_attributes 
+
+          new_p911_yr = P911Yr.find(@p911_yr.id)
+          expect(new_p911_yr.p911_yr_recipients).to eq(@p911_yr.p911_yr_recipients)
+        end
+      end   
+
+      context "with missing or non-numeric p911_yellow_ribbon" do
+        before(:each) do
+          @p911_yr = create :p911_yr
+
+          @p911_yr_attributes = @p911_yr.attributes
+          @p911_yr_attributes.delete("id")
+          @p911_yr_attributes.delete("updated_at")
+          @p911_yr_attributes.delete("created_at")
+        end
+
+        it "does not update a p911_yr entry" do
+          @p911_yr_attributes["p911_yellow_ribbon"] = nil
+          put :update, id: @p911_yr.id, p911_yr: @p911_yr_attributes 
+
+          new_p911_yr = P911Yr.find(@p911_yr.id)
+          expect(new_p911_yr.p911_yellow_ribbon).to eq(@p911_yr.p911_yellow_ribbon)
+
+          @p911_yr_attributes["p911_yellow_ribbon"] = 'abc'
+          put :update, id: @p911_yr.id, p911_yr: @p911_yr_attributes 
+
+          new_p911_yr = P911Yr.find(@p911_yr.id)
+          expect(new_p911_yr.p911_yellow_ribbon).to eq(@p911_yr.p911_yellow_ribbon)
+        end
+      end  
     end
   end
 

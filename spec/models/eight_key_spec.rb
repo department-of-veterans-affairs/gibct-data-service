@@ -7,17 +7,5 @@ RSpec.describe EightKey, type: :model do
         expect(create(:eight_key)).to be_valid
       end
     end
-
-    context "institution names" do
-      it "are required" do
-        expect(build :eight_key, institution: nil).not_to be_valid
-      end
-    end
-
-    context "state" do
-      it "must be valid" do
-        expect(build :eight_key, state: "ZZ").not_to be_valid
-      end
-    end
   end
 end

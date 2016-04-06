@@ -91,15 +91,23 @@ RSpec.describe SvasController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @sva = attributes_for :sva, institution: nil
+      before(:each) do
+        @sva = attributes_for :sva
+      end
+
+      it "does not create a new sva entry" do
+        class E
+          def full_messages
+            []
+          end
         end
 
-        it "does not create a new csv file" do
-          expect{ post :create, sva: @sva }.to change(Sva, :count).by(0)
-        end
-      end   
+        dbl_sva = instance_double('Sva', save: false, persisted?: false, errors: E.new)
+        allow(Sva).to receive(:new).and_return(dbl_sva)
+
+        expect{ post :create, sva: @sva }.to change(Sva, :count).by(0)
+        expect(Sva.find_by(cross: @sva[:cross])).to be_nil
+      end 
     end
   end
 
@@ -187,24 +195,32 @@ RSpec.describe SvasController, type: :controller do
         end
       end
 
-      context "with no institution name" do
+      context "having invalid form input" do
         before(:each) do
           @sva = create :sva
 
           @sva_attributes = @sva.attributes
+
           @sva_attributes.delete("id")
           @sva_attributes.delete("updated_at")
           @sva_attributes.delete("created_at")
-          @sva_attributes["institution"] = nil
+          @sva_attributes["institution"] += "x"
         end
 
-        it "does not update a sva entry" do
-          put :update, id: @sva.id, sva: @sva_attributes 
+        it "does not create a new sva entry" do
+          class E
+            def full_messages
+              []
+            end
+          end
 
-          new_sva = Sva.find(@sva.id)
-          expect(new_sva.institution).to eq(@sva.institution)
-        end
-      end   
+          dbl_sva = instance_double('Sva', update: false, persisted?: false, errors: E.new)
+          allow(Sva).to receive(:find).and_return(dbl_sva)
+
+          expect{ put :update, id: @sva.id, sva: @sva_attributes }.to change(Sva, :count).by(0)
+          expect(Sva.find_by(id: @sva.id).institution).to eq(@sva.institution)
+        end 
+      end
     end
   end
 

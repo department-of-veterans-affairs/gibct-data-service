@@ -12,32 +12,10 @@
   </div>
 
   <div class="form-group">
-    <%= f.label(:cross, "IPEDS") %>
+    <%= f.label(:cross, "Ipeds") %>
     <%= f.text_field :cross, 
       { value: "#{@eight_key.cross}", class: "form-control", required: false } %>
   </div>
-
-  <div class="form-group">
-    <%= f.label(:city) %>
-    <%= f.text_field :city, 
-      { value: "#{@eight_key.city}", class: "form-control", required: false } %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label(:state) %>
-    <%= f.select(:state, 
-      options_for_select(DS::State.get_as_options, 
-      selected: @eight_key.state), 
-      { include_blank: "Select a state" },
-      { class: "form-control", required: false }) %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label(:notes) %>
-    <%= f.text_field :notes, 
-      { value: "#{@eight_key.notes}", class: "form-control", required: false } %>
-  </div>
-
     
   <div class="actions">
     <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  

@@ -11,9 +11,7 @@ class P911YrCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 1
 
-  NORMALIZE = {}
-
-  DISALLOWED_CHARS = /[^\w@\- \.\/]/
+  DISALLOWED_CHARS = /[^\dA-Za-z \-\.]/
 
   #############################################################################
   ## populate

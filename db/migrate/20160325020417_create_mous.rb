@@ -2,10 +2,10 @@ class CreateMous < ActiveRecord::Migration
   def change
     create_table :mous do |t|
       t.string :ope, null: false
-      t.string :institution, null: false
-      t.string :city
-      t.string :state
-      t.string :dod_mou
+      t.string :ope6, null: false
+      t.string :institution
+      t.string :status
+      t.boolean :dodmou
 
       t.timestamps null: false
 

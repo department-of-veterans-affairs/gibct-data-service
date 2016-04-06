@@ -89,21 +89,11 @@ RSpec.describe P911TfsController, type: :controller do
       end 
     end
 
-    context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @p911_tf = attributes_for :p911_tf, institution: nil
-        end
-
-        it "does not create a new csv file" do
-          expect{ post :create, p911_tf: @p911_tf }.to change(P911Tf, :count).by(0)
-        end
-      end   
-  
+    context "having invalid form input" do 
       context "with no facility code" do
         before(:each) do
           @p911_tf = attributes_for :p911_tf, facility_code: nil
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, p911_tf: @p911_tf }.to change(P911Tf, :count).by(0)
@@ -114,12 +104,32 @@ RSpec.describe P911TfsController, type: :controller do
         before(:each) do
           p911_tf = create :p911_tf
           @p911_tf = attributes_for :p911_tf, facility_code: p911_tf.facility_code
-          end
+        end
 
         it "does not create a new csv file" do
           expect{ post :create, p911_tf: @p911_tf }.to change(P911Tf, :count).by(0)
         end
       end   
+
+      context "with missing or non-numeric p911_recipients" do
+        it "does not create a new csv file" do
+          p911_tf = attributes_for :p911_tf, p911_recipients: 'abc'
+          expect{ post :create, p911_tf: p911_tf }.to change(P911Tf, :count).by(0)
+         
+          p911_tf[:p911_recipients] = nil
+          expect{ post :create, p911_tf: p911_tf }.to change(P911Tf, :count).by(0)
+        end
+      end
+
+      context "with missing or non-numeric p911_tuition_fees" do
+        it "does not create a new csv file" do
+          p911_tf = attributes_for :p911_tf, p911_tuition_fees: 'abc'
+          expect{ post :create, p911_tf: p911_tf }.to change(P911Tf, :count).by(0)
+         
+          p911_tf[:p911_tuition_fees] = nil
+          expect{ post :create, p911_tf: p911_tf }.to change(P911Tf, :count).by(0)
+        end
+      end
     end
   end
 
@@ -206,25 +216,6 @@ RSpec.describe P911TfsController, type: :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
-
-      context "with no institution name" do
-        before(:each) do
-          @p911_tf = create :p911_tf
-
-          @p911_tf_attributes = @p911_tf.attributes
-          @p911_tf_attributes.delete("id")
-          @p911_tf_attributes.delete("updated_at")
-          @p911_tf_attributes.delete("created_at")
-          @p911_tf_attributes["institution"] = nil
-        end
-
-        it "does not update a p911_tf entry" do
-          put :update, id: @p911_tf.id, p911_tf: @p911_tf_attributes 
-
-          new_p911_tf = P911Tf.find(@p911_tf.id)
-          expect(new_p911_tf.institution).to eq(@p911_tf.institution)
-        end
-      end   
   
       context "with no facility code" do
         before(:each) do
@@ -262,6 +253,56 @@ RSpec.describe P911TfsController, type: :controller do
 
           new_p911_tf = P911Tf.find(@p911_tf.id)
           expect(new_p911_tf.facility_code).to eq(@p911_tf.facility_code)
+        end
+      end   
+
+      context "with missing or non-numeric p911_recipients" do
+        before(:each) do
+          @p911_tf = create :p911_tf
+
+          @p911_tf_attributes = @p911_tf.attributes
+          @p911_tf_attributes.delete("id")
+          @p911_tf_attributes.delete("updated_at")
+          @p911_tf_attributes.delete("created_at")
+        end
+
+        it "does not update a p911_tf entry" do
+          @p911_tf_attributes["p911_recipients"] = nil
+          put :update, id: @p911_tf.id, p911_tf: @p911_tf_attributes 
+
+          new_p911_tf = P911Tf.find(@p911_tf.id)
+          expect(new_p911_tf.p911_recipients).to eq(@p911_tf.p911_recipients)
+
+          @p911_tf_attributes["p911_recipients"] = 'abc'
+          put :update, id: @p911_tf.id, p911_tf: @p911_tf_attributes 
+
+          new_p911_tf = P911Tf.find(@p911_tf.id)
+          expect(new_p911_tf.p911_recipients).to eq(@p911_tf.p911_recipients)
+        end
+      end   
+
+      context "with missing or non-numeric p911_tuition_fees" do
+        before(:each) do
+          @p911_tf = create :p911_tf
+
+          @p911_tf_attributes = @p911_tf.attributes
+          @p911_tf_attributes.delete("id")
+          @p911_tf_attributes.delete("updated_at")
+          @p911_tf_attributes.delete("created_at")
+        end
+
+        it "does not update a p911_tf entry" do
+          @p911_tf_attributes["p911_tuition_fees"] = nil
+          put :update, id: @p911_tf.id, p911_tf: @p911_tf_attributes 
+
+          new_p911_tf = P911Tf.find(@p911_tf.id)
+          expect(new_p911_tf.p911_tuition_fees).to eq(@p911_tf.p911_tuition_fees)
+
+          @p911_tf_attributes["p911_tuition_fees"] = 'abc'
+          put :update, id: @p911_tf.id, p911_tf: @p911_tf_attributes 
+
+          new_p911_tf = P911Tf.find(@p911_tf.id)
+          expect(new_p911_tf.p911_tuition_fees).to eq(@p911_tf.p911_tuition_fees)
         end
       end   
     end

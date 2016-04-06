@@ -6,9 +6,9 @@
 %>
 
 <h2><small>Mou</small></h2>
-  
+
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
   <div class="col-xs-8">
@@ -17,7 +17,25 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>OPE: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @mou.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ope6: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @mou.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>Institution: </strong>
   </div>
   <div class="col-xs-8">
@@ -26,37 +44,19 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>OPE: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @mou.ope %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-2">
-    <strong>City: </strong>
-  </div>
-  <div class="col-xs-3">
-    <%= @mou.city %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-2">
-    <strong>State: </strong>
-  </div>
-  <div class="col-xs-3">
-    <%= @mou.state %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-2">
     <strong>Status: </strong>
   </div>
   <div class="col-xs-8">
-    <%= @mou.dod_mou %>
+    <%= @mou.status %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Dodmou: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @mou.dodmou %>
   </div>
 </div>

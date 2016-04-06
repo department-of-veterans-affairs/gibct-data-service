@@ -8,7 +8,7 @@ RSpec.describe P911Tf, type: :model do
       end
     end
 
-    context "facility codes" do
+    context "facility_code" do
       subject { create :p911_tf }
 
       it "are unique" do
@@ -20,9 +20,23 @@ RSpec.describe P911Tf, type: :model do
       end
     end
 
-    context "institution names" do
+    context "p911_recipients" do
+      it "must be an integer" do
+        expect(build :p911_tf, p911_recipients: 1.0).not_to be_valid
+      end
+
       it "are required" do
-        expect(build :p911_tf, institution: nil).not_to be_valid
+        expect(build :p911_tf, p911_recipients: nil).not_to be_valid
+      end
+    end
+
+    context "p911_tuition_fees" do
+      it "must be a number" do
+        expect(build :p911_tf, p911_tuition_fees: 'abc').not_to be_valid
+      end
+
+      it "are required" do
+        expect(build :p911_tf, p911_tuition_fees: nil).not_to be_valid
       end
     end
   end

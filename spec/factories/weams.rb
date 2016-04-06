@@ -1,14 +1,17 @@
 FactoryGirl.define do
+  sequence(:facility_code) { |n| n.to_s(32).rjust(8, "0") }
+
   factory :weam do
     institution { Faker::University.name }
+    facility_code { generate :facility_code }
 
-    sequence :facility_code do |n| 
-      n.to_s(32).rjust(8, "0") 
-    end
-
+    city { Faker::Address.city }
+    state { DS::State[DS::State.get_random_state] }
+    zip { Faker::Address.zip }
     country 'USA'
-    poo_status 'APRVD'
-    applicable_law_code 'Educational Institution is Approved For All Chapters'
+
+    poo_status 'aprvd'
+    applicable_law_code 'educational institution is approved for all chapters'
 
     institution_of_higher_learning_indicator 'Yes'
     ojt_indicator 'Yes'
@@ -30,28 +33,19 @@ FactoryGirl.define do
 
     ###########################################################################
     ## correspondence
-    ## correspondence_indicator is 'yes', flight_indicator is 'no', and the
+    ## correspondence_indicator is true, flight_indicator is 'no', and the
     ## other indicators do not matter
     ###########################################################################
     trait :correspondence do
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[1] = '1'
-        fc
-      end
+      facility_code { x = generate(:facility_code); x[1] = '1'; x }
     end
 
     ###########################################################################
     ## flight
-    ## flight_indicator is 'yes' other indicators are false
+    ## flight_indicator is true other indicators are false
     ###########################################################################
     trait :flight do
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[1] = '1'
-        fc
-      end
-
+      facility_code { x = generate(:facility_code); x[1] = '1'; x }
       correspondence_indicator 'No'
     end
 
@@ -60,14 +54,9 @@ FactoryGirl.define do
     ## country is not 'USA'
     ###########################################################################
     trait :foreign do
+      facility_code { x = generate(:facility_code); x[1] = '1'; x }
+
       country "CAN"
-
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[1] = '1'
-        fc
-      end
-
       flight_indicator 'No'
       correspondence_indicator 'No'
     end
@@ -77,12 +66,7 @@ FactoryGirl.define do
     ## facility_code first digit is 1
     ###########################################################################    
     trait :public do
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[0] = '1'
-        fc[1] = '1'
-        fc
-      end
+      facility_code { x = generate(:facility_code); x[0,1] = '11'; x }
 
       flight_indicator 'No'
       correspondence_indicator 'No'
@@ -94,12 +78,7 @@ FactoryGirl.define do
     ## facility_code first digit is 2
     ###########################################################################    
     trait :for_profit do
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[0] = '2'
-        fc[1] = '1'
-        fc
-      end
+       facility_code { x = generate(:facility_code); x[0,2] = '21'; x }
 
       flight_indicator 'No'
       correspondence_indicator 'No'
@@ -110,12 +89,7 @@ FactoryGirl.define do
     ## facility_code first digit is not 1 nor 2
     ###########################################################################    
     trait :private do
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[0] = '3'
-        fc[1] = '1'
-        fc
-      end
+      facility_code { x = generate(:facility_code); x[0,2] = '31'; x }
 
       flight_indicator 'No'
       correspondence_indicator 'No'
@@ -126,7 +100,7 @@ FactoryGirl.define do
     ## Fails approval because of poo_status
     ########################################################################### 
     trait :non_approved_poo do
-      poo_status 'WITHDRN'
+      poo_status 'withdrn'
     end
 
     ###########################################################################
@@ -134,7 +108,7 @@ FactoryGirl.define do
     ## Fails approval because of applicable_law_code
     ########################################################################### 
     trait :non_approved_applicable_law_code_not_approved do
-      applicable_law_code 'Educational Institution is not Approved'
+      applicable_law_code 'educational institution is not approved'
     end
 
     ###########################################################################
@@ -142,7 +116,7 @@ FactoryGirl.define do
     ## Fails approval because of applicable_law_code
     ########################################################################### 
     trait :non_approved_applicable_law_code_title_31 do
-      applicable_law_code 'Educational Institution is Approved for Chapter 31 Only'
+      applicable_law_code 'educational institution is approved for chapter 31 only'
     end
 
 
@@ -154,7 +128,7 @@ FactoryGirl.define do
       institution_of_higher_learning_indicator 'No'
       ojt_indicator 'No'
       correspondence_indicator 'No'
-      flight_indicator ' No'
+      flight_indicator 'No'
       non_college_degree_indicator 'No'
     end
   end

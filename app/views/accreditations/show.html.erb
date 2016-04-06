@@ -11,7 +11,7 @@
   <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.id %>
   </div>
 </div>
@@ -20,26 +20,8 @@
   <div class="col-xs-3">
     <strong>Institution Name: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.institution_name %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-3">
-    <strong>OPE: </strong>
-  </div>
-  <div class="col-xs-7">
-    <%= @accreditation.ope %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-3">
-    <strong>Institution IPEDS: </strong>
-  </div>
-  <div class="col-xs-7">
-    <%= @accreditation.institution_ipeds_unitid %>
   </div>
 </div>
 
@@ -47,17 +29,62 @@
   <div class="col-xs-3">
     <strong>Campus Name: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.campus_name %>
   </div>
 </div>
 
 <div class="row">
   <div class="col-xs-3">
-    <strong>Campus IPEDS: </strong>
+    <strong>Institution: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
+    <%= @accreditation.institution %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ope: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @accreditation.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ope 6: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @accreditation.ope6 %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Institution Ipeds: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @accreditation.institution_ipeds_unitid %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Campus Ipeds: </strong>
+  </div>
+  <div class="col-xs-8">
     <%= @accreditation.campus_ipeds_unitid %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ipeds: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @accreditation.cross %>
   </div>
 </div>
 
@@ -65,7 +92,7 @@
   <div class="col-xs-3">
     <strong>Association Type: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.csv_accreditation_type %>
   </div>
 </div>
@@ -74,7 +101,7 @@
   <div class="col-xs-3">
     <strong>Agency Name: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.agency_name %>
   </div>
 </div>
@@ -83,7 +110,7 @@
   <div class="col-xs-3">
     <strong>Accreditation Status: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.accreditation_status %>
   </div>
 </div>
@@ -92,7 +119,7 @@
   <div class="col-xs-3">
     <strong>Periods: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @accreditation.periods %>
   </div>
 </div>

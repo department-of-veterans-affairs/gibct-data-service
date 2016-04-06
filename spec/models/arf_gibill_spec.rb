@@ -20,10 +20,14 @@ RSpec.describe ArfGibill, type: :model do
       end
     end
 
-    context "institution names" do
-      it "are required" do
-        expect(build :arf_gibill, institution: nil).not_to be_valid
+    context "gibill" do
+      it "is an integer" do
+        expect(build :arf_gibill, gibill: 'abc').not_to be_valid
       end
-    end
+
+      it "is required" do
+        expect(build :arf_gibill, gibill: nil).not_to be_valid
+      end
+    end    
   end
 end

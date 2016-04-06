@@ -7,25 +7,30 @@ class CreateWeams < ActiveRecord::Migration
     	t.string :state
     	t.string :zip
     	t.string :country
-    	t.string :accredited
+      t.string :va_highest_degree_offered
+      t.string :type # BEWARE!!!!
 			t.integer :bah
-			t.string :poe
-			t.string :yr
+			t.boolean :poe
+			t.boolean :yr
+      t.boolean :flight
+      t.boolean :correspondence 
+      t.boolean :accredited
+
+      # Not in data.csv
       t.string :poo_status
       t.string :applicable_law_code
-      t.string :institution_of_higher_learning_indicator
-      t.string :ojt_indicator
-      t.string :correspondence_indicator
-      t.string :flight_indicator
-      t.string :non_college_degree_indicator
+      t.boolean :institution_of_higher_learning_indicator
+      t.boolean :ojt_indicator
+      t.boolean :correspondence_indicator
+      t.boolean :flight_indicator
+      t.boolean :non_college_degree_indicator
+      t.boolean :approved, null: false
 
       t.timestamps null: false
       
       t.index :facility_code, unique: true
       t.index :institution
-     	t.index :city
-      t.index :state
-      t.index :country
+      t.index :approved
     end
   end
 end

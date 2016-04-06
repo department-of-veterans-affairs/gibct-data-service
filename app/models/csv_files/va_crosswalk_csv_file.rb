@@ -11,17 +11,7 @@ class VaCrosswalkCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
 
-  NORMALIZE = {
-    ope: ->(ope) do 
-      ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
-    end,
-
-    cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
-    end,
-  }
-
-  DISALLOWED_CHARS = /[^\w@\- \.\/]/
+  DISALLOWED_CHARS = /[^\dA-Za-z \-\.]/
 
   #############################################################################
   ## populate

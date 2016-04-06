@@ -13,6 +13,7 @@ RSpec.describe WeamsCsvFile, type: :model do
   	it "does not save if the data doesn't save to weams" do
   		csv = build :weams_csv_file
   		csv.upload.read
+      
   		expect{ csv.save }.to change(Weam, :count).by(0)
   		expect(csv.persisted?).to be_falsy
   	end

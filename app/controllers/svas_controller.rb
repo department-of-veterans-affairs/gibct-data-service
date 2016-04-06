@@ -103,7 +103,7 @@ class SvasController < ApplicationController
   #############################################################################  
   def sva_params
     params.require(:sva).permit(
-      :institution, :cross, :city, :state, :student_veteran_link
+      :institution, :cross, :student_veteran_link
     )
   end
 end

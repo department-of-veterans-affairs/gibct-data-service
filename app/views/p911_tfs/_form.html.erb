@@ -8,19 +8,19 @@
   <div class="form-group">
     <%= f.label(:institution) %>
     <%= f.text_field :institution, 
-      { value: "#{@p911_tf.institution}", class: "form-control", required: true } %>
+      { value: "#{@p911_tf.institution}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:p911_tuition_fees, "Tuition and Fees Cost") %>
     <%= f.text_field :p911_tuition_fees, 
-      { value: "#{@p911_tf.p911_tuition_fees}", class: "form-control", required: false } %>
+      { value: "#{@p911_tf.p911_tuition_fees}", class: "form-control", required: true } %>
   </div>
   
   <div class="form-group">
     <%= f.label(:p911_recipients, "Number of Recipients (Trainees)") %>
     <%= f.text_field :p911_recipients, 
-      { value: "#{@p911_tf.p911_recipients}", class: "form-control", required: false } %>
+      { value: "#{@p911_tf.p911_recipients}", class: "form-control", required: true } %>
   </div>
 
   <div class="actions">

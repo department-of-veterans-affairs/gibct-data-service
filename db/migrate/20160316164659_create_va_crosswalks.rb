@@ -5,6 +5,7 @@ class CreateVaCrosswalks < ActiveRecord::Migration
       t.string :institution
       t.string :cross
       t.string :ope
+      t.string :ope6
 
       t.timestamps null: false
       
@@ -12,6 +13,7 @@ class CreateVaCrosswalks < ActiveRecord::Migration
       t.index :institution
       t.index :cross
       t.index :ope
+      t.index :ope6
     end
   end
 end

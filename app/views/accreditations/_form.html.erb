@@ -6,41 +6,41 @@
   </div>
 
   <div class="form-group">
-    <%= f.label(:ope) %>
-    <%= f.text_field :ope, 
-      { value: "#{@accreditation.ope}", class: "form-control", required: false } %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label(:cross, "Institution IPEDS") %>
-    <%= f.text_field :institution_ipeds_unitid, 
-      { value: "#{@accreditation.institution_ipeds_unitid}", class: "form-control", required: false } %>
-  </div>
-
-  <div class="form-group">
     <%= f.label(:campus_name) %>
     <%= f.text_field :campus_name, 
       { value: "#{@accreditation.campus_name}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:campus_ipeds_unitid, "Campus IPEDS") %>
-    <%= f.text_field :campus_ipeds_unitid, 
-      { value: "#{@accreditation.campus_ipeds_unitid}", class: "form-control", required: false } %>
+    <%= f.label(:ope) %>
+    <%= f.text_field :ope, 
+      { value: "#{@accreditation.ope}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:csv_accreditation_type, "Accreditation Type") %>
-    <%= f.select(:csv_accreditation_type, options_for_select(Accreditation::ACCREDITATION_TYPES, 
-      selected: @accreditation.csv_accreditation_type), 
-      { include_blank: "Select Accreditation Type" },
-      { class: "form-control", required: true }) %>
+    <%= f.label(:institution_ipeds_unitid, "Institution Ipeds") %>
+    <%= f.text_field :institution_ipeds_unitid, 
+      { value: "#{@accreditation.institution_ipeds_unitid}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:campus_ipeds_unitid, "Campus Ipeds") %>
+    <%= f.text_field :campus_ipeds_unitid, 
+      { value: "#{@accreditation.campus_ipeds_unitid}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
     <%= f.label(:agency_name) %>
     <%= f.text_field :agency_name, 
       { value: "#{@accreditation.agency_name}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:csv_accreditation_type) %>
+    <%= f.select(:csv_accreditation_type, options_for_select(Accreditation::CSV_ACCREDITATION_TYPES, 
+      selected: @accreditation.csv_accreditation_type), 
+      { include_blank: "Select Csv Accredtiation Type" },
+      { class: "form-control", required: false }) %>
   </div>
   
   <div class="form-group">
