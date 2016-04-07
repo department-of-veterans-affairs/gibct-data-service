@@ -1,6 +1,10 @@
 class IpedsIcAy < ActiveRecord::Base
   validates :cross, presence: true
 
+  validates :tuition_in_state, numericality: { only_integer: true, message: "%{value} is not a fixnum"}, allow_blank: true
+  validates :tuition_out_of_state, numericality: { only_integer: true, message: "%{value} is not a fixnum"}, allow_blank: true
+  validates :books, numericality: { only_integer: true, message: "%{value} is not a fixnum"}, allow_blank: true
+
   USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books]
 
   #############################################################################
@@ -13,34 +17,4 @@ class IpedsIcAy < ActiveRecord::Base
 
     write_attribute(:cross, DS::IpedsId.pad(value))
   end
-  
-  #############################################################################
-  ## vet2=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def tuition_in_state=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
-
-    write_attribute(:tuition_in_state, value)
-  end
-
-  #############################################################################
-  ## tuition_out_of_state=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def tuition_out_of_state=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
-
-    write_attribute(:tuition_out_of_state, value)
-  end
-
-  #############################################################################
-  ## books=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def books=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
-
-    write_attribute(:books, value)
-  end  
 end

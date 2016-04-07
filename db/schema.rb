@@ -181,11 +181,13 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "ipeds_ic_ays", ["cross"], name: "index_ipeds_ic_ays_on_cross", using: :btree
 
   create_table "ipeds_ic_pies", force: :cascade do |t|
-    t.string   "cross",      null: false
-    t.string   "chg1py3"
-    t.string   "chg5py3"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "cross",                null: false
+    t.integer  "chg1py3"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "ipeds_ic_pies", ["cross"], name: "index_ipeds_ic_pies_on_cross", using: :btree

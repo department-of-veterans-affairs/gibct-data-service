@@ -245,4 +245,23 @@ class DataCsv < ActiveRecord::Base
 
     run_bulk_query(query_str)
   end
+
+  ###########################################################################
+  ## update_with_ipeds_ic_py
+  ## Updates the DataCsv table with data from the scorecards table.
+  ###########################################################################
+  def self.update_with_ipeds_ic_py
+    names = IpedsIcPy::USE_COLUMNS.map(&:to_s)
+
+    query_str = ""
+    names.each do |name|
+      query_str += 'UPDATE data_csvs SET '
+      query_str += %("#{name}" = ipeds_ic_pies.#{name})
+      query_str += ' FROM ipeds_ic_pies '
+      query_str += 'WHERE data_csvs.cross = ipeds_ic_pies.cross AND '
+      query_str += "data_csvs.#{name} IS NULL; "
+    end
+
+    run_bulk_query(query_str)
+  end
 end

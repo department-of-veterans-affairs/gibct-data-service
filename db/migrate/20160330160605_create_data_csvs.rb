@@ -74,7 +74,7 @@ class CreateDataCsvs < ActiveRecord::Migration
       # Ipeds Hd
       t.string :vet_tuition_policy_url, default: nil
 
-      # Ipeds Ic Ay
+      # Ipeds Ic Ay/Py
       t.integer :tuition_in_state, default: nil
       t.integer :tuition_out_of_state, default: nil
       t.integer :books, default: nil

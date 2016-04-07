@@ -3,11 +3,11 @@ FactoryGirl.define do
 
     institution_name { Faker::University.name }
 
-    sequence :ope do |n| n.to_s(32).rjust(8, "0") end
-    sequence :institution_ipeds_unitid do |n| n.to_s(32).rjust(6, "0") end
+    sequence :ope do |n| DS::OpeId.pad(n.to_s) end
+    sequence :institution_ipeds_unitid do |n| DS::IpedsId.pad(n.to_s) end
 
     campus_name { "#{institution_name} - #{Faker::Address.city}" }
-    sequence :campus_ipeds_unitid do |n| n.to_s(32).rjust(6, "0") end
+    sequence :campus_ipeds_unitid do |n| DS::IpedsId.pad(n.to_s) end
 
     agency_name { 
         key = Accreditation::ACCREDITATIONS.keys.sample

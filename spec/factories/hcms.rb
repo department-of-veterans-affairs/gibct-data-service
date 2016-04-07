@@ -4,8 +4,8 @@ FactoryGirl.define do
 
     city { Faker::Address.city }
     sequence :state do |n| DS::State::STATES.keys[n % DS::State::STATES.keys.length] end
-    sequence :ope do |n| n.to_s(32).rjust(8, "0") end
-
+    sequence :ope do |n| DS::OpeId.pad(n.to_s) end
+ 
     monitor_method { ["HCM - Cash Monitoring 1", "HCM - Cash Monitoring 2"].sample }
     reason { ["Financial Responsibility", 
       "Audit Late/Missing", "Program Review", "Other -CIO Problems (Eligibility)",

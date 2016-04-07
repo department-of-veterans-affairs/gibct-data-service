@@ -9,11 +9,21 @@ RSpec.describe IpedsIcPy, type: :model do
     end
 
     context "cross" do
-      subject { create :ipeds_ic_py }
-
       it "are required" do
         expect(build :ipeds_ic_py, cross: nil).not_to be_valid
       end
+    end
+
+    context "chg1py3" do
+      it "must be an integer" do
+        expect(build :ipeds_ic_py, chg1py3: 2.0).not_to be_valid
+      end    
+    end
+
+    context "books" do
+      it "must be an integer" do
+        expect(build :ipeds_ic_py, books: 2.0).not_to be_valid
+      end    
     end
   end
 end
