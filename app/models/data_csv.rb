@@ -216,7 +216,6 @@ class DataCsv < ActiveRecord::Base
     run_bulk_query(query_str)
   end
 
-
   ###########################################################################
   ## update_with_ipeds_hd
   ## Updates the DataCsv table with data from the scorecards table.
@@ -228,6 +227,21 @@ class DataCsv < ActiveRecord::Base
     query_str += names.map { |name| %("#{name}" = ipeds_hds.#{name}) }.join(', ')
     query_str += ' FROM ipeds_hds '
     query_str += 'WHERE data_csvs.cross = ipeds_hds.cross'
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_ipeds_ic_ay
+  ## Updates the DataCsv table with data from the scorecards table.
+  ###########################################################################
+  def self.update_with_ipeds_ic_ay
+    names = IpedsIcAy::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = ipeds_ic_ays.#{name}) }.join(', ')
+    query_str += ' FROM ipeds_ic_ays '
+    query_str += 'WHERE data_csvs.cross = ipeds_ic_ays.cross'
 
     run_bulk_query(query_str)
   end

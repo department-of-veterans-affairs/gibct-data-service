@@ -104,7 +104,7 @@ class IpedsIcAysController < ApplicationController
   #############################################################################  
   def ipeds_ic_ay_params
     params.require(:ipeds_ic_ay).permit(
-      :cross, :chg2ay3, :chg3ay3, :chg4ay3
+      :cross, :tuition_in_state, :tuition_out_of_state, :books
     )
   end
 end

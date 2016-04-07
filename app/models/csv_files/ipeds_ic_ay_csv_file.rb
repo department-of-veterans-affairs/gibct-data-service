@@ -3,19 +3,13 @@ require "csv"
 class IpedsIcAyCsvFile < CsvFile
   HEADER_MAP = {
     "unitid" => :cross,
-    "chg2ay3" => :chg2ay3,
-    "chg3ay3" => :chg3ay3,
-    "chg4ay3" => :chg4ay3
+    "chg2ay3" => :tuition_in_state,
+    "chg3ay3" => :tuition_out_of_state,
+    "chg4ay3" => :books
   }
 
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
-
-  NORMALIZE = {
-    cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
-    end
-  }
 
   DISALLOWED_CHARS = /[^\w@\- \/]/
 
