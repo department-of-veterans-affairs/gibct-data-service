@@ -71,6 +71,9 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.string :calendar, default: nil
       t.string :online_all, default: nil
 
+      # Ipeds Hd
+      t.string :vet_tuition_policy_url, default: nil
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

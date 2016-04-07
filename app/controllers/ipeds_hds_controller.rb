@@ -104,7 +104,7 @@ class IpedsHdsController < ApplicationController
   #############################################################################  
   def ipeds_hd_params
     params.require(:ipeds_hd).permit(
-      :cross, :veturl
+      :cross, :vet_tuition_policy_url
     )
   end
 end

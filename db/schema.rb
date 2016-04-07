@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "soc_member"
     t.string   "calendar"
     t.string   "online_all"
+    t.string   "vet_tuition_policy_url"
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
   end
@@ -157,10 +158,10 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "ipeds_hds", force: :cascade do |t|
-    t.string   "cross",      null: false
-    t.string   "veturl"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "cross",                  null: false
+    t.string   "vet_tuition_policy_url"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "ipeds_hds", ["cross"], name: "index_ipeds_hds_on_cross", using: :btree

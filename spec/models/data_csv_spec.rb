@@ -309,5 +309,27 @@ RSpec.describe DataCsv, type: :model do
         end
       end
     end
+
+    context "with ipeds_hds" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:ipeds_hd) { create :ipeds_hd, cross: crosswalk.cross }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_ipeds_hd
+      end
+
+      it "is matched by cross" do
+        data = DataCsv.find_by(cross: ipeds_hd.cross)
+        expect(data).not_to be_nil
+      end
+
+      IpedsHd::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(ipeds_hd[column])
+        end
+      end
+    end
   end
 end

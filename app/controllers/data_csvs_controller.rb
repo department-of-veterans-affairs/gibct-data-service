@@ -117,7 +117,7 @@ class DataCsvsController < ApplicationController
       :graduation_rate_all_students, :transfer_out_rate_all_students,
       :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
       :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, :soc_member,
-      :calendar, :online_all
+      :calendar, :online_all, :vet_tuition_policy_url
     )
   end
 end

@@ -3,17 +3,11 @@ require "csv"
 class IpedsHdCsvFile < CsvFile
   HEADER_MAP = {
     "unitid" => :cross,
-    "veturl" => :veturl
+    "veturl" => :vet_tuition_policy_url
   }
 
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
-
-  NORMALIZE = {
-    cross: ->(cross) do 
-      cross.present? && cross.downcase != 'none' ? cross.rjust(8, "0") : ""
-    end
-  }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
 

@@ -6,9 +6,9 @@
   </div>
   
   <div class="form-group">
-    <%= f.label(:veturl) %>
-    <%= f.text_field :veturl, 
-      { value: "#{@ipeds_hd.veturl}", class: "form-control", required: false } %>
+    <%= f.label(:vet_tuition_policy_url, 'Veterans Tuition Policy Url') %>
+    <%= f.text_field :vet_tuition_policy_url, 
+      { value: "#{@ipeds_hd.vet_tuition_policy_url}", class: "form-control", required: false } %>
   </div>  
 
   <div class="actions">
