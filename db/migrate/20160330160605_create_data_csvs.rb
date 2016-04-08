@@ -79,6 +79,9 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.integer :tuition_out_of_state, default: nil
       t.integer :books, default: nil
 
+      # Sec702/Sec702 School
+      t.boolean :sec_702, default: nil
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

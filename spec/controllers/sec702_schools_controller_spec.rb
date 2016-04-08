@@ -155,7 +155,7 @@ RSpec.describe Sec702SchoolsController, type: :controller do
         @sec702_school_attributes.delete("id")
         @sec702_school_attributes.delete("updated_at")
         @sec702_school_attributes.delete("created_at")
-        @sec702_school_attributes["sec_702"] = @sec702_school_attributes["sec_702"] == "no" ? 'yes' : 'no'
+        @sec702_school_attributes["sec_702"] = @sec702_school_attributes["sec_702"] ? false : true
       end
 
       it "assigns the sec702 school record" do

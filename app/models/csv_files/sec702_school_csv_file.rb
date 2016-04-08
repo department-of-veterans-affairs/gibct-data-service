@@ -9,13 +9,6 @@ class Sec702SchoolCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
 
-  NORMALIZE = {
-    sec_702: ->(sec_702) do 
-      sec_702 = 'Yes' if sec_702 =='Ye' 
-      DS::Truth.value_to_truth(sec_702) if sec_702.present? 
-    end
-  }
-
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
 
   #############################################################################

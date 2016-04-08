@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.integer  "tuition_in_state"
     t.integer  "tuition_out_of_state"
     t.integer  "books"
+    t.boolean  "sec_702"
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
   end
@@ -277,7 +278,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "sec702_schools", force: :cascade do |t|
     t.string   "facility_code", null: false
-    t.string   "sec_702",       null: false
+    t.boolean  "sec_702"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end

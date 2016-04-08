@@ -264,4 +264,19 @@ class DataCsv < ActiveRecord::Base
 
     run_bulk_query(query_str)
   end
+
+  ###########################################################################
+  ## update_with_sec702_school
+  ## Updates the DataCsv table with data from the scorecards table.
+  ###########################################################################
+  def self.update_with_sec702_school
+    names = Sec702School::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = sec702_schools.#{name}) }.join(', ')
+    query_str += ' FROM sec702_schools '
+    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code'
+
+    run_bulk_query(query_str)
+  end
 end

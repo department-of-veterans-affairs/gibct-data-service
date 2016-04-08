@@ -398,5 +398,27 @@ RSpec.describe DataCsv, type: :model do
         end
       end      
     end
+
+    context "with sec702_schools" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:sec702_school) { create :sec702_school, facility_code: approved.facility_code }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_sec702_school
+      end
+
+      it "is matched by facility_code" do
+        data = DataCsv.find_by(facility_code: sec702_school.facility_code)
+        expect(data).not_to be_nil
+      end
+
+      Sec702School::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(sec702_school[column])
+        end
+      end
+    end
   end
 end

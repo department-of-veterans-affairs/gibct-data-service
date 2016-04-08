@@ -11,11 +11,11 @@ RSpec.describe Sec702School, type: :model do
     context "facility_code" do
       subject { create :sec702_school }
 
-      it "are unique" do
+      it "is unique" do
         expect(build :sec702_school, facility_code: subject.facility_code).not_to be_valid
       end
 
-      it "are required" do
+      it "is required" do
         expect(build :sec702_school, facility_code: nil).not_to be_valid
       end
     end
