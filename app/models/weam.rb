@@ -103,7 +103,7 @@ class Weam < ActiveRecord::Base
   ## Converts "state strings" to 2-character uppercase state abbreviations
   #############################################################################
   def state=(value)
-    value = DS::State[value.try(:strip)]
+    value = DS::State.get_abbr(value.try(:strip))
     write_attribute(:state, value.try(:upcase))
   end
 

@@ -275,7 +275,29 @@ class DataCsv < ActiveRecord::Base
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = sec702_schools.#{name}) }.join(', ')
     query_str += ' FROM sec702_schools '
-    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code'
+    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code AND '
+    query_str += "lower(data_csvs.type) = 'public'"
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_sec702
+  ## Updates the DataCsv table with data from the scorecards table.
+  ###########################################################################
+  def self.update_with_sec702
+    names = Sec702::USE_COLUMNS.map(&:to_s)
+
+    query_str = ""
+    names.each do |name|
+      query_str += 'UPDATE data_csvs SET '
+      query_str += %("#{name}" = sec702s.#{name})
+      query_str += ' FROM sec702s '
+      query_str += 'WHERE data_csvs.state = sec702s.state AND '
+      query_str += "data_csvs.#{name} IS NULL AND "
+      query_str += 'data_csvs.state IS NOT NULL AND '
+      query_str += "lower(data_csvs.type) = 'public'; "
+    end
 
     run_bulk_query(query_str)
   end

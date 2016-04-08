@@ -204,6 +204,19 @@ RSpec.describe DS do
       end
     end
 
+    context "get_abbr" do
+      it "gets the state abbreviation from an abbreviation or full name" do
+        expect(subject.get_abbr('al')).to eq('al')
+        expect(subject.get_abbr('AL')).to eq('AL')
+        expect(subject.get_abbr('alabama')).to eq('AL')
+        expect(subject.get_abbr('ALABAMA')).to eq('AL')
+      end
+
+      it "returns the name if it is not a state" do
+        expect(subject.get_abbr('ZZ')).to eq('ZZ')
+      end
+    end
+
     context "get_random_state" do
       it "gets a random state" do
         sp = subject.get_random_state

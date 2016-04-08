@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DataCsv, type: :model do
   subject { DataCsv.find_by(facility_code: approved.facility_code) }
 
-  let!(:approved) { create :weam }
+  let!(:approved) { create :weam, :public }
   let!(:unapproved) { create :weam, :non_approved_poo }
   let!(:unmatched) { create :weam }
 
@@ -419,6 +419,51 @@ RSpec.describe DataCsv, type: :model do
           expect(subject[column]).to eq(sec702_school[column])
         end
       end
+    end
+
+    context "with sec702s" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:sec702_school) { create :sec702_school, facility_code: approved.facility_code }
+      let!(:sec702) { create :sec702, state: approved.state, sec_702: !sec702_school.sec_702 }
+
+      describe "and values inserted by sec702_school are nil " do
+        before(:each) do
+          DataCsv.initialize_with_weams 
+          DataCsv.update_with_crosswalk
+          DataCsv.update_with_sec702
+        end
+
+        it "is matched by state" do
+          data = DataCsv.find_by(state: sec702.state)
+          expect(data).not_to be_nil
+        end
+
+        Sec702::USE_COLUMNS.each do |column|
+          it "contains the #{column} column" do
+            expect(subject[column]).to eq(sec702[column])
+          end
+        end
+      end
+
+      describe "and values inserted by sec702_school are not nil" do
+        before(:each) do
+          DataCsv.initialize_with_weams 
+          DataCsv.update_with_crosswalk
+          DataCsv.update_with_sec702
+          DataCsv.update_with_sec702_school
+        end
+
+        it "is matched by state" do
+          data = DataCsv.find_by(state: sec702.state)
+          expect(data).not_to be_nil
+        end
+
+        Sec702::USE_COLUMNS.each do |column|
+          it "contains the original #{column} column from sec702_school" do
+            expect(subject[column]).to eq(sec702_school[column])
+          end
+        end
+      end      
     end
   end
 end

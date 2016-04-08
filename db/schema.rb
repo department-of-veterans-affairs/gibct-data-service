@@ -287,7 +287,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "sec702s", force: :cascade do |t|
     t.string   "state",      null: false
-    t.string   "sec_702",    null: false
+    t.boolean  "sec_702"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
