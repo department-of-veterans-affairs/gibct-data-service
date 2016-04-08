@@ -4,6 +4,7 @@
 The GIBCT Data Service is a tool to compile and construct the database from several independent sources. These sources, in the form of CSVs or APIs, are imported into the tool and compiled to produce the GI Bill Comparison Tool database, as well as a csv containing the stakeholder-relevant data for each school in the database.
 
 ## Developer Setup
+It is important to note that the bulk update queries used in the DataCsv table to populate itself are POSTGRESQL specific.
 
 1. Install Ruby 2.3. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.3](https://github.com/rbenv/rbenv#installing-ruby-versions)).
 1. Install Bundler to manager dependencies: `gem install bundler`
@@ -19,7 +20,19 @@ The GIBCT Data Service is a tool to compile and construct the database from seve
 
 ## Deployment Instructions
 
-TBD ...
+No special considerations for deployment other than running
+
+	rake db:seed
+
+to populate the application's users table with qualified logins. The seeds.rb file has the following form:
+
+	# Destroy previous users ... 
+	User.destroy_all
+
+	# Add new users ... 
+	User.create(email: 'xxx@xx.gov', password: 'xxx')
+	
+This file should not be stored on a public repo in an unencryped form.
 
 ## How to Contribute
 
