@@ -115,7 +115,10 @@ class DataCsvsController < ApplicationController
       :insturl, :pred_degree_awarded, :locale, :undergrad_enrollment,
       :retention_all_students_ba, :retention_all_students_otb,
       :graduation_rate_all_students, :transfer_out_rate_all_students,
-      :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt
+      :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
+      :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, :soc_member,
+      :calendar, :online_all, :vet_tuition_policy_url, :tuition_in_state, 
+      :tuition_out_of_state, :books, :sec_702
     )
   end
 end

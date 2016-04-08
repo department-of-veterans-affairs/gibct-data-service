@@ -63,6 +63,25 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.float :repayment_rate_all_students, default: nil
       t.float :avg_stu_loan_debt, default: nil
 
+      # Ipeds Ic
+      t.string :credit_for_mil_training, default: nil
+      t.string :vet_poc, default: nil
+      t.string :student_vet_grp_ipeds, default: nil
+      t.string :soc_member, default: nil
+      t.string :calendar, default: nil
+      t.string :online_all, default: nil
+
+      # Ipeds Hd
+      t.string :vet_tuition_policy_url, default: nil
+
+      # Ipeds Ic Ay/Py
+      t.integer :tuition_in_state, default: nil
+      t.integer :tuition_out_of_state, default: nil
+      t.integer :books, default: nil
+
+      # Sec702/Sec702 School
+      t.boolean :sec_702, default: nil
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

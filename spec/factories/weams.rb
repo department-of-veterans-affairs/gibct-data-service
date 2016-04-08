@@ -6,7 +6,7 @@ FactoryGirl.define do
     facility_code { generate :facility_code }
 
     city { Faker::Address.city }
-    state { DS::State[DS::State.get_random_state] }
+    state { DS::State.get_random_state.first[0] }
     zip { Faker::Address.zip }
     country 'USA'
 

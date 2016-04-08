@@ -139,7 +139,7 @@ module DS
       "FL" => "Florida", "FM" => "Federated States of Miconeisa",
       "GA" => "Georgia", "GU" => "Guam",
       "HI" => "Hawaii",
-      "IA" => "Iowa", "ID" => "Idaho", "Indonesia" => "Indonesia", "IL" => "Illinois", 
+      "IA" => "Iowa", "ID" => "Idaho", "IDN" => "Indonesia", "IL" => "Illinois",
       "IN" => "Indiana",
       "KS" => "Kansas", "KY" => "Kentucky",
       "LA" => "Louisiana",
@@ -176,9 +176,15 @@ module DS
     ## full name).
     ###########################################################################
     def self.[](state_name)
-      STATES[state_name.try(:upcase)] ||
-      STATES.key(state_name.try(:capitalize)) || 
-      state_name
+      STATES[state_name.try(:upcase)] || get_abbr(state_name)
+    end
+
+    ###########################################################################
+    ## get_abbr
+    ## Returns the 2-character state abbreviation.
+    ###########################################################################
+    def self.get_abbr(state_name)
+      STATES.key(state_name.try(:capitalize)) || state_name
     end
 
     ###########################################################################

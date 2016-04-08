@@ -104,7 +104,7 @@ class IpedsIcPiesController < ApplicationController
   #############################################################################  
   def ipeds_ic_py_params
     params.require(:ipeds_ic_py).permit(
-      :cross, :chg1py3, :chg5py3
+      :cross, :chg1py3, :books
     )
   end
 end

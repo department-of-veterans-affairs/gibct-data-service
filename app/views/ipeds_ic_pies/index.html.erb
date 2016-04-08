@@ -5,16 +5,19 @@
     } 
 %>
 
-<h2><small>Ipeds IC AY Data</small></h2>
+<h2><small>Ipeds Ic Py</small></h2>
 
+<small>
 <div class="row">
   <div class="col-xs-12">
     <table class="table table-hover table-condensed table-bordered table-responsive">
       <thead>
         <th>Id</th>
-        <th>Cross</th>
+        <th>Ipeds</th>
         <th>Chg1py3</th>
-        <th>Chg5py3</th>
+        <th>Tuition In State</th>
+        <th>Tuition Out of State</th>
+        <th>Books</th>
         <th colspan="3">Actions</th>
       </thead>
       <tbody>
@@ -23,9 +26,10 @@
     </table>
   </div>
 </div>
+</small>
 
 <div class="row">
-  <div class="col-xs-offset-3 col-xs-8">
+  <div class="col-xs-offset-2 col-xs-10">
     <div class="digg_pagination">
       <%= will_paginate @ipeds_ic_pys %>
     </div>

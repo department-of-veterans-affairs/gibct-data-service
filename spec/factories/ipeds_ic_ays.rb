@@ -1,9 +1,9 @@
 FactoryGirl.define do
   factory :ipeds_ic_ay do
-    sequence :cross do |n| n.to_s(32).rjust(8, "0") end
+    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end
 
-    chg2ay3 { rand(50000) }
-    chg3ay3 { rand(50000) }  
-    chg4ay3 { rand(10000) }
+    tuition_in_state { rand(50000) }
+    tuition_out_of_state { rand(50000) }  
+    books { rand(10000) }
   end
 end

@@ -5,13 +5,13 @@
     } 
 %>
 
-<h2><small>Scorecard</small></h2>
+<h2><small>Scorecard: <%= @scorecard.institution %></small></h2>
   
 <div class="row">
   <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.id %>
   </div>
 </div>
@@ -20,17 +20,26 @@
   <div class="col-xs-3">
     <strong>Institution: </strong>
   </div>
-  <div class="col-xs-7">
-    <%= @scorecard.institution %>
+  <div class="col-xs-8">
+    
   </div>
 </div>
 
 <div class="row">
   <div class="col-xs-3">
-    <strong>OPE: </strong>
+    <strong>Ope: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ope6: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @scorecard.ope6 %>
   </div>
 </div>
 
@@ -38,7 +47,7 @@
   <div class="col-xs-3">
     <strong>IPEDS: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.cross %>
   </div>
 </div>
@@ -47,7 +56,7 @@
   <div class="col-xs-3">
     <strong>URL: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.insturl %>
   </div>
 </div>
@@ -56,7 +65,7 @@
   <div class="col-xs-3">
     <strong>Predominant Degree: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.pred_degree_awarded %>
   </div>
 </div>
@@ -65,7 +74,7 @@
   <div class="col-xs-3">
     <strong>Locale: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.locale %>
   </div>
 </div>
@@ -74,7 +83,7 @@
   <div class="col-xs-3">
     <strong>Undergrad Enrollment: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.undergrad_enrollment %>
   </div>
 </div>
@@ -83,7 +92,7 @@
   <div class="col-xs-3">
     <strong>Retention All Students (BA): </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.retention_all_students_ba %>
   </div>
 </div>
@@ -92,7 +101,7 @@
   <div class="col-xs-3">
     <strong>Retention All Students (OTB): </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.retention_all_students_otb %>
   </div>
 </div>
@@ -101,7 +110,7 @@
   <div class="col-xs-3">
     <strong>Salary All Students: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.salary_all_students %>
   </div>
 </div>
@@ -110,7 +119,7 @@
   <div class="col-xs-3">
     <strong>Repayment Rate All Students: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.repayment_rate_all_students %>
   </div>
 </div>
@@ -119,7 +128,7 @@
   <div class="col-xs-3">
     <strong>Average Student Loan Debt: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.avg_stu_loan_debt %>
   </div>
 </div>
@@ -128,7 +137,7 @@
   <div class="col-xs-3">
     <strong>C150 4 Pooled Supp: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.c150_4_pooled_supp %>
   </div>
 </div>
@@ -138,7 +147,7 @@
   <div class="col-xs-3">
     <strong>C200 L4 Pooled Supp: </strong>
   </div>
-  <div class="col-xs-7">
+  <div class="col-xs-8">
     <%= @scorecard.c200_l4_pooled_supp %>
   </div>
 </div>

@@ -2,7 +2,7 @@ class CreateSec702Schools < ActiveRecord::Migration
   def change
     create_table :sec702_schools do |t|
       t.string :facility_code, null: false
-      t.string :sec_702, null: false
+      t.boolean :sec_702, default: nil
 
       t.timestamps null: false
 

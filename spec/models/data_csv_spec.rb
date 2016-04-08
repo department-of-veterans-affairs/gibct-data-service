@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DataCsv, type: :model do
   subject { DataCsv.find_by(facility_code: approved.facility_code) }
 
-  let!(:approved) { create :weam }
+  let!(:approved) { create :weam, :public }
   let!(:unapproved) { create :weam, :non_approved_poo }
   let!(:unmatched) { create :weam }
 
@@ -286,6 +286,184 @@ RSpec.describe DataCsv, type: :model do
           expect(subject[column]).to eq(scorecard[column])
         end
       end
+    end
+
+    context "with ipeds_ics" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:ipeds_ic) { create :ipeds_ic, cross: crosswalk.cross }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_ipeds_ic
+      end
+
+      it "is matched by cross" do
+        data = DataCsv.find_by(cross: ipeds_ic.cross)
+        expect(data).not_to be_nil
+      end
+
+      IpedsIc::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(ipeds_ic[column])
+        end
+      end
+    end
+
+    context "with ipeds_hds" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:ipeds_hd) { create :ipeds_hd, cross: crosswalk.cross }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_ipeds_hd
+      end
+
+      it "is matched by cross" do
+        data = DataCsv.find_by(cross: ipeds_hd.cross)
+        expect(data).not_to be_nil
+      end
+
+      IpedsHd::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(ipeds_hd[column])
+        end
+      end
+    end
+
+    context "with ipeds_ic_ays" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:ipeds_ic_ay) { create :ipeds_ic_ay, cross: crosswalk.cross }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_ipeds_ic_ay
+      end
+
+      it "is matched by cross" do
+        data = DataCsv.find_by(cross: ipeds_ic_ay.cross)
+        expect(data).not_to be_nil
+      end
+
+      IpedsIcAy::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(ipeds_ic_ay[column])
+        end
+      end
+    end
+
+    context "with ipeds_ic_pies" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:ipeds_ic_ay) { create :ipeds_ic_ay, cross: crosswalk.cross }
+      let!(:ipeds_ic_py) { create :ipeds_ic_py, cross: crosswalk.cross }
+
+      describe "and values inserted by ipeds_ic_ay are nil" do
+        before(:each) do
+          DataCsv.initialize_with_weams 
+          DataCsv.update_with_crosswalk
+          DataCsv.update_with_ipeds_ic_py
+        end
+
+        it "is matched by cross" do
+          data = DataCsv.find_by(cross: ipeds_ic_py.cross)
+          expect(data).not_to be_nil
+        end
+
+        IpedsIcPy::USE_COLUMNS.each do |column|
+          it "contains the #{column} column" do
+            expect(subject[column]).to eq(ipeds_ic_py[column])
+          end
+        end
+      end
+
+      describe "and values inserted by ipeds_ic_ay are not nil" do
+        before(:each) do
+          DataCsv.initialize_with_weams 
+          DataCsv.update_with_crosswalk
+          DataCsv.update_with_ipeds_ic_ay
+          DataCsv.update_with_ipeds_ic_py
+        end
+
+        it "is matched by cross" do
+          data = DataCsv.find_by(cross: ipeds_ic_py.cross)
+          expect(data).not_to be_nil
+        end
+
+        IpedsIcPy::USE_COLUMNS.each do |column|
+          it "contains the original #{column} column from IpedsIcAy" do
+            expect(subject[column]).to eq(ipeds_ic_ay[column])
+          end
+        end
+      end      
+    end
+
+    context "with sec702_schools" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:sec702_school) { create :sec702_school, facility_code: approved.facility_code }
+
+      before(:each) do
+        DataCsv.initialize_with_weams 
+        DataCsv.update_with_crosswalk
+        DataCsv.update_with_sec702_school
+      end
+
+      it "is matched by facility_code" do
+        data = DataCsv.find_by(facility_code: sec702_school.facility_code)
+        expect(data).not_to be_nil
+      end
+
+      Sec702School::USE_COLUMNS.each do |column|
+        it "contains the #{column} column" do
+          expect(subject[column]).to eq(sec702_school[column])
+        end
+      end
+    end
+
+    context "with sec702s" do
+      let!(:crosswalk) { create :va_crosswalk, facility_code: approved.facility_code }
+      let!(:sec702_school) { create :sec702_school, facility_code: approved.facility_code }
+      let!(:sec702) { create :sec702, state: approved.state, sec_702: !sec702_school.sec_702 }
+
+      describe "and values inserted by sec702_school are nil " do
+        before(:each) do
+          DataCsv.initialize_with_weams 
+          DataCsv.update_with_crosswalk
+          DataCsv.update_with_sec702
+        end
+
+        it "is matched by state" do
+          data = DataCsv.find_by(state: sec702.state)
+          expect(data).not_to be_nil
+        end
+
+        Sec702::USE_COLUMNS.each do |column|
+          it "contains the #{column} column" do
+            expect(subject[column]).to eq(sec702[column])
+          end
+        end
+      end
+
+      describe "and values inserted by sec702_school are not nil" do
+        before(:each) do
+          DataCsv.initialize_with_weams 
+          DataCsv.update_with_crosswalk
+          DataCsv.update_with_sec702
+          DataCsv.update_with_sec702_school
+        end
+
+        it "is matched by state" do
+          data = DataCsv.find_by(state: sec702.state)
+          expect(data).not_to be_nil
+        end
+
+        Sec702::USE_COLUMNS.each do |column|
+          it "contains the original #{column} column from sec702_school" do
+            expect(subject[column]).to eq(sec702_school[column])
+          end
+        end
+      end      
     end
   end
 end

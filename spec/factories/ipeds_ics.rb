@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :ipeds_ic do
-    sequence :cross do |n| n.to_s(32).rjust(8, "0") end
+    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end
 
     vet3 { (-2 .. -1).to_a.sample }
     vet4 { (-2 .. -1).to_a.sample }

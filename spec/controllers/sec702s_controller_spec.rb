@@ -165,7 +165,7 @@ RSpec.describe Sec702sController, type: :controller do
         @sec702_attributes.delete("id")
         @sec702_attributes.delete("updated_at")
         @sec702_attributes.delete("created_at")
-        @sec702_attributes["sec_702"] = @sec702_attributes["sec_702"] == "no" ? 'yes' : 'no'
+        @sec702_attributes["sec_702"] = @sec702_attributes["sec_702"] ? false : true
       end
 
       it "assigns the sec702 record" do

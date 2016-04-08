@@ -1,26 +1,26 @@
 <%= form_for(@ipeds_ic_ay) do |f| %>
   <div class="form-group">
-    <%= f.label(:cross) %>
+    <%= f.label(:cross, 'Ipeds') %>
     <%= f.text_field :cross, 
       { value: "#{@ipeds_ic_ay.cross}", class: "form-control", required: true } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:chg2ay3) %>
-    <%= f.text_field :chg2ay3, 
-      { value: "#{@ipeds_ic_ay.chg2ay3}", class: "form-control", required: false } %>
+    <%= f.label(:tuition_in_state) %>
+    <%= f.text_field :tuition_in_state, 
+      { value: "#{@ipeds_ic_ay.tuition_in_state}", class: "form-control", required: false } %>
   </div>
 
   <div class="form-group">
-    <%= f.label(:chg3ay3) %>
-    <%= f.text_field :chg3ay3, 
-      { value: "#{@ipeds_ic_ay.chg3ay3}", class: "form-control", required: false } %>
+    <%= f.label(:tuition_out_of_state) %>
+    <%= f.text_field :tuition_out_of_state, 
+      { value: "#{@ipeds_ic_ay.tuition_out_of_state}", class: "form-control", required: false } %>
   </div>  
 
   <div class="form-group">
-    <%= f.label(:chg4ay3) %>
-    <%= f.text_field :chg4ay3, 
-      { value: "#{@ipeds_ic_ay.chg4ay3}", class: "form-control", required: false } %>
+    <%= f.label(:books) %>
+    <%= f.text_field :books, 
+      { value: "#{@ipeds_ic_ay.books}", class: "form-control", required: false } %>
   </div>
 
   <div class="actions">

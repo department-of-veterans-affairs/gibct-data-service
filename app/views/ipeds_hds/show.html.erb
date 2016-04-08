@@ -5,10 +5,10 @@
     } 
 %>
 
-<h2><small>Ipeds IC</small></h2>
+<h2><small>Ipeds Hd: <%= @ipeds_hd.cross %></small></h2>
   
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
   <div class="col-xs-8">
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Ipeds: </strong>
   </div>
   <div class="col-xs-8">
@@ -26,10 +26,10 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>Veturl: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @ipeds_hd.veturl %>
+    <strong>Veterans Tuition Policy Url: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_hd.vet_tuition_policy_url %>
   </div>
 </div>

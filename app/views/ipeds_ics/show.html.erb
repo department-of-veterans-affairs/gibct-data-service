@@ -5,10 +5,10 @@
     } 
 %>
 
-<h2><small>Ipeds IC</small></h2>
+<h2><small>Ipeds Ic: <%= @ipeds_ic.cross %></small></h2>
   
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
   <div class="col-xs-8">
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Ipeds: </strong>
   </div>
   <div class="col-xs-8">
@@ -26,34 +26,61 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Vet2: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @ipeds_ic.vet2 %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Credit For Military Training: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic.credit_for_mil_training %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>Vet3: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @ipeds_ic.vet3 %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Veteran Poc: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic.vet_poc %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>Vet4: </strong>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-8">
     <%= @ipeds_ic.vet4 %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Student Veteran Group Ipeds: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic.student_vet_grp_ipeds %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>Vet5: </strong>
   </div>
   <div class="col-xs-8">
@@ -62,7 +89,16 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Soc Member: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic.soc_member %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>Calsys: </strong>
   </div>
   <div class="col-xs-8">
@@ -71,10 +107,28 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
+    <strong>Calendar: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic.calendar %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
     <strong>Distnced: </strong>
   </div>
   <div class="col-xs-8">
     <%= @ipeds_ic.distnced %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Online All: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic.online_all %>
   </div>
 </div>

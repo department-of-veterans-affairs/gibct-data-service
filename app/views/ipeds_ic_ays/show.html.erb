@@ -5,10 +5,10 @@
     } 
 %>
 
-<h2><small>Ipeds IC AY</small></h2>
+<h2><small>Ipeds Ic Ay: <%= @ipeds_ic_ay.cross %></small></h2>
   
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Id: </strong>
   </div>
   <div class="col-xs-8">
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
+  <div class="col-xs-3">
     <strong>Ipeds: </strong>
   </div>
   <div class="col-xs-8">
@@ -26,28 +26,28 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>Chg2ay3: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @ipeds_ic_ay.chg2ay3 %>
+    <strong>Tuition in State: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic_ay.tuition_in_state %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>Chg3ay3: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @ipeds_ic_ay.chg3ay3 %>
+    <strong>Tuition Out of State: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic_ay.tuition_out_of_state %>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-2">
-    <strong>Chg4ay3: </strong>
-  </div>
   <div class="col-xs-3">
-    <%= @ipeds_ic_ay.chg4ay3 %>
+    <strong>Books: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @ipeds_ic_ay.books %>
   </div>
 </div>

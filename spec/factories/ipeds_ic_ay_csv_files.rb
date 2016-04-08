@@ -30,5 +30,14 @@ FactoryGirl.define do
         type: 'text/csv'
       )    
     end
+
+    factory :ipeds_ic_ay_csv_file_with_periods do
+      csv_data_file = File.new(Rails.root.join('spec/test_data', 'ipeds_ic_ay_test_with_periods.csv'))
+      
+      upload ActionDispatch::Http::UploadedFile.new(
+        tempfile: csv_data_file, filename: File.basename(csv_data_file), 
+        type: 'text/csv'
+      )    
+    end
   end
 end

@@ -17,4 +17,14 @@ RSpec.describe IpedsIcPyCsvFile, type: :model do
       expect(csv.persisted?).to be_falsy
     end
   end
+
+  describe "columns with periods only" do
+    it "are ignored" do
+      csv = create :ipeds_ic_py_csv_file_with_periods
+
+      [:tutition_in_state, :tuition_out_of_state, :books].each do |col|
+        expect(IpedsIcPy.first[col]).to be_nil
+      end
+    end
+  end
 end

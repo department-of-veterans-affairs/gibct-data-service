@@ -113,6 +113,17 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.float    "salary_all_students"
     t.float    "repayment_rate_all_students"
     t.float    "avg_stu_loan_debt"
+    t.string   "credit_for_mil_training"
+    t.string   "vet_poc"
+    t.string   "student_vet_grp_ipeds"
+    t.string   "soc_member"
+    t.string   "calendar"
+    t.string   "online_all"
+    t.string   "vet_tuition_policy_url"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
+    t.boolean  "sec_702"
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
   end
@@ -151,45 +162,53 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "ipeds_hds", force: :cascade do |t|
-    t.string   "cross",      null: false
-    t.string   "veturl"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "cross",                  null: false
+    t.string   "vet_tuition_policy_url"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "ipeds_hds", ["cross"], name: "index_ipeds_hds_on_cross", using: :btree
 
   create_table "ipeds_ic_ays", force: :cascade do |t|
-    t.string   "cross",      null: false
-    t.string   "chg2ay3"
-    t.string   "chg3ay3"
-    t.string   "chg4ay3"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "cross",                null: false
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "ipeds_ic_ays", ["cross"], name: "index_ipeds_ic_ays_on_cross", using: :btree
 
   create_table "ipeds_ic_pies", force: :cascade do |t|
-    t.string   "cross",      null: false
-    t.string   "chg1py3"
-    t.string   "chg5py3"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "cross",                null: false
+    t.integer  "chg1py3"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "ipeds_ic_pies", ["cross"], name: "index_ipeds_ic_pies_on_cross", using: :btree
 
   create_table "ipeds_ics", force: :cascade do |t|
-    t.string   "cross",      null: false
-    t.string   "vet2",       null: false
-    t.string   "vet3",       null: false
-    t.string   "vet4",       null: false
-    t.string   "vet5",       null: false
-    t.string   "calsys",     null: false
-    t.string   "distnced",   null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "cross",                   null: false
+    t.integer  "vet2",                    null: false
+    t.integer  "vet3",                    null: false
+    t.integer  "vet4",                    null: false
+    t.integer  "vet5",                    null: false
+    t.integer  "calsys",                  null: false
+    t.integer  "distnced",                null: false
+    t.string   "credit_for_mil_training"
+    t.string   "vet_poc"
+    t.string   "student_vet_grp_ipeds"
+    t.string   "soc_member"
+    t.string   "calendar"
+    t.string   "online_all"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "ipeds_ics", ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
@@ -259,7 +278,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "sec702_schools", force: :cascade do |t|
     t.string   "facility_code", null: false
-    t.string   "sec_702",       null: false
+    t.boolean  "sec_702"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -268,7 +287,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "sec702s", force: :cascade do |t|
     t.string   "state",      null: false
-    t.string   "sec_702",    null: false
+    t.boolean  "sec_702"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
