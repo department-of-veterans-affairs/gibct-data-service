@@ -193,6 +193,7 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_mou
     names = Mou::USE_COLUMNS.map(&:to_s)
+    reason = 'dod probation For military tuition assistance'
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = mous.#{name}) }.join(', ')
@@ -202,9 +203,18 @@ class DataCsv < ActiveRecord::Base
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
     query_str += ' FROM mous '
-    query_str += 'WHERE data_csvs.caution_flag IS NULL AND '
-    query_str += 'mous.dod_status = TRUE AND '
-    query_str += 'data_csvs.ope6 = mous.ope6'
+    query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
+    query_str += 'AND mous.dod_status = TRUE; '
+
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    query_str += "'#{reason},')"
+    query_str += ' FROM mous '
+    query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
+    query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    query_str += "data_csvs.caution_flag_reason IS NULL) "
+    query_str += 'AND mous.dod_status = TRUE'
 
     run_bulk_query(query_str)
   end
@@ -296,7 +306,7 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_sec702_school
     names = Sec702School::USE_COLUMNS.map(&:to_s)
-    reason = 'does not offer required in-state tuition rates,'
+    reason = 'does not offer required in-state tuition rates'
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = sec702_schools.#{name}) }.join(', ')
@@ -314,7 +324,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason}')"
+    query_str += "'#{reason},')"
     query_str += ' FROM sec702_schools '
     query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
     query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
@@ -331,7 +341,7 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_sec702
     names = Sec702::USE_COLUMNS.map(&:to_s)
-    reason = 'does not offer required in-state tuition rates,'
+    reason = 'does not offer required in-state tuition rates'
 
     query_str = ""
     names.each do |name|
@@ -353,7 +363,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason}')"
+    query_str += "'#{reason},')"
     query_str += ' FROM sec702s '
     query_str += 'WHERE data_csvs.state = sec702s.state '
     query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "

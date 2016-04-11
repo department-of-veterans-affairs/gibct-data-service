@@ -525,6 +525,67 @@ RSpec.describe DataCsv, type: :model do
         end
       end
     end
+
+    describe "setting the data_csv.caution_flag_reason" do
+      let(:prior_reason) { 'some other reason,' }
+      let(:reason) { 'dod probation For military tuition assistance,' }
+
+      context "with dod_status equal to true" do
+        let!(:mou) do 
+          create :mou, :mou_probation, ope: crosswalk_approved_public.ope
+        end
+
+        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
+
+        before(:each) do
+          DataCsv.find_by(ope6: mou.ope6)
+            .update(caution_flag_reason: prior_reason)
+
+          DataCsv.update_with_mou
+        end
+
+        it "appends data_csv.caution_flag_reason with its reason" do
+          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason}")
+        end          
+      end
+
+      context "with dod_status not equal to true" do
+        let!(:mou) do 
+          create :mou, status: 'blah', ope: crosswalk_approved_public.ope
+        end
+
+        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
+
+        before(:each) do
+          DataCsv.find_by(ope6: mou.ope6)
+            .update(caution_flag_reason: prior_reason)
+
+          DataCsv.update_with_mou
+        end
+
+        it "appends data_csv.caution_flag_reason with its reason" do
+          expect(data.caution_flag_reason).to eq(prior_reason)
+        end          
+      end
+
+      context "with a repeated dod status" do
+        let!(:mou) do 
+          create :mou, status: 'blah', ope: crosswalk_approved_public.ope
+        end
+
+        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
+
+        before(:each) do
+          DataCsv.find_by(ope6: mou.ope6).update(caution_flag_reason: reason)
+          DataCsv.update_with_mou
+        end
+
+        it "appends data_csv.caution_flag_reason with its reason" do
+          expect(data.caution_flag_reason).not_to eq(reason + reason)
+          expect(data.caution_flag_reason).to eq(reason)
+        end          
+      end
+    end
   end
 
   #############################################################################
