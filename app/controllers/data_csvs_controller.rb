@@ -118,7 +118,7 @@ class DataCsvsController < ApplicationController
       :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
       :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, :soc_member,
       :calendar, :online_all, :vet_tuition_policy_url, :tuition_in_state, 
-      :tuition_out_of_state, :books, :sec_702
+      :tuition_out_of_state, :books, :sec_702, :caution_flag
     )
   end
 end

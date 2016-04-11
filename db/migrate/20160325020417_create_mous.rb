@@ -6,6 +6,7 @@ class CreateMous < ActiveRecord::Migration
       t.string :institution
       t.string :status
       t.boolean :dodmou
+      t.boolean :dod_status
 
       t.timestamps null: false
 

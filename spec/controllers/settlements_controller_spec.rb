@@ -90,18 +90,6 @@ RSpec.describe SettlementsController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @settlement = attributes_for :settlement, institution: nil
-          end
-
-        it "does not create a new csv file" do
-          expect{ post :create, settlement: @settlement }.to change(Settlement, :count).by(0)
-        end
-      end   
-    end
-
-    context "having invalid form input" do
       context "with no cross" do
         before(:each) do
           @settlement = attributes_for :settlement, cross: nil
@@ -207,25 +195,6 @@ RSpec.describe SettlementsController, type: :controller do
           expect{ 
             put :update, id: 0, settlement: @settlement_attributes 
           }.to raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-
-      context "with no institution name" do
-        before(:each) do
-          @settlement = create :settlement
-
-          @settlement_attributes = @settlement.attributes
-          @settlement_attributes.delete("id")
-          @settlement_attributes.delete("updated_at")
-          @settlement_attributes.delete("created_at")
-          @settlement_attributes["institution"] = nil
-        end
-
-        it "does not update a settlement entry" do
-          put :update, id: @settlement.id, settlement: @settlement_attributes 
-
-          new_settlement = Settlement.find(@settlement.id)
-          expect(new_settlement.institution).to eq(@settlement.institution)
         end
       end
 

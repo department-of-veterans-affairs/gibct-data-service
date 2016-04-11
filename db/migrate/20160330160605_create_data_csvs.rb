@@ -82,6 +82,10 @@ class CreateDataCsvs < ActiveRecord::Migration
       # Sec702/Sec702 School
       t.boolean :sec_702, default: nil
 
+      # Mou/Accreditation/Settlement/Hcm
+      t.boolean :caution_flag, default: nil
+      t.text :caution_flag_reason, default: nil
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

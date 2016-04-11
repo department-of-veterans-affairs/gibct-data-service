@@ -26,7 +26,15 @@ FactoryGirl.define do
     end
 
     trait :not_institutional do
-      csv_accreditation_type { Accreditation::CSV_ACCREDITATION_TYPES.reject { |a| a == 'institutional' }.sample }
+      csv_accreditation_type { 
+        Accreditation::CSV_ACCREDITATION_TYPES.reject { 
+            |a| a == 'institutional' 
+        }.sample 
+      }
+    end
+
+    trait :accreditation_status_nil do
+      accreditation_status nil
     end
   end
 end

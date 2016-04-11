@@ -9,9 +9,9 @@ class Accreditation < ActiveRecord::Base
       "theatre", "chiropractic"]
   }
 
-  LAST_ACTIONS = ["Resigned", "Terminated", "Closed by Institution", "Probation",
-    "Show Cause", "Expired", "No Longer Recognized", "Accredited", 
-    "Resigned Under Show Cause", "Denied Full Accreditation", "Pre-Accredited"
+  LAST_ACTIONS = ["resigned", "terminated", "closed by institution", "probation",
+    "show cause", "expired", "no longer recognized", "accredited", 
+    "resigned under show cause", "denied full accreditation", "pre-accredited"
   ]
 
   CSV_ACCREDITATION_TYPES = ['institutional',  'specialized', 'internship/residency']
@@ -33,6 +33,14 @@ class Accreditation < ActiveRecord::Base
   #############################################################################
   def csv_accreditation_type=(value)
     write_attribute(:csv_accreditation_type, value.try(:strip).try(:downcase))
+  end
+
+  #############################################################################
+  ## accreditation_status=
+  ## Strips whitespace and sets value to downcase
+  #############################################################################
+  def accreditation_status=(value)
+    write_attribute(:accreditation_status, value.try(:strip).try(:downcase))
   end
 
   #############################################################################

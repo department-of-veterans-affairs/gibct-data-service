@@ -7,28 +7,22 @@ RSpec.describe Hcm, type: :model do
         expect(create(:hcm)).to be_valid
       end
     end
-
-    context "institution names" do
-      it "are required" do
-        expect(build :hcm, institution: nil).not_to be_valid
-      end
-    end
     
-    context "ope ids" do
-      it "are required" do
+    context "ope" do
+      it "is required" do
         expect(build :hcm, ope: nil).not_to be_valid
       end
     end
 
-    context "monitor methods" do
-      it "are required" do
-        expect(build :hcm, monitor_method: nil).not_to be_valid
+    context "hcm_type" do
+      it "is required" do
+        expect(build :hcm, hcm_type: nil).not_to be_valid
       end
     end
 
-    context "reasons" do
-      it "are required" do
-        expect(build :hcm, reason: nil).not_to be_valid
+    context "hcm_reason" do
+      it "is required" do
+        expect(build :hcm, hcm_reason: nil).not_to be_valid
       end
     end
   end

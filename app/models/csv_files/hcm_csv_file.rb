@@ -3,23 +3,13 @@ require "csv"
 class HcmCsvFile < CsvFile
   HEADER_MAP = {
     "institution name" => :institution,
-    "city" => :city,
-    "state" => :state,
     "ope id" => :ope,
-    "stop pay/monitor method" => :monitor_method,
-    "method reason desc" => :reason
+    "stop pay/monitor method" => :hcm_type,
+    "method reason desc" => :hcm_reason
   }
 
   SKIP_LINES_BEFORE_HEADER = 2
   SKIP_LINES_AFTER_HEADER = 0
-
-  NORMALIZE = {
-    ope: ->(ope) do 
-      ope.present? && ope.downcase != 'none' ? ope.rjust(8, "0") : ""
-    end,
-
-    state: ->(state) { state.length != 2 ? DS::State[state] : state.upcase }
-  }
 
   DISALLOWED_CHARS = /[^\w@\- \.\/]/
 

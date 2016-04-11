@@ -104,7 +104,7 @@ class HcmsController < ApplicationController
   #############################################################################  
   def hcm_params
     params.require(:hcm).permit(
-      :institution, :city, :state, :ope, :monitor_method, :reason
+      :institution, :ope, :hcm_type, :hcm_reason
     )
   end
 end

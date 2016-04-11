@@ -90,18 +90,6 @@ RSpec.describe HcmsController, type: :controller do
     end
 
     context "having invalid form input" do
-      context "with no institution name" do
-        before(:each) do
-          @hcm = attributes_for :hcm, institution: nil
-          end
-
-        it "does not create a new csv file" do
-          expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(0)
-        end
-      end   
-    end
-
-    context "having invalid form input" do
       context "with no ope" do
         before(:each) do
           @hcm = attributes_for :hcm, ope: nil
@@ -111,24 +99,20 @@ RSpec.describe HcmsController, type: :controller do
           expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(0)
         end
       end   
-    end
 
-    context "having invalid form input" do
-      context "with no monitor method" do
+      context "with no hcm_type" do
         before(:each) do
-          @hcm = attributes_for :hcm, monitor_method: nil
+          @hcm = attributes_for :hcm, hcm_type: nil
         end
 
         it "does not create a new csv file" do
           expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(0)
         end
       end   
-    end
 
-    context "having invalid form input" do
-      context "with no reason" do
+      context "with no hcm_reason" do
         before(:each) do
-          @hcm = attributes_for :hcm, reason: nil
+          @hcm = attributes_for :hcm, hcm_reason: nil
         end
 
         it "does not create a new csv file" do
@@ -222,25 +206,6 @@ RSpec.describe HcmsController, type: :controller do
         end
       end
 
-      context "with no institution name" do
-        before(:each) do
-          @hcm = create :hcm
-
-          @hcm_attributes = @hcm.attributes
-          @hcm_attributes.delete("id")
-          @hcm_attributes.delete("updated_at")
-          @hcm_attributes.delete("created_at")
-          @hcm_attributes["institution"] = nil
-        end
-
-        it "does not update a hcm entry" do
-          put :update, id: @hcm.id, hcm: @hcm_attributes 
-
-          new_hcm = Hcm.find(@hcm.id)
-          expect(new_hcm.institution).to eq(@hcm.institution)
-        end
-      end
-
       context "with no ope" do
         before(:each) do
           @hcm = create :hcm
@@ -260,7 +225,7 @@ RSpec.describe HcmsController, type: :controller do
         end
       end   
 
-      context "with no monitor method" do
+      context "with no hcm_type" do
         before(:each) do
           @hcm = create :hcm
 
@@ -268,7 +233,7 @@ RSpec.describe HcmsController, type: :controller do
           @hcm_attributes.delete("id")
           @hcm_attributes.delete("updated_at")
           @hcm_attributes.delete("created_at")
-          @hcm_attributes["monitor_method"] = nil
+          @hcm_attributes["hcm_type"] = nil
         end
 
         it "does not update a hcm entry" do
@@ -279,7 +244,7 @@ RSpec.describe HcmsController, type: :controller do
         end
       end   
 
-      context "with no reason" do
+      context "with no hcm_reason" do
         before(:each) do
           @hcm = create :hcm
 
@@ -287,7 +252,7 @@ RSpec.describe HcmsController, type: :controller do
           @hcm_attributes.delete("id")
           @hcm_attributes.delete("updated_at")
           @hcm_attributes.delete("created_at")
-          @hcm_attributes["reason"] = nil
+          @hcm_attributes["hcm_reason"] = nil
         end
 
         it "does not update a hcm entry" do
