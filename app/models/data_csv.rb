@@ -51,7 +51,6 @@ class DataCsv < ActiveRecord::Base
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = va_crosswalks.#{name}) }.join(', ')
-
     query_str += ' FROM va_crosswalks '
     query_str += 'WHERE data_csvs.facility_code = va_crosswalks.facility_code'    
 
@@ -68,7 +67,6 @@ class DataCsv < ActiveRecord::Base
     query_str = 'UPDATE data_csvs SET '
     query_str += "student_veteran = TRUE, "
     query_str += names.map { |name| %("#{name}" = svas.#{name}) }.join(', ')
-
     query_str += ' FROM svas '
     query_str += 'WHERE data_csvs.cross = svas.cross '
     query_str += 'AND svas.cross IS NOT NULL'    
@@ -85,7 +83,6 @@ class DataCsv < ActiveRecord::Base
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = vsocs.#{name}) }.join(', ')
-
     query_str += ' FROM vsocs '
     query_str += 'WHERE data_csvs.facility_code = vsocs.facility_code'    
 
@@ -119,9 +116,28 @@ class DataCsv < ActiveRecord::Base
     query_str += names.map { |name| %("#{name}" = accreditations.#{name}) }.join(', ')
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND accreditations.cross IS NOT NULL '
     query_str += %(AND accreditations.periods LIKE '%current%' )
-    query_str += "AND accreditations.csv_accreditation_type = 'institutional' "
-    query_str += 'AND accreditations.cross IS NOT NULL'
+    query_str += "AND accreditations.csv_accreditation_type = 'institutional'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag = TRUE'
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND accreditations.cross IS NOT NULL '
+    query_str += %(AND accreditations.periods LIKE '%current%' )
+    query_str += 'AND accreditations.accreditation_status IS NOT NULL '
+    query_str += "AND accreditations.csv_accreditation_type = 'institutional'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    query_str += "'accreditation (' || accreditations.accreditation_status || '),')"
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND accreditations.cross IS NOT NULL '
+    query_str += %(AND accreditations.periods LIKE '%current%' )
+    query_str += 'AND accreditations.accreditation_status IS NOT NULL '
+    query_str += "AND accreditations.csv_accreditation_type = 'institutional'; "
 
     run_bulk_query(query_str)
   end
@@ -181,7 +197,14 @@ class DataCsv < ActiveRecord::Base
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = mous.#{name}) }.join(', ')
     query_str += ' FROM mous '
-    query_str += 'WHERE data_csvs.ope6 = mous.ope6'
+    query_str += 'WHERE data_csvs.ope6 = mous.ope6; '
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag = TRUE'
+    query_str += ' FROM mous '
+    query_str += 'WHERE data_csvs.caution_flag IS NULL AND '
+    query_str += 'mous.dod_status = TRUE AND '
+    query_str += 'data_csvs.ope6 = mous.ope6'
 
     run_bulk_query(query_str)
   end
@@ -267,16 +290,37 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_sec702_school
-  ## Updates the DataCsv table with data from the scorecards table.
+  ## Updates the DataCsv table with data from the scorecards table. Note the
+  ## definition of NULL does not return true when NOT LIKE compared with a 
+  ## string.
   ###########################################################################
   def self.update_with_sec702_school
     names = Sec702School::USE_COLUMNS.map(&:to_s)
+    reason = 'does not offer required in-state tuition rates,'
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = sec702_schools.#{name}) }.join(', ')
     query_str += ' FROM sec702_schools '
-    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code AND '
-    query_str += "lower(data_csvs.type) = 'public'"
+    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
+    query_str += 'AND sec702_schools.sec_702 IS NOT NULL '
+    query_str += "AND lower(data_csvs.type) = 'public'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag = TRUE ' 
+    query_str += ' FROM sec702_schools '
+    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
+    query_str += "AND sec702_schools.sec_702 = FALSE "
+    query_str += "AND lower(data_csvs.type) = 'public'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    query_str += "'#{reason}')"
+    query_str += ' FROM sec702_schools '
+    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
+    query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    query_str += "data_csvs.caution_flag_reason IS NULL) "
+    query_str += "AND sec702_schools.sec_702 = FALSE "
+    query_str += "AND lower(data_csvs.type) = 'public'"
 
     run_bulk_query(query_str)
   end
@@ -287,17 +331,80 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_sec702
     names = Sec702::USE_COLUMNS.map(&:to_s)
+    reason = 'does not offer required in-state tuition rates,'
 
     query_str = ""
     names.each do |name|
       query_str += 'UPDATE data_csvs SET '
       query_str += %("#{name}" = sec702s.#{name})
       query_str += ' FROM sec702s '
-      query_str += 'WHERE data_csvs.state = sec702s.state AND '
-      query_str += "data_csvs.#{name} IS NULL AND "
-      query_str += 'data_csvs.state IS NOT NULL AND '
-      query_str += "lower(data_csvs.type) = 'public'; "
+      query_str += 'WHERE data_csvs.state = sec702s.state '
+      query_str += "AND data_csvs.#{name} IS NULL "
+      query_str += "AND lower(data_csvs.type) = 'public'; "
     end
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag = TRUE ' 
+    query_str += ' FROM sec702s '
+    query_str += 'WHERE data_csvs.state = sec702s.state '
+    query_str += "AND data_csvs.caution_flag IS NULL "
+    query_str += "AND sec702s.sec_702 = FALSE "
+    query_str += "AND lower(data_csvs.type) = 'public'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    query_str += "'#{reason}')"
+    query_str += ' FROM sec702s '
+    query_str += 'WHERE data_csvs.state = sec702s.state '
+    query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    query_str += "data_csvs.caution_flag_reason IS NULL) "
+    query_str += "AND sec702s.sec_702 = FALSE "
+    query_str += "AND lower(data_csvs.type) = 'public'"
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_settlement
+  ## Updates the DataCsv table with data from the settlements table.
+  ###########################################################################
+  def self.update_with_settlement
+    query_str = 'UPDATE data_csvs SET '
+    query_str += 'caution_flag = TRUE '
+    query_str += ' FROM settlements '
+    query_str += 'WHERE data_csvs.cross = settlements.cross; '
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    query_str += "settlements.settlement_description, ',')"
+    query_str += ' FROM settlements '
+    query_str += 'WHERE data_csvs.cross = settlements.cross AND '
+    query_str += "(data_csvs.caution_flag_reason NOT LIKE "
+    query_str += "'%' || settlements.settlement_description || '%' OR "
+    query_str += "data_csvs.caution_flag_reason IS NULL)"
+
+    run_bulk_query(query_str)
+  end
+
+  ###########################################################################
+  ## update_with_hcm
+  ## Updates the DataCsv table with data from the hcm table.
+  ###########################################################################
+  def self.update_with_hcm
+    query_str = 'UPDATE data_csvs SET '
+    query_str += 'caution_flag = TRUE'
+    query_str += ' FROM hcms '
+    query_str += 'WHERE data_csvs.ope6 = hcms.ope6; '
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    query_str += "'heightened cash monitoring (', hcms.hcm_reason, '),')"
+    query_str += ' FROM hcms '
+    query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
+    query_str += 'hcms.hcm_type IS NOT NULL AND '
+    query_str += "(data_csvs.caution_flag_reason NOT LIKE "
+    query_str += "'%' || hcms.hcm_reason || '%' OR "
+    query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
   end

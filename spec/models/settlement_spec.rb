@@ -8,20 +8,14 @@ RSpec.describe Settlement, type: :model do
       end
     end
 
-    context "institution names" do
-      it "are required" do
-        expect(build :settlement, institution: nil).not_to be_valid
-      end
-    end
-    
-    context "ipeds ids" do
-      it "are required" do
+    context "ipeds" do
+      it "is required" do
         expect(build :settlement, cross: nil).not_to be_valid
       end
     end
 
-    context "settlement descriptions" do
-      it "are required" do
+    context "settlement description" do
+      it "is required" do
         expect(build :settlement, settlement_description: nil).not_to be_valid
       end
     end

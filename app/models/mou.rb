@@ -37,6 +37,14 @@ class Mou < ActiveRecord::Base
   end
 
   #############################################################################
+  ## to_dod_status
+  ## Converts the status column to a boolean based on a string match.
+  #############################################################################
+  def to_dod_status
+    status == STATUSES[0]
+  end
+
+  #############################################################################
   ## set_derived_fields=
   ## Computes the values of derived fields just prior to saving. Note that 
   ## any fields here cannot be part of validations.
@@ -44,6 +52,7 @@ class Mou < ActiveRecord::Base
   def set_derived_fields
     self.ope6 = DS::OpeId.to_ope6(ope)
     self.dodmou = to_dodmou
+    self.dod_status = to_dod_status
     
     true
   end

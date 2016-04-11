@@ -124,6 +124,8 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.integer  "tuition_out_of_state"
     t.integer  "books"
     t.boolean  "sec_702"
+    t.boolean  "caution_flag"
+    t.string   "caution_flag_reason"
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
   end
@@ -148,14 +150,13 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "hcms", force: :cascade do |t|
-    t.string   "ope",            null: false
-    t.string   "institution",    null: false
-    t.string   "city"
-    t.string   "state"
-    t.string   "monitor_method", null: false
-    t.string   "reason",         null: false
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.string   "ope",         null: false
+    t.string   "ope6",        null: false
+    t.string   "institution"
+    t.string   "hcm_type",    null: false
+    t.string   "hcm_reason",  null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "hcms", ["institution"], name: "index_hcms_on_institution", using: :btree
@@ -219,6 +220,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "institution"
     t.string   "status"
     t.boolean  "dodmou"
+    t.boolean  "dod_status"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
@@ -296,7 +298,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   create_table "settlements", force: :cascade do |t|
     t.string   "cross",                  null: false
-    t.string   "institution",            null: false
+    t.string   "institution"
     t.string   "settlement_description", null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false

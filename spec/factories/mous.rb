@@ -4,5 +4,9 @@ FactoryGirl.define do
 
     institution { Faker::University.name }
     status { ["Probation - DoD", "Title IV Non-Compliant"].sample }
+
+    trait :mou_probation do
+      status "Probation - DoD"
+    end
   end
 end

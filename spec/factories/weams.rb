@@ -66,7 +66,7 @@ FactoryGirl.define do
     ## facility_code first digit is 1
     ###########################################################################    
     trait :public do
-      facility_code { x = generate(:facility_code); x[0,1] = '11'; x }
+      facility_code { x = generate(:facility_code); x[0,2] = '11'; x }
 
       flight_indicator 'No'
       correspondence_indicator 'No'

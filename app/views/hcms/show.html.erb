@@ -5,7 +5,7 @@
     } 
 %>
 
-<h2><small>Hcm: <%= @hcm.institution %></small></h2>
+<h2><small>Heightened Cash Monitoring: <%= @hcm.institution %></small></h2>
   
 <div class="row">
   <div class="col-xs-3">
@@ -13,6 +13,24 @@
   </div>
   <div class="col-xs-8">
     <%= @hcm.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ope: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @hcm.ope %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-3">
+    <strong>Ope 6: </strong>
+  </div>
+  <div class="col-xs-8">
+    <%= @hcm.ope6 %>
   </div>
 </div>
 
@@ -27,45 +45,18 @@
 
 <div class="row">
   <div class="col-xs-3">
-    <strong>OPE: </strong>
+    <strong>Hcm Type: </strong>
   </div>
   <div class="col-xs-8">
-    <%= @hcm.ope %>
+    <%= @hcm.hcm_type %>
   </div>
 </div>
 
 <div class="row">
   <div class="col-xs-3">
-    <strong>City: </strong>
+    <strong>Hcm Reason: </strong>
   </div>
   <div class="col-xs-8">
-    <%= @hcm.city %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-3">
-    <strong>State: </strong>
-  </div>
-  <div class="col-xs-8">
-    <%= @hcm.state %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-3">
-    <strong>Monitor Method: </strong>
-  </div>
-  <div class="col-xs-8">
-    <%= @hcm.monitor_method %>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-3">
-    <strong>Reason: </strong>
-  </div>
-  <div class="col-xs-8">
-    <%= @hcm.reason %>
+    <%= @hcm.hcm_reason %>
   </div>
 </div>
