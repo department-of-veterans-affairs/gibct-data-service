@@ -1,23 +1,24 @@
 class IpedsIcPy < ActiveRecord::Base
+  include Standardizable
+
   validates :cross, presence: true
-  validates :chg1py3, numericality: { only_integer: true, message: "%{value} is not a fixnum"}, allow_blank: true
-  validates :books, numericality: { only_integer: true, message: "%{value} is not a fixnum"}, allow_blank: true
+  validates :chg1py3, numericality: true, allow_blank: true
+  validates :books, numericality: true, allow_blank: true
 
   before_save :set_derived_fields
 
-
   USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books]
 
-  #############################################################################
-  ## cross=
-  ## Strips whitespace and sets value to downcase, and pads ipeds with 0s
-  #############################################################################
-  def cross=(value)
-    value = value.try(:strip).try(:downcase)
-    value = nil if value.blank? || value == 'none' 
+  # #############################################################################
+  # ## cross=
+  # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s
+  # #############################################################################
+  # def cross=(value)
+  #   value = value.try(:strip).try(:downcase)
+  #   value = nil if value.blank? || value == 'none' 
 
-    write_attribute(:cross, DS::IpedsId.pad(value))
-  end
+  #   write_attribute(:cross, DS::IpedsId.pad(value))
+  # end
 
   #############################################################################
   ## set_derived_fields=

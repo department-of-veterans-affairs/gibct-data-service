@@ -1,7 +1,10 @@
 require 'rails_helper'
+require 'support/shared_examples_for_standardizable'
 
 RSpec.describe IpedsHd, type: :model do
- describe "When creating" do
+  it_behaves_like "a standardizable model", IpedsHd
+
+  describe "When creating" do
     context "with a factory" do
       it "that factory is valid" do
         expect(create(:ipeds_hd)).to be_valid
