@@ -11,7 +11,6 @@ class AccreditationsController < ApplicationController
     @accreditations = Accreditation.paginate(:page => params[:page])
   end
 
-
   #############################################################################
   ## show
   #############################################################################

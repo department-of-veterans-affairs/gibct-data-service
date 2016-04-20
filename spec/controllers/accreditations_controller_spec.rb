@@ -84,8 +84,10 @@ RSpec.describe AccreditationsController, type: :controller do
       end
 
       it "creates an accreditation entry" do
+        institution_name = @accreditation[:institution_name].downcase
+        
         expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(1)
-        expect(Accreditation.find_by(institution_name: @accreditation[:institution_name])).not_to be_nil
+        expect(Accreditation.find_by(institution_name: institution_name)).not_to be_nil
       end 
     end
 
@@ -220,7 +222,7 @@ RSpec.describe AccreditationsController, type: :controller do
         expect(assigns(:accreditation)).to eq(@accreditation)
       end
 
-      it "deletes a scorecard record" do
+      it "deletes a accreditation record" do
         expect{ delete :destroy, id: @accreditation.id }.to change(Accreditation, :count).by(-1)
       end
     end

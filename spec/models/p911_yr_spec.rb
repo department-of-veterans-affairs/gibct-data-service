@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'support/shared_examples_for_standardizable'
 
 RSpec.describe P911Yr, type: :model do
+  it_behaves_like "a standardizable model", P911Yr
+
   describe "When creating" do
     context "with a factory" do
       it "that factory is valid" do
@@ -21,8 +24,8 @@ RSpec.describe P911Yr, type: :model do
     end
 
     context "p911_yr_recipients" do
-      it "must be an integer" do
-        expect(build :p911_yr, p911_yr_recipients: 1.0).not_to be_valid
+      it "must be a number" do
+        expect(build :p911_yr, p911_yr_recipients: "abc").not_to be_valid
       end
 
       it "are required" do
@@ -32,7 +35,7 @@ RSpec.describe P911Yr, type: :model do
 
     context "p911_yellow_ribbon" do
       it "must be a number" do
-        expect(build :p911_yr, p911_yellow_ribbon: 'abc').not_to be_valid
+        expect(build :p911_yr, p911_yellow_ribbon: "abc").not_to be_valid
       end
 
       it "are required" do

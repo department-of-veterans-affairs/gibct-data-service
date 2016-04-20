@@ -184,7 +184,9 @@ module DS
     ## Returns the 2-character state abbreviation.
     ###########################################################################
     def self.get_abbr(state_name)
-      STATES.key(state_name.try(:capitalize)) || state_name
+      name = state_name.split.map(&:capitalize).try(:join, " ")
+      
+      STATES.key(name) || state_name
     end
 
     ###########################################################################

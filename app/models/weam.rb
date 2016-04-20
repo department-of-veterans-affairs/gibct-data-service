@@ -1,10 +1,12 @@
 class Weam < ActiveRecord::Base
+  include Standardizable
+
   # GIBCT uses field called type, must kludge to prevent STI
   self.inheritance_column = "inheritance_type"
 
   validates :facility_code, presence: true, uniqueness: true
   validates :institution, presence: true
-  validates :bah, numericality: { only_integer: true }, allow_blank: true
+  validates :bah, numericality: true, allow_blank: true
 
   before_save :set_derived_fields
 
@@ -17,111 +19,120 @@ class Weam < ActiveRecord::Base
     :type, :va_highest_degree_offered, :flight, :correspondence
   ]
 
+  # Standard input from csvs
+  override_setters :facility_code, :institution, :city, :state, :zip, 
+    :country, :accredited, :bah, :poe, :yr, 
+    :type, :va_highest_degree_offered, :flight, :correspondence,
+    :poo_status, :applicable_law_code, 
+    :institution_of_higher_learning_indicator, :ojt_indicator,
+    :correspondence_indicator, :flight_indicator,
+    :non_college_degree_indicator, :approved
+
   #############################################################################
   ## bah=
   ## Strips whitespace and sets strings to nil, otherwise saves the number
   #############################################################################
-  def bah=(value)
-    value = value.to_i if DS::Number.is_i?(value)
-    write_attribute(:bah, value)
-  end
+  # def bah=(value)
+  #   value = value.to_i if DS::Number.is_i?(value)
+  #   write_attribute(:bah, value)
+  # end
 
   #############################################################################
   ## poe=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def poe=(value)
-    write_attribute(:poe, DS::Truth.truthy?(value))
-  end
+  # def poe=(value)
+  #   write_attribute(:poe, DS::Truth.truthy?(value))
+  # end
 
   #############################################################################
   ## yr=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def yr=(value)
-    write_attribute(:yr, DS::Truth.truthy?(value))
-  end
+  # def yr=(value)
+  #   write_attribute(:yr, DS::Truth.truthy?(value))
+  # end
 
   #############################################################################
   ## institution_of_higher_learning_indicator=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def institution_of_higher_learning_indicator=(value)
-    write_attribute(:institution_of_higher_learning_indicator, DS::Truth.truthy?(value))
-  end
+  # def institution_of_higher_learning_indicator=(value)
+  #   write_attribute(:institution_of_higher_learning_indicator, DS::Truth.truthy?(value))
+  # end
 
   #############################################################################
   ## ojt_indicator=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def ojt_indicator=(value)
-    write_attribute(:ojt_indicator, DS::Truth.truthy?(value))
-  end
+  # def ojt_indicator=(value)
+  #   write_attribute(:ojt_indicator, DS::Truth.truthy?(value))
+  # end
 
   #############################################################################
   ## correspondence_indicator=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def correspondence_indicator=(value)
-    write_attribute(:correspondence_indicator, DS::Truth.truthy?(value))
-  end
+  # def correspondence_indicator=(value)
+  #   write_attribute(:correspondence_indicator, DS::Truth.truthy?(value))
+  # end
   
   #############################################################################
   ## flight_indicator=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def flight_indicator=(value)
-    write_attribute(:flight_indicator, DS::Truth.truthy?(value))
-  end
+  # def flight_indicator=(value)
+  #   write_attribute(:flight_indicator, DS::Truth.truthy?(value))
+  # end
   
   #############################################################################
   ## non_college_degree_indicator=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def non_college_degree_indicator=(value)
-    write_attribute(:non_college_degree_indicator, DS::Truth.truthy?(value))
-  end
+  # def non_college_degree_indicator=(value)
+  #   write_attribute(:non_college_degree_indicator, DS::Truth.truthy?(value))
+  # end
   
   #############################################################################
   ## accredited=
   ## Converts truthy/falsy strings to booleans
   #############################################################################
-  def accredited=(value)
-    write_attribute(:accredited, DS::Truth.truthy?(value))
-  end
+  # def accredited=(value)
+  #   write_attribute(:accredited, DS::Truth.truthy?(value))
+  # end
 
   #############################################################################
   ## facility_code=
   ## Strips whitespace and sets value to upcase
   #############################################################################
-  def facility_code=(value)
-    write_attribute(:facility_code, value.try(:strip).try(:upcase))
-  end
+  # def facility_code=(value)
+  #   write_attribute(:facility_code, value.try(:strip).try(:upcase))
+  # end
 
   #############################################################################
   ## state=
   ## Converts "state strings" to 2-character uppercase state abbreviations
   #############################################################################
-  def state=(value)
-    value = DS::State.get_abbr(value.try(:strip))
-    write_attribute(:state, value.try(:upcase))
-  end
+  # def state=(value)
+  #   value = DS::State.get_abbr(value.try(:strip))
+  #   write_attribute(:state, value.try(:upcase))
+  # end
 
   #############################################################################
   ## poo_status=
   ## Strips whitespace and sets value to downcase
   #############################################################################
-  def poo_status=(value)
-    write_attribute(:poo_status, value.try(:strip).try(:downcase))
-  end
+  # def poo_status=(value)
+  #   write_attribute(:poo_status, value.try(:strip).try(:downcase))
+  # end
 
   #############################################################################
   ## applicable_law_code=
   ## Strips whitespace and sets value to downcase
   #############################################################################
-  def applicable_law_code=(value)
-    write_attribute(:applicable_law_code, value.try(:strip).try(:downcase))
-  end
+  # def applicable_law_code=(value)
+  #   write_attribute(:applicable_law_code, value.try(:strip).try(:downcase))
+  # end
 
   #############################################################################
   ## set_derived_fields=
@@ -164,7 +175,7 @@ class Weam < ActiveRecord::Base
   ## foreign?
   #############################################################################
   def foreign?
-    !flight? && country != "USA" && country != "US"
+    !flight? && country != "usa" && country != "us"
   end
 
   #############################################################################
@@ -196,7 +207,7 @@ class Weam < ActiveRecord::Base
     {
       '0' => ' ', '1' => '4-year', '2' => '4-year', '3' => '4-year',
       '4' => '2-year' 
-    }[facility_code[1]] || 'NCD'
+    }[facility_code[1]] || 'ncd'
   end
 
   #############################################################################
@@ -205,9 +216,9 @@ class Weam < ActiveRecord::Base
   #############################################################################
   def weams_type
     { 
-      'OJT' => ojt?, 'Correspondence' => correspondence?, 'Flight' => flight?,
-      'Foreign' => foreign?, 'Public' => public?, 'For Profit' => for_profit?,
-      'Private' => private?
+      'ojt' => ojt?, 'correspondence' => correspondence?, 'flight' => flight?,
+      'foreign' => foreign?, 'public' => public?, 'for profit' => for_profit?,
+      'private' => private?
     }.select { |key, value| value }.first[0]
   end
 

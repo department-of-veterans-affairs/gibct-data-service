@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :complaints
   resources :data_csvs
   resources :ipeds_ic_pies
   resources :ipeds_ic_ays

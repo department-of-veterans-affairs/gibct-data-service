@@ -86,6 +86,35 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.boolean :caution_flag, default: nil
       t.text :caution_flag_reason, default: nil
 
+      # Complaint
+      t.integer :complaints_facility_code, default: nil
+      t.integer :complaints_financial_by_fac_code, default: nil
+      t.integer :complaints_quality_by_fac_code, default: nil
+      t.integer :complaints_refund_by_fac_code, default: nil
+      t.integer :complaints_marketing_by_fac_code, default: nil
+      t.integer :complaints_accreditation_by_fac_code, default: nil
+      t.integer :complaints_degree_requirements_by_fac_code, default: nil
+      t.integer :complaints_student_loans_by_fac_code, default: nil
+      t.integer :complaints_grades_by_fac_code, default: nil
+      t.integer :complaints_credit_transfer_by_fac_code, default: nil
+      t.integer :complaints_job_by_fac_code, default: nil
+      t.integer :complaints_transcript_by_fac_code, default: nil
+      t.integer :complaints_other_by_fac_code, default: nil
+
+      t.integer :complaints_main_campus_roll_up, default: nil
+      t.integer :complaints_financial_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_quality_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_refund_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_marketing_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_accreditation_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_degree_requirements_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_student_loans_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_grades_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_credit_transfer_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_jobs_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_transcript_by_ope_id_do_not_sum, default: nil
+      t.integer :complaints_other_by_ope_id_do_not_sum, default: 0      
+
       t.timestamps null: false
 
       t.index :facility_code, unique: true

@@ -1,4 +1,6 @@
 class IpedsIc < ActiveRecord::Base
+  include Standardizable
+  
   validates :cross, presence: true
   validates :vet2, inclusion: { in: [-2, -1, 0, 1], message: "'%{value}' not allowed" }
   validates :vet3, inclusion: { in: [-2, -1, 0, 1], message: "'%{value}' not allowed" }
@@ -14,76 +16,80 @@ class IpedsIc < ActiveRecord::Base
     :soc_member, :calendar, :online_all
   ]
 
-  #############################################################################
-  ## cross=
-  ## Strips whitespace and sets value to downcase, and pads ipeds with 0s
-  #############################################################################
-  def cross=(value)
-    value = value.try(:strip).try(:downcase)
-    value = nil if value.blank? || value == 'none' 
+  override_setters :cross, :vet2, :vet3, :vet4, :vet5, :calsys, :distnced, 
+    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, 
+    :soc_member, :calendar, :online_all
 
-    write_attribute(:cross, DS::IpedsId.pad(value))
-  end
+  # #############################################################################
+  # ## cross=
+  # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s
+  # #############################################################################
+  # def cross=(value)
+  #   value = value.try(:strip).try(:downcase)
+  #   value = nil if value.blank? || value == 'none' 
 
-  #############################################################################
-  ## vet2=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def vet2=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+  #   write_attribute(:cross, DS::IpedsId.pad(value))
+  # end
 
-    write_attribute(:vet2, value)
-  end
+  # #############################################################################
+  # ## vet2=
+  # ## Sets strings to nil, otherwise saves the number
+  # #############################################################################
+  # def vet2=(value)
+  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
 
-  #############################################################################
-  ## vet3=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def vet3=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+  #   write_attribute(:vet2, value)
+  # end
 
-    write_attribute(:vet3, value)
-  end
+  # #############################################################################
+  # ## vet3=
+  # ## Sets strings to nil, otherwise saves the number
+  # #############################################################################
+  # def vet3=(value)
+  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
 
-  #############################################################################
-  ## vet4=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def vet4=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+  #   write_attribute(:vet3, value)
+  # end
 
-    write_attribute(:vet4, value)
-  end
+  # #############################################################################
+  # ## vet4=
+  # ## Sets strings to nil, otherwise saves the number
+  # #############################################################################
+  # def vet4=(value)
+  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
 
-  #############################################################################
-  ## vet5=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def vet5=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+  #   write_attribute(:vet4, value)
+  # end
 
-    write_attribute(:vet5, value)
-  end
+  # #############################################################################
+  # ## vet5=
+  # ## Sets strings to nil, otherwise saves the number
+  # #############################################################################
+  # def vet5=(value)
+  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
 
-  #############################################################################
-  ## calsys=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def calsys=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+  #   write_attribute(:vet5, value)
+  # end
 
-    write_attribute(:calsys, value)
-  end
+  # #############################################################################
+  # ## calsys=
+  # ## Sets strings to nil, otherwise saves the number
+  # #############################################################################
+  # def calsys=(value)
+  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
 
-  #############################################################################
-  ## distnced=
-  ## Sets strings to nil, otherwise saves the number
-  #############################################################################
-  def distnced=(value)
-    value = nil if !DS::Number.is_i?(value) # Will cause a save error
+  #   write_attribute(:calsys, value)
+  # end
 
-    write_attribute(:distnced, value)
-  end
+  # #############################################################################
+  # ## distnced=
+  # ## Sets strings to nil, otherwise saves the number
+  # #############################################################################
+  # def distnced=(value)
+  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
+
+  #   write_attribute(:distnced, value)
+  # end
 
   #############################################################################
   ## to_yes_string

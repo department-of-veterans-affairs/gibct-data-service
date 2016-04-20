@@ -1,7 +1,10 @@
 require 'rails_helper'
+require 'support/shared_examples_for_standardizable'
 
 RSpec.describe IpedsIc, type: :model do
- describe "When creating" do
+  it_behaves_like "a standardizable model", IpedsIc
+
+  describe "When creating" do
     context "with a factory" do
       it "that factory is valid" do
         expect(create(:ipeds_ic)).to be_valid
@@ -78,8 +81,8 @@ RSpec.describe IpedsIc, type: :model do
       soc_member: :vet5 
     }.each_pair do |dcol, ocol|
       context dcol.to_s do
-        it "receives the value 'Yes' when #{ocol.to_s} is 1" do
-          expect(create(:ipeds_ic, ocol => 1)[dcol]).to eq('Yes')
+        it "receives the value 'yes' when #{ocol.to_s} is 1" do
+          expect(create(:ipeds_ic, ocol => 1)[dcol]).to eq('yes')
         end
 
         it "is nil when #{ocol.to_s} is not 1" do

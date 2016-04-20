@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'support/shared_examples_for_standardizable'
 
 RSpec.describe Scorecard, type: :model do
+  it_behaves_like "a standardizable model", Scorecard
+
   describe "When creating" do
     context "with a factory" do
       it "that factory is valid" do
@@ -15,7 +18,7 @@ RSpec.describe Scorecard, type: :model do
     end
 
     context "ope" do
-      it "are required" do
+      it "is required" do
         expect(build :scorecard, ope: nil).not_to be_valid
       end
     end
