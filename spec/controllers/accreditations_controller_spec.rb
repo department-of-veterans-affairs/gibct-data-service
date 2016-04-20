@@ -222,7 +222,7 @@ RSpec.describe AccreditationsController, type: :controller do
         expect(assigns(:accreditation)).to eq(@accreditation)
       end
 
-      it "deletes a scorecard record" do
+      it "deletes a accreditation record" do
         expect{ delete :destroy, id: @accreditation.id }.to change(Accreditation, :count).by(-1)
       end
     end

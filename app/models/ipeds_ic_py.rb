@@ -9,6 +9,9 @@ class IpedsIcPy < ActiveRecord::Base
 
   USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books]
 
+  override_setters :cross, :chg1py3, :tuition_in_state, :tuition_out_of_state, 
+    :books
+
   # #############################################################################
   # ## cross=
   # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s

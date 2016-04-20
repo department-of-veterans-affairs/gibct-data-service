@@ -7,6 +7,9 @@ class P911Tf < ActiveRecord::Base
 
   USE_COLUMNS = [:p911_recipients, :p911_tuition_fees]
 
+  override_setters :facility_code, :institution, :p911_recipients, 
+    :p911_tuition_fees
+
   # #############################################################################
   # ## facility_code=
   # ## Strips whitespace and sets value to upcase

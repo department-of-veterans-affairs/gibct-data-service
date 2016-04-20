@@ -4,6 +4,8 @@ class Settlement < ActiveRecord::Base
   validates :cross, presence: true
   validates :settlement_description, presence: true
 
+  override_setters :cross, :institution, :settlement_description
+  
   # #############################################################################
   # ## cross=
   # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s

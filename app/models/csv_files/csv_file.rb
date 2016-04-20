@@ -5,6 +5,7 @@ class CsvFile < ActiveRecord::Base
   STI = { 
     'AccreditationCsvFile' => Accreditation,
     'ArfGibillCsvFile' => ArfGibill,
+    'ComplaintCsvFile' => Complaint,
     'EightKeyCsvFile' => EightKey,
     'HcmCsvFile' => Hcm,
     'IpedsHdCsvFile' => IpedsHd,

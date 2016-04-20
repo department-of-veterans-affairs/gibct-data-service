@@ -1,6 +1,6 @@
 class IpedsIc < ActiveRecord::Base
   include Standardizable
-
+  
   validates :cross, presence: true
   validates :vet2, inclusion: { in: [-2, -1, 0, 1], message: "'%{value}' not allowed" }
   validates :vet3, inclusion: { in: [-2, -1, 0, 1], message: "'%{value}' not allowed" }
@@ -15,6 +15,10 @@ class IpedsIc < ActiveRecord::Base
     :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, 
     :soc_member, :calendar, :online_all
   ]
+
+  override_setters :cross, :vet2, :vet3, :vet4, :vet5, :calsys, :distnced, 
+    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, 
+    :soc_member, :calendar, :online_all
 
   # #############################################################################
   # ## cross=

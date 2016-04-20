@@ -29,6 +29,11 @@ class Accreditation < ActiveRecord::Base
   before_save :set_derived_fields
   before_validation :set_accreditation_type
 
+  override_setters :institution_name, :campus_name, :institution, :ope, :ope6,
+    :institution_ipeds_unitid, :campus_ipeds_unitid, :cross,
+    :csv_accreditation_type, :accreditation_type, :agency_name, 
+    :accreditation_status, :periods
+
   # #############################################################################
   # ## csv_accreditation_type=
   # ## Strips whitespace and sets value to downcase

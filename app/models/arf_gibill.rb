@@ -6,6 +6,8 @@ class ArfGibill < ActiveRecord::Base
   
   USE_COLUMNS = [:gibill]
 
+  override_setters :facility_code, :institution, :gibill
+
   # #############################################################################
   # ## facility_code=
   # ## Strips whitespace and sets value to upcase

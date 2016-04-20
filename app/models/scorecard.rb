@@ -25,6 +25,13 @@ class Scorecard < ActiveRecord::Base
     :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt
   ]
 
+  override_setters :cross, :ope, :ope6, :institution, :insturl,
+    :pred_degree_awarded, :locale, :undergrad_enrollment, 
+    :retention_all_students_ba, :retention_all_students_otb,
+    :graduation_rate_all_students, :transfer_out_rate_all_students, 
+    :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
+    :c150_4_pooled_supp, :c200_l4_pooled_supp
+
   # #############################################################################
   # ## ope=
   # ## Strips whitespace and sets value to downcase, and pads ope with 0s

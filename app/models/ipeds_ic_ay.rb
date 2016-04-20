@@ -1,5 +1,5 @@
 class IpedsIcAy < ActiveRecord::Base
-  include Standardizable
+  include Standardizable 
 
   validates :cross, presence: true
 
@@ -8,6 +8,8 @@ class IpedsIcAy < ActiveRecord::Base
   validates :books, numericality: true, allow_blank: true
 
   USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books]
+
+  override_setters :cross, :tuition_in_state, :tuition_out_of_state, :books
 
   # #############################################################################
   # ## cross=

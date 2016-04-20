@@ -1,6 +1,6 @@
 class Weam < ActiveRecord::Base
   include Standardizable
-  
+
   # GIBCT uses field called type, must kludge to prevent STI
   self.inheritance_column = "inheritance_type"
 
@@ -18,6 +18,15 @@ class Weam < ActiveRecord::Base
     :country, :accredited, :bah, :poe, :yr, 
     :type, :va_highest_degree_offered, :flight, :correspondence
   ]
+
+  # Standard input from csvs
+  override_setters :facility_code, :institution, :city, :state, :zip, 
+    :country, :accredited, :bah, :poe, :yr, 
+    :type, :va_highest_degree_offered, :flight, :correspondence,
+    :poo_status, :applicable_law_code, 
+    :institution_of_higher_learning_indicator, :ojt_indicator,
+    :correspondence_indicator, :flight_indicator,
+    :non_college_degree_indicator, :approved
 
   #############################################################################
   ## bah=

@@ -50,6 +50,62 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "arf_gibills", ["facility_code"], name: "index_arf_gibills_on_facility_code", unique: true, using: :btree
   add_index "arf_gibills", ["institution"], name: "index_arf_gibills_on_institution", using: :btree
 
+  create_table "complaints", force: :cascade do |t|
+    t.string   "facility_code"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "institution"
+    t.string   "status"
+    t.string   "closed_reason"
+    t.string   "issue"
+    t.integer  "cfc",                                                 default: 0
+    t.integer  "cfbfc",                                               default: 0
+    t.integer  "cqbfc",                                               default: 0
+    t.integer  "crbfc",                                               default: 0
+    t.integer  "cmbfc",                                               default: 0
+    t.integer  "cabfc",                                               default: 0
+    t.integer  "cdrbfc",                                              default: 0
+    t.integer  "cslbfc",                                              default: 0
+    t.integer  "cgbfc",                                               default: 0
+    t.integer  "cctbfc",                                              default: 0
+    t.integer  "cjbfc",                                               default: 0
+    t.integer  "ctbfc",                                               default: 0
+    t.integer  "cobfc",                                               default: 0
+    t.integer  "complaints_facility_code",                            default: 0
+    t.integer  "complaints_financial_by_fac_code",                    default: 0
+    t.integer  "complaints_quality_by_fac_code",                      default: 0
+    t.integer  "complaints_refund_by_fac_code",                       default: 0
+    t.integer  "complaints_marketing_by_fac_code",                    default: 0
+    t.integer  "complaints_accreditation_by_fac_code",                default: 0
+    t.integer  "complaints_degree_requirements_by_fac_code",          default: 0
+    t.integer  "complaints_student_loans_by_fac_code",                default: 0
+    t.integer  "complaints_grades_by_fac_code",                       default: 0
+    t.integer  "complaints_credit_transfer_by_fac_code",              default: 0
+    t.integer  "complaints_job_by_fac_code",                          default: 0
+    t.integer  "complaints_transcript_by_fac_code",                   default: 0
+    t.integer  "complaints_other_by_fac_code",                        default: 0
+    t.integer  "complaints_main_campus_roll_up",                      default: 0
+    t.integer  "complaints_financial_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_quality_by_ope_id_do_not_sum",             default: 0
+    t.integer  "complaints_refund_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum", default: 0
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_grades_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum",     default: 0
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum",                default: 0
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum",          default: 0
+    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
+  end
+
+  add_index "complaints", ["facility_code"], name: "index_complaints_on_facility_code", using: :btree
+  add_index "complaints", ["institution"], name: "index_complaints_on_institution", using: :btree
+  add_index "complaints", ["ope"], name: "index_complaints_on_ope", using: :btree
+  add_index "complaints", ["ope6"], name: "index_complaints_on_ope6", using: :btree
+
   create_table "csv_files", force: :cascade do |t|
     t.string   "name",                      null: false
     t.datetime "upload_date",               null: false
@@ -72,8 +128,8 @@ ActiveRecord::Schema.define(version: 20160330160605) do
   add_index "csv_storages", ["csv_file_type"], name: "index_csv_storages_on_csv_file_type", unique: true, using: :btree
 
   create_table "data_csvs", force: :cascade do |t|
-    t.string   "facility_code",                                  null: false
-    t.string   "institution",                                    null: false
+    t.string   "facility_code",                                                       null: false
+    t.string   "institution",                                                         null: false
     t.string   "city"
     t.string   "state"
     t.string   "zip"
@@ -89,7 +145,7 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.string   "ope"
     t.string   "ope6"
     t.string   "cross"
-    t.boolean  "student_veteran",                default: false
+    t.boolean  "student_veteran",                                     default: false
     t.string   "student_veteran_link"
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
@@ -125,9 +181,35 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.integer  "books"
     t.boolean  "sec_702"
     t.boolean  "caution_flag"
-    t.string   "caution_flag_reason"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.text     "caution_flag_reason"
+    t.integer  "complaints_facility_code"
+    t.integer  "complaints_financial_by_fac_code"
+    t.integer  "complaints_quality_by_fac_code"
+    t.integer  "complaints_refund_by_fac_code"
+    t.integer  "complaints_marketing_by_fac_code"
+    t.integer  "complaints_accreditation_by_fac_code"
+    t.integer  "complaints_degree_requirements_by_fac_code"
+    t.integer  "complaints_student_loans_by_fac_code"
+    t.integer  "complaints_grades_by_fac_code"
+    t.integer  "complaints_credit_transfer_by_fac_code"
+    t.integer  "complaints_job_by_fac_code"
+    t.integer  "complaints_transcript_by_fac_code"
+    t.integer  "complaints_other_by_fac_code"
+    t.integer  "complaints_main_campus_roll_up"
+    t.integer  "complaints_financial_by_ope_id_do_not_sum"
+    t.integer  "complaints_quality_by_ope_id_do_not_sum"
+    t.integer  "complaints_refund_by_ope_id_do_not_sum"
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum"
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum"
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum"
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum"
+    t.integer  "complaints_grades_by_ope_id_do_not_sum"
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum"
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum"
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum"
+    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
   end
 
   add_index "data_csvs", ["cross"], name: "index_data_csvs_on_cross", using: :btree

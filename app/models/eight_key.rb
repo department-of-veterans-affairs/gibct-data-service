@@ -1,8 +1,10 @@
 class EightKey < ActiveRecord::Base
-  include Standardizable
+ include Standardizable
 
   USE_COLUMNS = []
 
+  override_setters :institution, :cross, :ope, :ope6
+  
   # before_save :set_derived_fields
 
   # #############################################################################

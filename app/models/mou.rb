@@ -8,6 +8,8 @@ class Mou < ActiveRecord::Base
   STATUSES = ["probation - dod", "title iv non-compliant"]
   USE_COLUMNS = [:dodmou]
 
+  override_setters :ope, :ope6, :institution, :status, :dodmou, :dod_status
+
   # #############################################################################
   # ## ope=
   # ## Strips whitespace and sets value to downcase, and pads ope with 0s

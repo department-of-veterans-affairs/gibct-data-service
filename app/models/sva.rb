@@ -3,6 +3,8 @@ class Sva < ActiveRecord::Base
   
   USE_COLUMNS = [:student_veteran_link]
 
+  override_setters :institution, :cross, :student_veteran_link
+
   # #############################################################################
   # ## cross=
   # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s

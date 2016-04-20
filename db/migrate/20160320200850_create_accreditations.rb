@@ -1,7 +1,6 @@
 class CreateAccreditations < ActiveRecord::Migration
   def change
     create_table :accreditations do |t|
-
       t.string :institution_name
       t.string :campus_name
       t.string :institution       

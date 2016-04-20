@@ -6,6 +6,8 @@ class Sec702 < ActiveRecord::Base
 
   USE_COLUMNS = [:sec_702]
 
+  override_setters :state, :sec_702
+
   # #############################################################################
   # ## state=
   # ## Converts "state strings" to 2-character uppercase state abbreviations

@@ -1479,4 +1479,38 @@ RSpec.describe DataCsv, type: :model do
       end
     end
   end
+
+  #############################################################################
+  ## update_with_complaint
+  #############################################################################
+  describe "update_with_complaint" do
+    let(:data) { DataCsv.find_by(facility_code: @complaint.facility_code) }
+
+    before(:each) do
+      create :complaint, :all_issues,
+        facility_code: crosswalk_approved_public.facility_code 
+
+      Complaint.update_sums_by_fac
+      Complaint.update_sums_by_ope6
+
+      @complaint = Complaint.find_by(facility_code: crosswalk_approved_public.facility_code)
+
+      DataCsv.initialize_with_weams
+      DataCsv.update_with_complaint
+    end
+
+    describe "when matching" do
+      it "is matched by facility_code" do
+        expect(data).not_to be_nil
+      end
+    end
+
+    describe "when copying fields to data_csv" do      
+      Complaint::USE_COLUMNS.each do |column|
+        it "updates the #{column} column" do
+          expect(data[column]).to eq(@complaint[column])
+        end
+      end
+    end
+  end
 end

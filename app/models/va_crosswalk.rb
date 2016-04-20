@@ -6,6 +6,8 @@ class VaCrosswalk < ActiveRecord::Base
 
   USE_COLUMNS = [:ope, :cross, :ope6]
 
+  override_setters :ope, :cross, :ope6, :institution, :facility_code
+
   # #############################################################################
   # ## facility_code=
   # ## Strips whitespace and sets value to upcase

@@ -1,14 +1,14 @@
-class AccreditationsController < ApplicationController
+class ComplaintsController < ApplicationController
   include Alertable
 
   before_action :authenticate_user! 
-  before_action :set_accreditation, only: [:show, :edit, :destroy, :update]
+  before_action :set_complaint, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @accreditations = Accreditation.paginate(:page => params[:page])
+    @complaints = Complaint.paginate(:page => params[:page])
   end
 
   #############################################################################
@@ -24,7 +24,7 @@ class AccreditationsController < ApplicationController
   ## new
   #############################################################################
   def new
-    @accreditation = Accreditation.new
+    @complaint = Complaint.new
         
     respond_to do |format|
       format.html
@@ -35,15 +35,15 @@ class AccreditationsController < ApplicationController
   ## create
   #############################################################################
   def create
-    @accreditation = Accreditation.create(accreditation_params)
+    @complaint = Complaint.create(complaint_params)
 
     respond_to do |format|
-      if @accreditation.persisted?
-        format.html { redirect_to @accreditation, notice: "#{@accreditation.institution} created."}
+      if @complaint.persisted?
+        format.html { redirect_to @complaint, notice: "#{@complaint.institution} created."}
       else
         label = "Errors prohibited this file from being saved:"
-        errors = @accreditation.errors.full_messages
-        flash.alert = AccreditationsController.pretty_error(label, errors).html_safe
+        errors = @complaint.errors.full_messages
+        flash.alert = ComplaintsController.pretty_error(label, errors).html_safe
 
         format.html { render :new }
       end
@@ -63,15 +63,15 @@ class AccreditationsController < ApplicationController
   ## update
   #############################################################################
   def update
-    rc = @accreditation.update(accreditation_params)
+    rc = @complaint.update(complaint_params)
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @accreditation, notice: "#{@accreditation.institution} updated."}
+        format.html { redirect_to @complaint, notice: "#{@complaint.institution} updated."}
       else
         label = "Errors prohibited this file from being saved:"
-        errors = @accreditation.errors.full_messages
-        flash.alert = AccreditationsController.pretty_error(label, errors).html_safe
+        errors = @complaint.errors.full_messages
+        flash.alert = ComplaintsController.pretty_error(label, errors).html_safe
 
         format.html { render :edit }
       end
@@ -82,31 +82,30 @@ class AccreditationsController < ApplicationController
   ## destroy
   #############################################################################
   def destroy
-    @accreditation.destroy
+    @complaint.destroy
 
     respond_to do |format|
-      format.html { redirect_to accreditations_url, 
-          notice: "#{@accreditation.institution} was successfully destroyed." }
+      format.html { redirect_to complaints_url, 
+          notice: "#{@complaint.institution} was successfully destroyed." }
     end
   end
 
   #############################################################################
-  ## set_accreditation
+  ## set_complaint
   ## Obtains the model instance from the id parameter.
   #############################################################################  
-  def set_accreditation
-    @accreditation = Accreditation.find(params[:id])
+  def set_complaint
+    @complaint = Complaint.find(params[:id])
   end
 
   #############################################################################
-  ## accreditation_params
+  ## complaint_params
   ## Strong parameters
   #############################################################################  
-  def accreditation_params
-    params.require(:accreditation).permit(
-      :institution_name, :ope, :institution_ipeds_unitid, :campus_name,
-      :campus_ipeds_unitid, :agency_name, :accreditation_status, :periods,
-      :csv_accreditation_type
+  def complaint_params
+    params.require(:complaint).permit(
+      :facility_code, :ope, :institution, :status,
+      :closed_reason, :issue
     )
   end
 end
