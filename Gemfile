@@ -42,10 +42,7 @@ gem 'will_paginate', '~> 3.1'
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '~> 2.16'
-
-# Used to colorize output for rake tasks
-gem "rainbow"
+gem 'puma', '3.2.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -65,7 +62,7 @@ group :development, :test do
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
-  
+
   gem 'capybara'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
   gem 'simplecov'
@@ -73,6 +70,9 @@ group :development, :test do
   gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
+
+  # Used to colorize output for rake tasks
+  gem "rainbow"
 end
 
 group :development do
@@ -81,7 +81,7 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', platforms: :ruby
-  
+
   # Include the IANA Time Zone Database on Windows, where Windows doens't ship with a timezone database.
   # POSIX systems should have this already, so we're not going to bring it in on other platforms
  gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
