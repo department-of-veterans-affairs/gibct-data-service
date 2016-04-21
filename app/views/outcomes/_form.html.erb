@@ -1,0 +1,54 @@
+<%= form_for(outcome) do |f| %>
+  <div class="form-group">
+    <%= f.label(:facility_code) %>
+    <%= f.text_field :facility_code, 
+      { value: "#{outcome.facility_code}", class: "form-control", required: true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:institution) %>
+    <%= f.text_field :institution, 
+      { value: "#{outcome.institution}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:retention_rate_veteran_ba, "Veteran Retention Rate BA") %>
+    <%= f.text_field :retention_rate_veteran_ba, 
+      { value: "#{outcome.retention_rate_veteran_ba}", class: "form-control", required: false } %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label(:retention_rate_veteran_otb, "Veteran Retention Rate Other") %>
+    <%= f.text_field :retention_rate_veteran_otb, 
+      { value: "#{outcome.retention_rate_veteran_otb}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:persistance_rate_veteran_ba, "Veteran Persistance Rate BA") %>
+    <%= f.text_field :persistance_rate_veteran_ba, 
+      { value: "#{outcome.persistance_rate_veteran_ba}", class: "form-control", required: false } %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label(:persistance_rate_veteran_otb, "Veteran Persistance Rate Other") %>
+    <%= f.text_field :persistance_rate_veteran_otb, 
+      { value: "#{outcome.persistance_rate_veteran_otb}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:graduation_rate_veteran, "Veteran Graduation Rate") %>
+    <%= f.text_field :graduation_rate_veteran, 
+      { value: "#{outcome.graduation_rate_veteran}", class: "form-control", required: false } %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label(:transfer_out_rate_veteran, "Veteran Transfer Out Rate") %>
+    <%= f.text_field :transfer_out_rate_veteran, 
+      { value: "#{outcome.transfer_out_rate_veteran}", class: "form-control", required: false } %>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Cancel", csv_files_path, class: "btn btn-default" %>  
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

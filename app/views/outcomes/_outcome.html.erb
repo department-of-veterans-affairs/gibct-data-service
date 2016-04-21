@@ -1,0 +1,20 @@
+<tr>
+	<td><%= outcome.id %></td>
+  <td><%= outcome.facility_code %></td>
+  <td><%= outcome.institution %></td>
+  <td><%= outcome.retention_rate_veteran_ba %></td>
+  <td><%= outcome.retention_rate_veteran_otb %></td>
+  <td><%= outcome.persistance_rate_veteran_ba %></td>
+  <td><%= outcome.persistance_rate_veteran_otb %></td>
+  <td><%= outcome.graduation_rate_veteran %></td>
+  <td><%= outcome.transfer_out_rate_veteran %></td>
+  <td>
+    <%= link_to 'Show', outcome %>
+  </td>
+    <td>
+    <%= link_to 'Edit', edit_outcome_path(outcome) %>
+  </td>
+  <td>
+  	<%= link_to 'Remove', outcome, method: :delete, data: { confirm: 'Are you sure?' } %>
+  </td>
+</tr>

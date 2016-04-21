@@ -1,15 +1,19 @@
 require "csv"
 
-class P911YrCsvFile < CsvFile
+class OutcomeCsvFile < CsvFile
   HEADER_MAP = {
-    "facility code" => :facility_code,
-    "name of institution" => :institution,
-    "number of trainees" => :p911_yr_recipients,
-    "total cost" => :p911_yellow_ribbon
+    "va_facility_code" => :facility_code,
+    "va_facility_name" => :institution,
+    "retention_rate_veteran_ba" => :retention_rate_veteran_ba,
+    "retention_rate_veteran_otb" => :retention_rate_veteran_otb,
+    "persistance_rate_veteran_ba" => :persistance_rate_veteran_ba,
+    "persistance_rate_veteran_otb" => :persistance_rate_veteran_otb,
+    "graduation_rate_veteran" => :graduation_rate_veteran,
+    "transfer_out_rate_veteran" => :transfer_out_rate_veteran
   }
 
   SKIP_LINES_BEFORE_HEADER = 0
-  SKIP_LINES_AFTER_HEADER = 1
+  SKIP_LINES_AFTER_HEADER = 0
 
   DISALLOWED_CHARS = /[^\dA-Za-z \-\.]/
 
@@ -22,8 +26,8 @@ class P911YrCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     begin
-      write_data
- 
+      write_data 
+
       rc = true
     rescue StandardError => e
       errors[:base] << e.message

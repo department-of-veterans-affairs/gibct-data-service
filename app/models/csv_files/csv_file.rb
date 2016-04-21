@@ -13,6 +13,7 @@ class CsvFile < ActiveRecord::Base
     'IpedsIcAyCsvFile' => IpedsIcAy,
     'IpedsIcPyCsvFile' => IpedsIcPy,
     'MouCsvFile' => Mou,
+    'OutcomeCsvFile' => Outcome,
     'P911TfCsvFile' => P911Tf,
     'P911YrCsvFile' => P911Yr,
     'ScorecardCsvFile' => Scorecard,
@@ -131,7 +132,7 @@ class CsvFile < ActiveRecord::Base
       raise StandardError.new("No upload file provided.") if upload.blank?
 
       store.data_store = upload.read
-      rc = store.save
+      rc = store.save 
     rescue StandardError => e
       errors[:base] << e.message
       rc = false

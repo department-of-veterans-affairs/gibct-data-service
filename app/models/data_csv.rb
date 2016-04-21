@@ -429,7 +429,22 @@ class DataCsv < ActiveRecord::Base
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = complaints.#{name}) }.join(', ')
     query_str += ' FROM complaints '
-    query_str += 'WHERE data_csvs.facility_code = complaints.facility_code'
+    query_str += 'WHERE data_csvs.facility_code = complaints.facility_code '
+
+    run_bulk_query(query_str)    
+  end
+
+  ###########################################################################
+  ## update_with_outcome
+  ## Updates the DataCsv table with data from the outcome table.
+  ###########################################################################
+  def self.update_with_outcome
+    names = Outcome::USE_COLUMNS.map(&:to_s)
+
+    query_str = 'UPDATE data_csvs SET '
+    query_str += names.map { |name| %("#{name}" = outcomes.#{name}) }.join(', ')
+    query_str += ' FROM outcomes '
+    query_str += 'WHERE data_csvs.facility_code = outcomes.facility_code '
 
     run_bulk_query(query_str)    
   end
