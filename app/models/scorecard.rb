@@ -4,17 +4,17 @@ class Scorecard < ActiveRecord::Base
   validates :ope, presence: true
   validates :ope6, presence: true
   validates :cross, presence: true
-  validates :pred_degree_awarded, numericality: true, allow_blank: true
-  validates :locale, numericality: { only_integer: true }, allow_blank: true
-  validates :undergrad_enrollment, numericality: true, allow_blank: true
-  validates :retention_all_students_ba, numericality: true, allow_blank: true
-  validates :retention_all_students_otb, numericality: true, allow_blank: true
-  validates :graduation_rate_all_students, numericality: true, allow_blank: true
-  validates :salary_all_students, numericality: true, allow_blank: true
-  validates :repayment_rate_all_students, numericality: true, allow_blank: true
-  validates :avg_stu_loan_debt, numericality: true, allow_blank: true
-  validates :c150_4_pooled_supp, numericality: true, allow_blank: true
-  validates :c200_l4_pooled_supp, numericality: true, allow_blank: true
+  validates :pred_degree_awarded, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :locale, numericality: { only_integer: { message: '%{value} is not a number' } }, allow_blank: true
+  validates :undergrad_enrollment, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :retention_all_students_ba, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :retention_all_students_otb, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :graduation_rate_all_students, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :salary_all_students, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :repayment_rate_all_students, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :avg_stu_loan_debt, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :c150_4_pooled_supp, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :c200_l4_pooled_supp, numericality: { message: '%{value} is not a number' }, allow_blank: true
 
   before_save :set_derived_fields
 

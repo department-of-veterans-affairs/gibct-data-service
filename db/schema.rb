@@ -207,7 +207,13 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum"
     t.integer  "complaints_jobs_by_ope_id_do_not_sum"
     t.integer  "complaints_transcript_by_ope_id_do_not_sum"
-    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
+    t.integer  "complaints_other_by_ope_id_do_not_sum"
+    t.float    "retention_rate_veteran_ba"
+    t.float    "retention_rate_veteran_otb"
+    t.float    "persistance_rate_veteran_ba"
+    t.float    "persistance_rate_veteran_otb"
+    t.float    "graduation_rate_veteran"
+    t.float    "transfer_out_rate_veteran"
     t.datetime "created_at",                                                          null: false
     t.datetime "updated_at",                                                          null: false
   end
@@ -309,6 +315,22 @@ ActiveRecord::Schema.define(version: 20160330160605) do
 
   add_index "mous", ["institution"], name: "index_mous_on_institution", using: :btree
   add_index "mous", ["ope"], name: "index_mous_on_ope", using: :btree
+
+  create_table "outcomes", force: :cascade do |t|
+    t.string   "facility_code",                              null: false
+    t.string   "institution"
+    t.float    "retention_rate_veteran_ba",    default: 0.0
+    t.float    "retention_rate_veteran_otb",   default: 0.0
+    t.float    "persistance_rate_veteran_ba",  default: 0.0
+    t.float    "persistance_rate_veteran_otb", default: 0.0
+    t.float    "graduation_rate_veteran",      default: 0.0
+    t.float    "transfer_out_rate_veteran",    default: 0.0
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+  end
+
+  add_index "outcomes", ["facility_code"], name: "index_outcomes_on_facility_code", using: :btree
+  add_index "outcomes", ["institution"], name: "index_outcomes_on_institution", using: :btree
 
   create_table "p911_tfs", force: :cascade do |t|
     t.string   "facility_code",     null: false

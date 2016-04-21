@@ -113,7 +113,15 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.integer :complaints_credit_transfer_by_ope_id_do_not_sum, default: nil
       t.integer :complaints_jobs_by_ope_id_do_not_sum, default: nil
       t.integer :complaints_transcript_by_ope_id_do_not_sum, default: nil
-      t.integer :complaints_other_by_ope_id_do_not_sum, default: 0      
+      t.integer :complaints_other_by_ope_id_do_not_sum, default: nil     
+
+      # Outcome
+      t.float :retention_rate_veteran_ba, default: nil
+      t.float :retention_rate_veteran_otb, default: nil
+      t.float :persistance_rate_veteran_ba, default: nil
+      t.float :persistance_rate_veteran_otb, default: nil
+      t.float :graduation_rate_veteran, default: nil
+      t.float :transfer_out_rate_veteran, default: nil
 
       t.timestamps null: false
 

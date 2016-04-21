@@ -22,7 +22,6 @@ class P911TfCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     begin
-      # Write only if the row does not contain the state name only
       write_data
  
       rc = true

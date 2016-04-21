@@ -2,6 +2,10 @@ module Standardizable
   extend ActiveSupport::Concern
 
   class_methods do
+    def forbidden_word?(v)
+      ['none', 'null', 'privacysuppressed'].include?(v)
+    end
+
     ###########################################################################
     ## truthy?
     ## Converts string "truths" to boolean truths.
@@ -38,8 +42,9 @@ module Standardizable
         ## ope6
         #######################################################################
         when :ope6
-          define_method(:ope6=) do |v|
-            if v.present? && v.downcase != "none" && v.downcase != "null"
+          define_method(:ope6=) do |v|            
+            # if v.present? && v.downcase != "none" && v.downcase != "null"
+            if v.present? && !self.class.forbidden_word?(v.downcase)
               write_attribute(:ope6, self.class.pad(v.strip, 8)[1, 5]) 
             end
           end 
@@ -50,7 +55,8 @@ module Standardizable
         when :ope
           define_method(:ope=) do |v|
             v = v.try(:strip).try(:downcase) if v.is_a?(String)
-            v = nil if v == "none" || v == "null"
+            # v = nil if v == "none" || v == "null"
+            v = nil if self.class.forbidden_word?(v)
 
             write_attribute(:ope, self.class.pad(v, 8)) 
             self.ope6 = ope
@@ -72,7 +78,8 @@ module Standardizable
             col = self.class.columns.find { |col| col.name == setter.to_s }
 
             v = v.try(:strip).try(:downcase) if v.is_a?(String)
-            v = nil if v == "none" || v == "null"
+            # v = nil if v == "none" || v == "null"
+            v = nil if self.class.forbidden_word?(v)
 
             if col.try(:sql_type) == "boolean"
               v = self.class.truthy?(v) if v.is_a?(String)
