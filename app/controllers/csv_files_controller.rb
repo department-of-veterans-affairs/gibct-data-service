@@ -19,8 +19,8 @@ class CsvFilesController < ApplicationController
   ## new
   #############################################################################
   def new
-    @csv_file = CsvFile.new
-        
+    @csv_file = CsvFile.new(type: params[:type])
+
     respond_to do |format|
       format.html
     end 
