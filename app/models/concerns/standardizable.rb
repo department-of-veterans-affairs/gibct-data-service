@@ -77,15 +77,16 @@ module Standardizable
           define_method("#{setter.to_s}=".to_sym) do |v|
             col = self.class.columns.find { |col| col.name == setter.to_s }
 
-            v = v.try(:strip).try(:downcase) if v.is_a?(String)
-            # v = nil if v == "none" || v == "null"
-            v = nil if self.class.forbidden_word?(v)
+            if v.is_a?(String)
+              v = v.try(:strip).try(:downcase) 
+              v = nil if self.class.forbidden_word?(v) || v.blank?
+            end
 
             if col.try(:sql_type) == "boolean"
               v = self.class.truthy?(v) if v.is_a?(String)
               write_attribute(setter, v)
             else
-              write_attribute(setter, v)
+              write_attribute(setter, v)              
             end
           end
         end

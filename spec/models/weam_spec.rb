@@ -55,7 +55,7 @@ RSpec.describe Weam, type: :model do
 
     describe "va_highest_degree_offered" do
       {
-        "10" => "", "11" => "4-year", "12" => "4-year", 
+        "10" => nil, "11" => "4-year", "12" => "4-year", 
         "13" => "4-year", "14" => "2-year", "15" => "ncd",
         "16" => "ncd", "17" => "ncd", "18" => "ncd", "19" => "ncd"
       }.each_pair do |facility_code, degree|

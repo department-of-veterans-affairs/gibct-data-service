@@ -1,5 +1,3 @@
-require "csv"
-
 class SvaCsvFile < CsvFile
   HEADER_MAP = {
     "school" => :institution,

@@ -1,5 +1,3 @@
-require "csv"
-
 class P911YrCsvFile < CsvFile
   HEADER_MAP = {
     "facility code" => :facility_code,

@@ -1,5 +1,3 @@
-require "csv"
-
 class VsocCsvFile < CsvFile
   HEADER_MAP = {
     "facility_code" => :facility_code,

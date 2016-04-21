@@ -1,5 +1,3 @@
-require "csv"
-
 class VaCrosswalkCsvFile < CsvFile
   HEADER_MAP = {
     "facility code" => :facility_code,

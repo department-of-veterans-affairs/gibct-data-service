@@ -34,63 +34,6 @@ class Accreditation < ActiveRecord::Base
     :csv_accreditation_type, :accreditation_type, :agency_name, 
     :accreditation_status, :periods
 
-  # #############################################################################
-  # ## csv_accreditation_type=
-  # ## Strips whitespace and sets value to downcase
-  # #############################################################################
-  # def csv_accreditation_type=(value)
-  #   write_attribute(:csv_accreditation_type, value.try(:strip).try(:downcase))
-  # end
-
-  # #############################################################################
-  # ## accreditation_status=
-  # ## Strips whitespace and sets value to downcase
-  # #############################################################################
-  # def accreditation_status=(value)
-  #   write_attribute(:accreditation_status, value.try(:strip).try(:downcase))
-  # end
-
-  # #############################################################################
-  # ## periods=
-  # ## Strips whitespace and sets value to downcase
-  # #############################################################################
-  # def periods=(value)
-  #   write_attribute(:periods, value.try(:strip).try(:downcase))
-  # end
-
-  # #############################################################################
-  # ## ope=
-  # ## Strips whitespace and sets value to downcase, and pads ope with 0s
-  # #############################################################################
-  # def ope=(value)
-  #   value = value.try(:strip).try(:downcase)
-  #   value = nil if value.blank? || value == 'none' 
-
-  #   write_attribute(:ope, DS::OpeId.pad(value))
-  # end
-
-  # #############################################################################
-  # ## campus_ipeds_unitid=
-  # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s
-  # #############################################################################
-  # def campus_ipeds_unitid=(value)
-  #   value = value.try(:strip).try(:downcase)
-  #   value = nil if value.blank? || value == 'none' 
-
-  #   write_attribute(:campus_ipeds_unitid, DS::IpedsId.pad(value))
-  # end
-
-  # #############################################################################
-  # ## institution_ipeds_unitid=
-  # ## Strips whitespace and sets value to downcase, and pads ipeds with 0s
-  # #############################################################################
-  # def institution_ipeds_unitid=(value)
-  #   value = value.try(:strip).try(:downcase)
-  #   value = nil if value.blank? || value == 'none' 
-
-  #   write_attribute(:institution_ipeds_unitid, DS::IpedsId.pad(value))
-  # end  
-
   #############################################################################
   ## institution
   ## Gets the name of the institution.

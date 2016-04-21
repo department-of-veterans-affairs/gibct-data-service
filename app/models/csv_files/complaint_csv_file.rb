@@ -1,5 +1,3 @@
-require "csv"
-
 class ComplaintCsvFile < CsvFile
   HEADER_MAP = {
     "status" => :status,

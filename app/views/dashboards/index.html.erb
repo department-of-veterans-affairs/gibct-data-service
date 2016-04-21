@@ -1,5 +1,8 @@
 <%= render partial: 'introduction', 
-    locals: { new_link: DataCsv.complete?, edit_link: false, list_link: true } %>
+    locals: { 
+      new_link: DataCsv.complete?, export_link: DataCsv.complete?, list_link: true 
+    } 
+%>
 
 <header>
   <section>

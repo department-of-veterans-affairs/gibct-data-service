@@ -1,5 +1,3 @@
-require "csv"
-
 class SettlementCsvFile < CsvFile
   HEADER_MAP = {
     "instnm" => :institution,

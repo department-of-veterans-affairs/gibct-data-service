@@ -1,5 +1,3 @@
-require "csv"
-
 class MouCsvFile < CsvFile
   HEADER_MAP = {
     "institution name" => :institution,

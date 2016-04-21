@@ -1,5 +1,3 @@
-require "csv"
-
 class OutcomeCsvFile < CsvFile
   HEADER_MAP = {
     "va_facility_code" => :facility_code,

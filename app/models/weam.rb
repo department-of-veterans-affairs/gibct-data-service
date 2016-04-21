@@ -29,112 +29,6 @@ class Weam < ActiveRecord::Base
     :non_college_degree_indicator, :approved
 
   #############################################################################
-  ## bah=
-  ## Strips whitespace and sets strings to nil, otherwise saves the number
-  #############################################################################
-  # def bah=(value)
-  #   value = value.to_i if DS::Number.is_i?(value)
-  #   write_attribute(:bah, value)
-  # end
-
-  #############################################################################
-  ## poe=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def poe=(value)
-  #   write_attribute(:poe, DS::Truth.truthy?(value))
-  # end
-
-  #############################################################################
-  ## yr=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def yr=(value)
-  #   write_attribute(:yr, DS::Truth.truthy?(value))
-  # end
-
-  #############################################################################
-  ## institution_of_higher_learning_indicator=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def institution_of_higher_learning_indicator=(value)
-  #   write_attribute(:institution_of_higher_learning_indicator, DS::Truth.truthy?(value))
-  # end
-
-  #############################################################################
-  ## ojt_indicator=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def ojt_indicator=(value)
-  #   write_attribute(:ojt_indicator, DS::Truth.truthy?(value))
-  # end
-
-  #############################################################################
-  ## correspondence_indicator=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def correspondence_indicator=(value)
-  #   write_attribute(:correspondence_indicator, DS::Truth.truthy?(value))
-  # end
-  
-  #############################################################################
-  ## flight_indicator=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def flight_indicator=(value)
-  #   write_attribute(:flight_indicator, DS::Truth.truthy?(value))
-  # end
-  
-  #############################################################################
-  ## non_college_degree_indicator=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def non_college_degree_indicator=(value)
-  #   write_attribute(:non_college_degree_indicator, DS::Truth.truthy?(value))
-  # end
-  
-  #############################################################################
-  ## accredited=
-  ## Converts truthy/falsy strings to booleans
-  #############################################################################
-  # def accredited=(value)
-  #   write_attribute(:accredited, DS::Truth.truthy?(value))
-  # end
-
-  #############################################################################
-  ## facility_code=
-  ## Strips whitespace and sets value to upcase
-  #############################################################################
-  # def facility_code=(value)
-  #   write_attribute(:facility_code, value.try(:strip).try(:upcase))
-  # end
-
-  #############################################################################
-  ## state=
-  ## Converts "state strings" to 2-character uppercase state abbreviations
-  #############################################################################
-  # def state=(value)
-  #   value = DS::State.get_abbr(value.try(:strip))
-  #   write_attribute(:state, value.try(:upcase))
-  # end
-
-  #############################################################################
-  ## poo_status=
-  ## Strips whitespace and sets value to downcase
-  #############################################################################
-  # def poo_status=(value)
-  #   write_attribute(:poo_status, value.try(:strip).try(:downcase))
-  # end
-
-  #############################################################################
-  ## applicable_law_code=
-  ## Strips whitespace and sets value to downcase
-  #############################################################################
-  # def applicable_law_code=(value)
-  #   write_attribute(:applicable_law_code, value.try(:strip).try(:downcase))
-  # end
-
-  #############################################################################
   ## set_derived_fields=
   ## Computes the values of derived fields just prior to saving. Note that 
   ## any fields here cannot be part of validations.
@@ -204,10 +98,12 @@ class Weam < ActiveRecord::Base
   ## Gets the highest degree offered by facility_code at the campus level.
   #############################################################################
   def highest_degree_offered
-    {
-      '0' => ' ', '1' => '4-year', '2' => '4-year', '3' => '4-year',
+    degree = {
+      '0' => nil, '1' => '4-year', '2' => '4-year', '3' => '4-year',
       '4' => '2-year' 
-    }[facility_code[1]] || 'ncd'
+    }
+
+    degree.keys.include?(facility_code[1]) ? degree[facility_code[1]] : 'ncd'
   end
 
   #############################################################################

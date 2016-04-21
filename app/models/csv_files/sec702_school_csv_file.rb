@@ -1,5 +1,3 @@
-require "csv"
-
 class Sec702SchoolCsvFile < CsvFile
   HEADER_MAP = {
     "facility code" => :facility_code,
