@@ -8,6 +8,17 @@ class DataCsv < ActiveRecord::Base
   validates :state, inclusion: { in: DS::State.get_names }, allow_blank: true
 
   ###########################################################################
+  ## complete?
+  ## Returns true only if all data_stores are populated in CsvStorage.
+  ###########################################################################
+  def self.complete?
+    CsvFile::STI.keys.inject(true) do |s,a| 
+      store = CsvStorage.find_by(csv_file_type: a)
+      s = s && store.present? && store.data_store.present?
+    end
+  end  
+
+  ###########################################################################
   ## run_bulk_query
   ## Runs bulk query and provides support for created_at, updated_at, and
   ## renumbering autoincrements.
@@ -25,6 +36,36 @@ class DataCsv < ActiveRecord::Base
     end
 
     ActiveRecord::Base.connection.execute(str)
+  end
+
+  ###########################################################################
+  ## build_csv
+  ## Builds the data_csv table.
+  ###########################################################################
+  def self.build_csv
+    return if !complete?
+
+    initialize_with_weams
+    update_with_crosswalk
+    update_with_sva
+    update_with_vsoc
+    update_with_eight_key
+    update_with_accreditation
+    update_with_arf_gibill
+    update_with_p911_tf
+    update_with_p911_yr
+    update_with_mou
+    update_with_scorecard
+    update_with_ipeds_ic
+    update_with_ipeds_hd
+    update_with_ipeds_ic_ay
+    update_with_ipeds_ic_py
+    update_with_sec702_school
+    update_with_sec702
+    update_with_settlement
+    update_with_hcm
+    update_with_complaint
+    update_with_outcome
   end
 
   ###########################################################################

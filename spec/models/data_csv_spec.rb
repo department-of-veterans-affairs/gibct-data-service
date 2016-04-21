@@ -31,6 +31,66 @@ RSpec.describe DataCsv, type: :model do
   end
 
   #############################################################################
+  ## complete?
+  #############################################################################
+  describe "complete?" do
+    context "when some csv_files are missing" do
+      it "is false" do
+        expect(DataCsv).not_to be_complete
+      end
+    end
+
+    context "when all csv_files are present" do
+      it "is true" do
+        CsvFile::STI.keys.each do |t| 
+          cs = CsvStorage.create(csv_file_type: t, data_store: "a")
+        end
+
+        expect(DataCsv).to be_complete
+      end
+    end
+  end
+
+  #############################################################################
+  ## build_csv
+  #############################################################################
+  describe "build_csv" do
+    context "when complete" do
+      before(:each) do
+        CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+      end
+
+      it "calls all initialize and update methods" do
+        [
+          :initialize_with_weams, :update_with_crosswalk, :update_with_sva,
+          :update_with_vsoc, :update_with_eight_key, 
+          :update_with_accreditation, :update_with_arf_gibill, 
+          :update_with_p911_tf, :update_with_p911_yr, :update_with_mou, 
+          :update_with_scorecard, :update_with_ipeds_ic, :update_with_ipeds_hd, 
+          :update_with_ipeds_ic_ay, :update_with_ipeds_ic_py,
+          :update_with_sec702_school, :update_with_sec702, 
+          :update_with_settlement, :update_with_hcm, :update_with_complaint,
+          :update_with_outcome
+        ].each do |m|
+          expect(DataCsv).to receive(m)
+        end
+        
+        DataCsv.build_csv
+      end
+
+      it "adds instances to the DataCsv table" do
+        expect{ DataCsv.build_csv }.to change{ DataCsv.count }
+      end
+    end
+
+    context "when not complete" do
+      it "does nothing" do
+        expect{ DataCsv.build_csv }.not_to change{ DataCsv.count }
+      end
+    end
+  end
+
+  #############################################################################
   ## initialize_with_weams
   #############################################################################
   describe "initialize_with_weams" do

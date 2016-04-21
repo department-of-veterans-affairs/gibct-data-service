@@ -12,15 +12,15 @@ RSpec.describe ApplicationHelper, type: :helper do
   let(:controller_inactive) {
     '<li class="dropdown"><a href="#" class="dropdown-toggle" '\
     'data-toggle="dropdown" role="button" aria-haspopup="true" '\
-    'aria-expanded="false">Dashboard <span class="caret"></span></a>'\
-    '<ul class="dropdown-menu"><li><a href="/dashboard">'\
+    'aria-expanded="false">Dashboards <span class="caret"></span></a>'\
+    '<ul class="dropdown-menu"><li><a href="/dashboards">'\
     'List</a></li></ul></li>'
   }
   let(:controller_active) {
     '<li class="dropdown active"><a href="#" class="dropdown-toggle" '\
     'data-toggle="dropdown" role="button" aria-haspopup="true" '\
-    'aria-expanded="false">Dashboard <span class="caret"></span></a>'\
-    '<ul class="dropdown-menu"><li><a href="/dashboard">'\
+    'aria-expanded="false">Dashboards <span class="caret"></span></a>'\
+    '<ul class="dropdown-menu"><li><a href="/dashboards">'\
     'List</a></li></ul></li>'
   }
 
@@ -66,13 +66,13 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "returns a regular dropdown if the controller_name doesn't match the controller" do
       allow(controller).to receive(:controller_name).and_return("foo")
 
-      expect(helper.draw_controller('dashboard', :index)).to eq(controller_inactive)
+      expect(helper.draw_controller('dashboards', :index)).to eq(controller_inactive)
     end
 
     it "returns an active dropdown if the controller_name match the controller" do
-      allow(controller).to receive(:controller_name).and_return("dashboard")
+      allow(controller).to receive(:controller_name).and_return("dashboards")
 
-      expect(helper.draw_controller('dashboard', :index)).to eq(controller_active)
+      expect(helper.draw_controller('dashboards', :index)).to eq(controller_active)
     end
   end
 

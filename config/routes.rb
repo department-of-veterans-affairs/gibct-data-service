@@ -22,11 +22,9 @@ Rails.application.routes.draw do
   resources :va_crosswalks
   resources :weams
   
-  root 'dashboard#index'
+  root 'dashboards#index' 
 
-  get 'dashboard' => 'dashboard#index', as: :dashboard
-
-  resources :csv_types, only: [:show, :index]
+  resources :dashboards, only: [:index, :create]
   resources :csv_files, only: [:show, :index, :new, :create, :destroy]
 
   get 'csv_files/:id/send_csv_file' => 'csv_files#send_csv_file', as: :send_csv_file
