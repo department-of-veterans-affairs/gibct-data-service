@@ -64,12 +64,12 @@ class CreateDataCsvs < ActiveRecord::Migration
       t.float :avg_stu_loan_debt, default: nil
 
       # Ipeds Ic
-      t.string :credit_for_mil_training, default: nil
-      t.string :vet_poc, default: nil
-      t.string :student_vet_grp_ipeds, default: nil
-      t.string :soc_member, default: nil
+      t.boolean :credit_for_mil_training, default: nil
+      t.boolean :vet_poc, default: nil
+      t.boolean :student_vet_grp_ipeds, default: nil
+      t.boolean :soc_member, default: nil
       t.string :calendar, default: nil
-      t.string :online_all, default: nil
+      t.boolean :online_all, default: nil
 
       # Ipeds Hd
       t.string :vet_tuition_policy_url, default: nil

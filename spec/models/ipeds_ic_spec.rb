@@ -82,7 +82,7 @@ RSpec.describe IpedsIc, type: :model do
     }.each_pair do |dcol, ocol|
       context dcol.to_s do
         it "receives the value 'yes' when #{ocol.to_s} is 1" do
-          expect(create(:ipeds_ic, ocol => 1)[dcol]).to eq('yes')
+          expect(create(:ipeds_ic, ocol => 1)[dcol]).to be_truthy
         end
 
         it "is nil when #{ocol.to_s} is not 1" do
@@ -115,7 +115,7 @@ RSpec.describe IpedsIc, type: :model do
 
     context "online_all" do
       it "receives the value 'true' when distnced is 1" do
-        expect(create(:ipeds_ic, distnced: 1).online_all).to eq('true')
+        expect(create(:ipeds_ic, distnced: 1).online_all).to be_truthy
       end
 
       it "is nil when distnced is not 1" do

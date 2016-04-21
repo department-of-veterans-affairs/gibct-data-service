@@ -169,12 +169,12 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.float    "salary_all_students"
     t.float    "repayment_rate_all_students"
     t.float    "avg_stu_loan_debt"
-    t.string   "credit_for_mil_training"
-    t.string   "vet_poc"
-    t.string   "student_vet_grp_ipeds"
-    t.string   "soc_member"
+    t.boolean  "credit_for_mil_training"
+    t.boolean  "vet_poc"
+    t.boolean  "student_vet_grp_ipeds"
+    t.boolean  "soc_member"
     t.string   "calendar"
-    t.string   "online_all"
+    t.boolean  "online_all"
     t.string   "vet_tuition_policy_url"
     t.integer  "tuition_in_state"
     t.integer  "tuition_out_of_state"
@@ -290,12 +290,12 @@ ActiveRecord::Schema.define(version: 20160330160605) do
     t.integer  "vet5",                    null: false
     t.integer  "calsys",                  null: false
     t.integer  "distnced",                null: false
-    t.string   "credit_for_mil_training"
-    t.string   "vet_poc"
-    t.string   "student_vet_grp_ipeds"
-    t.string   "soc_member"
+    t.boolean  "credit_for_mil_training"
+    t.boolean  "vet_poc"
+    t.boolean  "student_vet_grp_ipeds"
+    t.boolean  "soc_member"
     t.string   "calendar"
-    t.string   "online_all"
+    t.boolean  "online_all"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
