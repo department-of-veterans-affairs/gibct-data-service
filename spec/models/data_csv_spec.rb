@@ -91,6 +91,27 @@ RSpec.describe DataCsv, type: :model do
   end
 
   #############################################################################
+  ## to_csv
+  #############################################################################
+  describe "to_csv" do
+    before(:each) do
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
+    end
+
+    it "calls CSV.generate" do
+      expect(CSV).to receive(:generate)
+      DataCsv.to_csv
+    end
+
+    it "produces a header row + 1 row per DataCsv instance" do
+      expect(DataCsv.to_csv.lines.length).to eq(DataCsv.count + 1)
+    end
+  end
+
+  #############################################################################
   ## initialize_with_weams
   #############################################################################
   describe "initialize_with_weams" do
