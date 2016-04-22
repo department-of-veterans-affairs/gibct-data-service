@@ -1,5 +1,3 @@
-require "csv"
-
 class WeamsCsvFile < CsvFile
 	HEADER_MAP = {
 		"facility code" => :facility_code,

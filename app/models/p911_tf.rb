@@ -9,32 +9,4 @@ class P911Tf < ActiveRecord::Base
 
   override_setters :facility_code, :institution, :p911_recipients, 
     :p911_tuition_fees
-
-  # #############################################################################
-  # ## facility_code=
-  # ## Strips whitespace and sets value to upcase
-  # #############################################################################
-  # def facility_code=(value)
-  #   write_attribute(:facility_code, value.try(:strip).try(:upcase))
-  # end
-
-  # #############################################################################
-  # ## p911_recipients=
-  # ## Strips whitespace and sets strings to nil, otherwise saves the number
-  # #############################################################################
-  # def p911_recipients=(value)
-  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
-
-  #   write_attribute(:p911_recipients, value)
-  # end
-
-  # #############################################################################
-  # ## p911_tuition_fees=
-  # ## Strips whitespace and sets strings to nil, otherwise saves the number
-  # #############################################################################
-  # def p911_tuition_fees=(value)
-  #   value = nil if !DS::Number.is_f?(value) # Will cause a save error
-
-  #   write_attribute(:p911_tuition_fees, value)
-  # end
 end

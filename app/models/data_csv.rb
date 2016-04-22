@@ -1,3 +1,5 @@
+require 'csv'
+
 class DataCsv < ActiveRecord::Base
   # GIBCT uses field called type, must kludge to prevent STI
   self.inheritance_column = "inheritance_type"
@@ -39,10 +41,10 @@ class DataCsv < ActiveRecord::Base
   end
 
   ###########################################################################
-  ## build_csv
+  ## build_data_csv
   ## Builds the data_csv table.
   ###########################################################################
-  def self.build_csv
+  def self.build_data_csv
     return if !complete?
 
     initialize_with_weams
@@ -66,6 +68,24 @@ class DataCsv < ActiveRecord::Base
     update_with_hcm
     update_with_complaint
     update_with_outcome
+  end
+
+  ###########################################################################
+  ## to_csv
+  ## Converts all the entries in the DataCsv to a csv string.
+  ###########################################################################
+  def self.to_csv
+    CSV.generate do |csv|
+      cols = column_names.reject do |c| 
+        %w(id created_at updated_at).include?(c)
+      end
+
+      csv << cols
+
+      all.order(:institution).each do |data|
+        csv << data.attributes.values_at(*cols)
+      end
+    end
   end
 
   ###########################################################################
@@ -172,7 +192,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'accreditation (' || accreditations.accreditation_status || '),')"
+    query_str += "'accreditation (', accreditations.accreditation_status, '),')"
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '

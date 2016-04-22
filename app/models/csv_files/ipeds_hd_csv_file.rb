@@ -1,5 +1,3 @@
-require "csv"
-
 class IpedsHdCsvFile < CsvFile
   HEADER_MAP = {
     "unitid" => :cross,

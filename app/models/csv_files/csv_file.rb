@@ -1,3 +1,5 @@
+require "csv"
+
 class CsvFile < ActiveRecord::Base
   attr_accessor :upload
 

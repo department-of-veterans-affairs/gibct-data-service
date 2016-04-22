@@ -1,5 +1,3 @@
-require "csv"
-
 class HcmCsvFile < CsvFile
   HEADER_MAP = {
     "institution name" => :institution,

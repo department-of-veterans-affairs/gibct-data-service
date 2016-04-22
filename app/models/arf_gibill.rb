@@ -7,22 +7,4 @@ class ArfGibill < ActiveRecord::Base
   USE_COLUMNS = [:gibill]
 
   override_setters :facility_code, :institution, :gibill
-
-  # #############################################################################
-  # ## facility_code=
-  # ## Strips whitespace and sets value to upcase
-  # #############################################################################
-  # def facility_code=(value)
-  #   write_attribute(:facility_code, value.try(:strip).try(:upcase))
-  # end
-
-  # #############################################################################
-  # ## gibill=
-  # ## Sets strings to nil, otherwise saves the number
-  # #############################################################################
-  # def gibill=(value)
-  #   value = nil if !DS::Number.is_i?(value) # Will cause a save error
-
-  #   write_attribute(:gibill, value)
-  # end
 end

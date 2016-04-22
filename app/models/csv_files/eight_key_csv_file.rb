@@ -1,5 +1,3 @@
-require "csv"
-
 class EightKeyCsvFile < CsvFile
   HEADER_MAP = {
     "institution of higher education" => :institution,

@@ -1,5 +1,3 @@
-require "csv"
-
 class IpedsIcPyCsvFile < CsvFile
   HEADER_MAP = {
     "unitid" => :cross,

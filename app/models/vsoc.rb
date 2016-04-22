@@ -7,12 +7,4 @@ class Vsoc < ActiveRecord::Base
 
   override_setters :facility_code, :institution, :vetsuccess_name, 
     :vetsuccess_email
-
-  # #############################################################################
-  # ## facility_code=
-  # ## Strips whitespace and sets value to upcase
-  # #############################################################################
-  # def facility_code=(value)
-  #   write_attribute(:facility_code, value.try(:strip).try(:upcase))
-  # end
 end

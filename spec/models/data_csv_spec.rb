@@ -52,9 +52,9 @@ RSpec.describe DataCsv, type: :model do
   end
 
   #############################################################################
-  ## build_csv
+  ## build_data_csv
   #############################################################################
-  describe "build_csv" do
+  describe "build_data_csv" do
     context "when complete" do
       before(:each) do
         CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
@@ -75,18 +75,39 @@ RSpec.describe DataCsv, type: :model do
           expect(DataCsv).to receive(m)
         end
         
-        DataCsv.build_csv
+        DataCsv.build_data_csv
       end
 
       it "adds instances to the DataCsv table" do
-        expect{ DataCsv.build_csv }.to change{ DataCsv.count }
+        expect{ DataCsv.build_data_csv }.to change{ DataCsv.count }
       end
     end
 
     context "when not complete" do
       it "does nothing" do
-        expect{ DataCsv.build_csv }.not_to change{ DataCsv.count }
+        expect{ DataCsv.build_data_csv }.not_to change{ DataCsv.count }
       end
+    end
+  end
+
+  #############################################################################
+  ## to_csv
+  #############################################################################
+  describe "to_csv" do
+    before(:each) do
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
+    end
+
+    it "calls CSV.generate" do
+      expect(CSV).to receive(:generate)
+      DataCsv.to_csv
+    end
+
+    it "produces a header row + 1 row per DataCsv instance" do
+      expect(DataCsv.to_csv.lines.length).to eq(DataCsv.count + 1)
     end
   end
 

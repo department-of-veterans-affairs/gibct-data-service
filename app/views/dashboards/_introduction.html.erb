@@ -20,17 +20,16 @@
       </div>
     <% end %>
 
-<!-- 
-    <% if edit_link %>
+    <% if export_link %>
       <div class="row row-space-6">
         <div class="col-xs-12">   
-          <%= link_to "Edit #{@csv_type.name}", 
-            edit_csv_type_path(@csv_type), 
+          <%= link_to "Export data.csv", 
+            dashboards_export_csv_file_path(format: :csv), 
             class: "btn btn-primary btn-xs", 
             role: "button" %>
         </div>
       </div>
-    <% end %> -->
+    <% end %> 
 
     <% if new_link %>
       <div class="row row-space-6">

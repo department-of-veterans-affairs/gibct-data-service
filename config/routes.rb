@@ -28,7 +28,8 @@ Rails.application.routes.draw do
   resources :csv_files, only: [:show, :index, :new, :create, :destroy]
 
   get 'csv_files/:id/send_csv_file' => 'csv_files#send_csv_file', as: :send_csv_file
-
+  get 'dashboards/export(.:format)' => 'dashboards#export', as: :dashboards_export_csv_file
+  
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

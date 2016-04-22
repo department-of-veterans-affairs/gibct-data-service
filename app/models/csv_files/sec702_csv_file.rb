@@ -1,5 +1,3 @@
-require "csv"
-
 class Sec702CsvFile < CsvFile
   HEADER_MAP = {
     "state" => :state,

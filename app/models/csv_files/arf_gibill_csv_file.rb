@@ -1,5 +1,3 @@
-require "csv"
-
 class ArfGibillCsvFile < CsvFile
   HEADER_MAP = {
     "facility code" => :facility_code,
