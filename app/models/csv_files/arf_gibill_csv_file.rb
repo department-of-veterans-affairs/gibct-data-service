@@ -1,6 +1,6 @@
 class ArfGibillCsvFile < CsvFile
   HEADER_MAP = {
-    "facility code" => :facility_code,
+    "facility no." => :facility_code,
     "school name" => :institution,
     "total count of students" => :gibill
   }
