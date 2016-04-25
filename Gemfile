@@ -70,9 +70,6 @@ group :development, :test do
   gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
-
-  # Used to colorize output for rake tasks
-  gem "rainbow"
 end
 
 group :development do
@@ -86,3 +83,6 @@ group :development do
   # POSIX systems should have this already, so we're not going to bring it in on other platforms
  gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 end
+
+# Used to colorize output for rake tasks
+gem "rainbow"
