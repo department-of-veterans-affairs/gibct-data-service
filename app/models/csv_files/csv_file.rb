@@ -194,7 +194,10 @@ class CsvFile < ActiveRecord::Base
       key = header_map[header]
 
       # Get the value, strip out bad chars, and normalize common values
-      hash[key] = (values[i] || "").gsub(disallowed_chars, "").strip
+      if values.present?
+        hash[key] = (values[i] || "").gsub(disallowed_chars, "").strip
+      end
+
       hash
     end
   end
