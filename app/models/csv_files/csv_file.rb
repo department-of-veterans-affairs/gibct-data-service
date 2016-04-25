@@ -194,7 +194,10 @@ class CsvFile < ActiveRecord::Base
       key = header_map[header]
 
       # Get the value, strip out bad chars, and normalize common values
-      hash[key] = (values[i] || "").gsub(disallowed_chars, "").strip
+      if values.present?
+        hash[key] = (values[i] || "").gsub(disallowed_chars, "").strip
+      end
+
       hash
     end
   end
@@ -214,16 +217,23 @@ class CsvFile < ActiveRecord::Base
     headers = get_headers(clean_line(lines.shift))
     lines.shift(self.class::SKIP_LINES_AFTER_HEADER)
 
-    ActiveRecord::Base.transaction do
-      lines.each do |line|
-        line = clean_line(line) || ""
-        row = get_row(line, headers)
+    row = nil
 
-        # Allow a block, if given to determine if row is created
-        unless row.values.join.blank?
-          table.create!(row) if !block_given? || yield(row)
+    begin
+      ActiveRecord::Base.transaction do
+        lines.each do |line|
+          line = clean_line(line) || ""
+          row = get_row(line, headers)
+
+          # Allow a block, if given to determine if row is created
+          unless row.values.join.blank?
+            table.create!(row) if !block_given? || yield(row)
+          end
         end
       end
+    rescue StandardError => e
+      msg = "#{e.message} \n #{row.inspect} "
+      raise StandardError.new(msg)
     end
   end
 
