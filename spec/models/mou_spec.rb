@@ -19,13 +19,13 @@ RSpec.describe Mou, type: :model do
 
     context "dodmou" do
       Mou::STATUSES.each do |status|
-        it "is true if status matches '#{status}'" do
-          expect(create(:mou, status: status).dodmou).to be_truthy
+        it "is false if status matches '#{status}'" do
+          expect(create(:mou, status: status).dodmou).not_to be_truthy
         end
       end
 
-      it "is false if status does not match known statuses" do
-        expect(create(:mou, status: "").dodmou).to be_falsy
+      it "is true if status does not match known statuses" do
+        expect(create(:mou, status: "").dodmou).to be_truthy
       end
     end
 

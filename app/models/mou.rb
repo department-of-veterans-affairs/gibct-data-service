@@ -15,7 +15,7 @@ class Mou < ActiveRecord::Base
   ## Converts the status column to boolean, based on a string match.
   #############################################################################
   def to_dodmou
-    STATUSES.include?(status)
+    !STATUSES.include?(status)
   end
 
   #############################################################################
