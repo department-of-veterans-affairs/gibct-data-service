@@ -29,6 +29,12 @@ class CsvFile < ActiveRecord::Base
   }
 
   DELIMITERS = [',', '|', ' ']
+  ENCODING_OPTIONS = {
+    invalid: :replace,
+    undef: :replace,
+    replace: '',
+    universal_newline: true
+  }
 
   validates :type, inclusion: { in: STI.keys  }
 
@@ -150,8 +156,10 @@ class CsvFile < ActiveRecord::Base
   ## Removes nasty non utf binary stuff.
   #############################################################################
   def clean_line(l)
-    l.try(:encode, "UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
-      .try(:chop).try(:strip)
+    # l = l.try(:gsub, /[\n\r\"]/, "").try(:strip)
+      # .try(:encode, "UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
+
+    l.encode(Encoding.find('ASCII'), ENCODING_OPTIONS).gsub(/\n\r"/, "") if l.present?
   end
 
   #############################################################################
@@ -237,7 +245,7 @@ class CsvFile < ActiveRecord::Base
         end
       end
     rescue StandardError => e
-      msg = "row #{row_number}: #{e.message} \n #{line.inspect} "
+      msg = "row #{row_number}: #{e.message} '#{line.inspect}' "
       raise StandardError.new(msg)
     end
   end
