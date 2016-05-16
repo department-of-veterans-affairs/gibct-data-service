@@ -151,7 +151,7 @@ class CsvFile < ActiveRecord::Base
   #############################################################################
   def clean_line(l)
     l.try(:encode, "UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
-      .try(:chop)
+      .try(:chop).try(:strip)
   end
 
   #############################################################################
@@ -218,11 +218,16 @@ class CsvFile < ActiveRecord::Base
     lines.shift(self.class::SKIP_LINES_AFTER_HEADER)
 
     row = nil
+    line = nil
+    row_number = 1 + self.class::SKIP_LINES_BEFORE_HEADER +
+      self.class::SKIP_LINES_AFTER_HEADER
 
     begin
       ActiveRecord::Base.transaction do
-        lines.each do |line|
-          line = clean_line(line) || ""
+        lines.each do |l|
+          row_number += 1
+
+          line = clean_line(l) || ""
           row = get_row(line, headers)
 
           # Allow a block, if given to determine if row is created
@@ -232,7 +237,7 @@ class CsvFile < ActiveRecord::Base
         end
       end
     rescue StandardError => e
-      msg = "#{e.message} \n #{row.inspect} "
+      msg = "row #{row_number}: #{e.message} \n #{line.inspect} "
       raise StandardError.new(msg)
     end
   end
