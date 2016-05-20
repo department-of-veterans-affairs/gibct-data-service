@@ -104,9 +104,7 @@ class DataCsv < ActiveRecord::Base
     end
 
     # Keep only those columns we want to transfer
-    columns = GibctInstitution.column_names.reject do |name|
-      %W(id created_at updated_at).include? name
-    end    
+    columns = GibctInstitution.column_names - %W(id created_at updated_at)
 
     rows = rows.map do |row|
       row = row.attributes

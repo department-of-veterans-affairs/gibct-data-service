@@ -74,21 +74,25 @@ class DashboardsController < ApplicationController
   ## db_push
   #############################################################################
   def db_push
+    errors = []
     begin
       raise StandardError.new("Missing csv files") if !DataCsv.complete?
 
-      ActiveRecord::Base.transaction do
+      DataCsv.to_gibct
+    rescue StandardError => e
+      errors << e.message
+      raise StandardError.new(errors.join(","))
+    end
 
-      GibctInstitutionType.delete_all
-      GibctInstitution.delete_all
+    respond_to do |format|
+      if errors.blank?
+        format.html { redirect_to dashboards_path, notice: "Data pushed to Gibct."}
+      else
+        label = "Errors prohibited data from being pushed:"
+        flash.alert = CsvFilesController.pretty_error(label, errors).html_safe
 
-      DataCsv.each do |data_csv|
-        type_id = to_institution_type(row)
-      end
-
-      rescue StandardError => e
-        msg = "Id #{data_csv.id}: #{e.message} '#{data_csv.inspect}' "
-        raise StandardError.new(msg)
+        @csv_types = CsvFile.types
+        format.html { render :index }
       end
     end
   end
