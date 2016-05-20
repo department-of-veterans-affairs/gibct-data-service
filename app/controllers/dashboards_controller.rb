@@ -75,13 +75,13 @@ class DashboardsController < ApplicationController
   #############################################################################
   def db_push
     errors = []
+
     begin
       raise StandardError.new("Missing csv files") if !DataCsv.complete?
 
       DataCsv.to_gibct
     rescue StandardError => e
       errors << e.message
-      raise StandardError.new(errors.join(","))
     end
 
     respond_to do |format|

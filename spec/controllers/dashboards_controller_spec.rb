@@ -83,7 +83,7 @@ RSpec.describe DashboardsController, type: :controller do
   #############################################################################
   ## create
   #############################################################################
-  describe "GET export" do
+  describe "GET db_push" do
     login_user
     
     context "when all csv files are loaded" do
@@ -93,9 +93,16 @@ RSpec.describe DashboardsController, type: :controller do
         end     
       end
 
-      it "calls DataCsv.to_csv" do
-        expect(DataCsv).to receive(:to_csv)
-        get :export, { format: :csv }
+      it "calls DataCsv.to_gibct" do
+        expect(DataCsv).to receive(:to_gibct)
+        get :db_push
+      end 
+    end
+
+    context "when some csv files are missing" do
+      it "does not call DataCsv.to_gibct" do
+        expect(DataCsv).not_to receive(:to_gibct)
+        get :db_push
       end 
     end
   end
