@@ -89,6 +89,58 @@ class DataCsv < ActiveRecord::Base
   end
 
   ###########################################################################
+  ## to_gibct
+  ## Transfers data_csv entries to the GIBCT
+  ###########################################################################
+  def self.to_gibct
+    GibctInstitutionType.delete_all
+    GibctInstitution.delete_all
+
+    rows = DataCsv.all 
+
+    types = rows.pluck(:type).uniq.inject({}) do |memo, type| 
+      memo[type] = GibctInstitutionType.create(name: type).id
+      memo
+    end
+
+    # Keep only those columns we want to transfer
+    columns = GibctInstitution.column_names.reject do |name|
+      %W(id created_at updated_at).include? name
+    end    
+
+    rows = rows.map do |row|
+      row = row.attributes
+
+      row["ope"] = row["ope6"]
+      row["institution_type_id"] = types[row["type"]]
+      row.delete("type")
+
+      columns.map do |column| 
+        case GibctInstitution.columns_hash[column].type
+        when :float, :integer
+          row[column] || 0
+        when :string, :datetime
+          row[column].present? ? "'#{row[column]}'" : 'NULL'
+        else
+          row[column].nil? ? 'NULL' : row[column]
+        end
+      end.join(",")
+    end
+
+    if rows.length > 0
+      str = "ALTER SEQUENCE institutions_id_seq RESTART WITH 1; "
+      str += "ALTER TABLE institutions ALTER COLUMN created_at SET DEFAULT now(); "
+      str += "ALTER TABLE institutions ALTER COLUMN updated_at SET DEFAULT now(); "
+      str += "INSERT INTO institutions (" + columns.map { |c| %("#{c}") }.join(",") + ") "
+      str += "VALUES " + rows.map { |row| "(#{row})" }.join(",")
+      str += "; ALTER TABLE institutions ALTER COLUMN updated_at DROP DEFAULT; "
+      str += "ALTER TABLE institutions ALTER COLUMN created_at DROP DEFAULT; "
+
+      GibctInstitution.connection.execute(str)
+    end
+  end
+
+  ###########################################################################
   ## initialize_with_weams
   ## Initializes the DataCsv table with data from approved weams schools.
   ###########################################################################

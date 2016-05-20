@@ -69,4 +69,27 @@ class DashboardsController < ApplicationController
       end
     end    
   end
+
+  #############################################################################
+  ## db_push
+  #############################################################################
+  def db_push
+    begin
+      raise StandardError.new("Missing csv files") if !DataCsv.complete?
+
+      ActiveRecord::Base.transaction do
+
+      GibctInstitutionType.delete_all
+      GibctInstitution.delete_all
+
+      DataCsv.each do |data_csv|
+        type_id = to_institution_type(row)
+      end
+
+      rescue StandardError => e
+        msg = "Id #{data_csv.id}: #{e.message} '#{data_csv.inspect}' "
+        raise StandardError.new(msg)
+      end
+    end
+  end
 end

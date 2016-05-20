@@ -79,4 +79,24 @@ RSpec.describe DashboardsController, type: :controller do
       end 
     end
   end
+
+  #############################################################################
+  ## create
+  #############################################################################
+  describe "GET export" do
+    login_user
+    
+    context "when all csv files are loaded" do
+      before(:each) do
+        CsvFile::STI.keys.each do |cs|
+          cs = CsvStorage.create(csv_file_type: cs, data_store: "a")
+        end     
+      end
+
+      it "calls DataCsv.to_csv" do
+        expect(DataCsv).to receive(:to_csv)
+        get :export, { format: :csv }
+      end 
+    end
+  end
 end
