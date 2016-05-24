@@ -9,7 +9,7 @@ class HcmCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 2
   SKIP_LINES_AFTER_HEADER = 0
 
-  DISALLOWED_CHARS = /[^\w@\- \.\/]/
+  DISALLOWED_CHARS = /[^#\w@\- \.\/]/
 
   #############################################################################
   ## populate

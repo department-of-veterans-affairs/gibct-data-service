@@ -79,4 +79,31 @@ RSpec.describe DashboardsController, type: :controller do
       end 
     end
   end
+
+  #############################################################################
+  ## create
+  #############################################################################
+  describe "GET db_push" do
+    login_user
+    
+    context "when all csv files are loaded" do
+      before(:each) do
+        CsvFile::STI.keys.each do |cs|
+          cs = CsvStorage.create(csv_file_type: cs, data_store: "a")
+        end     
+      end
+
+      it "calls DataCsv.to_gibct" do
+        expect(DataCsv).to receive(:to_gibct)
+        get :db_push
+      end 
+    end
+
+    context "when some csv files are missing" do
+      it "does not call DataCsv.to_gibct" do
+        expect(DataCsv).not_to receive(:to_gibct)
+        get :db_push
+      end 
+    end
+  end
 end

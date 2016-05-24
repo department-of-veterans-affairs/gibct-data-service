@@ -112,6 +112,31 @@ RSpec.describe DataCsv, type: :model do
   end
 
   #############################################################################
+  ## to_gibct
+  #############################################################################
+  describe "to_gibct" do
+    before(:each) do
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
+
+      GibctInstitution.delete_all
+      GibctInstitutionType.delete_all
+
+      DataCsv.to_gibct
+    end
+
+    it "adds an institution type to the Gibct for each type in data_csv" do
+      expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
+    end
+
+    it "adds an institution to the Gibct for each institution in data_csv" do
+      expect(GibctInstitution.pluck(:institution)).to match_array(DataCsv.pluck(:institution))
+    end
+  end
+
+  #############################################################################
   ## initialize_with_weams
   #############################################################################
   describe "initialize_with_weams" do

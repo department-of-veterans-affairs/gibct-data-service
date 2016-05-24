@@ -20,6 +20,16 @@
       </div>
     <% end %>
 
+    <% if new_link %>
+      <div class="row row-space-6">
+        <div class="col-xs-12">
+          <%= link_to 'Build New data.csv', 
+            '/dashboards', method: :post, class: "btn btn-primary btn-xs", 
+            role: "button" %>
+        </div>
+      </div>
+    <% end %>
+
     <% if export_link %>
       <div class="row row-space-6">
         <div class="col-xs-12">   
@@ -30,12 +40,12 @@
         </div>
       </div>
     <% end %> 
-
-    <% if new_link %>
+    <br/><br/>
+    <% if push_link %>
       <div class="row row-space-6">
         <div class="col-xs-12">
-          <%= link_to 'Build New Data.csv', 
-            '/dashboards', method: :post, class: "btn btn-danger btn-xs", 
+          <%= link_to 'Push Data to Gibct', 
+            dashboards_db_push_path, class: "btn btn-danger btn-xs", 
             role: "button" %>
         </div>
       </div>
