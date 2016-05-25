@@ -12,7 +12,8 @@ RSpec.shared_examples "a csv file sti model" do |model|
       end
 
       it "can produce a readable type" do
-        readable = model.to_s.split('_').map(&:capitalize).join(" ")
+        readable = model.to_s.split('_')
+          .map(&:capitalize).join(" ").gsub(/csv file/i, '').strip
         expect(build(model).humanize_type).to eq(readable)
       end
     end
