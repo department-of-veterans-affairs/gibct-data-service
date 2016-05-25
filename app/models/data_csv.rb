@@ -535,6 +535,8 @@ class DataCsv < ActiveRecord::Base
   ## Updates the DataCsv table with data from the complaint table.
   ###########################################################################
   def self.update_with_complaint
+    Complaint.update_sums_by_ope6
+    
     names = Complaint::USE_COLUMNS.map(&:to_s)
 
     query_str = 'UPDATE data_csvs SET '

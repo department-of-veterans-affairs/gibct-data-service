@@ -25,7 +25,8 @@ class ComplaintCsvFile < CsvFile
       write_data
 
       Complaint.update_sums_by_fac
-      Complaint.update_sums_by_ope6
+      ## MPH move these into data_csv build
+      # Complaint.update_sums_by_ope6
  
       rc = true
     rescue StandardError => e

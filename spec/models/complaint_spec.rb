@@ -64,6 +64,24 @@ RSpec.describe Complaint, type: :model do
     end
   end
 
+  describe "update_ope_from_crosswalk" do
+    before(:each) do
+      weam = create :weam
+      crosswalk = create :va_crosswalk, facility_code: weam.facility_code, ope: "11111111"
+      complaint = create :complaint, facility_code: weam.facility_code, ope: "00000000"
+
+      Complaint.update_ope_from_crosswalk
+    end
+
+    it "replaces the complaints ope with the crosswalk ope" do
+      expect(Complaint.first.ope).to eq(VaCrosswalk.first.ope)
+    end
+
+    it "replaces the complaints ope with the crosswalk ope" do
+      expect(Complaint.first.ope6).to eq(VaCrosswalk.first.ope6)
+    end
+  end
+
   describe "update_sums_by_fac" do
     before(:each) do
       create_list :complaint, 10, :all_issues, facility_code: "1"
@@ -81,11 +99,19 @@ RSpec.describe Complaint, type: :model do
 
   describe "update_sums_by_ope6" do
     before(:each) do
-      create_list :complaint, 10, :all_issues, ope: "11111111"
+      weam = create :weam
+      crosswalk = create :va_crosswalk, facility_code: weam.facility_code, ope: "11111111"
+      create_list :complaint, 10, :all_issues, facility_code: weam.facility_code
+    end
+
+    it "calls update_ope_from_crosswalk" do
+      expect(Complaint).to receive(:update_ope_from_crosswalk)
       Complaint.update_sums_by_ope6
     end
 
     it "each facility code sum is n if there are n issues by that facility code" do
+      Complaint.update_sums_by_ope6
+
       Complaint.all.each do |complaint|
         Complaint::OPE6_SUMS.keys.each do |ope6_sum|
           expect(complaint[ope6_sum]).to eq(10)

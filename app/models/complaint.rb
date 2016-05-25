@@ -136,10 +136,27 @@ class Complaint < ActiveRecord::Base
   end
 
   #############################################################################
-  ## update_sums_by_fac
-  ## Sums recurring complaints by facility_code.
+  ## update_ope_from_crosswalk
+  ## Updates the Complaints opes from the crosswalk, which are maintained and
+  ## more reliable.
+  #############################################################################
+  def self.update_ope_from_crosswalk
+    Complaint.all.each do |c|
+      if crosswalk = VaCrosswalk.find_by(facility_code: c.facility_code)
+        c.ope = crosswalk.ope
+        c.save
+      end
+    end
+  end
+
+  #############################################################################
+  ## update_sums_by_ope6
+  ## Sums recurring complaints by ope6.
   #############################################################################
   def self.update_sums_by_ope6
+    # Complaint CSV opes are not reliable!
+    Complaint.update_ope_from_crosswalk
+
     fac_code_terms = FAC_CODE_TERMS.keys
     ope6_sums = OPE6_SUMS.keys
 

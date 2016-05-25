@@ -1600,12 +1600,18 @@ RSpec.describe DataCsv, type: :model do
       Complaint.update_sums_by_ope6
 
       @complaint = Complaint.find_by(facility_code: crosswalk_approved_public.facility_code)
+    end
 
-      DataCsv.update_with_complaint
+    describe "when updating ope complaints" do
+      it "calls update_sums_by_ope6" do
+        expect(Complaint).to receive(:update_sums_by_ope6)
+        DataCsv.update_with_complaint
+      end
     end
 
     describe "when matching" do
       it "is matched by facility_code" do
+        DataCsv.update_with_complaint
         expect(data).not_to be_nil
       end
     end
@@ -1613,6 +1619,7 @@ RSpec.describe DataCsv, type: :model do
     describe "when copying fields to data_csv" do      
       Complaint::USE_COLUMNS.each do |column|
         it "updates the #{column} column" do
+          DataCsv.update_with_complaint
           expect(data[column]).to eq(@complaint[column])
         end
       end
