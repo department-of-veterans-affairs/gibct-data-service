@@ -273,6 +273,7 @@ class CsvFile < ActiveRecord::Base
   ## Returns a readable form of the class type.
   #############################################################################
   def humanize_type
-    class_to_type.split("_").map(&:capitalize).join(" ")
+    class_to_type.split("_")
+      .map(&:capitalize).join(" ").gsub(/csv file/i, '').strip
   end
 end

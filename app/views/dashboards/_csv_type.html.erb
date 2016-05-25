@@ -2,7 +2,7 @@
 <% storage = CsvStorage.find_by(csv_file_type: csv_file[0]) %>
 
 <tr>
-	<td><%= csv_type[0] + " Type" %></td>
+	<td><%= csv_type[0].gsub(/csv file/i, '') %></td>
 	<td><%= csv_file.blank? ? "-" : csv_file.name %></td>
 	<td><%= csv_file.blank? ? "-" : csv_file.humanize_date %></td>
   <td><%= link_to 'Upload', new_csv_file_path + URI.encode("?type=#{csv_type[1]}") %></td>
