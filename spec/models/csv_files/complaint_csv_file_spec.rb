@@ -21,10 +21,5 @@ RSpec.describe ComplaintCsvFile, type: :model do
       expect(Complaint).to receive(:update_sums_by_fac)
       create :complaint_csv_file
     end
-
-    it "calls update_sums_by_ope6" do
-      expect(Complaint).to receive(:update_sums_by_fac)
-      create :complaint_csv_file
-    end
   end
 end
