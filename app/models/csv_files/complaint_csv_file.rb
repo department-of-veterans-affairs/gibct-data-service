@@ -22,7 +22,12 @@ class ComplaintCsvFile < CsvFile
     ActiveRecord::Base.logger = nil
 
     begin
-      write_data
+      # OPE ids are unreliable, but we set them later with the crosswalk, so
+      # just remove them for now.
+      write_data do |row|
+        row[:ope] = nil
+        true
+      end
 
       Complaint.update_sums_by_fac
       ## MPH move these into data_csv build

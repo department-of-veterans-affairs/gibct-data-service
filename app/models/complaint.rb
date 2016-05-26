@@ -1,3 +1,36 @@
+###############################################################################
+## Complaint
+## Complaint data appears in its CSV as list of individual student veteran 
+## complaints keyed by an optional facility code. Therefore each institution
+## can have more than one complaint. If a facility code is not present, then
+## the complaint is ignored (although OPE ids are provided, they are not 
+## reliable as it turns out). We therefore null out OPE ids while processing
+## the complaint CSV.
+##
+## The complaints themselves fall into a number of categories as detailed in
+## the class constant FAC_CODE_TERMS hash. The keys are attributes of the 
+## complaint that are incremented by 1 if the corresponding value is found
+## in the complaint issue attribute. By summing these complaint attributes
+## accross a given facility_code, we obtain complaints for that campus,
+## and by summing accross an OPE6 id, we arrive at the roll-up sum for the
+## entire institution. Note that all sums are not normalized as an artifact
+## of how the original GIBCT, and its hastily constructed replacement, was 
+## designed.
+##
+## To accomplish this, when saving each instance of a complaint, we check the
+## the method :ok_to_sum? when the record is being saved. If not, all complaint
+## counts remain at 0, otherwise we run the method :set_fac_code_terms to
+## set each complaint type to a 0 or a 1 based on a regular expression match of
+## the issue attribute with complaint category keywords. Summing all the 
+## complaints for a given facility_code is then done by the method 
+## :update_sums_by_fac (called after uploading the complaint CSV). Rolling up
+## complaints to the institution (OPE6 id) is done by the method 
+## :update_sums_by_ope6 while the data_csv table is being built.
+##
+## Whether or not a complaint is counted, it must have (1) a facility_code,
+## (2) be closed, and (3) not be invalid.
+###############################################################################
+
 class Complaint < ActiveRecord::Base
   include Standardizable
 
