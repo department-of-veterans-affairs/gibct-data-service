@@ -21,5 +21,11 @@ RSpec.describe ComplaintCsvFile, type: :model do
       expect(Complaint).to receive(:update_sums_by_fac)
       create :complaint_csv_file
     end
+
+    it "sets all OPE ids to nil" do
+      create :complaint_csv_file
+      expect(Complaint.pluck(:ope)).to eq([nil, nil])
+      expect(Complaint.pluck(:ope6)).to eq([nil, nil])
+    end
   end
 end
