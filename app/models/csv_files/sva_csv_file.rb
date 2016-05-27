@@ -8,7 +8,7 @@ class SvaCsvFile < CsvFile
   SKIP_LINES_BEFORE_HEADER = 0
   SKIP_LINES_AFTER_HEADER = 0
 
-  DISALLOWED_CHARS = /[^#\w@\- \.\/]/
+  DISALLOWED_CHARS = /[^#\w@\- \.\/:]/
 
   #############################################################################
   ## populate
