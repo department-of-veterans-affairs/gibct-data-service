@@ -13,7 +13,7 @@ RSpec.describe Sva, type: :model do
   end
 
   describe "student_veteran_link" do
-    subject { create(:sva, student_veteran_link: "http://www.studentveterans.org" ) }
+    subject { create(:sva, student_veteran_link: "http://www.studentveterans.org") }
 
     it "sets http://www.studentveterans.org to nil" do
       expect(subject.student_veteran_link).to be_nil
