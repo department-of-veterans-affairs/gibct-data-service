@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
   get 'csv_files/:id/send_csv_file' => 'csv_files#send_csv_file', as: :send_csv_file
   get 'dashboards/export(.:format)' => 'dashboards#export', as: :dashboards_export_csv_file
-  get 'dashboards/db_push(.:format)' => 'dashboards#db_push', as: :dashboards_db_push
+  get 'dashboards/db_push/:srv/(.:format)' => 'dashboards#db_push', as: :dashboards_db_push
   
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.

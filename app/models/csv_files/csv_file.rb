@@ -156,9 +156,6 @@ class CsvFile < ActiveRecord::Base
   ## Removes nasty non utf binary stuff.
   #############################################################################
   def clean_line(l)
-    # l = l.try(:gsub, /[\n\r\"]/, "").try(:strip)
-      # .try(:encode, "UTF-8", "ascii-8bit", invalid: :replace, undef: :replace)
-
     l.encode(Encoding.find('ASCII'), ENCODING_OPTIONS).gsub(/\n\r"/, "") if l.present?
   end
 

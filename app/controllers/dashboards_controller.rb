@@ -75,18 +75,25 @@ class DashboardsController < ApplicationController
   #############################################################################
   def db_push
     errors = []
+    notice = ""
 
     begin
       raise StandardError.new("Missing csv files") if !DataCsv.complete?
 
-      DataCsv.to_gibct
+      if params[:srv] == "production"
+        DataCsv.to_gibct "./config/gibct_production_database.yml"
+        notice = "Successfully pushed to production GIBCT."
+      else
+        DataCsv.to_gibct
+        notice = "Successfully pushed to staging GIBCT."
+      end
     rescue StandardError => e
       errors << e.message
     end
 
     respond_to do |format|
       if errors.blank?
-        format.html { redirect_to dashboards_path, notice: "Data pushed to Gibct."}
+        format.html { redirect_to dashboards_path, notice: notice }
       else
         label = "Errors prohibited data from being pushed:"
         flash.alert = CsvFilesController.pretty_error(label, errors).html_safe

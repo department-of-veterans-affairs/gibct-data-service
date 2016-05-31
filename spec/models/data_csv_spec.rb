@@ -121,10 +121,15 @@ RSpec.describe DataCsv, type: :model do
       Weam.first.update(attributes_for :weam, :public)
       DataCsv.build_data_csv
 
-      GibctInstitution.delete_all
-      GibctInstitutionType.delete_all
-
       DataCsv.to_gibct
+      
+      GibctInstitutionType.set_connection("./config/gibct_staging_database.yml")
+      GibctInstitution.set_connection("./config/gibct_staging_database.yml")
+    end
+
+    after(:each) do
+      GibctInstitution.remove_connection
+      GibctInstitutionType.remove_connection
     end
 
     it "adds an institution type to the Gibct for each type in data_csv" do
@@ -1543,14 +1548,12 @@ RSpec.describe DataCsv, type: :model do
 
     describe "setting the data_csv.caution_flag_reason" do
       let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) do 
-        s = hcm.hcm_reason.split(" ").map(&:capitalize).join(" ").gsub("U.s", "U.S")
-        "Heightened Cash Monitoring (#{s}),"
-      end
+      let(:reason) { "Program Review" }
+      let(:reason_str) { "Heightened Cash Monitoring (#{reason})" }
 
       context "with a non-nil hcm_reason" do
         let!(:hcm) do
-          create :hcm, ope: crosswalk_approved_public.ope
+          create :hcm, ope: crosswalk_approved_public.ope, hcm_reason: reason
         end
 
         let(:data) do 
@@ -1565,13 +1568,13 @@ RSpec.describe DataCsv, type: :model do
         end
 
         it "appends data_csv.caution_flag_reason with its reason" do
-          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason}")
+          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason_str},")
         end  
       end
 
       context "with a repeated hcm_reason" do
         let!(:hcm) do
-          create :hcm, ope: crosswalk_approved_public.ope
+          create :hcm, ope: crosswalk_approved_public.ope, hcm_reason: reason
         end
 
         let(:data) do 
@@ -1580,14 +1583,14 @@ RSpec.describe DataCsv, type: :model do
 
         before(:each) do
           DataCsv.find_by(ope6: hcm.ope6)
-            .update(caution_flag_reason: reason)
+            .update(caution_flag_reason: reason_str)
 
           DataCsv.update_with_hcm
         end
 
         it "dues not append data_csv.caution_flag_reason with the same reason" do
-          expect(data.caution_flag_reason).not_to eq(reason + reason)
-          expect(data.caution_flag_reason).to eq(reason)
+          expect(data.caution_flag_reason).not_to eq("#{reason_str}, #{reason_str}")
+          expect(data.caution_flag_reason).to eq(reason_str)
         end  
       end
     end
