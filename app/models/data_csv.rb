@@ -242,7 +242,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'accreditation (', accreditations.accreditation_status, '),')"
+    query_str += "'Accreditation (', INITCAP(accreditations.accreditation_status), '),')"
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '
@@ -304,7 +304,7 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_mou
     names = Mou::USE_COLUMNS.map(&:to_s)
-    reason = 'dod probation For military tuition assistance'
+    reason = 'DoD Probation For Military Tuition Assistance'
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = mous.#{name}) }.join(', ')
@@ -417,7 +417,7 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_sec702_school
     names = Sec702School::USE_COLUMNS.map(&:to_s)
-    reason = 'does not offer required in-state tuition rates'
+    reason = 'Does Not Offer Required In-State Tuition Rates'
 
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = sec702_schools.#{name}) }.join(', ')
@@ -452,7 +452,7 @@ class DataCsv < ActiveRecord::Base
   ###########################################################################
   def self.update_with_sec702
     names = Sec702::USE_COLUMNS.map(&:to_s)
-    reason = 'does not offer required in-state tuition rates'
+    reason = 'Does Not Offer Required In-State Tuition Rates'
 
     query_str = ""
     names.each do |name|
@@ -497,11 +497,11 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "settlements.settlement_description, ',')"
+    query_str += "INITCAP(settlements.settlement_description), ',')"
     query_str += ' FROM settlements '
     query_str += 'WHERE data_csvs.cross = settlements.cross AND '
     query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    query_str += "'%' || settlements.settlement_description || '%' OR "
+    query_str += "'%' || INITCAP(settlements.settlement_description) || '%' OR "
     query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
@@ -519,12 +519,12 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'heightened cash monitoring (', hcms.hcm_reason, '),')"
+    query_str += "'Heightened Cash Monitoring (', INITCAP(hcms.hcm_reason), '),')"
     query_str += ' FROM hcms '
     query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
     query_str += 'hcms.hcm_type IS NOT NULL AND '
     query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    query_str += "'%' || hcms.hcm_reason || '%' OR "
+    query_str += "'%' || INITCAP(hcms.hcm_reason) || '%' OR "
     query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
