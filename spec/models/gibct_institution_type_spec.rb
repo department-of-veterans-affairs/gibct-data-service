@@ -3,11 +3,17 @@ require 'support/shared_examples_for_standardizable'
 
 RSpec.describe GibctInstitutionType, type: :model do
   before(:each) do 
+    GibctInstitutionType.set_connection("./config/gibct_staging_database.yml")
+    GibctInstitution.set_connection("./config/gibct_staging_database.yml")
+
     GibctInstitutionType.delete_all
     GibctInstitution.delete_all
   end
 
-  it_behaves_like "a standardizable model", GibctInstitutionType
+  after(:each) do 
+    GibctInstitution.remove_connection
+    GibctInstitutionType.remove_connection
+  end
 
   describe "When creating" do
     context "with a factory" do

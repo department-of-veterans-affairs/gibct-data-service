@@ -92,7 +92,10 @@ class DataCsv < ActiveRecord::Base
   ## to_gibct
   ## Transfers data_csv entries to the GIBCT
   ###########################################################################
-  def self.to_gibct
+  def self.to_gibct(config = "./config/gibct_staging_database.yml")
+    GibctInstitutionType.set_connection(config)
+    GibctInstitution.set_connection(config)
+
     GibctInstitutionType.delete_all
     GibctInstitution.delete_all
 
@@ -136,6 +139,9 @@ class DataCsv < ActiveRecord::Base
 
       GibctInstitution.connection.execute(str)
     end
+
+    GibctInstitution.remove_connection
+    GibctInstitutionType.remove_connection
   end
 
   ###########################################################################
