@@ -633,8 +633,8 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'some other reason,' }
-      let(:reason) { 'dod probation For military tuition assistance,' }
+      let(:prior_reason) { 'Some Other Reason,' }
+      let(:reason) { 'DoD Probation For Military Tuition Assistance,' }
 
       context "with dod_status equal to true" do
         let!(:mou) do 
@@ -1017,8 +1017,8 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'some other reason,' }
-      let(:reason) { 'does not offer required in-state tuition rates,' }
+      let(:prior_reason) { 'Some Other Reason,' }
+      let(:reason) { 'Does Not Offer Required In-State Tuition Rates,' }
 
       context "for a public school" do
         context "with sec_702 equal to true" do
@@ -1306,8 +1306,8 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'some other reason,' }
-      let(:reason) { 'does not offer required in-state tuition rates,' }
+      let(:prior_reason) { 'Some Other Reason,' }
+      let(:reason) { 'Does Not Offer Required In-State Tuition Rates,' }
 
       context "for a public school" do
         context "with sec_702 equal to true" do
@@ -1446,7 +1446,7 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'some other reason,' }
+      let(:prior_reason) { 'Some Other Reason,' }
 
       context "with settlement_description not equal to nil" do
         let!(:settlement) do
@@ -1465,7 +1465,10 @@ RSpec.describe DataCsv, type: :model do
         end
 
         it "appends data_csv.caution_flag_reason with its reason" do
-          new_reason = "#{prior_reason}#{settlement.settlement_description},"
+          description = settlement.settlement_description.split(" ")
+            .map(&:capitalize).join(" ").gsub("U.s", "U.S")
+
+          new_reason = "#{prior_reason}#{description},"
           expect(data.caution_flag_reason).to eq(new_reason)
         end          
       end
@@ -1479,8 +1482,9 @@ RSpec.describe DataCsv, type: :model do
           DataCsv.find_by(cross: settlement.cross) 
         end
 
-        let(:reason) { "#{settlement.settlement_description}," }
-
+        let(:reason) do "#{settlement.settlement_description},".split(" ")
+            .map(&:capitalize).join(" ").gsub("U.s", "U.S")
+        end
 
         before(:each) do
           DataCsv.find_by(cross: settlement.cross)
@@ -1538,8 +1542,11 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'some other reason,' }
-      let(:reason) { "heightened cash monitoring (#{hcm.hcm_reason})," }
+      let(:prior_reason) { 'Some Other Reason,' }
+      let(:reason) do 
+        s = hcm.hcm_reason.split(" ").map(&:capitalize).join(" ").gsub("U.s", "U.S")
+        "Heightened Cash Monitoring (#{s}),"
+      end
 
       context "with a non-nil hcm_reason" do
         let!(:hcm) do
