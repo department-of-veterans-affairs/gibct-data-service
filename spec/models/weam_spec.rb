@@ -39,17 +39,88 @@ RSpec.describe Weam, type: :model do
       end
     end
 
+    describe "ojt?" do
+      it "is true if the second digit of the facility code is 0" do
+        expect(build :weam, :ojt).to be_ojt
+        expect(build :weam, facility_code: '01000000').not_to be_ojt
+      end
+    end
+
+    describe "offer_degree?" do
+      it "is true if institution of higher learning" do
+        weam = build(:weam, 
+            institution_of_higher_learning_indicator: true,
+            non_college_degree_indicator: false
+        )
+        expect(weam).to be_offer_degree
+
+        weam.institution_of_higher_learning_indicator = false
+        expect(weam).not_to be_offer_degree
+      end
+
+      it "is true if institution offers non-college degree" do
+        weam = build(:weam, 
+            institution_of_higher_learning_indicator: false,
+            non_college_degree_indicator: true
+        )
+        expect(weam).to be_offer_degree
+
+        weam.non_college_degree_indicator = false
+        expect(weam).not_to be_offer_degree
+      end   
+
+      it "is false if neither higher learning or ncd" do
+        weam = build(:weam, 
+            institution_of_higher_learning_indicator: false,
+            non_college_degree_indicator: false
+        )
+        expect(weam).not_to be_offer_degree
+      end  
+    end
+
     describe "correspondence" do
-      it "is true when the school is a correspondence institution" do
-        expect(create(:weam, :correspondence).correspondence).to be_truthy
-        expect(create(:weam, :flight).correspondence).not_to be_truthy
+      context "correspondence indicator is true" do
+        it "is true when the school is a correspondence institution" do
+          expect(create(:weam, :correspondence).correspondence).to be_truthy
+        end
+
+        it "is false if the school offers a degree" do
+          weam = create(:weam, :correspondence,             
+            institution_of_higher_learning_indicator: true,
+            non_college_degree_indicator: true
+          )
+
+          expect(weam.correspondence).not_to be_truthy
+        end
+      end
+
+      context "correspondence indicator is false" do
+        it "is false" do
+          expect(create(:weam, :flight).correspondence).not_to be_truthy
+        end
       end
     end
 
     describe "flight" do
-      it "is true when the school is a correspondence institution" do
-        expect(create(:weam, :flight).flight).to be_truthy
-        expect(create(:weam, :correspondence).flight).not_to be_truthy
+      context "flight indicator is true" do
+        it "is true when the school is a flight institution" do
+          expect(create(:weam, :flight).flight).to be_truthy
+        end
+
+        it "is false if the school offers a degree" do
+          weam = create(:weam, :flight,             
+            institution_of_higher_learning_indicator: true,
+            non_college_degree_indicator: true
+          )
+
+          expect(weam.correspondence).not_to be_truthy
+        end
+      end
+
+      context "flight indicator is false" do
+        it "is false" do
+          expect(create(:weam, :correspondence).flight).not_to be_truthy
+        end
       end
     end
 
