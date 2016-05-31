@@ -38,6 +38,8 @@ FactoryGirl.define do
     ###########################################################################
     trait :correspondence do
       facility_code { x = generate(:facility_code); x[1] = '1'; x }
+      institution_of_higher_learning_indicator 'No'
+      non_college_degree_indicator 'No'
     end
 
     ###########################################################################
@@ -47,6 +49,8 @@ FactoryGirl.define do
     trait :flight do
       facility_code { x = generate(:facility_code); x[1] = '1'; x }
       correspondence_indicator 'No'
+      institution_of_higher_learning_indicator 'No'
+      non_college_degree_indicator 'No'
     end
 
     ###########################################################################

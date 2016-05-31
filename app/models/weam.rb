@@ -52,17 +52,24 @@ class Weam < ActiveRecord::Base
   end
 
   #############################################################################
+  ## offer_degree?
+  #############################################################################
+  def offer_degree?
+    institution_of_higher_learning_indicator || non_college_degree_indicator
+  end
+
+  #############################################################################
   ## correspondence?
   #############################################################################
   def correspondence?
-    correspondence_indicator && !ojt?
+    correspondence_indicator && !ojt? && !offer_degree?
   end
 
   #############################################################################
   ## flight?
   #############################################################################
   def flight?
-    !correspondence? && flight_indicator
+    !correspondence? && flight_indicator && !ojt? && !offer_degree?
   end
 
   #############################################################################
