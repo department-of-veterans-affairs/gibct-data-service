@@ -14,7 +14,6 @@ module GibctDataService
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # Config to EST (MPH)
     config.time_zone = 'Eastern Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
@@ -24,10 +23,10 @@ module GibctDataService
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
-    # Bootstrap support. (mph)
+    # Bootstrap support.
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
-    # STI Subdirectoty support. (mph)
+    # STI subdirectoty support. 
     config.autoload_paths += %W(#{config.root}/app/models/csv_files)
   end
 end

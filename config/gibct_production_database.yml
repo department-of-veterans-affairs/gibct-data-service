@@ -1,3 +1,7 @@
+###############################################################################
+## This is the GIBCT production database configuration, and configures the 
+## connecton to the GIBCT database.
+###############################################################################
 default: &default
   adapter: postgresql
   encoding: unicode
