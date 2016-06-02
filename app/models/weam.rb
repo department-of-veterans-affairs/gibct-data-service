@@ -49,7 +49,7 @@ class Weam < ActiveRecord::Base
   ## ojt?
   #############################################################################
   def ojt?
-    facility_code[1] == '0'                                 
+    !facility_code.nil? && facility_code[1] == '0'                                 
   end
 
   #############################################################################
@@ -84,14 +84,14 @@ class Weam < ActiveRecord::Base
   ## public?
   #############################################################################
   def public?
-    !foreign? && facility_code[0] == "1"
+    !foreign? && !facility_code.nil? && facility_code[0] == "1"
   end
 
   #############################################################################
   ## for_profit?
   #############################################################################
   def for_profit?
-    !foreign? && facility_code[0] == "2"
+    !foreign? && !facility_code.nil? && facility_code[0] == "2"
   end
 
   #############################################################################
@@ -111,7 +111,7 @@ class Weam < ActiveRecord::Base
       '4' => '2-year' 
     }
 
-    degree.keys.include?(facility_code[1]) ? degree[facility_code[1]] : 'ncd'
+    !facility_code.nil? && degree.keys.include?(facility_code[1]) ? degree[facility_code[1]] : 'ncd'
   end
 
   #############################################################################
