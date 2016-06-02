@@ -1,7 +1,9 @@
 ##############################################################################
 ## Preloads all Single Table Inheritance (STI) classes in development, rather 
 ## than lazy loading. The parent class needs to recognize its children ASAP.
-## (mph)
+## These dependencies reflect the *CsvFile classes that are responsible for
+## uploading CSV files and population their associated intermediate data
+## tables. These are the tables used to populate the final data_csvs table.
 ##############################################################################
 if Rails.env.development? || Rails.env.test?
 	# TODO: (mph) Preload all raw file subclasses - Weams MUST be last ...	
