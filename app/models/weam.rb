@@ -8,7 +8,8 @@ class Weam < ActiveRecord::Base
   validates :institution, presence: true
   validates :bah, numericality: true, allow_blank: true
 
-  before_save :set_derived_fields
+  # before_save :set_derived_fields
+  before_validation :set_derived_fields
 
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
