@@ -83,8 +83,10 @@ module Standardizable
             end
 
             if col.try(:sql_type) == "boolean"
-              v = self.class.truthy?(v) if v.is_a?(String)
-              write_attribute(setter, v)
+              if !v.nil?
+                v = self.class.truthy?(v) if v.is_a?(String)
+                write_attribute(setter, v)
+              end
             else
               write_attribute(setter, v)              
             end
