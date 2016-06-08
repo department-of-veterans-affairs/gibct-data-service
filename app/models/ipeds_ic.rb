@@ -49,7 +49,7 @@ class IpedsIc < ActiveRecord::Base
     when 2
       'quarters'
     else
-       'nontraditional'
+      'nontraditional'
     end
   end
 

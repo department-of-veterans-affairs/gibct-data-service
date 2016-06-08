@@ -85,7 +85,7 @@ RSpec.describe SettlementsController, type: :controller do
 
       it "creates an settlement entry" do
         expect{ post :create, settlement: @settlement }.to change(Settlement, :count).by(1)
-        expect(Settlement.find_by(institution: @settlement[:institution])).not_to be_nil
+        expect(Settlement.find_by(institution: @settlement[:institution].upcase)).not_to be_nil
       end 
     end
 

@@ -85,7 +85,7 @@ RSpec.describe MousController, type: :controller do
 
       it "creates an mou entry" do
         expect{ post :create, mou: @mou }.to change(Mou, :count).by(1)
-        expect(Mou.find_by(institution: @mou[:institution])).not_to be_nil
+        expect(Mou.find_by(institution: @mou[:institution].upcase)).not_to be_nil
       end 
     end
 

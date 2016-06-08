@@ -10,13 +10,18 @@ RSpec.shared_examples "a standardizable model" do |model|
       end
 
     when :institution
-      it "saves the institution as a stripped string" do
+      it "uppercases the institution" do
         subject.institution = "\n  ab cde School   \n"
-        expect(subject.institution).to eq('ab cde School')
+        expect(subject.institution).to eq('AB CDE SCHOOL')
+      end
+
+      it "strips the institution" do
+        subject.institution = "\n  ab cde School   \n"
+        expect(subject.institution).to eq('AB CDE SCHOOL')
       end
 
     when :state
-      it "saves the state name as a stripped 2 character abbreviation" do
+      it "saves the state name as a 2 character abbreviation" do
         subject.state = "new york"
         expect(subject.state).to eq("NY")
       end
@@ -95,8 +100,39 @@ RSpec.shared_examples "a standardizable model" do |model|
             expect(subject[field]).to be_falsy
           end
         else
-          expect(subject.send("#{field}=".to_sym, "\n AbCd \n")).to eq("abcd")                 
+          expect(subject.send("#{field}=".to_sym, "\n AbCd \n")).to eq("AbCd")                 
         end
+      end
+    end
+  end
+
+  describe "match" do
+    context "using a string pattern" do
+      it "uses a case insensitive match" do
+        expect(model.match "^A.*", "abc").to be_truthy
+        expect(model.match "^a.*", "abc").to be_truthy
+        expect(model.match "^b.*", "abc").to be_falsy
+      end
+
+      it "returns nil when either pattern or value are blank" do
+        expect(model.match nil, "abc").to be_falsy
+        expect(model.match "", "abc").to be_falsy
+        expect(model.match "", "").to be_falsy
+        expect(model.match "", nil).to be_falsy
+      end
+    end
+
+    context "using a regexp pattern" do
+      it "matches lowercase if case insensitive" do
+        expect(model.match /^A.*/i, "abc").to be_truthy
+        expect(model.match /^A.*/, "abc").to be_falsy
+      end
+
+      it "returns nil when either pattern or value are blank" do
+        expect(model.match nil, nil).to be_falsy
+        expect(model.match nil, "").to be_falsy
+        expect(model.match nil, "abc").to be_falsy
+        expect(model.match /^A.*/, nil).to be_falsy
       end
     end
   end

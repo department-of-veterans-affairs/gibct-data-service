@@ -20,7 +20,7 @@ RSpec.describe Mou, type: :model do
     context "dodmou" do
       Mou::STATUSES.each do |status|
         it "is false if status matches '#{status}'" do
-          expect(create(:mou, status: status).dodmou).not_to be_truthy
+          expect(create(:mou, status: status.upcase).dodmou).not_to be_truthy
         end
       end
 
@@ -31,7 +31,7 @@ RSpec.describe Mou, type: :model do
 
     context "dod_status" do
       it "is true if status matches 'probation - dod'" do
-        expect(create(:mou, status: 'probation - dod').dod_status).to be_truthy
+        expect(create(:mou, status: 'PrObAtIoN - Dod').dod_status).to be_truthy
       end
 
       it "is false if status does not match 'probation - dod'" do

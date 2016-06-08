@@ -12,7 +12,7 @@ class Sva < ActiveRecord::Base
   ## any fields here cannot be part of validations.
   #############################################################################
   def set_derived_fields
-    self.student_veteran_link = nil if student_veteran_link == "http://www.studentveterans.org"
+    self.student_veteran_link = nil if student_veteran_link.try(:downcase) == "http://www.studentveterans.org"
 
     true
   end

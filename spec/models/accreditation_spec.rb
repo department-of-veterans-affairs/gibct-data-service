@@ -41,13 +41,13 @@ RSpec.describe Accreditation, type: :model do
       subject { create :accreditation }
 
       it "gets campus_name if it is not nil" do
-        expect(subject.institution).to eq(subject.campus_name)
+        expect(subject.institution).to match(Regexp.new(subject.campus_name, true))
       end
 
       it "gets the institution name if the campus name is nil" do
         subject.campus_name = nil
         subject.save
-        expect(subject.institution).to eq(subject.institution_name)
+        expect(subject.institution).to match(Regexp.new(subject.institution_name, true))
       end
     end
 

@@ -85,7 +85,7 @@ RSpec.describe ScorecardsController, type: :controller do
 
       it "creates an scorecard entry" do
         expect{ post :create, scorecard: @scorecard }.to change(Scorecard, :count).by(1)
-        expect(Scorecard.find_by(institution: @scorecard[:institution])).not_to be_nil
+        expect(Scorecard.find_by(institution: @scorecard[:institution].upcase)).not_to be_nil
       end 
     end
 
