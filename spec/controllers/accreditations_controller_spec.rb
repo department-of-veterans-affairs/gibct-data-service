@@ -84,7 +84,7 @@ RSpec.describe AccreditationsController, type: :controller do
       end
 
       it "creates an accreditation entry" do
-        institution_name = @accreditation[:institution_name].downcase
+        institution_name = @accreditation[:institution_name]
         
         expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(1)
         expect(Accreditation.find_by(institution_name: institution_name)).not_to be_nil

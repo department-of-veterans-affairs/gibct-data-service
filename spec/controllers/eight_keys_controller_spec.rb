@@ -85,7 +85,7 @@ RSpec.describe EightKeysController, type: :controller do
 
       it "creates an eight key entry" do
         expect{ post :create, eight_key: @eight_key }.to change(EightKey, :count).by(1)
-        expect(EightKey.find_by(institution: @eight_key[:institution])).not_to be_nil
+        expect(EightKey.find_by(institution: @eight_key[:institution].upcase)).not_to be_nil
       end 
     end
 

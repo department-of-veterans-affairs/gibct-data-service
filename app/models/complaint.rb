@@ -81,8 +81,7 @@ class Complaint < ActiveRecord::Base
 
   USE_COLUMNS = FAC_CODE_SUMS.keys + OPE6_SUMS.keys
 
-  validates :status,  inclusion: { in: STATUSES }
-  validates :closed_reason, inclusion: { in: CLOSED_REASONS }, allow_blank: true
+  validate :inclusion_validator
 
   USE_COLUMNS.each { |c| validates c, numericality: true }
   FAC_CODE_TERMS.keys.each { |c| validates c, numericality: true }
@@ -115,6 +114,27 @@ class Complaint < ActiveRecord::Base
     :complaints_other_by_ope_id_do_not_sum
 
   #############################################################################
+  ## lowercase_inclusion_validator
+  ## Case insensitive inclusion validator
+  #############################################################################
+  def lowercase_inclusion_validator(attribute, collection, blank_ok = true)
+    return if (var = eval(attribute.to_s)).blank? && blank_ok
+
+    if !collection.include?(var.try(:downcase))
+      errors.add(attribute, "#{var} not in [#{collection.join(', ')}]")
+    end
+  end
+
+  #############################################################################
+  ## inclusion_validator
+  ## Case insensitive inclusion validator
+  #############################################################################
+  def inclusion_validator
+    lowercase_inclusion_validator(:status, STATUSES, false)
+    lowercase_inclusion_validator(:closed_reason, CLOSED_REASONS)
+  end
+
+  #############################################################################
   ## ok_to_sum?
   ## True if the complaint record is a valid, closed complaint.
   #############################################################################
@@ -139,7 +159,8 @@ class Complaint < ActiveRecord::Base
   #############################################################################
   def set_fac_code_terms
     FAC_CODE_TERMS.each_pair do |c, v|
-      self[c] = (issue =~ Regexp.new(v, true)).nil? ? 0 : 1
+      # self[c] = (issue =~ Regexp.new(v, true)).nil? ? 0 : 1
+      self[c] = Complaint.match(v, issue) ? 1 : 0
     end
   end  
 

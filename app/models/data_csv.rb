@@ -264,17 +264,17 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '
-    query_str += %(AND accreditations.periods LIKE '%current%' )
-    query_str += "AND accreditations.csv_accreditation_type = 'institutional'; "
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '
-    query_str += %(AND accreditations.periods LIKE '%current%' )
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
     query_str += 'AND accreditations.accreditation_status IS NOT NULL '
-    query_str += "AND accreditations.csv_accreditation_type = 'institutional'; "
+    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
@@ -282,9 +282,9 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '
-    query_str += %(AND accreditations.periods LIKE '%current%' )
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
     query_str += 'AND accreditations.accreditation_status IS NOT NULL '
-    query_str += "AND accreditations.csv_accreditation_type = 'institutional'; "
+    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
 
     run_bulk_query(query_str)
   end
@@ -352,14 +352,13 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
     query_str += 'AND mous.dod_status = TRUE; '
-
-
+    #MPH
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
     query_str += "'#{reason},')"
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
-    query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    query_str += "AND (LOWER(data_csvs.caution_flag_reason) NOT LIKE '%#{reason}%' OR "
     query_str += "data_csvs.caution_flag_reason IS NULL) "
     query_str += 'AND mous.dod_status = TRUE'
 

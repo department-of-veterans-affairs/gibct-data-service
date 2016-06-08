@@ -21,18 +21,37 @@ class Accreditation < ActiveRecord::Base
   USE_COLUMNS = [:accreditation_status, :accreditation_type]
 
   validates :agency_name, presence: true
-
-  validates :csv_accreditation_type, inclusion: { in: CSV_ACCREDITATION_TYPES }, allow_blank: true
-  validates :accreditation_type, inclusion: { in: ACCREDITATIONS.keys }, allow_blank: true
-  validates :accreditation_status, inclusion: { in: LAST_ACTIONS }, allow_blank: true
-
-  before_save :set_derived_fields
-  before_validation :set_accreditation_type
+  validate :inclusion_validator
 
   override_setters :institution_name, :campus_name, :institution, :ope, :ope6,
     :institution_ipeds_unitid, :campus_ipeds_unitid, :cross,
     :csv_accreditation_type, :accreditation_type, :agency_name, 
     :accreditation_status, :periods
+
+  before_save :set_derived_fields
+  before_validation :set_accreditation_type
+
+  #############################################################################
+  ## lowercase_inclusion_validator
+  ## Case insensitive inclusion validator
+  #############################################################################
+  def lowercase_inclusion_validator(attribute, collection, blank_ok = true)
+    return if (var = eval(attribute.to_s)).blank? && blank_ok
+
+    if !collection.include?(var.try(:downcase))
+      errors.add(attribute, "#{var} not in [#{collection.join(', ')}]")
+    end
+  end
+
+  #############################################################################
+  ## inclusion_validator
+  ## Case insensitive inclusion validator
+  #############################################################################
+  def inclusion_validator
+    lowercase_inclusion_validator(:csv_accreditation_type, CSV_ACCREDITATION_TYPES)
+    lowercase_inclusion_validator(:accreditation_type, ACCREDITATIONS.keys)
+    lowercase_inclusion_validator(:accreditation_status, LAST_ACTIONS)
+  end
 
   #############################################################################
   ## institution
@@ -59,7 +78,7 @@ class Accreditation < ActiveRecord::Base
 
     ACCREDITATIONS.keys.each do |key|
       ACCREDITATIONS[key].each do |exp|
-        return (self.accreditation_type = key) if agency_name =~ Regexp.new(exp, true)
+        return (self.accreditation_type = key) if Accreditation.match(exp, agency_name)
       end
     end
   end

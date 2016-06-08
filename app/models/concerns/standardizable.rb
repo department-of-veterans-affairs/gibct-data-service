@@ -3,7 +3,7 @@ module Standardizable
 
   class_methods do
     def forbidden_word?(v)
-      ['none', 'null', 'privacysuppressed'].include?(v)
+      ['none', 'null', 'privacysuppressed'].include?(v.try(:downcase))
     end
 
     ###########################################################################
@@ -11,7 +11,7 @@ module Standardizable
     ## Converts string "truths" to boolean truths.
     ###########################################################################
     def truthy?(v)
-      ["true", "t", "yes", "ye", "y", "1", "on"].include?(v)
+      ["true", "t", "yes", "ye", "y", "1", "on"].include?(v.try(:downcase))
     end
 
     ###########################################################################
@@ -35,7 +35,7 @@ module Standardizable
         #######################################################################
         when :institution
           define_method(:institution=) do |v|
-            write_attribute(:institution, v.strip) if v.present?
+            write_attribute(:institution, v.strip.upcase) if v.present?
           end
 
         #######################################################################
@@ -78,7 +78,7 @@ module Standardizable
             col = self.class.columns.find { |col| col.name == setter.to_s }
 
             if v.is_a?(String)
-              v = v.try(:strip).try(:downcase) 
+              v = v.try(:strip)
               v = nil if self.class.forbidden_word?(v) || v.blank?
             end
 
@@ -110,6 +110,21 @@ module Standardizable
     ###########################################################################
     def pad(v, l, c = '0')
       v.ljust(l, c)  if v.present? && v.class == String && v.downcase != 'none'
+    end
+
+    ###########################################################################
+    ## match
+    ## Performs a case insensitive string match if the pattern is a string, or
+    ## a match if the pattern is a regex.
+    ###########################################################################
+    def match(pattern, value)
+      return false if value.blank? || pattern.blank?
+
+      if pattern.is_a?(String)
+        m = (value =~ Regexp.new(pattern, true)) != nil
+      elsif pattern.is_a?(Regexp)
+        m = (value =~ pattern) != nil
+      end
     end
   end
 end

@@ -85,7 +85,7 @@ RSpec.describe HcmsController, type: :controller do
 
       it "creates an hcm entry" do
         expect{ post :create, hcm: @hcm }.to change(Hcm, :count).by(1)
-        expect(Hcm.find_by(institution: @hcm[:institution])).not_to be_nil
+        expect(Hcm.find_by(institution: @hcm[:institution].upcase)).not_to be_nil
       end 
     end
 
