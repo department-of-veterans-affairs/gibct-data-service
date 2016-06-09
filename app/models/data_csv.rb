@@ -113,6 +113,7 @@ class DataCsv < ActiveRecord::Base
       csv << cols
 
       all.order(:institution).each do |data|
+        data["ope"] = ("'" + data["ope"] + "'") if data["ope"]
         csv << data.attributes.values_at(*cols).map { |v| v == false ? '' : v }
       end
     end
