@@ -96,6 +96,7 @@ class DashboardsController < ApplicationController
         format.html { redirect_to dashboards_path, notice: notice }
       else
         label = "Errors prohibited data from being pushed:"
+        # errors = [errors[0] + " ... "]
         flash.alert = CsvFilesController.pretty_error(label, errors).html_safe
 
         @csv_types = CsvFile.types

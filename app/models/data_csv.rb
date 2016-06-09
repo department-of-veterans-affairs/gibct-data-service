@@ -152,6 +152,7 @@ class DataCsv < ActiveRecord::Base
         when :float, :integer
           row[column] || 0
         when :string, :datetime
+          row[column].gsub!("'", "''") if row[column].respond_to?(:gsub)
           row[column].present? ? "'#{row[column]}'" : 'NULL'
         else
           row[column].nil? ? 'NULL' : row[column]
