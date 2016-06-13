@@ -7,7 +7,7 @@ class DashboardsController < ApplicationController
   ## index
   #############################################################################
 	def index
-    @csv_types = CsvFile.types
+    @csv_types = DashboardsController.get_csv_file_types
 
     respond_to do |format|
       format.html
@@ -36,7 +36,7 @@ class DashboardsController < ApplicationController
         errors = @data_csv.errors.full_messages
         flash.alert = CsvFilesController.pretty_error(label, errors).html_safe
 
-        @csv_types = CsvFile.types
+        @csv_types = DashboardsController.get_csv_file_types
         format.html { render :index }
       end
     end
@@ -64,7 +64,7 @@ class DashboardsController < ApplicationController
         errors = @data_csv.errors.full_messages
         flash.alert = CsvFilesController.pretty_error(label, errors).html_safe
 
-        @csv_types = CsvFile.types
+        @csv_types = DashboardsController.get_csv_file_types
         format.html { render :index }
       end
     end    
@@ -99,7 +99,7 @@ class DashboardsController < ApplicationController
         # errors = [errors[0] + " ... "]
         flash.alert = CsvFilesController.pretty_error(label, errors).html_safe
 
-        @csv_types = CsvFile.types
+        @csv_types = DashboardsController.get_csv_file_types
         format.html { render :index }
       end
     end

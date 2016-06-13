@@ -21,23 +21,57 @@ class DataCsv < ActiveRecord::Base
   end  
 
   ###########################################################################
+  ## setup_data_csv_table
+  ## Sets up the Postgres environment prior to running a query, optionally
+  ## causing the autosequencing of the ids to be reset and the created_at
+  ## column to default to the current time. Nominally sets updated_at to
+  ## default to the current time.
+  ###########################################################################
+  def self.setup_data_csv_table(for_weams = false)
+    str = ""
+
+    if for_weams
+      str += "ALTER SEQUENCE data_csvs_id_seq RESTART WITH 1; "
+      str += "ALTER TABLE data_csvs ALTER COLUMN created_at SET DEFAULT now(); "
+    end
+
+    str += "ALTER TABLE data_csvs ALTER COLUMN updated_at SET DEFAULT now(); "
+
+    ActiveRecord::Base.connection.execute(str)
+  end
+
+  ###########################################################################
+  ## restore_data_csv_table
+  ## Drops defaults on the data_csv table.
+  ###########################################################################
+  def self.restore_data_csv_table(for_weams = false)
+    str = "ALTER TABLE data_csvs ALTER COLUMN updated_at DROP DEFAULT; "
+    str += "ALTER TABLE data_csvs ALTER COLUMN created_at DROP DEFAULT;" if for_weams
+
+    ActiveRecord::Base.connection.execute(str)
+  end
+
+  ###########################################################################
   ## run_bulk_query
   ## Runs bulk query and provides support for created_at, updated_at, and
   ## renumbering autoincrements.
   ###########################################################################
-  def self.run_bulk_query(query, create = false, restart = false)
-    str = restart ? "ALTER SEQUENCE data_csvs_id_seq RESTART WITH 1; " : ""
+  def self.run_bulk_query(query, for_weams = false)
+    # str = restart ? "ALTER SEQUENCE data_csvs_id_seq RESTART WITH 1; " : ""
 
-    str += "ALTER TABLE data_csvs ALTER COLUMN updated_at SET DEFAULT now(); "
-    str += query + ";"
-    str += "ALTER TABLE data_csvs ALTER COLUMN updated_at DROP DEFAULT; "
+    # str += "ALTER TABLE data_csvs ALTER COLUMN updated_at SET DEFAULT now(); "
+    # str += query + ";"
+    # str += "ALTER TABLE data_csvs ALTER COLUMN updated_at DROP DEFAULT; "
 
-    if create
-      str = "ALTER TABLE data_csvs ALTER COLUMN created_at SET DEFAULT now(); " + str
-      str += " ALTER TABLE data_csvs ALTER COLUMN created_at DROP DEFAULT; "
-    end
+    # if create
+    #   str = "ALTER TABLE data_csvs ALTER COLUMN created_at SET DEFAULT now(); " + str
+    #   str += " ALTER TABLE data_csvs ALTER COLUMN created_at DROP DEFAULT; "
+    # end
 
-    ActiveRecord::Base.connection.execute(str)
+    # ActiveRecord::Base.connection.execute(str)
+    setup_data_csv_table(for_weams)
+    ActiveRecord::Base.connection.execute(query)
+    restore_data_csv_table(for_weams)
   end
 
   ###########################################################################
@@ -120,60 +154,149 @@ class DataCsv < ActiveRecord::Base
   end
 
   ###########################################################################
-  ## to_gibct
-  ## Transfers data_csv entries to the GIBCT
+  ## to_gibct_institution_type
+  ## Creates an institution type in the GIBCT for each unique type found in
+  ## the data csv.
   ###########################################################################
-  def self.to_gibct(config = "./config/gibct_staging_database.yml")
-    GibctInstitutionType.set_connection(config)
-    GibctInstitution.set_connection(config)
-
+  def self.to_gibct_institution_type(rows)
     GibctInstitutionType.delete_all
-    GibctInstitution.delete_all
-
-    rows = DataCsv.all 
 
     types = rows.pluck(:type).uniq.inject({}) do |memo, type| 
       memo[type] = GibctInstitutionType.create(name: type).id
       memo
     end
 
-    # Keep only those columns we want to transfer
-    columns = GibctInstitution.column_names - %W(id created_at updated_at)
+    types
+  end
 
-    rows = rows.map do |row|
+  ###########################################################################
+  ## gibct_institution_column_names
+  ## Gets the institution column names whose values are copied from data_csv.
+  ###########################################################################
+  def self.gibct_institution_column_names
+    names = GibctInstitution.column_names - %W(id created_at updated_at)
+  end
+
+  ###########################################################################
+  ## partition_rows
+  ## Partitions the data_csv row set into managable chunks. The largest
+  ## number of parameters supported in sql prepares is 65536. Therefore if
+  ## each row has k columns, and there are n rows
+  ## number of rows (nrows) on a single sql prepare = 65536 / k 
+  ## number of calls to prepare = rows.length / nrows 
+  ###########################################################################
+  def self.partition_rows(rows)
+    cols = gibct_institution_column_names.length
+
+    nrows = 65536 / cols
+    ncalls = rows.length / nrows
+    partitions = []
+
+    # Insert data in 65536 column blocks
+    ncalls.times { |i| partitions << (nrows * i .. nrows * (i + 1) - 1) }
+
+    remaining_rows = nrows * ncalls < rows.length
+    partitions << (nrows * ncalls .. (rows.length - 1)) if remaining_rows
+
+    partitions
+  end
+
+  def self.map_value_to_gibct(name, value, type)
+    case type
+    when :float, :integer
+      value = value || 0
+    when :string, :datetime
+      if value.nil?
+        value == "NULL"
+      elsif value.is_a?(String) || value.is_a?(DateTime)
+        value = value.gsub("'", "''") if value.respond_to?(:gsub)
+      end
+    when :boolean
+      value = false if value.nil?
+    else
+      value = value.nil? ? 'NULL' : value
+    end
+
+    value
+  end
+  ###########################################################################
+  ## to_gibct_institution_type
+  ## Creates an institution type in the GIBCT for each unique type found in
+  ## the data csv.
+  ###########################################################################
+  def self.to_gibct_institution(rows, types, delete_table, config)  
+    GibctInstitution.set_connection(config) 
+
+    str = "ALTER TABLE institutions ALTER COLUMN created_at SET DEFAULT now(); "
+    str += "ALTER TABLE institutions ALTER COLUMN updated_at SET DEFAULT now();"
+
+    if delete_table
+      GibctInstitution.delete_all
+      str += "ALTER SEQUENCE institutions_id_seq RESTART WITH 1; "
+    end
+
+    GibctInstitution.connection.execute("#{str} BEGIN;")
+
+    binds = []
+    placeholders = []
+    gibct_column_names = gibct_institution_column_names
+
+    rows.each_with_index do |row, i|
+      placeholder = []
+
       row = row.attributes
 
       row["ope"] = row["ope6"]
       row["institution_type_id"] = types[row["type"]]
       row.delete("type")
 
-      columns.map do |column| 
-        case GibctInstitution.columns_hash[column].type
-        when :float, :integer
-          row[column] || 0
-        when :string, :datetime
-          row[column].gsub!("'", "''") if row[column].respond_to?(:gsub)
-          row[column].present? ? "'#{row[column]}'" : 'NULL'
-        else
-          row[column].nil? ? 'NULL' : row[column]
-        end
-      end.join(",")
+      gibct_column_names.each_with_index do |column, j|
+        type = GibctInstitution.columns_hash[column].type
+        value = map_value_to_gibct(column, row[column], type)
+
+        binds << { value: value }
+        placeholder << "$#{i * gibct_column_names.length + j + 1}"
+      end
+
+      placeholders << "(" + placeholder.join(", ") + ")"
     end
 
-    if rows.length > 0
-      str = "ALTER SEQUENCE institutions_id_seq RESTART WITH 1; "
-      str += "ALTER TABLE institutions ALTER COLUMN created_at SET DEFAULT now(); "
-      str += "ALTER TABLE institutions ALTER COLUMN updated_at SET DEFAULT now(); "
-      str += "INSERT INTO institutions (" + columns.map { |c| %("#{c}") }.join(",") + ") "
-      str += "VALUES " + rows.map { |row| "(#{row})" }.join(",")
-      str += "; ALTER TABLE institutions ALTER COLUMN updated_at DROP DEFAULT; "
-      str += "ALTER TABLE institutions ALTER COLUMN created_at DROP DEFAULT; "
+    str = "INSERT INTO institutions ("
+    str += gibct_column_names.map { |c| %("#{c}") }.join(",") 
+    str += ") "
+    str += "VALUES " + placeholders.join(", ")
 
-      GibctInstitution.connection.execute(str)
-    end
+    raw = GibctInstitution.connection.raw_connection
+    raw.prepare('gibctinsert', str)
+    raw.exec_prepared('gibctinsert', binds)
+
+    str = "COMMIT;"
+    str += "ALTER TABLE institutions ALTER COLUMN updated_at DROP DEFAULT; "
+    str += "ALTER TABLE institutions ALTER COLUMN created_at DROP DEFAULT; "
+    GibctInstitution.connection.execute(str)
+
+    GibctInstitution.remove_connection
+  end
+
+  ###########################################################################
+  ## to_gibct
+  ## Transfers data_csv entries to the GIBCT
+  ###########################################################################
+  def self.to_gibct(config = "./config/gibct_staging_database.yml")
+    rows = DataCsv.all 
+
+    GibctInstitutionType.set_connection(config) 
+    GibctInstitution.set_connection(config) 
+
+    types = to_gibct_institution_type(rows)
+    partition = partition_rows(rows)
 
     GibctInstitution.remove_connection
     GibctInstitutionType.remove_connection
+
+    partition.each_with_index do |p, i| 
+      to_gibct_institution(rows[p], types, i == 0, config)
+    end
   end
 
   ###########################################################################
@@ -185,10 +308,10 @@ class DataCsv < ActiveRecord::Base
 
     names = Weam::USE_COLUMNS.map(&:to_s).join(', ')
 
-    query_str = "INSERT INTO data_csvs (#{names}) ("
-    query_str += Weam.select(names).where(approved: true).to_sql + ")"    
+    query = "INSERT INTO data_csvs (#{names}) ("
+    query += Weam.select(names).where(approved: true).to_sql + ")"
 
-    run_bulk_query(query_str, true, true)
+    run_bulk_query(query, true)  
   end
 
   ###########################################################################

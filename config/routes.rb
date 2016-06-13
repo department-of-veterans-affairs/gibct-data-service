@@ -25,9 +25,11 @@ Rails.application.routes.draw do
   root 'dashboards#index' 
 
   resources :dashboards, only: [:index, :create]
-  resources :csv_files, only: [:show, :index, :new, :create, :destroy]
+  resources :csv_files, only: [:show, :index, :create, :destroy]
 
   get 'csv_files/:id/send_csv_file' => 'csv_files#send_csv_file', as: :send_csv_file
+  get 'csv_files/new/:type' => 'csv_files#new', as: :new_csv_file
+
   get 'dashboards/export(.:format)' => 'dashboards#export', as: :dashboards_export_csv_file
   get 'dashboards/db_push/:srv/(.:format)' => 'dashboards#db_push', as: :dashboards_db_push
   

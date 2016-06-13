@@ -114,31 +114,130 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## to_gibct
   #############################################################################
-  describe "to_gibct" do
+  describe "to_gibct_institution_type" do
+    let (:test_connection) { "./config/gibct_staging_database.yml" }
+
     before(:each) do
+      # Load test csv files so there is information to work with
       CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
 
       Weam.first.update(attributes_for :weam, :public)
       DataCsv.build_data_csv
-
-      DataCsv.to_gibct
       
-      GibctInstitutionType.set_connection("./config/gibct_staging_database.yml")
-      GibctInstitution.set_connection("./config/gibct_staging_database.yml")
+      # Use this connection to test remote GIBCT DB
+      GibctInstitutionType.set_connection(test_connection)
+
+      DataCsv.to_gibct_institution_type(DataCsv.all)
     end
 
     after(:each) do
-      GibctInstitution.remove_connection
       GibctInstitutionType.remove_connection
     end
 
     it "adds an institution type to the Gibct for each type in data_csv" do
       expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
     end
+  end
 
-    it "adds an institution to the Gibct for each institution in data_csv" do
-      expect(GibctInstitution.pluck(:institution)).to match_array(DataCsv.pluck(:institution))
+  #############################################################################
+  ## to_gibct
+  #############################################################################
+  describe "to_gibct" do
+    let (:test_connection) { "./config/gibct_staging_database.yml" }
+
+    before(:each) do
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
     end
+
+    ###########################################################################
+    ## gibct_institution_column_names
+    ###########################################################################
+    describe "gibct_institution_column_names" do
+      before(:each) do
+        GibctInstitution.set_connection(test_connection)
+      end
+
+      after(:each) do
+        GibctInstitution.remove_connection
+      end
+
+      it "gets the column names of the fields in the GIBCT institution table" do
+        expect(DataCsv.gibct_institution_column_names.count).to be > 0
+        expect(DataCsv.gibct_institution_column_names).to include("facility_code")        
+        expect(DataCsv.gibct_institution_column_names).to include("institution_type_id")        
+      end
+
+      it "does not include id, created_at, or updated at" do
+        expect(DataCsv.gibct_institution_column_names).not_to include("id", "created_at", "updated_at")        
+      end
+    end
+
+    ###########################################################################
+    ## gibct_institution_column_names
+    ###########################################################################
+    describe "partition_rows" do
+      let(:max_block_rows) { 65536 / DataCsv.gibct_institution_column_names.length }
+
+      before(:each) do
+        GibctInstitution.set_connection(test_connection)
+      end
+
+      after(:each) do
+        GibctInstitution.remove_connection
+      end
+
+      it "partitions data_csv into a single block if there are less than 65K attributes" do
+        expect(DataCsv.partition_rows(DataCsv.all)).to eq([0 .. 1])
+
+        filler =  max_block_rows - DataCsv.count
+        filler = 0 if filler < 0
+
+        create_list :weam, filler, :public
+        DataCsv.build_data_csv
+
+        expect(DataCsv.partition_rows(DataCsv.all)).to eq([0 .. max_block_rows - 1])        
+      end
+
+      it "partitions data_csv into a multiple blocks if there are more than 65K attributes" do
+        filler =  max_block_rows - DataCsv.count + 1
+        filler = 0 if filler < 0
+
+        create_list :weam, filler, :public
+        DataCsv.build_data_csv
+
+        expect(DataCsv.partition_rows(DataCsv.all)).to eq([
+          0 .. max_block_rows - 1, max_block_rows .. DataCsv.count - 1
+        ])                
+      end
+    end
+
+    # before(:each) do
+    #   CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+    #   Weam.first.update(attributes_for :weam, :public)
+    #   DataCsv.build_data_csv
+
+    #   # DataCsv.to_gibct
+      
+    #   GibctInstitutionType.set_connection("./config/gibct_staging_database.yml")
+    #   GibctInstitution.set_connection("./config/gibct_staging_database.yml")
+    # end
+
+    after(:each) do
+      GibctInstitution.remove_connection
+      GibctInstitutionType.remove_connection
+    end
+
+    # it "adds an institution type to the Gibct for each type in data_csv" do
+    #   expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
+    # end
+
+    # it "adds an institution to the Gibct for each institution in data_csv" do
+    #   expect(GibctInstitution.pluck(:institution)).to match_array(DataCsv.pluck(:institution))
+    # end
   end
 
   #############################################################################

@@ -85,4 +85,46 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.pretty_controller_name).to be_blank
     end
   end
+
+  describe "to_a_tag" do
+    it "returns an a tag" do
+      expect(helper.to_a_tag("label", "someplace")).to eq(%(<a href="someplace">label</a>))
+    end
+
+    it "returns an a tag with var/value pairs" do
+      var_vals = { "var1" => "val1", "var2" => "val2" }
+      tag = %(<a href="someplace?var1=val1&var2=val2">label</a>)
+
+      expect(helper.to_a_tag("label", "someplace", var_vals)).to eq(tag)
+    end
+
+    it "returns an a tag with the label set to the url if the label is blank" do
+      expect(helper.to_a_tag(nil, "someplace")).to eq(%(<a href="someplace">someplace</a>))
+    end
+
+    it "returns an empty href a tag if url is blank" do
+      expect(helper.to_a_tag("label", nil)).to eq(%(<a href="">label</a>))
+    end
+
+    it "returns an empty a tag if label and url are blank" do
+      expect(helper.to_a_tag(nil, nil)).to eq(%(<a href=""></a>))
+    end
+  end
+
+  describe "to_uri" do
+    it "returns a uri" do
+      expect(helper.to_uri("someplace")).to eq("someplace")
+    end
+
+    it "returns a uri with var/value pairs" do
+      var_vals = { "var1" => "val1", "var2" => "val2" }
+      uri = "someplace?var1=val1&var2=val2"
+
+      expect(helper.to_uri("someplace", var_vals)).to eq(uri)
+    end
+
+    it "returns an empty uri if the url is blank" do
+      expect(helper.to_uri(nil, {"a" => "a"})).to be_blank
+    end
+  end
 end

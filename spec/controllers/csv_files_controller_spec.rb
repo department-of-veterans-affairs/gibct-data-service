@@ -62,11 +62,16 @@ RSpec.describe CsvFilesController, type: :controller do
     login_user
 
     before(:each) do
-      get :new
+      get :new, type: "AccreditationCsvFile"
     end
 
-    it "assigns a blank weam record" do
-      expect(assigns(:csv_file)).to be_a_new(CsvFile)
+    it "assigns a blank csv file record" do
+      expect(assigns(:csv_file)).to be_a_new(AccreditationCsvFile)
+    end
+
+    it "populates an array of csv_types" do
+      expect(CsvFilesController.get_csv_file_types.length).to be > 0
+      expect(assigns(:csv_types)).to eq(CsvFilesController.get_csv_file_types)
     end
 
     it "returns http success" do

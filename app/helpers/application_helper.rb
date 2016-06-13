@@ -1,5 +1,32 @@
 module ApplicationHelper
   #############################################################################
+  ## to_a_tag
+  ## Creates a properly formatted a tag.
+  #############################################################################
+  def to_a_tag(label, url, params = {})
+    label = url if label.blank?
+
+    str = %(<a href="#{url})
+    var_values = params.inject("") { |str, h| str += "#{h[0]}=#{h[1]}&" }
+
+    str += "?" + URI.encode(var_values.chomp("&")) if !var_values.blank?
+    str += %(">#{label}</a>)
+  end
+
+  #############################################################################
+  ## to_uri
+  ## Creates a properly formatted a tag.
+  #############################################################################
+  def to_uri(url, params = {})
+    return "" if url.blank?
+
+    var_values = params.inject("") { |str, h| str += "#{h[0]}=#{h[1]}&" }
+    url += "?" + URI.encode(var_values.chomp("&")) if !var_values.blank?
+    
+    url
+  end
+
+  #############################################################################
   ## pretty_controller_name
   ## Converts a controller name to a singularized title.
   #############################################################################
@@ -65,7 +92,7 @@ module ApplicationHelper
 
         l += draw_link(path, "List")
       when :new
-        path = send(('new_' + controller.chomp('s')+"_path").to_sym)
+        path = send(('new_' + controller.chomp('s')+"_path").to_sym, "AccreditationCsvFile")
 
         l += draw_link(path, "New")
       end
