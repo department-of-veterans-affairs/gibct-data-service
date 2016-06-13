@@ -201,23 +201,25 @@ class DataCsv < ActiveRecord::Base
     partitions
   end
 
-  def self.map_value_to_gibct(name, value, type)
+  ###########################################################################
+  ## map_value_to_type
+  ## Maps the value of the DataCsv.column to a data type.
+  ###########################################################################
+  def self.map_value_to_type(value, type)
     case type
-    when :float, :integer
-      value = value || 0
-    when :string, :datetime
-      if value.nil?
-        value == "NULL"
-      elsif value.is_a?(String) || value.is_a?(DateTime)
-        value = value.gsub("'", "''") if value.respond_to?(:gsub)
-      end
+    when :integer
+      value.to_i
+    when :float
+      value.to_f   
+    when :string
+      value.to_s.gsub("'", "''") if !value.nil?
     when :boolean
-      value = false if value.nil?
+      if !value.nil?
+        ["true", "t", "yes", "y", "1", "on"].include?(value.to_s.downcase)
+      end
     else
-      value = value.nil? ? 'NULL' : value
+      value
     end
-
-    value
   end
   ###########################################################################
   ## to_gibct_institution_type
@@ -252,7 +254,7 @@ class DataCsv < ActiveRecord::Base
 
       gibct_column_names.each_with_index do |column, j|
         type = GibctInstitution.columns_hash[column].type
-        value = map_value_to_gibct(column, row[column], type)
+        value = map_value_to_type(row[column], type)
 
         binds << { value: value }
         placeholder << "$#{i * gibct_column_names.length + j + 1}"

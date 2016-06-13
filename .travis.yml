@@ -22,7 +22,7 @@ branches:
 script:
   - git branch
   - bundle exec rspec
-  - bundle exec rake ci
+  - bundle exec rake security
 
 bundler_args: "--without development"
 cache:
