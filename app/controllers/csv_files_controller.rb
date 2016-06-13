@@ -19,7 +19,9 @@ class CsvFilesController < ApplicationController
   ## new
   #############################################################################
   def new
-    @csv_file = CsvFile.new(type: params[:type])
+    cft = params[:type] || "AccreditationCsvFile"
+    @csv_file = CsvFile.new(type: cft)
+    @csv_types = CsvFilesController.get_csv_file_types
 
     respond_to do |format|
       format.html
@@ -44,6 +46,7 @@ class CsvFilesController < ApplicationController
         format.html { redirect_to @csv_file, notice: "#{@csv_file.name} saved."}
       else
         @csv_file = CsvFile.new if @csv_file.nil?
+        @csv_types = CsvFilesController.get_csv_file_types
 
         label = "Errors prohibited this file from being saved:"
         errors = @csv_file.errors.full_messages

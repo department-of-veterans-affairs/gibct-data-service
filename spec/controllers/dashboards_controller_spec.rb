@@ -22,7 +22,8 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it "populates an array of csv_types" do
-      expect(assigns(:csv_types)).to eq(CsvFile.types)
+      expect(DashboardsController.get_csv_file_types.length).to be > 0
+      expect(assigns(:csv_types)).to eq(DashboardsController.get_csv_file_types)
     end
   end
 

@@ -114,7 +114,37 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## to_gibct
   #############################################################################
+  describe "to_gibct_institution_type" do
+    let (:test_connection) { "./config/gibct_staging_database.yml" }
+
+    before(:each) do
+      # Load test csv files so there is information to work with
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
+      
+      # Use this connection to test remote GIBCT DB
+      GibctInstitutionType.set_connection(test_connection)
+
+      DataCsv.to_gibct_institution_type(DataCsv.all)
+    end
+
+    after(:each) do
+      GibctInstitutionType.remove_connection
+    end
+
+    it "adds an institution type to the Gibct for each type in data_csv" do
+      expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
+    end
+  end
+
+  #############################################################################
+  ## to_gibct
+  #############################################################################
   describe "to_gibct" do
+    let (:test_connection) { "./config/gibct_staging_database.yml" }
+
     before(:each) do
       CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
 
@@ -133,11 +163,188 @@ RSpec.describe DataCsv, type: :model do
     end
 
     it "adds an institution type to the Gibct for each type in data_csv" do
+      expect(GibctInstitutionType.count).to eq(2)
       expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
     end
 
     it "adds an institution to the Gibct for each institution in data_csv" do
+      expect(GibctInstitution.count).to eq(2)
       expect(GibctInstitution.pluck(:institution)).to match_array(DataCsv.pluck(:institution))
+    end
+  end
+
+  #############################################################################
+  ## gibct_institution_column_names
+  #############################################################################
+  describe "gibct_institution_column_names" do
+    let (:test_connection) { "./config/gibct_staging_database.yml" }
+
+    before(:each) do
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
+     
+      GibctInstitution.set_connection(test_connection)
+    end
+
+    after(:each) do
+      GibctInstitution.remove_connection
+    end
+
+    it "gets the column names of the fields in the GIBCT institution table" do
+      expect(DataCsv.gibct_institution_column_names.count).to be > 0
+      expect(DataCsv.gibct_institution_column_names).to include("facility_code")        
+      expect(DataCsv.gibct_institution_column_names).to include("institution_type_id")        
+    end
+
+    it "does not include id, created_at, or updated at" do
+      expect(DataCsv.gibct_institution_column_names).not_to include("id", "created_at", "updated_at")        
+    end
+  end
+
+  #############################################################################
+  ## gibct_institution_column_names
+  #############################################################################
+  describe "partition_rows" do
+    let(:max_block_rows) { 65536 / DataCsv.gibct_institution_column_names.length }
+    let (:test_connection) { "./config/gibct_staging_database.yml" }
+
+    before(:each) do
+      CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
+
+      Weam.first.update(attributes_for :weam, :public)
+      DataCsv.build_data_csv
+     
+      GibctInstitution.set_connection(test_connection)
+    end
+
+    after(:each) do
+      GibctInstitution.remove_connection
+    end
+
+    it "partitions data_csv into a single block if there are less than 65K attributes" do
+      expect(DataCsv.partition_rows(DataCsv.all)).to eq([0 .. 1])
+
+      filler =  max_block_rows - DataCsv.count
+      filler = 0 if filler < 0
+
+      create_list :weam, filler, :public
+      DataCsv.build_data_csv
+
+      expect(DataCsv.partition_rows(DataCsv.all)).to eq([0 .. max_block_rows - 1])        
+    end
+
+    it "partitions data_csv into a multiple blocks if there are more than 65K attributes" do
+      filler =  max_block_rows - DataCsv.count + 1
+      filler = 0 if filler < 0
+
+      create_list :weam, filler, :public
+      DataCsv.build_data_csv
+
+      expect(DataCsv.partition_rows(DataCsv.all)).to eq([
+        0 .. max_block_rows - 1, max_block_rows .. DataCsv.count - 1
+      ])                
+    end
+  end
+
+  ###########################################################################
+  ## map_value_to_type
+  ###########################################################################
+  describe "map_value_to_type" do
+    it "maps nil to nil" do
+      expect(DataCsv.map_value_to_type(nil, :nil)).to be_nil
+    end
+
+    context "maps to boolean" do
+      it "maps nil to nil" do
+        expect(DataCsv.map_value_to_type(nil, :boolean)).to be_nil
+      end
+
+      it "maps 1 to true" do
+        expect(DataCsv.map_value_to_type(1, :boolean)).to be_truthy
+      end
+
+      it "maps != 1 to false" do
+        expect(DataCsv.map_value_to_type(2, :boolean)).to be_falsy
+      end
+
+      it "maps booleans to booleans" do
+        expect(DataCsv.map_value_to_type(true, :boolean)).to be_truthy
+        expect(DataCsv.map_value_to_type(false, :boolean)).to be_falsy
+      end
+
+      it "maps 'boolean type' strings to booleans" do
+        %W(TRUE true T t Y y YES yes ON on 1).each do |v|
+          expect(DataCsv.map_value_to_type(v, :boolean)).to be_truthy
+        end
+
+        %W(FALSE false F f N n NO no OFF off 0 2).each do |v|
+          expect(DataCsv.map_value_to_type(v, :boolean)).to be_falsy
+        end
+
+        expect(DataCsv.map_value_to_type('', :boolean)).to be_falsy
+      end
+    end
+
+    context "maps to integer" do
+      it "maps nil to 0" do
+        expect(DataCsv.map_value_to_type(nil, :integer)).to eq(0)
+      end
+
+      it "maps blank to 0" do
+        expect(DataCsv.map_value_to_type("", :integer)).to eq(0)
+      end
+
+      it "maps strings to integers" do
+        expect(DataCsv.map_value_to_type("1", :integer)).to eq(1)
+        expect(DataCsv.map_value_to_type("0", :integer)).to eq(0)
+        expect(DataCsv.map_value_to_type("-1", :integer)).to eq(-1)
+      end
+
+      it "maps numbers to integers" do
+        expect(DataCsv.map_value_to_type(1, :integer)).to eq(1)
+        expect(DataCsv.map_value_to_type(1.0, :integer)).to eq(1)
+      end
+    end
+
+    context "maps to float" do
+      it "maps nil to 0.0" do
+        expect(DataCsv.map_value_to_type(nil, :float)).to eq(0.0)
+      end
+
+      it "maps blank to 0" do
+        expect(DataCsv.map_value_to_type("", :float)).to eq(0.0)
+      end
+
+      it "maps strings to numbers" do
+        expect(DataCsv.map_value_to_type("1", :float)).to eq(1.0)
+        expect(DataCsv.map_value_to_type("-1.0", :float)).to eq(-1.0)
+        expect(DataCsv.map_value_to_type("0", :integer)).to eq(0.0)
+      end
+    end
+
+    context "maps to string" do
+      it "maps nil to nil" do
+        expect(DataCsv.map_value_to_type(nil, :string)).to be_nil
+      end
+
+      it "maps blank to blank" do
+        expect(DataCsv.map_value_to_type("", :string)).to eq('')
+      end
+
+      it "maps numbers to strings" do
+        expect(DataCsv.map_value_to_type(1, :string)).to eq('1')
+        expect(DataCsv.map_value_to_type(-1.0, :string)).to eq('-1.0')
+      end
+
+      it "maps strings to strings" do
+        expect(DataCsv.map_value_to_type("abc", :string)).to eq('abc')
+      end
+
+      it "escapes single quotes in strings" do
+        expect(DataCsv.map_value_to_type("o'boy", :string)).to eq("o''boy")
+      end
     end
   end
 

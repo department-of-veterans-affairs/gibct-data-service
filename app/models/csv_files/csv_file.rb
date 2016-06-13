@@ -75,22 +75,6 @@ class CsvFile < ActiveRecord::Base
   end
 
   #############################################################################
-  ## types
-  ## Creates a collection for every defined subtype (WeamsCsvile, 
-  ## CrosswalkCsvFile, ...). However, this (and for other reasons) require 
-  ## that STI subclasses are preloaded in the development environment rather 
-  ## than lazy loaded. A Parent class is not aware of a child until that child 
-  ## is loaded. (mph)
-  ##
-  ## c.f. /config/initializers/preload_sti_models.rb
-  #############################################################################
-  def self.types
-    descendants.map do |csv| 
-      [csv.to_s.underscore.split('_').map(&:capitalize).join(' '), csv.to_s] 
-    end
-  end
-
-  #############################################################################
   ## class_to_type
   ## Converts the class name into the name its corresponding file file type.
   #############################################################################

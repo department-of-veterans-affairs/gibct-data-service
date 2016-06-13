@@ -1,7 +1,7 @@
 <%= form_for(@csv_file, multipart: true) do |f| %>
   <div class="form-group">
     <%= f.label(:type) %>
-    <%= f.select(:type, options_for_select(CsvFile.types, 
+    <%= f.select(:type, options_for_select(@csv_types, 
       selected: @csv_file.type), 
       { include_blank: "Select File Type" },
     	{ class: "form-control", required: true }) %>

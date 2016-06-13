@@ -20,5 +20,22 @@ module Alertable
 
       pstr
     end
+
+    ###########################################################################
+    ## get_csv_file_types
+    ## Provides a list of all *CsvFile classes, excluding the base CsvFile
+    ## class itself.
+    ###########################################################################
+    def get_csv_file_types
+      # Get all but the base class CsvFile
+      Module.constants.select { |c| c.to_s =~ /\w+csvfile/i }.map do |csv|
+        csv = csv.to_s
+
+        name = csv.underscore.split('_').map(&:capitalize)
+          .join(' ').gsub(/csv file/i, '').strip
+
+        [name, csv]
+      end
+    end    
   end
 end
