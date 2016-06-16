@@ -6,7 +6,7 @@
 ## tables. These are the tables used to populate the final data_csvs table.
 ##############################################################################
 if Rails.env.development? || Rails.env.test?
-	# TODO: (mph) Preload all raw file subclasses - Weams MUST be last ...	
+	# Preload all raw file subclasses - Weams MUST be last ...	
   %w(
     csv_file accreditation_csv_file arf_gibill_csv_file complaint_csv_file 
     eight_key_csv_file hcm_csv_file ipeds_ic_csv_file ipeds_ic_ay_csv_file 
