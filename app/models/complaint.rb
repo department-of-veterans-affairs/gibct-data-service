@@ -139,7 +139,7 @@ class Complaint < ActiveRecord::Base
   ## True if the complaint record is a valid, closed complaint.
   #############################################################################
   def ok_to_sum?
-    status == "closed" && closed_reason != "invalid"
+    status.try(:downcase) == "closed" && closed_reason.try(:downcase) != "invalid"
   end
 
   #############################################################################
@@ -192,7 +192,7 @@ class Complaint < ActiveRecord::Base
   #############################################################################
   ## update_ope_from_crosswalk
   ## Updates the Complaints opes from the crosswalk, which are maintained and
-  ## more reliable.
+  ## more reliable. Returns a list of unique ope6s.
   #############################################################################
   def self.update_ope_from_crosswalk
     Complaint.all.each do |c|
@@ -205,27 +205,29 @@ class Complaint < ActiveRecord::Base
 
   #############################################################################
   ## update_sums_by_ope6
-  ## Sums recurring complaints by ope6.
+  ## Sums recurring complaints by ope6. Updates with the latest opes and ope6s
+  ## from the crosswalk, and then computes the sums by ope6. Should only be
+  ## called by DataCsv.update_with_complaint
   #############################################################################
   def self.update_sums_by_ope6
     # Complaint CSV opes are not reliable!
-    Complaint.update_ope_from_crosswalk
+    ope6s = Complaint.update_ope_from_crosswalk
 
     fac_code_terms = FAC_CODE_TERMS.keys
-    ope6_sums = OPE6_SUMS.keys
+    ope6_sum_terms = OPE6_SUMS.keys
 
     select_strings = fac_code_terms.each_with_index.map do |term, i|
-      "sum(#{term}) as #{ope6_sums[i]}"      
+      "sum(#{term}) as #{ope6_sum_terms[i]}"      
     end
 
     results = Complaint.select(:ope6)
       .select(select_strings.join(", "))
       .where.not(ope6: nil).group(:ope6)
 
-    Complaint.transaction do
+    DataCsv.transaction do
       results.each do |result|
-        attributes = ope6_sums.inject({}) { |a, t| a[t] = result[t]; a }
-        Complaint.where(ope6: result.ope6)
+        attributes = ope6_sum_terms.inject({}) { |a, t| a[t] = result[t]; a }
+        DataCsv.where(ope6: result.ope6)
           .update_all(attributes)
       end
     end

@@ -99,9 +99,24 @@ RSpec.describe Complaint, type: :model do
 
   describe "update_sums_by_ope6" do
     before(:each) do
-      weam = create :weam
-      crosswalk = create :va_crosswalk, facility_code: weam.facility_code, ope: "11111111"
-      create_list :complaint, 10, :all_issues, facility_code: weam.facility_code
+      weam0 = create :weam, facility_code: "00000000"
+      weam1 = create :weam, facility_code: "11111111"
+
+      crosswalk0 = create :va_crosswalk, facility_code: weam0.facility_code, ope: "22222222"
+      crosswalk1 = create :va_crosswalk, facility_code: weam1.facility_code, ope: "22222222"
+
+      # TODO Initialize by weans and update by crosswalk.
+      DataCsv.initialize_with_weams
+      DataCsv.update_with_crosswalk
+
+      # Generate 10 complaints for facility code "00000000", these should be reflected
+      # in ope6 sums for facility code "11111111".
+      create_list :complaint, 5, :all_issues, facility_code: weam0.facility_code
+    end
+
+    it "is called by DataCsv.update_with_complaint" do
+      expect(Complaint).to receive(:update_sums_by_ope6)
+      DataCsv.update_with_complaint
     end
 
     it "calls update_ope_from_crosswalk" do
@@ -109,12 +124,12 @@ RSpec.describe Complaint, type: :model do
       Complaint.update_sums_by_ope6
     end
 
-    it "each facility code sum is n if there are n issues by that facility code" do
-      Complaint.update_sums_by_ope6
+    it "each ope6 sums n if there are n issues by that facility code" do
+      DataCsv.update_with_complaint
 
-      Complaint.all.each do |complaint|
+      DataCsv.all.each do |data_csv|
         Complaint::OPE6_SUMS.keys.each do |ope6_sum|
-          expect(complaint[ope6_sum]).to eq(10)
+          expect(data_csv[ope6_sum]).to eq(5)
         end 
       end
     end   

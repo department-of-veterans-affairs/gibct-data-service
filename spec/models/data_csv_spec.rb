@@ -1807,16 +1807,14 @@ RSpec.describe DataCsv, type: :model do
   ## update_with_complaint
   #############################################################################
   describe "update_with_complaint" do
-    let(:data) { DataCsv.find_by(facility_code: @complaint.facility_code) }
+    let(:data) { DataCsv.find_by(facility_code: complaint.facility_code) }
+    let(:complaint) { Complaint.find_by(facility_code: crosswalk_approved_public.facility_code) }
 
     before(:each) do
       create :complaint, :all_issues,
         facility_code: crosswalk_approved_public.facility_code 
 
       Complaint.update_sums_by_fac
-      Complaint.update_sums_by_ope6
-
-      @complaint = Complaint.find_by(facility_code: crosswalk_approved_public.facility_code)
     end
 
     describe "when updating ope complaints" do
@@ -1829,6 +1827,7 @@ RSpec.describe DataCsv, type: :model do
     describe "when matching" do
       it "is matched by facility_code" do
         DataCsv.update_with_complaint
+        
         expect(data).not_to be_nil
       end
     end
@@ -1836,8 +1835,9 @@ RSpec.describe DataCsv, type: :model do
     describe "when copying fields to data_csv" do      
       Complaint::USE_COLUMNS.each do |column|
         it "updates the #{column} column" do
-          DataCsv.update_with_complaint
-          expect(data[column]).to eq(@complaint[column])
+          expect{ DataCsv.update_with_complaint }.to change{ 
+            DataCsv.find_by(facility_code: complaint.facility_code)[column] 
+          }
         end
       end
     end

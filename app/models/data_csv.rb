@@ -696,9 +696,7 @@ class DataCsv < ActiveRecord::Base
   ## update_with_complaint
   ## Updates the DataCsv table with data from the complaint table.
   ###########################################################################
-  def self.update_with_complaint
-    Complaint.update_sums_by_ope6
-    
+  def self.update_with_complaint    
     names = Complaint::USE_COLUMNS.map(&:to_s)
 
     query_str = 'UPDATE data_csvs SET '
@@ -706,7 +704,10 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM complaints '
     query_str += 'WHERE data_csvs.facility_code = complaints.facility_code '
 
-    run_bulk_query(query_str)    
+    # Transfer the complaints data to the data_csv, and then update all ope6
+    # sums, since we have to do it for ALL rows in the data_csv.
+    run_bulk_query(query_str)   
+    Complaint.update_sums_by_ope6 
   end
 
   ###########################################################################
