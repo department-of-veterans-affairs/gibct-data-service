@@ -105,11 +105,11 @@ RSpec.describe Complaint, type: :model do
       crosswalk0 = create :va_crosswalk, facility_code: weam0.facility_code, ope: "22222222"
       crosswalk1 = create :va_crosswalk, facility_code: weam1.facility_code, ope: "22222222"
 
-      # TODO Initialize by weans and update by crosswalk.
+      # Initialize by weans and update by crosswalk.
       DataCsv.initialize_with_weams
       DataCsv.update_with_crosswalk
 
-      # Generate 10 complaints for facility code "00000000", these should be reflected
+      # Generate 5 complaints for facility code "00000000", these should be reflected
       # in ope6 sums for facility code "11111111".
       create_list :complaint, 5, :all_issues, facility_code: weam0.facility_code
     end
