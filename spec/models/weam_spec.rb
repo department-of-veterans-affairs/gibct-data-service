@@ -127,8 +127,8 @@ RSpec.describe Weam, type: :model do
     describe "va_highest_degree_offered" do
       {
         "10" => nil, "11" => "4-year", "12" => "4-year", 
-        "13" => "4-year", "14" => "2-year", "15" => "ncd",
-        "16" => "ncd", "17" => "ncd", "18" => "ncd", "19" => "ncd"
+        "13" => "4-year", "14" => "2-year", "15" => "NCD",
+        "16" => "NCD", "17" => "NCD", "18" => "NCD", "19" => "NCD"
       }.each_pair do |facility_code, degree|
         it "returns '#{degree.to_s}' based on facility_code #{facility_code}" do
           weam = create :weam, facility_code: facility_code
@@ -139,8 +139,8 @@ RSpec.describe Weam, type: :model do
 
     describe "type" do
       {
-        flight: "flight", foreign: "foreign", correspondence: "correspondence",
-        ojt: "ojt", public: "public", for_profit: "for profit", private: "private"
+        flight: "FLIGHT", foreign: "FOREIGN", correspondence: "CORRESPONDENCE",
+        ojt: "OJT", public: "PUBLIC", for_profit: "FOR PROFIT", private: "PRIVATE"
       }.each_pair do |weam, type|
         it "knows if its a #{type} institution" do
           expect(create(:weam, weam).type).to eq(type)

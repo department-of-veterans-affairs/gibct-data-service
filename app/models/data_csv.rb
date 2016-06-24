@@ -57,18 +57,6 @@ class DataCsv < ActiveRecord::Base
   ## renumbering autoincrements.
   ###########################################################################
   def self.run_bulk_query(query, for_weams = false)
-    # str = restart ? "ALTER SEQUENCE data_csvs_id_seq RESTART WITH 1; " : ""
-
-    # str += "ALTER TABLE data_csvs ALTER COLUMN updated_at SET DEFAULT now(); "
-    # str += query + ";"
-    # str += "ALTER TABLE data_csvs ALTER COLUMN updated_at DROP DEFAULT; "
-
-    # if create
-    #   str = "ALTER TABLE data_csvs ALTER COLUMN created_at SET DEFAULT now(); " + str
-    #   str += " ALTER TABLE data_csvs ALTER COLUMN created_at DROP DEFAULT; "
-    # end
-
-    # ActiveRecord::Base.connection.execute(str)
     setup_data_csv_table(for_weams)
     ActiveRecord::Base.connection.execute(query)
     restore_data_csv_table(for_weams)

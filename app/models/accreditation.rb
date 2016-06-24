@@ -2,10 +2,10 @@ class Accreditation < ActiveRecord::Base
   include Standardizable
 
   ACCREDITATIONS = {
-    "regional" => ["middle", "new england", "north central", "southern", "western"],
-    "national" => ["career schools", "continuing education", "independent colleges", 
+    "REGIONAL" => ["middle", "new england", "north central", "southern", "western"],
+    "NATIONAL" => ["career schools", "continuing education", "independent colleges", 
       "biblical", "occupational", "distance", "new york", "transnational"],
-    "hybrid" => ["acupuncture", "nursing", "health education", "liberal","legal", 
+    "HYBRID" => ["acupuncture", "nursing", "health education", "liberal","legal", 
       "funeral", "osteopathic", "pediatric", "theological", "massage", "radiologic", 
       "midwifery", "montessori", "career arts", "design", "dance", "music", 
       "theatre", "chiropractic"]
@@ -16,7 +16,7 @@ class Accreditation < ActiveRecord::Base
     "resigned under show cause", "denied full accreditation", "pre-accredited"
   ]
 
-  CSV_ACCREDITATION_TYPES = ['institutional',  'specialized', 'internship/residency']
+  CSV_ACCREDITATION_TYPES = ['INSTITUTIONAL',  'SPECIALIZED', 'INTERNSHIP/RESIDENCY']
 
   USE_COLUMNS = [:accreditation_status, :accreditation_type]
 
@@ -36,9 +36,16 @@ class Accreditation < ActiveRecord::Base
   ## Case insensitive inclusion validator
   #############################################################################
   def lowercase_inclusion_validator(attribute, collection, blank_ok = true)
-    return if (var = eval(attribute.to_s)).blank? && blank_ok
+    return if (var = self[attribute]).blank? && blank_ok
 
-    if !collection.include?(var.try(:downcase))
+    # if !collection.include?(var.try(:downcase))
+    #   errors.add(attribute, "#{var} not in [#{collection.join(', ')}]")
+    # end
+
+    # Case insensitive 
+    pattern = Regexp.new(var, true)
+
+    if collection.find { |c| Accreditation.match(pattern, c) }.nil?
       errors.add(attribute, "#{var} not in [#{collection.join(', ')}]")
     end
   end
