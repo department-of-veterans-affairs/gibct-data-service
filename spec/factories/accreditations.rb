@@ -19,7 +19,7 @@ FactoryGirl.define do
         "#{Faker::Date.between(15.years.ago, Date.today)} - Current" 
     }
 
-    csv_accreditation_type 'institutional'
+    csv_accreditation_type 'INSTITUTIONAL'
 
     trait :not_current do
       periods 'Something not ...'
@@ -28,7 +28,7 @@ FactoryGirl.define do
     trait :not_institutional do
       csv_accreditation_type { 
         Accreditation::CSV_ACCREDITATION_TYPES.reject { 
-            |a| a == 'institutional' 
+            |a| a == 'INSTITUTIONAL' 
         }.sample 
       }
     end
