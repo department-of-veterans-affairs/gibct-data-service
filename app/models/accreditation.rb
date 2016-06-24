@@ -38,10 +38,6 @@ class Accreditation < ActiveRecord::Base
   def lowercase_inclusion_validator(attribute, collection, blank_ok = true)
     return if (var = self[attribute]).blank? && blank_ok
 
-    # if !collection.include?(var.try(:downcase))
-    #   errors.add(attribute, "#{var} not in [#{collection.join(', ')}]")
-    # end
-
     # Case insensitive 
     pattern = Regexp.new(var, true)
 
