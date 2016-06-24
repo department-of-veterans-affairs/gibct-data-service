@@ -121,9 +121,9 @@ class Weam < ActiveRecord::Base
   #############################################################################
   def weams_type
     { 
-      'OJT' => ojt?, 'CORRESPONDENCE' => correspondence?, 'FLIGHT' => flight?,
-      'FOREIGN' => foreign?, 'PUBLIC' => public?, 'FOR PROFIT' => for_profit?,
-      'PRIVATE' => private?
+      'ojt' => ojt?, 'correspondence' => correspondence?, 'flight' => flight?,
+      'foreign' => foreign?, 'public' => public?, 'for profit' => for_profit?,
+      'private' => private?
     }.find { |key, value| value }[0]
   end
 

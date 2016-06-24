@@ -136,6 +136,7 @@ class DataCsv < ActiveRecord::Base
 
       all.order(:institution).each do |data|
         data["ope"] = ("'" + data["ope"] + "'") if data["ope"]
+        data["type"] = data["type"].try(:upcase)
         csv << data.attributes.values_at(*cols).map { |v| v == false ? '' : v }
       end
     end
