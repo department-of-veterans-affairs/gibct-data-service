@@ -123,7 +123,7 @@ class CsvFile < ActiveRecord::Base
       # Require an upload file, doesn't make sense to allow updates without.
       raise StandardError.new("No upload file provided.") if upload.blank?
 
-      store.data_store = upload.read
+      store.data_store = upload.read.gsub!(/\r\n?/, "\n")
       rc = store.save 
     rescue StandardError => e
       errors[:base] << e.message
