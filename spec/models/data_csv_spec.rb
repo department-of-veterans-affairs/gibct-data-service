@@ -1677,8 +1677,7 @@ RSpec.describe DataCsv, type: :model do
         end
 
         it "appends data_csv.caution_flag_reason with its reason" do
-          description = settlement.settlement_description.split(" ")
-            .map(&:capitalize).join(" ").gsub("U.s", "U.S")
+          description = settlement.settlement_description
 
           new_reason = "#{prior_reason}#{description},"
           expect(data.caution_flag_reason).to eq(new_reason)
@@ -1694,9 +1693,7 @@ RSpec.describe DataCsv, type: :model do
           DataCsv.find_by(cross: settlement.cross) 
         end
 
-        let(:reason) do "#{settlement.settlement_description},".split(" ")
-            .map(&:capitalize).join(" ").gsub("U.s", "U.S")
-        end
+        let(:reason) { "#{settlement.settlement_description}," }
 
         before(:each) do
           DataCsv.find_by(cross: settlement.cross)

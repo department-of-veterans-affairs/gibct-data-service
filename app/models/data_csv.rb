@@ -394,7 +394,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'Accreditation (', INITCAP(accreditations.accreditation_status), '),')"
+    query_str += "'Accreditation (', accreditations.accreditation_status, '),')"
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '
@@ -648,11 +648,11 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "INITCAP(settlements.settlement_description), ',')"
+    query_str += "settlements.settlement_description, ',')"
     query_str += ' FROM settlements '
     query_str += 'WHERE data_csvs.cross = settlements.cross AND '
     query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    query_str += "'%' || INITCAP(settlements.settlement_description) || '%' OR "
+    query_str += "'%' || settlements.settlement_description || '%' OR "
     query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
@@ -670,12 +670,12 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'Heightened Cash Monitoring (', INITCAP(hcms.hcm_reason), '),')"
+    query_str += "'Heightened Cash Monitoring (', hcms.hcm_reason, '),')"
     query_str += ' FROM hcms '
     query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
     query_str += 'hcms.hcm_type IS NOT NULL AND '
     query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    query_str += "'%' || INITCAP(hcms.hcm_reason) || '%' OR "
+    query_str += "'%' || hcms.hcm_reason || '%' OR "
     query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
