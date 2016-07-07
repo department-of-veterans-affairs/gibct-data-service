@@ -35,7 +35,10 @@ module Standardizable
         #######################################################################
         when :institution
           define_method(:institution=) do |v|
-            write_attribute(:institution, v.strip.upcase) if v.present?
+            if v.present?
+              v = v.to_s.gsub("'", "''").strip.try(:upcase)
+              write_attribute(:institution, v) 
+            end
           end
 
         #######################################################################
@@ -43,7 +46,6 @@ module Standardizable
         #######################################################################
         when :ope6
           define_method(:ope6=) do |v|            
-            # if v.present? && v.downcase != "none" && v.downcase != "null"
             if v.present? && !self.class.forbidden_word?(v.downcase)
               write_attribute(:ope6, self.class.pad(v.strip, 8)[1, 5]) 
             end
@@ -55,7 +57,6 @@ module Standardizable
         when :ope
           define_method(:ope=) do |v|
             v = v.try(:strip).try(:downcase) if v.is_a?(String)
-            # v = nil if v == "none" || v == "null"
             v = nil if self.class.forbidden_word?(v)
 
             write_attribute(:ope, self.class.pad(v, 8)) 
@@ -80,6 +81,7 @@ module Standardizable
             if v.is_a?(String)
               v = v.try(:strip)
               v = nil if self.class.forbidden_word?(v) || v.blank?
+              v = v.to_s.gsub("'", "''") if !v.nil?
             end
 
             if col.try(:sql_type) == "boolean"

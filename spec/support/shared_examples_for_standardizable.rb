@@ -20,6 +20,11 @@ RSpec.shared_examples "a standardizable model" do |model|
         expect(subject.institution).to eq('AB CDE SCHOOL')
       end
 
+      it "adds an extra single quote if present in the institution" do
+        subject.institution = "\n  o'malley school   \n"
+        expect(subject.institution).to eq("O''MALLEY SCHOOL")
+      end
+
     when :state
       it "saves the state name as a 2 character abbreviation" do
         subject.state = "new york"
