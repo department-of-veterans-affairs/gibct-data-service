@@ -1386,7 +1386,7 @@ RSpec.describe DataCsv, type: :model do
 
     describe "setting the data_csv.caution_flag_reason" do
       let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { 'Does Not Offer Required In-State Tuition Rates,' }
+      let(:reason) { 'Does Not Offer Required In-State Tuition Rates, ' }
 
       context "for a public school" do
         context "with sec_702 equal to true" do
@@ -1675,7 +1675,7 @@ RSpec.describe DataCsv, type: :model do
 
     describe "setting the data_csv.caution_flag_reason" do
       let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { 'Does Not Offer Required In-State Tuition Rates,' }
+      let(:reason) { 'Does Not Offer Required In-State Tuition Rates, ' }
 
       context "for a public school" do
         context "with sec_702 equal to true" do
@@ -1835,7 +1835,7 @@ RSpec.describe DataCsv, type: :model do
         it "appends data_csv.caution_flag_reason with its reason" do
           description = settlement.settlement_description
 
-          new_reason = "#{prior_reason}#{description},"
+          new_reason = "#{prior_reason}#{description}, "
           expect(data.caution_flag_reason).to eq(new_reason)
         end          
       end
@@ -1928,7 +1928,7 @@ RSpec.describe DataCsv, type: :model do
         end
 
         it "appends data_csv.caution_flag_reason with its reason" do
-          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason_str},")
+          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason_str}, ")
         end  
       end
 
