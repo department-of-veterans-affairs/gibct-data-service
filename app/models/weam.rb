@@ -131,16 +131,6 @@ class Weam < ActiveRecord::Base
   ## approved?
   #############################################################################
   def approved?
-    # poo_status == 'aprvd' &&
-    #   applicable_law_code != ALC1 &&
-    #   applicable_law_code != ALC2 &&
-    #   (
-    #     institution_of_higher_learning_indicator || 
-    #     ojt_indicator ||
-    #     correspondence_indicator ||
-    #     flight_indicator ||
-    #     non_college_degree_indicator
-    #   )
     Weam.match('aprvd', poo_status) && 
       !Weam.match("^(#{ALC1}|#{ALC2})", applicable_law_code) &&
       (

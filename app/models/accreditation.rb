@@ -5,7 +5,7 @@ class Accreditation < ActiveRecord::Base
     "REGIONAL" => ["middle", "new england", "north central", "southern", "western"],
     "NATIONAL" => ["career schools", "continuing education", "independent colleges", 
       "biblical", "occupational", "distance", "new york", "transnational"],
-    "HYBRID" => ["acupuncture", "nursing", "health education", "liberal","legal", 
+    "HYBRID" => ["acupuncture", "nursing", "health education", "liberal", "legal", 
       "funeral", "osteopathic", "pediatric", "theological", "massage", "radiologic", 
       "midwifery", "montessori", "career arts", "design", "dance", "music", 
       "theatre", "chiropractic"]

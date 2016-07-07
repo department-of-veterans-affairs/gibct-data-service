@@ -201,7 +201,7 @@ class DataCsv < ActiveRecord::Base
     when :float
       value.to_f   
     when :string
-      value.to_s.gsub("'", "''") if !value.nil?
+      value.to_s if !value.nil?
     when :boolean
       if !value.nil?
         ["true", "t", "yes", "y", "1", "on"].include?(value.to_s.downcase)
@@ -376,12 +376,28 @@ class DataCsv < ActiveRecord::Base
     names = Accreditation::USE_COLUMNS.map(&:to_s)
 
     query_str = 'UPDATE data_csvs SET '
-    query_str += names.map { |name| %("#{name}" = accreditations.#{name}) }.join(', ')
+    query_str += 'accreditation_type = accreditations.accreditation_type'
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
-    query_str += 'AND accreditations.cross IS NOT NULL '
+    query_str += 'AND accreditations.cross IS NOT NULL '    
     query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
+    query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
+    query_str += 'AND accreditations.accreditation_type IS NOT NULL '
+    query_str += 'AND (data_csvs.accreditation_type IS NULL '
+    query_str += "OR (LOWER(data_csvs.accreditation_type) != 'regional' "
+    query_str += "AND LOWER(accreditations.accreditation_type) != 'hybrid')); "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'accreditation_status = accreditations.accreditation_status'
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND data_csvs.accreditation_type = accreditations.accreditation_type '
+    query_str += 'AND accreditations.cross IS NOT NULL '    
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
+    query_str += 'AND (data_csvs.accreditation_status IS NULL '
+    query_str += "OR (LOWER(data_csvs.accreditation_status) != 'show cause' "
+    query_str += "AND LOWER(accreditations.accreditation_status) != 'probation')); "
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
@@ -394,7 +410,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'Accreditation (', accreditations.accreditation_status, '),')"
+    query_str += "'Accreditation (', accreditations.accreditation_status, '), ')"
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND accreditations.cross IS NOT NULL '
@@ -471,7 +487,7 @@ class DataCsv < ActiveRecord::Base
     #MPH
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason},')"
+    query_str += "'#{reason}, ')"
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
     query_str += "AND (LOWER(data_csvs.caution_flag_reason) NOT LIKE '%#{reason}%' OR "

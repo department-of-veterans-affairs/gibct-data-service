@@ -4,20 +4,23 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## Common Definitions
   #############################################################################
-  let!(:weam_approved_public) { create :weam, :public, state: 'NY' }
-  let!(:weam_approved_private) { create :weam, :private, state: 'NJ' }
+  let!(:weam_approved_public) { create :weam, :public, state: 'NY', institution: "O'MALLEY SCHOOL" }
+  let!(:weam_approved_private) { create :weam, :private, state: 'NJ', institution: 'THE # SIGN SCHOOL' }
   let!(:weam_unapproved) { create :weam, :non_approved_poo, state: 'OH' }
   let!(:weam_unmatched) { create :weam, state: 'CA' }
 
   let!(:crosswalk_approved_public) do
     create :va_crosswalk, facility_code: weam_approved_public.facility_code 
   end
+
   let!(:crosswalk_approved_private) do
     create :va_crosswalk, facility_code: weam_approved_private.facility_code 
   end
+
   let!(:crosswalk_unapproved) do
     create :va_crosswalk, facility_code: weam_unapproved.facility_code 
   end
+
   let!(:crosswalk_unmatched) do
     create :va_crosswalk, facility_code: weam_unmatched.facility_code 
   end
@@ -33,17 +36,17 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## complete?
   #############################################################################
-  describe "complete?" do
-    context "when some csv_files are missing" do
-      it "is false" do
+  describe 'complete?' do
+    context 'when some csv_files are missing' do
+      it 'is false' do
         expect(DataCsv).not_to be_complete
       end
     end
 
-    context "when all csv_files are present" do
-      it "is true" do
+    context 'when all csv_files are present' do
+      it 'is true' do
         CsvFile::STI.keys.each do |t| 
-          cs = CsvStorage.create(csv_file_type: t, data_store: "a")
+          cs = CsvStorage.create(csv_file_type: t, data_store: 'a')
         end
 
         expect(DataCsv).to be_complete
@@ -54,13 +57,13 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## build_data_csv
   #############################################################################
-  describe "build_data_csv" do
-    context "when complete" do
+  describe 'build_data_csv' do
+    context 'when complete' do
       before(:each) do
         CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
       end
 
-      it "calls all initialize and update methods" do
+      it 'calls all initialize and update methods' do
         [
           :initialize_with_weams, :update_with_crosswalk, :update_with_sva,
           :update_with_vsoc, :update_with_eight_key, 
@@ -78,13 +81,13 @@ RSpec.describe DataCsv, type: :model do
         DataCsv.build_data_csv
       end
 
-      it "adds instances to the DataCsv table" do
+      it 'adds instances to the DataCsv table' do
         expect{ DataCsv.build_data_csv }.to change{ DataCsv.count }
       end
     end
 
-    context "when not complete" do
-      it "does nothing" do
+    context 'when not complete' do
+      it 'does nothing' do
         expect{ DataCsv.build_data_csv }.not_to change{ DataCsv.count }
       end
     end
@@ -93,7 +96,7 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## to_csv
   #############################################################################
-  describe "to_csv" do
+  describe 'to_csv' do
     before(:each) do
       CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
 
@@ -101,12 +104,12 @@ RSpec.describe DataCsv, type: :model do
       DataCsv.build_data_csv
     end
 
-    it "calls CSV.generate" do
+    it 'calls CSV.generate' do
       expect(CSV).to receive(:generate)
       DataCsv.to_csv
     end
 
-    it "produces a header row + 1 row per DataCsv instance" do
+    it 'produces a header row + 1 row per DataCsv instance' do
       expect(DataCsv.to_csv.lines.length).to eq(DataCsv.count + 1)
     end
   end
@@ -114,8 +117,8 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## to_gibct
   #############################################################################
-  describe "to_gibct_institution_type" do
-    let (:test_connection) { "./config/gibct_staging_database.yml" }
+  describe 'to_gibct_institution_type' do
+    let (:test_connection) { './config/gibct_staging_database.yml' }
 
     before(:each) do
       # Load test csv files so there is information to work with
@@ -134,7 +137,7 @@ RSpec.describe DataCsv, type: :model do
       GibctInstitutionType.remove_connection
     end
 
-    it "adds an institution type to the Gibct for each type in data_csv" do
+    it 'adds an institution type to the Gibct for each type in data_csv' do
       expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
     end
   end
@@ -142,8 +145,8 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## to_gibct
   #############################################################################
-  describe "to_gibct" do
-    let (:test_connection) { "./config/gibct_staging_database.yml" }
+  describe 'to_gibct' do
+    let (:test_connection) { './config/gibct_staging_database.yml' }
 
     before(:each) do
       CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
@@ -153,8 +156,8 @@ RSpec.describe DataCsv, type: :model do
 
       DataCsv.to_gibct
       
-      GibctInstitutionType.set_connection("./config/gibct_staging_database.yml")
-      GibctInstitution.set_connection("./config/gibct_staging_database.yml")
+      GibctInstitutionType.set_connection('./config/gibct_staging_database.yml')
+      GibctInstitution.set_connection('./config/gibct_staging_database.yml')
     end
 
     after(:each) do
@@ -162,12 +165,12 @@ RSpec.describe DataCsv, type: :model do
       GibctInstitutionType.remove_connection
     end
 
-    it "adds an institution type to the Gibct for each type in data_csv" do
+    it 'adds an institution type to the Gibct for each type in data_csv' do
       expect(GibctInstitutionType.count).to eq(2)
       expect(GibctInstitutionType.pluck(:name)).to match_array(DataCsv.pluck(:type))
     end
 
-    it "adds an institution to the Gibct for each institution in data_csv" do
+    it 'adds an institution to the Gibct for each institution in data_csv' do
       expect(GibctInstitution.count).to eq(2)
       expect(GibctInstitution.pluck(:institution)).to match_array(DataCsv.pluck(:institution))
     end
@@ -176,8 +179,8 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## gibct_institution_column_names
   #############################################################################
-  describe "gibct_institution_column_names" do
-    let (:test_connection) { "./config/gibct_staging_database.yml" }
+  describe 'gibct_institution_column_names' do
+    let (:test_connection) { './config/gibct_staging_database.yml' }
 
     before(:each) do
       CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
@@ -192,23 +195,23 @@ RSpec.describe DataCsv, type: :model do
       GibctInstitution.remove_connection
     end
 
-    it "gets the column names of the fields in the GIBCT institution table" do
+    it 'gets the column names of the fields in the GIBCT institution table' do
       expect(DataCsv.gibct_institution_column_names.count).to be > 0
-      expect(DataCsv.gibct_institution_column_names).to include("facility_code")        
-      expect(DataCsv.gibct_institution_column_names).to include("institution_type_id")        
+      expect(DataCsv.gibct_institution_column_names).to include('facility_code')        
+      expect(DataCsv.gibct_institution_column_names).to include('institution_type_id')        
     end
 
-    it "does not include id, created_at, or updated at" do
-      expect(DataCsv.gibct_institution_column_names).not_to include("id", "created_at", "updated_at")        
+    it 'does not include id, created_at, or updated at' do
+      expect(DataCsv.gibct_institution_column_names).not_to include('id', 'created_at', 'updated_at')        
     end
   end
 
   #############################################################################
-  ## gibct_institution_column_names
+  ## partition_rows
   #############################################################################
-  describe "partition_rows" do
+  describe 'partition_rows' do
     let(:max_block_rows) { 65536 / DataCsv.gibct_institution_column_names.length }
-    let (:test_connection) { "./config/gibct_staging_database.yml" }
+    let (:test_connection) { './config/gibct_staging_database.yml' }
 
     before(:each) do
       CsvFile::STI.keys.each { |k| create k.underscore.to_sym }
@@ -223,7 +226,7 @@ RSpec.describe DataCsv, type: :model do
       GibctInstitution.remove_connection
     end
 
-    it "partitions data_csv into a single block if there are less than 65K attributes" do
+    it 'partitions data_csv into a single block if there are less than 65K attributes' do
       expect(DataCsv.partition_rows(DataCsv.all)).to eq([0 .. 1])
 
       filler =  max_block_rows - DataCsv.count
@@ -235,7 +238,7 @@ RSpec.describe DataCsv, type: :model do
       expect(DataCsv.partition_rows(DataCsv.all)).to eq([0 .. max_block_rows - 1])        
     end
 
-    it "partitions data_csv into a multiple blocks if there are more than 65K attributes" do
+    it 'partitions data_csv into a multiple blocks if there are more than 65K attributes' do
       filler =  max_block_rows - DataCsv.count + 1
       filler = 0 if filler < 0
 
@@ -251,30 +254,30 @@ RSpec.describe DataCsv, type: :model do
   ###########################################################################
   ## map_value_to_type
   ###########################################################################
-  describe "map_value_to_type" do
-    it "maps nil to nil" do
+  describe 'map_value_to_type' do
+    it 'maps nil to nil' do
       expect(DataCsv.map_value_to_type(nil, :nil)).to be_nil
     end
 
-    context "maps to boolean" do
-      it "maps nil to nil" do
+    context 'maps to boolean' do
+      it 'maps nil to nil' do
         expect(DataCsv.map_value_to_type(nil, :boolean)).to be_nil
       end
 
-      it "maps 1 to true" do
+      it 'maps 1 to true' do
         expect(DataCsv.map_value_to_type(1, :boolean)).to be_truthy
       end
 
-      it "maps != 1 to false" do
+      it 'maps != 1 to false' do
         expect(DataCsv.map_value_to_type(2, :boolean)).to be_falsy
       end
 
-      it "maps booleans to booleans" do
+      it 'maps booleans to booleans' do
         expect(DataCsv.map_value_to_type(true, :boolean)).to be_truthy
         expect(DataCsv.map_value_to_type(false, :boolean)).to be_falsy
       end
 
-      it "maps 'boolean type' strings to booleans" do
+      it 'maps boolean type strings to booleans' do
         %W(TRUE true T t Y y YES yes ON on 1).each do |v|
           expect(DataCsv.map_value_to_type(v, :boolean)).to be_truthy
         end
@@ -287,63 +290,59 @@ RSpec.describe DataCsv, type: :model do
       end
     end
 
-    context "maps to integer" do
-      it "maps nil to 0" do
+    context 'maps to integer' do
+      it 'maps nil to 0' do
         expect(DataCsv.map_value_to_type(nil, :integer)).to eq(0)
       end
 
-      it "maps blank to 0" do
-        expect(DataCsv.map_value_to_type("", :integer)).to eq(0)
+      it 'maps blank to 0' do
+        expect(DataCsv.map_value_to_type('', :integer)).to eq(0)
       end
 
-      it "maps strings to integers" do
-        expect(DataCsv.map_value_to_type("1", :integer)).to eq(1)
-        expect(DataCsv.map_value_to_type("0", :integer)).to eq(0)
-        expect(DataCsv.map_value_to_type("-1", :integer)).to eq(-1)
+      it 'maps strings to integers' do
+        expect(DataCsv.map_value_to_type('1', :integer)).to eq(1)
+        expect(DataCsv.map_value_to_type('0', :integer)).to eq(0)
+        expect(DataCsv.map_value_to_type('-1', :integer)).to eq(-1)
       end
 
-      it "maps numbers to integers" do
+      it 'maps numbers to integers' do
         expect(DataCsv.map_value_to_type(1, :integer)).to eq(1)
         expect(DataCsv.map_value_to_type(1.0, :integer)).to eq(1)
       end
     end
 
-    context "maps to float" do
-      it "maps nil to 0.0" do
+    context 'maps to float' do
+      it 'maps nil to 0.0' do
         expect(DataCsv.map_value_to_type(nil, :float)).to eq(0.0)
       end
 
-      it "maps blank to 0" do
-        expect(DataCsv.map_value_to_type("", :float)).to eq(0.0)
+      it 'maps blank to 0' do
+        expect(DataCsv.map_value_to_type('', :float)).to eq(0.0)
       end
 
-      it "maps strings to numbers" do
-        expect(DataCsv.map_value_to_type("1", :float)).to eq(1.0)
-        expect(DataCsv.map_value_to_type("-1.0", :float)).to eq(-1.0)
-        expect(DataCsv.map_value_to_type("0", :integer)).to eq(0.0)
+      it 'maps strings to numbers' do
+        expect(DataCsv.map_value_to_type('1', :float)).to eq(1.0)
+        expect(DataCsv.map_value_to_type('-1.0', :float)).to eq(-1.0)
+        expect(DataCsv.map_value_to_type('0', :integer)).to eq(0.0)
       end
     end
 
-    context "maps to string" do
-      it "maps nil to nil" do
+    context 'maps to string' do
+      it 'maps nil to nil' do
         expect(DataCsv.map_value_to_type(nil, :string)).to be_nil
       end
 
-      it "maps blank to blank" do
-        expect(DataCsv.map_value_to_type("", :string)).to eq('')
+      it 'maps blank to blank' do
+        expect(DataCsv.map_value_to_type('', :string)).to eq('')
       end
 
-      it "maps numbers to strings" do
+      it 'maps numbers to strings' do
         expect(DataCsv.map_value_to_type(1, :string)).to eq('1')
         expect(DataCsv.map_value_to_type(-1.0, :string)).to eq('-1.0')
       end
 
-      it "maps strings to strings" do
-        expect(DataCsv.map_value_to_type("abc", :string)).to eq('abc')
-      end
-
-      it "escapes single quotes in strings" do
-        expect(DataCsv.map_value_to_type("o'boy", :string)).to eq("o''boy")
+      it 'maps strings to strings' do
+        expect(DataCsv.map_value_to_type('abc', :string)).to eq('abc')
       end
     end
   end
@@ -351,20 +350,24 @@ RSpec.describe DataCsv, type: :model do
   #############################################################################
   ## initialize_with_weams
   #############################################################################
-  describe "initialize_with_weams" do
+  describe 'initialize_with_weams' do
     let(:fcs) { DataCsv.all.pluck(:facility_code) }
 
-    describe "when approving" do
-      it "updates approved institutions" do        
-        expect(fcs).to contain_exactly(
-          weam_approved_public.facility_code,
-          weam_approved_private.facility_code,
-          weam_unmatched.facility_code
-        )  
+    describe 'an institution' do
+      context 'that is approved' do
+        it 'is copied to the data_csv' do
+          expect(fcs).to contain_exactly(
+            weam_approved_public.facility_code,
+            weam_approved_private.facility_code,
+            weam_unmatched.facility_code
+          )  
+        end
       end
 
-      it "does not update any unapproved institutions" do
-        expect(fcs).not_to include(weam_unapproved.facility_code)
+      context 'that is not approved' do
+        it 'is not copied to the data_csv' do
+          expect(fcs).not_to include(weam_unapproved.facility_code)
+        end
       end
     end
 
@@ -518,10 +521,10 @@ RSpec.describe DataCsv, type: :model do
   ## update_with_accreditation
   #############################################################################
   describe "update_with_accreditation" do
-    let(:data) { DataCsv.find_by(cross: accreditation.cross) }
-
     describe "when matching" do
-      context "and is institutional and current" do
+      context "and accreditation is institutional and current" do
+        let(:data) { DataCsv.find_by(cross: accreditation.cross) }
+
         let!(:accreditation) do 
           create :accreditation, 
             campus_ipeds_unitid: crosswalk_approved_public.cross
@@ -542,28 +545,11 @@ RSpec.describe DataCsv, type: :model do
           expect(data).to be_nil
         end
       end
-    end
-
-    describe "when copying fields to data_csv" do
-      context "and is institutional and current" do
-        let!(:accreditation) do 
-          create :accreditation, 
-            campus_ipeds_unitid: crosswalk_approved_public.cross
-        end
-
-        before(:each) do
-          DataCsv.update_with_accreditation
-        end
-
-        Accreditation::USE_COLUMNS.each do |column|
-          it "updates the #{column} column" do
-            expect(data[column]).to eq(accreditation[column])
-          end
-        end
-      end
 
       [:not_institutional, :not_current].each do |trait|
         context "and is #{trait.to_s.humanize.downcase}" do
+          let(:data) { DataCsv.find_by(cross: accreditation.cross) }
+
           let!(:accreditation) do 
             create :accreditation, trait,
               campus_ipeds_unitid: crosswalk_approved_public.cross
@@ -574,7 +560,7 @@ RSpec.describe DataCsv, type: :model do
           end
 
           Accreditation::USE_COLUMNS.each do |column|
-            it "does not match cross to approved schools in data_csv" do
+            it "does not match #{column} to approved schools in data_csv" do
               expect(data[column]).to be_nil
             end
           end
@@ -582,7 +568,152 @@ RSpec.describe DataCsv, type: :model do
       end
     end
 
+    describe 'when copying accreditation_type to the data_csv' do
+      context 'and data_csv.accreditation_type is nil' do
+        { 
+          'ACUPUNCTURE' => 'HYBRID', 'BIBLICAL' => 'NATIONAL', 
+          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => nil
+        }.each_pair do |agency, type|
+          it "sets the data_csvs.accreditation_type to '#{type}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: agency
+
+            DataCsv.update_with_accreditation
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_type).to eq(type)
+          end
+        end
+      end  
+
+      context 'and data_csv.accreditation_type is HYBRID' do
+        { 
+          'ACUPUNCTURE' => 'HYBRID', 'BIBLICAL' => 'NATIONAL', 
+          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => 'HYBRID'
+        }.each_pair do |agency, type|
+          it "sets the data_csvs.accreditation_type to '#{type}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: agency
+            
+            DataCsv.where(cross: accreditation.cross).update_all(accreditation_type: "HYBRID")
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_type).to eq(type)
+          end
+        end
+      end
+
+      context 'and data_csv.accreditation_type is NATIONAL' do
+        { 
+          'ACUPUNCTURE' => 'NATIONAL', 'BIBLICAL' => 'NATIONAL', 
+          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => 'NATIONAL'
+        }.each_pair do |agency, type|
+          it "sets the data_csvs.accreditation_type to '#{type}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: agency
+            
+            DataCsv.where(cross: accreditation.cross).update_all(accreditation_type: "NATIONAL")
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_type).to eq(type)
+          end
+        end
+      end 
+
+      context 'and data_csv.accreditation_type is REGIONAL' do
+        { 
+          'ACUPUNCTURE' => 'REGIONAL', 'BIBLICAL' => 'REGIONAL', 
+          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => 'REGIONAL'
+        }.each_pair do |agency, type|
+          it "sets the data_csvs.accreditation_type to '#{type}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: agency
+            
+            DataCsv.where(cross: accreditation.cross).update_all(accreditation_type: "REGIONAL")
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_type).to eq(type)
+          end
+        end
+      end     
+    end
+
+    describe 'when copying accreditation_status to the data_csv' do
+      context 'and data_csv.accreditation_status is nil' do
+        { 
+          'PROBATION' => 'PROBATION', 'SHOW CAUSE' => 'SHOW CAUSE', 
+          '' => nil
+        }.each_pair do |last_action, status|
+          it "sets the data_csvs.accreditation_type to '#{status}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: 'MIDDLE REGIONAL',
+              accreditation_status: last_action
+
+            DataCsv.update_with_accreditation
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_status).to eq(status)             
+          end
+        end
+      end
+
+      context 'and data_csv.accreditation_status is PROBATION' do
+        { 
+          'PROBATION' => 'PROBATION', 'SHOW CAUSE' => 'SHOW CAUSE', 
+          '' => 'PROBATION'
+        }.each_pair do |last_action, status|
+          it "sets the data_csvs.accreditation_type to '#{status}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: 'MIDDLE REGIONAL',
+              accreditation_status: last_action
+
+            DataCsv.where(cross: accreditation.cross).update_all(accreditation_status: "PROBATION")
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_status).to eq(status)             
+          end
+        end
+      end
+
+      context 'and data_csv.accreditation_status is SHOW CAUSE' do
+        { 
+          'PROBATION' => 'SHOW CAUSE', 'SHOW CAUSE' => 'SHOW CAUSE', 
+          '' => 'SHOW CAUSE'
+        }.each_pair do |last_action, status|
+          it "sets the data_csvs.accreditation_type to '#{status}'" do
+            accreditation = create :accreditation, 
+              campus_ipeds_unitid: crosswalk_approved_public.cross,
+              agency_name: 'MIDDLE REGIONAL',
+              accreditation_status: last_action
+
+            DataCsv.where(cross: accreditation.cross).update_all(accreditation_status: "SHOW CAUSE")
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: accreditation.cross)
+
+            expect(data.accreditation_status).to eq(status)             
+          end
+        end
+      end      
+    end
+
     describe "when setting data_csv.caution_flag" do
+      let(:data) { DataCsv.find_by(cross: accreditation.cross) }
+
       context "and is institutional, and current" do
         context "and the accreditation_status is not nil" do
           let!(:accreditation) do 
@@ -634,6 +765,8 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "when setting data_csv.caution_flag_reason" do
+      let(:data) { DataCsv.find_by(cross: accreditation.cross) }
+      
       context "and is institutional, and current" do
         context "and the accreditation_status is not nil" do
           let!(:accreditation) do 
@@ -846,7 +979,7 @@ RSpec.describe DataCsv, type: :model do
 
     describe "setting the data_csv.caution_flag_reason" do
       let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { 'DoD Probation For Military Tuition Assistance,' }
+      let(:reason) { 'DoD Probation For Military Tuition Assistance, ' }
 
       context "with dod_status equal to true" do
         let!(:mou) do 
