@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :accreditation do
 
-    institution_name { Faker::University.name }
+    institution_name { "Some Name" }
 
     sequence :ope do |n| DS::OpeId.pad(n.to_s) end
     sequence :institution_ipeds_unitid do |n| DS::IpedsId.pad(n.to_s) end

@@ -647,7 +647,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason},')"
+    query_str += "'#{reason}, ')"
     query_str += ' FROM sec702_schools '
     query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
     query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
@@ -686,7 +686,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason},')"
+    query_str += "'#{reason}, ')"
     query_str += ' FROM sec702s '
     query_str += 'WHERE data_csvs.state = sec702s.state '
     query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
@@ -709,7 +709,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "settlements.settlement_description, ',')"
+    query_str += "settlements.settlement_description, ', ')"
     query_str += ' FROM settlements '
     query_str += 'WHERE data_csvs.cross = settlements.cross AND '
     query_str += "(data_csvs.caution_flag_reason NOT LIKE "
@@ -731,7 +731,7 @@ class DataCsv < ActiveRecord::Base
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'Heightened Cash Monitoring (', hcms.hcm_reason, '),')"
+    query_str += "'Heightened Cash Monitoring (', hcms.hcm_reason, '), ')"
     query_str += ' FROM hcms '
     query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
     query_str += 'hcms.hcm_type IS NOT NULL AND '
