@@ -373,8 +373,6 @@ class DataCsv < ActiveRecord::Base
   ## Updates the DataCsv table with data from the accreditations table.
   ###########################################################################
   def self.update_with_accreditation
-    names = Accreditation::USE_COLUMNS.map(&:to_s)
-
     query_str = 'UPDATE data_csvs SET '
     query_str += 'accreditation_type = accreditations.accreditation_type'
     query_str += ' FROM accreditations '
@@ -382,22 +380,69 @@ class DataCsv < ActiveRecord::Base
     query_str += 'AND accreditations.cross IS NOT NULL '    
     query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
     query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
-    query_str += 'AND accreditations.accreditation_type IS NOT NULL '
-    query_str += 'AND (data_csvs.accreditation_type IS NULL '
-    query_str += "OR (LOWER(data_csvs.accreditation_type) != 'regional' "
-    query_str += "AND LOWER(accreditations.accreditation_type) != 'hybrid')); "
+    query_str += "AND LOWER(accreditations.accreditation_type) = 'hybrid'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'accreditation_type = accreditations.accreditation_type'
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND accreditations.cross IS NOT NULL '    
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
+    query_str += "AND LOWER(accreditations.accreditation_type) = 'national'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'accreditation_type = accreditations.accreditation_type'
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND accreditations.cross IS NOT NULL '    
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
+    query_str += "AND LOWER(accreditations.accreditation_type) = 'regional'; "
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'accreditation_status = accreditations.accreditation_status'
     query_str += ' FROM accreditations '
     query_str += 'WHERE data_csvs.cross = accreditations.cross '
     query_str += 'AND data_csvs.accreditation_type = accreditations.accreditation_type '
-    query_str += 'AND accreditations.cross IS NOT NULL '    
+    query_str += 'AND accreditations.cross IS NOT NULL '
     query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
-    query_str += 'AND (data_csvs.accreditation_status IS NULL '
-    query_str += "OR (LOWER(data_csvs.accreditation_status) != 'show cause' "
-    query_str += "AND LOWER(accreditations.accreditation_status) != 'probation')); "
+    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
+    query_str += "AND LOWER(accreditations.accreditation_status) = 'probation'; "
+
+    query_str += 'UPDATE data_csvs SET '
+    query_str += 'accreditation_status = accreditations.accreditation_status'
+    query_str += ' FROM accreditations '
+    query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    query_str += 'AND data_csvs.accreditation_type = accreditations.accreditation_type '
+    query_str += 'AND accreditations.cross IS NOT NULL '
+    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
+    query_str += "AND LOWER(accreditations.accreditation_status) = 'show cause'; "
+
+    # query_str = 'UPDATE data_csvs SET '
+    # query_str += 'accreditation_type = accreditations.accreditation_type'
+    # query_str += ' FROM accreditations '
+    # query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    # query_str += 'AND accreditations.cross IS NOT NULL '    
+    # query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    # query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
+    # query_str += 'AND accreditations.accreditation_type IS NOT NULL '
+    # query_str += 'AND (data_csvs.accreditation_type IS NULL '
+    # query_str += "OR (LOWER(data_csvs.accreditation_type) != 'regional' "
+    # query_str += "AND LOWER(accreditations.accreditation_type) != 'hybrid')); "
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'accreditation_status = accreditations.accreditation_status'
+    # query_str += ' FROM accreditations '
+    # query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    # query_str += 'AND data_csvs.accreditation_type = accreditations.accreditation_type '
+    # query_str += 'AND accreditations.cross IS NOT NULL '
+    # query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    # query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
+    # query_str += 'AND accreditations.accreditation_status IS NOT NULL '
+    # query_str += 'AND (data_csvs.accreditation_status IS NULL '
+    # query_str += "OR (LOWER(data_csvs.accreditation_status) != 'show cause')); "
 
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'

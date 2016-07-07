@@ -568,13 +568,14 @@ RSpec.describe DataCsv, type: :model do
       end
     end
 
-    describe 'when copying accreditation_type to the data_csv' do
-      context 'and data_csv.accreditation_type is nil' do
+    describe 'when building accreditation_type' do
+      context 'and data_csvs.accreditation_type is NULL' do
         { 
-          'ACUPUNCTURE' => 'HYBRID', 'BIBLICAL' => 'NATIONAL', 
-          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => nil
+          'ACUPUNCTURE HYBRID' => 'HYBRID', 
+          'BIBLICAL NATIONAL' => 'NATIONAL', 
+          'MIDDLE REGIONAL' => 'REGIONAL'
         }.each_pair do |agency, type|
-          it "sets the data_csvs.accreditation_type to '#{type}'" do
+          it "sets the data_csvs.accreditation_type to #{type}" do
             accreditation = create :accreditation, 
               campus_ipeds_unitid: crosswalk_approved_public.cross,
               agency_name: agency
@@ -587,78 +588,74 @@ RSpec.describe DataCsv, type: :model do
         end
       end  
 
-      context 'and data_csv.accreditation_type is HYBRID' do
-        { 
-          'ACUPUNCTURE' => 'HYBRID', 'BIBLICAL' => 'NATIONAL', 
-          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => 'HYBRID'
-        }.each_pair do |agency, type|
-          it "sets the data_csvs.accreditation_type to '#{type}'" do
-            accreditation = create :accreditation, 
-              campus_ipeds_unitid: crosswalk_approved_public.cross,
-              agency_name: agency
-            
-            DataCsv.where(cross: accreditation.cross).update_all(accreditation_type: "HYBRID")
-            DataCsv.update_with_accreditation
+      context 'with multiple types' do
+        it 'chooses NATIONAL over HYBRID' do
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'ACUPUNCTURE HYBRID'
 
-            data = DataCsv.find_by(cross: accreditation.cross)
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL'
 
-            expect(data.accreditation_type).to eq(type)
-          end
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'ACUPUNCTURE HYBRID'
+
+          DataCsv.update_with_accreditation
+          data = DataCsv.find_by(cross: accreditation.cross)
+
+          expect(data.accreditation_type).to eq('NATIONAL')    
         end
+
+        it 'chooses REGIONAL over HYBRID' do
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'ACUPUNCTURE HYBRID'
+
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'MIDDLE REGIONAL'
+
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'ACUPUNCTURE HYBRID'
+
+          DataCsv.update_with_accreditation
+          data = DataCsv.find_by(cross: accreditation.cross)
+
+          expect(data.accreditation_type).to eq('REGIONAL')    
+        end
+
+        it 'chooses REGIONAL over NATIONAL' do
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL'
+
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'MIDDLE REGIONAL'
+
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL'
+
+          DataCsv.update_with_accreditation
+          data = DataCsv.find_by(cross: accreditation.cross)
+
+          expect(data.accreditation_type).to eq('REGIONAL')    
+        end        
       end
-
-      context 'and data_csv.accreditation_type is NATIONAL' do
-        { 
-          'ACUPUNCTURE' => 'NATIONAL', 'BIBLICAL' => 'NATIONAL', 
-          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => 'NATIONAL'
-        }.each_pair do |agency, type|
-          it "sets the data_csvs.accreditation_type to '#{type}'" do
-            accreditation = create :accreditation, 
-              campus_ipeds_unitid: crosswalk_approved_public.cross,
-              agency_name: agency
-            
-            DataCsv.where(cross: accreditation.cross).update_all(accreditation_type: "NATIONAL")
-            DataCsv.update_with_accreditation
-
-            data = DataCsv.find_by(cross: accreditation.cross)
-
-            expect(data.accreditation_type).to eq(type)
-          end
-        end
-      end 
-
-      context 'and data_csv.accreditation_type is REGIONAL' do
-        { 
-          'ACUPUNCTURE' => 'REGIONAL', 'BIBLICAL' => 'REGIONAL', 
-          'MIDDLE' => 'REGIONAL', 'BLAH_BLAH' => 'REGIONAL'
-        }.each_pair do |agency, type|
-          it "sets the data_csvs.accreditation_type to '#{type}'" do
-            accreditation = create :accreditation, 
-              campus_ipeds_unitid: crosswalk_approved_public.cross,
-              agency_name: agency
-            
-            DataCsv.where(cross: accreditation.cross).update_all(accreditation_type: "REGIONAL")
-            DataCsv.update_with_accreditation
-
-            data = DataCsv.find_by(cross: accreditation.cross)
-
-            expect(data.accreditation_type).to eq(type)
-          end
-        end
-      end     
     end
 
-    describe 'when copying accreditation_status to the data_csv' do
-      context 'and data_csv.accreditation_status is nil' do
-        { 
-          'PROBATION' => 'PROBATION', 'SHOW CAUSE' => 'SHOW CAUSE', 
-          '' => nil
-        }.each_pair do |last_action, status|
-          it "sets the data_csvs.accreditation_type to '#{status}'" do
+    describe 'when building accreditation_status' do
+      context 'and data_csv.accreditation_status is NULL' do
+        ['PROBATION', 'SHOW CAUSE'].each do |status|
+          it "sets the data_csvs.accreditation_status to #{status}" do
             accreditation = create :accreditation, 
               campus_ipeds_unitid: crosswalk_approved_public.cross,
-              agency_name: 'MIDDLE REGIONAL',
-              accreditation_status: last_action
+              agency_name: 'BIBLICAL NATIONAL',
+              accreditation_status: status
 
             DataCsv.update_with_accreditation
             data = DataCsv.find_by(cross: accreditation.cross)
@@ -668,47 +665,73 @@ RSpec.describe DataCsv, type: :model do
         end
       end
 
-      context 'and data_csv.accreditation_status is PROBATION' do
-        { 
-          'PROBATION' => 'PROBATION', 'SHOW CAUSE' => 'SHOW CAUSE', 
-          '' => 'PROBATION'
-        }.each_pair do |last_action, status|
-          it "sets the data_csvs.accreditation_type to '#{status}'" do
-            accreditation = create :accreditation, 
-              campus_ipeds_unitid: crosswalk_approved_public.cross,
-              agency_name: 'MIDDLE REGIONAL',
-              accreditation_status: last_action
+      context 'multiple status for the same accreditation type' do
+        it 'chooses PROBATION over NIL' do
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: nil
 
-            DataCsv.where(cross: accreditation.cross).update_all(accreditation_status: "PROBATION")
-            DataCsv.update_with_accreditation
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: 'PROBATION'
 
-            data = DataCsv.find_by(cross: accreditation.cross)
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: nil
 
-            expect(data.accreditation_status).to eq(status)             
-          end
+          DataCsv.update_with_accreditation
+          data = DataCsv.find_by(cross: accreditation.cross)
+
+          expect(data.accreditation_status).to eq('PROBATION')             
         end
-      end
 
-      context 'and data_csv.accreditation_status is SHOW CAUSE' do
-        { 
-          'PROBATION' => 'SHOW CAUSE', 'SHOW CAUSE' => 'SHOW CAUSE', 
-          '' => 'SHOW CAUSE'
-        }.each_pair do |last_action, status|
-          it "sets the data_csvs.accreditation_type to '#{status}'" do
-            accreditation = create :accreditation, 
-              campus_ipeds_unitid: crosswalk_approved_public.cross,
-              agency_name: 'MIDDLE REGIONAL',
-              accreditation_status: last_action
+        it 'chooses SHOW CAUSE over NIL' do
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: nil
 
-            DataCsv.where(cross: accreditation.cross).update_all(accreditation_status: "SHOW CAUSE")
-            DataCsv.update_with_accreditation
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: 'SHOW CAUSE'
 
-            data = DataCsv.find_by(cross: accreditation.cross)
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: nil
 
-            expect(data.accreditation_status).to eq(status)             
-          end
+          DataCsv.update_with_accreditation
+          data = DataCsv.find_by(cross: accreditation.cross)
+
+          expect(data.accreditation_status).to eq('SHOW CAUSE')             
         end
-      end      
+
+        it 'chooses SHOW CAUSE over PROBATION' do
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: 'PROBATION'
+
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: 'SHOW CAUSE'
+
+          accreditation = create :accreditation, 
+            campus_ipeds_unitid: crosswalk_approved_public.cross,
+            agency_name: 'BIBLICAL NATIONAL',
+            accreditation_status: 'PROBATION'
+
+          DataCsv.update_with_accreditation
+          data = DataCsv.find_by(cross: accreditation.cross)
+
+          expect(data.accreditation_status).to eq('SHOW CAUSE')             
+        end
+      end   
     end
 
     describe "when setting data_csv.caution_flag" do
