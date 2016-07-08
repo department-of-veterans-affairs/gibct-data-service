@@ -788,56 +788,69 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "when setting data_csv.caution_flag_reason" do
-      let(:data) { DataCsv.find_by(cross: accreditation.cross) }
+      context "and accreditation is not institutional nor current" do
+        before(:each) do
+          create :accreditation, :not_institutional, campus_ipeds_unitid: crosswalk_approved_public.cross
+          create :accreditation, :not_current, campus_ipeds_unitid: crosswalk_approved_public.cross
+
+          DataCsv.update_with_accreditation
+        end
+
+        it "ignores the accreditation" do
+          data = DataCsv.find_by(cross: crosswalk_approved_public.cross)
+          expect(data.caution_flag_reason).to be_nil
+        end
+      end
       
-      context "and is institutional, and current" do
-        context "and the accreditation_status is not nil" do
-          let!(:accreditation) do 
-            create :accreditation, 
-              campus_ipeds_unitid: crosswalk_approved_public.cross
-          end
-
+      context "and accreditation is institutional and current" do
+        context "and accreditation_status or cross are nil" do
           before(:each) do
+            create :accreditation, :not_institutional, campus_ipeds_unitid: nil
+            create :accreditation, :not_current, campus_ipeds_unitid: crosswalk_approved_public.cross, accreditation_status: nil
+
             DataCsv.update_with_accreditation
           end
 
-          it "appends data_csv.caution_flag_reason true " do
-            expect(data.caution_flag_reason).not_to be_nil
-          end
-        end
-
-        context "and the accreditation_status is nil" do
-          let!(:accreditation) do 
-            create :accreditation, accreditation_status: nil,
-              campus_ipeds_unitid: crosswalk_approved_public.cross
-          end
-
-          before(:each) do
-            DataCsv.update_with_accreditation
-          end
-
-          it "leaves the data_csv.caution_flag as it was" do
-            expect(data.caution_flag).to be_nil
-          end
-        end
-      end   
-
-      [:not_institutional, :not_current].each do |trait|
-        context "and is #{trait.to_s.humanize.downcase}" do
-          let!(:accreditation) do 
-            create :accreditation, trait,
-              campus_ipeds_unitid: crosswalk_approved_public.cross
-          end
-
-          before(:each) do
-            DataCsv.update_with_accreditation
-          end
-
-          it "leaves the data_csv.caution_flag as it was" do
-            expect(data).not_to be_nil
+          it "and accreditation cross or status is nil" do
+            data = DataCsv.find_by(cross: crosswalk_approved_public.cross)
             expect(data.caution_flag_reason).to be_nil
           end
-        end 
+        end
+
+        context "and the accreditation_status is not nil" do
+          let!(:accreditation) do 
+            create :accreditation, campus_ipeds_unitid: crosswalk_approved_public.cross, accreditation_status: 'Probation'
+          end
+
+          it "sets the data_csv.caution_flag_reason" do
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: crosswalk_approved_public.cross)
+
+            expect(data.caution_flag_reason).to eq("Accreditation (Probation)")
+          end
+
+          it "appends accreditation_status grouped by cross" do
+            create :accreditation, campus_ipeds_unitid: crosswalk_approved_public.cross, accreditation_status: 'Show Cause'
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: crosswalk_approved_public.cross)
+            reason1 = "Accreditation (Probation)"
+            reason2 = "Accreditation (Show Cause)"
+
+            expect(data.caution_flag_reason.split(', ')).to contain_exactly(reason1, reason2)
+          end
+
+          it "appends to existing caution_flag_reasons" do
+            data = DataCsv.find_by(cross: crosswalk_approved_public.cross).update(caution_flag_reason: "A Reason")
+            DataCsv.update_with_accreditation
+
+            data = DataCsv.find_by(cross: crosswalk_approved_public.cross)
+            str = "A Reason, Accreditation (Probation)"
+
+            expect(data.caution_flag_reason).to eq(str)
+          end
+        end
       end
     end
   end
@@ -1001,63 +1014,55 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { 'DoD Probation For Military Tuition Assistance, ' }
+      let!(:mou) do 
+        create :mou, status: "blah", ope: crosswalk_approved_public.ope
+      end
 
-      context "with dod_status equal to true" do
+      context "when dod_status is false" do
+        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
+
+        it "leaves the data.csv_flag alone" do
+          DataCsv.update_with_mou
+
+          expect(data.caution_flag_reason).to be_nil
+        end
+      end
+
+      context "when dod_status is true" do
         let!(:mou) do 
           create :mou, :mou_probation, ope: crosswalk_approved_public.ope
         end
 
-        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
+        context 'with a single reason' do
+          let(:data) { DataCsv.find_by(ope6: mou.ope6)  }
 
-        before(:each) do
-          DataCsv.find_by(ope6: mou.ope6)
-            .update(caution_flag_reason: prior_reason)
+          it "sets a caution_flag_reason by ope" do
+            DataCsv.update_with_mou
 
+            reason = 'DoD Probation For Military Tuition Assistance'
+            expect(data.caution_flag_reason).to eq(reason)
+          end 
+        end
+
+        context 'with a multiple reasons' do
+          it "includes the distinct reason only once" do
+            create :mou, :mou_probation, ope: crosswalk_approved_public.ope
+            DataCsv.update_with_mou
+
+            reason = 'DoD Probation For Military Tuition Assistance'
+            expect(data.caution_flag_reason).to eq(reason)
+          end
+        end
+
+        it "appends to existing caution_flag_reasons" do
+          data = DataCsv.find_by(ope6: mou.ope6).update(caution_flag_reason: "A Reason")
           DataCsv.update_with_mou
-        end
 
-        it "appends data_csv.caution_flag_reason with its reason" do
-          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason}")
-        end          
-      end
+          data = DataCsv.find_by(ope6: mou.ope6)
+          str = "A Reason, DoD Probation For Military Tuition Assistance"
 
-      context "with dod_status not equal to true" do
-        let!(:mou) do 
-          create :mou, status: 'blah', ope: crosswalk_approved_public.ope
-        end
-
-        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
-
-        before(:each) do
-          DataCsv.find_by(ope6: mou.ope6)
-            .update(caution_flag_reason: prior_reason)
-
-          DataCsv.update_with_mou
-        end
-
-        it "appends data_csv.caution_flag_reason with its reason" do
-          expect(data.caution_flag_reason).to eq(prior_reason)
-        end          
-      end
-
-      context "with a repeated dod status" do
-        let!(:mou) do 
-          create :mou, status: 'blah', ope: crosswalk_approved_public.ope
-        end
-
-        let(:data) { DataCsv.find_by(ope6: mou.ope6) }
-
-        before(:each) do
-          DataCsv.find_by(ope6: mou.ope6).update(caution_flag_reason: reason)
-          DataCsv.update_with_mou
-        end
-
-        it "appends data_csv.caution_flag_reason with its reason" do
-          expect(data.caution_flag_reason).not_to eq(reason + reason)
-          expect(data.caution_flag_reason).to eq(reason)
-        end          
+          expect(data.caution_flag_reason).to eq(str)
+        end               
       end
     end
   end
@@ -1385,122 +1390,73 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { 'Does Not Offer Required In-State Tuition Rates, ' }
+      context "for a non-public school" do
+        let(:data) { DataCsv.find_by(facility_code: sec702_school.facility_code) }
+        let!(:sec702_school) { create :sec702_school, sec_702: 'no', facility_code: crosswalk_approved_private.facility_code }
+        
+        it "does not append data_csv.caution_flag_reason" do
+          DataCsv.update_with_sec702_school
 
-      context "for a public school" do
-        context "with sec_702 equal to true" do
-          let!(:sec702_school) do
-            create :sec702_school, sec_702: 'yes',
-              facility_code: crosswalk_approved_public.facility_code
-          end
-
-          let(:data) do 
-            DataCsv.find_by(facility_code: sec702_school.facility_code) 
-          end
-
-          before(:each) do
-            DataCsv.find_by(facility_code: sec702_school.facility_code)
-              .update(caution_flag_reason: prior_reason)
-
-            DataCsv.update_with_sec702_school
-          end
-
-          it "does not append data_csv.caution_flag_reason" do
-            expect(data.caution_flag_reason).to eq(prior_reason)
-          end          
-        end
-
-        context "with sec_702 nil" do
-          let!(:sec702_school) do
-            create :sec702_school, sec_702: nil,
-              facility_code: crosswalk_approved_public.facility_code
-          end
-
-          let(:data) do 
-            DataCsv.find_by(facility_code: sec702_school.facility_code) 
-          end
-
-          before(:each) do
-            DataCsv.find_by(facility_code: sec702_school.facility_code)
-              .update(caution_flag_reason: prior_reason)
-
-            DataCsv.update_with_sec702_school
-          end
-
-          it "does not append data_csv.caution_flag_reason" do
-            expect(data.caution_flag_reason).to eq(prior_reason)
-          end          
-        end
-
-        context "with sec_702 equal to false" do
-          context "and this reason is not yet in the flag" do
-            let!(:sec702_school) do
-              create :sec702_school, sec_702: 'no',
-                facility_code: crosswalk_approved_public.facility_code
-            end
-
-            let(:data) do 
-              DataCsv.find_by(facility_code: sec702_school.facility_code) 
-            end
-
-            before(:each) do
-              DataCsv.find_by(facility_code: sec702_school.facility_code)
-                .update(caution_flag_reason: prior_reason)
-
-              DataCsv.update_with_sec702_school
-            end
-
-            it "appends data_csv.caution_flag_reason" do
-              expect(data.caution_flag_reason).to eq(prior_reason + reason)
-            end  
-          end
-
-          context "and this reason is already in the flag (from sec702)" do
-            let!(:sec702_school) do
-              create :sec702_school, sec_702: 'no',
-                facility_code: crosswalk_approved_public.facility_code
-            end
-
-            let(:data) do 
-              DataCsv.find_by(facility_code: sec702_school.facility_code) 
-            end
-
-            before(:each) do
-              DataCsv.find_by(facility_code: sec702_school.facility_code)
-                .update(caution_flag_reason: reason)
-
-              DataCsv.update_with_sec702_school
-            end
-
-            it "appends data_csv.caution_flag_reason" do
-              expect(data.caution_flag_reason).not_to eq(reason + reason)
-              expect(data.caution_flag_reason).to eq(reason)
-            end  
-          end 
-        end
+          expect(data.caution_flag_reason).to eq(nil)
+        end   
       end
 
-      context "for a non-public school" do
-        let!(:sec702_school) do
-          create :sec702_school, sec_702: 'no',
-            facility_code: crosswalk_approved_private.facility_code
+      context "for a public school" do
+        context "with that is sec_702" do
+          let!(:sec702_school) do 
+            create :sec702_school, 
+              sec_702: 'yes', facility_code: crosswalk_approved_public.facility_code
+          end
+
+          it "does not append data_csv.caution_flag_reason" do
+            DataCsv.update_with_sec702_school
+            data = DataCsv.find_by(facility_code: sec702_school.facility_code)
+
+            expect(data.caution_flag_reason).to eq(nil)
+          end   
         end
 
-        let(:data) do 
-          DataCsv.find_by(facility_code: sec702_school.facility_code) 
+        context "that is not a sec_702" do
+          let(:reason1) { 'Does Not Offer Required In-State Tuition Rates' }
+
+          context "and sec_702 is nil" do 
+            let!(:sec702_school) do 
+              create :sec702_school, sec_702: nil,
+                facility_code: crosswalk_approved_public.facility_code
+            end
+
+            it "does not sets the caution_flag_reason when sec_702 is nil" do
+              DataCsv.update_with_sec702_school
+              data = DataCsv.find_by(facility_code: sec702_school.facility_code)
+
+              expect(data.caution_flag_reason).to be_nil
+            end
+          end
+
+          context "and sec_702 is 'no'" do 
+            let!(:sec702_school) do 
+              create :sec702_school, sec_702: 'no',
+                facility_code: crosswalk_approved_public.facility_code
+            end
+
+            it "sets the caution_flag_reason" do
+              DataCsv.update_with_sec702_school
+              data = DataCsv.find_by(facility_code: sec702_school.facility_code)
+
+              expect(data.caution_flag_reason).to eq(reason1)
+            end
+
+            it "appends to existing caution_flag_reasons" do
+              data = DataCsv.find_by(facility_code: sec702_school.facility_code).update(caution_flag_reason: "A Reason")
+              DataCsv.update_with_sec702_school
+              
+              data = DataCsv.find_by(facility_code: sec702_school.facility_code)
+              reason2 = "A Reason"
+
+              expect(data.caution_flag_reason.split(', ')).to contain_exactly(reason1, reason2)
+            end
+          end          
         end
-
-        before(:each) do
-          DataCsv.find_by(facility_code: sec702_school.facility_code)
-            .update(caution_flag_reason: prior_reason)
-
-          DataCsv.update_with_sec702_school
-        end
-
-        it "does not append data_csv.caution_flag_reason" do
-          expect(data.caution_flag_reason).to eq(prior_reason)
-        end   
       end
     end
   end
@@ -1673,120 +1629,78 @@ RSpec.describe DataCsv, type: :model do
       end
     end
 
-    describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { 'Does Not Offer Required In-State Tuition Rates, ' }
+   describe "setting the data_csv.caution_flag_reason" do
+      context "for a non-public school" do
+        let(:data) { DataCsv.find_by(state: sec702.state) }
+        let!(:sec702) { create :sec702, sec_702: 'no', state: weam_approved_private.state }
+        
+        it "does not append data_csv.caution_flag_reason" do
+          DataCsv.update_with_sec702
 
-      context "for a public school" do
-        context "with sec_702 equal to true" do
-          let!(:sec702) do
-            create :sec702, sec_702: 'yes', state: weam_approved_public.state
-          end
-
-          let(:data) do 
-            DataCsv.find_by(state: sec702.state) 
-          end
-
-          before(:each) do
-            DataCsv.find_by(state: sec702.state)
-              .update(caution_flag_reason: prior_reason)
-
-            DataCsv.update_with_sec702
-          end
-
-          it "does not append data_csv.caution_flag_reason" do
-            expect(data).not_to be_nil
-            expect(data.caution_flag_reason).to eq(prior_reason)
-          end          
-        end
-
-        context "with sec_702 nil" do
-          let!(:sec702) do
-            create :sec702, sec_702: 'yes', state: weam_approved_public.state
-          end
-
-          let(:data) do 
-            DataCsv.find_by(state: sec702.state) 
-          end
-
-          before(:each) do
-            DataCsv.find_by(state: sec702.state)
-              .update(caution_flag_reason: prior_reason)
-
-            DataCsv.update_with_sec702
-          end
-
-          it "does not append data_csv.caution_flag_reason" do
-            expect(data).not_to be_nil
-            expect(data.caution_flag_reason).to eq(prior_reason)
-          end          
-        end
-
-        context "with sec_702 equal to false" do
-          context "and this reason is not yet in the flag" do
-            let!(:sec702) do
-              create :sec702, sec_702: 'no', state: weam_approved_public.state
-            end
-
-            let(:data) do 
-              DataCsv.find_by(state: sec702.state) 
-            end
-
-            before(:each) do
-              DataCsv.find_by(state: sec702.state)
-                .update(caution_flag_reason: prior_reason)
-
-              DataCsv.update_with_sec702
-            end
-
-            it "appends data_csv.caution_flag_reason" do
-              expect(data.caution_flag_reason).to eq(prior_reason + reason)
-            end  
-          end
-
-          context "and this reason is already in the flag (from sec702)" do
-            let!(:sec702) do
-              create :sec702, sec_702: 'no', state: weam_approved_public.state
-            end
-
-            let(:data) do 
-              DataCsv.find_by(state: sec702.state) 
-            end
-
-            before(:each) do
-              DataCsv.find_by(state: sec702.state)
-                .update(caution_flag_reason: reason)
-
-              DataCsv.update_with_sec702
-            end
-
-            it "appends data_csv.caution_flag_reason" do
-              expect(data.caution_flag_reason).not_to eq(reason + reason)
-              expect(data.caution_flag_reason).to eq(reason)
-            end  
-          end 
-        end
+          expect(data.caution_flag_reason).to eq(nil)
+        end   
       end
 
-      context "for a non-public school" do
-        let!(:sec702) do
-          create :sec702, sec_702: 'no', state: weam_approved_private.state
+      context "for a public school" do
+        context "with that is sec_702" do
+          let!(:sec702) { create :sec702, sec_702: 'yes', state: weam_approved_public.state }
+
+
+          it "does not append data_csv.caution_flag_reason" do
+            DataCsv.update_with_sec702
+            data = DataCsv.find_by(state: sec702.state)
+
+            expect(data.caution_flag_reason).to eq(nil)
+          end   
         end
 
-        let(:data) do 
-          DataCsv.find_by(state: sec702.state) 
+        context "that is not a sec_702" do
+          let(:reason1) { 'Does Not Offer Required In-State Tuition Rates' }
+
+          context "and sec_702 is nil" do 
+            let!(:sec702) { create :sec702, sec_702: nil, state: weam_approved_public.state }
+
+            it "does not sets the caution_flag_reason when sec_702 is nil" do
+              DataCsv.update_with_sec702
+              data = DataCsv.find_by(state: sec702.state)
+
+              expect(data.caution_flag_reason).to be_nil
+            end
+          end
+
+          context "and sec_702 is 'no'" do 
+            let!(:sec702) { create :sec702, sec_702: 'no', state: weam_approved_public.state }
+
+            it "sets the caution_flag_reason" do
+              DataCsv.update_with_sec702
+              data = DataCsv.find_by(state: sec702.state)
+
+              expect(data.caution_flag_reason).to eq(reason1)
+            end
+
+            it "appends to existing caution_flag_reasons" do
+              data = DataCsv.find_by(state: sec702.state).update(caution_flag_reason: "A Reason")
+              DataCsv.update_with_sec702
+              
+              data = DataCsv.find_by(state: sec702.state)
+              reason2 = "A Reason"
+
+              expect(data.caution_flag_reason.split(', ')).to contain_exactly(reason1, reason2)
+            end
+
+            it "doesn't append to existing caution_flag_reason from a sec_702 school" do
+              sec702_school = create :sec702_school, sec_702: 'no',
+                facility_code: weam_approved_public.facility_code
+    
+              DataCsv.update_with_sec702_school
+              DataCsv.update_with_sec702
+              
+              data = DataCsv.find_by(state: sec702.state)
+
+              expect(data.caution_flag_reason).to eq(reason1)
+            end
+          end          
         end
-
-        before(:each) do
-          DataCsv.find_by(state: sec702.state)
-            .update(caution_flag_reason: prior_reason)
-
-          DataCsv.update_with_sec702
-        end
-
-        it "does not append data_csv.caution_flag_reason" do
-          expect(data.caution_flag_reason).to eq(prior_reason)
-        end   
       end
     end
   end
@@ -1814,54 +1728,44 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'Some Other Reason,' }
-
-      context "with settlement_description not equal to nil" do
-        let!(:settlement) do
-          create :settlement, cross: crosswalk_approved_public.cross
-        end
-
-        let(:data) do 
-          DataCsv.find_by(cross: settlement.cross) 
-        end
-
-        before(:each) do
-          DataCsv.find_by(cross: settlement.cross)
-            .update(caution_flag_reason: prior_reason)
-
-          DataCsv.update_with_settlement
-        end
-
-        it "appends data_csv.caution_flag_reason with its reason" do
-          description = settlement.settlement_description
-
-          new_reason = "#{prior_reason}#{description}, "
-          expect(data.caution_flag_reason).to eq(new_reason)
-        end          
+      let!(:settlement) do
+        create :settlement, cross: crosswalk_approved_public.cross,
+          settlement_description: "A Settlement"
       end
 
-      context "with a repeated settlement_description" do
-        let!(:settlement) do
-          create :settlement, cross: crosswalk_approved_public.cross
-        end
+      context 'with a single settlement' do
+        let(:data) { DataCsv.find_by(cross: settlement.cross)  }
 
-        let(:data) do 
-          DataCsv.find_by(cross: settlement.cross) 
-        end
+        it "sets a caution_flag_reason by cross" do
+          DataCsv.update_with_settlement
 
-        let(:reason) { "#{settlement.settlement_description}," }
+          expect(data.caution_flag_reason).to eq(settlement.settlement_description)
+        end 
+      end
+
+      context 'with multiple settlements' do
+        let(:data) { DataCsv.find_by(cross: settlement.cross)  }
 
         before(:each) do
-          DataCsv.find_by(cross: settlement.cross)
-            .update(caution_flag_reason: reason)
-
-          DataCsv.update_with_settlement
+          create :settlement, cross: crosswalk_approved_public.cross, 
+            settlement_description: "Another Settlement"
         end
 
-        it "does not append data_csv.caution_flag_reason with the same reason" do
-          expect(data.caution_flag_reason).not_to eq(reason + reason)
-          expect(data.caution_flag_reason).to eq(reason)
-        end          
+        it "concatenates settlement_description by cross" do
+          DataCsv.update_with_settlement
+
+          expect(data.caution_flag_reason.split(', ')).to contain_exactly("Another Settlement", "A Settlement")
+        end   
+      end
+
+      it "appends to existing caution_flag_reasons" do
+        data = DataCsv.find_by(cross: settlement.cross).update(caution_flag_reason: "A Reason")
+        DataCsv.update_with_settlement
+
+        data = DataCsv.find_by(cross: settlement.cross)
+        str = "A Reason, A Settlement"
+
+        expect(data.caution_flag_reason).to eq(str)
       end
     end
   end
@@ -1883,7 +1787,7 @@ RSpec.describe DataCsv, type: :model do
         DataCsv.update_with_hcm
       end
 
-      it "is matched by cross" do
+      it "is matched by ope6" do
          expect(data).not_to be_nil
       end
     end
@@ -1907,52 +1811,44 @@ RSpec.describe DataCsv, type: :model do
     end
 
     describe "setting the data_csv.caution_flag_reason" do
-      let(:prior_reason) { 'Some Other Reason,' }
-      let(:reason) { "Program Review" }
-      let(:reason_str) { "Heightened Cash Monitoring (#{reason})" }
+      let!(:hcm) do
+        create :hcm, ope: crosswalk_approved_public.ope, hcm_reason: "An HCM Reason"
+      end
 
-      context "with a non-nil hcm_reason" do
-        let!(:hcm) do
-          create :hcm, ope: crosswalk_approved_public.ope, hcm_reason: reason
-        end
+      context 'with a single reason' do
+        it "sets a caution_flag_reason by cross" do
+          DataCsv.update_with_hcm
+          data = DataCsv.find_by(ope6: hcm.ope6) 
 
-        let(:data) do 
-          DataCsv.find_by(ope6: hcm.ope6) 
-        end
+          str = "Heightened Cash Monitoring (#{hcm.hcm_reason})"
+          expect(data.caution_flag_reason).to eq(str)
+        end 
+      end
+
+      context 'with multiple reasons' do
+        let(:data) { DataCsv.find_by(ope6: hcm.ope6)  }
 
         before(:each) do
-          DataCsv.find_by(ope6: hcm.ope6)
-            .update(caution_flag_reason: prior_reason)
-
+          create :hcm, ope: crosswalk_approved_public.ope, hcm_reason: "Another HCM Reason"
           DataCsv.update_with_hcm
         end
 
-        it "appends data_csv.caution_flag_reason with its reason" do
-          expect(data.caution_flag_reason).to eq("#{prior_reason}#{reason_str}, ")
-        end  
+        it "concatenates hcm_reason by cross" do
+          reason1 = "Heightened Cash Monitoring (An HCM Reason)"
+          reason2 = "Heightened Cash Monitoring (Another HCM Reason)"
+          expect(data.caution_flag_reason.split(', ')).to contain_exactly(reason1, reason2)
+        end   
       end
 
-      context "with a repeated hcm_reason" do
-        let!(:hcm) do
-          create :hcm, ope: crosswalk_approved_public.ope, hcm_reason: reason
-        end
+      it "appends to existing caution_flag_reasons" do
+        data = DataCsv.find_by(ope6: hcm.ope6).update(caution_flag_reason: "A Reason")
+        DataCsv.update_with_hcm
 
-        let(:data) do 
-          DataCsv.find_by(ope6: hcm.ope6) 
-        end
+        data = DataCsv.find_by(ope6: hcm.ope6)
+        str = "A Reason, Heightened Cash Monitoring (An HCM Reason)"
 
-        before(:each) do
-          DataCsv.find_by(ope6: hcm.ope6)
-            .update(caution_flag_reason: reason_str)
-
-          DataCsv.update_with_hcm
-        end
-
-        it "dues not append data_csv.caution_flag_reason with the same reason" do
-          expect(data.caution_flag_reason).not_to eq("#{reason_str}, #{reason_str}")
-          expect(data.caution_flag_reason).to eq(reason_str)
-        end  
-      end
+        expect(data.caution_flag_reason).to eq(str)
+      end    
     end
   end
 

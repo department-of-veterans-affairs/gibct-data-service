@@ -420,30 +420,6 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
     query_str += "AND LOWER(accreditations.accreditation_status) = 'show cause'; "
 
-    # query_str = 'UPDATE data_csvs SET '
-    # query_str += 'accreditation_type = accreditations.accreditation_type'
-    # query_str += ' FROM accreditations '
-    # query_str += 'WHERE data_csvs.cross = accreditations.cross '
-    # query_str += 'AND accreditations.cross IS NOT NULL '    
-    # query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    # query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
-    # query_str += 'AND accreditations.accreditation_type IS NOT NULL '
-    # query_str += 'AND (data_csvs.accreditation_type IS NULL '
-    # query_str += "OR (LOWER(data_csvs.accreditation_type) != 'regional' "
-    # query_str += "AND LOWER(accreditations.accreditation_type) != 'hybrid')); "
-
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'accreditation_status = accreditations.accreditation_status'
-    # query_str += ' FROM accreditations '
-    # query_str += 'WHERE data_csvs.cross = accreditations.cross '
-    # query_str += 'AND data_csvs.accreditation_type = accreditations.accreditation_type '
-    # query_str += 'AND accreditations.cross IS NOT NULL '
-    # query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    # query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
-    # query_str += 'AND accreditations.accreditation_status IS NOT NULL '
-    # query_str += 'AND (data_csvs.accreditation_status IS NULL '
-    # query_str += "OR (LOWER(data_csvs.accreditation_status) != 'show cause')); "
-
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
     query_str += ' FROM accreditations '
@@ -453,15 +429,37 @@ class DataCsv < ActiveRecord::Base
     query_str += 'AND accreditations.accreditation_status IS NOT NULL '
     query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
 
-    query_str += 'UPDATE data_csvs SET '
-    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'Accreditation (', accreditations.accreditation_status, '), ')"
-    query_str += ' FROM accreditations '
-    query_str += 'WHERE data_csvs.cross = accreditations.cross '
-    query_str += 'AND accreditations.cross IS NOT NULL '
-    query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    query_str += 'AND accreditations.accreditation_status IS NOT NULL '
-    query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
+    query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    query_str += "  AGG.ad "
+    query_str += "ELSE "
+    query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.ad) "
+    query_str += "END "
+    query_str += "FROM ( "
+    query_str += "  SELECT A.cross, string_agg(A.AST, ', ') AS ad "
+    query_str += "    FROM ("
+    query_str += "      SELECT a.cross, 'Accreditation (' || a.accreditation_status || ')' as AST"
+    query_str += "      FROM accreditations a "
+    query_str += "      WHERE "
+    query_str += "        a.cross IS NOT NULL AND "
+    query_str += "        a.accreditation_status IS NOT NULL AND "
+    query_str += "        LOWER(a.periods) LIKE '%current%' AND "
+    query_str += "        LOWER(a.csv_accreditation_type) = 'institutional' "
+    query_str += "      GROUP BY a.cross, a.accreditation_status "
+    query_str += "    ) A "
+    query_str += "  GROUP BY A.cross "
+    query_str += ") AGG "
+    query_str += 'WHERE data_csvs.cross = AGG.cross; '
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    # query_str += "'Accreditation (', accreditations.accreditation_status, '), ')"
+    # query_str += ' FROM accreditations '
+    # query_str += 'WHERE data_csvs.cross = accreditations.cross '
+    # query_str += 'AND accreditations.cross IS NOT NULL '
+    # query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    # query_str += 'AND accreditations.accreditation_status IS NOT NULL '
+    # query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
 
     run_bulk_query(query_str)
   end
@@ -529,15 +527,33 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
     query_str += 'AND mous.dod_status = TRUE; '
-    #MPH
-    query_str += 'UPDATE data_csvs SET '
-    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason}, ')"
-    query_str += ' FROM mous '
-    query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
-    query_str += "AND (LOWER(data_csvs.caution_flag_reason) NOT LIKE '%#{reason}%' OR "
-    query_str += "data_csvs.caution_flag_reason IS NULL) "
-    query_str += 'AND mous.dod_status = TRUE'
+    
+    query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    query_str += "  AGG.am "
+    query_str += "ELSE "
+    query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.am) "
+    query_str += "END "
+    query_str += "FROM ( "
+    query_str += "  SELECT M.ope6, '#{reason}'::text AS am "
+    query_str += "    FROM ("
+    query_str += "      SELECT m.ope6 "
+    query_str += "      FROM mous m "
+    query_str += "      WHERE m.dod_status = TRUE "
+    query_str += "      GROUP BY m.ope6 "
+    query_str += "    ) M "
+    query_str += "  GROUP BY M.ope6 "
+    query_str += ") AGG "
+    query_str += 'WHERE data_csvs.ope6 = AGG.ope6; '
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    # query_str += "'#{reason}, ')"
+    # query_str += ' FROM mous '
+    # query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
+    # query_str += "AND (LOWER(data_csvs.caution_flag_reason) NOT LIKE '%#{reason}%' OR "
+    # query_str += "data_csvs.caution_flag_reason IS NULL) "
+    # query_str += 'AND mous.dod_status = TRUE'
 
     run_bulk_query(query_str)
   end
@@ -645,15 +661,35 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND sec702_schools.sec_702 = FALSE "
     query_str += "AND lower(data_csvs.type) = 'public'; "
 
-    query_str += 'UPDATE data_csvs SET '
-    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason}, ')"
-    query_str += ' FROM sec702_schools '
-    query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
-    query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
-    query_str += "data_csvs.caution_flag_reason IS NULL) "
-    query_str += "AND sec702_schools.sec_702 = FALSE "
-    query_str += "AND lower(data_csvs.type) = 'public'"
+    query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    query_str += "  AGG.asr "
+    query_str += "ELSE "
+    query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.asr) "
+    query_str += "END "
+    query_str += "FROM ( "
+    query_str += "  SELECT S.facility_code, '#{reason}'::text AS asr "
+    query_str += "    FROM ("
+    query_str += "      SELECT s.facility_code "
+    query_str += "      FROM sec702_schools s"
+    query_str += "      WHERE "
+    query_str += "        s.sec_702 = FALSE"
+    query_str += "      GROUP BY s.facility_code "
+    query_str += "    ) S "
+    query_str += "  GROUP BY S.facility_code "
+    query_str += ") AGG "
+    query_str += 'WHERE '
+    query_str += "data_csvs.facility_code = AGG.facility_code AND lower(data_csvs.type) = 'public'; "
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    # query_str += "'#{reason}, ')"
+    # query_str += ' FROM sec702_schools '
+    # query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
+    # query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    # query_str += "data_csvs.caution_flag_reason IS NULL) "
+    # query_str += "AND sec702_schools.sec_702 = FALSE "
+    # query_str += "AND lower(data_csvs.type) = 'public'"
 
     run_bulk_query(query_str)
   end
@@ -684,15 +720,39 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND sec702s.sec_702 = FALSE "
     query_str += "AND lower(data_csvs.type) = 'public'; "
 
-    query_str += 'UPDATE data_csvs SET '
-    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'#{reason}, ')"
-    query_str += ' FROM sec702s '
-    query_str += 'WHERE data_csvs.state = sec702s.state '
-    query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
-    query_str += "data_csvs.caution_flag_reason IS NULL) "
-    query_str += "AND sec702s.sec_702 = FALSE "
-    query_str += "AND lower(data_csvs.type) = 'public'"
+    query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    query_str += "  AGG.asr "
+    query_str += "ELSE "
+    query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.asr) "
+    query_str += "END "
+    query_str += "FROM ( "
+    query_str += "  SELECT S.state, '#{reason}'::text AS asr "
+    query_str += "    FROM ("
+    query_str += "      SELECT s.state "
+    query_str += "      FROM sec702s s"
+    query_str += "      WHERE "
+    query_str += "        s.sec_702 = FALSE"
+    query_str += "      GROUP BY s.state "
+    query_str += "    ) S "
+    query_str += "  GROUP BY S.state "
+    query_str += ") AGG "
+    query_str += 'WHERE '
+    query_str += "  data_csvs.state = AGG.state AND "
+    query_str += "  (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    query_str += "  data_csvs.caution_flag_reason IS NULL) AND "
+    query_str += "  lower(data_csvs.type) = 'public'; "
+
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    # query_str += "'#{reason}, ')"
+    # query_str += ' FROM sec702s '
+    # query_str += 'WHERE data_csvs.state = sec702s.state '
+    # query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
+    # query_str += "data_csvs.caution_flag_reason IS NULL) "
+    # query_str += "AND sec702s.sec_702 = FALSE "
+    # query_str += "AND lower(data_csvs.type) = 'public'"
 
     run_bulk_query(query_str)
   end
@@ -707,14 +767,34 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM settlements '
     query_str += 'WHERE data_csvs.cross = settlements.cross; '
 
-    query_str += 'UPDATE data_csvs SET '
-    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "settlements.settlement_description, ', ')"
-    query_str += ' FROM settlements '
-    query_str += 'WHERE data_csvs.cross = settlements.cross AND '
-    query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    query_str += "'%' || settlements.settlement_description || '%' OR "
-    query_str += "data_csvs.caution_flag_reason IS NULL)"
+    query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    query_str += "  AGG.asd "
+    query_str += "ELSE "
+    query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.asd) "
+    query_str += "END "
+    query_str += "FROM ( "
+    query_str += "  SELECT S.cross, string_agg(S.sd, ', ') AS asd "
+    query_str += "    FROM ("
+    query_str += "      SELECT s.cross, s.settlement_description AS sd"
+    query_str += "      FROM settlements s "
+    query_str += "      WHERE "
+    query_str += "        s.cross IS NOT NULL AND "
+    query_str += "        s.settlement_description IS NOT NULL "
+    query_str += "      GROUP BY s.cross, s.settlement_description "
+    query_str += "    ) S "
+    query_str += "  GROUP BY S.cross "
+    query_str += ") AGG "
+    query_str += 'WHERE data_csvs.cross = AGG.cross'
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    # query_str += "settlements.settlement_description, ', ')"
+    # query_str += ' FROM settlements '
+    # query_str += 'WHERE data_csvs.cross = settlements.cross AND '
+    # query_str += "(data_csvs.caution_flag_reason NOT LIKE "
+    # query_str += "'%' || settlements.settlement_description || '%' OR "
+    # query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
   end
@@ -729,15 +809,32 @@ class DataCsv < ActiveRecord::Base
     query_str += ' FROM hcms '
     query_str += 'WHERE data_csvs.ope6 = hcms.ope6; '
 
-    query_str += 'UPDATE data_csvs SET '
-    query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    query_str += "'Heightened Cash Monitoring (', hcms.hcm_reason, '), ')"
-    query_str += ' FROM hcms '
-    query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
-    query_str += 'hcms.hcm_type IS NOT NULL AND '
-    query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    query_str += "'%' || hcms.hcm_reason || '%' OR "
-    query_str += "data_csvs.caution_flag_reason IS NULL)"
+    query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    query_str += "  AGG.ahr "
+    query_str += "ELSE "
+    query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.ahr) "
+    query_str += "END "
+    query_str += "FROM ( "
+    query_str += "  SELECT H.ope6, string_agg(H.hcmr, ', ') AS ahr "
+    query_str += "    FROM ("
+    query_str += "      SELECT h.ope6, 'Heightened Cash Monitoring (' || h.hcm_reason || ')' as hcmr"
+    query_str += "      FROM hcms h "
+    query_str += "      GROUP BY h.ope6, h.hcm_reason "
+    query_str += "    ) H "
+    query_str += "  GROUP BY H.ope6 "
+    query_str += ") AGG "
+    query_str += 'WHERE data_csvs.ope6 = AGG.ope6'
+
+    # query_str += 'UPDATE data_csvs SET '
+    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
+    # query_str += "'Heightened Cash Monitoring (', hcms.hcm_reason, '), ')"
+    # query_str += ' FROM hcms '
+    # query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
+    # query_str += 'hcms.hcm_type IS NOT NULL AND '
+    # query_str += "(data_csvs.caution_flag_reason NOT LIKE "
+    # query_str += "'%' || hcms.hcm_reason || '%' OR "
+    # query_str += "data_csvs.caution_flag_reason IS NULL)"
 
     run_bulk_query(query_str)
   end
