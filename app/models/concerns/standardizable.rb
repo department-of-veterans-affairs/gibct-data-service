@@ -56,7 +56,7 @@ module Standardizable
         #######################################################################
         when :ope
           define_method(:ope=) do |v|
-            v = v.try(:strip).try(:downcase) if v.is_a?(String)
+            v = v.try(:strip).try(:upcase) if v.is_a?(String)
             v = nil if self.class.forbidden_word?(v)
 
             write_attribute(:ope, self.class.pad(v, 8)) 
