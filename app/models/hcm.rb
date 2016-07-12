@@ -1,3 +1,7 @@
+###############################################################################
+## EightKey
+## Contains the 8 Keys for Vet Success for an institution.
+###############################################################################
 class Hcm < ActiveRecord::Base
  include Standardizable 
   

@@ -1,5 +1,10 @@
 require 'csv'
 
+###############################################################################
+## DataCsv
+## Holds the merrged data from CSV-sourced data tables, as well as methods to
+## build, export, and push that data.
+###############################################################################
 class DataCsv < ActiveRecord::Base
   # GIBCT uses field called type, must kludge to prevent STI
   self.inheritance_column = "inheritance_type"
@@ -94,7 +99,8 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## to_csv
-  ## Converts all the entries in the DataCsv to a csv string.
+  ## Converts all the entries in the DataCsv to a csv row. Incorporates the
+  ## required field ordering to be used by the VA EDU's data dashboard.
   ###########################################################################
   def self.to_csv
     CSV.generate do |csv|
@@ -299,6 +305,7 @@ class DataCsv < ActiveRecord::Base
 
     names = Weam::USE_COLUMNS.map(&:to_s).join(', ')
 
+    # Include only those schools marked as approved (c.f., Weam model)
     query = "INSERT INTO data_csvs (#{names}) ("
     query += Weam.select(names).where(approved: true).to_sql + ")"
 
@@ -312,6 +319,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_crosswalk
     names = VaCrosswalk::USE_COLUMNS.map(&:to_s)
 
+    # Adds crosswalk info to approved schools, matching by facility_code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = va_crosswalks.#{name}) }.join(', ')
     query_str += ' FROM va_crosswalks '
@@ -327,6 +335,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_sva
     names = Sva::USE_COLUMNS.map(&:to_s)
 
+    # Add SVA info to approved schools based on IPEDs id.
     query_str = 'UPDATE data_csvs SET '
     query_str += "student_veteran = TRUE, "
     query_str += names.map { |name| %("#{name}" = svas.#{name}) }.join(', ')
@@ -344,6 +353,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_vsoc
     names = Vsoc::USE_COLUMNS.map(&:to_s)
 
+    # Adds Vets success info to approved schools, matching by facility_code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = vsocs.#{name}) }.join(', ')
     query_str += ' FROM vsocs '
@@ -359,6 +369,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_eight_key
     names = EightKey::USE_COLUMNS.map(&:to_s)
 
+    # Adds 8-keys info to approved schools, matching by IPEDs id.
     query_str = 'UPDATE data_csvs SET '
     query_str += "eight_keys = TRUE "
     query_str += ' FROM eight_keys '
@@ -370,9 +381,21 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_accreditation
-  ## Updates the DataCsv table with data from the accreditations table.
+  ## Updates the DataCsv table with data from the accreditations table. NOTE
+  ## there is an explict ordering of both accreditation type and status for 
+  ## those schools having conflicting types and statuses. The ordering is:
+  ##
+  ##   hybrid < national < regional
+  ##
+  ## and for status:
+  ##
+  ##   'show cause' < probation
+  ##
+  ## There is a requirement to include only those accreditations that are 
+  ## institutional and currently active.
   ###########################################################################
   def self.update_with_accreditation
+    # Sets all accreditations that are hybrid types first
     query_str = 'UPDATE data_csvs SET '
     query_str += 'accreditation_type = accreditations.accreditation_type'
     query_str += ' FROM accreditations '
@@ -382,6 +405,7 @@ class DataCsv < ActiveRecord::Base
     query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
     query_str += "AND LOWER(accreditations.accreditation_type) = 'hybrid'; "
 
+    # Sets all accreditations that are national, overriding conflicts with hybrids
     query_str += 'UPDATE data_csvs SET '
     query_str += 'accreditation_type = accreditations.accreditation_type'
     query_str += ' FROM accreditations '
@@ -391,6 +415,7 @@ class DataCsv < ActiveRecord::Base
     query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
     query_str += "AND LOWER(accreditations.accreditation_type) = 'national'; "
 
+    # Sets all accreditations that are regional, overriding conflicts with hybrids and nationals
     query_str += 'UPDATE data_csvs SET '
     query_str += 'accreditation_type = accreditations.accreditation_type'
     query_str += ' FROM accreditations '
@@ -400,6 +425,8 @@ class DataCsv < ActiveRecord::Base
     query_str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
     query_str += "AND LOWER(accreditations.accreditation_type) = 'regional'; "
 
+    # Sets status for probationary accreditations, the status being derived from the 
+    # higest level of accreditation (hybrid, national, regional).
     query_str += 'UPDATE data_csvs SET '
     query_str += 'accreditation_status = accreditations.accreditation_status'
     query_str += ' FROM accreditations '
@@ -410,6 +437,8 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
     query_str += "AND LOWER(accreditations.accreditation_status) = 'probation'; "
 
+   # Sets status for show cause accreditations, overwriting probationary statuses, 
+   # the status being derived from the higest level of accreditation (hybrid, national, regional).
     query_str += 'UPDATE data_csvs SET '
     query_str += 'accreditation_status = accreditations.accreditation_status'
     query_str += ' FROM accreditations '
@@ -420,6 +449,8 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
     query_str += "AND LOWER(accreditations.accreditation_status) = 'show cause'; "
 
+    # Sets the caution flag for all accreditations that have a non-null status. Note,
+    # that institutional type accreditations are always, null, probation, or show cause.
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
     query_str += ' FROM accreditations '
@@ -429,6 +460,12 @@ class DataCsv < ActiveRecord::Base
     query_str += 'AND accreditations.accreditation_status IS NOT NULL '
     query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
 
+    # Sets the caution flag reason for all accreditations that have a non-null status.
+    # The innermost subquery retrieves a unique set of statues (it is plausible that
+    # identical statuses may apply to the same school but from different agencies). We
+    # don't want to repeat the same reasons. The outer subquery then concatentates these
+    # unique reasons into a comma-separated string. Lastly the outer UPDATE-CASE appends
+    # these caution flag reasons to any existing caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
     query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
     query_str += "  AGG.ad "
@@ -451,16 +488,6 @@ class DataCsv < ActiveRecord::Base
     query_str += ") AGG "
     query_str += 'WHERE data_csvs.cross = AGG.cross; '
 
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    # query_str += "'Accreditation (', accreditations.accreditation_status, '), ')"
-    # query_str += ' FROM accreditations '
-    # query_str += 'WHERE data_csvs.cross = accreditations.cross '
-    # query_str += 'AND accreditations.cross IS NOT NULL '
-    # query_str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    # query_str += 'AND accreditations.accreditation_status IS NOT NULL '
-    # query_str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
-
     run_bulk_query(query_str)
   end
 
@@ -471,6 +498,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_arf_gibill
     names = ArfGibill::USE_COLUMNS.map(&:to_s)
 
+    # Adds Gi Bill student counts to approved schools, matching by facility_code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = arf_gibills.#{name}) }.join(', ')
     query_str += ' FROM arf_gibills '
@@ -486,6 +514,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_p911_tf
     names = P911Tf::USE_COLUMNS.map(&:to_s)
 
+    # Adds Post 911 info to approved schools, matching by facility_code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = p911_tfs.#{name}) }.join(', ')
     query_str += ' FROM p911_tfs '
@@ -501,6 +530,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_p911_yr
     names = P911Yr::USE_COLUMNS.map(&:to_s)
 
+    # Adds Post 911 yellow-ribbon approved schools, matching by facility_code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = p911_yrs.#{name}) }.join(', ')
     query_str += ' FROM p911_yrs '
@@ -517,17 +547,25 @@ class DataCsv < ActiveRecord::Base
     names = Mou::USE_COLUMNS.map(&:to_s)
     reason = 'DoD Probation For Military Tuition Assistance'
 
+    # Adds DOD memorandum of understanding for approved schools by ope6 id
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = mous.#{name}) }.join(', ')
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6; '
 
+    # Sets the caution flag for any approved school having a probatiton or 
+    # title IV non-compliance (status == true)
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
     query_str += ' FROM mous '
     query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
     query_str += 'AND mous.dod_status = TRUE; '
     
+    # Sets the caution flag reason for any approved school having a probatiton or 
+    # title IV non-compliance (status == true). The inner select sets the
+    # caution flag text, ensuring there are not reasons (in case of multiple) 
+    # memorandums. Lastly the outer UPDATE-CASE appends
+    # these caution flag reasons to any existing caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
     query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
     query_str += "  AGG.am "
@@ -546,15 +584,6 @@ class DataCsv < ActiveRecord::Base
     query_str += ") AGG "
     query_str += 'WHERE data_csvs.ope6 = AGG.ope6; '
 
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    # query_str += "'#{reason}, ')"
-    # query_str += ' FROM mous '
-    # query_str += 'WHERE data_csvs.ope6 = mous.ope6 '
-    # query_str += "AND (LOWER(data_csvs.caution_flag_reason) NOT LIKE '%#{reason}%' OR "
-    # query_str += "data_csvs.caution_flag_reason IS NULL) "
-    # query_str += 'AND mous.dod_status = TRUE'
-
     run_bulk_query(query_str)
   end
 
@@ -565,6 +594,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_scorecard
     names = Scorecard::USE_COLUMNS.map(&:to_s)
 
+    # Adds scorecard data to approved schools, matching by IPEDs id.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = scorecards.#{name}) }.join(', ')
     query_str += ' FROM scorecards '
@@ -575,11 +605,12 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_ic
-  ## Updates the DataCsv table with data from the scorecards table.
+  ## Updates the DataCsv table with data from the IC table.
   ###########################################################################
   def self.update_with_ipeds_ic
     names = IpedsIc::USE_COLUMNS.map(&:to_s)
 
+    # Adds IC data to approved schools, matching by IPEDs id.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = ipeds_ics.#{name}) }.join(', ')
     query_str += ' FROM ipeds_ics '
@@ -590,11 +621,12 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_hd
-  ## Updates the DataCsv table with data from the scorecards table.
+  ## Updates the DataCsv table with data from the HD table.
   ###########################################################################
   def self.update_with_ipeds_hd
     names = IpedsHd::USE_COLUMNS.map(&:to_s)
 
+    # Adds HD data to approved schools, matching by IPEDs id.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = ipeds_hds.#{name}) }.join(', ')
     query_str += ' FROM ipeds_hds '
@@ -605,11 +637,12 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_ic_ay
-  ## Updates the DataCsv table with data from the scorecards table.
+  ## Updates the DataCsv table with data from the IC AY table.
   ###########################################################################
   def self.update_with_ipeds_ic_ay
     names = IpedsIcAy::USE_COLUMNS.map(&:to_s)
 
+    # Adds IC-AY data to approved schools, matching by IPEDs id.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = ipeds_ic_ays.#{name}) }.join(', ')
     query_str += ' FROM ipeds_ic_ays '
@@ -620,13 +653,16 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_ic_py
-  ## Updates the DataCsv table with data from the scorecards table.
+  ## Updates the DataCsv table with data from the IC PY table. NOTE that the
+  ## information in this table (tution and book fees) are secondary to the
+  ## innformation contained tn the IC AY.
   ###########################################################################
   def self.update_with_ipeds_ic_py
     names = IpedsIcPy::USE_COLUMNS.map(&:to_s)
 
     query_str = ""
     names.each do |name|
+      # Update only where there are no IC AY values filled in.
       query_str += 'UPDATE data_csvs SET '
       query_str += %("#{name}" = ipeds_ic_pies.#{name})
       query_str += ' FROM ipeds_ic_pies '
@@ -639,14 +675,15 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_sec702_school
-  ## Updates the DataCsv table with data from the scorecards table. Note the
-  ## definition of NULL does not return true when NOT LIKE compared with a 
-  ## string.
+  ## Updates the DataCsv table with data from the sec 702 school table. NOTE
+  ## the definition of NULL does not return true when NOT LIKE compared with  
+  ## a string.
   ###########################################################################
   def self.update_with_sec702_school
     names = Sec702School::USE_COLUMNS.map(&:to_s)
     reason = 'Does Not Offer Required In-State Tuition Rates'
 
+    # Only approved public schools can be SEC 702 complaint, matched by facility code
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = sec702_schools.#{name}) }.join(', ')
     query_str += ' FROM sec702_schools '
@@ -654,6 +691,7 @@ class DataCsv < ActiveRecord::Base
     query_str += 'AND sec702_schools.sec_702 IS NOT NULL '
     query_str += "AND lower(data_csvs.type) = 'public'; "
 
+    # Any approved public school that is NOT sec 702 compliant sets the caution flag.
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE ' 
     query_str += ' FROM sec702_schools '
@@ -661,6 +699,11 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND sec702_schools.sec_702 = FALSE "
     query_str += "AND lower(data_csvs.type) = 'public'; "
 
+    # Sets the caution flags for non compliant sec 702 public schools. The inner select 
+    # chooses only those schools that are not sec 702 compliant. The outer select
+    # concatenates these reasons into a comma delimited list for each school.
+    # Lastly the outer UPDATE-CASE appends these caution flag reasons to any existing 
+    # caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
     query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
     query_str += "  AGG.asr "
@@ -681,22 +724,15 @@ class DataCsv < ActiveRecord::Base
     query_str += 'WHERE '
     query_str += "data_csvs.facility_code = AGG.facility_code AND lower(data_csvs.type) = 'public'; "
 
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    # query_str += "'#{reason}, ')"
-    # query_str += ' FROM sec702_schools '
-    # query_str += 'WHERE data_csvs.facility_code = sec702_schools.facility_code '
-    # query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
-    # query_str += "data_csvs.caution_flag_reason IS NULL) "
-    # query_str += "AND sec702_schools.sec_702 = FALSE "
-    # query_str += "AND lower(data_csvs.type) = 'public'"
-
     run_bulk_query(query_str)
   end
 
   ###########################################################################
   ## update_with_sec702
-  ## Updates the DataCsv table with data from the scorecards table.
+  ## Updates the DataCsv table with data from the sec 702 table. This table
+  ## details whether the public schools state-wide are sec 703 compliant. 
+  ## this information is subordinate to the sec 702 info in the sec 703 
+  ## school table.
   ###########################################################################
   def self.update_with_sec702
     names = Sec702::USE_COLUMNS.map(&:to_s)
@@ -704,6 +740,8 @@ class DataCsv < ActiveRecord::Base
 
     query_str = ""
     names.each do |name|
+      # Updates the sec 702 information only if there is no corresponding
+      # entry from the sec 702 school table.
       query_str += 'UPDATE data_csvs SET '
       query_str += %("#{name}" = sec702s.#{name})
       query_str += ' FROM sec702s '
@@ -712,6 +750,8 @@ class DataCsv < ActiveRecord::Base
       query_str += "AND lower(data_csvs.type) = 'public'; "
     end
 
+    # Updates the caution flag only if there is no corresponding flag
+    # from the sec 702 school table.
     query_str += 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE ' 
     query_str += ' FROM sec702s '
@@ -720,6 +760,12 @@ class DataCsv < ActiveRecord::Base
     query_str += "AND sec702s.sec_702 = FALSE "
     query_str += "AND lower(data_csvs.type) = 'public'; "
 
+    # Sets the caution flags for non compliant sec 702 public schools. The inner select 
+    # ensures the flag reason is only included once even of the state is listed
+    # more than once. The where clause ensures only schools that do not have 
+    # existing sec 702 school cautions are included. The outer select aggregates
+    # these reasons in a comma delimited string that is then appended to the existing
+    # caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
     query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
     query_str += "  AGG.asr "
@@ -743,17 +789,6 @@ class DataCsv < ActiveRecord::Base
     query_str += "  data_csvs.caution_flag_reason IS NULL) AND "
     query_str += "  lower(data_csvs.type) = 'public'; "
 
-
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    # query_str += "'#{reason}, ')"
-    # query_str += ' FROM sec702s '
-    # query_str += 'WHERE data_csvs.state = sec702s.state '
-    # query_str += "AND (data_csvs.caution_flag_reason NOT LIKE '%#{reason}%' OR "
-    # query_str += "data_csvs.caution_flag_reason IS NULL) "
-    # query_str += "AND sec702s.sec_702 = FALSE "
-    # query_str += "AND lower(data_csvs.type) = 'public'"
-
     run_bulk_query(query_str)
   end
 
@@ -762,11 +797,18 @@ class DataCsv < ActiveRecord::Base
   ## Updates the DataCsv table with data from the settlements table.
   ###########################################################################
   def self.update_with_settlement
+    # Sets caution flags if the corresponing approved school (by IPEDs id) 
+    # has an entry in the settlements table.
     query_str = 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE '
     query_str += ' FROM settlements '
     query_str += 'WHERE data_csvs.cross = settlements.cross; '
 
+    # Sets the caution flag reason. The inner select ensures that the
+    # settlement descriptions are unique for each school (There may be 
+    # more than one per school). The outer select aggregates these 
+    # reasons together in a comma delimited string that are appended to
+    # the existing caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
     query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
     query_str += "  AGG.asd "
@@ -787,15 +829,6 @@ class DataCsv < ActiveRecord::Base
     query_str += ") AGG "
     query_str += 'WHERE data_csvs.cross = AGG.cross'
 
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    # query_str += "settlements.settlement_description, ', ')"
-    # query_str += ' FROM settlements '
-    # query_str += 'WHERE data_csvs.cross = settlements.cross AND '
-    # query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    # query_str += "'%' || settlements.settlement_description || '%' OR "
-    # query_str += "data_csvs.caution_flag_reason IS NULL)"
-
     run_bulk_query(query_str)
   end
 
@@ -804,11 +837,17 @@ class DataCsv < ActiveRecord::Base
   ## Updates the DataCsv table with data from the hcm table.
   ###########################################################################
   def self.update_with_hcm
+    # Sets caution flags if the corresponing approved school (by OPE6 id) 
+    # has an entry in the Hcm table.
     query_str = 'UPDATE data_csvs SET '
     query_str += 'caution_flag = TRUE'
     query_str += ' FROM hcms '
     query_str += 'WHERE data_csvs.ope6 = hcms.ope6; '
 
+    # Sets the caution flag reason for each school, by OPE6. The inner select
+    # encloses unique reasons within a lable while the outer select aggregates
+    # the reasons into a comma delimited string. Lastly the outer UPDATE-CASE 
+    # appends these caution flag reasons to any existing caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
     query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
     query_str += "  AGG.ahr "
@@ -826,16 +865,6 @@ class DataCsv < ActiveRecord::Base
     query_str += ") AGG "
     query_str += 'WHERE data_csvs.ope6 = AGG.ope6'
 
-    # query_str += 'UPDATE data_csvs SET '
-    # query_str += 'caution_flag_reason = CONCAT(data_csvs.caution_flag_reason,'
-    # query_str += "'Heightened Cash Monitoring (', hcms.hcm_reason, '), ')"
-    # query_str += ' FROM hcms '
-    # query_str += 'WHERE data_csvs.ope6 = hcms.ope6 AND '
-    # query_str += 'hcms.hcm_type IS NOT NULL AND '
-    # query_str += "(data_csvs.caution_flag_reason NOT LIKE "
-    # query_str += "'%' || hcms.hcm_reason || '%' OR "
-    # query_str += "data_csvs.caution_flag_reason IS NULL)"
-
     run_bulk_query(query_str)
   end
 
@@ -846,6 +875,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_complaint    
     names = Complaint::USE_COLUMNS.map(&:to_s)
 
+    # Sets the complaint data for each school, matching by facility code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = complaints.#{name}) }.join(', ')
     query_str += ' FROM complaints '
@@ -864,6 +894,7 @@ class DataCsv < ActiveRecord::Base
   def self.update_with_outcome
     names = Outcome::USE_COLUMNS.map(&:to_s)
 
+    # Sets the outcome data for each school, matching by facility code.
     query_str = 'UPDATE data_csvs SET '
     query_str += names.map { |name| %("#{name}" = outcomes.#{name}) }.join(', ')
     query_str += ' FROM outcomes '

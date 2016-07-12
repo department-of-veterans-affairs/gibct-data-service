@@ -1,3 +1,11 @@
+###############################################################################
+## P911Yr
+## Contains Post 911 GI Bill enrollee counts and tuition paid on a school by
+## school basis for the Yellow Ribbon enrollees.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class P911Yr < ActiveRecord::Base
   include Standardizable 
   

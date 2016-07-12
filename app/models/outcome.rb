@@ -1,3 +1,10 @@
+###############################################################################
+## Outcome
+## Contains demographic data on vets vs. public rates.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Outcome < ActiveRecord::Base
   include Standardizable
   

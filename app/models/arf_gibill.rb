@@ -1,3 +1,10 @@
+###############################################################################
+## ArfGibill
+## Contains the number of GI Bill students at an institution.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class ArfGibill < ActiveRecord::Base
   include Standardizable
 

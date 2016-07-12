@@ -1,3 +1,9 @@
+###############################################################################
+## GibctInstitution
+## The model used when pushing data to the GIBCT database. This is the 
+## institutions table, and once the connection is set - all operations are 
+## carried out on the GIBCT DB.
+###############################################################################
 class GibctInstitution < ActiveRecord::Base
   self.table_name = 'institutions'
 

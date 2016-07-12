@@ -1,3 +1,10 @@
+###############################################################################
+## Vsoc
+## Contains the email and name of the Vet's success rep on campus.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Vsoc < ActiveRecord::Base
   include Standardizable
 

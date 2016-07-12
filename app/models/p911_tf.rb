@@ -1,3 +1,11 @@
+###############################################################################
+## P911Tf
+## Contains Post 911 GI Bill enrollee counts and tuition paid on a school by
+## school basis.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class P911Tf < ActiveRecord::Base
   include Standardizable
   

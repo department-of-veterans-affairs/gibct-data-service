@@ -29,6 +29,22 @@
 ##
 ## Whether or not a complaint is counted, it must have (1) a facility_code,
 ## (2) be closed, and (3) not be invalid.
+##
+## STATUSES and CLOSED reasons contain the status and disposition of the 
+## complaint, only valid and closed complaints are used by the DS and GIBCT.
+## 
+## FAC_CODE_TERMS contain substrings in each complaint that identify the type
+## of complaint this instance holds. There may be several types of complaints
+## for each campus (facility code), and institution (OPE6 id).
+##
+## FAC_CODE_SUMS map the instance's facility code-based summation field with
+## the FAC_CODE_TERM.
+##
+## OPE6_SUMS map the instance's institution level-based ope6 summation field 
+## with the FAC_CODE_TERM.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
 ###############################################################################
 
 class Complaint < ActiveRecord::Base

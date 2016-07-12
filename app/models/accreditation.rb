@@ -1,3 +1,22 @@
+###############################################################################
+## Accreditation
+## Represents accreditations and accreditation bodies. Additionally, caution
+## flags are derived from some of the data here.
+##
+## The ACCREDITATIONS hash maps accreditation types (Regional, National, or 
+## Hybrid) to substrings in the name of the accrediting body. So, for example,
+## if the accrediting agency is the "New England Medical Association", then
+## the accreditation is "Regional".
+##
+## LAST_ACTIONS are an array of strings that refer to changes to accreditation
+## from which caution flags are derived ('show cause' and 'probation').
+##
+## CSV_ACCREDITATION_TYPES are used to detail accreditation types in the CSV.
+## Only INSTITUTIONAL accreditation types are recognized by the DS and GIBCT.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Accreditation < ActiveRecord::Base
   include Standardizable
 
@@ -23,6 +42,7 @@ class Accreditation < ActiveRecord::Base
   validates :agency_name, presence: true
   validate :inclusion_validator
 
+  # C.F., the Standardization module.
   override_setters :institution_name, :campus_name, :institution, :ope, :ope6,
     :institution_ipeds_unitid, :campus_ipeds_unitid, :cross,
     :csv_accreditation_type, :accreditation_type, :agency_name, 
@@ -33,7 +53,7 @@ class Accreditation < ActiveRecord::Base
 
   #############################################################################
   ## lowercase_inclusion_validator
-  ## Case insensitive inclusion validator
+  ## Case insensitive inclusion validator.
   #############################################################################
   def lowercase_inclusion_validator(attribute, collection, blank_ok = true)
     return if (var = self[attribute]).blank? && blank_ok
@@ -48,7 +68,7 @@ class Accreditation < ActiveRecord::Base
 
   #############################################################################
   ## inclusion_validator
-  ## Case insensitive inclusion validator
+  ## Calls the lower case inclusion validator for appropriate fields.
   #############################################################################
   def inclusion_validator
     lowercase_inclusion_validator(:csv_accreditation_type, CSV_ACCREDITATION_TYPES)
@@ -91,7 +111,6 @@ class Accreditation < ActiveRecord::Base
   ## Performs derivation for field values not taken directly from a csv.
   #############################################################################
   def set_derived_fields
-    # self.ope6 = DS::OpeId.to_ope6(ope)
     self.cross = to_cross
     self.institution = to_institution
   end

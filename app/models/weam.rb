@@ -1,3 +1,19 @@
+###############################################################################
+## Weam
+## Contains VA WEAMS data. 
+## NOTE that this file must be built first before any other other table is built
+## into the DataCsv table.
+##
+## The intheritance_column must be changed to a non-existant coluumn because
+## this table has a field named type, which causes rails to assume STI 
+## inheritance.
+##
+## ACL1 and ACL2 represent two phrases that would mark a school as not
+## approved, and therefore not included as a GI BILL Eligible school.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Weam < ActiveRecord::Base
   include Standardizable
 
@@ -47,6 +63,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## ojt?
+  ## Is this instance an OJT institution?
   #############################################################################
   def ojt?
     !facility_code.nil? && facility_code[1] == '0'                                 
@@ -54,6 +71,8 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## offer_degree?
+  ## Does this institution offer a AA or BA if an institution of higher
+  ## learning, or a certification if an OJT?
   #############################################################################
   def offer_degree?
     institution_of_higher_learning_indicator || non_college_degree_indicator
@@ -61,6 +80,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## correspondence?
+  ## Is this a correspondence school?
   #############################################################################
   def correspondence?
     correspondence_indicator && !ojt? && !offer_degree?
@@ -68,6 +88,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## flight?
+  ## Is this a flight school?
   #############################################################################
   def flight?
     !correspondence? && flight_indicator && !ojt? && !offer_degree?
@@ -75,6 +96,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## foreign?
+  ## Is this a foreign school?
   #############################################################################
   def foreign?
     # !flight? && country != "usa" && country != "us"
@@ -83,6 +105,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## public?
+  ## Is this a public school?
   #############################################################################
   def public?
     !foreign? && !facility_code.nil? && facility_code[0] == "1"
@@ -90,6 +113,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## for_profit?
+  ## Is this a for profit school (e.g., Devry or Phoenix)?
   #############################################################################
   def for_profit?
     !foreign? && !facility_code.nil? && facility_code[0] == "2"
@@ -97,6 +121,7 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## private?
+  ## Is this a private school, like Princeton?
   #############################################################################
   def private?
     !public? && !for_profit?
@@ -129,6 +154,10 @@ class Weam < ActiveRecord::Base
 
   #############################################################################
   ## approved?
+  ## To be approved, a school must be marked 'aprvd' in the poo-status, have 
+  ## an approved applicable law code that is not restrictive of GI Bill 
+  ## benefits, and be a higher learning institution, OJT, flight, 
+  ## correspondence or an institution that is a degree-granting concern.
   #############################################################################
   def approved?
     Weam.match('aprvd', poo_status) && 
