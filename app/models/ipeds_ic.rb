@@ -1,7 +1,8 @@
 ###############################################################################
 ## IpedsIc
-## Contains a continuation of the DOE IPeds data set. Most of the fields here
-## are enumerated with integers representing distinct concepts.
+## The IPEDs Institutional Characteristics file that contains a continuation 
+## of the DOE IPeds data set. Most of the fields here are enumerated with 
+## integers representing distinct concepts.
 ##
 ## USE_COLUMNS hold those columns that get copied to the DataCsv table during
 ## the build process.

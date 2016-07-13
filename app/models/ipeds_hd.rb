@@ -1,6 +1,6 @@
 ###############################################################################
 ## IpedsHd
-## Contains the DOE IPeds tuituion policy url.
+## The IPEDS Header file contains the DOE IPeds tuituion policy url.
 ##
 ## USE_COLUMNS hold those columns that get copied to the DataCsv table during
 ## the build process.

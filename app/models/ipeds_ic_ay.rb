@@ -1,6 +1,7 @@
 ###############################################################################
 ## IpedsIcAy
-## Provieds tuiton and book cost data.
+## IPEDS Institutional Characterstics Academic Year contains tuiton and book 
+## cost data.
 ##
 ## USE_COLUMNS hold those columns that get copied to the DataCsv table during
 ## the build process.

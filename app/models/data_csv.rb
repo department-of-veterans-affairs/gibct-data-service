@@ -2,7 +2,7 @@ require 'csv'
 
 ###############################################################################
 ## DataCsv
-## Holds the merrged data from CSV-sourced data tables, as well as methods to
+## Holds the merged data from CSV-sourced data tables, as well as methods to
 ## build, export, and push that data.
 ###############################################################################
 class DataCsv < ActiveRecord::Base
@@ -605,7 +605,7 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_ic
-  ## Updates the DataCsv table with data from the IC table.
+  ## Updates the DataCsv table with data from the IPEDs IC table.
   ###########################################################################
   def self.update_with_ipeds_ic
     names = IpedsIc::USE_COLUMNS.map(&:to_s)
@@ -621,7 +621,7 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_hd
-  ## Updates the DataCsv table with data from the HD table.
+  ## Updates the DataCsv table with data from the IPEDs HD table.
   ###########################################################################
   def self.update_with_ipeds_hd
     names = IpedsHd::USE_COLUMNS.map(&:to_s)
@@ -637,7 +637,7 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_ic_ay
-  ## Updates the DataCsv table with data from the IC AY table.
+  ## Updates the DataCsv table with data from the IPEDs IC AY table.
   ###########################################################################
   def self.update_with_ipeds_ic_ay
     names = IpedsIcAy::USE_COLUMNS.map(&:to_s)
@@ -653,9 +653,9 @@ class DataCsv < ActiveRecord::Base
 
   ###########################################################################
   ## update_with_ipeds_ic_py
-  ## Updates the DataCsv table with data from the IC PY table. NOTE that the
-  ## information in this table (tution and book fees) are secondary to the
-  ## innformation contained tn the IC AY.
+  ## Updates the DataCsv table with data from the IPEDs IC PY table. NOTE 
+  ## that the information in this table (tution and book fees) are secondary 
+  ## to the innformation contained tn the IPEDs IC AY.
   ###########################################################################
   def self.update_with_ipeds_ic_py
     names = IpedsIcPy::USE_COLUMNS.map(&:to_s)
@@ -845,7 +845,7 @@ class DataCsv < ActiveRecord::Base
     query_str += 'WHERE data_csvs.ope6 = hcms.ope6; '
 
     # Sets the caution flag reason for each school, by OPE6. The inner select
-    # encloses unique reasons within a lable while the outer select aggregates
+    # encloses unique reasons within a label while the outer select aggregates
     # the reasons into a comma delimited string. Lastly the outer UPDATE-CASE 
     # appends these caution flag reasons to any existing caution flag reasons.
     query_str += 'UPDATE data_csvs SET caution_flag_reason = '
