@@ -1,3 +1,9 @@
+###############################################################################
+## DS
+## Provides standardization of length, conversion to ope6s from opes. OPE6 is 
+## the 2, 3, 4, 5, and 6 digits of the 8 digit OPE. It also provides conversion
+## for enumerated fields, boolean strings, and number discovery.
+###############################################################################
 module DS
   #############################################################################
   ## OpeId

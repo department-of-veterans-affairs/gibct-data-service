@@ -1,3 +1,10 @@
+###############################################################################
+## Scorecard
+## From the DOE, contains demographics and rates on a school by school basis.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Scorecard < ActiveRecord::Base
   include Standardizable
 
@@ -34,6 +41,7 @@ class Scorecard < ActiveRecord::Base
 
   #############################################################################
   ## to_graduation_rate_all_students
+  ## Selects the proper graduation data data based on a field precedence.
   #############################################################################
   def to_graduation_rate_all_students
     c150_4_pooled_supp.present? ? c150_4_pooled_supp : 

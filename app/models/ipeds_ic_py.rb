@@ -1,3 +1,11 @@
+###############################################################################
+## IpedsIcPy
+## Provieds tuiton and book cost data, but the inormation here is secondary to
+## the information in the IpedsIcAy table.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class IpedsIcPy < ActiveRecord::Base
   include Standardizable
 

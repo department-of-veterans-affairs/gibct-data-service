@@ -1,3 +1,10 @@
+###############################################################################
+## Sva
+## Contains the link to the Student Veteran's Association web page.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Sva < ActiveRecord::Base
   include Standardizable
   

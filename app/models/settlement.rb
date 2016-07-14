@@ -1,3 +1,7 @@
+###############################################################################
+## Settlements
+## Contains settlement data for schools in non-compliance with VA policy.
+###############################################################################
 class Settlement < ActiveRecord::Base
   include Standardizable
   

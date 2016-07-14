@@ -1,3 +1,10 @@
+###############################################################################
+## IpedsHd
+## The IPEDS Header file contains the DOE IPeds tuituion policy url.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class IpedsHd < ActiveRecord::Base
  include Standardizable
 

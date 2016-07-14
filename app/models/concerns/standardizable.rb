@@ -1,7 +1,21 @@
+###############################################################################
+## The Standardizable module ensures the uniformity of fields accross the 
+## multiple CSVs that comprise the data. A special class method called
+## override_setters takes an array argument of field names, and ensures that
+## the values written to the instance are uniform (e.g, all the same case, the
+## string values that can represent true and false are converted in a
+## in a centralized manner, specific fields are padded, and so on). It also
+## provides a case insensitive matcher.
+###############################################################################
 module Standardizable
   extend ActiveSupport::Concern
 
   class_methods do
+    ###########################################################################
+    ## forbidden_word
+    ## Identifies those words that are present in some CSVs that represent 
+    ## null values, but for some reason are included in the soruce CSV.
+    ###########################################################################
     def forbidden_word?(v)
       ['none', 'null', 'privacysuppressed'].include?(v.try(:downcase))
     end

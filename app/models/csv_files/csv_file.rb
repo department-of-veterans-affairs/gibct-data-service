@@ -1,5 +1,22 @@
 require "csv"
 
+###############################################################################
+## CsvFile
+## Base class for the CSV File hierarchy. This is where all the CSVs are 
+## uploaded and stored as raw data, as well as converted to an intermediate 
+## form to be merged with other such data into the DataCsv table. 
+##
+## The STI Hash maps the CsvFile class hierarchy to their respective
+## intermediate data tables. These tables are then collated and merged when
+## building the DataCsv table.
+## 
+## The DELIMITERS array represents allowable CSV delimiters for all CSVs, and 
+## will most likely be deprecated in future versions.
+##
+## The ENCODING_OPTIONS hash are those parameters that define the ingestion 
+## from CSV to data specifying how to map non-translatable characters in the
+## CSV.
+############################################################################### 
 class CsvFile < ActiveRecord::Base
   attr_accessor :upload
 
@@ -84,6 +101,7 @@ class CsvFile < ActiveRecord::Base
 
   #############################################################################
   ## clear_data
+  ## When uploading new data from a CSV, the old data is erased.
   #############################################################################
   def clear_data
     if latest?

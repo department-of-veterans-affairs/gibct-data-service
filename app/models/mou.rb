@@ -1,3 +1,12 @@
+###############################################################################
+## Mou
+## The DOD's Memorandum of Understanding data. Any institution included in the
+## file whose Status is either probation or title IV non-compliance will 
+## will be indicated in this file.
+##
+## USE_COLUMNS hold those columns that get copied to the DataCsv table during
+## the build process.
+###############################################################################
 class Mou < ActiveRecord::Base
   include Standardizable
   

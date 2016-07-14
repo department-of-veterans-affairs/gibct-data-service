@@ -1,3 +1,9 @@
+###############################################################################
+## GibctInstitutionTYpe
+## The model used when pushing data to the GIBCT database. This is the 
+## institution types table, and once the connection is set - all operations are 
+## carried out on the GIBCT DB.
+###############################################################################
 class GibctInstitutionType < ActiveRecord::Base  
   include Standardizable
 
