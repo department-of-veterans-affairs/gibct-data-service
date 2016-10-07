@@ -373,7 +373,7 @@ ActiveRecord::Schema.define(version: 20160609143717) do
     t.float    "repayment_rate_all_students"
     t.float    "avg_stu_loan_debt"
     t.float    "c150_4_pooled_supp"
-    t.float    "c200_l4_pooled_supp"
+    t.float    "c150_l4_pooled_supp"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end
