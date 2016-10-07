@@ -21,7 +21,7 @@ class Scorecard < ActiveRecord::Base
   validates :repayment_rate_all_students, numericality: { message: '%{value} is not a number' }, allow_blank: true
   validates :avg_stu_loan_debt, numericality: { message: '%{value} is not a number' }, allow_blank: true
   validates :c150_4_pooled_supp, numericality: { message: '%{value} is not a number' }, allow_blank: true
-  validates :c200_l4_pooled_supp, numericality: { message: '%{value} is not a number' }, allow_blank: true
+  validates :c150_l4_pooled_supp, numericality: { message: '%{value} is not a number' }, allow_blank: true
 
   before_save :set_derived_fields
 
@@ -37,7 +37,7 @@ class Scorecard < ActiveRecord::Base
     :retention_all_students_ba, :retention_all_students_otb,
     :graduation_rate_all_students, :transfer_out_rate_all_students, 
     :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
-    :c150_4_pooled_supp, :c200_l4_pooled_supp
+    :c150_4_pooled_supp, :c150_l4_pooled_supp
 
   #############################################################################
   ## to_graduation_rate_all_students
@@ -45,7 +45,7 @@ class Scorecard < ActiveRecord::Base
   #############################################################################
   def to_graduation_rate_all_students
     c150_4_pooled_supp.present? ? c150_4_pooled_supp : 
-      c200_l4_pooled_supp.present? ? c200_l4_pooled_supp : nil
+      c150_l4_pooled_supp.present? ? c150_l4_pooled_supp : nil
   end
 
   #############################################################################
