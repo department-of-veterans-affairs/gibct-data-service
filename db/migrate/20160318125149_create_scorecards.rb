@@ -17,7 +17,7 @@ class CreateScorecards < ActiveRecord::Migration
       t.float :repayment_rate_all_students
       t.float :avg_stu_loan_debt
       t.float :c150_4_pooled_supp
-      t.float :c150_l4_pooled_supp
+      t.float :c200_l4_pooled_supp
 
       t.timestamps null: false
 
