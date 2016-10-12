@@ -14,6 +14,6 @@ FactoryGirl.define do
     repayment_rate_all_students { Faker::Number.decimal(0, 9) }
     avg_stu_loan_debt { Faker::Number.between(1, 50000) }
     c150_4_pooled_supp { Faker::Number.decimal(0, 9) }
-    c200_l4_pooled_supp { Faker::Number.decimal(0, 9) }
+    c150_l4_pooled_supp { Faker::Number.decimal(0, 9) }
   end
 end
