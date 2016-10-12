@@ -13,7 +13,7 @@ class ScorecardCsvFile < CsvFile
     "rpy_3yr_rt_supp" => :repayment_rate_all_students,
     "grad_debt_mdn_supp" => :avg_stu_loan_debt,
     "c150_4_pooled_supp" => :c150_4_pooled_supp,
-    "c200_l4_pooled_supp" => :c200_l4_pooled_supp,
+    "c150_l4_pooled_supp" => :c150_l4_pooled_supp,
   }
 
   SKIP_LINES_BEFORE_HEADER = 0

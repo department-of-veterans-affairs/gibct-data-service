@@ -108,7 +108,7 @@ class ScorecardsController < ApplicationController
       :undergrad_enrollment, :retention_all_students_ba, 
       :retention_all_students_otb, :salary_all_students, 
       :repayment_rate_all_students, :avg_stu_loan_debt, :c150_4_pooled_supp, 
-      :c200_l4_pooled_supp
+      :c150_l4_pooled_supp
     )
   end
 end

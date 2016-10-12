@@ -29,13 +29,13 @@ RSpec.describe Scorecard, type: :model do
         expect(sc.graduation_rate_all_students).to eq(sc.c150_4_pooled_supp)
       end
 
-      it "uses the value of c200_l4_pooled_supp if c150_4_pooled_supp is nil" do
+      it "uses the value of c150_l4_pooled_supp if c150_4_pooled_supp is nil" do
         sc = create(:scorecard, c150_4_pooled_supp: nil)
-        expect(sc.graduation_rate_all_students).to eq(sc.c200_l4_pooled_supp)
+        expect(sc.graduation_rate_all_students).to eq(sc.c150_l4_pooled_supp)
       end 
 
-      it "is nil if both c150_4_pooled_supp and c200_l4_pooled_supp are nil" do
-        sc = create(:scorecard, c150_4_pooled_supp: nil, c200_l4_pooled_supp: nil)
+      it "is nil if both c150_4_pooled_supp and c150_l4_pooled_supp are nil" do
+        sc = create(:scorecard, c150_4_pooled_supp: nil, c150_l4_pooled_supp: nil)
         expect(sc.graduation_rate_all_students).to be_nil
       end     
     end
