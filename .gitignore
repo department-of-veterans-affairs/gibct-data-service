@@ -42,6 +42,7 @@ bower.json
 *.rbc
 capybara-*.html
 
+.rbenv-gemsets
 .rspec
 .env
 .byebug_history

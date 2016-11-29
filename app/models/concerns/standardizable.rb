@@ -1,5 +1,5 @@
 ###############################################################################
-## The Standardizable module ensures the uniformity of fields accross the 
+## The Standardizable module ensures the uniformity of fields accross the
 ## multiple CSVs that comprise the data. A special class method called
 ## override_setters takes an array argument of field names, and ensures that
 ## the values written to the instance are uniform (e.g, all the same case, the
@@ -13,7 +13,7 @@ module Standardizable
   class_methods do
     ###########################################################################
     ## forbidden_word
-    ## Identifies those words that are present in some CSVs that represent 
+    ## Identifies those words that are present in some CSVs that represent
     ## null values, but for some reason are included in the soruce CSV.
     ###########################################################################
     def forbidden_word?(v)
@@ -51,7 +51,7 @@ module Standardizable
           define_method(:institution=) do |v|
             if v.present?
               v = v.to_s.gsub("'", "''").strip.try(:upcase)
-              write_attribute(:institution, v) 
+              write_attribute(:institution, v)
             end
           end
 
@@ -59,11 +59,11 @@ module Standardizable
         ## ope6
         #######################################################################
         when :ope6
-          define_method(:ope6=) do |v|            
+          define_method(:ope6=) do |v|
             if v.present? && !self.class.forbidden_word?(v.downcase)
-              write_attribute(:ope6, self.class.pad(v.strip, 8)[1, 5]) 
+              write_attribute(:ope6, self.class.pad(v.strip, 8)[1, 5])
             end
-          end 
+          end
 
         #######################################################################
         ## ope
@@ -73,10 +73,10 @@ module Standardizable
             v = v.try(:strip).try(:upcase) if v.is_a?(String)
             v = nil if self.class.forbidden_word?(v)
 
-            write_attribute(:ope, self.class.pad(v, 8)) 
+            write_attribute(:ope, self.class.pad(v, 8))
             self.ope6 = ope
-          end   
-                 
+          end
+
         #######################################################################
         ## state
         #######################################################################
@@ -104,7 +104,7 @@ module Standardizable
                 write_attribute(setter, v)
               end
             else
-              write_attribute(setter, v)              
+              write_attribute(setter, v)
             end
           end
         end
@@ -122,10 +122,10 @@ module Standardizable
 
     ###########################################################################
     ## pad
-    ## Left-justifies text v in a field padded by l characters c.
+    ## Right-justifies text v in a field padded by l characters c.
     ###########################################################################
     def pad(v, l, c = '0')
-      v.ljust(l, c)  if v.present? && v.class == String && v.downcase != 'none'
+      v.rjust(l, c)  if v.present? && v.class == String && v.downcase != 'none'
     end
 
     ###########################################################################
