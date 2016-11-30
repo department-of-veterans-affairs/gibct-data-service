@@ -1,38 +1,4 @@
-Rails.application.routes.draw do
-  resources :outcomes
-  resources :complaints
-  resources :data_csvs
-  resources :ipeds_ic_pies
-  resources :ipeds_ic_ays
-  resources :ipeds_hds
-  resources :ipeds_ics
-  resources :settlements
-  resources :hcms
-  resources :mous
-  resources :sec702_schools
-  resources :sec702s
-  resources :svas
-  resources :vsocs
-  resources :p911_yrs
-  resources :p911_tfs
-  resources :arf_gibills
-  resources :accreditations
-  resources :scorecards
-  resources :eight_keys
-  resources :va_crosswalks
-  resources :weams
-  
-  root 'dashboards#index' 
-
-  resources :dashboards, only: [:index, :create]
-  resources :csv_files, only: [:show, :index, :create, :destroy]
-
-  get 'csv_files/:id/send_csv_file' => 'csv_files#send_csv_file', as: :send_csv_file
-  get 'csv_files/new/(:type)' => 'csv_files#new', as: :new_csv_file
-
-  get 'dashboards/export(.:format)' => 'dashboards#export', as: :dashboards_export_csv_file
-  get 'dashboards/db_push/:srv/(.:format)' => 'dashboards#db_push', as: :dashboards_db_push
-  
+Rails.application.routes.draw do  
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
