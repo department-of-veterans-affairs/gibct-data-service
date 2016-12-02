@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
@@ -26,7 +27,7 @@ module GibctDataService
     # Bootstrap support.
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
-    # STI subdirectoty support. 
+    # STI subdirectoty support.
     config.autoload_paths += %W(#{config.root}/app/models/csv_files)
   end
 end

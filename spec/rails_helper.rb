@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= "test"
-require File.expand_path("../../config/environment", __FILE__)
+ENV['RAILS_ENV'] ||= 'test'
+require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
-require "spec_helper"
-require "rspec/rails"
+abort('The Rails environment is running in production mode!') if Rails.env.production?
+require 'spec_helper'
+require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -27,7 +28,7 @@ require "rspec/rails"
 # Uncommented (MPH)
 ActiveRecord::Migration.maintain_test_schema!
 
-require "capybara"
+require 'capybara'
 Capybara.default_driver = :sniffybara
 
 RSpec.configure do |config|
@@ -42,16 +43,19 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  # Allow short form of factory girl calls. (MPH)
+  # Allow short form of factory girl calls.
   config.include FactoryGirl::Syntax::Methods
 
-  # database_cleaner configuration (MPH)
+  # Include paths helper in specs
+  config.include Rails.application.routes.url_helpers
+
+  # database_cleaner configuration
   # Clear the entire DB before tests begin
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  # Run each test in a transaction (MPH)
+  # Run each test in a transaction
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
   end
@@ -59,19 +63,19 @@ RSpec.configure do |config|
   # Only runs before examples which have been flagged :js => true.
   # By default, they are generally used for Capybara tests which use a
   # javascript headless webkit such as Selenium. For these types of tests,
-  # transactions won’t work, so this code overrides the setting and
-  # chooses the “truncation” strategy instead. (MPH)
+  # transactions won't work, so this code overrides the setting and
+  # chooses the truncation strategy instead. (MPH)
   config.before(:each, js: true) do
     DatabaseCleaner.strategy = :truncation
   end
 
-  # Cause database_cleaner to start before each test. (MPH)
+  # Cause database_cleaner to start before each test.
   config.before(:each) do
     DatabaseCleaner.start
   end
 
   # Cause database_cleaner to clean database with selected strategy after
-  # each test. (MPH)
+  # each test.
   config.after(:each) do
     DatabaseCleaner.clean
   end

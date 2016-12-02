@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GI Bill Comparison Tool Data Service</title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div class="fluid-container">
+    <div class="row">
+      <div class="col-md-12">
+	       <%= render 'layouts/navbar' %>
+	       <%= render 'layouts/messages' %>
+       </div>
+    </div>
+    <div class="row" >
+      <div class="col-md-offset-1 col-md-10">
+        <%= yield %>
+      </div>
+    </div>
+	</div>
+</body>
+</html>

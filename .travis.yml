@@ -23,6 +23,7 @@ script:
   - git branch
   - bundle exec rspec
   - bundle exec rake security
+  - bundle exec rubocop .
 
 bundler_args: "--without development"
 cache:

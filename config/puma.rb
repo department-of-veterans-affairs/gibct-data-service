@@ -1,4 +1,5 @@
 #!/usr/bin/env puma
+# frozen_string_literal: true
 
 # Set the environment in which the rack's app will run. The value must be a string.
 #
