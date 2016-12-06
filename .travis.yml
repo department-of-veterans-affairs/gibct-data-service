@@ -13,7 +13,6 @@ before_script:
 - cd ..
 branches:
   only:
-  - master
   - rewrite-1
 script:
 - git branch
