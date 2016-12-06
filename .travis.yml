@@ -10,7 +10,7 @@ before_script:
 - cd gi-bill-comparison-tool
 - bundle exec rake db:create
 - bundle exec rake db:migrate
-- cd ..
+- cd ../gibct_data_service
 branches:
   only:
   - rewrite-1
