@@ -17,7 +17,7 @@ before_script:
 
 branches:
     only:
-        - master
+        - rewrite-1
 
 script:
   - git branch
