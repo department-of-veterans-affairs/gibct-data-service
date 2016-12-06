@@ -30,6 +30,8 @@ gem 'devise'
 gem 'activerecord-session_store'
 
 gem 'figaro'
+gem 'travis'
+
 gem 'will_paginate'
 
 # Application server: Puma

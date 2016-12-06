@@ -1,34 +1,31 @@
 language: ruby
-
 addons:
-  postgresql: "9.4"
-
+  postgresql: '9.4'
 services:
-  - postgresql
-
+- postgresql
 before_script:
-  - bundle exec rake db:create
-  - bundle exec rake db:migrate
-  - git clone https://github.com/department-of-veterans-affairs/gi-bill-comparison-tool.git
-  - cd gi-bill-comparison-tool
-  - bundle exec rake db:create
-  - bundle exec rake db:migrate
-  - cd ..
-
+- bundle exec rake db:create
+- bundle exec rake db:migrate
+- git clone https://github.com/department-of-veterans-affairs/gi-bill-comparison-tool.git
+- cd gi-bill-comparison-tool
+- bundle exec rake db:create
+- bundle exec rake db:migrate
+- cd ..
 branches:
-    only:
-        - master
-        - rewrite-1
-
+  only:
+  - master
+  - rewrite-1
 script:
-  - git branch
-  - bundle exec rspec
-  - bundle exec rake security
-  - bundle exec rubocop .
-
+- git branch
+- bundle exec rspec
+- bundle exec rake security
+- bundle exec rubocop .
 bundler_args: "--without development"
 cache:
-  - bundler
-
+- bundler
 notifications:
   email: false
+env:
+  global:
+  - secure: WUCY96aZaGGfw76VstP8W7o6PGHcOiMz0RdBhnlWXrsxpNIjIfYxGjiwkCTdeccd8UiZVNNth3cQ3WnyscI193PVFVtMdUnqeu+lbXftCAiAPwqYv961/i9LAIhgYX6wF8A3XfOd0T0w6s5xz0nafD7S6mFM2WvLo0YsF47tDcRWQ+S7Kq68p2tiHvFUADtHKyep4wIfosai89NfPCLGmRooEwB/V0sb9Odf25KRr4kkQYoSArFV31SEe+5Po9mB8AVWHYwV4xQ9/j+QYjAmNTMPBlRkct/zukGQP06HaKGf1na0mQUoDOsRbmW4AsMITfJD3+OUuxKlhd5hZ+T6PUSBE2c4+q/dejAGvPR5CjNUAg9Vzaf7flalNKr26bUBYz0+h7f9uZzCItmEwYoldf2irrBK1pgUrtylGYt7udfdL8nAs6/7eG0AIDZ+QAXMbQIL+k4KAdDzdMuz8LHXHwcWM9e+00+8YGLktnDsNOQpXSVNkj3Ef34QtLZ0HyTW5v+MuMukUWSfikrAg8Hy2IxsJtbxLfvjL9LtBTAqGjTHzcdPDMhFa842RXlPJmVQoS6qO5n/NfK58wqtiGX5R7h81Y8hokW6GS/z+grjOvzj/xBHZbq8abRLPm7+l6xAo4LX70zpheXqhNTz6JqmYWZ9GGUBfdkEJ2kWUHJWFro=
+  - secure: Kcbk+tZdckoRvjPxzDy82X04qPdzqiJsHaquQhUk05t/orD73Qxwfu1ntilYIBXC+AVphwwglv41togKm9j0TojaaAFXMz0jBLBl4sb/dj5LTocJ+GzwN+X9WsHHkPavMT8SuqugGlwGUjHODzIV3fAAFNe/88oWpPVvIEBZNJ0Yr839pzBhUy96knNr/BNr6NsKeotNX8fdOn+yR11OVoTeOlkYFs0RdjZVYAxk+HoDqW8/TrFj5C3SkrlcQdlrppJ50hqRpt+wdapBMUMhMBtjDa+5GOGB9HyvXGpD4AFJim5j3ZzMCaPc5vHZVgB9AueuLe6wWcKQ6nWqpb9B/bAdcSPApclMw3F2KvYbQ231I/ezbkjhJydSDlFVQ3faAFwqkXPhwTcgV8+n3NYgSFfPjCGhydzh7L19t4UuYh1+ylfVR8ha/2f2npOao+4yH66XGvU0UncAyIQ2eK20kTQ9U8cNH+htUhUSJ3k6Fnfrqz1Mrj0TYjcKHkKhpRNy3J8ZIAQI7vPZZ5sSBhcunitTwFbN/fRcMMF+c6MolCxNSeQ+csQJZ2ZLKAqqG7gJucco3JBU0lDxOPWF5Xps5ejS+KyTYSTQcx+fB0Jh1KR3DBy4nA/fsLWOT1qkKyHjHYKlQYFzy65BIGXMUYJeEbeXGdOFHXfbKFeCSlbYWDU=
