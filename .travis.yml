@@ -6,11 +6,7 @@ services:
 before_script:
 - bundle exec rake db:create
 - bundle exec rake db:migrate
-- git clone https://github.com/department-of-veterans-affairs/gi-bill-comparison-tool.git
-- cd gi-bill-comparison-tool
-- bundle exec rake db:create
-- bundle exec rake db:migrate
-- cd ../gibct_data_service
+- bundle exec rake db:seed
 branches:
   only:
   - rewrite-1
@@ -18,7 +14,7 @@ script:
 - git branch
 - bundle exec rspec
 - bundle exec rake security
-- bundle exec rubocop .
+- bundle exec rubocop $TRAVIS_BUILD_DIR
 bundler_args: "--without development"
 cache:
 - bundler
