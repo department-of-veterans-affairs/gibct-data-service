@@ -9,11 +9,11 @@ services:
 before_script:
   - bundle exec rake db:create
   - bundle exec rake db:migrate
-  - git clone https://github.com/department-of-veterans-affairs/gi-bill-comparison-tool.git
 
 branches:
-    only:
-        - master
+  only:
+    - master
+    - rewrite-1
 
 script:
   - git branch
