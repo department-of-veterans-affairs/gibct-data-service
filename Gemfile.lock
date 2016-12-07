@@ -98,6 +98,8 @@ GEM
     faker (1.6.3)
       i18n (~> 0.5)
     ffi (1.9.10)
+    figaro (1.1.1)
+      thor (~> 0.14)
     formatador (0.2.5)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -167,7 +169,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (3.2.0)
+    puma (2.16.0)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
@@ -313,13 +315,14 @@ DEPENDENCIES
   devise (~> 3.5, >= 3.5.6)
   factory_girl_rails (~> 4.6)
   faker (~> 1.6, >= 1.6.2)
+  figaro
   guard-rspec
   jbuilder (~> 2.0)
   jquery-rails
   jquery-ui-rails
   jshint
   pg (~> 0.15)
-  puma (= 3.2.0)
+  puma (~> 2.16.0)
   rails (= 4.2.7.1)
   rainbow
   rspec-rails
