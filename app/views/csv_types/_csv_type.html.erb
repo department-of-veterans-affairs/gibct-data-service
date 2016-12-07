@@ -1,8 +1,0 @@
-<% csv_file = CsvFile.where(type: csv_type[1]).last_upload %>
-
-<tr>
-	<td><%= csv_type[0] + " Type" %></td>
-	<td><%= csv_file.blank? ? "-" : csv_file.name %></td>
-	<td><%= csv_file.blank? ? "-" : csv_file.humanize_date %></td>
-  <td><%= link_to 'Show', csv_type_path(csv_type[1]) %></td>
-</tr>

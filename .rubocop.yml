@@ -8,15 +8,16 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'Gemfile'
 
 Style/StringLiterals:
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
 
 Style/Documentation:
   Enabled: false
 
 Metrics/LineLength:
-  Max: 100
+  Max: 120
 
 Rails:
   Enabled: true

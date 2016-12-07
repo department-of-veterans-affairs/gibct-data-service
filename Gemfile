@@ -1,12 +1,5 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-2.3.0
-#ruby-gemset=ingest
-
-# For heroku staging
-ruby "2.3.0"
-gem 'rails_12factor', '~> 0.0.3', group: :production
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
 
