@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ShellCommand
   # runs shell command and prints output
   # returns boolean depending on the success of the command

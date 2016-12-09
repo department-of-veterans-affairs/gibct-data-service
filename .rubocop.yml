@@ -8,6 +8,7 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'bin/**/*'
     - 'Gemfile'
 
 Style/StringLiterals:

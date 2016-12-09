@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # RSpec.shared_examples "a standardizable model" do |model|
 #   subject { model.new }
 #
