@@ -46,7 +46,7 @@ group :development, :test do
   gem 'byebug'
 
   # Linters
-  gem 'rubocop', '~> 0.36.0', require: false
+  gem 'rubocop', '~> 0.46.0'
   gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
 

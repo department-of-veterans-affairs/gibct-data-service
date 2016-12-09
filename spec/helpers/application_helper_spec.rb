@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe ApplicationHelper, type: :helper do
   before(:each) do
     allow(helper.controller).to receive(:controller_name).and_return('dashboards')

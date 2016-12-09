@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ApplicationHelper
   def active_link?(path, method = 'GET')
     begin
@@ -14,6 +15,6 @@ module ApplicationHelper
   end
 
   def link_if_not_active(body, path, method = 'GET')
-    active_link?(path, method) ? "<a>#{body}</a>".html_safe : link_to(body, path)
+    active_link?(path, method) ? safe_join(["<a>#{body}</a>".html_safe]) : link_to(body, path)
   end
 end

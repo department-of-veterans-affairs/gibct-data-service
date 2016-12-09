@@ -8,10 +8,8 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'bin/**/*'
     - 'Gemfile'
-
-Style/FrozenStringLiteralComment:
-  Enabled: true
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
