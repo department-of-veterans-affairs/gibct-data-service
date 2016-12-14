@@ -1,0 +1,32 @@
+<div class="jumbotron">
+  <h2>Current Build Information</h2>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <ul class="list-group">
+          <li class="list-group-item">Production Version:
+            <span class="badge"><%= @production_version.blank? ? '-' : @production_version %></span>
+          </li>
+          <li class="list-group-item">Preview Version:
+            <span class="badge"><%= @preview_version.blank? ? '-' : @preview_version %></span>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-offset-8 col-md-4">
+        <% if @production_version.present? %>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-2">
+                <a class="btn btn-primary btn-sm" href="#" role="button">Push To Production</a>
+              </div>
+              <div class="col-md-offset-1 col-md-2">
+                <a class="btn btn-warning btn-sm" href="#" role="button">Revert From Production</a>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

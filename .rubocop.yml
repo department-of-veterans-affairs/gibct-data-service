@@ -10,6 +10,7 @@ AllCops:
     - 'vendor/**/*'
     - 'bin/**/*'
     - 'Gemfile'
+    - 'log/**/*'
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
@@ -19,6 +20,10 @@ Style/Documentation:
 
 Metrics/LineLength:
   Max: 120
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
 
 Rails:
   Enabled: true

@@ -1,0 +1,5 @@
+
+Weam:
+  skip_lines_before_header: 0
+  skip_lines_after_header: 1
+  delimiter: ','

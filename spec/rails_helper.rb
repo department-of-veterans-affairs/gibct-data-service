@@ -25,10 +25,9 @@ require 'rspec/rails'
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-# Uncommented (MPH)
 ActiveRecord::Migration.maintain_test_schema!
 
-require 'capybara'
+require 'capybara/rspec'
 Capybara.default_driver = :sniffybara
 
 RSpec.configure do |config|
