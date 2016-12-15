@@ -29,7 +29,7 @@ FactoryGirl.define do
   end
 
   factory :weam do
-    name { 'Some School' }
+    institution { 'Some School' }
     facility_code { generate :facility_code }
 
     city { 'Cupcakes' }

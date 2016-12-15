@@ -9,7 +9,7 @@ class Weam < ActiveRecord::Base
 
   HEADER_MAP = {
     'facility code' => :facility_code,
-    'institution name' => :name,
+    'institution name' => :institution,
     'institution city' => :city,
     'institution state' => :state,
     'institution zip code' => :zip,
@@ -29,7 +29,7 @@ class Weam < ActiveRecord::Base
 
   validates :facility_code, presence: true
   validates :facility_code, uniqueness: true, unless: :skip_uniqueness
-  validates :name, presence: true
+  validates :institution, presence: true
   validates :institution_type, presence: true
   validates :bah, numericality: true, allow_blank: true
 

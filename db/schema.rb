@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20161212142040) do
 
   create_table "weams", force: :cascade do |t|
     t.string   "facility_code",                            null: false
-    t.string   "name",                                     null: false
+    t.string   "institution",                              null: false
     t.string   "city"
     t.string   "state"
     t.string   "zip"
@@ -106,7 +106,7 @@ ActiveRecord::Schema.define(version: 20161212142040) do
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", using: :btree
-  add_index "weams", ["name"], name: "index_weams_on_name", using: :btree
+  add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
 end
