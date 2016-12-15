@@ -55,6 +55,6 @@ class CsvFilesController < ApplicationController
   end
 
   def flash_alert(errors)
-    flash.alert = CsvFilesController.pretty_error('Errors prohibited this file from being saved:', errors)
+    flash.alert = CsvFilesController.pretty_error(errors, 'Errors prohibited this file from being saved:')
   end
 end

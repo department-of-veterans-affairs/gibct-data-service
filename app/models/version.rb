@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class Version < ActiveRecord::Base
+  TIME_TYPES = [DateTime, Time, ActiveSupport::TimeWithZone].freeze
+
   validates :number, presence: true, numericality: { only_integer: true }
   validates :by, presence: true, unless: proc { |v| v.approved_on_before_type_cast.nil? }
   validate :validate_approved_on
@@ -28,7 +30,7 @@ class Version < ActiveRecord::Base
   protected
 
   def validate_approved_on
-    return if approved_on_before_type_cast.nil? || [DateTime, Time].include?(approved_on_before_type_cast.class)
+    return if approved_on_before_type_cast.nil? || TIME_TYPES.include?(approved_on_before_type_cast.class)
     begin
       DateTime.parse(approved_on_before_type_cast).in_time_zone.to_datetime
     rescue ArgumentError

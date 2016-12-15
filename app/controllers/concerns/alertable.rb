@@ -6,11 +6,10 @@ module Alertable
   end
 
   class_methods do
-    ###########################################################################
-    ## pretty_error
-    ## Wraps an array of messages (presumably errors) in a list.
-    ###########################################################################
-    def pretty_error(label = '', errors = [])
+    # Wraps an array of error messages in an html list with a label (optional) above it
+    def pretty_error(errors, label = '')
+      return '' if errors.blank?
+
       msg = errors.inject('<ul>') do |m, error|
         m + "<li>#{error}</li>"
       end + '</ul>'

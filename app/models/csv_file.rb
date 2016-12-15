@@ -78,4 +78,11 @@ class CsvFile < ActiveRecord::Base
   rescue StandardError => e
     raise e.class, "Row #{n}: #{e.message}"
   end
+
+  protected
+
+  # allow the creation only
+  def readonly?
+    new_record? ? false : true
+  end
 end

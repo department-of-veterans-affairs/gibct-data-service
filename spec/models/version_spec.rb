@@ -30,10 +30,10 @@ RSpec.describe Version, type: :model do
 
   describe 'production and preview versions' do
     before(:each) do
-      create :version, number: 1, approved_on: '2016-12-6 15:00:00 -0500'
-      create :version, number: 2, created_at: '2016-12-7 15:00:00 -0500'
-      create :version, number: 3, approved_on: '2016-12-9 15:00:00 -0500'
-      create :version, number: 4, created_at: '2016-12-10 15:00:00 -0500'
+      create :version, number: 1, approved_on: 3.days.ago
+      create :version, number: 2, created_at: 2.days.ago
+      create :version, number: 3, approved_on: 1.days.ago
+      create :version, number: 4, created_at: 0.days.ago
     end
 
     it 'can find the latest production_version' do
@@ -45,19 +45,19 @@ RSpec.describe Version, type: :model do
     end
 
     it 'can find the production_version on a given date and time as string' do
-      expect(Version.production_version_at('2016-12-7 15:00:00 -0500')).to eq(1)
+      expect(Version.production_version_at(2.days.ago.to_s)).to eq(1)
     end
 
     it 'can find the production_version on a given date and time as Time' do
-      expect(Version.production_version_at(Time.zone.now - 3.days)).to eq(1)
+      expect(Version.production_version_at(2.days.ago)).to eq(1)
     end
 
     it 'can find the preview_version on a given date and time as string' do
-      expect(Version.preview_version_at('2016-12-9 15:00:00 -0500')).to eq(2)
+      expect(Version.preview_version_at(1.day.ago.to_s)).to eq(2)
     end
 
     it 'can find the production_version on a given date and time as Time' do
-      expect(Version.preview_version_at(Time.zone.now - 1.day)).to eq(2)
+      expect(Version.preview_version_at(1.day.ago)).to eq(2)
     end
   end
 end
