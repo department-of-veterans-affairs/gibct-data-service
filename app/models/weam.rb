@@ -3,6 +3,7 @@ class Weam < ActiveRecord::Base
   include Savable, Standardizable
 
   before_validation :compute_derived_fields
+  override_setters
 
   ALC1 = 'educational institution is not approved'.freeze
   ALC2 = 'educational institution is approved for chapter 31 only'.freeze
@@ -10,6 +11,9 @@ class Weam < ActiveRecord::Base
   HEADER_MAP = {
     'facility code' => :facility_code,
     'institution name' => :institution,
+    'address 1' => :address_1,
+    'address 2' => :address_2,
+    'address 3' => :address_3,
     'institution city' => :city,
     'institution state' => :state,
     'institution zip code' => :zip,
@@ -24,7 +28,9 @@ class Weam < ActiveRecord::Base
     'ojt indicator' => :ojt_indicator,
     'correspondence indicator' => :correspondence_indicator,
     'flight indicator' => :flight_indicator,
-    'non-college degree indicator' => :non_college_degree_indicator
+    'non-college degree indicator' => :non_college_degree_indicator,
+    'ipeds' => :ipeds,
+    'ope' => :ope
   }.freeze
 
   validates :facility_code, presence: true
@@ -35,7 +41,7 @@ class Weam < ActiveRecord::Base
 
   # computes all fields that are dependent on other fields
   def compute_derived_fields
-    self.institution_type = weams_type
+    self.institution_type = weams_institution_type
     self.va_highest_degree_offered = highest_degree_offered
 
     self.flight = flight?
@@ -53,17 +59,17 @@ class Weam < ActiveRecord::Base
   # Does this institution offer a AA or BA if an institution of higher
   # learning, or a certification if an OJT?
   def offer_degree?
-    institution_of_higher_learning_indicator || non_college_degree_indicator
+    Weam.to_bool(institution_of_higher_learning_indicator) || Weam.to_bool(non_college_degree_indicator)
   end
 
   # Is this a correspondence school?
   def correspondence?
-    correspondence_indicator && !ojt? && !offer_degree?
+    Weam.to_bool(correspondence_indicator) && !ojt? && !offer_degree?
   end
 
   # Is this a flight school?
   def flight?
-    !correspondence? && flight_indicator && !ojt? && !offer_degree?
+    !correspondence? && Weam.to_bool(flight_indicator) && !ojt? && !offer_degree?
   end
 
   # Is this a foreign school?
@@ -95,7 +101,7 @@ class Weam < ActiveRecord::Base
   end
 
   # Gets the type of institution (public, private, ... )
-  def weams_type
+  def weams_institution_type
     {
       'ojt' => ojt?, 'correspondence' => correspondence?, 'flight' => flight?,
       'foreign' => foreign?, 'public' => public?, 'for profit' => for_profit?,
@@ -106,8 +112,9 @@ class Weam < ActiveRecord::Base
   # True if the school offers a degree, higher learning institution, ojt, flight or
   # correspondence school
   def flags_for_approved?
-    institution_of_higher_learning_indicator || ojt_indicator ||
-      correspondence_indicator || flight_indicator || non_college_degree_indicator
+    Weam.to_bool(institution_of_higher_learning_indicator) || Weam.to_bool(ojt_indicator) ||
+      Weam.to_bool(correspondence_indicator) || Weam.to_bool(flight_indicator) ||
+      Weam.to_bool(non_college_degree_indicator)
   end
 
   # To be approved, a school must be marked 'aprvd' in the poo-status, have
@@ -117,7 +124,6 @@ class Weam < ActiveRecord::Base
   def approved?
     return false unless poo_status =~ Regexp.new('aprvd')
     return false if applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}")
-
     flags_for_approved?
   end
 end

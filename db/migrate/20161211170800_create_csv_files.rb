@@ -8,7 +8,7 @@ class CreateCsvFiles < ActiveRecord::Migration
       t.integer :skip_lines_before_header, null: false, default: 3
       t.integer :skip_lines_after_header, null: false, default: 0
       t.string :delimiter, null: false, default: ','
-      t.string :result
+      t.string :result, default: 'not uploaded'
 
       t.timestamps null: false
     end

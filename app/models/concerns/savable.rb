@@ -8,9 +8,9 @@ module Savable
 
   # Rely on postgres to enforce uniqueness, eliminates a query to determine if column
   # is not unique.
-  def save_for_bulk_insert
+  def save_for_bulk_insert!
     self.skip_uniqueness = true
-    save
+    save!
   end
 
   class_methods do

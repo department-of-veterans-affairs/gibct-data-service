@@ -33,7 +33,7 @@ FactoryGirl.define do
     facility_code { generate :facility_code }
 
     city { 'Cupcakes' }
-    state { 'New York' }
+    state { 'ny' }
     zip { '11203' }
     country 'USA'
 

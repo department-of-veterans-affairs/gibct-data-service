@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
-  describe 'validates' do
+  describe 'when validating' do
     subject { build :version }
 
     let(:bad_version) { build :version, number: 123.4 }
@@ -28,11 +28,11 @@ RSpec.describe Version, type: :model do
     end
   end
 
-  describe 'production and preview versions' do
+  describe 'when determining production and preview versions' do
     before(:each) do
       create :version, number: 1, approved_on: 3.days.ago
       create :version, number: 2, created_at: 2.days.ago
-      create :version, number: 3, approved_on: 1.days.ago
+      create :version, number: 3, approved_on: 1.day.ago
       create :version, number: 4, created_at: 0.days.ago
     end
 

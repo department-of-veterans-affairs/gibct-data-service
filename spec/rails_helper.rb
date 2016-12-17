@@ -35,10 +35,6 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  config.define_derived_metadata(file_path: Regexp.new('/spec/controller/conerns')) do |metadata|
-    metadata[:type] = :controller_concern
-  end
-
   # Adding capybara DSL to rspec (MPH)
   config.include Capybara::DSL
 

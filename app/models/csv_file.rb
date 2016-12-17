@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'CSV'
 
 class CsvFile < ActiveRecord::Base
@@ -23,60 +24,78 @@ class CsvFile < ActiveRecord::Base
 
   # Kicks off csv loading of model
   def upload_csv_file
-    prep_model
-
     begin
-      data = upload_file.read.encode(Encoding.find('UTF-8'), ENCODING_OPTIONS)
-      load_data_into(model, data)
+      prep_load
+      load_data
+
       self.result = 'Successful'
     rescue StandardError => e
-      errors[:base] << e.message
+      Rails.logger.error "Tried to upload: #{errors[:base] << e.message}"
       self.result = 'Failed'
     end
 
     true
   end
 
-  def prep_model
-    model = TYPES.find { |r| r.name.casecmp(csv_type.downcase).zero? }
-    model.delete_all
-
-    model
+  def prep_load
+    model_from_csv_type.delete_all
+    data_from_csv_file
+    headers_from_csv_file
+    check_headers
+    generate_header_converter
   end
 
-  # Read strings terminated by \n, process and save in a single transaction
-  def load_data_into(model, data)
+  def model_from_csv_type
+    @model ||= TYPES.find { |r| r.name.casecmp(csv_type.downcase).zero? }
+  end
+
+  def data_from_csv_file
+    @data ||= upload_file.read.encode(Encoding.find('UTF-8'), ENCODING_OPTIONS)
+  end
+
+  def headers_from_csv_file
     n = 0
+    @headers ||= CSV.parse(data_from_csv_file) do |row|
+      next if (n += 1) <= skip_lines_before_header
+      break row.map { |r| r.try(:strip).try(:downcase) }
+    end
+  end
 
-    model.transaction do
-      CSV.parse(data, headers: process_headers(model, data)) do |row|
-        n += 1
-        next if n <= skip_lines_before_header + skip_lines_after_header + 1
+  def check_headers
+    missing_headers = model_from_csv_type::HEADER_MAP.keys - headers_from_csv_file
+    raise StandardError, "#{name} missing headers: #{missing_headers.inspect}" if missing_headers.present?
+  end
 
-        # The model is afforded the opportunity to validate the row before a model is created
-        process_rows(model, row, n) if model.permit_csv_row_before_save
+  def generate_header_converter
+    CSV::HeaderConverters[:header_map] = lambda do |header|
+      begin
+        model_from_csv_type::HEADER_MAP[header.strip]
+      rescue StandardError
+        raise StandardError, "'#{header.strip}' not found in #{model_from_csv_type} model" if h.blank?
       end
     end
   end
 
-  def process_headers(model, data)
+  # Read strings terminated by \n, process and save in a single transaction
+  def load_data
     n = 0
-    headers = CSV.parse(data) do |row|
-      next if (n += 1) <= skip_lines_before_header
-      break row.map { |r| r.strip.downcase }
+
+    model_from_csv_type.transaction do
+      CSV.parse(data_from_csv_file, headers: headers_from_csv_file, header_converters: [:downcase, :header_map]) do |row|
+        n += 1
+        next if n <= skip_lines_before_header + skip_lines_after_header + 1
+
+        # The model is afforded the opportunity to validate the row before a model is created
+        process_rows(row, n) if model_from_csv_type.permit_csv_row_before_save
+      end
     end
-
-    missing_headers = model::HEADER_MAP.keys - headers
-    raise StandardError, "#{name} missing headers: #{missing_headers.inspect}" if missing_headers.present?
-
-    headers
   end
 
-  def process_rows(model, row, n)
-    instance = model.new(row)
+  def process_rows(row, n)
+    instance = model_from_csv_type.new(row.to_hash)
     instance.save_for_bulk_insert!
   rescue StandardError => e
-    raise e.class, "Row #{n}: #{e.message}"
+    raise e.class, "Row #{n}: #{e.message}\n#{Rails.logger.error e.backtrace}"
   end
 
   protected

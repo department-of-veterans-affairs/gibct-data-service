@@ -17,16 +17,16 @@ ActiveRecord::Schema.define(version: 20161212142040) do
   enable_extension "plpgsql"
 
   create_table "csv_files", force: :cascade do |t|
-    t.string   "csv_type",                               null: false
-    t.string   "name",                                   null: false
+    t.string   "csv_type",                                          null: false
+    t.string   "name",                                              null: false
     t.string   "description"
-    t.string   "user",                                   null: false
-    t.integer  "skip_lines_before_header", default: 3,   null: false
-    t.integer  "skip_lines_after_header",  default: 0,   null: false
-    t.string   "delimiter",                default: ",", null: false
-    t.string   "result"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.string   "user",                                              null: false
+    t.integer  "skip_lines_before_header", default: 3,              null: false
+    t.integer  "skip_lines_after_header",  default: 0,              null: false
+    t.string   "delimiter",                default: ",",            null: false
+    t.string   "result",                   default: "not uploaded"
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
   end
 
   add_index "csv_files", ["csv_type"], name: "index_csv_files_on_csv_type", using: :btree
@@ -85,22 +85,27 @@ ActiveRecord::Schema.define(version: 20161212142040) do
     t.string   "state"
     t.string   "zip"
     t.string   "country"
-    t.string   "va_highest_degree_offered"
-    t.string   "institution_type"
     t.integer  "bah"
     t.boolean  "poe"
     t.boolean  "yr"
+    t.string   "va_highest_degree_offered"
+    t.string   "institution_type"
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "address_3"
     t.string   "poo_status"
     t.string   "applicable_law_code"
-    t.boolean  "institution_of_higher_learning_indicator"
-    t.boolean  "ojt_indicator"
-    t.boolean  "correspondence_indicator"
-    t.boolean  "flight_indicator"
-    t.boolean  "non_college_degree_indicator"
+    t.string   "institution_of_higher_learning_indicator"
+    t.string   "ojt_indicator"
+    t.string   "correspondence_indicator"
+    t.string   "flight_indicator"
+    t.string   "non_college_degree_indicator"
     t.boolean  "approved",                                 null: false
+    t.string   "ipeds"
+    t.string   "ope"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end

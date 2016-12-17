@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-RSpec.shared_examples 'an alertable controller' do |controller|
+RSpec.shared_examples 'an alertable controller' do
   describe '::pretty_error' do
     let(:errors) { %w(error1 error2) }
     let(:label) { 'some label' }
@@ -9,21 +9,21 @@ RSpec.shared_examples 'an alertable controller' do |controller|
 
     context 'without a label' do
       it 'formats the errors for html' do
-        expect(controller.pretty_error(errors)).to eq(ul)
+        expect(described_class.pretty_error(errors)).to eq(ul)
       end
 
       it 'returns an empty string when there are no errors' do
-        expect(controller.pretty_error([])).to be_blank
+        expect(described_class.pretty_error([])).to be_blank
       end
     end
 
     context 'with a label' do
       it 'formats the errors for html' do
-        expect(controller.pretty_error(errors, label)).to eq(ul_with_label)
+        expect(described_class.pretty_error(errors, label)).to eq(ul_with_label)
       end
 
       it 'returns an empty string when there are no errors' do
-        expect(controller.pretty_error([], label)).to be_blank
+        expect(described_class.pretty_error([], label)).to be_blank
       end
     end
   end
