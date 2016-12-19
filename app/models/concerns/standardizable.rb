@@ -70,7 +70,7 @@ module Standardizable
     def override_generic_string_setter(col)
       klass = self
       define_method "#{col}=" do |value|
-        self[col] = klass.forbidden_word?(value) || value.blank? ? nil : value.strip.delete("'")
+        self[col] = klass.forbidden_word?(value) || (value.blank? ? nil : value.strip.delete("'"))
       end
     end
   end

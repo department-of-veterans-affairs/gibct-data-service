@@ -81,12 +81,12 @@ class CsvFile < ActiveRecord::Base
     n = 0
 
     model_from_csv_type.transaction do
-      CSV.parse(data_from_csv_file, headers: headers_from_csv_file, header_converters: [:downcase, :header_map]) do |row|
+      CSV.parse(data_from_csv_file, headers: headers_from_csv_file, header_converters: [:downcase, :header_map]) do |r|
         n += 1
         next if n <= skip_lines_before_header + skip_lines_after_header + 1
 
         # The model is afforded the opportunity to validate the row before a model is created
-        process_rows(row, n) if model_from_csv_type.permit_csv_row_before_save
+        process_rows(r, n) if model_from_csv_type.permit_csv_row_before_save
       end
     end
   end
