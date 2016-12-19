@@ -12,19 +12,26 @@ AllCops:
     - 'Gemfile'
     - 'log/**/*'
 
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
-
-Style/Documentation:
-  Enabled: false
-
-Metrics/LineLength:
-  Max: 120
+Metrics/AbcSize:
+  Max: 17
 
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
     - 'app/models/concerns/**/*'
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 12
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
 
 Rails:
   Enabled: true

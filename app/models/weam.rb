@@ -5,8 +5,8 @@ class Weam < ActiveRecord::Base
   before_validation :compute_derived_fields
   override_setters
 
-  ALC1 = 'educational institution is not approved'.freeze
-  ALC2 = 'educational institution is approved for chapter 31 only'.freeze
+  ALC1 = 'educational institution is not approved'
+  ALC2 = 'educational institution is approved for chapter 31 only'
 
   HEADER_MAP = {
     'facility code' => :facility_code,

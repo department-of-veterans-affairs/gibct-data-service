@@ -28,6 +28,15 @@ RSpec.describe CsvFile, type: :model do
     end
   end
 
+  describe 'when asked for defaults' do
+    CsvFile::TYPES.each do |type|
+      it 'returns the skipped line parameters and default delimiter for every csv type' do
+        defaults = described_class.defaults_for(type)
+        expect(defaults.keys).to include('skip_lines_before_header', 'skip_lines_after_header', 'delimiter')
+      end
+    end
+  end
+
   describe 'when saving' do
     subject { build :csv_file }
 
@@ -60,13 +69,23 @@ RSpec.describe CsvFile, type: :model do
       expect(subject.headers_from_csv_file).to match_array(headers)
     end
 
+    it "loads each row into the CSV model's table" do
+      expect { subject.save }.to change { Weam.all.length }.from(5).to(3)
+    end
+
     it 'raises an error if any headers are missing' do
       missing_header_csv = build :csv_file, :weam, :weam_missing_header
       expect { missing_header_csv.check_headers }.to raise_error(StandardError)
     end
 
-    it "loads each row into the CSV model's table" do
-      expect { subject.save }.to change { Weam.all.length }.from(5).to(3)
+    it 'raises an error if a row of data cannot be saved' do
+      missing_name = create :csv_file, :weam_missing_school_name
+      expect(missing_name.errors.any?).to be_truthy
+    end
+
+    it 'raises an error if extra headers are found' do
+      extra_header = create :csv_file, :weam_extra_header
+      expect(extra_header.errors.any?).to be_truthy
     end
   end
 end

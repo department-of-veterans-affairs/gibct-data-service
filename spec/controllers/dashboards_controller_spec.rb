@@ -8,7 +8,7 @@ require 'controllers/shared_examples/shared_examples_for_alertable'
 RSpec.describe DashboardsController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'dashboards'
   it_behaves_like 'an alertable controller'
-  
+
   describe 'GET #index' do
     login_user
 

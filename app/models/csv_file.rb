@@ -30,7 +30,10 @@ class CsvFile < ActiveRecord::Base
 
       self.result = 'Successful'
     rescue StandardError => e
-      Rails.logger.error "Tried to upload: #{errors[:base] << e.message}"
+      msg = "Tried to upload: #{e.message}"
+      Rails.logger.error msg
+
+      errors.add(:base, msg)
       self.result = 'Failed'
     end
 
@@ -69,9 +72,10 @@ class CsvFile < ActiveRecord::Base
   def generate_header_converter
     CSV::HeaderConverters[:header_map] = lambda do |header|
       begin
-        model_from_csv_type::HEADER_MAP[header.strip]
-      rescue StandardError
-        raise StandardError, "'#{header.strip}' not found in #{model_from_csv_type} model" if h.blank?
+        h = model_from_csv_type::HEADER_MAP[header.try(:strip)]
+        raise StandardError, "Header '#{header}' not found in #{model_from_csv_type} model" if h.blank?
+
+        h
       end
     end
   end
@@ -95,7 +99,7 @@ class CsvFile < ActiveRecord::Base
     instance = model_from_csv_type.new(row.to_hash)
     instance.save_for_bulk_insert!
   rescue StandardError => e
-    raise e.class, "Row #{n}: #{e.message}\n#{Rails.logger.error e.backtrace}"
+    raise "Row #{n}: #{e.message}\n#{Rails.logger.error e.backtrace}"
   end
 
   protected

@@ -16,8 +16,26 @@ FactoryGirl.define do
     end
 
     trait :weam_missing_header do
+      skip_lines_before_header 0
+      skip_lines_after_header 1
       upload_file do
         ActionDispatch::TestProcess.fixture_file_upload('spec/fixtures/weams_missing_header_test.csv', 'text/csv')
+      end
+    end
+
+    trait :weam_missing_school_name do
+      skip_lines_before_header 0
+      skip_lines_after_header 1
+      upload_file do
+        ActionDispatch::TestProcess.fixture_file_upload('spec/fixtures/weams_missing_school_name_test.csv', 'text/csv')
+      end
+    end
+
+    trait :weam_extra_header do
+      skip_lines_before_header 0
+      skip_lines_after_header 1
+      upload_file do
+        ActionDispatch::TestProcess.fixture_file_upload('spec/fixtures/weams_extra_header_test.csv', 'text/csv')
       end
     end
   end

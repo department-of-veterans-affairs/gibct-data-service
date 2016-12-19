@@ -33,11 +33,11 @@ class CsvFilesController < ApplicationController
     @csv_file.name = csv_file_params[:upload_file].try(:original_filename)
     @csv_file.user = current_user.try(:email)
 
-    if @csv_file.save
+    if save_success?
       redirect_to @csv_file
     else
       flash_alert(@csv_file.errors.full_messages)
-      render :new
+      redirect_to new_csv_file_path(csv_type: @csv_file.csv_type)
     end
   end
 
@@ -56,5 +56,9 @@ class CsvFilesController < ApplicationController
 
   def flash_alert(errors)
     flash.alert = CsvFilesController.pretty_error(errors, 'Errors prohibited this file from being saved:')
+  end
+
+  def save_success?
+    @csv_file.save && !@csv_file.result.casecmp('failed').zero?
   end
 end
