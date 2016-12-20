@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'CSV'
+require 'csv'
 
 class CsvFile < ActiveRecord::Base
   TYPES = [Weam].freeze
