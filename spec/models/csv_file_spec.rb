@@ -40,8 +40,8 @@ RSpec.describe CsvFile, type: :model do
   describe 'when getting upload times' do
     let(:csv_types) { CsvFile::TYPES.map { |t| t.name.underscore } }
 
-    let(:today) { 0.days.ago }
-    let(:yesterday) { 1.day.ago }
+    let(:today) { 0.days.ago.beginning_of_day }
+    let(:yesterday) { 1.day.ago.beginning_of_day }
 
     before(:each) do
       csv_types.each do |t|
