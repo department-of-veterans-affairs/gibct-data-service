@@ -24,7 +24,7 @@ RSpec.shared_examples 'a savable model' do
 
   describe '::permit_csv_row_before_save' do
     it 'returns a boolean' do
-      expect(described_class.permit_csv_row_before_save).to be_truthy.or be_falsey
+      expect(described_class.permit_csv_row_before_save('')).to be_truthy.or be_falsey
     end
   end
 end

@@ -3,18 +3,15 @@ class CsvFilesController < ApplicationController
   include Alertable
 
   def index
-    @csv_files = CsvFile.all
+    @csv_files = CsvFile.all.paginate(page: params[:page])
   end
 
   def show
     @csv_file = CsvFile.find(params[:id])
-
-    if @csv_file.present?
-      render :show
-    else
-      flash_alert(@csv_file.errors.full_messages)
-      render :index
-    end
+    render :show
+  rescue ActiveRecord::RecordNotFound
+    flash_alert(["Csv File record with id = #{params[:id]} was not found"], 'Bad Parameter:')
+    redirect_to csv_files_path
   end
 
   def new
@@ -41,6 +38,11 @@ class CsvFilesController < ApplicationController
     end
   end
 
+  def defaults(key)
+    @default ||= CsvFile.defaults_for(params[:csv_type])
+    @default[key]
+  end
+
   protected
 
   def csv_file_params
@@ -49,13 +51,8 @@ class CsvFilesController < ApplicationController
     )
   end
 
-  def defaults(key)
-    @default ||= CsvFile.defaults_for(params[:csv_type])
-    @default[key]
-  end
-
-  def flash_alert(errors)
-    flash.alert = CsvFilesController.pretty_error(errors, 'Errors prohibited this file from being saved:')
+  def flash_alert(errors, label = 'Errors prohibited this file from being saved:')
+    flash.alert = CsvFilesController.pretty_error(errors, label)
   end
 
   def save_success?

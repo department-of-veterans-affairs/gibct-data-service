@@ -36,7 +36,7 @@ gem 'activerecord-session_store', '~> 1.0'
 gem 'will_paginate', '~> 3.1'
 
 # Provides country/state support
-gem 'carmen'
+# gem 'carmen'
 
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger

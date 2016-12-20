@@ -18,91 +18,101 @@ class CsvFile < ActiveRecord::Base
 
   validates :delimiter, inclusion: { in: DELIMITERS, message: '%{value} is not a valid delimiter' }
 
+  # Loads some default parameters for CSV file formats
   def self.defaults_for(type)
     YAML.load_file('config/csv_file_defaults.yml')[type.to_s]
+  end
+
+  # Finds the most recent upload grouped by csv_type
+  def self.last_upload_time(success)
+    result = success ? 'Successful' : 'Failed'
+
+    inner_query = 'SELECT cf.csv_type as ctype, MAX(cf.created_at) as max_ca '\
+                  'FROM csv_files cf '\
+                  "WHERE cf.result='#{result}' "\
+                  'GROUP BY cf.csv_type'
+
+    query = 'SELECT csv_files.* '\
+      "FROM csv_files INNER JOIN (#{inner_query}) md "\
+      'ON md.ctype=csv_files.csv_type '\
+      "WHERE md.max_ca=csv_files.created_at AND csv_files.result='#{result}';"
+
+    CsvFile.find_by_sql(query)
   end
 
   # Kicks off csv loading of model
   def upload_csv_file
     begin
-      prep_load
-      load_data
+      model.transaction do
+        precheck!
+        load_data!
 
-      self.result = 'Successful'
+        self.result = 'Successful'
+      end
     rescue StandardError => e
       msg = "Tried to upload: #{e.message}"
-      Rails.logger.error msg
-
       errors.add(:base, msg)
+      Rails.logger.error msg + "\n#{e.backtrace}"
+
       self.result = 'Failed'
     end
 
     true
   end
 
-  def prep_load
-    model_from_csv_type.delete_all
-    data_from_csv_file
-    headers_from_csv_file
-    check_headers
-    generate_header_converter
+  # Prechecks columns vs csv headers for the model and installs CSV header_converters
+  def precheck!
+    columns = model::HEADER_MAP.keys
+
+    missing = columns - headers
+    raise StandardError, "#{name} is missing headers: #{missing.inspect}" if missing.present?
+
+    extra = headers - columns
+    raise StandardError, "#{name} has extra headers: #{extra.inspect}" if extra.present?
+
+    CSV::HeaderConverters[:header_map] = lambda do |header|
+      model::HEADER_MAP[header.try(:strip).try(:downcase)]
+    end
   end
 
-  def model_from_csv_type
+  # Attempts to read the csv file line-by-line and save
+  def load_data!
+    n = 0
+    model.delete_all
+    first_row = skip_lines_before_header + skip_lines_after_header + 1
+
+    CSV.parse(data, headers: headers, header_converters: [:downcase, :header_map]) do |row|
+      next if (n += 1) <= first_row || !model.permit_csv_row_before_save(row)
+
+      begin
+        model.new(row.to_hash).save_for_bulk_insert!
+      rescue StandardError => e
+        raise StandardError, "On row #{n}: #{e.message}"
+      end
+    end
+  end
+
+  protected
+
+  # Gets the model used for this type of csv
+  def model
     @model ||= TYPES.find { |r| r.name.casecmp(csv_type.downcase).zero? }
   end
 
-  def data_from_csv_file
+  # Reads and encodes temporary uploaded csv file
+  def data
     @data ||= upload_file.read.encode(Encoding.find('UTF-8'), ENCODING_OPTIONS)
   end
 
-  def headers_from_csv_file
+  # Reads the csv file headers
+  def headers
     n = 0
-    @headers ||= CSV.parse(data_from_csv_file) do |row|
+
+    @headers ||= CSV.parse(data) do |row|
       next if (n += 1) <= skip_lines_before_header
       break row.map { |r| r.try(:strip).try(:downcase) }
     end
   end
-
-  def check_headers
-    missing_headers = model_from_csv_type::HEADER_MAP.keys - headers_from_csv_file
-    raise StandardError, "#{name} missing headers: #{missing_headers.inspect}" if missing_headers.present?
-  end
-
-  def generate_header_converter
-    CSV::HeaderConverters[:header_map] = lambda do |header|
-      begin
-        h = model_from_csv_type::HEADER_MAP[header.try(:strip)]
-        raise StandardError, "Header '#{header}' not found in #{model_from_csv_type} model" if h.blank?
-
-        h
-      end
-    end
-  end
-
-  # Read strings terminated by \n, process and save in a single transaction
-  def load_data
-    n = 0
-
-    model_from_csv_type.transaction do
-      CSV.parse(data_from_csv_file, headers: headers_from_csv_file, header_converters: [:downcase, :header_map]) do |r|
-        n += 1
-        next if n <= skip_lines_before_header + skip_lines_after_header + 1
-
-        # The model is afforded the opportunity to validate the row before a model is created
-        process_rows(r, n) if model_from_csv_type.permit_csv_row_before_save
-      end
-    end
-  end
-
-  def process_rows(row, n)
-    instance = model_from_csv_type.new(row.to_hash)
-    instance.save_for_bulk_insert!
-  rescue StandardError => e
-    raise "Row #{n}: #{e.message}\n#{Rails.logger.error e.backtrace}"
-  end
-
-  protected
 
   # allow the creation only
   def readonly?

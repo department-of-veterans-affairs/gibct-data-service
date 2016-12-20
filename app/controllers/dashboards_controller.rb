@@ -5,5 +5,6 @@ class DashboardsController < ApplicationController
   def index
     @production_version = Version.production_version
     @preview_version = Version.preview_version
+    @uploads = CsvFile.last_upload_time(true)
   end
 end

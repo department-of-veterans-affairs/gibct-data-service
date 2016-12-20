@@ -15,8 +15,8 @@ module Savable
 
   class_methods do
     # Override to provide custom row validation before model instance is created.
-    def permit_csv_row_before_save(row = true)
-      row
+    def permit_csv_row_before_save(_row)
+      true
     end
   end
 end
