@@ -20,6 +20,10 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
         'WCAG2AA.Principle1.Guideline1_3.1_3_1.H44.NonExistentFragment'
       Sniffybara::Driver.accessibility_code_exceptions <<
         'WCAG2AA.Principle1.Guideline1_3.1_3_1.F68.Hidden'
+      Sniffybara::Driver.accessibility_code_exceptions <<
+        'WCAG2AA.Principle1.Guideline1_3.1_3_1.H49.Small'
+      Sniffybara::Driver.accessibility_code_exceptions <<
+        'WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail'
 
       it 'outputs an error message if not successful' do
         visit user_session_path

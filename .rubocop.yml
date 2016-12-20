@@ -10,18 +10,34 @@ AllCops:
     - 'vendor/**/*'
     - 'bin/**/*'
     - 'Gemfile'
+    - 'log/**/*'
 
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
+Metrics/AbcSize:
+  Max: 40
 
-Style/Documentation:
-  Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'app/models/concerns/**/*'
 
 Metrics/LineLength:
   Max: 120
 
+Metrics/MethodLength:
+  Enabled: true
+  Max: 20
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
 Rails:
   Enabled: true
+
+Rails/HttpPositionalArguments:
+  Enabled: false
 
 Rails/Output:
   Exclude:

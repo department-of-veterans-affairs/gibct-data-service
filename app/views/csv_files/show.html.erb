@@ -1,0 +1,19 @@
+<h2>Upload: <span style="color: #00A9A1"><%= @csv_file.csv_type %> File</span></h2>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10">
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Id:', value: @csv_file.id, top: '7rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Uploaded By:', value: @csv_file.user, top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'File Name:', value: @csv_file.name, top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Description:', value: @csv_file.description, top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Skipped Lines Before Header:', value: @csv_file.skip_lines_before_header, top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Skipped Lines After Header:', value: @csv_file.skip_lines_after_header, top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Delimiter:', value: @csv_file.delimiter, top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Date:', value: @csv_file.created_at.to_formatted_s(:rfc822), top: '2rem' } %>
+      <%= render partial: 'csv_files/show_column', locals: { label: 'Result:', value: @csv_file.result, top: '2rem' } %>
+    </div>
+
+    <div class="col-md-2">
+      <%= link_to 'List Csv File Uploads', csv_files_path, class: 'btn btn-primary', role: 'button'%>
+    </div>

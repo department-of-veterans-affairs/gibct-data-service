@@ -6,6 +6,7 @@ require File.expand_path('../../config/environment', __FILE__)
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -25,10 +26,9 @@ require 'rspec/rails'
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-# Uncommented (MPH)
 ActiveRecord::Migration.maintain_test_schema!
 
-require 'capybara'
+require 'capybara/rspec'
 Capybara.default_driver = :sniffybara
 
 RSpec.configure do |config|
