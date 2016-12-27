@@ -3,8 +3,9 @@ include ActionDispatch::TestProcess
 
 FactoryGirl.define do
   factory :csv_file do
+    user
+
     sequence(:name) { |n| "csv_file_#{n}.csv" }
-    sequence(:user) { |n| "homer_simpson#{n}@va.gov" }
 
     csv_type { CsvFile::TYPES.sample }
 

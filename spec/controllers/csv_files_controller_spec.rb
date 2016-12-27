@@ -71,7 +71,7 @@ RSpec.describe CsvFilesController, type: :controller do
     end
 
     it 'assigns the current user' do
-      expect(assigns(:csv_file).user).to eq(controller.current_user.email)
+      expect(assigns(:csv_file).user.email).to eq(controller.current_user.email)
     end
 
     it 'assigns defaults' do

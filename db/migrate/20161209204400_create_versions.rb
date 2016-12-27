@@ -1,9 +1,10 @@
 class CreateVersions < ActiveRecord::Migration
   def change
     create_table :versions do |t|
-      t.integer :number, index: true, null: false
-      t.datetime :approved_on, index: true, default: nil, null: true
-      t.string :by, index: true
+      t.belongs_to :user, index: true, null: false
+      
+      t.integer :version, index: true, null: false
+      t.boolean :production, index: true, default: false, null: false
 
       t.timestamps null: false
     end

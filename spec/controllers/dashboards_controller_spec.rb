@@ -13,9 +13,9 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before(:each) do
-      create :version, number: 1
-      create :version, :as_production, number: 2
-      create :version, number: 3
+      create :version, version: 1
+      create :version, :production, version: 2
+      create :version, version: 3
 
       get :index
     end
@@ -25,8 +25,8 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'provides latest production and preview viewsons' do
-      expect(assigns(:production_version)).to eq(2)
-      expect(assigns(:preview_version)).to eq(3)
+      expect(assigns(:production_version).version).to eq(2)
+      expect(assigns(:preview_version).version).to eq(3)
     end
   end
 end

@@ -17,10 +17,10 @@ ActiveRecord::Schema.define(version: 20161212142040) do
   enable_extension "plpgsql"
 
   create_table "csv_files", force: :cascade do |t|
+    t.integer  "user_id",                                           null: false
     t.string   "csv_type",                                          null: false
     t.string   "name",                                              null: false
     t.string   "description"
-    t.string   "user",                                              null: false
     t.integer  "skip_lines_before_header", default: 3,              null: false
     t.integer  "skip_lines_after_header",  default: 0,              null: false
     t.string   "delimiter",                default: ",",            null: false
@@ -30,13 +30,15 @@ ActiveRecord::Schema.define(version: 20161212142040) do
   end
 
   add_index "csv_files", ["csv_type"], name: "index_csv_files_on_csv_type", using: :btree
-  add_index "csv_files", ["user"], name: "index_csv_files_on_user", using: :btree
+  add_index "csv_files", ["user_id"], name: "index_csv_files_on_user_id", using: :btree
 
   create_table "data_csvs", force: :cascade do |t|
-    t.integer  "version_id"
+    t.integer  "version",    null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "data_csvs", ["version"], name: "index_data_csvs_on_version", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
@@ -67,16 +69,16 @@ ActiveRecord::Schema.define(version: 20161212142040) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.integer  "number",      null: false
-    t.datetime "approved_on"
-    t.string   "by"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "user_id",                    null: false
+    t.integer  "version",                    null: false
+    t.boolean  "production", default: false, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
-  add_index "versions", ["approved_on"], name: "index_versions_on_approved_on", using: :btree
-  add_index "versions", ["by"], name: "index_versions_on_by", using: :btree
-  add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
+  add_index "versions", ["production"], name: "index_versions_on_production", using: :btree
+  add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
+  add_index "versions", ["version"], name: "index_versions_on_version", using: :btree
 
   create_table "weams", force: :cascade do |t|
     t.string   "facility_code",                            null: false

@@ -10,8 +10,13 @@ class CsvFile < ActiveRecord::Base
 
   attr_accessor :upload_file
 
+  belongs_to :user, inverse_of: :csv_files
+
+  validates_associated :user
+  validates :user_id, presence: true
+
   validates :csv_type, inclusion: { in: TYPES.map(&:name), message: '%{value} is not a valid CSV type' }
-  validates :name, :user, presence: true
+  validates :name, presence: true
 
   validates :skip_lines_before_header, presence: true, numericality: { only: :integer, greater_than_or_equal_to: 0 }
   validates :skip_lines_after_header, presence: true, numericality: { only: :integer, greater_than_or_equal_to: 0 }
@@ -24,7 +29,7 @@ class CsvFile < ActiveRecord::Base
   end
 
   # Finds the most recent upload grouped by csv_type
-  def self.last_upload_time(success)
+  def self.last_uploads(success = true)
     result = success ? 'Successful' : 'Failed'
 
     inner_query = 'SELECT cf.csv_type as ctype, MAX(cf.created_at) as max_ca '\
@@ -37,7 +42,7 @@ class CsvFile < ActiveRecord::Base
       'ON md.ctype=csv_files.csv_type '\
       "WHERE md.max_ca=csv_files.created_at AND csv_files.result='#{result}';"
 
-    CsvFile.find_by_sql(query)
+    find_by_sql(query)
   end
 
   # Kicks off csv loading of model

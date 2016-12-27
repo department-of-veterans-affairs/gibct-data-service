@@ -53,14 +53,14 @@ RSpec.describe CsvFile, type: :model do
     end
 
     it 'gets the latest sucessful upload times' do
-      last_uploads = CsvFile.last_upload_time(true)
+      last_uploads = CsvFile.last_uploads(true)
 
       expect(last_uploads.map(&:csv_type).uniq).to match_array(CsvFile::TYPES.map(&:name))
       expect(last_uploads.map(&:created_at)).to RSpec::Matchers::BuiltIn::All.new(eq(today))
     end
 
     it 'gets the latest failed upload times' do
-      last_uploads = CsvFile.last_upload_time(false)
+      last_uploads = CsvFile.last_uploads(false)
 
       expect(last_uploads.map(&:csv_type).uniq).to match_array(CsvFile::TYPES.map(&:name))
       expect(last_uploads.map(&:created_at)).to RSpec::Matchers::BuiltIn::All.new(eq(today))

@@ -16,7 +16,7 @@ class CsvFilesController < ApplicationController
 
   def new
     @csv_file = CsvFile.new
-    @csv_file.user = current_user.email
+    @csv_file.user = current_user
     return unless params[:csv_type].present?
 
     @csv_file.csv_type = params[:csv_type]
@@ -28,7 +28,7 @@ class CsvFilesController < ApplicationController
   def create
     @csv_file = CsvFile.new(csv_file_params)
     @csv_file.name = csv_file_params[:upload_file].try(:original_filename)
-    @csv_file.user = current_user.try(:email)
+    @csv_file.user = current_user
 
     if save_success?
       redirect_to @csv_file

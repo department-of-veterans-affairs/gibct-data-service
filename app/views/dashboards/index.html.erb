@@ -1,45 +1,69 @@
-<div class="jumbotron">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-3">
-        Lastest DataCsv Build Version
-      </div>
-      <div class="col-md-9">
-        Latest Successful Uploads
-      </div>
-    </div>
+<div class="panel panel-default">
+  <div class="panel-heading">Build Versions</div>
+  <div class="panel-body">
+    <p>
+      The data service provides two sets of data. One set is data provided to the GI Bill Comparison Tool (GIBCT) in
+      production, while the other set is data provided to the GIBCT preview system. Additionally, each set contains
+      multiple versions of this data. The version of data returned by default is the most recent version.
+    </p>
+  </div>
+  <small>
+    <table class="table table-hover table-condensed table-responsive">
+      <thead>
+        <th>Type</th>
+        <th>Version</th>
+        <th>Date</th>
+        <th>By</th>
+        <th colspan="3">Actions</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Production</td>
+          <td><%= @production_version.try(:version) || '-' %></td>
+          <td><%= @production_version.try(:created_at) || '-' %></td>
+          <td><%= @production_version.try(:user).try(:email) || '-' %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Preview</td>
+          <td><%= @preview_version.try(:version) || '-' %></td>
+          <td><%= @preview_version.try(:created_at) || '-' %></td>
+          <td><%= @preview_version.try(:user).try(:email) || '-' %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </small>
+</div>
 
-    <div class="row">
-      <div class="col-md-3">
-        <ul class="list-group">
-          <li class="list-group-item">Production Version:&nbsp;&nbsp;
-            <span class="badge">
-              <%= @production_version.blank? ? '-' : link_to(@production_version, version_path(@production_version)) %>
-            </span>
-          </li>
-          <li class="list-group-item">Preview Version:&nbsp;&nbsp;
-            <span class="badge">
-              <%= @preview_version.blank? ? '-' : link_to(@preview_version, version_path(@preview_version)) %>
-            </span>
-          </li>
-        </ul>
-      </div>
-      <div class="col-md-9">
-        <small>
-          <table class="table table-hover table-condensed table-bordered table-responsive">
-            <thead>
-              <th>Type</th>
-              <th>Upload Date</th>
-              <th>Uploaded By</th>
-              <th>File Name</th>
-              <th>Description</th>
-              <th colspan="3">Actions</th>
-            </thead>
-            <tbody>
-              <%= render partial: "upload", collection: @uploads, as: :csv_file %>
-            </tbody>
-          </table>
-        </small>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Latest Successful Uploads</h3>
+        </div>
+        <div class="panel-body">
+          <small>
+            <table class="table table-hover table-condensed table-bordered table-responsive">
+              <thead>
+                <th>Type</th>
+                <th>Upload Date</th>
+                <th>Uploaded By</th>
+                <th>File Name</th>
+                <th>Description</th>
+                <th colspan="3">Actions</th>
+              </thead>
+              <tbody>
+                <%= render partial: "upload", collection: @uploads, as: :csv_file %>
+              </tbody>
+            </table>
+          </small>
+        </div>
       </div>
     </div>
   </div>
