@@ -31,7 +31,7 @@ RSpec.shared_examples 'a standardizable model' do |model|
         end
 
       when 'ope'
-        it ':state capitalizes, trims, and right 0-justifies to 8 places' do
+        it ':ope capitalizes, trims, and right 0-justifies to 8 places' do
           subject.ope = '   1ab3  '
           expect(subject.ope).to eq('00001AB3')
         end
