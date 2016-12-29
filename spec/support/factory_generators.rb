@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   sequence(:facility_code) do |n|
     n.to_s(32).rjust(8, '0')

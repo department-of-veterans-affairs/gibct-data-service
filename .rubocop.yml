@@ -29,6 +29,9 @@ Metrics/MethodLength:
 Metrics/MethodLength:
   Max: 120
 
+Metrics/ModuleLength:
+  Max: 120
+
 Style/Documentation:
   Enabled: false
 

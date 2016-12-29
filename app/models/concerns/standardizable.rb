@@ -55,6 +55,7 @@ module Standardizable
         when 'institution' then override_institution_setter
         when 'state' then override_state_setter
         when 'ope' then override_ope_setter
+        when 'cross' then override_cross_setter
         else override_generic_setter(col, data_type)
         end
       end

@@ -12,11 +12,11 @@ class Version < ActiveRecord::Base
   scope :production, -> { where(production: true) }
   scope :preview, -> { where(production: false) }
 
-  def self.preview_version=(version = nil)
+  def self.preview_version=(_version = nil)
     # create a new preview version record
   end
 
-  def self.production_version=(version = nil)
+  def self.production_version=(_version = nil)
     # If version is nil, take the last preview version and increment max version number to create a new ver
     # if not nil, it must exist
     # create a new product version record

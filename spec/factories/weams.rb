@@ -12,11 +12,11 @@ FactoryGirl.define do
     poo_status 'aprvd'
     applicable_law_code 'educational institution is approved for all chapters'
 
-    institution_of_higher_learning_indicator 'Yes'
-    ojt_indicator 'Yes'
-    correspondence_indicator 'Yes'
-    flight_indicator 'Yes'
-    non_college_degree_indicator 'Yes'
+    institution_of_higher_learning_indicator 'No'
+    ojt_indicator 'No'
+    correspondence_indicator 'No'
+    flight_indicator 'No'
+    non_college_degree_indicator 'No'
     institution_type 'Public'
 
     # Facility_code second digit is 0
@@ -29,17 +29,14 @@ FactoryGirl.define do
     trait :correspondence do
       facility_code { generate(:facility_code_private) }
 
-      institution_of_higher_learning_indicator 'No'
-      non_college_degree_indicator 'No'
+      correspondence_indicator 'Yes'
     end
 
     # Flight_indicator is true other indicators are false
     trait :flight do
       facility_code { generate(:facility_code_private) }
 
-      correspondence_indicator 'No'
-      institution_of_higher_learning_indicator 'No'
-      non_college_degree_indicator 'No'
+      flight_indicator 'Yes'
     end
 
     # Not located in US
@@ -47,32 +44,32 @@ FactoryGirl.define do
       facility_code { generate(:facility_code_private) }
 
       country 'CAN'
-      flight_indicator 'No'
-      correspondence_indicator 'No'
     end
 
     # Public/state institutions
     trait :public do
-      facility_code { enerate(:facility_code_public) }
-
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+      facility_code { generate(:facility_code_public) }
     end
 
     # Schools that are private and for profit
     trait :for_profit do
-      facility_code { facility_code_for_profit }
-
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+      facility_code { generate(:facility_code_for_profit) }
     end
 
     # private schools (not necessarily for profit)
     trait :private do
       facility_code { generate(:facility_code_private) }
+    end
 
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+    trait :higher_learning do
+      institution_of_higher_learning_indicator 'Yes'
+    end
+
+    trait :ncd do
+      non_college_degree_indicator 'true'
+    end
+
+    trait :non_degree do
     end
 
     # Fails approval because of poo_status
@@ -90,13 +87,13 @@ FactoryGirl.define do
       applicable_law_code 'educational institution is approved for chapter 31 only'
     end
 
-    # Fails approval because of all false indicators
-    trait :non_approved_indicators do
-      institution_of_higher_learning_indicator 'No'
-      ojt_indicator 'No'
-      correspondence_indicator 'No'
-      flight_indicator 'No'
-      non_college_degree_indicator 'No'
+    # Passes approval because of all false indicators
+    trait :approved_indicators do
+      institution_of_higher_learning_indicator 'Yes'
+      ojt_indicator 'Yes'
+      correspondence_indicator 'Yes'
+      flight_indicator 'Yes'
+      non_college_degree_indicator 'Yes'
     end
   end
 end
