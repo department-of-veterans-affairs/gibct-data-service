@@ -13,21 +13,38 @@ RSpec.shared_examples 'a standardizable model' do |model|
     model.column_definitions.each_pair do |col, type|
       case col
       when 'facility_code'
-        it ":#{col} right justifies and capitalizes to 8 places" do
-          subject.facility_code = 'abc123'
+        it ':facility_code capitalizes, trims, and right 0-justifies to 8 places' do
+          subject.facility_code = '   abc123    '
           expect(subject.facility_code).to eq('00ABC123')
         end
 
       when 'institution'
-        it ":#{col} capitalizes and trims names" do
+        it ':institution capitalizes and trims names' do
           subject.institution = ' some name    '
           expect(subject.institution).to eq('SOME NAME')
         end
 
       when 'state'
-        it ":#{col} trims and gets the abbreviated-name" do
+        it ':state trims and gets the abbreviated-name' do
           subject.state = ' Ny '
           expect(subject.state).to eq('NY')
+        end
+
+      when 'ope'
+        it ':ope capitalizes, trims, and right 0-justifies to 8 places' do
+          subject.ope = '   1ab3  '
+          expect(subject.ope).to eq('00001AB3')
+        end
+
+        it 'adds a getter for ope6' do
+          subject.ope = '   1ab3  '
+          expect(subject.ope6).to eq('0001A')
+        end
+
+      when 'cross'
+        it ':cross capitalizes, trims, and right 0-justifies to 6 places' do
+          subject.cross = '  ab123   '
+          expect(subject.cross).to eq('0AB123')
         end
       else
         case type

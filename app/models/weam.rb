@@ -74,17 +74,17 @@ class Weam < ActiveRecord::Base
 
   # Is this a foreign school?
   def foreign?
-    !flight? && country =~ Regexp.new('\A(us|usa)\z')
+    !correspondence? && !flight? && (country =~ Regexp.new('\A(us|usa)\z', 'i')).nil?
   end
 
   # Is this a public school?
   def public?
-    !foreign? && facility_code.try(:[], 0) == '1'
+    !correspondence? && !flight? && !foreign? && facility_code.try(:[], 0) == '1'
   end
 
   # Is this a for profit school (e.g., Devry or Phoenix)?
   def for_profit?
-    !foreign? && facility_code.try(:[], 0) == '2'
+    !correspondence? && !flight? && !foreign? && facility_code.try(:[], 0) == '2'
   end
 
   # Is this a private school, like Princeton?

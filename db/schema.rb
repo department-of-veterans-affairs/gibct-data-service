@@ -11,10 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161212142040) do
+ActiveRecord::Schema.define(version: 20161228144756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "crosswalks", force: :cascade do |t|
+    t.string   "facility_code", null: false
+    t.string   "institution"
+    t.string   "cross"
+    t.string   "city"
+    t.string   "state"
+    t.string   "ope"
+    t.string   "notes"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
+  add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", using: :btree
+  add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
+  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
 
   create_table "csv_files", force: :cascade do |t|
     t.integer  "user_id",                                           null: false
@@ -76,7 +93,6 @@ ActiveRecord::Schema.define(version: 20161212142040) do
     t.datetime "updated_at",                 null: false
   end
 
-  add_index "versions", ["production"], name: "index_versions_on_production", using: :btree
   add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
   add_index "versions", ["version"], name: "index_versions_on_version", using: :btree
 
@@ -112,7 +128,7 @@ ActiveRecord::Schema.define(version: 20161212142040) do
     t.datetime "updated_at",                               null: false
   end
 
-  add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", using: :btree
+  add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 

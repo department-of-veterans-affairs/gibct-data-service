@@ -13,7 +13,7 @@ RSpec.describe CsvFilesController, type: :controller do
     login_user
 
     before(:each) do
-      create :csv_file, :weam
+      create :weam_csv_file
       get :index
     end
 
@@ -33,7 +33,7 @@ RSpec.describe CsvFilesController, type: :controller do
       let(:csv_file) { CsvFile.first }
 
       before(:each) do
-        get :show, id: create(:csv_file, :weam).id
+        get :show, id: create(:weam_csv_file).id
       end
 
       it 'populates a csv_file' do
@@ -88,7 +88,7 @@ RSpec.describe CsvFilesController, type: :controller do
       let(:facility_codes) { %w(00000146 10000008 10000013) }
 
       before(:each) do
-        post :create, csv_file: attributes_for(:csv_file, :weam)
+        post :create, csv_file: attributes_for(:weam_csv_file)
       end
 
       # it 'repopulates the associated csv table' do

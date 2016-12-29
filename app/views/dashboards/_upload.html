@@ -1,7 +1,7 @@
 <tr>
   <td><%= csv_file.csv_type %></td>
   <td><%= csv_file.created_at.to_formatted_s(:long) %></td>
-  <td><%= csv_file.user %></td>
+  <td><%= csv_file.user.email %></td>
   <td><%= csv_file.name %></td>
   <td><%= csv_file.description %></td>
   <td>

@@ -54,22 +54,26 @@ module Standardizable
         when 'facility_code' then override_facility_code_setter
         when 'institution' then override_institution_setter
         when 'state' then override_state_setter
+        when 'ope' then override_ope_setter
+        when 'cross' then override_cross_setter
         else override_generic_setter(col, data_type)
         end
       end
     end
 
     def override_facility_code_setter
+      klass = self
+
       define_method 'facility_code=' do |value|
-        value = value.try(:strip)
-        self['facility_code'] = value ? value.upcase.rjust(8, '0') : nil
+        value = value.try(:strip).try(:upcase)
+        self['facility_code'] = klass.forbidden_word?(value) || value.blank? ? nil : value.rjust(8, '0')
       end
     end
 
     def override_institution_setter
       define_method 'institution=' do |value|
-        value = value.try(:strip)
-        self['institution'] = value ? value.upcase : nil
+        value = value.try(:strip).try(:upcase)
+        self['institution'] = value ? value : nil
       end
     end
 
@@ -77,6 +81,28 @@ module Standardizable
       define_method('state=') do |value|
         value = value.to_s.try(:strip)
         self['state'] = STATES.keys.any? { |s| s.casecmp(value).zero? } ? value.upcase : nil
+      end
+    end
+
+    def override_ope_setter
+      klass = self
+
+      define_method('ope=') do |value|
+        value = value.to_s.try(:strip).try(:upcase)
+        self['ope'] = klass.forbidden_word?(value) || value.blank? ? nil : value.rjust(8, '0')
+      end
+
+      define_method('ope6') do
+        ope.present? ? ope[1, 5] : nil
+      end
+    end
+
+    def override_cross_setter
+      klass = self
+
+      define_method('cross=') do |value|
+        value = value.to_s.try(:strip).try(:upcase)
+        self['cross'] = klass.forbidden_word?(value) || value.blank? ? nil : value.rjust(6, '0')
       end
     end
 
@@ -89,6 +115,7 @@ module Standardizable
 
     def override_generic_boolean_setter(col)
       klass = self
+
       define_method "#{col}=" do |value|
         value = value.to_s.try(:strip)
         self[col] = value.nil? ? nil : klass.to_bool(value)

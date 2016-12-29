@@ -30,7 +30,7 @@ RSpec.describe CsvFile, type: :model do
 
   describe 'when getting defaults' do
     CsvFile::TYPES.each do |type|
-      it 'returns the skipped line parameters and default delimiter for every csv type' do
+      it "returns the skipped line parameters and default delimiter for #{type}" do
         defaults = described_class.defaults_for(type)
         expect(defaults.keys).to include('skip_lines_before_header', 'skip_lines_after_header', 'delimiter')
       end
@@ -45,10 +45,12 @@ RSpec.describe CsvFile, type: :model do
 
     before(:each) do
       csv_types.each do |t|
-        create :csv_file, "#{t.underscore}_missing_header".to_sym, created_at: yesterday
-        create :csv_file, "#{t.underscore}_missing_header".to_sym, created_at: today
-        create :csv_file, t.to_sym, created_at: yesterday
-        create :csv_file, t.to_sym, created_at: today
+        factory = "#{t.underscore}_csv_file".to_sym
+
+        create factory, :missing_header, created_at: yesterday
+        create factory, :missing_header, created_at: today
+        create factory, created_at: yesterday
+        create factory, created_at: today
       end
     end
 
@@ -76,35 +78,46 @@ RSpec.describe CsvFile, type: :model do
     end
   end
 
-  describe 'when uploading a file' do
-    subject { build :csv_file, :weam }
+  CsvFile::TYPES.each do |type|
+    type_factory = type.name.underscore
 
-    before(:each) { create_list :weam, 5 }
+    describe "when uploading a #{type} file" do
+      subject { build "#{type_factory}_csv_file".to_sym }
 
-    it "loads each row into the CSV model's table" do
-      expect { subject.save }.to change { Weam.all.length }.from(5).to(3)
-      expect(subject.result).to eq('Successful')
-    end
+      before(:each) { create_list type_factory.to_sym, 5 }
 
-    it 'raises an error if any headers are missing' do
-      missing_header_csv_file = create :csv_file, :weam, :weam_missing_header
+      it "loads each row into the CSV model's table" do
+        expect { subject.save }.to change { type.all.length }.from(5).to(3)
+        expect(subject.result).to eq('Successful')
+      end
 
-      expect(missing_header_csv_file.result).to eq('Failed')
-      expect(missing_header_csv_file.errors.any?).to be_truthy
-    end
+      it 'raises an error if any headers are missing' do
+        missing_header_csv_file = create "#{type_factory}_csv_file".to_sym, :missing_header
 
-    it 'raises an error if a row of data cannot be saved' do
-      missing_name_csv_file = create :csv_file, :weam_missing_school_name
+        expect(missing_header_csv_file.result).to eq('Failed')
+        expect(missing_header_csv_file.errors.any?).to be_truthy
+      end
 
-      expect(missing_name_csv_file.result).to eq('Failed')
-      expect(missing_name_csv_file.errors.any?).to be_truthy
-    end
+      it 'raises an error if a row of data cannot be saved' do
+        missing_required_column_csv_file = create "#{type_factory}_csv_file".to_sym, :missing_required_column
 
-    it 'raises an error if extra headers are found' do
-      extra_header_csv_file = create :csv_file, :weam_extra_header
+        expect(missing_required_column_csv_file.result).to eq('Failed')
+        expect(missing_required_column_csv_file.errors.any?).to be_truthy
+      end
 
-      expect(extra_header_csv_file.result).to eq('Failed')
-      expect(extra_header_csv_file.errors.any?).to be_truthy
+      it 'raises an error if extra headers are found' do
+        extra_header_csv_file = create "#{type_factory}_csv_file".to_sym, :extra_header
+
+        expect(extra_header_csv_file.result).to eq('Failed')
+        expect(extra_header_csv_file.errors.any?).to be_truthy
+      end
+
+      it 'raises an error if a duplcate column is found' do
+        extra_header_csv_file = create "#{type_factory}_csv_file".to_sym, :duplicate_column
+
+        expect(extra_header_csv_file.result).to eq('Failed')
+        expect(extra_header_csv_file.errors.any?).to be_truthy
+      end
     end
   end
 end

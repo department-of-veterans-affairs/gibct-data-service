@@ -1,10 +1,10 @@
 class CreateWeams < ActiveRecord::Migration
   def change
     create_table :weams do |t|
-      t.string :facility_code, index: true, unique: true, null: false
-    	t.string :institution, index: true, null: false
+      t.string :facility_code, null: false
+    	t.string :institution, null: false
     	t.string :city
-    	t.string :state, index: true
+    	t.string :state
     	t.string :zip
     	t.string :country
       t.integer :bah
@@ -33,6 +33,9 @@ class CreateWeams < ActiveRecord::Migration
       t.string :ope
 
       t.timestamps null: false
+      t.index :facility_code, unique: true
+      t.index :institution
+      t.index :state
     end
   end
 end
