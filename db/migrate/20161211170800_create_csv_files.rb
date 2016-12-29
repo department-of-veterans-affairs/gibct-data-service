@@ -1,9 +1,9 @@
 class CreateCsvFiles < ActiveRecord::Migration
   def change
     create_table :csv_files do |t|
-      t.belongs_to :user, index: true, null: false
+      t.belongs_to :user, null: false
 
-      t.string :csv_type, index: true, null: false
+      t.string :csv_type, null: false
       t.string :name, null: false
       t.string :description
       t.integer :skip_lines_before_header, null: false, default: 3
@@ -12,6 +12,8 @@ class CreateCsvFiles < ActiveRecord::Migration
       t.string :result, default: 'not uploaded'
 
       t.timestamps null: false
+      t.index :user_id
+      t.index :csv_type
     end
   end
 end

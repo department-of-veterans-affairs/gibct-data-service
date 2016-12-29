@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   root 'dashboards#index'
 
   resource :weams
+  resources :crosswalks
 end

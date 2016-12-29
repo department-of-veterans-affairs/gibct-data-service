@@ -326,6 +326,7 @@ DEPENDENCIES
   jquery-ui-rails
   jshint
   pg (~> 0.15)
+  pry
   pry-rails
   puma (~> 3.6)
   rails (= 4.2.7.1)

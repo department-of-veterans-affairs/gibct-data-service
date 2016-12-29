@@ -1,0 +1,2 @@
+class CrosswalksController < ApplicationController
+end

@@ -2,7 +2,7 @@
 require 'csv'
 
 class CsvFile < ActiveRecord::Base
-  TYPES = [Weam].freeze
+  TYPES = [Weam, Crosswalk].freeze
   DELIMITERS = %w(, |).freeze
   ENCODING_OPTIONS = { invalid: :replace, undef: :replace, replace: '', universal_newline: true }.freeze
 
@@ -47,19 +47,17 @@ class CsvFile < ActiveRecord::Base
 
   # Kicks off csv loading of model
   def upload_csv_file
-    begin
-      model.transaction do
-        precheck!
-        load_data!
+    self.result = 'Failed'
 
-        self.result = 'Successful'
-      end
+    begin
+      precheck!
+      load_data!
+
+      self.result = 'Successful'
     rescue StandardError => e
       msg = "Tried to upload: #{e.message}"
       errors.add(:base, msg)
       Rails.logger.error msg + "\n#{e.backtrace}"
-
-      self.result = 'Failed'
     end
 
     true
@@ -68,7 +66,6 @@ class CsvFile < ActiveRecord::Base
   # Prechecks columns vs csv headers for the model and installs CSV header_converters
   def precheck!
     columns = model::HEADER_MAP.keys
-
     missing = columns - headers
     raise StandardError, "#{name} is missing headers: #{missing.inspect}" if missing.present?
 
@@ -86,13 +83,15 @@ class CsvFile < ActiveRecord::Base
     model.delete_all
     first_row = skip_lines_before_header + skip_lines_after_header + 1
 
-    CSV.parse(data, headers: headers, header_converters: [:downcase, :header_map]) do |row|
-      next if (n += 1) <= first_row || !model.permit_csv_row_before_save(row)
+    model.transaction do
+      CSV.parse(data, headers: headers, header_converters: [:downcase, :header_map]) do |row|
+        next if (n += 1) <= first_row || !model.permit_csv_row_before_save(row)
 
-      begin
-        model.new(row.to_hash).save_for_bulk_insert!
-      rescue StandardError => e
-        raise StandardError, "On row #{n}: #{e.message}"
+        begin
+          model.create!(row.to_hash)
+        rescue ActiveRecord::RecordInvalid => e
+          raise ActiveRecord::RecordInvalid, "On row #{n}: #{e.message}"
+        end
       end
     end
   end

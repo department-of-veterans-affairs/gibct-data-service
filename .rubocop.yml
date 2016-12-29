@@ -24,8 +24,10 @@ Metrics/LineLength:
   Max: 120
 
 Metrics/MethodLength:
-  Enabled: true
   Max: 20
+
+Metrics/MethodLength:
+  Max: 120
 
 Style/Documentation:
   Enabled: false
