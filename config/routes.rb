@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  resources :csv_files
-  resources :data_csvs
-  resources :versions
   devise_for :user
 
   # For active? helper
