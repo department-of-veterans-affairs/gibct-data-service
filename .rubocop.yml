@@ -12,19 +12,14 @@ AllCops:
     - 'Gemfile'
     - 'log/**/*'
 
-Metrics/AbcSize:
-  Max: 40
-
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
-    - 'app/models/concerns/**/*'
 
 Metrics/LineLength:
   Max: 120
 
 Metrics/MethodLength:
-  Enabled: true
   Max: 20
 
 Style/Documentation:
