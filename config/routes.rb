@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :weams
   devise_for :user
 
   # For active? helper

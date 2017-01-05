@@ -32,8 +32,12 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
 gem 'activerecord-session_store', '~> 1.0'
 
+# Mass importing of CSV data
+gem 'activerecord-import'
+gem 'smarter_csv'
+
 # Pagination
-gem 'will_paginate', '~> 3.1'
+gem 'will_paginate'
 
 # Provides country/state support
 # gem 'carmen'
