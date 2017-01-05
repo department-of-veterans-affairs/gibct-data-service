@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-RSpec.shared_examples 'a loadable model' do | options |
+RSpec.shared_examples 'a loadable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
 
