@@ -3,32 +3,48 @@ require 'rails_helper'
 
 RSpec.describe Version, type: :model do
   describe 'when validating' do
-    subject { build :version }
+    subject { build :version, :production }
 
-    let(:bad_version) { build :version, version: 123.4 }
-    let(:no_version) { build :version, version: nil }
-    let(:no_user) { build :version, created_at: DateTime.current, user: nil }
+    let(:no_user) { build :version, user: nil }
+    let(:good_existing_version) { build :version, :production, version: 1 }
+    let(:bad_existing_version) { build :version, :production, version: 1000 }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
     end
 
-    it 'requires an integer number' do
-      expect(no_version).not_to be_valid
-      expect(bad_version).not_to be_valid
+    it 'requires the requesting user' do
+      expect(no_user).not_to be_valid
     end
 
-    it 'requires a pushing authority' do
-      expect(no_user).not_to be_valid
+    context 'and setting a new version' do
+      it 'sets the version to the max-version + 1' do
+        subject.save
+        expect(create(:version, :production).version).to eq(subject.version + 1)
+      end
+    end
+
+    context 'and rolling back' do
+      it 'requires an existing version when rolling back ' do
+        subject.save
+        expect(good_existing_version).to be_valid
+        expect(bad_existing_version).not_to be_valid
+      end
+
+      it 'leaves version number as-is' do
+        subject.save
+        rollback = create :version, :production, version: subject.version
+        expect(rollback.version).to eq(subject.version)
+      end
     end
   end
 
   describe 'when determining production and preview versions' do
     before(:each) do
-      create :version, :production, version: 1, created_at: 3.days.ago
-      create :version, version: 2, created_at: 2.days.ago
-      create :version, :production, version: 3, created_at: 1.day.ago
-      create :version, version: 4, created_at: 0.days.ago
+      create :version, :production, created_at: 3.days.ago
+      create :version, created_at: 2.days.ago
+      create :version, :production, created_at: 1.day.ago
+      create :version, created_at: 0.days.ago
     end
 
     it 'can find the latest production_version' do

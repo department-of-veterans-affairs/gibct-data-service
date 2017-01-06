@@ -2,25 +2,16 @@
 class Version < ActiveRecord::Base
   belongs_to :user, inverse_of: :versions
 
-  validates :version, presence: true, numericality: { only_integer: true }
-
   validates_associated :user
   validates :user_id, presence: true
+
+  before_validation :check_version
+  before_save :increment_version
 
   scope :production, -> { where(production: true) }
   scope :preview, -> { where(production: false) }
 
   scope :max_by_time, -> { order(:created_at).last }
-
-  def self.preview_version=(version = nil)
-    raise "Version #{version} does not exist" if version.present?
-  end
-
-  def self.production_version=(_version = nil)
-    # If version is nil, take the last preview version and increment max version number to create a new ver
-    # if not nil, it must exist
-    # create a new product version record
-  end
 
   def self.production_version
     Version.production.max_by_time
@@ -38,5 +29,17 @@ class Version < ActiveRecord::Base
   def self.preview_version_by_time(time)
     time = Time.zone.parse(time).to_datetime if time.is_a?(String)
     Version.preview.where('created_at <= ?', time).max_by_time
+  end
+
+  def check_version
+    if version.present? && Version.find_by(version: version).nil?
+      errors.add(:version, "#{version} doesn't exist")
+    end
+
+    true
+  end
+
+  def increment_version
+    self.version = (Version.maximum(:version) || 0) + 1 if version.nil?
   end
 end

@@ -3,10 +3,6 @@ FactoryGirl.define do
   factory :version do
     user
 
-    sequence :version do |n|
-      n
-    end
-
     trait :production do
       production true
     end
