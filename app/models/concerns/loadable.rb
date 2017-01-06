@@ -31,10 +31,6 @@ module Loadable
       key_mapping = {}
       converter_mapping = {}
 
-      unless LoadableClass.const_defined? 'MAP'
-        raise "#{name}::MAP not defined { csv-column => { model-column => CSV-Converter} }"
-      end
-
       LoadableClass::MAP.each_pair do |csv_column, map|
         key = map.keys.first
 

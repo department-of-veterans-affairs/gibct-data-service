@@ -10,10 +10,6 @@ module Exportable
     def export
       header_mapping = {}
 
-      unless ExportableClass.const_defined? 'MAP'
-        raise "#{name}::MAP not defined { csv-column => { model-column => CSV-Converter} }"
-      end
-
       ExportableClass::MAP.each_pair do |csv_column, map|
         key = map.keys.first
         header_mapping[key] = csv_column.split(' ').map(&:capitalize).join(' ')

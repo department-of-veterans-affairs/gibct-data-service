@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :versions
   resources :weams
   devise_for :user
 
