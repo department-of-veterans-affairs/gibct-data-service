@@ -13,15 +13,15 @@ RSpec.shared_examples 'a loadable model' do |options|
     end
   end
 
-  describe 'load' do
+  describe "#{described_class}.load" do
     context 'with an error-free csv file' do
       let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
 
-      it "deletes all records in the #{described_class.name.pluralize} table before loading" do
+      it 'deletes all records in the table before loading' do
         expect { described_class.load(csv_file, options) }.to change { described_class.count }.from(5).to(2)
       end
 
-      it "loads the #{described_class.name.pluralize} table from a CSV file" do
+      it 'loads the table from a CSV file' do
         results = described_class.load(csv_file, options)
 
         expect(results.failed_instances).to be_blank
@@ -34,7 +34,7 @@ RSpec.shared_examples 'a loadable model' do |options|
       let(:csv_file_invalid) { File.new(Rails.root.join('spec/fixtures', "#{name}_invalid.csv")) }
       let(:csv_file_dup) { File.new(Rails.root.join('spec/fixtures', "#{name}_dup.csv")) }
 
-      it "does not load invalid records into the #{described_class.name.pluralize} table" do
+      it 'does not load invalid records into the table' do
         results = described_class.load(csv_file_invalid, options)
 
         expect(results.failed_instances.length).to eq(1)

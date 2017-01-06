@@ -7,12 +7,12 @@
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
 class Weam < ActiveRecord::Base
-  include Loadable
+  include Loadable, Exportable
 
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
 
-  # Used by loadable
+  # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
   MAP = {
     'facility code' => { facility_code: FacilityCodeConverter },
     'institution name' => { institution: InstitutionConverter },
