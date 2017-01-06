@@ -10,8 +10,10 @@ class Version < ActiveRecord::Base
   scope :production, -> { where(production: true) }
   scope :preview, -> { where(production: false) }
 
-  def self.preview_version=(_version = nil)
-    # create a new preview version record
+  scope :max_by_time, -> { order(:created_at).last }
+
+  def self.preview_version=(version = nil)
+    raise "Version #{version} does not exist" if version.present?
   end
 
   def self.production_version=(_version = nil)
@@ -21,40 +23,20 @@ class Version < ActiveRecord::Base
   end
 
   def self.production_version
-    find_max_version
+    Version.production.max_by_time
   end
 
   def self.preview_version
-    find_max_version false
+    Version.preview.max_by_time
   end
 
   def self.production_version_by_time(time)
-    find_version_by_time(time)
+    time = Time.zone.parse(time).to_datetime if time.is_a?(String)
+    Version.production.where('created_at <= ?', time).max_by_time
   end
 
   def self.preview_version_by_time(time)
-    find_version_by_time(time, false)
-  end
-
-  def self.find_version_by_time(time, production = true)
     time = Time.zone.parse(time).to_datetime if time.is_a?(String)
-
-    query = 'SELECT * FROM versions '\
-            'INNER JOIN '\
-              '(SELECT max(created_at) AS max_created_at FROM versions WHERE production=? AND created_at<?) as mv '\
-              'ON created_at=mv.max_created_at '\
-            'WHERE production=?;'
-
-    Version.find_by_sql([query, production, time, production]).first
-  end
-
-  def self.find_max_version(production = true)
-    query = 'SELECT * FROM versions '\
-            'INNER JOIN '\
-              '(SELECT max(created_at) AS max_created_at FROM versions WHERE production=?) as mv '\
-              'ON created_at=mv.max_created_at '\
-            'WHERE production=?;'
-
-    Version.find_by_sql([query, production, production]).first
+    Version.preview.where('created_at <= ?', time).max_by_time
   end
 end
