@@ -1,5 +1,5 @@
 
 Weam:
-  skip_lines_before_header: 0
-  skip_lines_after_header: 1
-  delimiter: ','
+  skipped_first_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"

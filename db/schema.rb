@@ -11,34 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161212142040) do
+ActiveRecord::Schema.define(version: 20170106144618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "csv_files", force: :cascade do |t|
-    t.integer  "user_id",                                           null: false
-    t.string   "csv_type",                                          null: false
-    t.string   "name",                                              null: false
-    t.string   "description"
-    t.integer  "skip_lines_before_header", default: 3,              null: false
-    t.integer  "skip_lines_after_header",  default: 0,              null: false
-    t.string   "delimiter",                default: ",",            null: false
-    t.string   "result",                   default: "not uploaded"
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
-  end
-
-  add_index "csv_files", ["csv_type"], name: "index_csv_files_on_csv_type", using: :btree
-  add_index "csv_files", ["user_id"], name: "index_csv_files_on_user_id", using: :btree
-
-  create_table "data_csvs", force: :cascade do |t|
-    t.integer  "version",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "data_csvs", ["version"], name: "index_data_csvs_on_version", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
@@ -76,8 +52,7 @@ ActiveRecord::Schema.define(version: 20161212142040) do
     t.datetime "updated_at",                 null: false
   end
 
-  add_index "versions", ["production"], name: "index_versions_on_production", using: :btree
-  add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
+  add_index "versions", ["user_id"], name: "index_versions_on_user_id", unique: true, using: :btree
   add_index "versions", ["version"], name: "index_versions_on_version", using: :btree
 
   create_table "weams", force: :cascade do |t|
@@ -91,7 +66,7 @@ ActiveRecord::Schema.define(version: 20161212142040) do
     t.boolean  "poe"
     t.boolean  "yr"
     t.string   "va_highest_degree_offered"
-    t.string   "institution_type"
+    t.string   "institution_type",                         null: false
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
@@ -100,19 +75,19 @@ ActiveRecord::Schema.define(version: 20161212142040) do
     t.string   "address_3"
     t.string   "poo_status"
     t.string   "applicable_law_code"
-    t.string   "institution_of_higher_learning_indicator"
-    t.string   "ojt_indicator"
-    t.string   "correspondence_indicator"
-    t.string   "flight_indicator"
-    t.string   "non_college_degree_indicator"
-    t.boolean  "approved",                                 null: false
-    t.string   "ipeds"
+    t.boolean  "institution_of_higher_learning_indicator"
+    t.boolean  "ojt_indicator"
+    t.boolean  "correspondence_indicator"
+    t.boolean  "flight_indicator"
+    t.boolean  "non_college_degree_indicator"
+    t.boolean  "approved"
+    t.string   "cross"
     t.string   "ope"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end
 
-  add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", using: :btree
+  add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
