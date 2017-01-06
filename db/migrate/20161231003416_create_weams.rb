@@ -6,13 +6,12 @@ class CreateWeams < ActiveRecord::Migration
     	t.string :city
     	t.string :state
     	t.string :zip
-    	t.string :country
+      t.string :country
       t.integer :bah
 			t.boolean :poe
 			t.boolean :yr
       t.string :va_highest_degree_offered
       t.string :institution_type, null: false
-
       t.boolean :flight
       t.boolean :correspondence
       t.boolean :accredited
