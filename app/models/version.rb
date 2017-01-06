@@ -13,6 +13,8 @@ class Version < ActiveRecord::Base
 
   scope :max_by_time, -> { order(:created_at).last }
 
+  alias_attribute :created_by, :user
+
   def self.production_version
     Version.production.max_by_time
   end
