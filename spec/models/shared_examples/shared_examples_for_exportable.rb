@@ -25,7 +25,7 @@ RSpec.shared_examples 'an exportable model' do
     it 'reproduces each table record as a row' do
       converters = described_class::MAP.values
 
-      Weam.all.each_with_index do |record, n|
+      described_class.all.each_with_index do |record, n|
         csv_columns = rows[n + 1].split(',').map { |s| s.blank? ? nil : s }
 
         converters.each_with_index do |converter, i|

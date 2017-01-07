@@ -1,5 +1,10 @@
 
 Weam:
-  skipped_first_lines: 0
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Crosswalk:
+  skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"

@@ -37,3 +37,7 @@ Rails/HttpPositionalArguments:
 Rails/Output:
   Exclude:
     - 'lib/**/*.rb'
+
+Style/Tab:
+  Enabled: false
+  

@@ -26,13 +26,14 @@ RSpec.shared_examples 'a loadable model' do |options|
 
         expect(results.failed_instances).to be_blank
         expect(results.num_inserts).to eq(1)
-        expect(results.ids).to match_array(Weam.pluck(:id).map(&:to_s))
+        expect(results.ids).to match_array(described_class.pluck(:id).map(&:to_s))
       end
     end
 
     context 'with a problematic csv file' do
       let(:csv_file_invalid) { File.new(Rails.root.join('spec/fixtures', "#{name}_invalid.csv")) }
       let(:csv_file_dup) { File.new(Rails.root.join('spec/fixtures', "#{name}_dup.csv")) }
+      let(:csv_rows) { 2 }
 
       it 'does not load invalid records into the table' do
         results = described_class.load(csv_file_invalid, options)
@@ -45,7 +46,7 @@ RSpec.shared_examples 'a loadable model' do |options|
         results = described_class.load(csv_file_dup, options)
 
         expect(results.failed_instances).to be_blank
-        expect(Weam.first.institution).to eq('1ST ROW')
+        expect(results.num_inserts).to eq(csv_rows - 1)
       end
     end
   end

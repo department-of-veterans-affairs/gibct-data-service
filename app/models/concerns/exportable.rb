@@ -3,14 +3,17 @@ module Exportable
   extend ActiveSupport::Concern
 
   included do
-    ExportableClass = name.constantize
   end
 
   class_methods do
+    def exportable_class
+      name.constantize
+    end
+
     def export
       header_mapping = {}
 
-      ExportableClass::MAP.each_pair do |csv_column, map|
+      exportable_class::MAP.each_pair do |csv_column, map|
         key = map.keys.first
         header_mapping[key] = csv_column.split(' ').map(&:capitalize).join(' ')
       end
@@ -22,7 +25,7 @@ module Exportable
       CSV.generate do |csv|
         csv << header_mapping.values
 
-        ExportableClass.find_each do |result|
+        exportable_class.find_each do |result|
           csv << header_mapping.keys.map { |k| result[k] }
         end
       end
