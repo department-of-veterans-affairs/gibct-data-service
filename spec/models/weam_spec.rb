@@ -183,7 +183,7 @@ RSpec.describe Weam, type: :model do
     }.each_pair do |weam_type, type|
       it "knows its #{type}" do
         weam = build :weam, weam_type
-        weam.derive_fields
+        weam.validate_derived_fields
 
         expect(weam.institution_type).to eq(type)
       end

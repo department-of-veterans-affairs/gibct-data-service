@@ -4,8 +4,8 @@ require 'rails_helper'
 RSpec.describe CrossConverter do
   subject { described_class }
 
-  it 'right justifies with leading 0s to 6 digits in length' do
-    expect(subject.convert('1')).to eq('000001')
+  it 'right justifies with leading 0s to 8 digits in length' do
+    expect(subject.convert('1')).to eq('00000001')
   end
 
   it 'returns nil if value is blank' do

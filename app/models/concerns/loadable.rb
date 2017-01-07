@@ -5,34 +5,21 @@ module Loadable
   included do
   end
 
-  # Can be overriden to populate columns that are computed ...
+  # Override if fields are calculated
   def derive_fields; end
 
   class_methods do
-    def loadable_class
-      name.constantize
-    end
-
-    def csv_load_options
-      {
-        force_utf8: true,
-        remove_zero_values: false,
-        convert_values_to_numeric: { except: [:facility_code, :cross, :ope, :ipeds, :unitid, :zip] }
-      }
-    end
-
     def load(filename, options = {})
       delete_all
 
-      rows = SmarterCSV.process(filename, merge_options(options)).map do |c|
-        instance = loadable_class.new(c)
-        instance.derive_fields
+      rows = SmarterCSV.process(filename, merge_options(options))
+      return nil if rows.length.zero?
 
-        instance
-      end
+      loadable_class.import rows.map { |row| loadable_class.new(row) }, validate: true, ignore: true
+    end
 
-      # Ignore duplicates ...
-      loadable_class.import rows, ignore: true
+    def loadable_class
+      name.constantize
     end
 
     def merge_options(options)
@@ -46,7 +33,11 @@ module Loadable
         converter_mapping[key] = map[key]
       end
 
-      csv_load_options.merge(key_mapping: key_mapping, value_converters: converter_mapping).merge(options)
+      options.reverse_merge(
+        force_utf8: true, remove_zero_values: false, remove_empty_hashes: true,
+        key_mapping: key_mapping, value_converters: converter_mapping,
+        convert_values_to_numeric: { except: [:facility_code, :cross, :ope, :ipeds, :unitid, :zip] }
+      )
     end
   end
 end

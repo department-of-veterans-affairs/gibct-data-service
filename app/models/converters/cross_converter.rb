@@ -4,6 +4,6 @@
 class CrossConverter < BaseConverter
   def self.convert(value)
     value = super(value)
-    value.blank? ? nil : value.rjust(6, '0')
+    value.blank? ? nil : value.rjust(8, '0')
   end
 end

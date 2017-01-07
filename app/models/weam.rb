@@ -38,24 +38,22 @@ class Weam < ActiveRecord::Base
     'ope' => { ope: OpeConverter }
   }.freeze
 
-  # Duplicates ignored during import ...
   validates :facility_code, presence: true
   validates :institution, presence: true
-  validates :institution_type, presence: true
   validates :bah, numericality: true, allow_blank: true
 
-  before_validation :derive_fields
+  validate :validate_derived_fields
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
-  def derive_fields
+  def validate_derived_fields
     self.institution_type = derive_type
     self.va_highest_degree_offered = highest_degree_offered
     self.flight = flight?
     self.correspondence = correspondence?
     self.approved = approved?
 
-    true
+    errors.add(:institution_type, 'cannot be blank') if institution_type.blank?
   end
 
   # Is this instance an OJT institution?
