@@ -5,9 +5,6 @@ module Loadable
   included do
   end
 
-  # Override if fields are calculated
-  def derive_fields; end
-
   class_methods do
     def load(filename, options = {})
       delete_all

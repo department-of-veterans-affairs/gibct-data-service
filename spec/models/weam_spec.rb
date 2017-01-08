@@ -13,6 +13,21 @@ RSpec.describe Weam, type: :model do
     it 'has a valid factory' do
       expect(subject).to be_valid
     end
+
+    it 'requires facility_code' do
+      subject.facility_code = nil
+      expect(subject).not_to be_valid
+    end
+
+    it 'requires institution' do
+      subject.institution = nil
+      expect(subject).not_to be_valid
+    end
+
+    it 'requires numeric bah if specified' do
+      subject.bah = true
+      expect(subject).not_to be_valid
+    end
   end
 
   describe 'offer_degree?' do
@@ -183,7 +198,7 @@ RSpec.describe Weam, type: :model do
     }.each_pair do |weam_type, type|
       it "knows its #{type}" do
         weam = build :weam, weam_type
-        weam.validate_derived_fields
+        weam.derive_fields
 
         expect(weam.institution_type).to eq(type)
       end

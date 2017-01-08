@@ -8,3 +8,8 @@ Crosswalk:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+EightKey:
+  skip_lines: 1
+  col_sep: ','
+  row_sep: "\r\n"

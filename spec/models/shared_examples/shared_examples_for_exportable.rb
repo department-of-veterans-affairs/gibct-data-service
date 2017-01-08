@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-RSpec.shared_examples 'an exportable model' do
+RSpec.shared_examples 'an exportable model' do |options|
   let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
@@ -15,7 +15,7 @@ RSpec.shared_examples 'an exportable model' do
     let(:rows) { described_class.export.split("\n") }
 
     before(:each) do
-      described_class.load(csv_file)
+      described_class.load(csv_file, options)
     end
 
     it 'capitalizes the original headers' do

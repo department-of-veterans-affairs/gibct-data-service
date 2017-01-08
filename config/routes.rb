@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :eight_keys
   resources :crosswalks
   resources :versions
   resources :weams

@@ -42,18 +42,16 @@ class Weam < ActiveRecord::Base
   validates :institution, presence: true
   validates :bah, numericality: true, allow_blank: true
 
-  validate :validate_derived_fields
+  validate :derive_fields
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
-  def validate_derived_fields
+  def derive_fields
     self.institution_type = derive_type
     self.va_highest_degree_offered = highest_degree_offered
     self.flight = flight?
     self.correspondence = correspondence?
     self.approved = approved?
-
-    errors.add(:institution_type, 'cannot be blank') if institution_type.blank?
   end
 
   # Is this instance an OJT institution?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170107002825) do
+ActiveRecord::Schema.define(version: 20170107202319) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,21 @@ ActiveRecord::Schema.define(version: 20170107002825) do
   add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
   add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
   add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
+
+  create_table "eight_keys", force: :cascade do |t|
+    t.string   "institution", null: false
+    t.string   "city"
+    t.string   "state"
+    t.string   "cross"
+    t.string   "ope"
+    t.string   "notes"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
+  add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
+  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
