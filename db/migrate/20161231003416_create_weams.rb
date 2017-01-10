@@ -30,6 +30,7 @@ class CreateWeams < ActiveRecord::Migration
       t.boolean :approved
       t.string :cross
       t.string :ope
+      t.string :ope6
 
       t.timestamps null: false
       t.index :facility_code, unique: true

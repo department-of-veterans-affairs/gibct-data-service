@@ -7,6 +7,7 @@ class CreateCrosswalks < ActiveRecord::Migration
       t.string :city
       t.string :state
       t.string :ope
+      t.string :ope6
       t.string :notes
 
       t.timestamps null: false
@@ -14,6 +15,7 @@ class CreateCrosswalks < ActiveRecord::Migration
       t.index :institution
       t.index :cross
       t.index :ope
+      t.index :ope6
     end
   end
 end

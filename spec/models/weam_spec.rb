@@ -28,23 +28,19 @@ RSpec.describe Weam, type: :model do
       subject.bah = true
       expect(subject).not_to be_valid
     end
-  end
 
-  describe 'offer_degree?' do
-    let(:higher_learning_institution) { build :weam, :higher_learning }
-    let(:ncd_institution) { build :weam, :ncd }
-    let(:non_degree_institution) { build :weam, :non_degree }
-
-    it 'is true if institution of higher learning' do
-      expect(higher_learning_institution).to be_offer_degree
+    it 'changes dependent columns' do
+      expect(subject).to receive(:derive_type)
+      expect(subject).to receive(:highest_degree_offered)
+      expect(subject).to receive(:flight?)
+      expect(subject).to receive(:correspondence?)
+      expect(subject).to receive(:approved?)
+      subject.valid?
     end
 
-    it 'is true if institution offers non-college degree' do
-      expect(ncd_institution).to be_offer_degree
-    end
-
-    it 'is false if institution does not confer a degree' do
-      expect(non_degree_institution).not_to be_offer_degree
+    it 'computes the ope6 from ope[1, 5]' do
+      subject.valid?
+      expect(subject.ope6).to eql(subject.ope[1, 5])
     end
   end
 
@@ -61,26 +57,20 @@ RSpec.describe Weam, type: :model do
     end
   end
 
-  describe 'foreign?' do
-    let(:foreign) { build :weam, :foreign }
-    let(:non_foreign) { build :weam, :public }
-    let(:foreign_flight) { build :weam, :flight, country: 'CAN' }
-    let(:foreign_correspondence) { build :weam, :correspondence, country: 'CAN' }
+  describe 'offer_degree?' do
+    let(:higher_learning_institution) { build :weam, :higher_learning }
+    let(:ncd_institution) { build :weam, :ncd }
+    let(:both) { build :weam, :higher_learning, :ncd }
+    let(:neither) { build :weam }
 
-    it 'is true when the school is a foreign institution' do
-      expect(foreign).to be_foreign
+    it 'is true if institution of higher learning, non-college degree granting, or both' do
+      expect(higher_learning_institution).to be_offer_degree
+      expect(ncd_institution).to be_offer_degree
+      expect(both).to be_offer_degree
     end
 
-    it 'is false when the school is not a foreign institution' do
-      expect(non_foreign).not_to be_foreign
-    end
-
-    it 'is false when the foreign school is a flight institution' do
-      expect(foreign_flight).not_to be_foreign
-    end
-
-    it 'is false when the foreign school is a correspondence institution' do
-      expect(foreign_correspondence).not_to be_foreign
+    it 'is false if institution does not confer a degree' do
+      expect(neither).not_to be_offer_degree
     end
   end
 
@@ -127,6 +117,29 @@ RSpec.describe Weam, type: :model do
 
     it 'is false when the school offers a non-college degree' do
       expect(ncd_institution).not_to be_flight
+    end
+  end
+
+  describe 'foreign?' do
+    let(:foreign) { build :weam, :foreign }
+    let(:non_foreign) { build :weam, :public }
+    let(:foreign_flight) { build :weam, :flight, :foreign }
+    let(:foreign_correspondence) { build :weam, :correspondence, :foreign }
+
+    it 'is true when the school is a foreign institution' do
+      expect(foreign).to be_foreign
+    end
+
+    it 'is false when the school is not a foreign institution' do
+      expect(non_foreign).not_to be_foreign
+    end
+
+    it 'is false when the foreign school is a flight institution' do
+      expect(foreign_flight).not_to be_foreign
+    end
+
+    it 'is false when the foreign school is a correspondence institution' do
+      expect(foreign_correspondence).not_to be_foreign
     end
   end
 
@@ -191,17 +204,54 @@ RSpec.describe Weam, type: :model do
     end
   end
 
-  describe 'type' do
-    {
-      flight: 'flight', foreign: 'foreign', correspondence: 'correspondence',
-      ojt: 'ojt', public: 'public', for_profit: 'for profit', private: 'private'
-    }.each_pair do |weam_type, type|
-      it "knows its #{type}" do
-        weam = build :weam, weam_type
-        weam.derive_fields
+  describe 'derive_type' do
+    it 'knows its type' do
+      [:flight, :foreign, :correspondence, :ojt, :public, :for_profit, :private].each do |type|
+        weam = build :weam, type
+        weam.valid?
 
-        expect(weam.institution_type).to eq(type)
+        expect(weam.institution_type).to eq(type.to_s.tr('_', ' '))
       end
+    end
+  end
+
+  describe 'flags_for_approved?' do
+    subject { build :weam, :with_approved_indicators }
+
+    let(:not_approved) { build :weam }
+
+    it 'is true only if at least one indicator flag is set' do
+      expect(subject.flags_for_approved?).to be_truthy
+      expect(not_approved.flags_for_approved?).to be_falsy
+    end
+  end
+
+  describe 'approved?' do
+    subject { build :weam, :approved_poo_and_law_code, :with_approved_indicators }
+
+    let(:withdrawn) { build :weam, :withdrawn_poo, :with_approved_indicators }
+    let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
+    let(:title_31_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
+    let(:false_indicators) { build :weam }
+
+    before(:each) do
+      subject.valid?
+      withdrawn.valid?
+      non_approved_law_code.valid?
+    end
+
+    it 'is true if poo and law code are approved with at least one true indicator' do
+      expect(subject.approved?).to be_truthy
+    end
+
+    it 'is false if the poo is withdrawn, or if law code is not approved or title 31' do
+      expect(withdrawn.approved?).to be_falsy
+      expect(non_approved_law_code.approved?).to be_falsy
+      expect(title_31_law_code.approved?).to be_falsy
+    end
+
+    it 'is false if there are no truthful indicators' do
+      expect(false_indicators.approved?).to be_falsy
     end
   end
 end

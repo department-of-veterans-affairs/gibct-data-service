@@ -6,24 +6,11 @@ module Loadable
   end
 
   class_methods do
-    def load(filename, options = {})
-      delete_all
-
-      rows = SmarterCSV.process(filename, merge_options(options))
-      return nil if rows.length.zero?
-
-      loadable_class.import rows.map { |row| loadable_class.new(row) }, validate: true, ignore: true
-    end
-
-    def loadable_class
-      name.constantize
-    end
-
-    def merge_options(options)
+    def merge_options(klass, options)
       key_mapping = {}
       converter_mapping = {}
 
-      loadable_class::MAP.each_pair do |csv_column, map|
+      klass::MAP.each_pair do |csv_column, map|
         key = map.keys.first
 
         key_mapping[csv_column.parameterize.underscore.to_sym] = key
@@ -32,9 +19,24 @@ module Loadable
 
       options.reverse_merge(
         force_utf8: true, remove_zero_values: false, remove_empty_hashes: true,
-        key_mapping: key_mapping, value_converters: converter_mapping,
-        convert_values_to_numeric: { except: [:facility_code, :cross, :ope, :ipeds, :unitid, :zip] }
+        key_mapping: key_mapping, value_converters: converter_mapping, remove_empty_values: true,
+        convert_values_to_numeric: { except: [:facility_code, :cross, :ope, :ipeds, :unitid, :zip ] }
       )
+    end
+
+    def load(filename, options = {})
+      delete_all
+
+      klass = name.constantize
+      rows = SmarterCSV.process(filename, merge_options(klass, options))
+
+      rows = rows.map do |row|
+        row = klass.new(row)
+        row.run_callbacks(:validation)
+        row
+      end
+
+      klass.import rows, validate: true, ignore: true
     end
   end
 end

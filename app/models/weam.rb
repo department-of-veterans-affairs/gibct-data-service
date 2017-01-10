@@ -24,7 +24,7 @@ class Weam < ActiveRecord::Base
     'institution zip code' => { zip: ZipConverter },
     'institution country' => { country: BaseConverter },
     'accredited' => { accredited: BooleanConverter },
-    'current academic year bah rate' => { bah: IntegerConverter },
+    'current academic year bah rate' => { bah: BaseConverter },
     'principles of excellence' => { poe: BooleanConverter },
     'current academic year yellow ribbon' => { yr: BooleanConverter },
     'poo status' => { poo_status: BaseConverter },
@@ -42,16 +42,19 @@ class Weam < ActiveRecord::Base
   validates :institution, presence: true
   validates :bah, numericality: true, allow_blank: true
 
-  validate :derive_fields
+  before_validation :derive_dependent_columns
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
-  def derive_fields
+  def derive_dependent_columns
     self.institution_type = derive_type
     self.va_highest_degree_offered = highest_degree_offered
     self.flight = flight?
     self.correspondence = correspondence?
     self.approved = approved?
+    self.ope6 = Ope6Converter.convert(ope)
+
+    true
   end
 
   # Is this instance an OJT institution?
