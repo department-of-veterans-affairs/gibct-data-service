@@ -13,9 +13,9 @@ module Exportable
     def export
       header_mapping = {}
 
-      exportable_class::MAP.each_pair do |csv_column, map|
-        key = map.keys.first
-        header_mapping[key] = csv_column.split('_').map(&:capitalize).join(' ')
+      exportable_class::MAP.each_pair do |csv_column, mapping|
+        key = mapping[:column]
+        header_mapping[key] = csv_column.split(/\s/).map(&:capitalize).join(' ')
       end
 
       generate(header_mapping)

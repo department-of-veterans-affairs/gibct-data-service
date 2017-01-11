@@ -3,31 +3,31 @@ class Accreditation < ActiveRecord::Base
   include Loadable, Exportable
 
   MAP = {
-    'institution_id' => { institution_id: BaseConverter },
-    'institution_name' => { institution_name: InstitutionConverter },
-    'institution_address' => { institution_address: BaseConverter },
-    'institution_city' => { institution_city: BaseConverter },
-    'institution_state' => { institution_state: BaseConverter },
-    'institution_zip' => { institution_zip: BaseConverter },
-    'institution_phone' => { institution_phone: BaseConverter },
-    'institution_opeid' => { ope: OpeConverter },
-    'institution_ipeds_unitid' => { institution_ipeds_unitid: CrossConverter },
-    'institution_web_address' => { institution_web_address: BaseConverter },
-    'campus_id' => { campus_id: BaseConverter },
-    'campus_name' => { campus_name: InstitutionConverter },
-    'campus_address' => { campus_address: BaseConverter },
-    'campus_city' => { campus_city: BaseConverter },
-    'campus_state' => { campus_state: BaseConverter },
-    'campus_zip' => { campus_zip: BaseConverter },
-    'campus_ipeds_unitid' => { campus_ipeds_unitid: CrossConverter },
-    'accreditation_type' => { accreditation_type: BaseConverter },
-    'agency_name' => { agency_name: BaseConverter },
-    'agency_status' => { agency_status: BaseConverter },
-    'program_name' => { program_name: BaseConverter },
-    'accreditation_status' => { accreditation_csv_status: BaseConverter },
-    'accreditation_date_type' => { accreditation_date_type: BaseConverter },
-    'periods' => { periods: BaseConverter },
-    'last action' => { accreditation_status: BaseConverter }
+    'institution_id' => { column: :institution_id, converter: BaseConverter },
+    'institution_name' => { column: :institution_name, converter: InstitutionConverter },
+    'institution_address' => { column: :institution_address, converter: BaseConverter },
+    'institution_city' => { column: :institution_city, converter: BaseConverter },
+    'institution_state' => { column: :institution_state, converter: BaseConverter },
+    'institution_zip' => { column: :institution_zip, converter: BaseConverter },
+    'institution_phone' => { column: :institution_phone, converter: BaseConverter },
+    'institution_opeid' => { column: :ope, converter: OpeConverter },
+    'institution_ipeds_unitid' => { column: :institution_ipeds_unitid, converter: CrossConverter },
+    'institution_web_address' => { column: :institution_web_address, converter: BaseConverter },
+    'campus_id' => { column: :campus_id, converter: BaseConverter },
+    'campus_name' => { column: :campus_name, converter: InstitutionConverter },
+    'campus_address' => { column: :campus_address, converter: BaseConverter },
+    'campus_city' => { column: :campus_city, converter: BaseConverter },
+    'campus_state' => { column: :campus_state, converter: BaseConverter },
+    'campus_zip' => { column: :campus_zip, converter: BaseConverter },
+    'campus_ipeds_unitid' => { column: :campus_ipeds_unitid, converter: CrossConverter },
+    'accreditation_type' => { column: :accreditation_type, converter: BaseConverter },
+    'agency_name' => { column: :agency_name, converter: BaseConverter },
+    'agency_status' => { column: :agency_status, converter: BaseConverter },
+    'program_name' => { column: :program_name, converter: BaseConverter },
+    'accreditation_status' => { column: :accreditation_csv_status, converter: BaseConverter },
+    'accreditation_date_type' => { column: :accreditation_date_type, converter: BaseConverter },
+    'periods' => { column: :periods, converter: BaseConverter },
+    'last action' => { column: :accreditation_status, converter: BaseConverter }
   }.freeze
 
   # The ACCREDITATIONS hash maps accreditation types (Regional, National, or
@@ -57,6 +57,8 @@ class Accreditation < ActiveRecord::Base
   ACCREDITATION_TYPES = ['INSTITUTIONAL', 'SPECIALIZED', 'INTERNSHIP/RESIDENCY'].freeze
 
   before_validation :derive_dependent_columns
+
+  validates :agency_name, presence: true
 
   def derive_dependent_columns
     self.cross = to_cross

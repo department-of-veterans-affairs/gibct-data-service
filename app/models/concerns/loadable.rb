@@ -11,16 +11,16 @@ module Loadable
       converter_mapping = {}
 
       klass::MAP.each_pair do |csv_column, map|
-        key = map.keys.first
+        key = map[:column]
 
         key_mapping[csv_column.parameterize.underscore.to_sym] = key
-        converter_mapping[key] = map[key]
+        converter_mapping[key] = map[:converter]
       end
 
       options.reverse_merge(
         force_utf8: true, remove_zero_values: false, remove_empty_hashes: true,
         key_mapping: key_mapping, value_converters: converter_mapping, remove_empty_values: true,
-        convert_values_to_numeric: { except: [:facility_code, :cross, :ope, :ipeds, :unitid, :zip ] }
+        convert_values_to_numeric: false
       )
     end
 

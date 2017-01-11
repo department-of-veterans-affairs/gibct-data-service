@@ -12,6 +12,8 @@ FactoryGirl.define do
     ope { generate :ope }
     institution_ipeds_unitid { generate :cross }
     campus_ipeds_unitid { generate :cross }
+
+    agency_name 'American Physical Therapy Association, Commission on Accreditation in Physical Therapy Education'
     # accreditation_type => { accreditation_type: BaseConverter },
     # 'agency_name' => { agency_name: BaseConverter },
     # 'agency_status' => { agency_status: BaseConverter },

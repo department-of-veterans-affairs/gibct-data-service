@@ -5,16 +5,16 @@ class Crosswalk < ActiveRecord::Base
   before_validation :derive_dependent_columns
 
   MAP = {
-    'facility code' => { facility_code: FacilityCodeConverter },
-    'institution name' => { institution: InstitutionConverter },
-    'city' => { city: BaseConverter },
-    'state' => { state: BaseConverter },
-    'ipeds' => { cross: CrossConverter },
-    'ope' => { ope: OpeConverter },
-    'notes' => { notes: BaseConverter }
+    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'institution name' => { column: :institution, converter: InstitutionConverter },
+    'city' => { column: :city, converter: BaseConverter },
+    'state' => { column: :state, converter: BaseConverter },
+    'ipeds' => { column: :cross, converter: CrossConverter },
+    'ope' => { column: :ope, converter: OpeConverter },
+    'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, :institution, :ope, :cross, presence: true
+  validates :facility_code, presence: true
 
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)

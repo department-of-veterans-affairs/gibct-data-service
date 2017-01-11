@@ -5,12 +5,12 @@ class EightKey < ActiveRecord::Base
   validate :validate_ope_and_cross
 
   MAP = {
-    'institution of higher education' => { institution: InstitutionConverter },
-    'city' => { city: BaseConverter },
-    'state' => { state: StateConverter },
-    'opeid' => { ope: OpeConverter },
-    'ipeds_id' => { cross: CrossConverter },
-    'notes' => { notes: BaseConverter }
+    'institution of higher education' => { column: :institution, converter: InstitutionConverter },
+    'city' => { column: :city, converter: BaseConverter },
+    'state' => { column: :state, converter: StateConverter },
+    'opeid' => { column: :ope, converter: OpeConverter },
+    'ipeds_id' => { column: :cross, converter: CrossConverter },
+    'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 
   def validate_ope_and_cross
