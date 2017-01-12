@@ -20,7 +20,7 @@ class Accreditation < ActiveRecord::Base
     'campus_state' => { column: :campus_state, converter: BaseConverter },
     'campus_zip' => { column: :campus_zip, converter: BaseConverter },
     'campus_ipeds_unitid' => { column: :campus_ipeds_unitid, converter: CrossConverter },
-    'accreditation_type' => { column: :accreditation_type, converter: BaseConverter },
+    'accreditation_type' => { column: :csv_accreditation_type, converter: BaseConverter },
     'agency_name' => { column: :agency_name, converter: BaseConverter },
     'agency_status' => { column: :agency_status, converter: BaseConverter },
     'program_name' => { column: :program_name, converter: BaseConverter },
@@ -35,13 +35,13 @@ class Accreditation < ActiveRecord::Base
   # if the accrediting agency is the "New England Medical Association", then
   # the accreditation is 'Regional'.
   ACCREDITATIONS = {
-    'REGIONAL' => ['middle', 'new england', 'north central', 'southern', 'western'],
-    'NATIONAL' => ['career schools', 'continuing education', 'independent colleges',
-                   'biblical', 'occupational', 'distance', 'new york', 'transnational'],
-    'HYBRID' => ['acupuncture', 'nursing', 'health education', 'liberal', 'legal',
-                 'funeral', 'osteopathic', 'pediatric', 'theological', 'massage', 'radiologic',
-                 'midwifery', 'montessori', 'career arts', 'design', 'dance', 'music',
-                 'theatre', 'chiropractic']
+    'REGIONAL' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i],
+    'NATIONAL' => [/career schools/i, /continuing education/i, /independent colleges/i,
+                   /biblical/i, /occupational/i, /distance/i, /new york/i, /transnational/i],
+    'HYBRID' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
+                 /funeral/i, /osteopathic/i, /pediatric/i, /theological/i, /massage/i, /radiologic/i,
+                 /midwifery/i, /montessori/i, /career arts/i, /design/i, /dance/i, /music/i,
+                 /theatre/i, /chiropractic/i]
   }.freeze
 
   # LAST_ACTIONS are an array of strings that refer to changes to accreditation
@@ -52,18 +52,21 @@ class Accreditation < ActiveRecord::Base
     'resigned under show cause', 'denied full accreditation', 'pre-accredited'
   ].freeze
 
-  # ACCREDITATION_TYPES are used to detail accreditation types in the CSV.
+  # CSV_ACCREDITATION_TYPES are used to detail accreditation types in the CSV.
   # Only INSTITUTIONAL accreditation types are recognized by the DS and GIBCT.
-  ACCREDITATION_TYPES = ['INSTITUTIONAL', 'SPECIALIZED', 'INTERNSHIP/RESIDENCY'].freeze
+  CSV_ACCREDITATION_TYPES = ['institutional', 'specialized', 'internship/residency'].freeze
+
+  # DataCsv uses columns :accreditation_status, :accreditation_type
+  validates :agency_name, presence: true
+  validates :accreditation_status, inclusion: { in: LAST_ACTIONS }, allow_blank: true
 
   before_validation :derive_dependent_columns
-
-  validates :agency_name, presence: true
 
   def derive_dependent_columns
     self.cross = to_cross
     self.ope6 = Ope6Converter.convert(ope)
     self.institution = to_institution
+    self.accreditation_type = to_accreditation_type
 
     true
   end
@@ -74,5 +77,15 @@ class Accreditation < ActiveRecord::Base
 
   def to_cross
     campus_ipeds_unitid || institution_ipeds_unitid
+  end
+
+  def to_accreditation_type
+    return if agency_name.blank?
+
+    ACCREDITATIONS.each_pair do |type, regexp_array|
+      return type if regexp_array.find { |regexp| agency_name.match(regexp) }
+    end
+
+    nil
   end
 end

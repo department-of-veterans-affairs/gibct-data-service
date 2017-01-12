@@ -10,8 +10,49 @@ RSpec.describe Accreditation, type: :model do
   describe 'when validating' do
     subject { build :accreditation }
 
+    let(:by_campus) { create(:accreditation, :by_campus) }
+    let(:by_institution) { create(:accreditation, :by_institution) }
+
     it 'has a valid factory' do
       expect(subject).to be_valid
+    end
+
+    it 'sets the ope6' do
+      subject.valid?
+      expect(subject.ope6).to eq(subject.ope[1, 5])
+    end
+
+    it 'will use either the institution_name or the campus_name if only one is present' do
+      expect(by_campus.institution).to eq(by_campus.campus_name)
+      expect(by_institution.institution).to eq(by_institution.institution_name)
+    end
+
+    it 'prefers campus_name over institution_name' do
+      subject.valid?
+      expect(subject.institution).to eq(subject.campus_name)
+    end
+
+    it 'will use either the ipeds_institution_unitid or the ipeds_campus_unitid if only one is present' do
+      expect(by_campus.cross).to eq(by_campus.campus_ipeds_unitid)
+      expect(by_institution.cross).to eq(by_institution.institution_ipeds_unitid)
+    end
+
+    it 'prefers ipeds_campus_unitid over ipeds_institution_unitid' do
+      subject.valid?
+      expect(subject.cross).to eq(subject.campus_ipeds_unitid)
+    end
+
+    it 'assigns the accreditation_type based on agency name' do
+      described_class::ACCREDITATIONS.keys.each do |type|
+        described_class::ACCREDITATIONS[type]
+          .map { |regexp| "THE #{regexp.to_s.scan(/:(.*)\)/).flatten.first.upcase} ONE" }
+          .each do |name|
+          a = build :accreditation, agency_name: name
+          a.valid?
+
+          expect(a.accreditation_type).to eq(type)
+        end
+      end
     end
   end
 end

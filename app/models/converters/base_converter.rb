@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 class BaseConverter
   def self.convert(value)
-    # return value unless value.is_a? String
+    return value if value.nil? || !value.is_a?(String)
 
-    %w(none null privacysuppressed).include?(value.try(:downcase)) ? nil : value.try(:strip).try(:tr, '"', '')
+    value = value.tr('"', '').downcase.strip
+    %w(none null privacysuppressed).include?(value) ? nil : value
   end
 end

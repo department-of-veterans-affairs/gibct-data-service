@@ -7,12 +7,14 @@ class CreateEightKeys < ActiveRecord::Migration
       t.string :state
       t.string :cross
       t.string :ope
+      t.string :ope6
       t.string :notes
 
       t.timestamps null: false
       t.index :institution
       t.index :cross
       t.index :ope
+      t.index :ope6
     end
   end
 end

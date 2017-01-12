@@ -22,5 +22,15 @@ FactoryGirl.define do
     # 'accreditation_date_type' => { accreditation_date_type: BaseConverter },
     # 'periods' => { periods: BaseConverter },
     # 'last action' => { accreditation_status: BaseConverter }
+
+    trait :by_campus do
+      institution_name nil
+      institution_ipeds_unitid nil
+    end
+
+    trait :by_institution do
+      campus_name nil
+      campus_ipeds_unitid nil
+    end
   end
 end

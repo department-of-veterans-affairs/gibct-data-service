@@ -29,7 +29,7 @@ RSpec.shared_examples 'an exportable model' do |options|
 
         rows[i].each.with_index { |value, j| attributes[mapping[header_row[j]][:column]] = value }
         csv_record = described_class.new(attributes)
-        csv_record.derive_dependent_columns
+        csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
 
         csv_test_attributes = csv_record.attributes.except('id', 'created_at', 'updated_at')
         test_attributes = record.attributes.except('id', 'created_at', 'updated_at')

@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170108071550) do
     t.string   "campus_zip"
     t.string   "campus_ipeds_unitid"
     t.string   "accreditation_type"
+    t.string   "csv_accreditation_type"
     t.string   "agency_name"
     t.string   "agency_status"
     t.string   "program_name"
@@ -79,6 +80,7 @@ ActiveRecord::Schema.define(version: 20170108071550) do
     t.string   "state"
     t.string   "cross"
     t.string   "ope"
+    t.string   "ope6"
     t.string   "notes"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
@@ -87,6 +89,7 @@ ActiveRecord::Schema.define(version: 20170108071550) do
   add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
   add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
   add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
+  add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false

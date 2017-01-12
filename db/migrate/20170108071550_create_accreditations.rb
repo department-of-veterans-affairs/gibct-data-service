@@ -23,6 +23,7 @@ class CreateAccreditations < ActiveRecord::Migration
       t.string :campus_zip
       t.string :campus_ipeds_unitid
       t.string :accreditation_type
+      t.string :csv_accreditation_type
       t.string :agency_name
       t.string :agency_status
       t.string :program_name

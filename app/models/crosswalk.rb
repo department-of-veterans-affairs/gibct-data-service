@@ -14,6 +14,7 @@ class Crosswalk < ActiveRecord::Base
     'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 
+  # DataCsv uses columns :facility_code, :cross, and :ope6
   validates :facility_code, presence: true
 
   def derive_dependent_columns

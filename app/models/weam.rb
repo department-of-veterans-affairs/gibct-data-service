@@ -40,8 +40,9 @@ class Weam < ActiveRecord::Base
     'ope' => { column: :ope, converter: OpeConverter }
   }.freeze
 
-  validates :facility_code, presence: true
-  validates :institution, presence: true
+  # DataCsv uses columns :facility_code, :institution, :city, :state, :zip, :country,
+  # :accredited, :bah, :poe, :yr, :institution_type, :va_highest_degree_offered, :flight, :correspondence
+  validates :facility_code, :institution, :institution_type, presence: true
   validates :bah, numericality: true, allow_blank: true
 
   before_validation :derive_dependent_columns
