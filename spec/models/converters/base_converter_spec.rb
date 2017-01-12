@@ -21,4 +21,8 @@ RSpec.describe BaseConverter do
   it 'converts blanks to an empty string' do
     expect(subject.convert('      ')).to be_blank
   end
+
+  it 'converts all strings to lower case' do
+    expect(subject.convert('This Is A String')).to eq('this is a string')
+  end
 end

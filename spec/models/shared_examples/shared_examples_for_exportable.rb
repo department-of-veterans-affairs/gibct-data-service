@@ -1,39 +1,40 @@
 # frozen_string_literal: true
-RSpec.shared_examples 'an exportable model' do
-  let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
+RSpec.shared_examples 'an exportable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
+  let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
+  let(:mapping) { described_class::MAP }
+
+  subject { described_class.export }
 
   describe "#{described_class}::MAP" do
     it 'must be defined for exportable classes' do
-      expect(described_class::MAP).not_to be_nil
+      expect(mapping).not_to be_nil
     end
   end
 
   describe "#{described_class}.export" do
-    let(:headers) { described_class::MAP.keys.map { |header| header.split(' ').map(&:capitalize).join(' ') }.join(',') }
-    let(:rows) { described_class.export.split("\n") }
-
     before(:each) do
-      described_class.load(csv_file)
+      described_class.load(csv_file, options)
     end
 
-    it 'capitalizes the original headers' do
-      expect(rows.first).to eq(headers)
-    end
+    it 'creates a string representation of a csv_file' do
+      rows = subject.split("\n")
+      header_row = rows.shift.split(',').map(&:downcase)
 
-    it 'reproduces each table record as a row' do
-      converters = described_class::MAP.values
+      rows = CSV.parse(rows.join("\n"))
 
-      Weam.all.each_with_index do |record, n|
-        csv_columns = rows[n + 1].split(',').map { |s| s.blank? ? nil : s }
+      described_class.find_each.with_index do |record, i|
+        attributes = {}
 
-        converters.each_with_index do |converter, i|
-          column_name = converter.keys.first
-          converter_class = converter[column_name]
+        rows[i].each.with_index { |value, j| attributes[mapping[header_row[j]][:column]] = value }
+        csv_record = described_class.new(attributes)
+        csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
 
-          expect(record[column_name]).to eq(converter_class.convert(csv_columns[i]))
-        end
+        csv_test_attributes = csv_record.attributes.except('id', 'created_at', 'updated_at')
+        test_attributes = record.attributes.except('id', 'created_at', 'updated_at')
+
+        expect(csv_test_attributes).to eq(test_attributes)
       end
     end
   end

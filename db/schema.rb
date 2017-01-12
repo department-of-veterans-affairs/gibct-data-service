@@ -11,10 +11,85 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170106144618) do
+ActiveRecord::Schema.define(version: 20170108071550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accreditations", force: :cascade do |t|
+    t.string   "institution",              null: false
+    t.string   "cross"
+    t.string   "ope6"
+    t.integer  "institution_id"
+    t.string   "institution_name"
+    t.string   "institution_address"
+    t.string   "institution_city"
+    t.string   "institution_state"
+    t.string   "institution_zip"
+    t.string   "institution_phone"
+    t.string   "institution_ipeds_unitid"
+    t.string   "ope"
+    t.string   "institution_web_address"
+    t.integer  "campus_id"
+    t.string   "campus_name"
+    t.string   "campus_address"
+    t.string   "campus_city"
+    t.string   "campus_state"
+    t.string   "campus_zip"
+    t.string   "campus_ipeds_unitid"
+    t.string   "accreditation_type"
+    t.string   "csv_accreditation_type"
+    t.string   "agency_name"
+    t.string   "agency_status"
+    t.string   "program_name"
+    t.string   "accreditation_csv_status"
+    t.string   "accreditation_date_type"
+    t.string   "periods"
+    t.string   "accreditation_status"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "accreditations", ["cross"], name: "index_accreditations_on_cross", using: :btree
+  add_index "accreditations", ["institution"], name: "index_accreditations_on_institution", using: :btree
+  add_index "accreditations", ["ope"], name: "index_accreditations_on_ope", using: :btree
+  add_index "accreditations", ["ope6"], name: "index_accreditations_on_ope6", using: :btree
+
+  create_table "crosswalks", force: :cascade do |t|
+    t.string   "facility_code", null: false
+    t.string   "institution"
+    t.string   "cross"
+    t.string   "city"
+    t.string   "state"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "notes"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
+  add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
+  add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
+  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
+  add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
+
+  create_table "eight_keys", force: :cascade do |t|
+    t.string   "institution", null: false
+    t.string   "city"
+    t.string   "state"
+    t.string   "cross"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "notes"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
+  add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
+  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
+  add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
@@ -66,7 +141,7 @@ ActiveRecord::Schema.define(version: 20170106144618) do
     t.boolean  "poe"
     t.boolean  "yr"
     t.string   "va_highest_degree_offered"
-    t.string   "institution_type",                         null: false
+    t.string   "institution_type"
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
@@ -83,6 +158,7 @@ ActiveRecord::Schema.define(version: 20170106144618) do
     t.boolean  "approved"
     t.string   "cross"
     t.string   "ope"
+    t.string   "ope6"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end

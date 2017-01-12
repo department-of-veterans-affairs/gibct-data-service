@@ -11,7 +11,7 @@ class CreateWeams < ActiveRecord::Migration
 			t.boolean :poe
 			t.boolean :yr
       t.string :va_highest_degree_offered
-      t.string :institution_type, null: false
+      t.string :institution_type
       t.boolean :flight
       t.boolean :correspondence
       t.boolean :accredited
@@ -30,6 +30,7 @@ class CreateWeams < ActiveRecord::Migration
       t.boolean :approved
       t.string :cross
       t.string :ope
+      t.string :ope6
 
       t.timestamps null: false
       t.index :facility_code, unique: true

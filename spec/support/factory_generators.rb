@@ -29,10 +29,10 @@ FactoryGirl.define do
   end
 
   sequence(:ope) do |n|
-    n.to_s(32).rjust(8, '0')
+    n.to_s.rjust(8, '0')
   end
 
   sequence(:cross) do |n|
-    n.to_s(32).rjust(6, '0')
+    n.to_s.rjust(6, '0')
   end
 end

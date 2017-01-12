@@ -3,20 +3,10 @@ FactoryGirl.define do
   factory :weam do
     institution { 'SOME SCHOOL' }
     facility_code { generate :facility_code }
+    ope { generate :ope }
+    # cross { generate :cross }
 
-    city { 'Cupcakes' }
-    state { 'NY' }
-    zip { '11203' }
     country 'USA'
-
-    poo_status 'aprvd'
-    applicable_law_code 'educational institution is approved for all chapters'
-
-    institution_of_higher_learning_indicator false
-    ojt_indicator false
-    correspondence_indicator false
-    flight_indicator false
-    non_college_degree_indicator false
 
     # Facility_code second digit is 0
     trait :ojt do
@@ -68,26 +58,31 @@ FactoryGirl.define do
       non_college_degree_indicator true
     end
 
-    trait :non_degree do
+    trait :approved_poo_and_law_code do
+      poo_status 'aprvd'
+      applicable_law_code 'educational institution is approved for all chapters'
     end
 
     # Fails approval because of poo_status
-    trait :non_approved_poo do
+    trait :withdrawn_poo do
       poo_status 'withdrn'
+      applicable_law_code 'educational institution is approved for all chapters'
     end
 
     # Fails approval because of applicable_law_code
-    trait :non_approved_applicable_law_code_not_approved do
+    trait :approved_poo_and_non_approved_law_code do
+      poo_status 'aprvd'
       applicable_law_code 'educational institution is not approved'
     end
 
     # Fails approval because of applicable_law_code
-    trait :non_approved_applicable_law_code_title_31 do
+    trait :approved_poo_and_law_code_title_31 do
+      poo_status 'aprvd'
       applicable_law_code 'educational institution is approved for chapter 31 only'
     end
 
     # Passes approval because of all false indicators
-    trait :approved_indicators do
+    trait :with_approved_indicators do
       institution_of_higher_learning_indicator true
       ojt_indicator true
       correspondence_indicator true

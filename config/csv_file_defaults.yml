@@ -1,5 +1,20 @@
 
 Weam:
-  skipped_first_lines: 0
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Crosswalk:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+EightKey:
+  skip_lines: 1
+  col_sep: ','
+  row_sep: "\r\n"
+
+Accreditation:
+  skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"

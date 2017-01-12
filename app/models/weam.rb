@@ -14,46 +14,48 @@ class Weam < ActiveRecord::Base
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
   MAP = {
-    'facility code' => { facility_code: FacilityCodeConverter },
-    'institution name' => { institution: InstitutionConverter },
-    'address 1' => { address_1: BaseConverter },
-    'address 2' => { address_2: BaseConverter },
-    'address 3' => { address_3: BaseConverter },
-    'institution city' => { city: BaseConverter },
-    'institution state' => { state: StateConverter },
-    'institution zip code' => { zip: ZipConverter },
-    'institution country' => { country: BaseConverter },
-    'accredited' => { accredited: BooleanConverter },
-    'current academic year bah rate' => { bah: IntegerConverter },
-    'principles of excellence' => { poe: BooleanConverter },
-    'current academic year yellow ribbon' => { yr: BooleanConverter },
-    'poo status' => { poo_status: BaseConverter },
-    'applicable law code' => { applicable_law_code: BaseConverter },
-    'institution of higher learning indicator' => { institution_of_higher_learning_indicator: BooleanConverter },
-    'ojt indicator' => { ojt_indicator: BooleanConverter },
-    'correspondence indicator' => { correspondence_indicator: BooleanConverter },
-    'flight indicator' => { flight_indicator: BooleanConverter },
-    'non-college degree indicator' => { non_college_degree_indicator: BooleanConverter },
-    'ipeds' => { cross: CrossConverter },
-    'ope' => { ope: OpeConverter }
+    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'institution name' => { column: :institution, converter: InstitutionConverter },
+    'address 1' => { column: :address_1, converter: BaseConverter },
+    'address 2' => { column: :address_2, converter: BaseConverter },
+    'address 3' => { column: :address_3, converter: BaseConverter },
+    'institution city' => { column: :city, converter: BaseConverter },
+    'institution state' => { column: :state, converter: StateConverter },
+    'institution zip code' => { column: :zip, converter: ZipConverter },
+    'institution country' => { column: :country, converter: BaseConverter },
+    'accredited' => { column: :accredited, converter: BooleanConverter },
+    'current academic year bah rate' => { column: :bah, converter: BaseConverter },
+    'principles of excellence' => { column: :poe, converter: BooleanConverter },
+    'current academic year yellow ribbon' => { column: :yr, converter: BooleanConverter },
+    'poo status' => { column: :poo_status, converter: BaseConverter },
+    'applicable law code' => { column: :applicable_law_code, converter: BaseConverter },
+    'institution of higher learning indicator' => {
+      column: :institution_of_higher_learning_indicator, converter: BooleanConverter
+    },
+    'ojt indicator' => { column: :ojt_indicator, converter: BooleanConverter },
+    'correspondence indicator' => { column: :correspondence_indicator, converter: BooleanConverter },
+    'flight indicator' => { column: :flight_indicator, converter: BooleanConverter },
+    'non-college degree indicator' => { column: :non_college_degree_indicator, converter: BooleanConverter },
+    'ipeds' => { column: :cross, converter: CrossConverter },
+    'ope' => { column: :ope, converter: OpeConverter }
   }.freeze
 
-  # Duplicates ignored during import ...
-  validates :facility_code, presence: true
-  validates :institution, presence: true
-  validates :institution_type, presence: true
+  # DataCsv uses columns :facility_code, :institution, :city, :state, :zip, :country,
+  # :accredited, :bah, :poe, :yr, :institution_type, :va_highest_degree_offered, :flight, :correspondence
+  validates :facility_code, :institution, :institution_type, presence: true
   validates :bah, numericality: true, allow_blank: true
 
-  before_validation :derive_fields
+  before_validation :derive_dependent_columns
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
-  def derive_fields
+  def derive_dependent_columns
     self.institution_type = derive_type
     self.va_highest_degree_offered = highest_degree_offered
     self.flight = flight?
     self.correspondence = correspondence?
     self.approved = approved?
+    self.ope6 = Ope6Converter.convert(ope)
 
     true
   end
