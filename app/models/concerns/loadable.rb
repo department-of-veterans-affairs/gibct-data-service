@@ -5,6 +5,10 @@ module Loadable
   included do
   end
 
+  def derive_dependent_columns
+    true
+  end
+
   class_methods do
     def merge_options(klass, options)
       key_mapping = {}
@@ -13,7 +17,7 @@ module Loadable
       klass::MAP.each_pair do |csv_column, map|
         key = map[:column]
 
-        key_mapping[csv_column.parameterize.underscore.to_sym] = key
+        key_mapping[csv_column.tr(' ', '_').to_sym] = key
         converter_mapping[key] = map[:converter]
       end
 
