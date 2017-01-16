@@ -56,7 +56,6 @@ class Accreditation < ActiveRecord::Base
   # Only INSTITUTIONAL accreditation types are recognized by the DS and GIBCT.
   CSV_ACCREDITATION_TYPES = ['institutional', 'specialized', 'internship/residency'].freeze
 
-  # DataCsv uses columns :accreditation_status, :accreditation_type
   validates :agency_name, presence: true
   validates :accreditation_status, inclusion: { in: LAST_ACTIONS }, allow_blank: true
 

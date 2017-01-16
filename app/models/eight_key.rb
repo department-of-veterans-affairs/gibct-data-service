@@ -2,7 +2,15 @@
 class EightKey < ActiveRecord::Base
   include Loadable, Exportable
 
-  # DataCsv uses column :cross
+  MAP = {
+    'institution of higher education' => { column: :institution, converter: InstitutionConverter },
+    'city' => { column: :city, converter: BaseConverter },
+    'state' => { column: :state, converter: StateConverter },
+    'opeid' => { column: :ope, converter: OpeConverter },
+    'ipeds_id' => { column: :cross, converter: CrossConverter },
+    'notes' => { column: :notes, converter: BaseConverter }
+  }.freeze
+
   validate :ope_or_cross
   before_validation :derive_dependent_columns
 
@@ -17,13 +25,4 @@ class EightKey < ActiveRecord::Base
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
   end
-
-  MAP = {
-    'institution of higher education' => { column: :institution, converter: InstitutionConverter },
-    'city' => { column: :city, converter: BaseConverter },
-    'state' => { column: :state, converter: StateConverter },
-    'opeid' => { column: :ope, converter: OpeConverter },
-    'ipeds_id' => { column: :cross, converter: CrossConverter },
-    'notes' => { column: :notes, converter: BaseConverter }
-  }.freeze
 end
