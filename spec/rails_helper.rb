@@ -30,6 +30,7 @@ ActiveRecord::Migration.maintain_test_schema!
 
 require 'capybara/rspec'
 Capybara.default_driver = :sniffybara
+Capybara.server_boot_timeout = 50
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
