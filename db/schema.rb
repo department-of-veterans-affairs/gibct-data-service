@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170117131537) do
+ActiveRecord::Schema.define(version: 20170117134227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,25 @@ ActiveRecord::Schema.define(version: 20170117131537) do
   add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
   add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", unique: true, using: :btree
   add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
+
+  create_table "mous", force: :cascade do |t|
+    t.string   "ope",              null: false
+    t.string   "ope6",             null: false
+    t.string   "status"
+    t.boolean  "dodmou"
+    t.boolean  "dod_status"
+    t.string   "institution"
+    t.string   "trade_name"
+    t.string   "city"
+    t.string   "state"
+    t.string   "institution_type"
+    t.string   "approval_date"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "mous", ["ope"], name: "index_mous_on_ope", using: :btree
+  add_index "mous", ["ope6"], name: "index_mous_on_ope6", using: :btree
 
   create_table "p911_tfs", force: :cascade do |t|
     t.string   "facility_code",      null: false
