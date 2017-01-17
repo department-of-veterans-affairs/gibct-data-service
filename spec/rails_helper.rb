@@ -31,8 +31,6 @@ ActiveRecord::Migration.maintain_test_schema!
 require 'capybara/rspec'
 Capybara.default_driver = :sniffybara
 Capybara.javascript_driver = :webkit_debug
-Capybara.always_include_port = true
-Capybara.default_host = 'http://localhost'
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
