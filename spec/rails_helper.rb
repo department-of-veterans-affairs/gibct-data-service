@@ -30,12 +30,13 @@ ActiveRecord::Migration.maintain_test_schema!
 
 require 'capybara/rspec'
 Capybara.default_driver = :sniffybara
+Capybara.javascript_driver = :webkit_debug
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  # Adding capybara DSL to rspec (MPH)
+  # Adding capybara DSL to rspec
   config.include Capybara::DSL
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
@@ -43,16 +44,16 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  # Allow short form of factory girl calls. (MPH)
+  # Allow short form of factory girl calls.
   config.include FactoryGirl::Syntax::Methods
 
-  # database_cleaner configuration (MPH)
+  # database_cleaner configuration
   # Clear the entire DB before tests begin
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  # Run each test in a transaction (MPH)
+  # Run each test in a transaction
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
   end

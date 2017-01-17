@@ -18,3 +18,43 @@ Accreditation:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+Scorecard:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+P911Tf:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+P911Yr:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Vsoc:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Sva:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Sec702:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Sec702School:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+Mou:
+  skip_lines: 1
+  col_sep: ','
+  row_sep: "\r\n"

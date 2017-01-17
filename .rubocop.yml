@@ -16,6 +16,10 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
 
+Metrics/ClassLength:
+  Exclude:
+    - 'app/models/scorecard.rb'
+
 Metrics/LineLength:
   Max: 120
 
@@ -40,4 +44,3 @@ Rails/Output:
 
 Style/Tab:
   Enabled: false
-  
