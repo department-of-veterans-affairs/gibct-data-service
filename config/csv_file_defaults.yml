@@ -23,3 +23,13 @@ Scorecard:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+P911Tf:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+P911Yr:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"

@@ -4,6 +4,6 @@ class BaseConverter
     return value if value.nil? || !value.is_a?(String)
 
     value = value.tr('"', '').downcase.strip
-    %w(none null privacysuppressed).include?(value) ? nil : value
+    %w(none null privacysuppressed xxxxxxxx).include?(value) ? nil : value
   end
 end
