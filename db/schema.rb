@@ -69,6 +69,16 @@ ActiveRecord::Schema.define(version: 20170124200527) do
 
   add_index "arf_gi_bills", ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true, using: :btree
 
+  create_table "calculator_constants", force: :cascade do |t|
+    t.string   "name"
+    t.float    "float_value"
+    t.string   "string_value"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "calculator_constants", ["name"], name: "index_calculator_constants_on_name", using: :btree
+
   create_table "complaints", force: :cascade do |t|
     t.string   "status"
     t.string   "ope"
@@ -150,6 +160,102 @@ ActiveRecord::Schema.define(version: 20170124200527) do
   add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", unique: true, using: :btree
   add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
 
+  create_table "data_csvs", force: :cascade do |t|
+    t.string   "facility_code",                                                       null: false
+    t.string   "institution",                                                         null: false
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "country"
+    t.string   "va_highest_degree_offered"
+    t.string   "type"
+    t.integer  "bah"
+    t.boolean  "poe"
+    t.boolean  "yr"
+    t.boolean  "flight"
+    t.boolean  "correspondence"
+    t.boolean  "accredited"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "cross"
+    t.boolean  "student_veteran",                                     default: false
+    t.string   "student_veteran_link"
+    t.string   "vetsuccess_name"
+    t.string   "vetsuccess_email"
+    t.boolean  "eight_keys"
+    t.string   "accreditation_status"
+    t.string   "accreditation_type"
+    t.integer  "gibill"
+    t.float    "p911_tuition_fees"
+    t.integer  "p911_recipients"
+    t.float    "p911_yellow_ribbon"
+    t.integer  "p911_yr_recipients"
+    t.boolean  "dodmou"
+    t.string   "insturl"
+    t.integer  "pred_degree_awarded"
+    t.integer  "locale"
+    t.integer  "undergrad_enrollment"
+    t.float    "retention_all_students_ba"
+    t.float    "retention_all_students_otb"
+    t.float    "graduation_rate_all_students"
+    t.float    "transfer_out_rate_all_students"
+    t.float    "salary_all_students"
+    t.float    "repayment_rate_all_students"
+    t.float    "avg_stu_loan_debt"
+    t.boolean  "credit_for_mil_training"
+    t.boolean  "vet_poc"
+    t.boolean  "student_vet_grp_ipeds"
+    t.boolean  "soc_member"
+    t.string   "calendar"
+    t.boolean  "online_all"
+    t.string   "vet_tuition_policy_url"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
+    t.boolean  "sec_702"
+    t.boolean  "caution_flag"
+    t.text     "caution_flag_reason"
+    t.integer  "complaints_facility_code"
+    t.integer  "complaints_financial_by_fac_code"
+    t.integer  "complaints_quality_by_fac_code"
+    t.integer  "complaints_refund_by_fac_code"
+    t.integer  "complaints_marketing_by_fac_code"
+    t.integer  "complaints_accreditation_by_fac_code"
+    t.integer  "complaints_degree_requirements_by_fac_code"
+    t.integer  "complaints_student_loans_by_fac_code"
+    t.integer  "complaints_grades_by_fac_code"
+    t.integer  "complaints_credit_transfer_by_fac_code"
+    t.integer  "complaints_job_by_fac_code"
+    t.integer  "complaints_transcript_by_fac_code"
+    t.integer  "complaints_other_by_fac_code"
+    t.integer  "complaints_main_campus_roll_up"
+    t.integer  "complaints_financial_by_ope_id_do_not_sum"
+    t.integer  "complaints_quality_by_ope_id_do_not_sum"
+    t.integer  "complaints_refund_by_ope_id_do_not_sum"
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum"
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum"
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum"
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum"
+    t.integer  "complaints_grades_by_ope_id_do_not_sum"
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum"
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum"
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum"
+    t.integer  "complaints_other_by_ope_id_do_not_sum"
+    t.float    "retention_rate_veteran_ba"
+    t.float    "retention_rate_veteran_otb"
+    t.float    "persistance_rate_veteran_ba"
+    t.float    "persistance_rate_veteran_otb"
+    t.float    "graduation_rate_veteran"
+    t.float    "transfer_out_rate_veteran"
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
+  end
+
+  add_index "data_csvs", ["cross"], name: "index_data_csvs_on_cross", using: :btree
+  add_index "data_csvs", ["facility_code"], name: "index_data_csvs_on_facility_code", unique: true, using: :btree
+  add_index "data_csvs", ["institution"], name: "index_data_csvs_on_institution", using: :btree
+  add_index "data_csvs", ["ope"], name: "index_data_csvs_on_ope", using: :btree
+
   create_table "eight_keys", force: :cascade do |t|
     t.string   "cross"
     t.string   "institution"
@@ -182,6 +288,101 @@ ActiveRecord::Schema.define(version: 20170124200527) do
   end
 
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
+
+  create_table "institutions", force: :cascade do |t|
+    t.string   "institution_type_name"
+    t.string   "facility_code"
+    t.string   "institution"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "country"
+    t.float    "bah"
+    t.string   "cross"
+    t.string   "ope"
+    t.string   "insturl"
+    t.string   "vet_tuition_policy_url"
+    t.integer  "pred_degree_awarded"
+    t.integer  "locale"
+    t.integer  "gibill",                                              default: 0
+    t.integer  "undergrad_enrollment"
+    t.boolean  "yr",                                                  default: false
+    t.boolean  "student_veteran",                                     default: false
+    t.string   "student_veteran_link"
+    t.boolean  "poe",                                                 default: false
+    t.boolean  "eight_keys",                                          default: false
+    t.boolean  "dodmou",                                              default: false
+    t.boolean  "sec_702",                                             default: false
+    t.string   "vetsuccess_name"
+    t.string   "vetsuccess_email"
+    t.string   "credit_for_mil_training"
+    t.string   "vet_poc"
+    t.string   "student_vet_grp_ipeds"
+    t.string   "soc_member"
+    t.string   "va_highest_degree_offered"
+    t.float    "retention_rate_veteran_ba"
+    t.float    "retention_all_students_ba"
+    t.float    "retention_rate_veteran_otb"
+    t.float    "retention_all_students_otb"
+    t.float    "persistance_rate_veteran_ba"
+    t.float    "persistance_rate_veteran_otb"
+    t.float    "graduation_rate_veteran"
+    t.float    "graduation_rate_all_students"
+    t.float    "transfer_out_rate_veteran"
+    t.float    "transfer_out_rate_all_students"
+    t.float    "salary_all_students"
+    t.float    "repayment_rate_all_students"
+    t.float    "avg_stu_loan_debt"
+    t.string   "calendar"
+    t.float    "tuition_in_state"
+    t.float    "tuition_out_of_state"
+    t.float    "books"
+    t.string   "online_all"
+    t.float    "p911_tuition_fees",                                   default: 0.0
+    t.integer  "p911_recipients",                                     default: 0
+    t.float    "p911_yellow_ribbon",                                  default: 0.0
+    t.integer  "p911_yr_recipients",                                  default: 0
+    t.boolean  "accredited",                                          default: false
+    t.string   "accreditation_type"
+    t.string   "accreditation_status"
+    t.string   "caution_flag"
+    t.string   "caution_flag_reason"
+    t.integer  "complaints_facility_code",                            default: 0
+    t.integer  "complaints_financial_by_fac_code",                    default: 0
+    t.integer  "complaints_quality_by_fac_code",                      default: 0
+    t.integer  "complaints_refund_by_fac_code",                       default: 0
+    t.integer  "complaints_marketing_by_fac_code",                    default: 0
+    t.integer  "complaints_accreditation_by_fac_code",                default: 0
+    t.integer  "complaints_degree_requirements_by_fac_code",          default: 0
+    t.integer  "complaints_student_loans_by_fac_code",                default: 0
+    t.integer  "complaints_grades_by_fac_code",                       default: 0
+    t.integer  "complaints_credit_transfer_by_fac_code",              default: 0
+    t.integer  "complaints_credit_job_by_fac_code",                   default: 0
+    t.integer  "complaints_job_by_fac_code",                          default: 0
+    t.integer  "complaints_transcript_by_fac_code",                   default: 0
+    t.integer  "complaints_other_by_fac_code",                        default: 0
+    t.integer  "complaints_main_campus_roll_up",                      default: 0
+    t.integer  "complaints_financial_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_quality_by_ope_id_do_not_sum",             default: 0
+    t.integer  "complaints_refund_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum", default: 0
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_grades_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum",     default: 0
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum",                default: 0
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum",          default: 0
+    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
+  end
+
+  add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
+  add_index "institutions", ["facility_code"], name: "index_institutions_on_facility_code", using: :btree
+  add_index "institutions", ["institution"], name: "index_institutions_on_institution", using: :btree
+  add_index "institutions", ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
+  add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
 
   create_table "ipeds_hds", force: :cascade do |t|
     t.string   "cross",                  null: false
@@ -1058,24 +1259,23 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.boolean  "poe"
     t.boolean  "yr"
     t.string   "va_highest_degree_offered"
-    t.string   "institution_type"
+    t.string   "institution_type",                         null: false
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "address_3"
+    t.string   "poo_status"
+    t.string   "applicable_law_code"
+    t.boolean  "institution_of_higher_learning_indicator"
     t.boolean  "ojt_indicator"
     t.boolean  "correspondence_indicator"
     t.boolean  "flight_indicator"
     t.boolean  "non_college_degree_indicator"
-    t.boolean  "institution_of_higher_learning_indicator"
-    t.string   "poo_status"
-    t.string   "applicable_law_code"
     t.boolean  "approved"
-    t.string   "address_1"
-    t.string   "address_2"
-    t.string   "address_3"
     t.string   "cross"
     t.string   "ope"
-    t.string   "ope6"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end

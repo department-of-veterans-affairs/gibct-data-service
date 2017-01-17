@@ -12,6 +12,11 @@ module GibctDataService
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    # Specify environment specific hostname and protocol
+    config.hostname = ENV['HOSTNAME']
+    config.protocol = 'http'
+    routes.default_url_options = { host: config.hostname, protocol: config.protocol }
+
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     config.time_zone = 'Eastern Time (US & Canada)'
