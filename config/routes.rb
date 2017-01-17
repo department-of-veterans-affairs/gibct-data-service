@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :sec702s
   resources :svas
   resources :vsocs
   resources :p911_yrs
