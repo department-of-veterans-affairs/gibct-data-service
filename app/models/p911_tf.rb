@@ -14,7 +14,7 @@ class P911Tf < ActiveRecord::Base
     'number of payments' => { column: :number_of_payments, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, presence: true, uniqueness: true
+  validates :facility_code, presence: true
   validates :p911_recipients, numericality: true
   validates :p911_tuition_fees, numericality: true
 end
