@@ -4,7 +4,7 @@ class Vsoc < ActiveRecord::Base
 
   MAP = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution' => { column: :institution, converter: BaseConverter },
+    'institution' => { column: :institution, converter: InstitutionConverter },
     'vetsuccess_name' => { column: :vetsuccess_name, converter: BaseConverter },
     'vetsuccess_email' => { column: :vetsuccess_email, converter: BaseConverter }
   }.freeze

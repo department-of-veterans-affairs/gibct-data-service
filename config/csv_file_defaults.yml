@@ -63,3 +63,8 @@ Hcm:
   skip_lines: 2
   col_sep: ','
   row_sep: "\r\n"
+
+Settlement:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"

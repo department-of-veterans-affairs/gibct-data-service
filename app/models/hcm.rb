@@ -4,7 +4,7 @@ class Hcm < ActiveRecord::Base
 
   MAP = {
     'ope id' => { column: :ope, converter: OpeConverter },
-    'institution name' => { column: :institution, converter: BaseConverter },
+    'institution name' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
     'country' => { column: :country, converter: BaseConverter },

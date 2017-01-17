@@ -4,7 +4,7 @@ class P911Yr < ActiveRecord::Base
 
   MAP = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'name of institution' => { column: :institution, converter: BaseConverter },
+    'name of institution' => { column: :institution, converter: InstitutionConverter },
     'state' => { column: :state, converter: BaseConverter },
     'country' => { column: :country, converter: BaseConverter },
     'number of trainees' => { column: :p911_yr_recipients, converter: BaseConverter },

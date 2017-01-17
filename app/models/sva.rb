@@ -4,7 +4,7 @@ class Sva < ActiveRecord::Base
 
   MAP = {
     'id' => { column: :csv_id, converter: BaseConverter },
-    'school' => { column: :institution, converter: BaseConverter },
+    'school' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
     'ipeds code' => { column: :ipeds_code, converter: BaseConverter },
