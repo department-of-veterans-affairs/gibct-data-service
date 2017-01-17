@@ -58,3 +58,8 @@ Mou:
   skip_lines: 1
   col_sep: ','
   row_sep: "\r\n"
+
+Hcm:
+  skip_lines: 2
+  col_sep: ','
+  row_sep: "\r\n"

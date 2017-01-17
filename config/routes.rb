@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :hcms
   resources :mous
   resources :sec702_schools
   resources :sec702s
