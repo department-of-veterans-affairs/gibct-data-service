@@ -14,17 +14,17 @@ pipeline {
 
     stage('Install bundle') {
       steps {
-        sh 'bundle install -j 4 --without development'
+        sh 'bash --login -c "bundle install -j 4 --without development"'
 
         dir('gi-bill-comparison-tool') {
-          sh 'bundle install -j 4 --without development'
+          sh 'bash --login -c "bundle install -j 4 --without development"'
         }
       }
     }
 
     stage('Audit') {
       steps {
-        sh 'bundle exec rake security'
+        sh 'bash --login -c "bundle exec rake security"'
       }
     }
 
@@ -40,17 +40,17 @@ pipeline {
 
     stage('Ensure database') {
       steps {
-        sh 'bundle exec rake db:create db:migrate'
+        sh 'bash --login -c "bundle exec rake db:create db:migrate"'
 
         dir('gi-bill-comparison-tool') {
-          sh 'RAILS_ENV=test bundle exec rake db:create db:migrate'
+          sh 'bash --login -c "RAILS_ENV=test bundle exec rake db:create db:migrate"'
         }
       }
     }
 
     stage('Run tests') {
       steps {
-        sh 'bundle exec rspec'
+        sh 'bash --login -c "bundle exec rspec"'
       }
     }
   }
