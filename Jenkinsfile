@@ -14,33 +14,43 @@ pipeline {
 
     stage('Install bundle') {
       steps {
-        sh 'bash --login -c "bundle install -j 4 --without development"'
+        sh 'bundle install -j 4 --without development'
 
         dir('gi-bill-comparison-tool') {
-          sh 'bash --login -c "bundle install -j 4 --without development"'
+          sh 'bundle install -j 4 --without development'
         }
       }
     }
 
     stage('Audit') {
       steps {
-        sh 'bash --login -c "bundle exec rake security"'
+        sh 'bundle exec rake security'
+      }
+    }
+
+    stage('Prepare') {
+      steps {
+        sh 'bundle exec rake db:drop'
+
+        dir('gi-bill-comparison-tool') {
+          sh 'RAILS_ENV=test bundle exec rake db:drop'
+        }
       }
     }
 
     stage('Ensure database') {
       steps {
-        sh 'bash --login -c "bundle exec rake db:drop db:create db:migrate"'
+        sh 'bundle exec rake db:create db:migrate'
 
         dir('gi-bill-comparison-tool') {
-          sh 'bash --login -c "RAILS_ENV=test bundle exec rake db:drop db:create db:migrate"'
+          sh 'RAILS_ENV=test bundle exec rake db:create db:migrate'
         }
       }
     }
 
     stage('Run tests') {
       steps {
-        sh 'bash --login -c "bundle exec rspec"'
+        sh 'bundle exec rspec'
       }
     }
   }
