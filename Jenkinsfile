@@ -30,10 +30,10 @@ pipeline {
 
     stage('Prepare') {
       steps {
-        sh 'bundle exec rake db:drop'
+        sh 'bash --login -c "bundle exec rake db:drop"'
 
         dir('gi-bill-comparison-tool') {
-          sh 'RAILS_ENV=test bundle exec rake db:drop'
+          sh 'bash --login -c "RAILS_ENV=test bundle exec rake db:drop"'
         }
       }
     }
