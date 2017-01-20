@@ -5,6 +5,6 @@ class BooleanConverter < BaseConverter
 
   def self.convert(value)
     value = super(value)
-    value.blank? ? nil : TRUTHS.include?(value.downcase)
+    value.blank? ? nil : TRUTHS.include?(value.to_s)
   end
 end

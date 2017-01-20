@@ -19,6 +19,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - 'app/models/scorecard.rb'
+    - 'app/models/ipeds_ic.rb'
 
 Metrics/LineLength:
   Max: 120

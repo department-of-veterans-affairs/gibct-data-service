@@ -15,7 +15,8 @@ RSpec.describe Settlement, type: :model do
     end
 
     it 'requires a valid cross' do
-      expect(build(:settlement, cross: nil)).not_to be_valid
+      subject.cross = nil
+      expect(subject).not_to be_valid
     end
 
     it 'requires a valid settlement_description' do

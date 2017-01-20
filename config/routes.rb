@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :ipeds_ics
   resources :settlements
   resources :hcms
   resources :mous

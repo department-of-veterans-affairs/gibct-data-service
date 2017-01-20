@@ -10,6 +10,11 @@ RSpec.describe BooleanConverter do
     end
   end
 
+  it 'converts numbers to booleans' do
+    expect(subject.convert(1)).to be_truthy
+    expect(subject.convert(2)).to be_falsey
+  end
+
   it 'converts non-truthy strings to falsey' do
     expect(subject.convert('some random string')).to be_falsey
   end

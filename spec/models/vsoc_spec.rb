@@ -15,8 +15,7 @@ RSpec.describe Vsoc, type: :model do
     end
 
     it 'requires facility_code' do
-      subject.facility_code = nil
-      expect(subject).not_to be_valid
+      expect(build(:vsoc, facility_code: nil)).not_to be_valid
     end
   end
 end

@@ -68,3 +68,8 @@ Settlement:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+IpedsIc:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
