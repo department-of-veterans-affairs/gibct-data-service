@@ -1,0 +1,2 @@
+class IpedsHdsController < ApplicationController
+end

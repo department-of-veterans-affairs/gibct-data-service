@@ -73,3 +73,8 @@ IpedsIc:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+IpedsHd:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
