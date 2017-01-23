@@ -14,14 +14,13 @@ RSpec.describe ArfGiBill, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires facility_code' do
-      subject.facility_code = nil
-      expect(subject).not_to be_valid
+    it 'requires a valid facility_code' do
+      expect(build(:arf_gi_bill, facility_code: nil)).not_to be_valid
     end
 
-    it 'requires numeric gibill if specified' do
-      subject.gibill = 'abc'
-      expect(subject).not_to be_valid
+    it 'requires numeric gibill or nil' do
+      expect(build(:arf_gi_bill, gibill: nil)).to be_valid
+      expect(build(:arf_gi_bill, gibill: 'abc')).not_to be_valid
     end
   end
 end

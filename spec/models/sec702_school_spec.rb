@@ -14,7 +14,7 @@ RSpec.describe Sec702School, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires a facility_code' do
+    it 'requires a valid facility_code' do
       expect(build(:sec702_school, facility_code: nil)).not_to be_valid
     end
   end

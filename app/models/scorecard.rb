@@ -3,9 +3,9 @@ class Scorecard < ActiveRecord::Base
   include Loadable, Exportable
 
   validates :cross, presence: true
-  validates :pred_degree_awarded, numericality: { in: (0..4) }
-  validates :locale, numericality: { in: [-3, 11, 12, 13, 21, 22, 23, 31, 32, 33, 41, 42, 43] }, allow_blank: true
-  validates :undergrad_enrollment, numericality: { only_integer: true },  allow_blank: true
+  validates :pred_degree_awarded, inclusion: { in: (0..4) }
+  validates :locale, inclusion: { in: [-3, 11, 12, 13, 21, 22, 23, 31, 32, 33, 41, 42, 43] }, allow_blank: true
+  validates :undergrad_enrollment, numericality: { only_integer: true }, allow_blank: true
   validates :retention_all_students_ba, numericality: true, allow_blank: true
   validates :retention_all_students_otb, numericality: true, allow_blank: true
   validates :salary_all_students, numericality: { only_integer: true }, allow_blank: true

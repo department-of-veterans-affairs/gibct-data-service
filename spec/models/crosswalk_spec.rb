@@ -10,6 +10,14 @@ RSpec.describe Crosswalk, type: :model do
   describe 'when validating' do
     subject { build :crosswalk }
 
+    it 'has a valid factory' do
+      expect(subject).to be_valid
+    end
+
+    it 'requires a valid facility_code' do
+      expect(build(:crosswalk, facility_code: nil)).not_to be_valid
+    end
+
     it 'computes the ope6 from ope[1, 5]' do
       subject.valid?
       expect(subject.ope6).to eql(subject.ope[1, 5])

@@ -14,15 +14,15 @@ RSpec.describe Hcm, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires the ope' do
+    it 'requires a valid ope' do
       expect(build(:hcm, ope: nil)).not_to be_valid
     end
 
-    it 'requires hcm_type' do
+    it 'requires valid hcm_type' do
       expect(build(:hcm, hcm_type: nil)).not_to be_valid
     end
 
-    it 'requires hcm_reason' do
+    it 'requires valid hcm_reason' do
       expect(build(:hcm, hcm_reason: nil)).not_to be_valid
     end
   end

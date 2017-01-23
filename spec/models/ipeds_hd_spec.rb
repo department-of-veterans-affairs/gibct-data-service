@@ -13,5 +13,9 @@ RSpec.describe IpedsHd, type: :model do
     it 'has a valid factory' do
       expect(subject).to be_valid
     end
+
+    it 'requires a valid cross' do
+      expect(build(:ipeds_hd, cross: nil)).not_to be_valid
+    end
   end
 end

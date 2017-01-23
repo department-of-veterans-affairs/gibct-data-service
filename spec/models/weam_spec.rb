@@ -14,11 +14,11 @@ RSpec.describe Weam, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires facility_code' do
+    it 'requires a valid facility_code' do
       expect(build(:weam, facility_code: nil)).not_to be_valid
     end
 
-    it 'requires institution' do
+    it 'requires a valid institution' do
       expect(build(:weam, institution: nil)).not_to be_valid
     end
 

@@ -14,7 +14,7 @@ RSpec.describe Mou, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires the ope' do
+    it 'requires a valid ope' do
       expect(build(:mou, ope: nil)).not_to be_valid
     end
 
