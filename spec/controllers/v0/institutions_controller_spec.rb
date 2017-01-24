@@ -19,7 +19,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'institution profile' do
-    xit 'returns common exception response if school not found' do
+    it 'returns common exception response if school not found' do
       get :show, id: '1'
       assert_response :missing
       expect(response.content_type).to eq('application/json')
