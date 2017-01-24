@@ -7,7 +7,7 @@ FactoryGirl.define do
     sequence(:country) { |n| "country #{n}" }
 
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
-    sequence(:cross) { |n| "#{n}" * 7 }
+    sequence(:cross) { |n| n.to_s * 7 }
     institution_type_name 'private'
 
     trait :in_nyc do
