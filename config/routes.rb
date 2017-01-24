@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :outcomes
   resources :complaints
   resources :ipeds_ic_pies
   resources :ipeds_ic_ays

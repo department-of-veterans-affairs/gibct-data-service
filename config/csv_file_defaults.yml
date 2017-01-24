@@ -93,3 +93,8 @@ Complaint:
   skip_lines: 7
   col_sep: ','
   row_sep: "\r\n"
+
+Outcome:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
