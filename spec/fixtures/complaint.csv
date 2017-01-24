@@ -1,0 +1,10 @@
+System Name,Postsecondary Education Complaint System,,,,,,,,,,,,
+Report Title,Complaint Cases Summary,,,,,,,,,,,,
+Report Date,3/30/16,,,,,,,,,,,,
+,,,,,,,,,,,,,
+Date Range (min),1/1/14,,,,,,,,,,,,
+Date Range (max),3/30/16,,,,,,,,,,,,
+ ,,,,,,,,,,,,,
+Case ID,Level,Status,Case Owner,School,OPEID,Facility Code,School City,School State,Submitted,Closed,Closed Reason,Issues,Education Benefits
+VA1074,Level 3,Closed,"Holbrook, Robert",ROSE STATE COLLEGE,918500,14927436,MIDWEST CITY,OK,1/30/14,3/24/14,Resolved, Financial Issues (e.g. Tuition/Fee charges), Post-9/11 GI Bill (Ch. 33)
+VA1075,Level 3,Closed,"Holbrook, Robert",UNIVERSITY OF PHOENIX LITTLE ROCK,12098848,21005604,LITTLE ROCK,AR,1/30/14,2/11/14,Invalid, Financial Issues (e.g. Tuition/Fee charges), Post-9/11 GI Bill (Ch. 33)

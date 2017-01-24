@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123202716) do
+ActiveRecord::Schema.define(version: 20170124095318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,68 @@ ActiveRecord::Schema.define(version: 20170123202716) do
   end
 
   add_index "arf_gi_bills", ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true, using: :btree
+
+  create_table "complaints", force: :cascade do |t|
+    t.string   "status"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "facility_code"
+    t.string   "closed_reason"
+    t.string   "issues"
+    t.integer  "cfc",                                                 default: 0
+    t.integer  "cfbfc",                                               default: 0
+    t.integer  "cqbfc",                                               default: 0
+    t.integer  "crbfc",                                               default: 0
+    t.integer  "cmbfc",                                               default: 0
+    t.integer  "cabfc",                                               default: 0
+    t.integer  "cdrbfc",                                              default: 0
+    t.integer  "cslbfc",                                              default: 0
+    t.integer  "cgbfc",                                               default: 0
+    t.integer  "cctbfc",                                              default: 0
+    t.integer  "cjbfc",                                               default: 0
+    t.integer  "ctbfc",                                               default: 0
+    t.integer  "cobfc",                                               default: 0
+    t.integer  "complaints_facility_code",                            default: 0
+    t.integer  "complaints_financial_by_fac_code",                    default: 0
+    t.integer  "complaints_quality_by_fac_code",                      default: 0
+    t.integer  "complaints_refund_by_fac_code",                       default: 0
+    t.integer  "complaints_marketing_by_fac_code",                    default: 0
+    t.integer  "complaints_accreditation_by_fac_code",                default: 0
+    t.integer  "complaints_degree_requirements_by_fac_code",          default: 0
+    t.integer  "complaints_student_loans_by_fac_code",                default: 0
+    t.integer  "complaints_grades_by_fac_code",                       default: 0
+    t.integer  "complaints_credit_transfer_by_fac_code",              default: 0
+    t.integer  "complaints_job_by_fac_code",                          default: 0
+    t.integer  "complaints_transcript_by_fac_code",                   default: 0
+    t.integer  "complaints_other_by_fac_code",                        default: 0
+    t.integer  "complaints_main_campus_roll_up",                      default: 0
+    t.integer  "complaints_financial_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_quality_by_ope_id_do_not_sum",             default: 0
+    t.integer  "complaints_refund_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum", default: 0
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_grades_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum",     default: 0
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum",                default: 0
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum",          default: 0
+    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
+    t.string   "case_id"
+    t.string   "level"
+    t.string   "case_owner"
+    t.string   "institution"
+    t.string   "city"
+    t.string   "state"
+    t.string   "submitted"
+    t.string   "closed"
+    t.string   "education_benefits"
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
+  end
+
+  add_index "complaints", ["facility_code"], name: "index_complaints_on_facility_code", using: :btree
+  add_index "complaints", ["ope6"], name: "index_complaints_on_ope6", using: :btree
 
   create_table "crosswalks", force: :cascade do |t|
     t.string   "facility_code", null: false
