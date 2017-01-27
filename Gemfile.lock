@@ -148,6 +148,10 @@ GEM
       multi_json (~> 1.0)
       therubyracer (~> 0.12.1)
     json (1.8.6)
+    json-schema (2.2.5)
+    json_matchers (0.5.0)
+      activesupport (>= 3.0.0)
+      json-schema (~> 2.2.5)
     jsonapi (0.1.1.beta6)
       jsonapi-parser (= 0.1.1.beta3)
       jsonapi-renderer (= 0.1.1.beta1)
@@ -347,6 +351,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   jshint
+  json_matchers
   pg (~> 0.15)
   pry-rails
   puma (~> 3.6)
@@ -369,4 +374,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.13.6
+   1.14.3

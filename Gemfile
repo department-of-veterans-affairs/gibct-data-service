@@ -65,6 +65,7 @@ group :development, :test do
 
   # Testing tools
   gem 'rspec-rails'
+  gem "json_matchers"
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false

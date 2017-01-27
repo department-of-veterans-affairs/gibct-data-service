@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 class Institution < ActiveRecord::Base
-  include Tristateable
-
   EMPLOYER = 'ojt'
   LOCALE = {
-    11 => 'City',
-    12 => 'City',
-    13 => 'City',
-    21 => 'Suburban',
-    22 => 'Suburban',
-    23 => 'Suburban',
-    31 => 'Town',
-    32 => 'Town',
-    33 => 'Town',
-    41 => 'Rural',
-    42 => 'Rural',
-    43 => 'Rural'
+    11 => 'city',
+    12 => 'city',
+    13 => 'city',
+    21 => 'suburban',
+    22 => 'suburban',
+    23 => 'suburban',
+    31 => 'town',
+    32 => 'town',
+    33 => 'town',
+    41 => 'rural',
+    42 => 'rural',
+    43 => 'rural'
   }.freeze
   DEGREES = {
     0 => nil,
@@ -27,75 +25,69 @@ class Institution < ActiveRecord::Base
     4 => 4,
     '4-year' => 4
   }.freeze
+  TYPES = [
+    'ojt',
+    'private',
+    'foreign',
+    'correspondence',
+    'flight',
+    'for profit',
+    'public'
+  ].freeze
 
   validates :facility_code, uniqueness: true, presence: true
-  validates :institution_type_name, presence: true
+  validates :institution_type_name, inclusion: { in: TYPES }
   validates :institution, presence: true
   validates :country, presence: true
 
   self.per_page = 10
 
-  def credit_for_mil_training
-    tristate_boolean(:credit_for_mil_training)
+  def scorecard_link
+    return nil unless school? && cross.present?
+    [
+      "https://collegescorecard.ed.gov/school/?#{cross}",
+      institution.downcase.parameterize
+    ].join('-')
   end
 
-  def vet_poc
-    tristate_boolean(:vet_poc)
+  def website_link
+    return nil if insturl.blank?
+    "http://#{insturl}"
   end
 
-  def student_vet_grp_ipeds
-    tristate_boolean(:student_vet_grp_ipeds)
+  def vet_website_link
+    return nil if vet_tuition_policy_url.blank?
+    "http://#{vet_tuition_policy_url}"
   end
 
-  def soc_member
-    tristate_boolean(:soc_member)
+  def complaints
+    prefix = 'complaints_'
+    attributes.each_with_object({}) do |(k, v), complaints|
+      complaints[k.gsub(prefix, '')] = v if k.starts_with?(prefix)
+      complaints
+    end
   end
 
-  def online_all
-    tristate_boolean(:online_all)
-  end
-
-  # returns true if school is a correspondence school
+  # Returns a short locale description
   #
-  def correspondence?
-    institution_type_name.casecmp('correspondence').zero?
+  def locale_type
+    LOCALE[locale]
   end
 
-  # returns true if school is a flight school
+  # Returns the highest degree offered.
   #
-  def flight?
-    institution_type_name.casecmp('flight').zero?
+  def highest_degree
+    DEGREES[pred_degree_awarded] || DEGREES[va_highest_degree_offered.try(:downcase)]
   end
 
-  # returns true if school is ojt.
-  #
-  def ojt?
-    institution_type_name.casecmp('ojt').zero?
-  end
-
-  # returns true if school is not ojt.
-  #
   def school?
-    !institution_type_name.casecmp('ojt').zero?
-  end
-
-  # returns true if school is in USA
-  #
-  def in_usa?
-    country.try(:downcase) == 'usa'
-  end
-
-  # Gets the locale name correpsonding to the locale
-  #
-  def locale_name
-    LOCALE[locale] || 'Locale Unknown'
+    institution_type_name != 'ojt'
   end
 
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    search_term = search_term.to_s.strip.downcase
     Institution.select('id, facility_code as value, institution as label')
                .where('lower(institution) LIKE (?)', "#{search_term}%")
                .limit(limit)
@@ -120,11 +112,14 @@ class Institution < ActiveRecord::Base
 
   scope :filter, lambda { |field, value|
     return if value.blank?
+    raise ArgumentError, 'Field name is required' if field.blank?
     case value
-    when value == 'true' || value == 'yes'
+    when 'true', 'yes'
       where(field => true)
-    else
+    when 'false', 'no'
       where.not(field => true)
     end
   }
+
+  scope :version, ->(version) {}
 end

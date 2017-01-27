@@ -60,7 +60,7 @@ class CreateInstitutions < ActiveRecord::Migration
       t.boolean :accredited, default: false
       t.string :accreditation_type, default: nil # String with "null" string values
       t.string :accreditation_status, default: nil # String with "null" string values
-      t.string :caution_flag, default: nil # Boolean with null string values
+      t.boolean :caution_flag, default: false
       t.string :caution_flag_reason, default: nil # String with "null" string values
 
       # Complaint Data

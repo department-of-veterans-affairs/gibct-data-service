@@ -8,4 +8,6 @@ class CalculatorConstant < ActiveRecord::Base
   def value
     string_value || float_value
   end
+
+  scope :version, ->(version) {}
 end

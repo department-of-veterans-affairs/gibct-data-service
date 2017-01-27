@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 class InstitutionProfileSerializer < ActiveModel::Serializer
-  include OptionalSerializedAttributes
-
-  attribute :institution
+  attribute :institution, key: :name
   attribute :facility_code
   attribute :institution_type_name, key: :type
   attribute :city
@@ -12,8 +10,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :bah
   attribute :cross
   attribute :ope
-  attribute :pred_degree_awarded
-  attribute :locale
+  attribute :highest_degree
+  attribute :locale_type
   attribute :gibill, key: :student_count
   attribute :undergrad_enrollment
   attribute :yr
@@ -23,13 +21,12 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :eight_keys
   attribute :dodmou
   attribute :sec_702
-  attribute :vetsuccess_name
-  attribute :vetsuccess_email
+  attribute :vetsuccess_name, key: :vet_success_name
+  attribute :vetsuccess_email, key: :vet_success_email
   attribute :credit_for_mil_training
   attribute :vet_poc
   attribute :student_vet_grp_ipeds
   attribute :soc_member
-  attribute :va_highest_degree_offered
   attribute :retention_rate_veteran_ba
   attribute :retention_all_students_ba
   attribute :retention_rate_veteran_otb
@@ -55,51 +52,14 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :accredited
   attribute :accreditation_type
   attribute :accreditation_status
-  attribute :caution_flag, if: -> { object.caution_flag.present? }
-  attribute :caution_flag_reason, if: -> { object.caution_flag.present? }
-  attribute_if_positive :complaints_facility_code
-  attribute_if_positive :complaints_financial_by_fac_code
-  attribute_if_positive :complaints_quality_by_fac_code
-  attribute_if_positive :complaints_refund_by_fac_code
-  attribute_if_positive :complaints_marketing_by_fac_code
-  attribute_if_positive :complaints_accreditation_by_fac_code
-  attribute_if_positive :complaints_degree_requirements_by_fac_code
-  attribute_if_positive :complaints_student_loans_by_fac_code
-  attribute_if_positive :complaints_grades_by_fac_code
-  attribute_if_positive :complaints_credit_transfer_by_fac_code
-  attribute_if_positive :complaints_credit_job_by_fac_code
-  attribute_if_positive :complaints_job_by_fac_code
-  attribute_if_positive :complaints_transcript_by_fac_code
-  attribute_if_positive :complaints_other_by_fac_code
-  attribute_if_positive :complaints_main_campus_roll_up
-  attribute_if_positive :complaints_financial_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_quality_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_refund_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_marketing_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_accreditation_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_degree_requirements_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_student_loans_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_grades_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_credit_transfer_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_jobs_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_transcript_by_ope_id_do_not_sum
-  attribute_if_positive :complaints_other_by_ope_id_do_not_sum
+  attribute(:caution_flag) { object.caution_flag == 'true' }
+  attribute :caution_flag_reason
+  attribute(:complaints) { object.complaints }
   attribute :created_at
   attribute :updated_at
 
-  link :website do
-    "http://#{object.insturl}" if object.insturl.present?
-  end
-
-  link :vet_tuition_policy_url do
-    "http://#{object.vet_tuition_policy_url}" if object.vet_tuition_policy_url.present?
-  end
-
-  link :scorecard do
-    "https://collegescorecard.ed.gov/school/?#{object.cross}-#{object.institution.downcase.parameterize}"
-  end
-
-  link :self do
-    v0_institution_url(object.facility_code)
-  end
+  link(:website) { object.website_link }
+  link(:scorecard) { object.scorecard_link }
+  link(:vet_website_link) { object.vet_website_link }
+  link(:self) { v0_institution_url(object.facility_code) }
 end
