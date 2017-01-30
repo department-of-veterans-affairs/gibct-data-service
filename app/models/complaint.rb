@@ -96,10 +96,12 @@ class Complaint < ActiveRecord::Base
   before_validation :derive_dependent_columns
 
   def self.update_ope_from_crosswalk
-    find_each do |complaint|
-      crosswalk = Crosswalk.find_by(facility_code: complaint.facility_code)
-      complaint.update(ope: crosswalk.ope, ope6: crosswalk.ope6) if crosswalk
-    end
+    Complaint.connection.update(<<-SQL)
+      UPDATE complaints
+        SET ope = crosswalks.ope, ope6 = crosswalks.ope6
+        FROM crosswalks
+        WHERE complaints.facility_code = crosswalks.facility_code AND crosswalks.ope IS NOT NULL
+      SQL
   end
 
   def derive_dependent_columns
