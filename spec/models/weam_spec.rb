@@ -14,28 +14,16 @@ RSpec.describe Weam, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires facility_code' do
-      subject.facility_code = nil
-      expect(subject).not_to be_valid
+    it 'requires a valid facility_code' do
+      expect(build(:weam, facility_code: nil)).not_to be_valid
     end
 
-    it 'requires institution' do
-      subject.institution = nil
-      expect(subject).not_to be_valid
+    it 'requires a valid institution' do
+      expect(build(:weam, institution: nil)).not_to be_valid
     end
 
     it 'requires numeric bah if specified' do
-      subject.bah = true
-      expect(subject).not_to be_valid
-    end
-
-    it 'changes dependent columns' do
-      expect(subject).to receive(:derive_type)
-      expect(subject).to receive(:highest_degree_offered)
-      expect(subject).to receive(:flight?)
-      expect(subject).to receive(:correspondence?)
-      expect(subject).to receive(:approved?)
-      subject.valid?
+      expect(build(:weam, bah: true)).not_to be_valid
     end
 
     it 'computes the ope6 from ope[1, 5]' do

@@ -4,7 +4,7 @@ class P911Yr < ActiveRecord::Base
 
   MAP = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'name of institution' => { column: :institution, converter: BaseConverter },
+    'name of institution' => { column: :institution, converter: InstitutionConverter },
     'state' => { column: :state, converter: BaseConverter },
     'country' => { column: :country, converter: BaseConverter },
     'number of trainees' => { column: :p911_yr_recipients, converter: BaseConverter },
@@ -14,7 +14,7 @@ class P911Yr < ActiveRecord::Base
     'number of payments' => { column: :number_of_payments, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, presence: true, uniqueness: true
+  validates :facility_code, presence: true
   validates :p911_yr_recipients, numericality: true
   validates :p911_yellow_ribbon, numericality: true
 end

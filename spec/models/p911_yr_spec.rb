@@ -14,9 +14,8 @@ RSpec.describe P911Yr, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires facility_code' do
-      subject.facility_code = nil
-      expect(subject).not_to be_valid
+    it 'requires a valid facility_code' do
+      expect(build(:p911_yr, facility_code: nil)).not_to be_valid
     end
 
     it 'requires numeric p911_yr_recipients' do

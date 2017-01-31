@@ -6,7 +6,7 @@ class Mou < ActiveRecord::Base
 
   MAP = {
     'ope id' => { column: :ope, converter: OpeConverter },
-    'institution name' => { column: :institution, converter: BaseConverter },
+    'institution name' => { column: :institution, converter: InstitutionConverter },
     'trade name' => { column: :trade_name, converter: BaseConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },

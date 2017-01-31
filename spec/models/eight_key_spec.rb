@@ -14,7 +14,7 @@ RSpec.describe EightKey, type: :model do
       expect(subject).to be_valid
     end
 
-    it 'requires cross or ope to be valid' do
+    it 'requires a cross or an ope to be valid' do
       expect(build(:eight_key, ope: nil)).to be_valid
       expect(build(:eight_key, cross: nil)).to be_valid
       expect(build(:eight_key, ope: nil, cross: nil)).not_to be_valid
