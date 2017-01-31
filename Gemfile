@@ -16,9 +16,6 @@ gem 'uglifier', '>= 1.3.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
-
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
@@ -38,6 +35,10 @@ gem 'smarter_csv'
 
 # Pagination
 gem 'will_paginate'
+
+# JSON API
+gem 'active_model_serializers', '~> 0.10.4'
+gem 'virtus', '~> 1.0.5'
 
 # Provides country/state support
 # gem 'carmen'
@@ -64,6 +65,7 @@ group :development, :test do
 
   # Testing tools
   gem 'rspec-rails'
+  gem "json_matchers"
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false

@@ -6,6 +6,7 @@ require File.expand_path('../../config/environment', __FILE__)
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
+require 'support/serializer_spec_helper'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -38,6 +39,9 @@ RSpec.configure do |config|
 
   # Adding capybara DSL to rspec
   config.include Capybara::DSL
+
+  # Serializer specs
+  config.include SerializerSpecHelper, type: :serializer
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
