@@ -24,7 +24,7 @@ pipeline {
 
     stage('Audit') {
       steps {
-        sh 'bash --login -c "bundle exec rake security"'
+        sh 'bash --login -c "bundle exec rake security lint ci"'
       }
     }
 
@@ -38,7 +38,7 @@ pipeline {
       }
     }
 
-    stage('Ensure database') {
+    stage('Ensure database exists') {
       steps {
         sh 'bash --login -c "bundle exec rake db:create db:migrate"'
 
