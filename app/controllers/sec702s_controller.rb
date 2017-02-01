@@ -1,14 +1,14 @@
 class Sec702sController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_sec702, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @sec702s = Sec702.paginate(:page => params[:page])
+    @sec702s = Sec702.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class Sec702sController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class Sec702sController < ApplicationController
   #############################################################################
   def new
     @sec702 = Sec702.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class Sec702sController < ApplicationController
 
     respond_to do |format|
       if @sec702.persisted?
-        format.html { redirect_to @sec702, notice: "#{@sec702.state} created."}
+        format.html { redirect_to @sec702, notice: "#{@sec702.state} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @sec702.errors.full_messages
         flash.alert = Sec702sController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class Sec702sController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class Sec702sController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @sec702, notice: "#{@sec702.state} updated."}
+        format.html { redirect_to @sec702, notice: "#{@sec702.state} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @sec702.errors.full_messages
         flash.alert = Sec702sController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class Sec702sController < ApplicationController
     @sec702.destroy
 
     respond_to do |format|
-      format.html { redirect_to sec702s_url, 
-          notice: "#{@sec702.state} was successfully destroyed." }
+      format.html do
+        redirect_to sec702s_url,
+                    notice: "#{@sec702.state} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_sec702
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_sec702
     @sec702 = Sec702.find(params[:id])
   end
@@ -101,7 +103,7 @@ class Sec702sController < ApplicationController
   #############################################################################
   ## sec702_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def sec702_params
     params.require(:sec702).permit(
       :state, :sec_702

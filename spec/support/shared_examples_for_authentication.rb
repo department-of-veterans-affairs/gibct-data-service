@@ -1,7 +1,7 @@
-RSpec.shared_examples "an authenticating controller" do |action, destination|     
-  describe "when being visited" do
-    context "and not authenticated" do 
-      it "redirects the user to login page" do
+RSpec.shared_examples 'an authenticating controller' do |action, destination|
+  describe 'when being visited' do
+    context 'and not authenticated' do
+      it 'redirects the user to login page' do
         get action
 
         expect(response).to have_http_status(302)
@@ -9,18 +9,18 @@ RSpec.shared_examples "an authenticating controller" do |action, destination|
       end
     end
 
-    context "and submitting credentials" do
+    context 'and submitting credentials' do
       let(:bad_user) { build :user, :bad_email }
 
       # Failing on Devise views
-      Sniffybara::Driver.accessibility_code_exceptions << 
-        "WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141"
-      Sniffybara::Driver.accessibility_code_exceptions << 
-        "WCAG2AA.Principle1.Guideline1_3.1_3_1.H44.NonExistentFragment"
-      Sniffybara::Driver.accessibility_code_exceptions << 
-        "WCAG2AA.Principle1.Guideline1_3.1_3_1.F68.Hidden"
+      Sniffybara::Driver.accessibility_code_exceptions <<
+        'WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141'
+      Sniffybara::Driver.accessibility_code_exceptions <<
+        'WCAG2AA.Principle1.Guideline1_3.1_3_1.H44.NonExistentFragment'
+      Sniffybara::Driver.accessibility_code_exceptions <<
+        'WCAG2AA.Principle1.Guideline1_3.1_3_1.F68.Hidden'
 
-      it "outputs an error message if not successful" do
+      it 'outputs an error message if not successful' do
         visit user_session_path
 
         fill_in 'Email', with: bad_user.email
@@ -32,23 +32,23 @@ RSpec.shared_examples "an authenticating controller" do |action, destination|
       end
     end
 
-    context "and when authenticated" do
+    context 'and when authenticated' do
       login_user
 
-      it "sends that user to the #{destination}/#{action.to_s}" do
-        expect(get action).to render_template("#{destination}/#{action.to_s}")
+      it "sends that user to the #{destination}/#{action}" do
+        expect(get action).to render_template("#{destination}/#{action}")
       end
 
-      it "has a current user" do
+      it 'has a current user' do
         expect(subject.current_user).to_not be_nil
       end
     end
   end
 
-  describe "and when logging out" do
+  describe 'and when logging out' do
     logout_user
 
-    it "nulls the current user" do
+    it 'nulls the current user' do
       expect(subject.current_user).to be_nil
     end
   end

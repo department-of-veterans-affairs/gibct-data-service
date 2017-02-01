@@ -1,14 +1,14 @@
 class IpedsHdsController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_ipeds_hd, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @ipeds_hds = IpedsHd.paginate(:page => params[:page])
+    @ipeds_hds = IpedsHd.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class IpedsHdsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class IpedsHdsController < ApplicationController
   #############################################################################
   def new
     @ipeds_hd = IpedsHd.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class IpedsHdsController < ApplicationController
 
     respond_to do |format|
       if @ipeds_hd.persisted?
-        format.html { redirect_to @ipeds_hd, notice: "#{@ipeds_hd.cross} created."}
+        format.html { redirect_to @ipeds_hd, notice: "#{@ipeds_hd.cross} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @ipeds_hd.errors.full_messages
         flash.alert = IpedsHdsController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class IpedsHdsController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class IpedsHdsController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @ipeds_hd, notice: "#{@ipeds_hd.cross} updated."}
+        format.html { redirect_to @ipeds_hd, notice: "#{@ipeds_hd.cross} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @ipeds_hd.errors.full_messages
         flash.alert = IpedsHdsController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class IpedsHdsController < ApplicationController
     @ipeds_hd.destroy
 
     respond_to do |format|
-      format.html { redirect_to ipeds_hds_url, 
-          notice: "#{@ipeds_hd.cross} was successfully destroyed." }
+      format.html do
+        redirect_to ipeds_hds_url,
+                    notice: "#{@ipeds_hd.cross} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_ipeds_hd
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_ipeds_hd
     @ipeds_hd = IpedsHd.find(params[:id])
   end
@@ -101,11 +103,10 @@ class IpedsHdsController < ApplicationController
   #############################################################################
   ## ipeds_hd_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def ipeds_hd_params
     params.require(:ipeds_hd).permit(
       :cross, :vet_tuition_policy_url
     )
   end
 end
-

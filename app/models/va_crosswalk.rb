@@ -8,12 +8,12 @@
 ## USE_COLUMNS hold those columns that get copied to the DataCsv table during
 ## the build process.
 ###############################################################################
-class VaCrosswalk < ActiveRecord::Base  
+class VaCrosswalk < ActiveRecord::Base
   include Standardizable
-  
+
   validates :facility_code, presence: true, uniqueness: true
 
-  USE_COLUMNS = [:ope, :cross, :ope6]
+  USE_COLUMNS = [:ope, :cross, :ope6].freeze
 
   override_setters :ope, :cross, :ope6, :institution, :facility_code
 end

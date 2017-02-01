@@ -1,14 +1,14 @@
 class ComplaintsController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_complaint, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @complaints = Complaint.paginate(:page => params[:page])
+    @complaints = Complaint.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class ComplaintsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class ComplaintsController < ApplicationController
   #############################################################################
   def new
     @complaint = Complaint.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class ComplaintsController < ApplicationController
 
     respond_to do |format|
       if @complaint.persisted?
-        format.html { redirect_to @complaint, notice: "#{@complaint.institution} created."}
+        format.html { redirect_to @complaint, notice: "#{@complaint.institution} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @complaint.errors.full_messages
         flash.alert = ComplaintsController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class ComplaintsController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class ComplaintsController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @complaint, notice: "#{@complaint.institution} updated."}
+        format.html { redirect_to @complaint, notice: "#{@complaint.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @complaint.errors.full_messages
         flash.alert = ComplaintsController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class ComplaintsController < ApplicationController
     @complaint.destroy
 
     respond_to do |format|
-      format.html { redirect_to complaints_url, 
-          notice: "#{@complaint.institution} was successfully destroyed." }
+      format.html do
+        redirect_to complaints_url,
+                    notice: "#{@complaint.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_complaint
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_complaint
     @complaint = Complaint.find(params[:id])
   end
@@ -101,7 +103,7 @@ class ComplaintsController < ApplicationController
   #############################################################################
   ## complaint_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def complaint_params
     params.require(:complaint).permit(
       :facility_code, :ope, :institution, :status,

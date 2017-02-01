@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :outcome do
-    sequence :facility_code do |n| n.to_s(32).rjust(8, "0") end
+    sequence(:facility_code) { |n| n.to_s(32).rjust(8, '0') }
     institution { Faker::University.name }
 
     retention_rate_veteran_ba { Faker::Number.decimal(0) }

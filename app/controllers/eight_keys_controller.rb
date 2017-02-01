@@ -1,14 +1,14 @@
 class EightKeysController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_eight_key, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @eight_keys = EightKey.paginate(:page => params[:page])
+    @eight_keys = EightKey.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class EightKeysController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class EightKeysController < ApplicationController
   #############################################################################
   def new
     @eight_key = EightKey.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class EightKeysController < ApplicationController
 
     respond_to do |format|
       if @eight_key.persisted?
-        format.html { redirect_to @eight_key, notice: "#{@eight_key.institution} created."}
+        format.html { redirect_to @eight_key, notice: "#{@eight_key.institution} created." }
       else
-        label = "Errors eight_key this file from being saved:"
+        label = 'Errors eight_key this file from being saved:'
         errors = @eight_key.errors.full_messages
         flash.alert = EightKeysController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class EightKeysController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class EightKeysController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @eight_key, notice: "#{@eight_key.institution} updated."}
+        format.html { redirect_to @eight_key, notice: "#{@eight_key.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @eight_key.errors.full_messages
         flash.alert = EightKeysController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class EightKeysController < ApplicationController
     @eight_key.destroy
 
     respond_to do |format|
-      format.html { redirect_to eight_keys_url, 
-          notice: "#{@eight_key.institution} was successfully destroyed." }
+      format.html do
+        redirect_to eight_keys_url,
+                    notice: "#{@eight_key.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_eight_key
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_eight_key
     @eight_key = EightKey.find(params[:id])
   end
@@ -101,7 +103,7 @@ class EightKeysController < ApplicationController
   #############################################################################
   ## eight_key_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def eight_key_params
     params.require(:eight_key).permit(
       :institution, :ope, :cross

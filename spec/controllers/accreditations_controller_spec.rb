@@ -5,12 +5,12 @@ require 'support/devise'
 require 'support/shared_examples_for_authentication'
 
 RSpec.describe AccreditationsController, type: :controller do
-  it_behaves_like "an authenticating controller", :index, "accreditations"
+  it_behaves_like 'an authenticating controller', :index, 'accreditations'
 
   #############################################################################
   ## index
   #############################################################################
-  describe "GET index" do
+  describe 'GET index' do
     login_user
 
     before(:each) do
@@ -20,11 +20,11 @@ RSpec.describe AccreditationsController, type: :controller do
       get :index
     end
 
-    it "populates an array of csvs" do
+    it 'populates an array of csvs' do
       expect(assigns(:accreditations)).to include(@accreditation)
     end
 
-    it "returns http success" do
+    it 'returns http success' do
       expect(response).to have_http_status(:success)
     end
   end
@@ -32,23 +32,23 @@ RSpec.describe AccreditationsController, type: :controller do
   #############################################################################
   ## show
   #############################################################################
-  describe "GET show" do
+  describe 'GET show' do
     login_user
 
     before(:each) do
       @accreditation = create :accreditation
     end
 
-    context "with a valid id" do
-      it "populates a csv_file" do
+    context 'with a valid id' do
+      it 'populates a csv_file' do
         get :show, id: @accreditation.id
         expect(assigns(:accreditation)).to eq(@accreditation)
       end
     end
 
-    context "with a invalid id" do
-      it "raises an error" do
-        expect{ get :show, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
+    context 'with a invalid id' do
+      it 'raises an error' do
+        expect { get :show, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
@@ -56,18 +56,18 @@ RSpec.describe AccreditationsController, type: :controller do
   #############################################################################
   ## new
   #############################################################################
-  describe "GET new" do
+  describe 'GET new' do
     login_user
 
     before(:each) do
       get :new
     end
 
-    it "assigns a blank accreditation record" do
+    it 'assigns a blank accreditation record' do
       expect(assigns(:accreditation)).to be_a_new(Accreditation)
     end
 
-    it "returns http success" do
+    it 'returns http success' do
       expect(response).to have_http_status(:success)
     end
   end
@@ -75,39 +75,39 @@ RSpec.describe AccreditationsController, type: :controller do
   #############################################################################
   ## create
   #############################################################################
-  describe "POST create" do
+  describe 'POST create' do
     login_user
-    
-    context "having valid form input" do
+
+    context 'having valid form input' do
       before(:each) do
         @accreditation = attributes_for :accreditation
       end
 
-      it "creates an accreditation entry" do
+      it 'creates an accreditation entry' do
         institution_name = @accreditation[:institution_name]
-        
-        expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(1)
+
+        expect { post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(1)
         expect(Accreditation.find_by(institution_name: institution_name)).not_to be_nil
-      end 
+      end
     end
 
-    context "having invalid form input" do
-      context "with no agency_name" do
+    context 'having invalid form input' do
+      context 'with no agency_name' do
         before(:each) do
           @accreditation = attributes_for :accreditation, agency_name: nil
-          end
-
-        it "does not create a new csv file" do
-          expect{ post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(0)
         end
-      end  
+
+        it 'does not create a new csv file' do
+          expect { post :create, accreditation: @accreditation }.to change(Accreditation, :count).by(0)
+        end
+      end
     end
   end
 
   #############################################################################
   ## edit
   #############################################################################
-  describe "GET edit" do
+  describe 'GET edit' do
     login_user
 
     before(:each) do
@@ -115,19 +115,19 @@ RSpec.describe AccreditationsController, type: :controller do
       get :edit, id: @accreditation.id
     end
 
-    context "with a valid id" do
-      it "assigns an accreditation record" do
+    context 'with a valid id' do
+      it 'assigns an accreditation record' do
         expect(assigns(:accreditation)).to eq(@accreditation)
       end
 
-      it "returns http success" do
+      it 'returns http success' do
         expect(response).to have_http_status(:success)
       end
     end
 
-    context "with an invalid id" do
-      it "with an invalid id it raises an error" do
-        expect{ get :edit, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
+    context 'with an invalid id' do
+      it 'with an invalid id it raises an error' do
+        expect { get :edit, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
@@ -135,101 +135,101 @@ RSpec.describe AccreditationsController, type: :controller do
   #############################################################################
   ## update
   #############################################################################
-  describe "PUT update" do
+  describe 'PUT update' do
     login_user
-    
-    context "having valid form input" do
+
+    context 'having valid form input' do
       before(:each) do
         @accreditation = create :accreditation
 
         @accreditation_attributes = @accreditation.attributes
-        @accreditation_attributes.delete("id")
-        @accreditation_attributes.delete("updated_at")
-        @accreditation_attributes.delete("created_at")
-        @accreditation_attributes["campus_name"] += "x"
+        @accreditation_attributes.delete('id')
+        @accreditation_attributes.delete('updated_at')
+        @accreditation_attributes.delete('created_at')
+        @accreditation_attributes['campus_name'] += 'x'
       end
 
-      it "assigns the accreditation record" do
+      it 'assigns the accreditation record' do
         put :update, id: @accreditation.id, accreditation: @accreditation_attributes
         expect(assigns(:accreditation)).to eq(@accreditation)
       end
 
-      it "updates an accreditation entry" do
-        expect{ 
-          put :update, id: @accreditation.id, accreditation: @accreditation_attributes 
-        }.to change(Accreditation, :count).by(0)
+      it 'updates an accreditation entry' do
+        expect do
+          put :update, id: @accreditation.id, accreditation: @accreditation_attributes
+        end.to change(Accreditation, :count).by(0)
 
         new_accreditation = Accreditation.find(@accreditation.id)
         expect(new_accreditation.campus_name).not_to eq(@accreditation.campus_name)
         expect(new_accreditation.updated_at).not_to eq(@accreditation.created_at)
-      end 
+      end
     end
 
-    context "having invalid form input" do
-      context "with an invalid id" do
+    context 'having invalid form input' do
+      context 'with an invalid id' do
         before(:each) do
           @accreditation = create :accreditation
 
           @accreditation_attributes = @accreditation.attributes
 
-          @accreditation_attributes.delete("id")
-          @accreditation_attributes.delete("updated_at")
-          @accreditation_attributes.delete("created_at")
+          @accreditation_attributes.delete('id')
+          @accreditation_attributes.delete('updated_at')
+          @accreditation_attributes.delete('created_at')
         end
 
-        it "with an invalid id it raises an error" do
-          expect{ 
-            put :update, id: 0, accreditation: @accreditation 
-          }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'with an invalid id it raises an error' do
+          expect do
+            put :update, id: 0, accreditation: @accreditation
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
-      context "with no agency_name" do
+      context 'with no agency_name' do
         before(:each) do
           @accreditation = create :accreditation
 
           @accreditation_attributes = @accreditation.attributes
 
-          @accreditation_attributes.delete("id")
-          @accreditation_attributes.delete("updated_at")
-          @accreditation_attributes.delete("created_at")
-          @accreditation_attributes["agency_name"] = nil
+          @accreditation_attributes.delete('id')
+          @accreditation_attributes.delete('updated_at')
+          @accreditation_attributes.delete('created_at')
+          @accreditation_attributes['agency_name'] = nil
         end
 
-        it "does not update a accreditation entry" do
-          put :update, id: @accreditation.id, accreditation: @accreditation_attributes 
+        it 'does not update a accreditation entry' do
+          put :update, id: @accreditation.id, accreditation: @accreditation_attributes
 
           new_accreditation = Accreditation.find(@accreditation.id)
           expect(new_accreditation.agency_name).to eq(@accreditation.agency_name)
         end
-      end   
+      end
     end
   end
 
   #############################################################################
   ## destroy
   #############################################################################
-  describe "DELETE destroy" do
+  describe 'DELETE destroy' do
     login_user
 
     before(:each) do
       @accreditation = create :accreditation
     end
 
-    context "with a valid id" do
-      it "deletes a csv_file" do
+    context 'with a valid id' do
+      it 'deletes a csv_file' do
         delete :destroy, id: @accreditation.id
         expect(assigns(:accreditation)).to eq(@accreditation)
       end
 
-      it "deletes a accreditation record" do
-        expect{ delete :destroy, id: @accreditation.id }.to change(Accreditation, :count).by(-1)
+      it 'deletes a accreditation record' do
+        expect { delete :destroy, id: @accreditation.id }.to change(Accreditation, :count).by(-1)
       end
     end
 
-    context "with an invalid id" do
-      it "raises an error" do
-        expect{ delete :destroy, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
+    context 'with an invalid id' do
+      it 'raises an error' do
+        expect { delete :destroy, id: 0 }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

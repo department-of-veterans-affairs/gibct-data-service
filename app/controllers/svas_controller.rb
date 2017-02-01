@@ -1,14 +1,14 @@
 class SvasController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_sva, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @svas = Sva.paginate(:page => params[:page])
+    @svas = Sva.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class SvasController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class SvasController < ApplicationController
   #############################################################################
   def new
     @sva = Sva.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -38,9 +38,9 @@ class SvasController < ApplicationController
     @sva = Sva.create(sva_params)
     respond_to do |format|
       if @sva.persisted?
-        format.html { redirect_to @sva, notice: "#{@sva.institution} created."}
+        format.html { redirect_to @sva, notice: "#{@sva.institution} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @sva.errors.full_messages
         flash.alert = SvasController.pretty_error(label, errors).html_safe
 
@@ -55,7 +55,7 @@ class SvasController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -66,9 +66,9 @@ class SvasController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @sva, notice: "#{@sva.institution} updated."}
+        format.html { redirect_to @sva, notice: "#{@sva.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @sva.errors.full_messages
         flash.alert = SvasController.pretty_error(label, errors).html_safe
 
@@ -84,15 +84,17 @@ class SvasController < ApplicationController
     @sva.destroy
 
     respond_to do |format|
-      format.html { redirect_to svas_url, 
-          notice: "#{@sva.institution} was successfully destroyed." }
+      format.html do
+        redirect_to svas_url,
+                    notice: "#{@sva.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_sva
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_sva
     @sva = Sva.find(params[:id])
   end
@@ -100,7 +102,7 @@ class SvasController < ApplicationController
   #############################################################################
   ## sva_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def sva_params
     params.require(:sva).permit(
       :institution, :cross, :student_veteran_link
