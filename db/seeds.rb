@@ -1,8 +1,7 @@
-puts "Destroy previous users ... "
+puts 'Destroy previous users ... '
 User.destroy_all
 
-puts "Add new users ... "
-User.create(email: 'marc@va.gov', password: 'marcmarc')
-User.create(email: 'rick@va.gov', password: 'rickrick')
+puts 'Add new users ... '
+User.create(email: ENV['ADMIN_EMAIL'], password: ENV['ADMIN_PW'])
 
 puts "Done ... Woo Hoo!"

@@ -1,12 +1,5 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-2.3.0
-#ruby-gemset=ingest
-
-# For heroku staging
-ruby "2.3.0"
-gem 'rails_12factor', '~> 0.0.3', group: :production
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
 
@@ -39,20 +32,29 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
 gem 'activerecord-session_store', '~> 1.0'
 
+# Mass importing of CSV data
+gem 'activerecord-import'
+gem 'smarter_csv'
+
 # Pagination
-gem 'will_paginate', '~> 3.1'
+gem 'will_paginate'
+
+# Provides country/state support
+# gem 'carmen'
 
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '3.2.0'
+gem "puma", "~> 3.6"
+gem 'figaro'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'pry-rails'
 
   # Linters
-  gem 'rubocop', '~> 0.36.0', require: false
+  gem 'rubocop', '~> 0.46.0'
   gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
 

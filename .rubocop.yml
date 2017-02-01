@@ -8,18 +8,31 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'bin/**/*'
+    - 'Gemfile'
+    - 'log/**/*'
 
-Style/StringLiterals:
-  EnforcedStyle: double_quotes
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 20
 
 Style/Documentation:
   Enabled: false
 
-Metrics/LineLength:
-  Max: 100
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
 
 Rails:
   Enabled: true
+
+Rails/HttpPositionalArguments:
+  Enabled: false
 
 Rails/Output:
   Exclude:
