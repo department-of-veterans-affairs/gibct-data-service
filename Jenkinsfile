@@ -24,7 +24,7 @@ pipeline {
 
     stage('Audit') {
       steps {
-        sh 'bash --login -c "bundle exec rake security lint ci"'
+        sh 'bash --login -c "bundle exec rake ci"'
       }
     }
 
