@@ -15,7 +15,7 @@ module V0
     # GET /v0/institutions?name=duluth&x=y
     def index
       downcase_search_query_params!
-      render json: search_results.order(:institution).page(params[:page]),
+      render json: search_results.page(params[:page]).per_page(page_size),
              meta: { version: params[:version] }
     end
 
@@ -42,6 +42,11 @@ module V0
       params[:name].try(:strip!)
     end
 
+    def page_size
+      page_size = params[:per_page].to_i
+      page_size > 0 ? page_size : Institution.per_page
+    end
+
     # rubocop:disable AbcSize
     def search_results
       Institution.version(params[:version])
@@ -54,6 +59,7 @@ module V0
                  .filter(:yr, params[:yellow_ribbon_scholarship]) # boolean
                  .filter(:poe, params[:principles_of_excellence]) # boolean
                  .filter(:eight_keys, params[:eight_keys_to_veteran_success]) # boolean
+                 .order(:institution)
     end
     # rubocop:enable AbcSize
   end
