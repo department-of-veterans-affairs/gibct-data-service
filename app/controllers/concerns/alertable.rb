@@ -4,17 +4,17 @@ module Alertable
   included do
   end
 
-  class_methods do 
+  class_methods do
     ###########################################################################
     ## pretty_error
     ## Wraps an array of messages (presumably errors) in a list.
     ###########################################################################
-    def pretty_error(label = "", errors = [])
-      msg = errors.inject("<ul>") do |m, error|
-        m += "<li>#{error}</li>"
-      end + "</ul>"
+    def pretty_error(label = '', errors = [])
+      msg = errors.inject('<ul>') do |m, error|
+        m + "<li>#{error}</li>"
+      end + '</ul>'
 
-      pstr = ""
+      pstr = ''
       pstr += "<p>#{label}</p>" if label.present?
       pstr += msg if errors.present?
 
@@ -32,10 +32,10 @@ module Alertable
         csv = csv.to_s
 
         name = csv.underscore.split('_').map(&:capitalize)
-          .join(' ').gsub(/csv file/i, '').strip
+                  .join(' ').gsub(/csv file/i, '').strip
 
         [name, csv]
       end
-    end    
+    end
   end
 end

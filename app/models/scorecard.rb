@@ -30,27 +30,30 @@ class Scorecard < ActiveRecord::Base
     :retention_all_students_ba, :retention_all_students_otb,
     :graduation_rate_all_students, :transfer_out_rate_all_students,
     :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt
-  ]
+  ].freeze
 
   override_setters :cross, :ope, :ope6, :institution, :insturl,
-    :pred_degree_awarded, :locale, :undergrad_enrollment, 
-    :retention_all_students_ba, :retention_all_students_otb,
-    :graduation_rate_all_students, :transfer_out_rate_all_students, 
-    :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
-    :c150_4_pooled_supp, :c150_l4_pooled_supp
+                   :pred_degree_awarded, :locale, :undergrad_enrollment,
+                   :retention_all_students_ba, :retention_all_students_otb,
+                   :graduation_rate_all_students, :transfer_out_rate_all_students,
+                   :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
+                   :c150_4_pooled_supp, :c150_l4_pooled_supp
 
   #############################################################################
   ## to_graduation_rate_all_students
   ## Selects the proper graduation data data based on a field precedence.
   #############################################################################
   def to_graduation_rate_all_students
-    c150_4_pooled_supp.present? ? c150_4_pooled_supp : 
-      c150_l4_pooled_supp.present? ? c150_l4_pooled_supp : nil
+    if c150_4_pooled_supp.present?
+      c150_4_pooled_supp
+    elsif c150_l4_pooled_supp.present?
+      c150_l4_pooled_supp
+    end
   end
 
   #############################################################################
   ## set_derived_fields=
-  ## Computes the values of derived fields just prior to saving. Note that 
+  ## Computes the values of derived fields just prior to saving. Note that
   ## any fields here cannot be part of validations.
   #############################################################################
   def set_derived_fields

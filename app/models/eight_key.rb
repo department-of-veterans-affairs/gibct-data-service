@@ -3,9 +3,9 @@
 ## Contains the 8 Keys for Vet Success for an institution.
 ###############################################################################
 class EightKey < ActiveRecord::Base
- include Standardizable
+  include Standardizable
 
-  USE_COLUMNS = []
+  USE_COLUMNS = [].freeze
 
   override_setters :institution, :cross, :ope, :ope6
 end

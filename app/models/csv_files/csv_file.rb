@@ -1,27 +1,27 @@
-require "csv"
+require 'csv'
 
 ###############################################################################
 ## CsvFile
-## Base class for the CSV File hierarchy. This is where all the CSVs are 
-## uploaded and stored as raw data, as well as converted to an intermediate 
-## form to be merged with other such data into the DataCsv table. 
+## Base class for the CSV File hierarchy. This is where all the CSVs are
+## uploaded and stored as raw data, as well as converted to an intermediate
+## form to be merged with other such data into the DataCsv table.
 ##
 ## The STI Hash maps the CsvFile class hierarchy to their respective
 ## intermediate data tables. These tables are then collated and merged when
 ## building the DataCsv table.
-## 
-## The DELIMITERS array represents allowable CSV delimiters for all CSVs, and 
+##
+## The DELIMITERS array represents allowable CSV delimiters for all CSVs, and
 ## will most likely be deprecated in future versions.
 ##
-## The ENCODING_OPTIONS hash are those parameters that define the ingestion 
+## The ENCODING_OPTIONS hash are those parameters that define the ingestion
 ## from CSV to data specifying how to map non-translatable characters in the
 ## CSV.
-############################################################################### 
+###############################################################################
 class CsvFile < ActiveRecord::Base
   attr_accessor :upload
 
   # Required for validation, and lists all allowed derived csv file tables.
-  STI = { 
+  STI = {
     'AccreditationCsvFile' => Accreditation,
     'ArfGibillCsvFile' => ArfGibill,
     'ComplaintCsvFile' => Complaint,
@@ -42,18 +42,18 @@ class CsvFile < ActiveRecord::Base
     'SvaCsvFile' => Sva,
     'VaCrosswalkCsvFile' => VaCrosswalk,
     'VsocCsvFile' => Vsoc,
-    'WeamsCsvFile' => Weam 
-  }
+    'WeamsCsvFile' => Weam
+  }.freeze
 
-  DELIMITERS = [',', '|', ' ']
+  DELIMITERS = [',', '|', ' '].freeze
   ENCODING_OPTIONS = {
     invalid: :replace,
     undef: :replace,
     replace: '',
     universal_newline: true
-  }
+  }.freeze
 
-  validates :type, inclusion: { in: STI.keys  }
+  validates :type, inclusion: { in: STI.keys }
 
   before_save :set_name, :upload_file, :populate
   before_destroy :clear_data
@@ -62,8 +62,8 @@ class CsvFile < ActiveRecord::Base
   ## last_upload_date
   ## Gets the date on which the last file was uploaded
   #############################################################################
-  scope :last_upload_date, -> { 
-    maximum(:upload_date).in_time_zone('Eastern Time (US & Canada)') 
+  scope :last_upload_date, lambda {
+    maximum(:upload_date).in_time_zone('Eastern Time (US & Canada)')
   }
 
   #############################################################################
@@ -77,8 +77,8 @@ class CsvFile < ActiveRecord::Base
   ## Patch for ActionPack in url generating methods that use AR instances.
   ## For example, form_for @some_record. This method overrides the model_name
   ## method for subclasses to return the base class (CsvFile) name so that
-  ## only one controller is required to handle all STI, so that form_for, 
-  ## link_to, and so on all refer tho the RawFile controller, regardless of 
+  ## only one controller is required to handle all STI, so that form_for,
+  ## link_to, and so on all refer tho the RawFile controller, regardless of
   ## subtype ... (mph)
   #############################################################################
   def self.inherited(child)
@@ -88,7 +88,7 @@ class CsvFile < ActiveRecord::Base
       end
     end
 
-    super 
+    super
   end
 
   #############################################################################
@@ -105,7 +105,9 @@ class CsvFile < ActiveRecord::Base
   #############################################################################
   def clear_data
     if latest?
-      if store = CsvStorage.find_by(csv_file_type: type)
+      store = CsvStorage.find_by(csv_file_type: type)
+
+      if store
         store.data_store = nil
         store.save!
       end
@@ -123,14 +125,14 @@ class CsvFile < ActiveRecord::Base
   def set_name
     self.upload_date = DateTime.current
 
-    self.name = upload_date.strftime("%y%m%d%H%M%S%L")
+    self.name = upload_date.strftime('%y%m%d%H%M%S%L')
     self.name += "_#{class_to_type}.csv"
   end
 
   #############################################################################
   ## upload_file
   ## Uploads the given file into the storage data binary.
-  #############################################################################  
+  #############################################################################
   def upload_file
     store = CsvStorage.find_or_create_by(csv_file_type: type)
 
@@ -139,18 +141,18 @@ class CsvFile < ActiveRecord::Base
 
     begin
       # Require an upload file, doesn't make sense to allow updates without.
-      raise StandardError.new("No upload file provided.") if upload.blank?
+      fail StandardError.new('No upload file provided.') if upload.blank?
 
       store.data_store = upload.read.gsub!(/\r\n?/, "\n")
-      rc = store.save 
+      rc = store.save
     rescue StandardError => e
       errors[:base] << e.message
       rc = false
     ensure
-      ActiveRecord::Base.logger = old_logger      
+      ActiveRecord::Base.logger = old_logger
     end
 
-    return rc
+    rc
   end
 
   #############################################################################
@@ -158,7 +160,7 @@ class CsvFile < ActiveRecord::Base
   ## Removes nasty non utf binary stuff.
   #############################################################################
   def clean_line(l)
-    l.encode(Encoding.find('ASCII'), ENCODING_OPTIONS).gsub(/\n\r"/, "") if l.present?
+    l.encode(Encoding.find('ASCII'), ENCODING_OPTIONS).gsub(/\n\r"/, '') if l.present?
   end
 
   #############################################################################
@@ -175,8 +177,8 @@ class CsvFile < ActiveRecord::Base
     # Headers must contain at least the HEADER_MAP. Subtracting Array A from
     # B = all elements in A not in B. This should be empty.
     missing_headers = header_map.keys - headers
-    if (missing_headers).present?
-      raise StandardError.new("Missing headers in #{name}: #{missing_headers.inspect}") 
+    if missing_headers.present?
+      fail StandardError.new("Missing headers in #{name}: #{missing_headers.inspect}")
     end
 
     headers
@@ -194,7 +196,7 @@ class CsvFile < ActiveRecord::Base
     header_map = self.class::HEADER_MAP
     disallowed_chars = self.class::DISALLOWED_CHARS
 
-     # Map the header indexes to the values we need
+    # Map the header indexes to the values we need
     header_map.keys.inject({}) do |hash, header|
       i = headers.find_index(header)
 
@@ -202,7 +204,7 @@ class CsvFile < ActiveRecord::Base
 
       # Get the value, strip out bad chars, and normalize common values
       if values.present?
-        hash[key] = (values[i] || "").gsub(disallowed_chars, "").strip
+        hash[key] = (values[i] || '').gsub(disallowed_chars, '').strip
       end
 
       hash
@@ -211,7 +213,7 @@ class CsvFile < ActiveRecord::Base
 
   #############################################################################
   ## write_data
-  ## Reads the associated csv data store and writes those lines to the 
+  ## Reads the associated csv data store and writes those lines to the
   ## intermediate csv file in preparation for building the database.
   #############################################################################
   def write_data
@@ -227,14 +229,14 @@ class CsvFile < ActiveRecord::Base
     row = nil
     line = nil
     row_number = 1 + self.class::SKIP_LINES_BEFORE_HEADER +
-      self.class::SKIP_LINES_AFTER_HEADER
+                 self.class::SKIP_LINES_AFTER_HEADER
 
     begin
       ActiveRecord::Base.transaction do
         lines.each do |l|
           row_number += 1
 
-          line = clean_line(l) || ""
+          line = clean_line(l) || ''
           row = get_row(line, headers)
 
           # Allow a block, if given to determine if row is created
@@ -254,8 +256,8 @@ class CsvFile < ActiveRecord::Base
   ## True if this instance is the last uploaded for its type.
   #############################################################################
   def latest?
-    str1 = upload_date.strftime("%y%m%d%H%M%S%6N")
-    str2 = self.class.last_upload_date.strftime("%y%m%d%H%M%S%6N")
+    str1 = upload_date.strftime('%y%m%d%H%M%S%6N')
+    str2 = self.class.last_upload_date.strftime('%y%m%d%H%M%S%6N')
     str1 == str2
   end
 
@@ -264,7 +266,7 @@ class CsvFile < ActiveRecord::Base
   ## Returns a readable form of the upload date.
   #############################################################################
   def humanize_date
-    upload_date.present? ? upload_date.strftime("%B %d, %Y") : '-'
+    upload_date.present? ? upload_date.strftime('%B %d, %Y') : '-'
   end
 
   #############################################################################
@@ -272,7 +274,7 @@ class CsvFile < ActiveRecord::Base
   ## Returns a readable form of the class type.
   #############################################################################
   def humanize_type
-    class_to_type.split("_")
-      .map(&:capitalize).join(" ").gsub(/csv file/i, '').strip
+    class_to_type.split('_')
+                 .map(&:capitalize).join(' ').gsub(/csv file/i, '').strip
   end
 end

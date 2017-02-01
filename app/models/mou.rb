@@ -1,7 +1,7 @@
 ###############################################################################
 ## Mou
 ## The DOD's Memorandum of Understanding data. Any institution included in the
-## file whose Status is either probation or title IV non-compliance will 
+## file whose Status is either probation or title IV non-compliance will
 ## will be indicated in this file.
 ##
 ## USE_COLUMNS hold those columns that get copied to the DataCsv table during
@@ -9,13 +9,13 @@
 ###############################################################################
 class Mou < ActiveRecord::Base
   include Standardizable
-  
+
   validates :ope, presence: true
 
   before_save :set_derived_fields
 
-  STATUSES = ["probation - dod", "title iv non-compliant"]
-  USE_COLUMNS = [:dodmou]
+  STATUSES = ['probation - dod', 'title iv non-compliant'].freeze
+  USE_COLUMNS = [:dodmou].freeze
 
   override_setters :ope, :ope6, :institution, :status, :dodmou, :dod_status
 
@@ -37,13 +37,13 @@ class Mou < ActiveRecord::Base
 
   #############################################################################
   ## set_derived_fields=
-  ## Computes the values of derived fields just prior to saving. Note that 
+  ## Computes the values of derived fields just prior to saving. Note that
   ## any fields here cannot be part of validations.
   #############################################################################
   def set_derived_fields
     self.dodmou = to_dodmou
     self.dod_status = to_dod_status
-    
+
     true
   end
 end

@@ -1,14 +1,14 @@
 class SettlementsController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_settlement, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @settlements = Settlement.paginate(:page => params[:page])
+    @settlements = Settlement.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class SettlementsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class SettlementsController < ApplicationController
   #############################################################################
   def new
     @settlement = Settlement.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class SettlementsController < ApplicationController
 
     respond_to do |format|
       if @settlement.persisted?
-        format.html { redirect_to @settlement, notice: "#{@settlement.institution} created."}
+        format.html { redirect_to @settlement, notice: "#{@settlement.institution} created." }
       else
-        label = "Errors settlement this file from being saved:"
+        label = 'Errors settlement this file from being saved:'
         errors = @settlement.errors.full_messages
         flash.alert = SettlementsController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class SettlementsController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class SettlementsController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @settlement, notice: "#{@settlement.institution} updated."}
+        format.html { redirect_to @settlement, notice: "#{@settlement.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @settlement.errors.full_messages
         flash.alert = SettlementsController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class SettlementsController < ApplicationController
     @settlement.destroy
 
     respond_to do |format|
-      format.html { redirect_to settlements_url, 
-          notice: "#{@settlement.institution} was successfully destroyed." }
+      format.html do
+        redirect_to settlements_url,
+                    notice: "#{@settlement.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_settlement
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_settlement
     @settlement = Settlement.find(params[:id])
   end
@@ -101,7 +103,7 @@ class SettlementsController < ApplicationController
   #############################################################################
   ## settlement_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def settlement_params
     params.require(:settlement).permit(
       :institution, :cross, :settlement_description

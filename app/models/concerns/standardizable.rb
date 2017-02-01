@@ -17,7 +17,7 @@ module Standardizable
     ## null values, but for some reason are included in the soruce CSV.
     ###########################################################################
     def forbidden_word?(v)
-      ['none', 'null', 'privacysuppressed'].include?(v.try(:downcase))
+      %w(none null privacysuppressed).include?(v.try(:downcase))
     end
 
     ###########################################################################
@@ -25,7 +25,7 @@ module Standardizable
     ## Converts string "truths" to boolean truths.
     ###########################################################################
     def truthy?(v)
-      ["true", "t", "yes", "ye", "y", "1", "on"].include?(v.try(:downcase))
+      %w(true t yes ye y 1 on).include?(v.try(:downcase))
     end
 
     ###########################################################################
@@ -41,7 +41,7 @@ module Standardizable
         #######################################################################
         when :facility_code
           define_method(:facility_code=) do |v|
-            write_attribute(:facility_code, v.strip.upcase) if v.present?
+            self[:facility_code] = v.strip.upcase if v.present?
           end
 
         #######################################################################
@@ -51,7 +51,7 @@ module Standardizable
           define_method(:institution=) do |v|
             if v.present?
               v = v.to_s.gsub("'", "''").strip.try(:upcase)
-              write_attribute(:institution, v)
+              self[:institution] = v
             end
           end
 
@@ -61,7 +61,7 @@ module Standardizable
         when :ope6
           define_method(:ope6=) do |v|
             if v.present? && !self.class.forbidden_word?(v.downcase)
-              write_attribute(:ope6, self.class.pad(v.strip, 8)[1, 5])
+              self[:ope6] = self.class.pad(v.strip, 8)[1, 5]
             end
           end
 
@@ -73,7 +73,7 @@ module Standardizable
             v = v.try(:strip).try(:upcase) if v.is_a?(String)
             v = nil if self.class.forbidden_word?(v)
 
-            write_attribute(:ope, self.class.pad(v, 8))
+            self[:ope] = self.class.pad(v, 8)
             self.ope6 = ope
           end
 
@@ -82,29 +82,29 @@ module Standardizable
         #######################################################################
         when :state
           define_method(:state=) do |v|
-            write_attribute(:state, DS::State.get_abbr(v.strip)) if v.present?
+            self[:state] = DS::State.get_abbr(v.strip) if v.present?
           end
 
         #######################################################################
         ## miscellaneous
         #######################################################################
         else
-          define_method("#{setter.to_s}=".to_sym) do |v|
-            col = self.class.columns.find { |col| col.name == setter.to_s }
+          define_method("#{setter}=".to_sym) do |v|
+            col = self.class.columns.find { |c| c.name == setter.to_s }
 
             if v.is_a?(String)
               v = v.try(:strip)
               v = nil if self.class.forbidden_word?(v) || v.blank?
-              v = v.to_s.gsub("'", "''") if !v.nil?
+              v = v.to_s.gsub("'", "''") unless v.nil?
             end
 
-            if col.try(:sql_type) == "boolean"
-              if !v.nil?
+            if col.try(:sql_type) == 'boolean'
+              unless v.nil?
                 v = self.class.truthy?(v) if v.is_a?(String)
-                write_attribute(setter, v)
+                self[setter] = v
               end
             else
-              write_attribute(setter, v)
+              self[setter] = v
             end
           end
         end
@@ -117,7 +117,7 @@ module Standardizable
     ###########################################################################
     def fields
       column_names.map(&:to_sym)
-        .reject { |c| [:id, :created_at, :updated_at].include? c }
+                  .reject { |c| [:id, :created_at, :updated_at].include? c }
     end
 
     ###########################################################################
@@ -125,7 +125,7 @@ module Standardizable
     ## Right-justifies text v in a field padded by l characters c.
     ###########################################################################
     def pad(v, l, c = '0')
-      v.rjust(l, c)  if v.present? && v.class == String && v.downcase != 'none'
+      v.rjust(l, c) if v.present? && v.class == String && v.downcase != 'none'
     end
 
     ###########################################################################
@@ -137,9 +137,9 @@ module Standardizable
       return false if value.blank? || pattern.blank?
 
       if pattern.is_a?(String)
-        m = (value =~ Regexp.new(pattern, true)) != nil
+        !(value =~ Regexp.new(pattern, true)).nil?
       elsif pattern.is_a?(Regexp)
-        m = (value =~ pattern) != nil
+        !(value =~ pattern).nil?
       end
     end
   end

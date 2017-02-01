@@ -1,23 +1,23 @@
 class WeamsController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_weam, only: [:show, :edit, :destroy, :update]
 
-	#############################################################################
+  #############################################################################
   ## index
   #############################################################################
   def index
-		@weams = Weam.paginate(:page => params[:page])
-	end
+    @weams = Weam.paginate(page: params[:page])
+  end
 
-	#############################################################################
+  #############################################################################
   ## show
   #############################################################################
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class WeamsController < ApplicationController
   #############################################################################
   def new
     @weam = Weam.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class WeamsController < ApplicationController
 
     respond_to do |format|
       if @weam.persisted?
-        format.html { redirect_to @weam, notice: "#{@weam.institution} created."}
+        format.html { redirect_to @weam, notice: "#{@weam.institution} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @weam.errors.full_messages
         flash.alert = WeamsController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class WeamsController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class WeamsController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @weam, notice: "#{@weam.institution} updated."}
+        format.html { redirect_to @weam, notice: "#{@weam.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @weam.errors.full_messages
         flash.alert = WeamsController.pretty_error(label, errors).html_safe
 
@@ -85,29 +85,31 @@ class WeamsController < ApplicationController
     @weam.destroy
 
     respond_to do |format|
-      format.html { redirect_to weams_url, 
-          notice: "#{@weam.institution} was successfully destroyed." }
+      format.html do
+        redirect_to weams_url,
+                    notice: "#{@weam.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_weam
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_weam
-  	@weam = Weam.find(params[:id])
+    @weam = Weam.find(params[:id])
   end
 
   #############################################################################
   ## weam_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def weam_params
     params.require(:weam).permit(
-    	:facility_code, :institution, :type, :city, :state, :zip, :country, :bah,
-    	:accredited, :poe, :yr, :poo_status, :applicable_law_codes, 
-      :institution_of_higher_learning_indicator, :ojt_indicator, 
-      :correspondence_indicator, :flight_indicator, 
+      :facility_code, :institution, :type, :city, :state, :zip, :country, :bah,
+      :accredited, :poe, :yr, :poo_status, :applicable_law_codes,
+      :institution_of_higher_learning_indicator, :ojt_indicator,
+      :correspondence_indicator, :flight_indicator,
       :non_college_degree_indicator
     )
   end

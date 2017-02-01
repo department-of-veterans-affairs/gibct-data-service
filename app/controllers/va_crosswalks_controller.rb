@@ -1,14 +1,14 @@
 class VaCrosswalksController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_va_crosswalk, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @va_crosswalks = VaCrosswalk.order(:facility_code).paginate(:page => params[:page])
+    @va_crosswalks = VaCrosswalk.order(:facility_code).paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class VaCrosswalksController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class VaCrosswalksController < ApplicationController
   #############################################################################
   def new
     @va_crosswalk = VaCrosswalk.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class VaCrosswalksController < ApplicationController
 
     respond_to do |format|
       if @va_crosswalk.persisted?
-        format.html { redirect_to @va_crosswalk, notice: "#{@va_crosswalk.institution} created."}
+        format.html { redirect_to @va_crosswalk, notice: "#{@va_crosswalk.institution} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @va_crosswalk.errors.full_messages
         flash.alert = VaCrosswalksController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class VaCrosswalksController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class VaCrosswalksController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @va_crosswalk, notice: "#{@va_crosswalk.institution} updated."}
+        format.html { redirect_to @va_crosswalk, notice: "#{@va_crosswalk.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @va_crosswalk.errors.full_messages
         flash.alert = VaCrosswalksController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class VaCrosswalksController < ApplicationController
     @va_crosswalk.destroy
 
     respond_to do |format|
-      format.html { redirect_to va_crosswalks_url, 
-          notice: "#{@va_crosswalk.institution} was successfully destroyed." }
+      format.html do
+        redirect_to va_crosswalks_url,
+                    notice: "#{@va_crosswalk.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_va_crosswalk
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_va_crosswalk
     @va_crosswalk = VaCrosswalk.find(params[:id])
   end
@@ -101,7 +103,7 @@ class VaCrosswalksController < ApplicationController
   #############################################################################
   ## va_crosswalk_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def va_crosswalk_params
     params.require(:va_crosswalk).permit(
       :facility_code, :institution, :ope, :cross

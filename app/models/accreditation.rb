@@ -3,7 +3,7 @@
 ## Represents accreditations and accreditation bodies. Additionally, caution
 ## flags are derived from some of the data here.
 ##
-## The ACCREDITATIONS hash maps accreditation types (Regional, National, or 
+## The ACCREDITATIONS hash maps accreditation types (Regional, National, or
 ## Hybrid) to substrings in the name of the accrediting body. So, for example,
 ## if the accrediting agency is the "New England Medical Association", then
 ## the accreditation is "Regional".
@@ -21,32 +21,32 @@ class Accreditation < ActiveRecord::Base
   include Standardizable
 
   ACCREDITATIONS = {
-    "REGIONAL" => ["middle", "new england", "north central", "southern", "western"],
-    "NATIONAL" => ["career schools", "continuing education", "independent colleges", 
-      "biblical", "occupational", "distance", "new york", "transnational"],
-    "HYBRID" => ["acupuncture", "nursing", "health education", "liberal", "legal", 
-      "funeral", "osteopathic", "pediatric", "theological", "massage", "radiologic", 
-      "midwifery", "montessori", "career arts", "design", "dance", "music", 
-      "theatre", "chiropractic"]
-  }
+    'REGIONAL' => ['middle', 'new england', 'north central', 'southern', 'western'],
+    'NATIONAL' => ['career schools', 'continuing education', 'independent colleges',
+                   'biblical', 'occupational', 'distance', 'new york', 'transnational'],
+    'HYBRID' => ['acupuncture', 'nursing', 'health education', 'liberal', 'legal',
+                 'funeral', 'osteopathic', 'pediatric', 'theological', 'massage', 'radiologic',
+                 'midwifery', 'montessori', 'career arts', 'design', 'dance', 'music',
+                 'theatre', 'chiropractic']
+  }.freeze
 
-  LAST_ACTIONS = ["resigned", "terminated", "closed by institution", "probation",
-    "show cause", "expired", "no longer recognized", "accredited", 
-    "resigned under show cause", "denied full accreditation", "pre-accredited"
-  ]
+  LAST_ACTIONS = ['resigned', 'terminated', 'closed by institution', 'probation',
+                  'show cause', 'expired', 'no longer recognized', 'accredited',
+                  'resigned under show cause', 'denied full accreditation', 'pre-accredited'
+  ].freeze
 
-  CSV_ACCREDITATION_TYPES = ['INSTITUTIONAL',  'SPECIALIZED', 'INTERNSHIP/RESIDENCY']
+  CSV_ACCREDITATION_TYPES = ['INSTITUTIONAL', 'SPECIALIZED', 'INTERNSHIP/RESIDENCY'].freeze
 
-  USE_COLUMNS = [:accreditation_status, :accreditation_type]
+  USE_COLUMNS = [:accreditation_status, :accreditation_type].freeze
 
   validates :agency_name, presence: true
   validate :inclusion_validator
 
   # C.F., the Standardization module.
   override_setters :institution_name, :campus_name, :institution, :ope, :ope6,
-    :institution_ipeds_unitid, :campus_ipeds_unitid, :cross,
-    :csv_accreditation_type, :accreditation_type, :agency_name, 
-    :accreditation_status, :periods
+                   :institution_ipeds_unitid, :campus_ipeds_unitid, :cross,
+                   :csv_accreditation_type, :accreditation_type, :agency_name,
+                   :accreditation_status, :periods
 
   before_save :set_derived_fields
   before_validation :set_accreditation_type
@@ -58,7 +58,7 @@ class Accreditation < ActiveRecord::Base
   def lowercase_inclusion_validator(attribute, collection, blank_ok = true)
     return if (var = self[attribute]).blank? && blank_ok
 
-    # Case insensitive 
+    # Case insensitive
     pattern = Regexp.new(var, true)
 
     if collection.find { |c| Accreditation.match(pattern, c) }.nil?
@@ -96,7 +96,7 @@ class Accreditation < ActiveRecord::Base
   ## accreditation_type
   ## Gets the accreditation_type (as understood by the GIBCT).
   #############################################################################
-   def set_accreditation_type
+  def set_accreditation_type
     self.accreditation_type = nil
 
     ACCREDITATIONS.keys.each do |key|

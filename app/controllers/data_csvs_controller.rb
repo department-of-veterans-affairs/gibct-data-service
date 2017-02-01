@@ -1,14 +1,14 @@
 class DataCsvsController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_data_csv, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @data_csvs = DataCsv.order(:facility_code, :ope6, :cross).paginate(:page => params[:page])
+    @data_csvs = DataCsv.order(:facility_code, :ope6, :cross).paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class DataCsvsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class DataCsvsController < ApplicationController
   #############################################################################
   def new
     @data_csv = DataCsv.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class DataCsvsController < ApplicationController
 
     respond_to do |format|
       if @data_csv.persisted?
-        format.html { redirect_to @data_csv, notice: "#{@data_csv.institution} created."}
+        format.html { redirect_to @data_csv, notice: "#{@data_csv.institution} created." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @data_csv.errors.full_messages
         flash.alert = DataCsvsController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class DataCsvsController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class DataCsvsController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @data_csv, notice: "#{@data_csv.institution} updated."}
+        format.html { redirect_to @data_csv, notice: "#{@data_csv.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @data_csv.errors.full_messages
         flash.alert = DataCsvsController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class DataCsvsController < ApplicationController
     @data_csv.destroy
 
     respond_to do |format|
-      format.html { redirect_to data_csvs_url, 
-          notice: "#{@data_csv.institution} was successfully destroyed." }
+      format.html do
+        redirect_to data_csvs_url,
+                    notice: "#{@data_csv.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_data_csv
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_data_csv
     @data_csv = DataCsv.find(params[:id])
   end
@@ -101,13 +103,13 @@ class DataCsvsController < ApplicationController
   #############################################################################
   ## data_csv_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def data_csv_params
     params.require(:data_csv).permit(
       :facility_code, :institution, :type, :city, :state, :zip, :country, :bah,
-      :accredited, :poe, :yr, :poo_status, :applicable_law_codes, 
-      :institution_of_higher_learning_indicator, :ojt_indicator, 
-      :correspondence_indicator, :flight_indicator, 
+      :accredited, :poe, :yr, :poo_status, :applicable_law_codes,
+      :institution_of_higher_learning_indicator, :ojt_indicator,
+      :correspondence_indicator, :flight_indicator,
       :non_college_degree_indicator, :ope, :cross, :student_veteran,
       :student_veteran_link, :vetsuccess_name, :vetsuccess_email, :eight_keys,
       :accreditation_status, :accreditation_type, :gibill, :p911_tuition_fees,
@@ -117,7 +119,7 @@ class DataCsvsController < ApplicationController
       :graduation_rate_all_students, :transfer_out_rate_all_students,
       :salary_all_students, :repayment_rate_all_students, :avg_stu_loan_debt,
       :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, :soc_member,
-      :calendar, :online_all, :vet_tuition_policy_url, :tuition_in_state, 
+      :calendar, :online_all, :vet_tuition_policy_url, :tuition_in_state,
       :tuition_out_of_state, :books, :sec_702, :caution_flag
     )
   end

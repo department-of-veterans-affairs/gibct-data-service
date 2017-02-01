@@ -1,7 +1,7 @@
 ###############################################################################
 ## IpedsIc
-## The IPEDs Institutional Characteristics file that contains a continuation 
-## of the DOE IPeds data set. Most of the fields here are enumerated with 
+## The IPEDs Institutional Characteristics file that contains a continuation
+## of the DOE IPeds data set. Most of the fields here are enumerated with
 ## integers representing distinct concepts.
 ##
 ## USE_COLUMNS hold those columns that get copied to the DataCsv table during
@@ -9,7 +9,7 @@
 ###############################################################################
 class IpedsIc < ActiveRecord::Base
   include Standardizable
-  
+
   validates :cross, presence: true
   validates :vet2, inclusion: { in: [-2, -1, 0, 1], message: "'%{value}' not allowed" }
   validates :vet3, inclusion: { in: [-2, -1, 0, 1], message: "'%{value}' not allowed" }
@@ -21,13 +21,13 @@ class IpedsIc < ActiveRecord::Base
   before_save :set_derived_fields
 
   USE_COLUMNS = [
-    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, 
+    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds,
     :soc_member, :calendar, :online_all
-  ]
+  ].freeze
 
-  override_setters :cross, :vet2, :vet3, :vet4, :vet5, :calsys, :distnced, 
-    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds, 
-    :soc_member, :calendar, :online_all
+  override_setters :cross, :vet2, :vet3, :vet4, :vet5, :calsys, :distnced,
+                   :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds,
+                   :soc_member, :calendar, :online_all
 
   #############################################################################
   ## to_yes_string
@@ -64,7 +64,7 @@ class IpedsIc < ActiveRecord::Base
 
   #############################################################################
   ## set_derived_fields=
-  ## Computes the values of derived fields just prior to saving. Note that 
+  ## Computes the values of derived fields just prior to saving. Note that
   ## any fields here cannot be part of validations.
   #############################################################################
   def set_derived_fields

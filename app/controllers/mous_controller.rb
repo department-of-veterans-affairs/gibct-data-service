@@ -1,14 +1,14 @@
 class MousController < ApplicationController
   include Alertable
 
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_mou, only: [:show, :edit, :destroy, :update]
 
   #############################################################################
   ## index
   #############################################################################
   def index
-    @mous = Mou.paginate(:page => params[:page])
+    @mous = Mou.paginate(page: params[:page])
   end
 
   #############################################################################
@@ -17,7 +17,7 @@ class MousController < ApplicationController
   def show
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -25,10 +25,10 @@ class MousController < ApplicationController
   #############################################################################
   def new
     @mou = Mou.new
-        
+
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -39,9 +39,9 @@ class MousController < ApplicationController
 
     respond_to do |format|
       if @mou.persisted?
-        format.html { redirect_to @mou, notice: "#{@mou.institution} created."}
+        format.html { redirect_to @mou, notice: "#{@mou.institution} created." }
       else
-        label = "Errors mou this file from being saved:"
+        label = 'Errors mou this file from being saved:'
         errors = @mou.errors.full_messages
         flash.alert = MousController.pretty_error(label, errors).html_safe
 
@@ -56,7 +56,7 @@ class MousController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-    end 
+    end
   end
 
   #############################################################################
@@ -67,9 +67,9 @@ class MousController < ApplicationController
 
     respond_to do |format|
       if rc != false
-        format.html { redirect_to @mou, notice: "#{@mou.institution} updated."}
+        format.html { redirect_to @mou, notice: "#{@mou.institution} updated." }
       else
-        label = "Errors prohibited this file from being saved:"
+        label = 'Errors prohibited this file from being saved:'
         errors = @mou.errors.full_messages
         flash.alert = MousController.pretty_error(label, errors).html_safe
 
@@ -85,15 +85,17 @@ class MousController < ApplicationController
     @mou.destroy
 
     respond_to do |format|
-      format.html { redirect_to mous_url, 
-          notice: "#{@mou.institution} was successfully destroyed." }
+      format.html do
+        redirect_to mous_url,
+                    notice: "#{@mou.institution} was successfully destroyed."
+      end
     end
   end
 
   #############################################################################
   ## set_mou
   ## Obtains the model instance from the id parameter.
-  #############################################################################  
+  #############################################################################
   def set_mou
     @mou = Mou.find(params[:id])
   end
@@ -101,7 +103,7 @@ class MousController < ApplicationController
   #############################################################################
   ## mou_params
   ## Strong parameters
-  #############################################################################  
+  #############################################################################
   def mou_params
     params.require(:mou).permit(
       :institution, :ope, :dodmou

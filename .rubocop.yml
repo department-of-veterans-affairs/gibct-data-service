@@ -1,4 +1,5 @@
 AllCops:
+  TargetRubyVersion: 2.3
   Include:
     - '**/config.ru'
     - '**/Rakefile'
@@ -9,14 +10,76 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
 
+# This is the rubocop default but putting it here explicitly
+# strong benefit for code readability and speed in reviewing PRs for code review
+# only use double quote when doing interpolation or complex escape sequences
 Style/StringLiterals:
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
 
 Style/Documentation:
   Enabled: false
 
+# This cop forces you to put a return at the beginning of a block of code rather than having an if statement
+# whose body carries to the end of the function. For example:
+#
+# def foo
+#   ...
+#   if test
+#     ...
+#   end
+# end
+#
+# would be considered bad, and the cop would force you to put a `return if !test` before that block and
+# then remove the if. The problem is that this hides intent, since the if test does have a purpose in
+# readability, and it could also be easier for future changes to miss the return statement and add code
+# after it expecting it to be executed.
+Style/GuardClause:
+  Enabled: false
+
+# This is pretty much the same thing as the one above. Inside a loop, it forces you to use next to skip
+# iteration rather than using an if block that runs to the end of the loop, and it suffers from the same
+# problems as above.
+Style/Next:
+  Enabled: false
+
+Style/NestedParenthesizedCalls:
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/EachWithObject:
+  Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/AccessorMethodName:
+  Enabled: false
+
 Metrics/LineLength:
-  Max: 100
+  Max: 120
+
+Metrics/BlockNesting:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 50
+
+Metrics/ClassLength:
+  Max: 400
+
+Metrics/AbcSize:
+  Max: 80
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+Metrics/PerceivedComplexity:
+  Max: 20
 
 Rails:
   Enabled: true
