@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe V0::InstitutionsController, type: :controller, focus: true do
+RSpec.describe V0::InstitutionsController, type: :controller do
   context 'autocomplete results' do
     it 'returns collection of matches' do
       7.times { create(:institution, :contains_harv) }

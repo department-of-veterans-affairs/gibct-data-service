@@ -290,6 +290,7 @@ ActiveRecord::Schema.define(version: 20170124200527) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institutions", force: :cascade do |t|
+    t.integer  "version",                                                             null: false
     t.string   "institution_type_name"
     t.string   "facility_code"
     t.string   "institution"
@@ -315,10 +316,10 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.boolean  "sec_702",                                             default: false
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
-    t.string   "credit_for_mil_training"
-    t.string   "vet_poc"
-    t.string   "student_vet_grp_ipeds"
-    t.string   "soc_member"
+    t.boolean  "credit_for_mil_training"
+    t.boolean  "vet_poc"
+    t.boolean  "student_vet_grp_ipeds"
+    t.boolean  "soc_member"
     t.string   "va_highest_degree_offered"
     t.float    "retention_rate_veteran_ba"
     t.float    "retention_all_students_ba"
@@ -337,7 +338,7 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.float    "tuition_in_state"
     t.float    "tuition_out_of_state"
     t.float    "books"
-    t.string   "online_all"
+    t.boolean  "online_all"
     t.float    "p911_tuition_fees",                                   default: 0.0
     t.integer  "p911_recipients",                                     default: 0
     t.float    "p911_yellow_ribbon",                                  default: 0.0
@@ -345,7 +346,7 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.boolean  "accredited",                                          default: false
     t.string   "accreditation_type"
     t.string   "accreditation_status"
-    t.string   "caution_flag"
+    t.boolean  "caution_flag",                                        default: false
     t.string   "caution_flag_reason"
     t.integer  "complaints_facility_code",                            default: 0
     t.integer  "complaints_financial_by_fac_code",                    default: 0
@@ -1259,23 +1260,24 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.boolean  "poe"
     t.boolean  "yr"
     t.string   "va_highest_degree_offered"
-    t.string   "institution_type",                         null: false
+    t.string   "institution_type"
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
-    t.string   "address_1"
-    t.string   "address_2"
-    t.string   "address_3"
-    t.string   "poo_status"
-    t.string   "applicable_law_code"
-    t.boolean  "institution_of_higher_learning_indicator"
     t.boolean  "ojt_indicator"
     t.boolean  "correspondence_indicator"
     t.boolean  "flight_indicator"
     t.boolean  "non_college_degree_indicator"
+    t.boolean  "institution_of_higher_learning_indicator"
+    t.string   "poo_status"
+    t.string   "applicable_law_code"
     t.boolean  "approved"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "address_3"
     t.string   "cross"
     t.string   "ope"
+    t.string   "ope6"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end

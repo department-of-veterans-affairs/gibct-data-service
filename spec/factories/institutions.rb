@@ -2,12 +2,12 @@
 FactoryGirl.define do
   factory :institution do
     sequence(:id) { |n| n }
-    sequence(:facility_code) { |n| "facility code #{n}" }
+    facility_code { generate :facility_code }
+    cross { generate :cross }
     sequence(:institution) { |n| "institution #{n}" }
     sequence(:country) { |n| "country #{n}" }
-
+    sequence(:version) { |n| n }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
-    sequence(:cross) { |n| n.to_s * 7 }
     institution_type_name 'private'
 
     trait :in_nyc do

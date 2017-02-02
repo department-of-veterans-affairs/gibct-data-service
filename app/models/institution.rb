@@ -1,20 +1,14 @@
 # frozen_string_literal: true
 class Institution < ActiveRecord::Base
-  EMPLOYER = 'ojt'
+  EMPLOYER = 'ojt'.freeze
+
   LOCALE = {
-    11 => 'city',
-    12 => 'city',
-    13 => 'city',
-    21 => 'suburban',
-    22 => 'suburban',
-    23 => 'suburban',
-    31 => 'town',
-    32 => 'town',
-    33 => 'town',
-    41 => 'rural',
-    42 => 'rural',
-    43 => 'rural'
+    11 => 'city', 12 => 'city', 13 => 'city',
+    21 => 'suburban', 22 => 'suburban', 23 => 'suburban',
+    31 => 'town', 32 => 'town', 33 => 'town', 41 => 'rural',
+    42 => 'rural', 43 => 'rural'
   }.freeze
+
   DEGREES = {
     0 => nil,
     'ncd' => 'Certificate',
@@ -25,20 +19,12 @@ class Institution < ActiveRecord::Base
     4 => 4,
     '4-year' => 4
   }.freeze
-  TYPES = [
-    'ojt',
-    'private',
-    'foreign',
-    'correspondence',
-    'flight',
-    'for profit',
-    'public'
-  ].freeze
+
+  TYPES = ['ojt', 'private', 'foreign', 'correspondence', 'flight', 'for profit', 'public'].freeze
 
   validates :facility_code, uniqueness: true, presence: true
+  validates :version, :institution, :country, presence: true
   validates :institution_type_name, inclusion: { in: TYPES }
-  validates :institution, presence: true
-  validates :country, presence: true
 
   self.per_page = 10
 

@@ -1,6 +1,7 @@
 class CreateInstitutions < ActiveRecord::Migration
   def change
     create_table :institutions do |t|
+      t.integer :version, null: false
       t.string :institution_type_name, default: nil
 
       # Phyiscal Info
@@ -30,10 +31,10 @@ class CreateInstitutions < ActiveRecord::Migration
       t.boolean :sec_702, default: false
       t.string :vetsuccess_name, default: nil # String with "null" string values
       t.string :vetsuccess_email, default: nil # String with "null" string values
-      t.string :credit_for_mil_training, default: nil # Boolean with null string values
-      t.string :vet_poc, default: nil # Boolean with null string value
-      t.string :student_vet_grp_ipeds, default: nil # Boolean with null string values
-      t.string :soc_member, default: nil # Boolean with null string values
+      t.boolean :credit_for_mil_training, default: nil # Boolean with null values
+      t.boolean :vet_poc, default: nil # Boolean with null values
+      t.boolean :student_vet_grp_ipeds, default: nil # Boolean with null values
+      t.boolean :soc_member, default: nil # Boolean with null values
       t.string :va_highest_degree_offered, default: nil # string with "null" string values
       t.float :retention_rate_veteran_ba, default: nil #Float with "null" strings.
       t.float :retention_all_students_ba, default: nil #Float with "null" strings.
@@ -52,7 +53,7 @@ class CreateInstitutions < ActiveRecord::Migration
       t.float :tuition_in_state, default: nil #Float with "null" and other terms
       t.float :tuition_out_of_state, default: nil #Float with "null" and other terms
       t.float :books, default: nil #Float with "null" and other terms
-      t.string :online_all, default: nil # Boolean with null string values
+      t.boolean :online_all, default: nil # Boolean with null values
       t.float :p911_tuition_fees, default: 0.0
       t.integer :p911_recipients, default: 0
       t.float :p911_yellow_ribbon, default: 0.0
