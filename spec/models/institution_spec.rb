@@ -26,7 +26,11 @@ RSpec.describe Institution, type: :model do
 
       it 'should search when attribute is provided' do
         expect(described_class.search(name: 'chicago').to_sql)
-          .to include("WHERE (lower(facility_code) = ('---\n- :name\n- chicago\n') OR lower(institution) LIKE ('%{:name=>\"chicago\"}%') OR lower(city) LIKE ('%{:name=>\"chicago\"}%'))")
+          .to include(
+            "WHERE (lower(facility_code) = ('---\n- :name\n- chicago\n')",
+            "OR lower(institution) LIKE ('%{:name=>\"chicago\"}%')",
+            "OR lower(city) LIKE ('%{:name=>\"chicago\"}%'))"
+          )
       end
     end
   end
@@ -56,19 +60,19 @@ RSpec.describe Institution, type: :model do
       duplicate_facility = subject.dup
       expect(duplicate_facility).not_to be_valid
       expect(duplicate_facility.errors.messages)
-        .to eq(facility_code: ["has already been taken"])
+        .to eq(facility_code: ['has already been taken'])
     end
 
     it 'requires institution_type_name to be in valid TYPES' do
-      expect(build :institution, institution_type_name: 'invalid_name').not_to be_valid
+      expect(build(:institution, institution_type_name: 'invalid_name')).not_to be_valid
     end
 
     it 'requires institution to be present' do
-      expect(build :institution, institution: nil).not_to be_valid
+      expect(build(:institution, institution: nil)).not_to be_valid
     end
 
     it 'requires presence of country' do
-      expect(build :institution, country: nil).not_to be_valid
+      expect(build(:institution, country: nil)).not_to be_valid
     end
   end
 end
