@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Institution < ActiveRecord::Base
-  EMPLOYER = 'ojt'.freeze
+  EMPLOYER = 'ojt'
 
   LOCALE = {
     11 => 'city', 12 => 'city', 13 => 'city',

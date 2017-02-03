@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Institution, type: :model, focus: true do
+RSpec.describe Institution, type: :model do
   describe 'when validating' do
-    subject { build :institution }
+    subject { create :institution }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
     end
 
-    it 'requires a valid facility_code' do
+    it 'requires a valid and unique facility_code' do
       expect(build(:institution, facility_code: nil)).not_to be_valid
+
+      duplicate_facility = build :institution, facility_code: subject.facility_code
+      expect(duplicate_facility).not_to be_valid
+      expect(duplicate_facility.errors.messages).to eq(facility_code: ['has already been taken'])
     end
 
     it 'requires a version' do
@@ -28,13 +32,6 @@ RSpec.describe Institution, type: :model, focus: true do
     it 'requires a valid institution_type_name' do
       expect(build(:institution, institution_type_name: nil)).not_to be_valid
       expect(build(:institution, institution_type_name: 'blah-blah')).not_to be_valid
-    end
-  end
-
-  describe 'school?' do
-    it 'returns true if an institution is not ojt' do
-      expect(build(:institution, institution_type_name: 'ojt')).not_to be_school
-      expect(build(:institution, institution_type_name: 'private')).to be_school
     end
   end
 
@@ -79,21 +76,8 @@ RSpec.describe Institution, type: :model, focus: true do
 
     it 'returns a hash of complaint counts' do
       complaints = complaint_fac_code.complaints
-      expect(complaints['facility_code']).to eq(1)
 
-      %w(
-        financial_by_fac_code quality_by_fac_code refund_by_fac_code marketing_by_fac_code
-        degree_requirements_by_fac_code student_loans_by_fac_code grades_by_fac_code
-        credit_transfer_by_fac_code credit_job_by_fac_code job_by_fac_code transcript_by_fac_code
-        other_by_fac_code main_campus_roll_up financial_by_ope_id_do_not_sum
-        quality_by_ope_id_do_not_sum refund_by_ope_id_do_not_sum marketing_by_ope_id_do_not_sum
-        accreditation_by_ope_id_do_not_sum degree_requirements_by_ope_id_do_not_sum
-        student_loans_by_ope_id_do_not_sum grades_by_ope_id_do_not_sum
-        credit_transfer_by_ope_id_do_not_sum jobs_by_ope_id_do_not_sum
-        transcript_by_ope_id_do_not_sum other_by_ope_id_do_not_sum
-      ).each do |complaint|
-        expect(complaints[complaint]).to be_zero
-      end
+      expect(complaints['facility_code']).to eq(1)
     end
   end
 
@@ -128,31 +112,49 @@ RSpec.describe Institution, type: :model, focus: true do
       expect(build(:institution, va_highest_degree_offered: '2-year').highest_degree).to eq(2)
       expect(build(:institution, va_highest_degree_offered: '4-year').highest_degree).to eq(4)
     end
+
+    it 'prefers pred_degree_awarded over va_highest_degree_offered' do
+      expect(build(:institution, pred_degree_awarded: 2, va_highest_degree_offered: '4-year').highest_degree).to eq(2)
+    end
   end
 
-  describe '#search' do
-    before(:each) do
-      create :institution, facility_code: '00000001'
-      create_list :institution, 2, :in_chicago
-      create :institution, institution: 'HARVARD UNIVERSITY'
+  describe 'school?' do
+    it 'returns true if an institution is not ojt' do
+      expect(build(:institution, institution_type_name: 'ojt')).not_to be_school
+      expect(build(:institution, institution_type_name: 'private')).to be_school
+    end
+  end
+
+  describe 'class methods and scopes' do
+    context 'filter scope' do
+      it 'should raise an error if no arguments are provided' do
+        expect { described_class.filter }.to raise_error(ArgumentError)
+      end
+
+      it 'should filter on field existing' do
+        expect(described_class.filter('institution', 'true').to_sql)
+          .to include("WHERE \"institutions\".\"institution\" = 't'")
+      end
+
+      it 'should filter on field not existing' do
+        expect(described_class.filter('institution', 'false').to_sql)
+          .to include("WHERE (\"institutions\".\"institution\" != 't')")
+      end
     end
 
-    it 'searches schools by facility_code' do
-      results = Institution.search('00000001')
-      expect(results.count).to eq(1)
-      expect(results.first.facility_code).to eq('00000001')
-    end
+    context 'search scope' do
+      it 'should return nil if no search term is provided' do
+        expect(described_class.search(name: nil)).to be_empty
+      end
 
-    it 'searches schools by city' do
-      results = Institution.search('chicago')
-      expect(results.count).to eq(2)
-      expect(results.pluck(:city)).to eq(%w(chicago chicago))
-    end
-
-    it 'searches schools by name' do
-      results = Institution.search('harv')
-      expect(results.count).to eq(1)
-      expect(results.first.institution).to eq('HARVARD UNIVERSITY')
+      it 'should search when attribute is provided' do
+        expect(described_class.search(name: 'chicago').to_sql)
+          .to include(
+            "WHERE (lower(facility_code) = ('---\n- :name\n- chicago\n')",
+            "OR lower(institution) LIKE ('%{:name=>\"chicago\"}%')",
+            "OR lower(city) LIKE ('%{:name=>\"chicago\"}%'))"
+          )
+      end
     end
   end
 end

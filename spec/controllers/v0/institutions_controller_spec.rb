@@ -12,8 +12,21 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'search results' do
+    before(:each) do
+      2.times { create(:institution, :in_nyc) }
+      create(:institution, :in_chicago)
+    end
+
     it 'search returns results' do
       get :index
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'search returns results matching name' do
+      get :index, name: 'chicago'
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
