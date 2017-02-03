@@ -7,7 +7,7 @@ module InstitutionBuilder
   ].freeze
 
   def self.buildable?
-    TABLES.map(&:count).reject { |c| c > 0 }.blank?
+    TABLES.map(&:count).reject(&:positive?).blank?
   end
 
   def self.valid_user?(user)
