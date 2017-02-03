@@ -6,5 +6,10 @@ FactoryGirl.define do
 
     status 'closed'
     closed_reason 'resolved'
+
+    trait :institution_builder do
+      facility_code 'ZZZZZZZZ'
+      ope '99999999'
+    end
   end
 end

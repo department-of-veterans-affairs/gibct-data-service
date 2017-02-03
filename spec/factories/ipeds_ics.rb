@@ -8,5 +8,9 @@ FactoryGirl.define do
     vet5 1
     distnced 1
     calsys 1
+
+    trait :institution_builder do
+      cross '999999'
+    end
   end
 end

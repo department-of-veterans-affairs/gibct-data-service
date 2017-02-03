@@ -6,5 +6,9 @@ FactoryGirl.define do
     tuition_in_state 1
     tuition_out_of_state 1
     books 1
+
+    trait :institution_builder do
+      cross '999999'
+    end
   end
 end

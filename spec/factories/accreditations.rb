@@ -32,5 +32,9 @@ FactoryGirl.define do
       campus_name nil
       campus_ipeds_unitid nil
     end
+
+    trait :institution_builder do
+      cross '999999'
+    end
   end
 end

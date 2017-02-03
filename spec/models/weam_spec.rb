@@ -198,7 +198,7 @@ RSpec.describe Weam, type: :model do
         weam = build :weam, type
         weam.valid?
 
-        expect(weam.institution_type).to eq(type.to_s.tr('_', ' '))
+        expect(weam.institution_type_name).to eq(type.to_s.tr('_', ' '))
       end
     end
   end

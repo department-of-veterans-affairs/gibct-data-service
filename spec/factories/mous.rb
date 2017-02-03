@@ -10,5 +10,9 @@ FactoryGirl.define do
     trait :by_title_iv do
       status 'title iv non-compliant'
     end
+
+    trait :institution_builder do
+      ope '99999999'
+    end
   end
 end

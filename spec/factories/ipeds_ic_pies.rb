@@ -5,5 +5,9 @@ FactoryGirl.define do
 
     chg1py3 1
     books 1
+
+    trait :institution_builder do
+      cross '999999'
+    end
   end
 end

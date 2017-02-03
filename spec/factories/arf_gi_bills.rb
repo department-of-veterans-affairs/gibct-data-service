@@ -7,5 +7,9 @@ FactoryGirl.define do
     sequence :gibill do |n|
       n
     end
+
+    trait :institution_builder do
+      facility_code 'ZZZZZZZZ'
+    end
   end
 end

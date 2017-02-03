@@ -12,6 +12,12 @@ class Weam < ActiveRecord::Base
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
 
+  USE_COLUMNS = [
+    :facility_code, :institution, :city, :state, :zip,
+    :country, :accredited, :bah, :poe, :yr,
+    :institution_type_name, :va_highest_degree_offered, :flight, :correspondence
+  ].freeze
+
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
   MAP = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
@@ -40,7 +46,7 @@ class Weam < ActiveRecord::Base
     'ope' => { column: :ope, converter: OpeConverter }
   }.freeze
 
-  validates :facility_code, :institution, :institution_type, presence: true
+  validates :facility_code, :institution, :institution_type_name, presence: true
   validates :bah, numericality: true, allow_blank: true
 
   before_validation :derive_dependent_columns
@@ -48,7 +54,7 @@ class Weam < ActiveRecord::Base
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
   def derive_dependent_columns
-    self.institution_type = derive_type
+    self.institution_type_name = derive_type
     self.va_highest_degree_offered = highest_degree_offered
     self.flight = flight?
     self.correspondence = correspondence?

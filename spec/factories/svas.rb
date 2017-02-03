@@ -10,5 +10,9 @@ FactoryGirl.define do
     end
 
     cross { generate :cross }
+
+    trait :institution_builder do
+      cross '999999'
+    end
   end
 end

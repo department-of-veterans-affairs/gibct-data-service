@@ -89,5 +89,12 @@ FactoryGirl.define do
       flight_indicator true
       non_college_degree_indicator true
     end
+
+    trait :institution_builder do
+      facility_code 'ZZZZZZZZ'
+      poo_status 'aprvd'
+      applicable_law_code 'educational institution is approved for all chapters'
+      institution_of_higher_learning_indicator true
+    end
   end
 end

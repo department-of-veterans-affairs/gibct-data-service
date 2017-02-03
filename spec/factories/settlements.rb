@@ -5,5 +5,9 @@ FactoryGirl.define do
     cross { generate :cross }
 
     settlement_description { 'Settlement with U.S. Government' }
+
+    trait :institution_builder do
+      cross '999999'
+    end
   end
 end

@@ -7,7 +7,7 @@ class CreateVersions < ActiveRecord::Migration
       t.boolean :production, default: false, null: false
 
       t.timestamps null: false
-      t.index :user_id, unique: true
+      t.index :user_id
       t.index :version
     end
   end

@@ -10,5 +10,8 @@ FactoryGirl.define do
     end
 
     sec_702 true
+
+    trait :institution_builder do
+    end
   end
 end
