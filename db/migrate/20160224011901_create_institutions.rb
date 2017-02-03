@@ -18,6 +18,7 @@ class CreateInstitutions < ActiveRecord::Migration
       t.float :bah, default: nil # Float with "null" string values
       t.string :cross, default: nil # String with "null" string values
       t.string :ope, default: nil # String with null as no_data
+      t.string :ope6, default: nil # String with null as no_data
       t.string :insturl, default: nil # String with null as no_data
       t.string :vet_tuition_policy_url, default: nil # String with null as no_data
       t.integer :pred_degree_awarded, default: nil # Integer with "null" string values

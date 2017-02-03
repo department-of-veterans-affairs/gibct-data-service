@@ -30,6 +30,7 @@ module InstitutionBuilder
 
   def self.run_insertions(version)
     initialize_with_weams(version)
+    add_crosswalk
   end
 
   def self.run(user)
@@ -51,6 +52,17 @@ module InstitutionBuilder
     # Include only those schools marked as approved (c.f., Weam model)
     query = "INSERT INTO institutions (#{names}, version) ("
     query += Weam.select(names).select("#{version.version} as version").where(approved: true).to_sql + ')'
+
+    ActiveRecord::Base.connection.execute(query)
+  end
+
+  def self.add_crosswalk
+    names = Crosswalk::USE_COLUMNS.map(&:to_s)
+
+    query = 'UPDATE institutions SET '
+    query += names.map { |name| %("#{name}" = crosswalks.#{name}) }.join(', ')
+    query += ' FROM crosswalks '
+    query += 'WHERE institutions.facility_code = crosswalks.facility_code'
 
     ActiveRecord::Base.connection.execute(query)
   end

@@ -2,7 +2,7 @@
 class Crosswalk < ActiveRecord::Base
   include Loadable, Exportable
 
-  before_validation :derive_dependent_columns
+  USE_COLUMNS = [:ope, :cross, :ope6].freeze
 
   MAP = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
@@ -14,11 +14,11 @@ class Crosswalk < ActiveRecord::Base
     'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 
+  before_validation :derive_dependent_columns
   validates :facility_code, presence: true
 
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
-
     true
   end
 end

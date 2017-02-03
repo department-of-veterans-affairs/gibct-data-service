@@ -207,6 +207,7 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.float    "bah"
     t.string   "cross"
     t.string   "ope"
+    t.string   "ope6"
     t.string   "insturl"
     t.string   "vet_tuition_policy_url"
     t.integer  "pred_degree_awarded"

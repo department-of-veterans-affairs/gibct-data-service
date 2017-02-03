@@ -58,7 +58,7 @@ RSpec.describe InstitutionBuilder, type: :model, focus: true do
       end
     end
 
-    describe 'when adding Weam data' do
+    describe 'when initializing with Weam data' do
       it 'adds only approved schools' do
         create :weam, poo_status: 'nasty poo'
         expect { InstitutionBuilder.run(valid_user) }.to change { Institution.count }.by(1)
@@ -72,6 +72,19 @@ RSpec.describe InstitutionBuilder, type: :model, focus: true do
 
         Weam::USE_COLUMNS.each do |column|
           expect(weam[column]).to eq(institution[column])
+        end
+      end
+    end
+
+    describe 'when adding Crosswalk data' do
+      it 'the new institution record matches the crosswalk record' do
+        InstitutionBuilder.run(valid_user)
+
+        crosswalk = Crosswalk.first
+        institution = Institution.first
+
+        Crosswalk::USE_COLUMNS.each do |column|
+          expect(crosswalk[column]).to eq(institution[column])
         end
       end
     end
