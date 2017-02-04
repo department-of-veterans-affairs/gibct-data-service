@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe InstitutionBuilder, type: :model do
+RSpec.describe InstitutionBuilder, type: :model, focus: true do
   let(:tables) { InstitutionBuilder::TABLES.map { |t| t.name.underscore.to_sym } }
   let(:valid_user) { User.first }
   let(:invalid_user) { User.new email: valid_user.email + 'xyz' }
@@ -86,6 +86,27 @@ RSpec.describe InstitutionBuilder, type: :model do
         Crosswalk::USE_COLUMNS.each do |column|
           expect(crosswalk[column]).to eq(institution[column])
         end
+      end
+    end
+
+    describe 'when adding Sva data' do
+      it 'the new institution record matches the sva record' do
+        InstitutionBuilder.run(valid_user)
+
+        sva = Sva.first
+        institution = Institution.first
+
+        Sva::USE_COLUMNS.each do |column|
+          expect(crosswalk[column]).to eq(institution[column])
+        end
+      end
+
+      it 'sets student_veteran to TRUE for every sva record matched to institutions' do
+        InstitutionBuilder.run(valid_user)
+
+        sva = Sva.first
+        institution = Institution.find_by(cross: sva.cross)
+        expect(institution.student_veteran).to be_truthy
       end
     end
   end

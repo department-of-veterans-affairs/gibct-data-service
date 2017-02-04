@@ -66,4 +66,16 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
   end
+
+  def self.add_sva
+    columns = Sva::USE_COLUMNS.map(&:to_s)
+
+    # Add SVA info to approved schools based on IPEDs id.
+    str = 'UPDATE institutions SET '
+    str += 'student_veteran = TRUE, '
+    str += columns.map { |col| %("#{col}" = svas.#{col}) }.join(', ')
+    str += ' FROM svas WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL'
+
+    Institution.connection.update(str)
+  end
 end

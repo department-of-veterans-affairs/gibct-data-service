@@ -2,6 +2,8 @@
 class Sva < ActiveRecord::Base
   include Loadable, Exportable
 
+  USE_COLUMNS = [:student_veteran_link].freeze
+
   MAP = {
     'id' => { column: :csv_id, converter: BaseConverter },
     'school' => { column: :institution, converter: InstitutionConverter },
