@@ -31,6 +31,7 @@ module InstitutionBuilder
   def self.run_insertions(version)
     initialize_with_weams(version)
     add_crosswalk
+    add_sva
   end
 
   def self.run(user)

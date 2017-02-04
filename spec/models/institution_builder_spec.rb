@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe InstitutionBuilder, type: :model, focus: true do
+RSpec.describe InstitutionBuilder, type: :model do
   let(:tables) { InstitutionBuilder::TABLES.map { |t| t.name.underscore.to_sym } }
   let(:valid_user) { User.first }
   let(:invalid_user) { User.new email: valid_user.email + 'xyz' }
@@ -97,7 +97,7 @@ RSpec.describe InstitutionBuilder, type: :model, focus: true do
         institution = Institution.first
 
         Sva::USE_COLUMNS.each do |column|
-          expect(crosswalk[column]).to eq(institution[column])
+          expect(sva[column]).to eq(institution[column])
         end
       end
 
