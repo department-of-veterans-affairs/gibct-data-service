@@ -40,30 +40,30 @@ module InstitutionBuilder
     version = Version.create(production: false, user: user)
 
     default_timestamps_to_now
-    run_insertions(version)
+    run_insertions(version.version)
     drop_default_timestamps
 
     version
   end
 
   def self.initialize_with_weams(version)
-    names = Weam::USE_COLUMNS.map(&:to_s).join(', ')
+    columns = Weam::USE_COLUMNS.map(&:to_s)
 
-    # Include only those schools marked as approved (c.f., Weam model)
-    query = "INSERT INTO institutions (#{names}, version) ("
-    query += Weam.select(names).select("#{version.version} as version").where(approved: true).to_sql + ')'
+    institutions = Weam.select(columns).where(approved: true).map(&:attributes).each_with_object([]) do |weam, a|
+      a << Institution.new(weam.except('id').merge(version: version))
+    end
 
-    ActiveRecord::Base.connection.execute(query)
+    # No validations here, Weam was validated on import - don't need to waste time with unique checks
+    Institution.import institutions, validate: false, ignore: true
   end
 
   def self.add_crosswalk
-    names = Crosswalk::USE_COLUMNS.map(&:to_s)
+    columns = Crosswalk::USE_COLUMNS.map(&:to_s)
 
-    query = 'UPDATE institutions SET '
-    query += names.map { |name| %("#{name}" = crosswalks.#{name}) }.join(', ')
-    query += ' FROM crosswalks '
-    query += 'WHERE institutions.facility_code = crosswalks.facility_code'
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = crosswalks.#{col}) }.join(', ')
+    str += ' FROM crosswalks WHERE institutions.facility_code = crosswalks.facility_code'
 
-    ActiveRecord::Base.connection.execute(query)
+    Institution.connection.update(str)
   end
 end
