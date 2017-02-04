@@ -32,6 +32,7 @@ module InstitutionBuilder
     initialize_with_weams(version)
     add_crosswalk
     add_sva
+    add_vsoc
   end
 
   def self.run(user)
@@ -76,6 +77,17 @@ module InstitutionBuilder
     str += 'student_veteran = TRUE, '
     str += columns.map { |col| %("#{col}" = svas.#{col}) }.join(', ')
     str += ' FROM svas WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_vsoc
+    columns = Vsoc::USE_COLUMNS.map(&:to_s)
+
+    # Adds Vets success info to approved schools, matching by facility_code.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = vsocs.#{col}) }.join(', ')
+    str += ' FROM vsocs WHERE institutions.facility_code = vsocs.facility_code'
 
     Institution.connection.update(str)
   end

@@ -81,7 +81,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         InstitutionBuilder.run(valid_user)
 
         crosswalk = Crosswalk.first
-        institution = Institution.first
+        institution = Institution.find_by(facility_code: crosswalk.facility_code)
 
         Crosswalk::USE_COLUMNS.each do |column|
           expect(crosswalk[column]).to eq(institution[column])
@@ -94,7 +94,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         InstitutionBuilder.run(valid_user)
 
         sva = Sva.first
-        institution = Institution.first
+        institution = Institution.find_by(cross: sva.cross)
 
         Sva::USE_COLUMNS.each do |column|
           expect(sva[column]).to eq(institution[column])
@@ -107,6 +107,19 @@ RSpec.describe InstitutionBuilder, type: :model do
         sva = Sva.first
         institution = Institution.find_by(cross: sva.cross)
         expect(institution.student_veteran).to be_truthy
+      end
+    end
+
+    describe 'when adding Vsoc data' do
+      it 'the new institution record matches the vsoc record' do
+        InstitutionBuilder.run(valid_user)
+
+        vsoc = Vsoc.first
+        institution = Institution.find_by(facility_code: vsoc.facility_code)
+
+        Vsoc::USE_COLUMNS.each do |column|
+          expect(vsoc[column]).to eq(institution[column])
+        end
       end
     end
   end

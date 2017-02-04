@@ -2,6 +2,8 @@
 class Vsoc < ActiveRecord::Base
   include Loadable, Exportable
 
+  USE_COLUMNS = [:vetsuccess_name, :vetsuccess_email].freeze
+
   MAP = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
