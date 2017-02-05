@@ -122,5 +122,15 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding Vsoc data' do
+      it 'sets eight_keys to TRUE for every eight_key record matched to institutions' do
+        InstitutionBuilder.run(valid_user)
+
+        eight_key = EightKey.first
+        institution = Institution.find_by(cross: eight_key.cross)
+        expect(institution.eight_keys).to be_truthy
+      end
+    end
   end
 end

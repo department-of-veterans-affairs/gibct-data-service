@@ -33,6 +33,7 @@ module InstitutionBuilder
     add_crosswalk
     add_sva
     add_vsoc
+    add_eight_key
   end
 
   def self.run(user)
@@ -72,7 +73,6 @@ module InstitutionBuilder
   def self.add_sva
     columns = Sva::USE_COLUMNS.map(&:to_s)
 
-    # Add SVA info to approved schools based on IPEDs id.
     str = 'UPDATE institutions SET '
     str += 'student_veteran = TRUE, '
     str += columns.map { |col| %("#{col}" = svas.#{col}) }.join(', ')
@@ -84,10 +84,17 @@ module InstitutionBuilder
   def self.add_vsoc
     columns = Vsoc::USE_COLUMNS.map(&:to_s)
 
-    # Adds Vets success info to approved schools, matching by facility_code.
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = vsocs.#{col}) }.join(', ')
     str += ' FROM vsocs WHERE institutions.facility_code = vsocs.facility_code'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_eight_key
+    str = 'UPDATE institutions SET eight_keys = TRUE '
+    str += ' FROM eight_keys WHERE institutions.cross = eight_keys.cross'
+    str += ' AND eight_keys.cross IS NOT NULL'
 
     Institution.connection.update(str)
   end
