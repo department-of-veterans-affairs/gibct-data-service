@@ -35,10 +35,10 @@ class Accreditation < ActiveRecord::Base
   # if the accrediting agency is the "New England Medical Association", then
   # the accreditation is 'Regional'.
   ACCREDITATIONS = {
-    'REGIONAL' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i],
-    'NATIONAL' => [/career schools/i, /continuing education/i, /independent colleges/i,
+    'regional' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i],
+    'national' => [/career schools/i, /continuing education/i, /independent colleges/i,
                    /biblical/i, /occupational/i, /distance/i, /new york/i, /transnational/i],
-    'HYBRID' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
+    'hybrid' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
                  /funeral/i, /osteopathic/i, /pediatric/i, /theological/i, /massage/i, /radiologic/i,
                  /midwifery/i, /montessori/i, /career arts/i, /design/i, /dance/i, /music/i,
                  /theatre/i, /chiropractic/i]

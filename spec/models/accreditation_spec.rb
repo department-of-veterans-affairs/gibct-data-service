@@ -32,12 +32,12 @@ RSpec.describe Accreditation, type: :model do
       expect(subject.institution).to eq(subject.campus_name)
     end
 
-    it 'will use either the ipeds_institution_unitid or the ipeds_campus_unitid if only one is present' do
+    it 'will use either the institution_ipeds_unitid or the campus_ipeds_unitid if only one is present' do
       expect(by_campus.cross).to eq(by_campus.campus_ipeds_unitid)
       expect(by_institution.cross).to eq(by_institution.institution_ipeds_unitid)
     end
 
-    it 'prefers ipeds_campus_unitid over ipeds_institution_unitid' do
+    it 'prefers campus_ipeds_unitid over institution_ipeds_unitid' do
       subject.valid?
       expect(subject.cross).to eq(subject.campus_ipeds_unitid)
     end

@@ -6,9 +6,9 @@ FactoryGirl.define do
     cross { generate :cross }
     sequence(:institution) { |n| "institution #{n}" }
     sequence(:country) { |n| "country #{n}" }
-    sequence(:version) { |n| n }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name 'private'
+    version 1
 
     trait :in_nyc do
       city 'new york'

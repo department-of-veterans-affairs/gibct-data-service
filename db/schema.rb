@@ -1136,14 +1136,14 @@ ActiveRecord::Schema.define(version: 20170124200527) do
 
   create_table "versions", force: :cascade do |t|
     t.integer  "user_id",                    null: false
-    t.integer  "version",                    null: false
+    t.integer  "number",                     null: false
     t.boolean  "production", default: false, null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
 
+  add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
   add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
-  add_index "versions", ["version"], name: "index_versions_on_version", using: :btree
 
   create_table "vsocs", force: :cascade do |t|
     t.string   "facility_code",    null: false

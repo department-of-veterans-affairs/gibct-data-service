@@ -107,5 +107,5 @@ class Institution < ActiveRecord::Base
     end
   }
 
-  scope :version, ->(version) {}
+  scope :version, ->(version) { where(version: version) }
 end

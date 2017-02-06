@@ -28,12 +28,13 @@ module InstitutionBuilder
     ActiveRecord::Base.connection.execute(query)
   end
 
-  def self.run_insertions(version)
-    initialize_with_weams(version)
+  def self.run_insertions(version_number)
+    initialize_with_weams(version_number)
     add_crosswalk
     add_sva
     add_vsoc
     add_eight_key
+    add_accreditation
   end
 
   def self.run(user)
@@ -43,17 +44,17 @@ module InstitutionBuilder
     version = Version.create(production: false, user: user)
 
     default_timestamps_to_now
-    run_insertions(version.version)
+    run_insertions(version.number)
     drop_default_timestamps
 
     version
   end
 
-  def self.initialize_with_weams(version)
+  def self.initialize_with_weams(version_number)
     columns = Weam::USE_COLUMNS.map(&:to_s)
 
     institutions = Weam.select(columns).where(approved: true).map(&:attributes).each_with_object([]) do |weam, a|
-      a << Institution.new(weam.except('id').merge(version: version))
+      a << Institution.new(weam.except('id').merge(version: version_number))
     end
 
     # No validations here, Weam was validated on import - don't need to waste time with unique checks
@@ -103,16 +104,16 @@ module InstitutionBuilder
   # ordering of both accreditation type and status for those schools having conflicting types
   # hybrid < national < regional, and for status: 'show cause' < probation. There is a
   # requirement to include only those accreditations that are institutional and currently active.
-  def self.update_with_accreditation
+  def self.add_accreditation
     # Sets all accreditations that are hybrid types first
     str = 'UPDATE institutions SET '
     str += 'accreditation_type = accreditations.accreditation_type'
     str += ' FROM accreditations '
     str += 'WHERE institutions.cross = accreditations.cross '
     str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
-    str += "AND LOWER(accreditations.accreditation_type) = 'hybrid'; "
+    str += %(AND accreditations.periods LIKE '%current%' )
+    str += %(AND accreditations.csv_accreditation_type = 'institutional' )
+    str += "AND accreditations.accreditation_type = 'hybrid'; "
 
     # Sets all accreditations that are national, overriding conflicts with hybrids
     str += 'UPDATE institutions SET '
@@ -120,9 +121,9 @@ module InstitutionBuilder
     str += ' FROM accreditations '
     str += 'WHERE institutions.cross = accreditations.cross '
     str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
-    str += "AND LOWER(accreditations.accreditation_type) = 'national';"
+    str += %(AND accreditations.periods LIKE '%current%' )
+    str += %(AND accreditations.csv_accreditation_type = 'institutional' )
+    str += "AND accreditations.accreditation_type = 'national';"
 
     # Sets all accreditations that are regional, overriding conflicts with hybrids and nationals
     str += 'UPDATE institutions SET '
@@ -130,9 +131,9 @@ module InstitutionBuilder
     str += ' FROM accreditations '
     str += 'WHERE institutions.cross = accreditations.cross '
     str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    str += %(AND LOWER(accreditations.csv_accreditation_type) = 'institutional' )
-    str += "AND LOWER(accreditations.accreditation_type) = 'regional'; "
+    str += %(AND accreditations.periods LIKE '%current%' )
+    str += %(AND accreditations.csv_accreditation_type = 'institutional' )
+    str += "AND accreditations.accreditation_type = 'regional'; "
 
     # Sets status for probationary accreditations, the status being derived from the
     # higest level of accreditation (hybrid, national, regional).
@@ -142,9 +143,9 @@ module InstitutionBuilder
     str += 'WHERE institutions.cross = accreditations.cross '
     str += 'AND institutions.accreditation_type = accreditations.accreditation_type '
     str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
-    str += "AND LOWER(accreditations.accreditation_status) = 'probation'; "
+    str += %(AND accreditations.periods LIKE '%current%' )
+    str += "AND accreditations.csv_accreditation_type = 'institutional' "
+    str += "AND accreditations.accreditation_status = 'probation'; "
 
     # Sets status for show cause accreditations, overwriting probationary statuses,
     # the status being derived from the higest level of accreditation (hybrid, national, regional).
@@ -154,9 +155,9 @@ module InstitutionBuilder
     str += 'WHERE institutions.cross = accreditations.cross '
     str += 'AND institutions.accreditation_type = accreditations.accreditation_type '
     str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
-    str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional' "
-    str += "AND LOWER(accreditations.accreditation_status) = 'show cause'; "
+    str += %(AND accreditations.periods LIKE '%current%' )
+    str += "AND accreditations.csv_accreditation_type = 'institutional' "
+    str += "AND accreditations.accreditation_status = 'show cause'; "
 
     # Sets the caution flag for all accreditations that have a non-null status. Note,
     # that institutional type accreditations are always, null, probation, or show cause.
@@ -165,9 +166,9 @@ module InstitutionBuilder
     str += ' FROM accreditations '
     str += 'WHERE institutions.cross = accreditations.cross '
     str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND LOWER(accreditations.periods) LIKE '%current%' )
+    str += %(AND accreditations.periods LIKE '%current%' )
     str += 'AND accreditations.accreditation_status IS NOT NULL '
-    str += "AND LOWER(accreditations.csv_accreditation_type) = 'institutional'; "
+    str += "AND accreditations.csv_accreditation_type = 'institutional'; "
 
     # Sets the caution flag reason for all accreditations that have a non-null status.
     # The innermost subquery retrieves a unique set of statues (it is plausible that
@@ -189,14 +190,14 @@ module InstitutionBuilder
     str += '      WHERE '
     str += '        a.cross IS NOT NULL AND '
     str += '        a.accreditation_status IS NOT NULL AND '
-    str += "        LOWER(a.periods) LIKE '%current%' AND "
-    str += "        LOWER(a.csv_accreditation_type) = 'institutional' "
+    str += "        a.periods LIKE '%current%' AND "
+    str += "        a.csv_accreditation_type = 'institutional' "
     str += '      GROUP BY a.cross, a.accreditation_status '
     str += '    ) A '
     str += '  GROUP BY A.cross '
     str += ') AGG '
     str += 'WHERE institutions.cross = AGG.cross; '
 
-    Institution.connection.update(str)
+    Institution.connection.execute(str)
   end
 end

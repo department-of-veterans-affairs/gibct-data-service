@@ -6,8 +6,8 @@ RSpec.describe Version, type: :model do
     subject { build :version, :production }
 
     let(:no_user) { build :version, user: nil }
-    let(:good_existing_version) { build :version, :production, version: 1 }
-    let(:bad_existing_version) { build :version, :production, version: 1000 }
+    let(:good_existing_version) { build :version, :production, number: 1 }
+    let(:bad_existing_version) { build :version, :production, number: 1000 }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
@@ -20,7 +20,7 @@ RSpec.describe Version, type: :model do
     context 'and setting a new version' do
       it 'sets the version to the max-version + 1' do
         subject.save
-        expect(create(:version, :production).version).to eq(subject.version + 1)
+        expect(create(:version, :production).number).to eq(subject.number + 1)
       end
     end
 
@@ -33,8 +33,8 @@ RSpec.describe Version, type: :model do
 
       it 'leaves version number as-is' do
         subject.save
-        rollback = create :version, :production, version: subject.version
-        expect(rollback.version).to eq(subject.version)
+        rollback = create :version, :production, number: subject.number
+        expect(rollback.number).to eq(subject.number)
       end
     end
   end
@@ -48,27 +48,27 @@ RSpec.describe Version, type: :model do
     end
 
     it 'can find the latest production_version' do
-      expect(Version.production_version.version).to eq(3)
+      expect(Version.production_version.number).to eq(3)
     end
 
     it 'can find the latest preview_version' do
-      expect(Version.preview_version.version).to eq(4)
+      expect(Version.preview_version.number).to eq(4)
     end
 
     it 'can find the production_version on a given date and time as string' do
-      expect(Version.production_version_by_time(2.days.ago.to_s).version).to eq(1)
+      expect(Version.production_version_by_time(2.days.ago.to_s).number).to eq(1)
     end
 
     it 'can find the production_version on a given date and time as Time' do
-      expect(Version.production_version_by_time(2.days.ago).version).to eq(1)
+      expect(Version.production_version_by_time(2.days.ago).number).to eq(1)
     end
 
     it 'can find the preview_version on a given date and time as string' do
-      expect(Version.preview_version_by_time(1.day.ago.to_s).version).to eq(2)
+      expect(Version.preview_version_by_time(1.day.ago.to_s).number).to eq(2)
     end
 
     it 'can find the preview_version on a given date and time as Time' do
-      expect(Version.preview_version_by_time(1.day.ago).version).to eq(2)
+      expect(Version.preview_version_by_time(1.day.ago).number).to eq(2)
     end
   end
 end

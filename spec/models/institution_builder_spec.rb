@@ -3,8 +3,11 @@ require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:tables) { InstitutionBuilder::TABLES.map { |t| t.name.underscore.to_sym } }
+
   let(:valid_user) { User.first }
   let(:invalid_user) { User.new email: valid_user.email + 'xyz' }
+
+  let(:institutions) { Institution.version(Version.preview_version.number) }
 
   before(:each) do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
@@ -34,14 +37,11 @@ RSpec.describe InstitutionBuilder, type: :model do
 
   describe '#run' do
     context 'with a valid user' do
-      it 'creates a new preview version record' do
-        expect { InstitutionBuilder.run(valid_user) }.to change { Version.count }.by(1)
-      end
-
       it 'returns the new preview version record if sucessful' do
+        InstitutionBuilder.run(valid_user)
         version = InstitutionBuilder.run(valid_user)
 
-        expect(version).to eq(Version.first)
+        expect(version).to eq(Version.preview_version)
         expect(version.production).to be_falsey
       end
 
@@ -59,16 +59,27 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when initializing with Weam data' do
-      it 'adds only approved schools' do
+      let(:institutions) { Institution.version(Version.preview_version.number) }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'adds approved schools' do
+        expect(institutions.count).to eq(1)
+      end
+
+      it 'does not add non-approved schools' do
+        # add 2nd school
         create :weam, poo_status: 'nasty poo'
-        expect { InstitutionBuilder.run(valid_user) }.to change { Institution.count }.by(1)
+        InstitutionBuilder.run(valid_user)
+
+        expect(institutions.count).to eq(1)
       end
 
       it 'the new institution record matches the weam record' do
-        InstitutionBuilder.run(valid_user)
-
         weam = Weam.first
-        institution = Institution.first
+        institution = institutions.first
 
         Weam::USE_COLUMNS.each do |column|
           expect(weam[column]).to eq(institution[column])
@@ -77,12 +88,14 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Crosswalk data' do
-      it 'the new institution record matches the crosswalk record' do
+      let(:institution) { institutions.find_by(facility_code: crosswalk.facility_code) }
+      let(:crosswalk) { Crosswalk.first }
+
+      before(:each) do
         InstitutionBuilder.run(valid_user)
+      end
 
-        crosswalk = Crosswalk.first
-        institution = Institution.find_by(facility_code: crosswalk.facility_code)
-
+      it 'the new institution record matches the crosswalk record' do
         Crosswalk::USE_COLUMNS.each do |column|
           expect(crosswalk[column]).to eq(institution[column])
         end
@@ -90,46 +103,115 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Sva data' do
-      it 'the new institution record matches the sva record' do
+      let(:institution) { institutions.find_by(cross: sva.cross) }
+      let(:sva) { Sva.first }
+
+      before(:each) do
         InstitutionBuilder.run(valid_user)
+      end
 
-        sva = Sva.first
-        institution = Institution.find_by(cross: sva.cross)
-
+      it 'the new institution record matches the sva record' do
         Sva::USE_COLUMNS.each do |column|
           expect(sva[column]).to eq(institution[column])
         end
       end
 
       it 'sets student_veteran to TRUE for every sva record matched to institutions' do
-        InstitutionBuilder.run(valid_user)
-
-        sva = Sva.first
-        institution = Institution.find_by(cross: sva.cross)
         expect(institution.student_veteran).to be_truthy
       end
     end
 
     describe 'when adding Vsoc data' do
-      it 'the new institution record matches the vsoc record' do
+      let(:institution) { institutions.find_by(facility_code: vsoc.facility_code) }
+      let(:vsoc) { Vsoc.first }
+
+      before(:each) do
         InstitutionBuilder.run(valid_user)
+      end
 
-        vsoc = Vsoc.first
-        institution = Institution.find_by(facility_code: vsoc.facility_code)
-
+      it 'the new institution record matches the vsoc record' do
         Vsoc::USE_COLUMNS.each do |column|
           expect(vsoc[column]).to eq(institution[column])
         end
       end
     end
 
-    describe 'when adding Vsoc data' do
-      it 'sets eight_keys to TRUE for every eight_key record matched to institutions' do
-        InstitutionBuilder.run(valid_user)
+    describe 'when adding EightKey data' do
+      let(:institution) { institutions.find_by(cross: eight_key.cross) }
+      let(:eight_key) { EightKey.first }
 
-        eight_key = EightKey.first
-        institution = Institution.find_by(cross: eight_key.cross)
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'sets eight_keys to TRUE for every eight_key record matched to institutions' do
         expect(institution.eight_keys).to be_truthy
+      end
+    end
+
+    describe 'when adding Accreditation data' do
+      before(:each) do
+        Accreditation.delete_all
+      end
+
+      describe 'when accessing the accreditation time frame' do
+        it 'adds current accreditations' do
+          create :accreditation, :institution_builder, periods: '12/12/2012 - current'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_type).not_to be_nil
+        end
+
+        it 'does not add non-current accreditations' do
+          create :accreditation, :institution_builder, periods: 'expired accreditation'
+          InstitutionBuilder.run(valid_user)
+
+          expect(Institution.first.accreditation_type).to be_nil
+        end
+      end
+
+      describe 'when accessing the type of accrediting authority' do
+        it 'adds non-institutional accreditations' do
+          create :accreditation, :institution_builder, csv_accreditation_type: 'institutional'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_type).not_to be_nil
+        end
+
+        it 'does not add non-institutional accreditations' do
+          create :accreditation, :institution_builder, csv_accreditation_type: 'specialized'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_type).to be_nil
+        end
+      end
+
+      describe 'when accessing the accreditation type' do
+        { 'hybrid' => 'Design', 'national' => 'Biblical', 'regional' => 'Middle' }.each_pair do |type, name|
+          it "sets the accreditation_type for #{name}" do
+            create :accreditation, :institution_builder, agency_name: name
+            InstitutionBuilder.run(valid_user)
+
+            expect(institutions.first.accreditation_type).to eq(type)
+          end
+        end
+
+        it 'prefers national over hybrid' do
+          create :accreditation, :institution_builder, agency_name: 'Design School'
+          create :accreditation, :institution_builder, agency_name: 'Biblical School'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_type).to eq('national')
+        end
+
+        it 'prefers regional over hybrid and national' do
+          create :accreditation, :institution_builder, agency_name: 'Design School'
+          create :accreditation, :institution_builder, agency_name: 'Biblical School'
+          create :accreditation, :institution_builder, agency_name: 'Middle School'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_type).to eq('regional')
+        end
       end
     end
   end
