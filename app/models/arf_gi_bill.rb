@@ -2,8 +2,6 @@
 class ArfGiBill < ActiveRecord::Base
   include Loadable, Exportable
 
-  USE_COLUMNS = [:gibill].freeze
-
   MAP = {
     'facility no.' => { column: :facility_code, converter: FacilityCodeConverter },
     'school name' => { column: :institution, converter: InstitutionConverter },

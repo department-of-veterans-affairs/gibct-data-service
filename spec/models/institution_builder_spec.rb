@@ -109,9 +109,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'the new institution record matches the sva record' do
-        Sva::USE_COLUMNS.each do |column|
-          expect(sva[column]).to eq(institution[column])
-        end
+        expect(institution.student_veteran_link).to eq(sva.student_veteran_link)
       end
 
       it 'sets student_veteran to TRUE for every sva record matched to institutions' do
@@ -148,8 +146,12 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Accreditation data' do
+      let(:institution) { institutions.find_by(cross: accreditation.cross) }
+      let(:accreditation) { Accreditation.first }
+
       before(:each) do
         Accreditation.delete_all
+        Mou.first.update(status: nil)
       end
 
       describe 'when accessing the accreditation time frame' do
@@ -281,6 +283,78 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'the new institution record matches the p911_tf record' do
         P911Tf::USE_COLUMNS.each do |column|
           expect(p911_tf[column]).to eq(institution[column])
+        end
+      end
+    end
+
+    describe 'when adding P911Yr data' do
+      let(:institution) { institutions.find_by(facility_code: p911_yr.facility_code) }
+      let(:p911_yr) { P911Yr.first }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'the new institution record matches the p911_yr record' do
+        P911Yr::USE_COLUMNS.each do |column|
+          expect(p911_yr[column]).to eq(institution[column])
+        end
+      end
+    end
+
+    describe 'when adding Mou data' do
+      let(:institution) { institutions.find_by(ope6: mou.ope6) }
+      let(:crosswalk) { Crosswalk.find_by(ope6: Mou.first.ope6) }
+      let(:accreditation) { Accreditation.find_by(cross: crosswalk.cross) }
+      let(:reason) { 'DoD Probation For Military Tuition Assistance' }
+      let(:mou) { Mou.first }
+
+      it 'the new institution record matches the mou record' do
+        InstitutionBuilder.run(valid_user)
+
+        expect(mou.dodmou).to eq(institution.dodmou)
+      end
+
+      describe 'when accessing the caution flag' do
+        it 'sets the flag when dod_status is true' do
+          accreditation.update(accreditation_status: nil)
+          InstitutionBuilder.run(valid_user)
+
+          expect(institution.caution_flag).to be_truthy
+        end
+
+        it 'does not set the flag when dod_status is not true' do
+          mou.update(status: nil)
+          accreditation.update(accreditation_status: nil)
+          InstitutionBuilder.run(valid_user)
+
+          expect(institution.caution_flag).to be_falsey
+        end
+      end
+
+      describe 'when accessing the caution flag reason' do
+        it 'sets the reason when dod_status is true' do
+          accreditation.update(accreditation_status: nil)
+          InstitutionBuilder.run(valid_user)
+
+          expect(institution.caution_flag_reason).to eq(reason)
+        end
+
+        it 'appends to the existing caution flag reasons when dod_status is true' do
+          accreditation.update(accreditation_status: 'probation')
+          InstitutionBuilder.run(valid_user)
+
+          expect(institution.caution_flag_reason).to match(/.*DoD.*/)
+          expect(institution.caution_flag_reason).to match(/.*probation.*/)
+        end
+
+        it 'does not alter existing caution flag reasons when dod_status is not true' do
+          mou.update(status: nil)
+          accreditation.update(accreditation_status: 'probation')
+          InstitutionBuilder.run(valid_user)
+
+          expect(institution.caution_flag_reason).not_to match(/.*DoD.*/)
+          expect(institution.caution_flag_reason).to match(/.*probation.*/)
         end
       end
     end

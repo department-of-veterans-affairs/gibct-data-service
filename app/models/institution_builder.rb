@@ -37,6 +37,8 @@ module InstitutionBuilder
     add_accreditation
     add_arf_gi_bill
     add_p911_tf
+    add_p911_yr
+    add_mou
   end
 
   def self.run(user)
@@ -74,11 +76,8 @@ module InstitutionBuilder
   end
 
   def self.add_sva
-    columns = Sva::USE_COLUMNS.map(&:to_s)
-
     str = 'UPDATE institutions SET '
-    str += 'student_veteran = TRUE, '
-    str += columns.map { |col| %("#{col}" = svas.#{col}) }.join(', ')
+    str += 'student_veteran = TRUE, student_veteran_link = svas.student_veteran_link'
     str += ' FROM svas WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL'
 
     Institution.connection.update(str)
@@ -204,11 +203,10 @@ module InstitutionBuilder
   end
 
   def self.add_arf_gi_bill
-    columns = ArfGiBill::USE_COLUMNS.map(&:to_s)
-
     # Adds Gi Bill student counts to approved schools, matching by facility_code.
     str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = arf_gi_bills.#{col}) }.join(', ')
+    # str += columns.map { |col| %("#{col}" = arf_gi_bills.#{col}) }.join(', ')
+    str += ' gibill = arf_gi_bills.gibill '
     str += ' FROM arf_gi_bills '
     str += 'WHERE institutions.facility_code = arf_gi_bills.facility_code'
 
@@ -225,5 +223,60 @@ module InstitutionBuilder
     str += 'WHERE institutions.facility_code = p911_tfs.facility_code'
 
     Institution.connection.update(str)
+  end
+
+  def self.add_p911_yr
+    columns = P911Yr::USE_COLUMNS.map(&:to_s)
+
+    # Adds Post 911 yellow-ribbon approved schools, matching by facility_code.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = p911_yrs.#{col}) }.join(', ')
+    str += ' FROM p911_yrs '
+    str += 'WHERE institutions.facility_code = p911_yrs.facility_code'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_mou
+    reason = 'DoD Probation For Military Tuition Assistance'
+
+    # Adds DOD memorandum of understanding for approved schools by ope6 id
+    str = 'UPDATE institutions SET '
+    str += ' dodmou = mous.dodmou '
+    str += ' FROM mous '
+    str += 'WHERE institutions.ope6 = mous.ope6; '
+
+    # Sets the caution flag for any approved school having a probatiton or
+    # title IV non-compliance (status == true)
+    str += 'UPDATE institutions SET '
+    str += 'caution_flag = TRUE'
+    str += ' FROM mous '
+    str += 'WHERE institutions.ope6 = mous.ope6 '
+    str += 'AND mous.dod_status = TRUE; '
+
+    # Sets the caution flag reason for any approved school having a probatiton or
+    # title IV non-compliance (status == true). The inner select sets the
+    # caution flag text, ensuringstr there are not reasons (in case of multiple)
+    # memorandums. Lastly the outer UPDATE-CASE appends
+    # these caution flag reasons to any existing caution flag reasons.
+    str += 'UPDATE institutions SET caution_flag_reason = '
+    str += 'CASE WHEN institutions.caution_flag_reason IS NULL THEN '
+    str += ' AGG.am '
+    str += 'ELSE '
+    str += " CONCAT(institutions.caution_flag_reason, ', ', AGG.am) "
+    str += 'END '
+    str += 'FROM ( '
+    str += " SELECT M.ope6, '#{reason}'::text AS am "
+    str += '    FROM ('
+    str += '      SELECT m.ope6 '
+    str += '      FROM mous m '
+    str += '      WHERE m.dod_status = TRUE '
+    str += '      GROUP BY m.ope6 '
+    str += '    ) M '
+    str += '  GROUP BY M.ope6 '
+    str += ') AGG '
+    str += 'WHERE institutions.ope6 = AGG.ope6; '
+
+    Institution.connection.execute(str)
   end
 end

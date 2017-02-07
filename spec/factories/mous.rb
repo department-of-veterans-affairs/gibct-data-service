@@ -2,6 +2,7 @@
 FactoryGirl.define do
   factory :mou do
     ope { generate :ope }
+    status 'probation - dod'
 
     trait :by_dod do
       status 'probation - dod'
