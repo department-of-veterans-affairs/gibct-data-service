@@ -36,6 +36,7 @@ module InstitutionBuilder
     add_eight_key
     add_accreditation
     add_arf_gi_bill
+    add_p911_tf
   end
 
   def self.run(user)
@@ -207,9 +208,21 @@ module InstitutionBuilder
 
     # Adds Gi Bill student counts to approved schools, matching by facility_code.
     str = 'UPDATE institutions SET '
-    str += columns.map { |name| %("#{name}" = arf_gi_bills.#{name}) }.join(', ')
+    str += columns.map { |col| %("#{col}" = arf_gi_bills.#{col}) }.join(', ')
     str += ' FROM arf_gi_bills '
     str += 'WHERE institutions.facility_code = arf_gi_bills.facility_code'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_p911_tf
+    columns = P911Tf::USE_COLUMNS.map(&:to_s)
+
+    # Adds Post 911 info to approved schools, matching by facility_code.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = p911_tfs.#{col}) }.join(', ')
+    str += ' FROM p911_tfs '
+    str += 'WHERE institutions.facility_code = p911_tfs.facility_code'
 
     Institution.connection.update(str)
   end

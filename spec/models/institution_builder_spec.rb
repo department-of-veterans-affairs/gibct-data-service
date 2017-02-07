@@ -269,5 +269,20 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institution.gibill).to eq(arf_gi_bill.gibill)
       end
     end
+
+    describe 'when adding P911Tf data' do
+      let(:institution) { institutions.find_by(facility_code: p911_tf.facility_code) }
+      let(:p911_tf) { P911Tf.first }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'the new institution record matches the p911_tf record' do
+        P911Tf::USE_COLUMNS.each do |column|
+          expect(p911_tf[column]).to eq(institution[column])
+        end
+      end
+    end
   end
 end

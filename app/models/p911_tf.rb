@@ -2,6 +2,8 @@
 class P911Tf < ActiveRecord::Base
   include Loadable, Exportable
 
+  USE_COLUMNS = [:p911_recipients, :p911_tuition_fees].freeze
+
   MAP = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'name of institution' => { column: :institution, converter: InstitutionConverter },
