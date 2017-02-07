@@ -213,6 +213,50 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect(institutions.first.accreditation_type).to eq('regional')
         end
       end
+
+      describe 'when accessing the accreditation status' do
+        it "sets status and only for probation and 'show cause'" do
+          create :accreditation, :institution_builder, accreditation_status: 'expired'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_status).to be_nil
+        end
+
+        it "prefers 'show cause' over probation" do
+          create :accreditation, :institution_builder, accreditation_status: 'show cause'
+          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_status).to eq('show cause')
+        end
+      end
+
+      describe 'when setting caution flags' do
+        it 'sets the flag for when the accreditation_status is set' do
+          create :accreditation, :institution_builder, accreditation_status: 'expired'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.caution_flag).to be_truthy
+        end
+
+        it 'does not set the flag when the accreditation status is nil' do
+          create :accreditation, :institution_builder, accreditation_status: nil
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.caution_flag).to be_falsey
+        end
+      end
+
+      describe 'when setting the caution flag reason' do
+        it 'concatentates multiple accreditation cautions' do
+          create :accreditation, :institution_builder, accreditation_status: 'show cause'
+          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'expired'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.caution_flag_reason).to match(/.*show cause.*/)
+        end
+      end
     end
   end
 end

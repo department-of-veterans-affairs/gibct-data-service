@@ -185,7 +185,7 @@ module InstitutionBuilder
     str += 'FROM ( '
     str += "  SELECT A.cross, string_agg(A.AST, ', ') AS ad "
     str += '    FROM ('
-    str += "      SELECT a.cross, 'Accreditation (' || a.accreditation_status || ')' as AST"
+    str += "      SELECT a.cross, 'accreditation (' || a.accreditation_status || ')' as AST"
     str += '      FROM accreditations a '
     str += '      WHERE '
     str += '        a.cross IS NOT NULL AND '
