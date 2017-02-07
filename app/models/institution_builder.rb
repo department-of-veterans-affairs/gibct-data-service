@@ -35,6 +35,7 @@ module InstitutionBuilder
     add_vsoc
     add_eight_key
     add_accreditation
+    add_arf_gi_bill
   end
 
   def self.run(user)
@@ -199,5 +200,17 @@ module InstitutionBuilder
     str += 'WHERE institutions.cross = AGG.cross; '
 
     Institution.connection.execute(str)
+  end
+
+  def self.add_arf_gi_bill
+    columns = ArfGiBill::USE_COLUMNS.map(&:to_s)
+
+    # Adds Gi Bill student counts to approved schools, matching by facility_code.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |name| %("#{name}" = arf_gi_bills.#{name}) }.join(', ')
+    str += ' FROM arf_gi_bills '
+    str += 'WHERE institutions.facility_code = arf_gi_bills.facility_code'
+
+    Institution.connection.update(str)
   end
 end

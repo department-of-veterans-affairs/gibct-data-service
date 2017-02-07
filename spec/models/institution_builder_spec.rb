@@ -59,8 +59,6 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when initializing with Weam data' do
-      let(:institutions) { Institution.version(Version.preview_version.number) }
-
       before(:each) do
         InstitutionBuilder.run(valid_user)
       end
@@ -256,6 +254,19 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(institutions.first.caution_flag_reason).to match(/.*show cause.*/)
         end
+      end
+    end
+
+    describe 'when adding ArfGiBill data' do
+      let(:institution) { institutions.find_by(facility_code: arf_gi_bill.facility_code) }
+      let(:arf_gi_bill) { ArfGiBill.first }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'sets arf_gi_bills for every insitution matched by facility_code' do
+        expect(institution.gibill).to eq(arf_gi_bill.gibill)
       end
     end
   end
