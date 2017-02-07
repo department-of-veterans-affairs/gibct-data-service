@@ -40,6 +40,7 @@ module InstitutionBuilder
     add_p911_yr
     add_mou
     add_scorecard
+    add_ipeds_ic
   end
 
   def self.run(user)
@@ -289,6 +290,18 @@ module InstitutionBuilder
     str += columns.map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
     str += ' FROM scorecards '
     str += 'WHERE institutions.cross = scorecards.cross'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_ipeds_ic
+    columns = IpedsIc::USE_COLUMNS.map(&:to_s)
+
+    # Adds IC data to approved schools, matching by IPEDs id.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = ipeds_ics.#{col}) }.join(', ')
+    str += ' FROM ipeds_ics '
+    str += 'WHERE institutions.cross = ipeds_ics.cross'
 
     Institution.connection.update(str)
   end

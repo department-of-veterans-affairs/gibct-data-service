@@ -373,5 +373,20 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding IpedsIc data' do
+      let(:institution) { institutions.find_by(cross: ipeds_ic.cross) }
+      let(:ipeds_ic) { IpedsIc.first }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'the new institution record matches the ipeds_ic record' do
+        IpedsIc::USE_COLUMNS.each do |column|
+          # expect(ipeds_ic[column]).to eq(institution[column])
+        end
+      end
+    end
   end
 end

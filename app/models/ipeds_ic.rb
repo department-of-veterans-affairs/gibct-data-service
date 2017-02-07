@@ -2,6 +2,11 @@
 class IpedsIc < ActiveRecord::Base
   include Loadable, Exportable
 
+  USE_COLUMNS = [
+    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds,
+    :soc_member, :calendar, :online_all
+  ].freeze
+
   # Note do not map the "integer" values to "boolean" values otherwise exports will put true/false instead of 1/0,
   # instead move them to dependent booleans before validation.
   MAP = {
