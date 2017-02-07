@@ -401,5 +401,20 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institution.vet_tuition_policy_url).to eq(ipeds_hd.vet_tuition_policy_url)
       end
     end
+
+    describe 'when adding IpedsIcAy data' do
+      let(:institution) { institutions.find_by(cross: ipeds_ic_ay.cross) }
+      let(:ipeds_ic_ay) { IpedsIcAy.first }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'the new institution record matches the ipeds_ic record' do
+        IpedsIcAy::USE_COLUMNS.each do |column|
+          expect(ipeds_ic_ay[column]).to eq(institution[column])
+        end
+      end
+    end
   end
 end

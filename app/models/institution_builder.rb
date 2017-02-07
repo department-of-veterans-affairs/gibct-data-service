@@ -42,6 +42,7 @@ module InstitutionBuilder
     add_scorecard
     add_ipeds_ic
     add_ipeds_hd
+    add_ipeds_ic_ay
   end
 
   def self.run(user)
@@ -305,6 +306,17 @@ module InstitutionBuilder
     str += 'vet_tuition_policy_url = ipeds_hds.vet_tuition_policy_url'
     str += ' FROM ipeds_hds '
     str += 'WHERE institutions.cross = ipeds_hds.cross'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_ipeds_ic_ay
+    columns = IpedsIcAy::USE_COLUMNS.map(&:to_s)
+
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = ipeds_ic_ays.#{col}) }.join(', ')
+    str += ' FROM ipeds_ic_ays '
+    str += 'WHERE institutions.cross = ipeds_ic_ays.cross'
 
     Institution.connection.update(str)
   end
