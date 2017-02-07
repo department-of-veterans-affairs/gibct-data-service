@@ -358,5 +358,20 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding Scorecard data' do
+      let(:institution) { institutions.find_by(cross: scorecard.cross) }
+      let(:scorecard) { Scorecard.first }
+
+      before(:each) do
+        InstitutionBuilder.run(valid_user)
+      end
+
+      it 'the new institution record matches the scorecard record' do
+        Scorecard::USE_COLUMNS.each do |column|
+          expect(scorecard[column]).to eq(institution[column])
+        end
+      end
+    end
   end
 end

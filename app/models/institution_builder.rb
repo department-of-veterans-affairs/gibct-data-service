@@ -39,6 +39,7 @@ module InstitutionBuilder
     add_p911_tf
     add_p911_yr
     add_mou
+    add_scorecard
   end
 
   def self.run(user)
@@ -278,5 +279,17 @@ module InstitutionBuilder
     str += 'WHERE institutions.ope6 = AGG.ope6; '
 
     Institution.connection.execute(str)
+  end
+
+  def self.add_scorecard
+    columns = Scorecard::USE_COLUMNS.map(&:to_s)
+
+    # Adds scorecard data to approved schools, matching by IPEDs id.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
+    str += ' FROM scorecards '
+    str += 'WHERE institutions.cross = scorecards.cross'
+
+    Institution.connection.update(str)
   end
 end
