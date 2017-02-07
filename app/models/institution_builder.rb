@@ -43,6 +43,7 @@ module InstitutionBuilder
     add_ipeds_ic
     add_ipeds_hd
     add_ipeds_ic_ay
+    add_ipeds_ic_py
   end
 
   def self.run(user)
@@ -317,6 +318,21 @@ module InstitutionBuilder
     str += columns.map { |col| %("#{col}" = ipeds_ic_ays.#{col}) }.join(', ')
     str += ' FROM ipeds_ic_ays '
     str += 'WHERE institutions.cross = ipeds_ic_ays.cross'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_ipeds_ic_py
+    columns = IpedsIcPy::USE_COLUMNS.map(&:to_s)
+
+    str = 'UPDATE institutions SET '
+
+    str += columns.map do |col|
+      %("#{col}" = CASE WHEN institutions.#{col} IS NULL THEN ipeds_ic_pies.#{col} ELSE institutions.#{col} END)
+    end.join(', ')
+
+    str += ' FROM ipeds_ic_pies '
+    str += 'WHERE institutions.cross = ipeds_ic_pies.cross'
 
     Institution.connection.update(str)
   end

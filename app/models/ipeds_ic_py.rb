@@ -2,6 +2,8 @@
 class IpedsIcPy < ActiveRecord::Base
   include Loadable, Exportable
 
+  USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books].freeze
+
   MAP = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'prgmofr' => { column: :prgmofr, converter: BaseConverter },

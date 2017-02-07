@@ -416,5 +416,38 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding IpedsIcPy data' do
+      let(:institution) { institutions.find_by(cross: ipeds_ic_py.cross) }
+      let(:ipeds_ic_py) { IpedsIcPy.first }
+      let(:ipeds_ic_ay) { IpedsIcAy.first }
+
+      let(:nil_ipeds_ic_ay) { IpedsIcPy::USE_COLUMNS.each_with_object({}) { |v, o| o[v] = nil } }
+
+      context 'when the institution fields are nil' do
+        it 'the new institution record matches the ipeds_ic_py record' do
+          IpedsIcAy.first.update(nil_ipeds_ic_ay)
+          InstitutionBuilder.run(valid_user)
+
+          IpedsIcPy::USE_COLUMNS.each do |column|
+            expect(ipeds_ic_py[column]).to eq(institution[column])
+          end
+        end
+      end
+
+      context 'when the institution fields are not nil' do
+        it 'the new institution record matches the ipeds_ic_ay record' do
+          InstitutionBuilder.run(valid_user)
+
+          IpedsIcPy::USE_COLUMNS.each do |column|
+            expect(ipeds_ic_py[column]).not_to eq(institution[column])
+          end
+
+          IpedsIcAy::USE_COLUMNS.each do |column|
+            expect(ipeds_ic_ay[column]).to eq(institution[column])
+          end
+        end
+      end
+    end
   end
 end
