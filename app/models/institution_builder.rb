@@ -41,6 +41,7 @@ module InstitutionBuilder
     add_mou
     add_scorecard
     add_ipeds_ic
+    add_ipeds_hd
   end
 
   def self.run(user)
@@ -205,9 +206,7 @@ module InstitutionBuilder
   end
 
   def self.add_arf_gi_bill
-    # Adds Gi Bill student counts to approved schools, matching by facility_code.
     str = 'UPDATE institutions SET '
-    # str += columns.map { |col| %("#{col}" = arf_gi_bills.#{col}) }.join(', ')
     str += ' gibill = arf_gi_bills.gibill '
     str += ' FROM arf_gi_bills '
     str += 'WHERE institutions.facility_code = arf_gi_bills.facility_code'
@@ -218,7 +217,6 @@ module InstitutionBuilder
   def self.add_p911_tf
     columns = P911Tf::USE_COLUMNS.map(&:to_s)
 
-    # Adds Post 911 info to approved schools, matching by facility_code.
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = p911_tfs.#{col}) }.join(', ')
     str += ' FROM p911_tfs '
@@ -230,7 +228,6 @@ module InstitutionBuilder
   def self.add_p911_yr
     columns = P911Yr::USE_COLUMNS.map(&:to_s)
 
-    # Adds Post 911 yellow-ribbon approved schools, matching by facility_code.
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = p911_yrs.#{col}) }.join(', ')
     str += ' FROM p911_yrs '
@@ -242,7 +239,6 @@ module InstitutionBuilder
   def self.add_mou
     reason = 'DoD Probation For Military Tuition Assistance'
 
-    # Adds DOD memorandum of understanding for approved schools by ope6 id
     str = 'UPDATE institutions SET '
     str += ' dodmou = mous.dodmou '
     str += ' FROM mous '
@@ -285,7 +281,6 @@ module InstitutionBuilder
   def self.add_scorecard
     columns = Scorecard::USE_COLUMNS.map(&:to_s)
 
-    # Adds scorecard data to approved schools, matching by IPEDs id.
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
     str += ' FROM scorecards '
@@ -297,11 +292,19 @@ module InstitutionBuilder
   def self.add_ipeds_ic
     columns = IpedsIc::USE_COLUMNS.map(&:to_s)
 
-    # Adds IC data to approved schools, matching by IPEDs id.
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = ipeds_ics.#{col}) }.join(', ')
     str += ' FROM ipeds_ics '
     str += 'WHERE institutions.cross = ipeds_ics.cross'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_ipeds_hd
+    str = 'UPDATE institutions SET '
+    str += 'vet_tuition_policy_url = ipeds_hds.vet_tuition_policy_url'
+    str += ' FROM ipeds_hds '
+    str += 'WHERE institutions.cross = ipeds_hds.cross'
 
     Institution.connection.update(str)
   end
