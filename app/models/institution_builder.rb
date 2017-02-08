@@ -30,11 +30,11 @@ module InstitutionBuilder
 
   def self.run_insertions(version_number)
     initialize_with_weams(version_number)
-    add_crosswalk
-    add_sva
-    add_vsoc
-    add_eight_key
-    add_accreditation
+    add_crosswalk(version_number)
+    add_sva(version_number)
+    add_vsoc(version_number)
+    add_eight_key(version_number)
+    add_accreditation(version_number)
     add_arf_gi_bill
     add_p911_tf
     add_p911_yr
@@ -70,38 +70,46 @@ module InstitutionBuilder
     Institution.import institutions, validate: false, ignore: true
   end
 
-  def self.add_crosswalk
+  def self.add_crosswalk(version_number)
     columns = Crosswalk::USE_COLUMNS.map(&:to_s)
 
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = crosswalks.#{col}) }.join(', ')
-    str += ' FROM crosswalks WHERE institutions.facility_code = crosswalks.facility_code'
+    str += '  FROM crosswalks '
+    str += '  WHERE institutions.facility_code = crosswalks.facility_code '
+    str += "   AND institutions.version = #{version_number} "
 
     Institution.connection.update(str)
   end
 
-  def self.add_sva
+  def self.add_sva(version_number)
     str = 'UPDATE institutions SET '
-    str += 'student_veteran = TRUE, student_veteran_link = svas.student_veteran_link'
-    str += ' FROM svas WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL'
+    str += '  student_veteran = TRUE, student_veteran_link = svas.student_veteran_link'
+    str += '  FROM svas '
+    str += '  WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL'
+    str += "    AND institutions.version = #{version_number} "
 
     Institution.connection.update(str)
   end
 
-  def self.add_vsoc
+  def self.add_vsoc(version_number)
     columns = Vsoc::USE_COLUMNS.map(&:to_s)
 
     str = 'UPDATE institutions SET '
     str += columns.map { |col| %("#{col}" = vsocs.#{col}) }.join(', ')
-    str += ' FROM vsocs WHERE institutions.facility_code = vsocs.facility_code'
+    str += '  FROM vsocs '
+    str += '  WHERE institutions.facility_code = vsocs.facility_code'
+    str += "    AND institutions.version = #{version_number}; "
 
     Institution.connection.update(str)
   end
 
-  def self.add_eight_key
+  def self.add_eight_key(version_number)
     str = 'UPDATE institutions SET eight_keys = TRUE '
-    str += ' FROM eight_keys WHERE institutions.cross = eight_keys.cross'
-    str += ' AND eight_keys.cross IS NOT NULL'
+    str += ' FROM eight_keys '
+    str += ' WHERE institutions.cross = eight_keys.cross'
+    str += '   AND eight_keys.cross IS NOT NULL'
+    str += "    AND institutions.version = #{version_number}; "
 
     Institution.connection.update(str)
   end
@@ -110,71 +118,61 @@ module InstitutionBuilder
   # ordering of both accreditation type and status for those schools having conflicting types
   # hybrid < national < regional, and for status: 'show cause' < probation. There is a
   # requirement to include only those accreditations that are institutional and currently active.
-  def self.add_accreditation
-    # Sets all accreditations that are hybrid types first
-    str = 'UPDATE institutions SET '
-    str += 'accreditation_type = accreditations.accreditation_type'
-    str += ' FROM accreditations '
-    str += 'WHERE institutions.cross = accreditations.cross '
-    str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND accreditations.periods LIKE '%current%' )
-    str += %(AND accreditations.csv_accreditation_type = 'institutional' )
-    str += "AND accreditations.accreditation_type = 'hybrid'; "
+  def self.add_accreditation(version_number)
+    # Set the accreditation_type according to the hierarchy hybrid < national < regional
+    str = ' UPDATE institutions SET accreditation_type = CASE '
+    str += "  WHEN at_types @> '{ regional }' THEN 'regional' "
+    str += "  WHEN at_types @> '{ national }' THEN 'national' "
+    str += "  WHEN at_types @> '{ hybrid }' THEN 'hybrid' "
+    str += '  ELSE NULL '
+    str += 'END '
+    str += 'FROM ('
+    str += 'SELECT "cross", array_agg(DISTINCT(accreditation_type)) AS at_types '
+    str += 'FROM accreditations '
+    str += 'WHERE "cross" IS NOT NULL '
+    str += '  AND accreditation_type IS NOT NULL '
+    str += "  AND periods LIKE '%current%' "
+    str += "  AND csv_accreditation_type = 'institutional' "
+    str += 'GROUP BY "cross") AS cross_type_arr '
+    str += 'WHERE cross_type_arr.cross = institutions.cross '
+    str += "  AND institutions.version = #{version_number} "
 
-    # Sets all accreditations that are national, overriding conflicts with hybrids
-    str += 'UPDATE institutions SET '
-    str += 'accreditation_type = accreditations.accreditation_type'
-    str += ' FROM accreditations '
-    str += 'WHERE institutions.cross = accreditations.cross '
-    str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND accreditations.periods LIKE '%current%' )
-    str += %(AND accreditations.csv_accreditation_type = 'institutional' )
-    str += "AND accreditations.accreditation_type = 'national';"
+    Institution.connection.update(str)
 
-    # Sets all accreditations that are regional, overriding conflicts with hybrids and nationals
-    str += 'UPDATE institutions SET '
-    str += 'accreditation_type = accreditations.accreditation_type'
-    str += ' FROM accreditations '
-    str += 'WHERE institutions.cross = accreditations.cross '
-    str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND accreditations.periods LIKE '%current%' )
-    str += %(AND accreditations.csv_accreditation_type = 'institutional' )
-    str += "AND accreditations.accreditation_type = 'regional'; "
+    # Set the accreditation_status according to the hierarchy probation < show cause
+    str = ' UPDATE institutions SET accreditation_status = CASE '
+    str += "  WHEN as_statuses @> '{ regional }' THEN 'regional' "
+    str += "  WHEN as_statuses @> '{ show cause }' THEN 'show cause' "
+    str += "  WHEN as_statuses @> '{ probation }' THEN 'probation' "
+    str += '  ELSE NULL '
+    str += 'END '
+    str += 'FROM ('
+    str += '  SELECT "cross", accreditation_type, array_agg(DISTINCT(accreditation_status)) AS as_statuses '
+    str += '    FROM accreditations '
+    str += '    WHERE "cross" IS NOT NULL '
+    str += '      AND accreditation_type IS NOT NULL '
+    str += "      AND (accreditation_status = 'probation' OR accreditation_status = 'show cause') "
+    str += "      AND periods LIKE '%current%' "
+    str += "      AND csv_accreditation_type = 'institutional' "
+    str += '    GROUP BY "cross", accreditation_type) AS cross_status_arr '
+    str += 'WHERE institutions.cross = cross_status_arr.cross '
+    str += '  AND institutions.accreditation_type = cross_status_arr.accreditation_type '
+    str += "  AND institutions.version = #{version_number} "
 
-    # Sets status for probationary accreditations, the status being derived from the
-    # higest level of accreditation (hybrid, national, regional).
-    str += 'UPDATE institutions SET '
-    str += 'accreditation_status = accreditations.accreditation_status'
-    str += ' FROM accreditations '
-    str += 'WHERE institutions.cross = accreditations.cross '
-    str += 'AND institutions.accreditation_type = accreditations.accreditation_type '
-    str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND accreditations.periods LIKE '%current%' )
-    str += "AND accreditations.csv_accreditation_type = 'institutional' "
-    str += "AND accreditations.accreditation_status = 'probation'; "
-
-    # Sets status for show cause accreditations, overwriting probationary statuses,
-    # the status being derived from the higest level of accreditation (hybrid, national, regional).
-    str += 'UPDATE institutions SET '
-    str += 'accreditation_status = accreditations.accreditation_status'
-    str += ' FROM accreditations '
-    str += 'WHERE institutions.cross = accreditations.cross '
-    str += 'AND institutions.accreditation_type = accreditations.accreditation_type '
-    str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND accreditations.periods LIKE '%current%' )
-    str += "AND accreditations.csv_accreditation_type = 'institutional' "
-    str += "AND accreditations.accreditation_status = 'show cause'; "
+    Institution.connection.update(str)
 
     # Sets the caution flag for all accreditations that have a non-null status. Note,
     # that institutional type accreditations are always, null, probation, or show cause.
-    str += 'UPDATE institutions SET '
-    str += 'caution_flag = TRUE'
-    str += ' FROM accreditations '
+    str = ' UPDATE institutions SET '
+    str += '  caution_flag = TRUE '
+    str += 'FROM accreditations '
     str += 'WHERE institutions.cross = accreditations.cross '
-    str += 'AND accreditations.cross IS NOT NULL '
-    str += %(AND accreditations.periods LIKE '%current%' )
-    str += 'AND accreditations.accreditation_status IS NOT NULL '
-    str += "AND accreditations.csv_accreditation_type = 'institutional'; "
+    str += '  AND accreditations.cross IS NOT NULL '
+    str += "  AND accreditations.periods LIKE '%current%' "
+    str += '  AND accreditations.accreditation_status IS NOT NULL '
+    str += "  AND accreditations.csv_accreditation_type = 'institutional'; "
+
+    Institution.connection.update(str)
 
     # Sets the caution flag reason for all accreditations that have a non-null status.
     # The innermost subquery retrieves a unique set of statues (it is plausible that
@@ -182,7 +180,7 @@ module InstitutionBuilder
     # don't want to repeat the same reasons. The outer subquery then concatentates these
     # unique reasons into a comma-separated string. Lastly the outer UPDATE-CASE appends
     # these caution flag reasons to any existing caution flag reasons.
-    str += 'UPDATE institutions SET caution_flag_reason = '
+    str = 'UPDATE institutions SET caution_flag_reason = '
     str += 'CASE WHEN institutions.caution_flag_reason IS NULL THEN '
     str += '  AGG.ad '
     str += 'ELSE '
@@ -204,7 +202,7 @@ module InstitutionBuilder
     str += ') AGG '
     str += 'WHERE institutions.cross = AGG.cross; '
 
-    Institution.connection.execute(str)
+    Institution.connection.update(str)
   end
 
   def self.add_arf_gi_bill
@@ -241,25 +239,23 @@ module InstitutionBuilder
   def self.add_mou
     reason = 'DoD Probation For Military Tuition Assistance'
 
+    # Sets the caution flag for any approved school having a probatiton or
+    # title IV non-compliance (status == true)
     str = 'UPDATE institutions SET '
-    str += ' dodmou = mous.dodmou '
+    str += ' dodmou = mous.dodmou, caution_flag = CASE '
+    str += '   WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag '
+    str += ' END '
     str += ' FROM mous '
     str += 'WHERE institutions.ope6 = mous.ope6; '
 
-    # Sets the caution flag for any approved school having a probatiton or
-    # title IV non-compliance (status == true)
-    str += 'UPDATE institutions SET '
-    str += 'caution_flag = TRUE'
-    str += ' FROM mous '
-    str += 'WHERE institutions.ope6 = mous.ope6 '
-    str += 'AND mous.dod_status = TRUE; '
+    Institution.connection.update(str)
 
     # Sets the caution flag reason for any approved school having a probatiton or
     # title IV non-compliance (status == true). The inner select sets the
     # caution flag text, ensuringstr there are not reasons (in case of multiple)
     # memorandums. Lastly the outer UPDATE-CASE appends
     # these caution flag reasons to any existing caution flag reasons.
-    str += 'UPDATE institutions SET caution_flag_reason = '
+    str = 'UPDATE institutions SET caution_flag_reason = '
     str += 'CASE WHEN institutions.caution_flag_reason IS NULL THEN '
     str += ' AGG.am '
     str += 'ELSE '

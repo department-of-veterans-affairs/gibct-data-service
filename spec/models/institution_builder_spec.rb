@@ -197,17 +197,17 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers national over hybrid' do
-          create :accreditation, :institution_builder, agency_name: 'Design School'
           create :accreditation, :institution_builder, agency_name: 'Biblical School'
+          create :accreditation, :institution_builder, agency_name: 'Design School'
           InstitutionBuilder.run(valid_user)
 
           expect(institutions.first.accreditation_type).to eq('national')
         end
 
         it 'prefers regional over hybrid and national' do
-          create :accreditation, :institution_builder, agency_name: 'Design School'
           create :accreditation, :institution_builder, agency_name: 'Biblical School'
           create :accreditation, :institution_builder, agency_name: 'Middle School'
+          create :accreditation, :institution_builder, agency_name: 'Design School'
           InstitutionBuilder.run(valid_user)
 
           expect(institutions.first.accreditation_type).to eq('regional')
@@ -222,12 +222,29 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect(institutions.first.accreditation_status).to be_nil
         end
 
-        it "prefers 'show cause' over probation" do
+        ['probation', 'show cause'].each do |status|
+          it "sets the accreditation_type for #{status}" do
+            create :accreditation, :institution_builder, accreditation_status: status
+            InstitutionBuilder.run(valid_user)
+
+            expect(institutions.first.accreditation_status).to eq(status)
+          end
+        end
+
+        it "prefers 'show cause' over probation for the same accreditation type" do
           create :accreditation, :institution_builder, accreditation_status: 'show cause'
           create :accreditation, :institution_builder, accreditation_status: 'probation'
           InstitutionBuilder.run(valid_user)
 
           expect(institutions.first.accreditation_status).to eq('show cause')
+        end
+
+        it 'only uses the accreditation_status for the accreditation_type' do
+          create :accreditation, :institution_builder, accreditation_status: 'show cause'
+          create :accreditation, :institution_builder, accreditation_status: 'probation', agency_name: 'Biblical'
+          InstitutionBuilder.run(valid_user)
+
+          expect(institutions.first.accreditation_status).to eq('probation')
         end
       end
 
