@@ -587,6 +587,46 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
       end
+
+      describe 'when adding Settlement data' do
+        let(:institution) { institutions.find_by(cross: settlement.cross) }
+        let(:settlement) { Settlement.first }
+
+        describe 'the caution_flag' do
+          it 'is set for every settlement' do
+            create :settlement, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institution.caution_flag).to be_truthy
+          end
+        end
+
+        describe 'the caution_flag_reason' do
+          it 'is set to the settlement_description' do
+            create :settlement, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
+          end
+
+          it 'is set with multiple descriptions' do
+            create :settlement, :institution_builder
+            create :settlement, :institution_builder, settlement_description: 'another description'
+            InstitutionBuilder.run(user)
+
+            expect(institution.caution_flag_reason).to eq("#{settlement.settlement_description}, another description")
+          end
+
+          it 'is concatenated with the settlement_description' do
+            create :accreditation, :institution_builder, accreditation_status: 'probation'
+            create :settlement, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+              .and match(settlement.settlement_description)
+          end
+        end
+      end
     end
   end
 end

@@ -41,6 +41,7 @@ module InstitutionBuilder
     add_ipeds_ic_ay
     add_ipeds_ic_py
     add_sec_702
+    add_settlement
   end
 
   def self.run(user)
@@ -136,7 +137,6 @@ module InstitutionBuilder
 
     # Set the accreditation_status according to the hierarchy probation < show cause
     str = ' UPDATE institutions SET accreditation_status = CASE '
-    str += "  WHEN as_statuses @> '{ regional }' THEN 'regional' "
     str += "  WHEN as_statuses @> '{ show cause }' THEN 'show cause' "
     str += "  WHEN as_statuses @> '{ probation }' THEN 'probation' "
     str += '  ELSE NULL '
@@ -312,15 +312,63 @@ module InstitutionBuilder
     str += '  sec_702 = s702_list.sec_702, caution_flag = NOT s702_list.sec_702, '
     str += '  caution_flag_reason = CASE WHEN NOT s702_list.sec_702 '
     str += "    THEN concat_ws(',', caution_flag_reason, '#{reason}') ELSE caution_flag_reason END "
-    str += '  FROM ( '
-    str += '    SELECT facility_code, sec702s.sec_702 FROM institutions '
-    str += '      INNER JOIN sec702s ON sec702s.state = institutions.state '
-    str += '      EXCEPT SELECT facility_code, sec_702 FROM sec702_schools '
-    str += '    UNION SELECT facility_code, sec_702 FROM sec702_schools '
-    str += '  ) AS s702_list '
-    str += '  WHERE institutions.facility_code = s702_list.facility_code '
+    str += 'FROM ( '
+    str += '  SELECT facility_code, sec702s.sec_702 FROM institutions '
+    str += '    INNER JOIN sec702s ON sec702s.state = institutions.state '
+    str += '    EXCEPT SELECT facility_code, sec_702 FROM sec702_schools '
+    str += '  UNION SELECT facility_code, sec_702 FROM sec702_schools '
+    str += ') AS s702_list '
+    str += 'WHERE institutions.facility_code = s702_list.facility_code '
     str += "    AND institutions.institution_type_name = 'public'"
 
     Institution.connection.update(str)
+  end
+
+  def self.add_settlement
+    # Sets caution flags if the corresponing approved school (by IPEDs id)
+    # has an entry in the settlements table.
+    str = ' UPDATE institutions SET '
+    str += '  caution_flag = TRUE, '
+    str += "  caution_flag_reason = concat_ws(',', caution_flag_reason, settlement_list.descriptions) "
+    str += 'FROM ( '
+    str += %( SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions )
+    str += '  FROM settlements '
+    str += '  WHERE "cross" IS NOT NULL '
+    str += '  GROUP BY "cross" '
+    str += ') settlement_list '
+    str += 'WHERE institutions.cross = settlement_list.cross'
+
+    Institution.connection.update(str)
+    # str = 'UPDATE data_csvs SET '
+    # str += 'caution_flag = TRUE '
+    # str += ' FROM settlements '
+    # str += 'WHERE data_csvs.cross = settlements.cross; '
+
+    # Sets the caution flag reason. The inner select ensures that the
+    # settlement descriptions are unique for each school (There may be
+    # more than one per school). The outer select aggregates these
+    # reasons together in a comma delimited string that are appended to
+    # the existing caution flag reasons.
+    # query_str += 'UPDATE data_csvs SET caution_flag_reason = '
+    # query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
+    # query_str += "  AGG.asd "
+    # query_str += "ELSE "
+    # query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.asd) "
+    # query_str += "END "
+    # query_str += "FROM ( "
+    # query_str += "  SELECT S.cross, string_agg(S.sd, ', ') AS asd "
+    # query_str += "    FROM ("
+    # query_str += "      SELECT s.cross, s.settlement_description AS sd"
+    # query_str += "      FROM settlements s "
+    # query_str += "      WHERE "
+    # query_str += "        s.cross IS NOT NULL AND "
+    # query_str += "        s.settlement_description IS NOT NULL "
+    # query_str += "      GROUP BY s.cross, s.settlement_description "
+    # query_str += "    ) S "
+    # query_str += "  GROUP BY S.cross "
+    # query_str += ") AGG "
+    # query_str += 'WHERE data_csvs.cross = AGG.cross'
+
+    # run_bulk_query(query_str)
   end
 end
