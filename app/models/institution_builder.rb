@@ -43,6 +43,7 @@ module InstitutionBuilder
     add_sec_702
     add_settlement
     add_hcm
+    add_outcome
   end
 
   def self.run(user)
@@ -356,6 +357,20 @@ module InstitutionBuilder
     str += '  GROUP BY "ope6" '
     str += ') hcm_list '
     str += 'WHERE institutions.ope6 = hcm_list.ope6'
+
+    Institution.connection.update(str)
+  end
+
+  # TODO: Complaint
+
+  def self.add_outcome
+    columns = Outcome::USE_COLUMNS.map(&:to_s)
+
+    # Sets the outcome data for each school, matching by facility code.
+    str = 'UPDATE institutions SET '
+    str += columns.map { |col| %("#{col}" = outcomes.#{col}) }.join(', ')
+    str += ' FROM outcomes '
+    str += 'WHERE institutions.facility_code = outcomes.facility_code '
 
     Institution.connection.update(str)
   end

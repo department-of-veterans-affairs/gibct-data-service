@@ -2,6 +2,12 @@
 class Outcome < ActiveRecord::Base
   include Loadable, Exportable
 
+  USE_COLUMNS = [
+    :retention_rate_veteran_ba, :retention_rate_veteran_otb,
+    :persistance_rate_veteran_ba, :persistance_rate_veteran_otb,
+    :graduation_rate_veteran, :transfer_out_rate_veteran
+  ].freeze
+
   MAP = {
     'va_facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'va_facility_name' => { column: :institution, converter: InstitutionConverter },
