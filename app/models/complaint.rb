@@ -1,13 +1,8 @@
 # frozen_string_literal: true
-# Complaint data appears in its CSV as list of individual student veteran complaints keyed by an optional facility code.
-# Therefore each institution can have more than one complaint. If a facility code is not present, then the complaint is
-# ignored (although OPE ids are provided, they are not reliable as it turns out).
-#
-# The complaints themselves fall into a number of categories as detailed in the class constant FAC_CODE_TERMS hash. The
-# keys are attributes of the complaint that are incremented by 1 if the corresponding value is found in the complaint
-# issue attribute. By summing these complaint attributes accross a given facility_code, we obtain complaints for that
-# campus, and by summing accross an OPE6 id that is obtained from the crosswalk when building out the institutions
-# table, we arrive at the roll-up sum for the entire institution.
+
+# By summing these complaint attributes accross a given facility_code, we obtain complaints for a campus, and by
+# summing accross an OPE6 id that is obtained from the crosswalk when building out the institutions table, we
+# arrive at the roll-up sum for the entire institution.
 #
 # To accomplish this, when saving each instance of a complaint, we check the the method :ok_to_sum? when the record is
 # being saved. If not, all complaint counts remain at 0, otherwise we run the method :set_fac_code_terms to set each
@@ -17,15 +12,6 @@
 # :update_sums_by_ope6 while the institution table is being built.
 #
 # Whether or not a complaint is counted, it must have (1) a facility_code, (2) be closed, and (3) not be invalid.
-#
-# :status and :closed_reason contain the status and disposition of the complaint, only valid and closed complaints are
-# used by the DS and GIBCT.
-#
-# FAC_CODE_TERMS contain substrings in each complaint that identify the type of complaint this instance holds. There may
-# be several types of complaints for each campus (facility code), and institution (ope6). FAC_CODE_SUMS map the
-# instance's facility code-based summation field with the FAC_CODE_TERM. OPE6_SUMS map the instance's institution
-# level-based ope6 summation field with the FAC_CODE_TERM. USE_COLUMNS hold those columns that get copied to the
-# institution table during its build process.
 
 # frozen_string_literal: true
 class Complaint < ActiveRecord::Base
@@ -34,6 +20,11 @@ class Complaint < ActiveRecord::Base
   STATUSES = %w(active closed pending reserved).freeze
   CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
 
+  # FAC_CODE_TERMS contain substrings in each complaint that identify the type of complaint. There may
+  # be several types of complaints for each campus (facility code), and institution (ope6). FAC_CODE_SUMS map the
+  # instance's facility code-based summation field with the FAC_CODE_TERM. OPE6_SUMS map the instance's institution
+  # level-based ope6 summation field with the FAC_CODE_TERM. USE_COLUMNS hold those columns that get copied to the
+  # institution table during its build process.
   FAC_CODE_TERMS = {
     cfc: /.*/, cfbfc: /financial/, cqbfc: /quality/, crbfc: /refund/, cmbfc: /recruit/, cabfc: /accreditation/,
     cdrbfc: /degree/, cslbfc: /loans/, cgbfc: /grade/, cctbfc: /transfer/, cjbfc: /job/, ctbfc: /transcript/,
@@ -72,6 +63,8 @@ class Complaint < ActiveRecord::Base
     complaints_other_by_ope_id_do_not_sum: :cobfc
   }.freeze
 
+  USE_COLUMNS = (FAC_CODE_ROLL_UP_SUMS.keys + OPE6_ROLL_UP_SUMS.keys).freeze
+
   MAP = {
     'case id' => { column: :case_id, converter: BaseConverter },
     'level' => { column: :level, converter: BaseConverter },
@@ -95,6 +88,7 @@ class Complaint < ActiveRecord::Base
 
   before_validation :derive_dependent_columns
 
+  # Updates these unreliable opes with onese from the crosswalk, which are maintained and more reliable.
   def self.update_ope_from_crosswalk
     Complaint.connection.update(<<-SQL)
       UPDATE complaints

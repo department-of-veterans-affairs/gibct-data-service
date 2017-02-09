@@ -43,6 +43,7 @@ module InstitutionBuilder
     add_sec_702
     add_settlement
     add_hcm
+    add_complaint
     add_outcome
   end
 
@@ -69,154 +70,168 @@ module InstitutionBuilder
   end
 
   def self.add_crosswalk(version_number)
-    columns = Crosswalk::USE_COLUMNS.map(&:to_s)
+    columns = Crosswalk::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = crosswalks.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = crosswalks.#{col}) }.join(', ')
-    str += '  FROM crosswalks '
-    str += '  WHERE institutions.facility_code = crosswalks.facility_code '
-    str += "   AND institutions.version = #{version_number} "
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM crosswalks
+      WHERE institutions.facility_code = crosswalks.facility_code
+        AND institutions.version = #{version_number};
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_sva(version_number)
-    str = 'UPDATE institutions SET '
-    str += '  student_veteran = TRUE, student_veteran_link = svas.student_veteran_link'
-    str += '  FROM svas '
-    str += '  WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL'
-    str += "    AND institutions.version = #{version_number} "
+    str = <<-SQL
+      UPDATE institutions SET
+        student_veteran = TRUE, student_veteran_link = svas.student_veteran_link
+      FROM svas
+      WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL
+        AND institutions.version = #{version_number};
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_vsoc(version_number)
-    columns = Vsoc::USE_COLUMNS.map(&:to_s)
+    columns = Vsoc::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = vsocs.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = vsocs.#{col}) }.join(', ')
-    str += '  FROM vsocs '
-    str += '  WHERE institutions.facility_code = vsocs.facility_code'
-    str += "    AND institutions.version = #{version_number}; "
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM vsocs
+      WHERE institutions.facility_code = vsocs.facility_code
+        AND institutions.version = #{version_number};
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_eight_key(version_number)
-    str = 'UPDATE institutions SET eight_keys = TRUE '
-    str += ' FROM eight_keys '
-    str += ' WHERE institutions.cross = eight_keys.cross'
-    str += '   AND eight_keys.cross IS NOT NULL'
-    str += "    AND institutions.version = #{version_number}; "
+    str = <<-SQL
+      UPDATE institutions SET eight_keys = TRUE
+      FROM eight_keys
+      WHERE institutions.cross = eight_keys.cross
+        AND eight_keys.cross IS NOT NULL
+        AND institutions.version = #{version_number};
+    SQL
 
     Institution.connection.update(str)
   end
 
-  # Updates the institution table with data from the accreditations table. There is an explict
-  # ordering of both accreditation type and status for those schools having conflicting types
-  # hybrid < national < regional, and for status: 'show cause' < probation. There is a
-  # requirement to include only those accreditations that are institutional and currently active.
   def self.add_accreditation(version_number)
     # Set the accreditation_type according to the hierarchy hybrid < national < regional
-    str = ' UPDATE institutions SET accreditation_type = CASE '
-    str += "  WHEN at_types @> '{ regional }' THEN 'regional' "
-    str += "  WHEN at_types @> '{ national }' THEN 'national' "
-    str += "  WHEN at_types @> '{ hybrid }' THEN 'hybrid' "
-    str += '  ELSE NULL '
-    str += 'END '
-    str += 'FROM ('
-    str += 'SELECT "cross", array_agg(DISTINCT(accreditation_type)) AS at_types '
-    str += 'FROM accreditations '
-    str += 'WHERE "cross" IS NOT NULL '
-    str += '  AND accreditation_type IS NOT NULL '
-    str += "  AND periods LIKE '%current%' "
-    str += "  AND csv_accreditation_type = 'institutional' "
-    str += 'GROUP BY "cross") AS cross_type_arr '
-    str += 'WHERE cross_type_arr.cross = institutions.cross '
-    str += "  AND institutions.version = #{version_number} "
+    # We include only those accreditation that are institutional and currently active.
+    str = <<-SQL
+      UPDATE institutions SET accreditation_type = CASE
+        WHEN at_types @> '{ regional }' THEN 'regional'
+        WHEN at_types @> '{ national }' THEN 'national'
+        WHEN at_types @> '{ hybrid }' THEN 'hybrid'
+        ELSE NULL
+      END
+      FROM (
+        SELECT "cross", array_agg(DISTINCT(accreditation_type)) AS at_types
+        FROM accreditations
+        WHERE "cross" IS NOT NULL
+          AND accreditation_type IS NOT NULL
+          AND periods LIKE '%current%'
+          AND csv_accreditation_type = 'institutional'
+        GROUP BY "cross") AS cross_type_arr
+      WHERE cross_type_arr.cross = institutions.cross
+        AND institutions.version = #{version_number};
+    SQL
 
     Institution.connection.update(str)
 
-    # Set the accreditation_status according to the hierarchy probation < show cause
-    str = ' UPDATE institutions SET accreditation_status = CASE '
-    str += "  WHEN as_statuses @> '{ show cause }' THEN 'show cause' "
-    str += "  WHEN as_statuses @> '{ probation }' THEN 'probation' "
-    str += '  ELSE NULL '
-    str += 'END '
-    str += 'FROM ('
-    str += '  SELECT "cross", accreditation_type, array_agg(DISTINCT(accreditation_status)) AS as_statuses '
-    str += '    FROM accreditations '
-    str += '    WHERE "cross" IS NOT NULL '
-    str += '      AND accreditation_type IS NOT NULL '
-    str += "      AND (accreditation_status = 'probation' OR accreditation_status = 'show cause') "
-    str += "      AND periods LIKE '%current%' "
-    str += "      AND csv_accreditation_type = 'institutional' "
-    str += '    GROUP BY "cross", accreditation_type) AS cross_status_arr '
-    str += 'WHERE institutions.cross = cross_status_arr.cross '
-    str += '  AND institutions.accreditation_type = cross_status_arr.accreditation_type '
-    str += "  AND institutions.version = #{version_number} "
+    # Set the accreditation_status according to the hierarchy probation < show cause aligned by
+    # accreditation_type
+    str = <<-SQL
+      UPDATE institutions SET accreditation_status = CASE
+        WHEN as_statuses @> '{ show cause }' THEN 'show cause'
+        WHEN as_statuses @> '{ probation }' THEN 'probation'
+        ELSE NULL
+      END
+      FROM (
+        SELECT "cross", accreditation_type, array_agg(DISTINCT(accreditation_status)) AS as_statuses
+        FROM accreditations
+        WHERE "cross" IS NOT NULL
+          AND accreditation_type IS NOT NULL
+          AND (accreditation_status = 'probation' OR accreditation_status = 'show cause')
+          AND periods LIKE '%current%'
+          AND csv_accreditation_type = 'institutional'
+        GROUP BY "cross", accreditation_type) AS cross_status_arr
+      WHERE institutions.cross = cross_status_arr.cross
+        AND institutions.accreditation_type = cross_status_arr.accreditation_type
+        AND institutions.version = #{version_number};
+    SQL
 
     Institution.connection.update(str)
 
     # Sets the caution flag for all accreditations that have a non-null status. Note,
     # that institutional type accreditations are always, null, probation, or show cause.
-    str = ' UPDATE institutions SET '
-    str += '  caution_flag = TRUE '
-    str += 'FROM accreditations '
-    str += 'WHERE institutions.cross = accreditations.cross '
-    str += '  AND accreditations.cross IS NOT NULL '
-    str += "  AND accreditations.periods LIKE '%current%' "
-    str += '  AND accreditations.accreditation_status IS NOT NULL '
-    str += "  AND accreditations.csv_accreditation_type = 'institutional'; "
+    str = <<-SQL
+      UPDATE institutions SET caution_flag = TRUE
+      FROM accreditations
+      WHERE institutions.cross = accreditations.cross
+        AND accreditations.cross IS NOT NULL
+        AND accreditations.periods LIKE '%current%'
+        AND accreditations.accreditation_status IS NOT NULL
+        AND accreditations.csv_accreditation_type = 'institutional';
+    SQL
 
     Institution.connection.update(str)
 
     # Sets the caution flag reason for all accreditations that have a non-null status.
     # The innermost subquery retrieves a distinct set of statuses (it is plausible that
     # identical statuses may apply to the same school but from different agencies).
-    str = ' UPDATE institutions SET '
-    str += "  caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reasons) "
-    str += 'FROM ('
-    str += '  SELECT "cross", '
-    str += "    array_to_string(array_agg(distinct('Accreditation ('||accreditation_status||')')), ', ') AS reasons "
-    str += '  FROM accreditations '
-    str += '  WHERE "cross" IS NOT NULL '
-    str += '   AND accreditation_status IS NOT NULL '
-    str += "   AND periods LIKE '%current%' "
-    str += "  AND csv_accreditation_type = 'institutional' "
-    str += '  GROUP BY "cross" ) reasons_list '
-    str += 'WHERE institutions.cross = reasons_list.cross '
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reasons)
+      FROM (
+        SELECT "cross",
+          array_to_string(array_agg(distinct('Accreditation ('||accreditation_status||')')), ', ') AS reasons
+        FROM accreditations
+        WHERE "cross" IS NOT NULL
+          AND accreditation_status IS NOT NULL
+          AND periods LIKE '%current%'
+          AND csv_accreditation_type = 'institutional'
+          GROUP BY "cross" ) reasons_list
+      WHERE institutions.cross = reasons_list.cross;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_arf_gi_bill
-    str = 'UPDATE institutions SET '
-    str += ' gibill = arf_gi_bills.gibill '
-    str += ' FROM arf_gi_bills '
-    str += 'WHERE institutions.facility_code = arf_gi_bills.facility_code'
+    str = <<-SQL
+      UPDATE institutions SET gibill = arf_gi_bills.gibill
+      FROM arf_gi_bills
+      WHERE institutions.facility_code = arf_gi_bills.facility_code;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_p911_tf
-    columns = P911Tf::USE_COLUMNS.map(&:to_s)
+    columns = P911Tf::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = p911_tfs.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = p911_tfs.#{col}) }.join(', ')
-    str += ' FROM p911_tfs '
-    str += 'WHERE institutions.facility_code = p911_tfs.facility_code'
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM p911_tfs
+      WHERE institutions.facility_code = p911_tfs.facility_code;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_p911_yr
-    columns = P911Yr::USE_COLUMNS.map(&:to_s)
+    columns = P911Yr::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = p911_yrs.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = p911_yrs.#{col}) }.join(', ')
-    str += ' FROM p911_yrs '
-    str += 'WHERE institutions.facility_code = p911_yrs.facility_code'
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM p911_yrs
+      WHERE institutions.facility_code = p911_yrs.facility_code;
+    SQL
 
     Institution.connection.update(str)
   end
@@ -224,83 +239,87 @@ module InstitutionBuilder
   def self.add_mou
     reason = 'DoD Probation For Military Tuition Assistance'
 
-    # Sets the caution flag for any approved school having a probatiton or
-    # title IV non-compliance (status == true)
-    str = 'UPDATE institutions SET '
-    str += ' dodmou = mous.dodmou, caution_flag = CASE '
-    str += '   WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag '
-    str += ' END '
-    str += ' FROM mous '
-    str += 'WHERE institutions.ope6 = mous.ope6; '
+    # Sets the caution flag for any approved school having a probatiton or title IV non-compliance (status == true)
+    str = <<-SQL
+      UPDATE institutions SET
+        dodmou = mous.dodmou,
+        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
+      FROM mous
+      WHERE institutions.ope6 = mous.ope6;
+    SQL
 
     Institution.connection.update(str)
 
-    # Sets dodmou for any approved school having a probatiton or
-    # title IV non-compliance status. The caution flag reason is only
-    # affected by a DoD probation status
-    str = ' UPDATE institutions SET '
-    str += "  caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason) "
-    str += 'FROM ( '
-    str += "  SELECT distinct(ope6), '#{reason}' AS reason FROM mous WHERE dod_status = TRUE "
-    str += ') as reasons_list '
-    str += 'WHERE institutions.ope6 = reasons_list.ope6; '
+    # Sets dodmou for any approved school having a probatiton or title IV non-compliance status.
+    # The caution flag reason is only affected by a DoD type probation status
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
+      FROM (
+        SELECT distinct(ope6), '#{reason}' AS reason FROM mous
+        WHERE dod_status = TRUE) as reasons_list
+      WHERE institutions.ope6 = reasons_list.ope6;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_scorecard
-    columns = Scorecard::USE_COLUMNS.map(&:to_s)
+    columns = Scorecard::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
-    str += ' FROM scorecards '
-    str += 'WHERE institutions.cross = scorecards.cross'
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM scorecards
+      WHERE institutions.cross = scorecards.cross;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_ipeds_ic
-    columns = IpedsIc::USE_COLUMNS.map(&:to_s)
+    columns = IpedsIc::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = ipeds_ics.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = ipeds_ics.#{col}) }.join(', ')
-    str += ' FROM ipeds_ics '
-    str += 'WHERE institutions.cross = ipeds_ics.cross'
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM ipeds_ics
+      WHERE institutions.cross = ipeds_ics.cross;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_ipeds_hd
-    str = 'UPDATE institutions SET '
-    str += 'vet_tuition_policy_url = ipeds_hds.vet_tuition_policy_url'
-    str += ' FROM ipeds_hds '
-    str += 'WHERE institutions.cross = ipeds_hds.cross'
+    str = <<-SQL
+      UPDATE institutions SET vet_tuition_policy_url = ipeds_hds.vet_tuition_policy_url
+      FROM ipeds_hds
+      WHERE institutions.cross = ipeds_hds.cross;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_ipeds_ic_ay
-    columns = IpedsIcAy::USE_COLUMNS.map(&:to_s)
+    columns = IpedsIcAy::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = ipeds_ic_ays.#{col}) }.join(', ')
 
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = ipeds_ic_ays.#{col}) }.join(', ')
-    str += ' FROM ipeds_ic_ays '
-    str += 'WHERE institutions.cross = ipeds_ic_ays.cross'
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM ipeds_ic_ays
+      WHERE institutions.cross = ipeds_ic_ays.cross;
+    SQL
 
     Institution.connection.update(str)
   end
 
   def self.add_ipeds_ic_py
-    columns = IpedsIcPy::USE_COLUMNS.map(&:to_s)
-
-    str = 'UPDATE institutions SET '
-
-    str += columns.map do |col|
+    columns = IpedsIcPy::USE_COLUMNS.map(&:to_s).map do |col|
       %("#{col}" = CASE WHEN institutions.#{col} IS NULL THEN ipeds_ic_pies.#{col} ELSE institutions.#{col} END)
     end.join(', ')
 
-    str += ' FROM ipeds_ic_pies '
-    str += 'WHERE institutions.cross = ipeds_ic_pies.cross'
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM ipeds_ic_pies
+      WHERE institutions.cross = ipeds_ic_pies.cross;
+    SQL
 
     Institution.connection.update(str)
   end
@@ -310,18 +329,21 @@ module InstitutionBuilder
     # only approved public schools can be SEC 702 complaint
     reason = 'Does Not Offer Required In-State Tuition Rates'
 
-    str = ' UPDATE institutions SET '
-    str += '  sec_702 = s702_list.sec_702, caution_flag = NOT s702_list.sec_702, '
-    str += '  caution_flag_reason = CASE WHEN NOT s702_list.sec_702 '
-    str += "    THEN concat_ws(',', caution_flag_reason, '#{reason}') ELSE caution_flag_reason END "
-    str += 'FROM ( '
-    str += '  SELECT facility_code, sec702s.sec_702 FROM institutions '
-    str += '    INNER JOIN sec702s ON sec702s.state = institutions.state '
-    str += '    EXCEPT SELECT facility_code, sec_702 FROM sec702_schools '
-    str += '  UNION SELECT facility_code, sec_702 FROM sec702_schools '
-    str += ') AS s702_list '
-    str += 'WHERE institutions.facility_code = s702_list.facility_code '
-    str += "    AND institutions.institution_type_name = 'public'"
+    str = <<-SQL
+      UPDATE institutions SET
+        sec_702 = s702_list.sec_702, caution_flag = NOT s702_list.sec_702,
+        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
+          THEN concat_ws(',', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
+        END
+      FROM (
+        SELECT facility_code, sec702s.sec_702 FROM institutions
+          INNER JOIN sec702s ON sec702s.state = institutions.state
+            EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
+            UNION SELECT facility_code, sec_702 FROM sec702_schools
+      ) AS s702_list
+      WHERE institutions.facility_code = s702_list.facility_code
+        AND institutions.institution_type_name = 'public';
+    SQL
 
     Institution.connection.update(str)
   end
@@ -329,16 +351,18 @@ module InstitutionBuilder
   def self.add_settlement
     # Sets caution flags and caution flag reasons if the corresponing approved school (by IPEDs id)
     # has an entry in the settlements table.
-    str = ' UPDATE institutions SET '
-    str += '  caution_flag = TRUE, '
-    str += "  caution_flag_reason = concat_ws(',', caution_flag_reason, settlement_list.descriptions) "
-    str += 'FROM ( '
-    str += %( SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions )
-    str += '  FROM settlements '
-    str += '  WHERE "cross" IS NOT NULL '
-    str += '  GROUP BY "cross" '
-    str += ') settlement_list '
-    str += 'WHERE institutions.cross = settlement_list.cross'
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag = TRUE,
+        caution_flag_reason = concat_ws(',', caution_flag_reason, settlement_list.descriptions)
+      FROM (
+        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
+        FROM settlements
+        WHERE "cross" IS NOT NULL
+        GROUP BY "cross"
+      ) settlement_list
+      WHERE institutions.cross = settlement_list.cross;
+    SQL
 
     Institution.connection.update(str)
   end
@@ -346,31 +370,46 @@ module InstitutionBuilder
   def self.add_hcm
     # Sets caution flags and caution flag reasons if the corresponing approved school (by ope6)
     # has an entry in the hcms table.
-    str = ' UPDATE institutions SET '
-    str += '  caution_flag = TRUE, '
-    str += "  caution_flag_reason = concat_ws(',', caution_flag_reason, hcm_list.reasons) "
-    str += 'FROM ( '
-    str += '  SELECT "ope6", '
-    str += "    array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') "
-    str += '    AS reasons '
-    str += '  FROM hcms '
-    str += '  GROUP BY "ope6" '
-    str += ') hcm_list '
-    str += 'WHERE institutions.ope6 = hcm_list.ope6'
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag = TRUE,
+        caution_flag_reason = concat_ws(',', caution_flag_reason, hcm_list.reasons)
+      FROM (
+        SELECT "ope6",
+          array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
+        FROM hcms
+        GROUP BY ope6
+      ) hcm_list
+      WHERE institutions.ope6 = hcm_list.ope6;
+    SQL
 
     Institution.connection.update(str)
   end
 
-  # TODO: Complaint
+  def self.add_complaint
+    columns = Complaint::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = complaints.#{col}) }.join(', ')
+
+    # Sets the complaint data for each school, matching by facility code.
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM complaints
+      WHERE institutions.facility_code = complaints.facility_code;
+    SQL
+
+    Institution.connection.update(str)
+
+    # TODO: Rollup sums by facility_code and ope6
+  end
 
   def self.add_outcome
-    columns = Outcome::USE_COLUMNS.map(&:to_s)
+    columns = Outcome::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = outcomes.#{col}) }.join(', ')
 
     # Sets the outcome data for each school, matching by facility code.
-    str = 'UPDATE institutions SET '
-    str += columns.map { |col| %("#{col}" = outcomes.#{col}) }.join(', ')
-    str += ' FROM outcomes '
-    str += 'WHERE institutions.facility_code = outcomes.facility_code '
+    str = <<-SQL
+      UPDATE institutions SET #{columns}
+      FROM outcomes
+      WHERE institutions.facility_code = outcomes.facility_code;
+    SQL
 
     Institution.connection.update(str)
   end

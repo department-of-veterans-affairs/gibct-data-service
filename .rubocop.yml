@@ -15,6 +15,7 @@ AllCops:
 Metrics/AbcSize:
   Exclude:
     - app/models/institution_builder.rb
+    - app/models/complaint.rb
 
 Metrics/BlockLength:
   Exclude:

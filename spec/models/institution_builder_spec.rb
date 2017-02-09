@@ -670,6 +670,22 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
+      describe 'when adding Complaint data' do
+        let(:institution) { institutions.find_by(facility_code: complaint.facility_code) }
+        let(:complaint) { Complaint.first }
+
+        before(:each) do
+          create :complaint, :institution_builder
+          InstitutionBuilder.run(user)
+        end
+
+        it 'copies columns used by institutions' do
+          Complaint::USE_COLUMNS.each do |column|
+            expect(complaint[column]).to eq(institution[column])
+          end
+        end
+      end
+
       describe 'when adding Outcome data' do
         let(:institution) { institutions.find_by(facility_code: outcome.facility_code) }
         let(:outcome) { Outcome.first }
