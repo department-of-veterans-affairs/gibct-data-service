@@ -42,6 +42,7 @@ module InstitutionBuilder
     add_ipeds_ic_py
     add_sec_702
     add_settlement
+    add_hcm
   end
 
   def self.run(user)
@@ -325,7 +326,7 @@ module InstitutionBuilder
   end
 
   def self.add_settlement
-    # Sets caution flags if the corresponing approved school (by IPEDs id)
+    # Sets caution flags and caution flag reasons if the corresponing approved school (by IPEDs id)
     # has an entry in the settlements table.
     str = ' UPDATE institutions SET '
     str += '  caution_flag = TRUE, '
@@ -339,36 +340,23 @@ module InstitutionBuilder
     str += 'WHERE institutions.cross = settlement_list.cross'
 
     Institution.connection.update(str)
-    # str = 'UPDATE data_csvs SET '
-    # str += 'caution_flag = TRUE '
-    # str += ' FROM settlements '
-    # str += 'WHERE data_csvs.cross = settlements.cross; '
+  end
 
-    # Sets the caution flag reason. The inner select ensures that the
-    # settlement descriptions are unique for each school (There may be
-    # more than one per school). The outer select aggregates these
-    # reasons together in a comma delimited string that are appended to
-    # the existing caution flag reasons.
-    # query_str += 'UPDATE data_csvs SET caution_flag_reason = '
-    # query_str += 'CASE WHEN data_csvs.caution_flag_reason IS NULL THEN '
-    # query_str += "  AGG.asd "
-    # query_str += "ELSE "
-    # query_str += "  CONCAT(data_csvs.caution_flag_reason, ', ', AGG.asd) "
-    # query_str += "END "
-    # query_str += "FROM ( "
-    # query_str += "  SELECT S.cross, string_agg(S.sd, ', ') AS asd "
-    # query_str += "    FROM ("
-    # query_str += "      SELECT s.cross, s.settlement_description AS sd"
-    # query_str += "      FROM settlements s "
-    # query_str += "      WHERE "
-    # query_str += "        s.cross IS NOT NULL AND "
-    # query_str += "        s.settlement_description IS NOT NULL "
-    # query_str += "      GROUP BY s.cross, s.settlement_description "
-    # query_str += "    ) S "
-    # query_str += "  GROUP BY S.cross "
-    # query_str += ") AGG "
-    # query_str += 'WHERE data_csvs.cross = AGG.cross'
+  def self.add_hcm
+    # Sets caution flags and caution flag reasons if the corresponing approved school (by ope6)
+    # has an entry in the hcms table.
+    str = ' UPDATE institutions SET '
+    str += '  caution_flag = TRUE, '
+    str += "  caution_flag_reason = concat_ws(',', caution_flag_reason, hcm_list.reasons) "
+    str += 'FROM ( '
+    str += '  SELECT "ope6", '
+    str += "    array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') "
+    str += '    AS reasons '
+    str += '  FROM hcms '
+    str += '  GROUP BY "ope6" '
+    str += ') hcm_list '
+    str += 'WHERE institutions.ope6 = hcm_list.ope6'
 
-    # run_bulk_query(query_str)
+    Institution.connection.update(str)
   end
 end

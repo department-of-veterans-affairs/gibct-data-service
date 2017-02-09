@@ -627,6 +627,47 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
       end
+
+      describe 'when adding Hcm data' do
+        let(:institution) { institutions.find_by(ope6: hcm.ope6) }
+        let(:hcm) { Hcm.first }
+
+        describe 'the caution_flag' do
+          it 'is set for every heightened cash monitoring notice' do
+            create :hcm, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institution.caution_flag).to be_truthy
+          end
+        end
+
+        describe 'the caution_flag_reason' do
+          it 'is set to the hcm_reason' do
+            create :hcm, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
+          end
+
+          it 'is set with multiple hcm_reason' do
+            create :hcm, :institution_builder
+            create :hcm, :institution_builder, hcm_reason: 'another reason'
+            InstitutionBuilder.run(user)
+
+            expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
+              .and match(/another reason/)
+          end
+
+          it 'is concatenated with the hcm_reason' do
+            create :accreditation, :institution_builder, accreditation_status: 'probation'
+            create :hcm, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+              .and match(Regexp.new(hcm.hcm_reason))
+          end
+        end
+      end
     end
   end
 end
