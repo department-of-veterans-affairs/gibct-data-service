@@ -1,3 +1,9 @@
+puts 'Destroy previous users ... '
+User.destroy_all
+
+puts 'Add new users ... '
+User.create(email: ENV['ADMIN_EMAIL'], password: ENV['ADMIN_PW'])
+
 puts 'Creating sample constants'
 constants = {
   'TFCAP' => 21970.46,
@@ -113,5 +119,7 @@ Outcome.load('sample_csvs/outcome.csv')
 
 puts 'Building Institutions'
 InstitutionBuilder.run(User.first)
+
+Version.update(1, production: true)
 
 puts "Done ... Woo Hoo!"

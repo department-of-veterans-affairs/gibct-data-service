@@ -18,23 +18,13 @@
         "additionalProperties": false,
         "properties": {
           "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "float_value": {
-            "type": ["null", "number"]
-          },
-          "string_value": {
-            "type": ["null", "string"]
-          },
-          "created_at": { "type": "string" },
-          "updated_at": { "type": "string" }
+          "value": { "type": "string" },
+          "label": { "type": "string" }
         },
         "required": [
           "id",
-          "name",
-          "float_value",
-          "string_value",
-          "created_at",
-          "updated_at"
+          "value",
+          "label"
         ]
       }
     },

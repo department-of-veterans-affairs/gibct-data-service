@@ -1,32 +1,40 @@
 # frozen_string_literal: true
 module V0
   class InstitutionsController < ApiController
+    before_action :resolve_version
+
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @search_term = params[:term].strip.downcase
-      response = {
-        data: Institution.version(params[:version]).autocomplete(@search_term),
-        links: { self: autocomplete_v0_institutions_url(term: params[:term]) },
-        meta: { version: params[:version] }
+      @data = Institution.version(@version).autocomplete(@search_term)
+      @meta = {
+        version: @version,
+        term: @search_term
       }
-      render json: response, adapter: :json
+      @links = {
+        self: autocomplete_v0_institutions_url(term: params[:term])
+      }
+      render json: { data: @data, links: @links, meta: @meta }, adapter: :json
     end
 
     # GET /v0/institutions?name=duluth&x=y
     def index
       downcase_search_query_params!
-      render json: search_results.order(:institution).page(params[:page]),
-             meta: { version: params[:version] }
+      @meta = {
+        version: @version,
+        count: search_results.count
+      }
+      render json: search_results.order(:institution).page(params[:page]), meta: @meta
     end
 
     # GET /v0/institutions/20005123
     def show
-      resource = Institution.version(params[:version]).find_by(facility_code: params[:id])
+      resource = Institution.version(@version).find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
       render json: resource, serializer: InstitutionProfileSerializer,
-             meta: { version: params[:version] }
+             meta: { version: @version }
     end
 
     private
@@ -45,7 +53,7 @@ module V0
 
     # rubocop:disable AbcSize
     def search_results
-      Institution.version(params[:version])
+      Institution.version(@version)
                  .search(params[:name])
                  .filter(:caution_flag, params[:caution]) # boolean
                  .filter(:institution_type_name, params[:type_name])
@@ -57,5 +65,11 @@ module V0
                  .filter(:eight_keys, params[:eight_keys_to_veteran_success]) # boolean
     end
     # rubocop:enable AbcSize
+
+    # Newest production data version assumed when version param is undefined
+    def resolve_version
+      v = params[:version]
+      @version = v.blank? ? Version.default_version_number : v
+    end
   end
 end

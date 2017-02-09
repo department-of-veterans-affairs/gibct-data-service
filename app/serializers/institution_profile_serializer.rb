@@ -9,7 +9,10 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :country
   attribute :bah
   attribute :cross
+  attribute :flight
+  attribute :correspondence
   attribute :ope
+  attribute :ope6
   attribute :highest_degree
   attribute :locale_type
   attribute :gibill, key: :student_count
@@ -52,7 +55,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :accredited
   attribute :accreditation_type
   attribute :accreditation_status
-  attribute(:caution_flag) { object.caution_flag == 'true' }
+  attribute :caution_flag
   attribute :caution_flag_reason
   attribute(:complaints) { object.complaints }
   attribute :created_at

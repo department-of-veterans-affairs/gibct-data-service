@@ -25,6 +25,14 @@ module GibctDataService
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    # CORS configuration; see also cors_preflight route
+    config.middleware.insert_before 0, 'Rack::Cors', logger: (-> { Rails.logger }) do
+      allow do
+        origins 'localhost:3001', 'localhost:3000', 'localhost'
+        resource '/v0/*', headers: :any, methods: :any, credentials: true
+      end
+    end
+
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
