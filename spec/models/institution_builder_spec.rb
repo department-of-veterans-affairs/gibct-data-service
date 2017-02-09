@@ -614,7 +614,8 @@ RSpec.describe InstitutionBuilder, type: :model do
             create :settlement, :institution_builder, settlement_description: 'another description'
             InstitutionBuilder.run(user)
 
-            expect(institution.caution_flag_reason).to eq("#{settlement.settlement_description}, another description")
+            expect(institution.caution_flag_reason).to match(settlement.settlement_description)
+              .and match('another description')
           end
 
           it 'is concatenated with the settlement_description' do
