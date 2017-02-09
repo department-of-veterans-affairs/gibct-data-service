@@ -32,4 +32,65 @@ constants = {
 }.map { |k,v| {name: k, float_value: v} }
 CalculatorConstant.create(constants)
 
+puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
+puts 'Loading Weam'
+Weam.load('sample_csvs/weam.csv')
+
+puts 'Loading Crosswalk'
+Crosswalk.load('sample_csvs/crosswalk.csv')
+
+puts 'Loading EightKey'
+EightKey.load('sample_csvs/eight_key.csv', skip_lines: 1)
+
+puts 'Loading Accreditation'
+Accreditation.load('sample_csvs/accreditation.csv')
+
+puts 'Loading Scorecard'
+Scorecard.load('sample_csvs/scorecard.csv')
+
+puts 'Loading P911Tf'
+P911Tf.load('sample_csvs/p911_tf.csv')
+
+puts 'Loading P911Yr'
+P911Yr.load('sample_csvs/p911_yr.csv')
+
+puts 'Loading Vsoc'
+Vsoc.load('sample_csvs/vsoc.csv')
+
+puts 'Loading Sva'
+Sva.load('sample_csvs/sva.csv')
+
+puts 'Loading Sec702'
+Sec702.load('sample_csvs/sec702.csv')
+
+puts 'Loading Sec702School'
+Sec702School.load('sample_csvs/sec702_school.csv')
+
+puts 'Loading Mou'
+Mou.load('sample_csvs/mou.csv', skip_lines: 1)
+
+puts 'Loading Hcm'
+Hcm.load('sample_csvs/hcm.csv', skip_lines: 2)
+
+puts 'Loading Settlement'
+Settlement.load('sample_csvs/settlement.csv')
+
+puts 'Loading IpedsIc'
+IpedsIc.load('sample_csvs/ipeds_ic.csv')
+
+puts 'Loading IpedsIcAy'
+IpedsIcAy.load('sample_csvs/ipeds_ic_ay.csv')
+
+puts 'Loading IpedsIcPy'
+IpedsIcPy.load('sample_csvs/ipeds_ic_py.csv')
+
+puts 'Loading IpedsHd'
+IpedsHd.load('sample_csvs/ipeds_hd.csv')
+
+puts 'Loading Complaint'
+Complaint.load('sample_csvs/complaint.csv', skip_lines: 7)
+
+puts 'Loading Outcome'
+Outcome.load('sample_csvs/outcome.csv')
+
 puts "Done ... Woo Hoo!"

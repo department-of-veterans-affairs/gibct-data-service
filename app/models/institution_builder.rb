@@ -10,10 +10,6 @@ module InstitutionBuilder
     TABLES.map(&:count).reject(&:positive?).blank?
   end
 
-  def self.valid_user?(user)
-    User.find_by(email: user.email).present?
-  end
-
   def self.default_timestamps_to_now
     query = 'ALTER TABLE institutions ALTER COLUMN updated_at SET DEFAULT now(); '
     query += 'ALTER TABLE institutions ALTER COLUMN created_at SET DEFAULT now();'
@@ -44,12 +40,11 @@ module InstitutionBuilder
     add_ipeds_hd
     add_ipeds_ic_ay
     add_ipeds_ic_py
+    add_sec_702
   end
 
   def self.run(user)
-    raise(ArgumentError, "'#{user.try(:email)}' is not a valid user") unless valid_user?(user)
     return nil unless buildable?
-
     version = Version.create(production: false, user: user)
 
     default_timestamps_to_now
@@ -175,32 +170,20 @@ module InstitutionBuilder
     Institution.connection.update(str)
 
     # Sets the caution flag reason for all accreditations that have a non-null status.
-    # The innermost subquery retrieves a unique set of statues (it is plausible that
-    # identical statuses may apply to the same school but from different agencies). We
-    # don't want to repeat the same reasons. The outer subquery then concatentates these
-    # unique reasons into a comma-separated string. Lastly the outer UPDATE-CASE appends
-    # these caution flag reasons to any existing caution flag reasons.
-    str = 'UPDATE institutions SET caution_flag_reason = '
-    str += 'CASE WHEN institutions.caution_flag_reason IS NULL THEN '
-    str += '  AGG.ad '
-    str += 'ELSE '
-    str += "  CONCAT(institutions.caution_flag_reason, ', ', AGG.ad) "
-    str += 'END '
-    str += 'FROM ( '
-    str += "  SELECT A.cross, string_agg(A.AST, ', ') AS ad "
-    str += '    FROM ('
-    str += "      SELECT a.cross, 'accreditation (' || a.accreditation_status || ')' as AST"
-    str += '      FROM accreditations a '
-    str += '      WHERE '
-    str += '        a.cross IS NOT NULL AND '
-    str += '        a.accreditation_status IS NOT NULL AND '
-    str += "        a.periods LIKE '%current%' AND "
-    str += "        a.csv_accreditation_type = 'institutional' "
-    str += '      GROUP BY a.cross, a.accreditation_status '
-    str += '    ) A '
-    str += '  GROUP BY A.cross '
-    str += ') AGG '
-    str += 'WHERE institutions.cross = AGG.cross; '
+    # The innermost subquery retrieves a distinct set of statuses (it is plausible that
+    # identical statuses may apply to the same school but from different agencies).
+    str = ' UPDATE institutions SET '
+    str += "  caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reasons) "
+    str += 'FROM ('
+    str += '  SELECT "cross", '
+    str += "    array_to_string(array_agg(distinct('Accreditation ('||accreditation_status||')')), ', ') AS reasons "
+    str += '  FROM accreditations '
+    str += '  WHERE "cross" IS NOT NULL '
+    str += '   AND accreditation_status IS NOT NULL '
+    str += "   AND periods LIKE '%current%' "
+    str += "  AND csv_accreditation_type = 'institutional' "
+    str += '  GROUP BY "cross" ) reasons_list '
+    str += 'WHERE institutions.cross = reasons_list.cross '
 
     Institution.connection.update(str)
   end
@@ -250,30 +233,17 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # Sets the caution flag reason for any approved school having a probatiton or
-    # title IV non-compliance (status == true). The inner select sets the
-    # caution flag text, ensuringstr there are not reasons (in case of multiple)
-    # memorandums. Lastly the outer UPDATE-CASE appends
-    # these caution flag reasons to any existing caution flag reasons.
-    str = 'UPDATE institutions SET caution_flag_reason = '
-    str += 'CASE WHEN institutions.caution_flag_reason IS NULL THEN '
-    str += ' AGG.am '
-    str += 'ELSE '
-    str += " CONCAT(institutions.caution_flag_reason, ', ', AGG.am) "
-    str += 'END '
+    # Sets dodmou for any approved school having a probatiton or
+    # title IV non-compliance status. The caution flag reason is only
+    # affected by a DoD probation status
+    str = ' UPDATE institutions SET '
+    str += "  caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason) "
     str += 'FROM ( '
-    str += " SELECT M.ope6, '#{reason}'::text AS am "
-    str += '    FROM ('
-    str += '      SELECT m.ope6 '
-    str += '      FROM mous m '
-    str += '      WHERE m.dod_status = TRUE '
-    str += '      GROUP BY m.ope6 '
-    str += '    ) M '
-    str += '  GROUP BY M.ope6 '
-    str += ') AGG '
-    str += 'WHERE institutions.ope6 = AGG.ope6; '
+    str += "  SELECT distinct(ope6), '#{reason}' AS reason FROM mous WHERE dod_status = TRUE "
+    str += ') as reasons_list '
+    str += 'WHERE institutions.ope6 = reasons_list.ope6; '
 
-    Institution.connection.execute(str)
+    Institution.connection.update(str)
   end
 
   def self.add_scorecard
@@ -329,6 +299,27 @@ module InstitutionBuilder
 
     str += ' FROM ipeds_ic_pies '
     str += 'WHERE institutions.cross = ipeds_ic_pies.cross'
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_sec_702
+    # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
+    # only approved public schools can be SEC 702 complaint
+    reason = 'Does Not Offer Required In-State Tuition Rates'
+
+    str = ' UPDATE institutions SET '
+    str += '  sec_702 = s702_list.sec_702, caution_flag = NOT s702_list.sec_702, '
+    str += '  caution_flag_reason = CASE WHEN NOT s702_list.sec_702 '
+    str += "    THEN concat_ws(',', caution_flag_reason, '#{reason}') ELSE caution_flag_reason END "
+    str += '  FROM ( '
+    str += '    SELECT facility_code, sec702s.sec_702 FROM institutions '
+    str += '      INNER JOIN sec702s ON sec702s.state = institutions.state '
+    str += '      EXCEPT SELECT facility_code, sec_702 FROM sec702_schools '
+    str += '    UNION SELECT facility_code, sec_702 FROM sec702_schools '
+    str += '  ) AS s702_list '
+    str += '  WHERE institutions.facility_code = s702_list.facility_code '
+    str += "    AND institutions.institution_type_name = 'public'"
 
     Institution.connection.update(str)
   end

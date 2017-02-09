@@ -8,7 +8,7 @@ FactoryGirl.define do
     closed_reason 'resolved'
 
     trait :institution_builder do
-      facility_code 'ZZZZZZZZ'
+      facility_code '1ZZZZZZZ'
       ope '99999999'
     end
   end

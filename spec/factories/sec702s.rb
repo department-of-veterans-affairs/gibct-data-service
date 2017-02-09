@@ -9,9 +9,10 @@ FactoryGirl.define do
       StateConverter::STATES.values[(n - 1) % StateConverter::STATES.length]
     end
 
-    sec_702 true
+    sec_702 false
 
     trait :institution_builder do
+      state 'NY'
     end
   end
 end

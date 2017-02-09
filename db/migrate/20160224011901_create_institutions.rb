@@ -31,7 +31,7 @@ class CreateInstitutions < ActiveRecord::Migration
       t.boolean :poe, default: false
       t.boolean :eight_keys, default: false
       t.boolean :dodmou, default: false
-      t.boolean :sec_702, default: false
+      t.boolean :sec_702, default: nil # Boolean with null values for reporting
       t.string :vetsuccess_name, default: nil # String with "null" string values
       t.string :vetsuccess_email, default: nil # String with "null" string values
       t.boolean :credit_for_mil_training, default: nil # Boolean with null values

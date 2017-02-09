@@ -7,7 +7,7 @@ FactoryGirl.define do
     p911_yr_recipients { 1 }
 
     trait :institution_builder do
-      facility_code 'ZZZZZZZZ'
+      facility_code '1ZZZZZZZ'
     end
   end
 end

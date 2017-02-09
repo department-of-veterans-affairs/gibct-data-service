@@ -10,7 +10,7 @@ FactoryGirl.define do
     cross { generate :cross }
 
     trait :institution_builder do
-      facility_code 'ZZZZZZZZ'
+      facility_code '1ZZZZZZZ'
       ope '99999999'
       cross '999999'
     end

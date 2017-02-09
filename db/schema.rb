@@ -220,7 +220,7 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.boolean  "poe",                                                 default: false
     t.boolean  "eight_keys",                                          default: false
     t.boolean  "dodmou",                                              default: false
-    t.boolean  "sec_702",                                             default: false
+    t.boolean  "sec_702"
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
     t.boolean  "credit_for_mil_training"
@@ -370,9 +370,9 @@ ActiveRecord::Schema.define(version: 20170124200527) do
 
   create_table "ipeds_ic_ays", force: :cascade do |t|
     t.string   "cross",                null: false
-    t.integer  "tuition_in_state"
-    t.integer  "tuition_out_of_state"
-    t.integer  "books"
+    t.float    "tuition_in_state"
+    t.float    "tuition_out_of_state"
+    t.float    "books"
     t.string   "xtuit1"
     t.integer  "tuition1"
     t.string   "xfee1"
@@ -610,9 +610,9 @@ ActiveRecord::Schema.define(version: 20170124200527) do
 
   create_table "ipeds_ic_pies", force: :cascade do |t|
     t.string   "cross",                null: false
-    t.integer  "tuition_in_state"
-    t.integer  "tuition_out_of_state"
-    t.integer  "books"
+    t.float    "tuition_in_state"
+    t.float    "tuition_out_of_state"
+    t.float    "books"
     t.integer  "prgmofr"
     t.float    "cipcode1"
     t.string   "xciptui1"

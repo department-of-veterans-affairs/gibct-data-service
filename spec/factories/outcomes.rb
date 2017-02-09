@@ -4,7 +4,7 @@ FactoryGirl.define do
     facility_code { generate :facility_code }
 
     trait :institution_builder do
-      facility_code 'ZZZZZZZZ'
+      facility_code '1ZZZZZZZ'
     end
   end
 end

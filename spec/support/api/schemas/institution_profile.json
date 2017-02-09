@@ -47,7 +47,7 @@
             "poe": { "type": "boolean" },
             "eight_keys": { "type": "boolean" },
             "dodmou": { "type": "boolean" },
-            "sec_702": { "type": "boolean" },
+            "sec_702": { "type": ["null", "boolean"] },
             "vet_success_name": { "type": ["null", "string"] },
             "vet_success_email": { "type": ["null", "string"] },
             "credit_for_mil_training": { "type": ["null", "boolean"] },

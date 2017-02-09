@@ -8,7 +8,7 @@ FactoryGirl.define do
     vetsuccess_email { 'someone@someplace.com' }
 
     trait :institution_builder do
-      facility_code 'ZZZZZZZZ'
+      facility_code '1ZZZZZZZ'
     end
   end
 end

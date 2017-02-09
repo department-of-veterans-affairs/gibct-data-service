@@ -4,7 +4,6 @@ FactoryGirl.define do
     institution { 'SOME SCHOOL' }
     facility_code { generate :facility_code }
     ope { generate :ope }
-    # cross { generate :cross }
 
     country 'USA'
 
@@ -91,10 +90,11 @@ FactoryGirl.define do
     end
 
     trait :institution_builder do
-      facility_code 'ZZZZZZZZ'
+      facility_code '1ZZZZZZZ'
       poo_status 'aprvd'
       applicable_law_code 'educational institution is approved for all chapters'
       institution_of_higher_learning_indicator true
+      state 'NY'
     end
   end
 end
