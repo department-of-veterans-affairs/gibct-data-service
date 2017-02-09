@@ -31,20 +31,20 @@ module InstitutionBuilder
     add_vsoc(version_number)
     add_eight_key(version_number)
     add_accreditation(version_number)
-    add_arf_gi_bill
-    add_p911_tf
-    add_p911_yr
-    add_mou
-    add_scorecard
-    add_ipeds_ic
-    add_ipeds_hd
-    add_ipeds_ic_ay
-    add_ipeds_ic_py
-    add_sec_702
-    add_settlement
-    add_hcm
-    add_complaint
-    add_outcome
+    add_arf_gi_bill(version_number)
+    add_p911_tf(version_number)
+    add_p911_yr(version_number)
+    add_mou(version_number)
+    add_scorecard(version_number)
+    add_ipeds_ic(version_number)
+    add_ipeds_hd(version_number)
+    add_ipeds_ic_ay(version_number)
+    add_ipeds_ic_py(version_number)
+    add_sec_702(version_number)
+    add_settlement(version_number)
+    add_hcm(version_number)
+    add_complaint(version_number)
+    add_outcome(version_number)
   end
 
   def self.run(user)
@@ -176,7 +176,8 @@ module InstitutionBuilder
         AND accreditations.cross IS NOT NULL
         AND accreditations.periods LIKE '%current%'
         AND accreditations.accreditation_status IS NOT NULL
-        AND accreditations.csv_accreditation_type = 'institutional';
+        AND accreditations.csv_accreditation_type = 'institutional'
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
@@ -196,47 +197,51 @@ module InstitutionBuilder
           AND periods LIKE '%current%'
           AND csv_accreditation_type = 'institutional'
           GROUP BY "cross" ) reasons_list
-      WHERE institutions.cross = reasons_list.cross;
+      WHERE institutions.cross = reasons_list.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_arf_gi_bill
+  def self.add_arf_gi_bill(version_number)
     str = <<-SQL
       UPDATE institutions SET gibill = arf_gi_bills.gibill
       FROM arf_gi_bills
-      WHERE institutions.facility_code = arf_gi_bills.facility_code;
+      WHERE institutions.facility_code = arf_gi_bills.facility_code
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_p911_tf
+  def self.add_p911_tf(version_number)
     columns = P911Tf::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = p911_tfs.#{col}) }.join(', ')
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM p911_tfs
-      WHERE institutions.facility_code = p911_tfs.facility_code;
+      WHERE institutions.facility_code = p911_tfs.facility_code
+      AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_p911_yr
+  def self.add_p911_yr(version_number)
     columns = P911Yr::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = p911_yrs.#{col}) }.join(', ')
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM p911_yrs
-      WHERE institutions.facility_code = p911_yrs.facility_code;
+      WHERE institutions.facility_code = p911_yrs.facility_code
+      AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_mou
+  def self.add_mou(version_number)
     reason = 'DoD Probation For Military Tuition Assistance'
 
     # Sets the caution flag for any approved school having a probatiton or title IV non-compliance (status == true)
@@ -245,7 +250,8 @@ module InstitutionBuilder
         dodmou = mous.dodmou,
         caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
       FROM mous
-      WHERE institutions.ope6 = mous.ope6;
+      WHERE institutions.ope6 = mous.ope6
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
@@ -258,59 +264,64 @@ module InstitutionBuilder
       FROM (
         SELECT distinct(ope6), '#{reason}' AS reason FROM mous
         WHERE dod_status = TRUE) as reasons_list
-      WHERE institutions.ope6 = reasons_list.ope6;
+      WHERE institutions.ope6 = reasons_list.ope6
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_scorecard
+  def self.add_scorecard(version_number)
     columns = Scorecard::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM scorecards
-      WHERE institutions.cross = scorecards.cross;
+      WHERE institutions.cross = scorecards.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_ic
+  def self.add_ipeds_ic(version_number)
     columns = IpedsIc::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = ipeds_ics.#{col}) }.join(', ')
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM ipeds_ics
-      WHERE institutions.cross = ipeds_ics.cross;
+      WHERE institutions.cross = ipeds_ics.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_hd
+  def self.add_ipeds_hd(version_number)
     str = <<-SQL
       UPDATE institutions SET vet_tuition_policy_url = ipeds_hds.vet_tuition_policy_url
       FROM ipeds_hds
-      WHERE institutions.cross = ipeds_hds.cross;
+      WHERE institutions.cross = ipeds_hds.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_ic_ay
+  def self.add_ipeds_ic_ay(version_number)
     columns = IpedsIcAy::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = ipeds_ic_ays.#{col}) }.join(', ')
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM ipeds_ic_ays
-      WHERE institutions.cross = ipeds_ic_ays.cross;
+      WHERE institutions.cross = ipeds_ic_ays.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_ic_py
+  def self.add_ipeds_ic_py(version_number)
     columns = IpedsIcPy::USE_COLUMNS.map(&:to_s).map do |col|
       %("#{col}" = CASE WHEN institutions.#{col} IS NULL THEN ipeds_ic_pies.#{col} ELSE institutions.#{col} END)
     end.join(', ')
@@ -318,13 +329,14 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM ipeds_ic_pies
-      WHERE institutions.cross = ipeds_ic_pies.cross;
+      WHERE institutions.cross = ipeds_ic_pies.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_sec_702
+  def self.add_sec_702(version_number)
     # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
     # only approved public schools can be SEC 702 complaint
     reason = 'Does Not Offer Required In-State Tuition Rates'
@@ -342,13 +354,14 @@ module InstitutionBuilder
             UNION SELECT facility_code, sec_702 FROM sec702_schools
       ) AS s702_list
       WHERE institutions.facility_code = s702_list.facility_code
-        AND institutions.institution_type_name = 'public';
+        AND institutions.institution_type_name = 'public'
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_settlement
+  def self.add_settlement(version_number)
     # Sets caution flags and caution flag reasons if the corresponing approved school (by IPEDs id)
     # has an entry in the settlements table.
     str = <<-SQL
@@ -361,13 +374,14 @@ module InstitutionBuilder
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
       ) settlement_list
-      WHERE institutions.cross = settlement_list.cross;
+      WHERE institutions.cross = settlement_list.cross
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_hcm
+  def self.add_hcm(version_number)
     # Sets caution flags and caution flag reasons if the corresponing approved school (by ope6)
     # has an entry in the hcms table.
     str = <<-SQL
@@ -380,20 +394,22 @@ module InstitutionBuilder
         FROM hcms
         GROUP BY ope6
       ) hcm_list
-      WHERE institutions.ope6 = hcm_list.ope6;
+      WHERE institutions.ope6 = hcm_list.ope6
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_complaint
+  def self.add_complaint(version_number)
     columns = Complaint::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = complaints.#{col}) }.join(', ')
 
     # Sets the complaint data for each school, matching by facility code.
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM complaints
-      WHERE institutions.facility_code = complaints.facility_code;
+      WHERE institutions.facility_code = complaints.facility_code
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
@@ -401,14 +417,15 @@ module InstitutionBuilder
     # TODO: Rollup sums by facility_code and ope6
   end
 
-  def self.add_outcome
+  def self.add_outcome(version_number)
     columns = Outcome::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = outcomes.#{col}) }.join(', ')
 
     # Sets the outcome data for each school, matching by facility code.
     str = <<-SQL
       UPDATE institutions SET #{columns}
       FROM outcomes
-      WHERE institutions.facility_code = outcomes.facility_code;
+      WHERE institutions.facility_code = outcomes.facility_code
+        AND institutions.version = #{version_number};
     SQL
 
     Institution.connection.update(str)
