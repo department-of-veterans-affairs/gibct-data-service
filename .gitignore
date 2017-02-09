@@ -42,6 +42,9 @@ bower.json
 *.rbc
 capybara-*.html
 
+# Ignore local config
+config/application.yml
+
 .rbenv-gemsets
 .rspec
 .env
