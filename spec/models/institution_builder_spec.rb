@@ -251,7 +251,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(
             institution.caution_flag_reason
-          ).to match(/.*show cause.*/).and match(/.*probation.*/).and match(/.*expired.*/)
+          ).to match(/show cause/).and match(/probation/).and match(/expired/)
         end
       end
     end
@@ -350,8 +350,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :mou, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institution.caution_flag_reason).to match(/.*accreditation.*/i)
-          expect(institution.caution_flag_reason).to match(/.*probation.*/)
+          expect(institution.caution_flag_reason).to match(/Accreditation/).and match(/probation/)
         end
 
         it 'is unaltered when dod_status is not true' do
@@ -360,8 +359,8 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           InstitutionBuilder.run(user)
 
-          expect(institution.caution_flag_reason).not_to match(/.*DoD.*/)
-          expect(institution.caution_flag_reason).to match(/.*probation.*/)
+          expect(institution.caution_flag_reason).not_to match(/DoD/)
+          expect(institution.caution_flag_reason).to match(/Accreditation/)
         end
       end
     end
@@ -539,6 +538,52 @@ RSpec.describe InstitutionBuilder, type: :model do
             InstitutionBuilder.run(user)
 
             expect(institutions.first.caution_flag).to be_falsey
+          end
+        end
+
+        describe 'the caution_flag_reason' do
+          let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
+
+          it 'is set from Section702 when sec_702 is false' do
+            create :sec702, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).not_to be_nil
+            expect(institutions.first.caution_flag_reason).to eq(reason)
+          end
+
+          it 'is set from Section702School when sec_702 is false' do
+            create :sec702_school, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).not_to be_nil
+            expect(institutions.first.caution_flag_reason).to eq(reason)
+          end
+
+          it 'prefers Sec702School over Section702' do
+            create :weam, :institution_builder, :private
+            create :sec702_school, :institution_builder, sec_702: true
+            create :sec702, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).to be_nil
+          end
+
+          it 'concatenates the sec_702 reason when sec_702 is false' do
+            create :accreditation, :institution_builder, accreditation_status: 'probation'
+            create :sec702, :institution_builder
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).to match(/Accreditation/).and match(/Tuition/)
+          end
+
+          it 'is left unaltered when sec_702 is true' do
+            create :accreditation, :institution_builder, accreditation_status: 'probation'
+            create :sec702_school, :institution_builder, sec_702: true
+            InstitutionBuilder.run(user)
+
+            expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+            expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
           end
         end
       end
