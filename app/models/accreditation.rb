@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Accreditation < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'institution_id' => { column: :institution_id, converter: BaseConverter },
     'institution_name' => { column: :institution_name, converter: InstitutionConverter },
     'institution_address' => { column: :institution_address, converter: BaseConverter },
@@ -59,7 +59,7 @@ class Accreditation < ActiveRecord::Base
   validates :agency_name, presence: true
   validates :accreditation_status, inclusion: { in: LAST_ACTIONS }, allow_blank: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.cross = to_cross

@@ -8,10 +8,10 @@ RSpec.describe Accreditation, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :accreditation }
+    subject { Accreditation.new(attributes_for(:accreditation)) }
 
-    let(:by_campus) { create(:accreditation, :by_campus) }
-    let(:by_institution) { create(:accreditation, :by_institution) }
+    let(:by_campus) { Accreditation.create(attributes_for(:accreditation, :by_campus)) }
+    let(:by_institution) { Accreditation.create(attributes_for(:accreditation, :by_institution)) }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
@@ -47,9 +47,7 @@ RSpec.describe Accreditation, type: :model do
         described_class::ACCREDITATIONS[type]
           .map { |regexp| "THE #{regexp.to_s.scan(/:(.*)\)/).flatten.first.upcase} ONE" }
           .each do |name|
-          a = build :accreditation, agency_name: name
-          a.valid?
-
+          a = Accreditation.create(attributes_for(:accreditation, agency_name: name))
           expect(a.accreditation_type).to eq(type)
         end
       end

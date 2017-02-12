@@ -7,23 +7,24 @@ RSpec.shared_examples 'a loadable model' do |options|
     create_list factory_name, 5
   end
 
-  describe "#{described_class}::MAP" do
-    it 'must be defined for loadable classes' do
-      expect(described_class::MAP).not_to be_nil
-    end
+  it 'CSV_CONVERTER_INFO must be defined for loadable classes' do
+    expect(described_class::CSV_CONVERTER_INFO).not_to be_nil
   end
 
-  describe "#{described_class}.load" do
+  describe 'when loading' do
     context 'with an error-free csv file' do
       let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
 
-      it 'loads the table from a CSV file' do
-        results = described_class.load(csv_file, options)
-        expect(results.num_inserts).to eq(1)
-      end
-
       it 'deletes the old table content' do
         expect { described_class.load(csv_file, options) }.to change { described_class.count }.from(5).to(2)
+      end
+
+      it 'loads the table' do
+        results = described_class.load(csv_file, options)
+
+        expect(results.num_inserts).to eq(1)
+        expect(results.ids.length).to eq(2)
+        expect(results.failed_instances.length).to eq(0)
       end
     end
 
@@ -36,6 +37,7 @@ RSpec.shared_examples 'a loadable model' do |options|
 
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(1)
+        expect(results.failed_instances.length).to eq(1)
       end
     end
   end

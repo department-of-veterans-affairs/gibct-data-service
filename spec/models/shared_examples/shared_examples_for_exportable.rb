@@ -3,17 +3,15 @@ RSpec.shared_examples 'an exportable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
   let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
-  let(:mapping) { described_class::MAP }
+  let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
   subject { described_class.export }
 
-  describe "#{described_class}::MAP" do
-    it 'must be defined for exportable classes' do
-      expect(mapping).not_to be_nil
-    end
+  it 'CSV_CONVERTER_INFO must be defined for exportable classes' do
+    expect(mapping).not_to be_nil
   end
 
-  describe "#{described_class}.export" do
+  describe 'when exporting' do
     before(:each) do
       described_class.load(csv_file, options)
     end
