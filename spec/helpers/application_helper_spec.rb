@@ -48,7 +48,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context 'without a label' do
       it 'formats the errors for html' do
-        expect(helper.pretty_error(errors)).to eq(div_helper ul)
+        expect(helper.pretty_error(errors)).to eq(div_helper(ul))
       end
 
       it 'returns an empty string when there are no errors' do
@@ -58,7 +58,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context 'with a label' do
       it 'formats the errors for html' do
-        expect(helper.pretty_error(errors, label)).to eq(div_helper ul_with_label)
+        expect(helper.pretty_error(errors, label)).to eq(div_helper(ul_with_label))
       end
 
       it 'returns an empty string when there are no errors' do
