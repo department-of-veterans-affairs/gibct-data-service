@@ -3,11 +3,9 @@ require 'rails_helper'
 require 'support/controller_macros'
 require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
-require 'controllers/shared_examples/shared_examples_for_alertable'
 
 RSpec.describe DashboardsController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'dashboards'
-  it_behaves_like 'an alertable controller'
 
   describe 'GET #index' do
     login_user
