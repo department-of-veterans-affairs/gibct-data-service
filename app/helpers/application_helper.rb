@@ -17,4 +17,26 @@ module ApplicationHelper
   def link_if_not_active(body, path, method = 'GET')
     active_link?(path, method) ? safe_join(["<a>#{body}</a>".html_safe]) : link_to(body, path)
   end
+
+  # Wraps an array of error messages in an html list with a label (optional) above it
+  def pretty_error(errors, label = '')
+    return '' if errors.blank?
+
+    content_tag(:div, class: 'errors') do
+      concat(content_tag(:p, label)) if label.present?
+
+      concat(
+        content_tag(:ul) do
+          errors.map do |error|
+            concat content_tag(:li, error)
+          end
+        end
+      )
+    end
+  end
+
+  # Temporary placeholder for InstitutionBuilder.buildable?
+  def buildable?
+    true
+  end
 end
