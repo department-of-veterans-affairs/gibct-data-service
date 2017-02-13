@@ -30,5 +30,14 @@ FactoryGirl.define do
     trait :institution_builder do
       campus_ipeds_unitid '999999'
     end
+
+    initialize_with do
+      new(
+        institution_name: institution_name, campus_name: campus_name,
+        ope: ope, institution_ipeds_unitid: institution_ipeds_unitid,
+        campus_ipeds_unitid: campus_ipeds_unitid, agency_name: agency_name,
+        periods: periods, csv_accreditation_type: csv_accreditation_type
+      )
+    end
   end
 end

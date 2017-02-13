@@ -242,9 +242,9 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.float    "repayment_rate_all_students"
     t.float    "avg_stu_loan_debt"
     t.string   "calendar"
-    t.float    "tuition_in_state"
-    t.float    "tuition_out_of_state"
-    t.float    "books"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
     t.boolean  "online_all"
     t.float    "p911_tuition_fees",                                   default: 0.0
     t.integer  "p911_recipients",                                     default: 0
@@ -370,9 +370,9 @@ ActiveRecord::Schema.define(version: 20170124200527) do
 
   create_table "ipeds_ic_ays", force: :cascade do |t|
     t.string   "cross",                null: false
-    t.float    "tuition_in_state"
-    t.float    "tuition_out_of_state"
-    t.float    "books"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
     t.string   "xtuit1"
     t.integer  "tuition1"
     t.string   "xfee1"
@@ -610,9 +610,9 @@ ActiveRecord::Schema.define(version: 20170124200527) do
 
   create_table "ipeds_ic_pies", force: :cascade do |t|
     t.string   "cross",                null: false
-    t.float    "tuition_in_state"
-    t.float    "tuition_out_of_state"
-    t.float    "books"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
     t.integer  "prgmofr"
     t.float    "cipcode1"
     t.string   "xciptui1"

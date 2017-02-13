@@ -6,10 +6,18 @@ FactoryGirl.define do
 
     status 'closed'
     closed_reason 'resolved'
+    issues nil
 
     trait :institution_builder do
       facility_code '1ZZZZZZZ'
       ope '99999999'
+    end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, ope: ope, status: status,
+        closed_reason: closed_reason, issues: issues
+      )
     end
   end
 end

@@ -9,5 +9,9 @@ FactoryGirl.define do
     trait :institution_builder do
       cross '999999'
     end
+
+    initialize_with do
+      new(cross: cross, chg1py3: chg1py3, books: books)
+    end
   end
 end

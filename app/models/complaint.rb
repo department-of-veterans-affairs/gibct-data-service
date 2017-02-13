@@ -15,7 +15,7 @@
 
 # frozen_string_literal: true
 class Complaint < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
   STATUSES = %w(active closed pending reserved).freeze
   CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
@@ -65,7 +65,7 @@ class Complaint < ActiveRecord::Base
 
   USE_COLUMNS = (FAC_CODE_ROLL_UP_SUMS.keys + OPE6_ROLL_UP_SUMS.keys).freeze
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'case id' => { column: :case_id, converter: BaseConverter },
     'level' => { column: :level, converter: BaseConverter },
     'status' => { column: :status, converter: BaseConverter },
@@ -86,7 +86,7 @@ class Complaint < ActiveRecord::Base
   validates :status, inclusion: { in: STATUSES }
   validates :closed_reason, inclusion: { in: CLOSED_REASONS }, allow_blank: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   # Updates these unreliable opes with onese from the crosswalk, which are maintained and more reliable.
   def self.update_ope_from_crosswalk

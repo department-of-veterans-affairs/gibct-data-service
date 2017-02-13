@@ -9,7 +9,7 @@ RSpec.describe BaseConverter do
   end
 
   it 'converts forbidden words to nil' do
-    %w(None NuLl PrIvAcYsUpPrEsSeD xXxXxXxX .).each do |word|
+    %w(None NuLl PrIvAcYsUpPrEsSeD .).each do |word|
       expect(subject.convert(word)).to be_nil
     end
   end

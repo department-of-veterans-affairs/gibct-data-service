@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Scorecard < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
   validates :cross, presence: true
   validates :pred_degree_awarded, inclusion: { in: (0..4) }
@@ -22,7 +22,7 @@ class Scorecard < ActiveRecord::Base
     :repayment_rate_all_students, :avg_stu_loan_debt
   ].freeze
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
     'opeid6' => { column: :ope6, converter: Ope6Converter },
@@ -147,7 +147,7 @@ class Scorecard < ActiveRecord::Base
     'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: BaseConverter }
   }.freeze
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.graduation_rate_all_students = to_graduation_rate_all_students

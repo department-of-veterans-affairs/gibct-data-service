@@ -53,9 +53,9 @@ class CreateInstitutions < ActiveRecord::Migration
       t.float :repayment_rate_all_students, default: nil #Float with "null" and other terms
       t.float :avg_stu_loan_debt, default: nil #Float with "null" and other terms
       t.string :calendar, default: nil # String with "null" string values
-      t.float :tuition_in_state, default: nil #Float with "null" and other terms
-      t.float :tuition_out_of_state, default: nil #Float with "null" and other terms
-      t.float :books, default: nil #Float with "null" and other terms
+      t.integer :tuition_in_state, default: nil #Float with "null" and other terms
+      t.integer :tuition_out_of_state, default: nil #Float with "null" and other terms
+      t.integer :books, default: nil #Float with "null" and other terms
       t.boolean :online_all, default: nil # Boolean with null values
       t.float :p911_tuition_fees, default: 0.0
       t.integer :p911_recipients, default: 0

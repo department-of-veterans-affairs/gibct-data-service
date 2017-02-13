@@ -3,9 +3,9 @@ class CreateIpedsIcPies < ActiveRecord::Migration
     create_table :ipeds_ic_pies do |t|
       # Used in the building of DataCsv
       t.string :cross, null: false
-      t.float :tuition_in_state
-      t.float :tuition_out_of_state
-      t.float :books
+      t.integer :tuition_in_state
+      t.integer :tuition_out_of_state
+      t.integer :books
 
       # Not used in building DataCsv, but used in exporting source csv
       t.integer :prgmofr

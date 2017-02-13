@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Sec702 < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'state' => { column: :state, converter: StateConverter },
     'state full name' => { column: :state_full_name, converter: BaseConverter },
     'sec702' => { column: :sec_702, converter: BooleanConverter }

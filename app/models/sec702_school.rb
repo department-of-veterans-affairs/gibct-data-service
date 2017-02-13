@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Sec702School < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'section_702' => { column: :sec_702, converter: BooleanConverter }
   }.freeze

@@ -6,6 +6,11 @@ module InstitutionBuilder
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam
   ].freeze
 
+  def self.columns_for_update(klass)
+    table_name = klass.name.underscore.pluralize
+    klass::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
+  end
+
   def self.buildable?
     TABLES.map(&:count).reject(&:positive?).blank?
   end
@@ -61,19 +66,15 @@ module InstitutionBuilder
   def self.initialize_with_weams(version_number)
     columns = Weam::USE_COLUMNS.map(&:to_s)
 
-    institutions = Weam.select(columns).where(approved: true).map(&:attributes).each_with_object([]) do |weam, a|
-      a << Institution.new(weam.except('id').merge(version: version_number))
-    end
+    str = "INSERT INTO institutions (#{columns.join(', ')}, version) "
+    str += Weam.select(columns).select("#{version_number.to_i} as version").where(approved: true).to_sql
 
-    # No validations here, Weam was validated on import - don't need to waste time with unique checks
-    Institution.import institutions, validate: false, ignore: true
+    Institution.connection.insert(str)
   end
 
   def self.add_crosswalk(version_number)
-    columns = Crosswalk::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = crosswalks.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(Crosswalk)}
       FROM crosswalks
       WHERE institutions.facility_code = crosswalks.facility_code
         AND institutions.version = #{version_number};
@@ -95,10 +96,8 @@ module InstitutionBuilder
   end
 
   def self.add_vsoc(version_number)
-    columns = Vsoc::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = vsocs.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(Vsoc)}
       FROM vsocs
       WHERE institutions.facility_code = vsocs.facility_code
         AND institutions.version = #{version_number};
@@ -216,10 +215,8 @@ module InstitutionBuilder
   end
 
   def self.add_p911_tf(version_number)
-    columns = P911Tf::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = p911_tfs.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(P911Tf)}
       FROM p911_tfs
       WHERE institutions.facility_code = p911_tfs.facility_code
       AND institutions.version = #{version_number};
@@ -229,10 +226,8 @@ module InstitutionBuilder
   end
 
   def self.add_p911_yr(version_number)
-    columns = P911Yr::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = p911_yrs.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(P911Yr)}
       FROM p911_yrs
       WHERE institutions.facility_code = p911_yrs.facility_code
       AND institutions.version = #{version_number};
@@ -272,10 +267,8 @@ module InstitutionBuilder
   end
 
   def self.add_scorecard(version_number)
-    columns = Scorecard::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = scorecards.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(Scorecard)}
       FROM scorecards
       WHERE institutions.cross = scorecards.cross
         AND institutions.version = #{version_number};
@@ -285,10 +278,8 @@ module InstitutionBuilder
   end
 
   def self.add_ipeds_ic(version_number)
-    columns = IpedsIc::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = ipeds_ics.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(IpedsIc)}
       FROM ipeds_ics
       WHERE institutions.cross = ipeds_ics.cross
         AND institutions.version = #{version_number};
@@ -309,10 +300,8 @@ module InstitutionBuilder
   end
 
   def self.add_ipeds_ic_ay(version_number)
-    columns = IpedsIcAy::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = ipeds_ic_ays.#{col}) }.join(', ')
-
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(IpedsIcAy)}
       FROM ipeds_ic_ays
       WHERE institutions.cross = ipeds_ic_ays.cross
         AND institutions.version = #{version_number};
@@ -402,11 +391,8 @@ module InstitutionBuilder
   end
 
   def self.add_complaint(version_number)
-    columns = Complaint::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = complaints.#{col}) }.join(', ')
-
-    # Sets the complaint data for each school, matching by facility code.
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(Complaint)}
       FROM complaints
       WHERE institutions.facility_code = complaints.facility_code
         AND institutions.version = #{version_number};
@@ -418,11 +404,8 @@ module InstitutionBuilder
   end
 
   def self.add_outcome(version_number)
-    columns = Outcome::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = outcomes.#{col}) }.join(', ')
-
-    # Sets the outcome data for each school, matching by facility code.
     str = <<-SQL
-      UPDATE institutions SET #{columns}
+      UPDATE institutions SET #{columns_for_update(Outcome)}
       FROM outcomes
       WHERE institutions.facility_code = outcomes.facility_code
         AND institutions.version = #{version_number};

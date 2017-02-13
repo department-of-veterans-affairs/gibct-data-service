@@ -10,5 +10,9 @@ FactoryGirl.define do
     trait :institution_builder do
       cross '999999'
     end
+
+    initialize_with do
+      new(cross: cross, tuition_in_state: tuition_in_state, tuition_out_of_state: tuition_out_of_state, books: books)
+    end
   end
 end

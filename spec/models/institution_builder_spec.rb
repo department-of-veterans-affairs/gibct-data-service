@@ -14,7 +14,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       InstitutionBuilder::TABLES.each { |t| create t.name.underscore.to_sym, :institution_builder }
     end
 
-    it 'is true when all tables rae populated' do
+    it 'is true when all tables are populated' do
       expect(InstitutionBuilder).to be_buildable
     end
 

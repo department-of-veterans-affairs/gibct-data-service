@@ -8,17 +8,16 @@ RSpec.describe Accreditation, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { Accreditation.new(attributes_for(:accreditation)) }
+    subject { build :accreditation }
 
-    let(:by_campus) { Accreditation.create(attributes_for(:accreditation, :by_campus)) }
-    let(:by_institution) { Accreditation.create(attributes_for(:accreditation, :by_institution)) }
+    let(:by_campus) { create :accreditation, :by_campus }
+    let(:by_institution) { create :accreditation, :by_institution }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
     end
 
-    it 'sets the ope6' do
-      subject.valid?
+    it 'computes the ope6 from ope' do
       expect(subject.ope6).to eq(subject.ope[1, 5])
     end
 
@@ -28,7 +27,6 @@ RSpec.describe Accreditation, type: :model do
     end
 
     it 'prefers campus_name over institution_name' do
-      subject.valid?
       expect(subject.institution).to eq(subject.campus_name)
     end
 
@@ -38,7 +36,6 @@ RSpec.describe Accreditation, type: :model do
     end
 
     it 'prefers campus_ipeds_unitid over institution_ipeds_unitid' do
-      subject.valid?
       expect(subject.cross).to eq(subject.campus_ipeds_unitid)
     end
 
@@ -47,8 +44,7 @@ RSpec.describe Accreditation, type: :model do
         described_class::ACCREDITATIONS[type]
           .map { |regexp| "THE #{regexp.to_s.scan(/:(.*)\)/).flatten.first.upcase} ONE" }
           .each do |name|
-          a = Accreditation.create(attributes_for(:accreditation, agency_name: name))
-          expect(a.accreditation_type).to eq(type)
+          expect(create(:accreditation, agency_name: name).accreditation_type).to eq(type)
         end
       end
     end

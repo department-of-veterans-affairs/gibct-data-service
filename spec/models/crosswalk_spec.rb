@@ -18,8 +18,7 @@ RSpec.describe Crosswalk, type: :model do
       expect(build(:crosswalk, facility_code: nil)).not_to be_valid
     end
 
-    it 'computes the ope6 from ope[1, 5]' do
-      subject.valid?
+    it 'computes the ope6 from ope' do
       expect(subject.ope6).to eql(subject.ope[1, 5])
     end
   end

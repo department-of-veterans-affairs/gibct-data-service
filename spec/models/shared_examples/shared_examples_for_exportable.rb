@@ -7,10 +7,6 @@ RSpec.shared_examples 'an exportable model' do |options|
 
   subject { described_class.export }
 
-  it 'CSV_CONVERTER_INFO must be defined for exportable classes' do
-    expect(mapping).not_to be_nil
-  end
-
   describe 'when exporting' do
     before(:each) do
       described_class.load(csv_file, options)

@@ -5,14 +5,14 @@ FactoryGirl.define do
       StateConverter::STATES.keys[(n - 1) % StateConverter::STATES.length]
     end
 
-    sequence :state_full_name do |n|
-      StateConverter::STATES.values[(n - 1) % StateConverter::STATES.length]
-    end
-
     sec_702 false
 
     trait :institution_builder do
       state 'NY'
+    end
+
+    initialize_with do
+      new(state: state, sec_702: sec_702)
     end
   end
 end

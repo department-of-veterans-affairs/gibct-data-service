@@ -13,5 +13,16 @@ FactoryGirl.define do
     trait :institution_builder do
       facility_code '1ZZZZZZZ'
     end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, retention_rate_veteran_ba: retention_rate_veteran_ba,
+        retention_rate_veteran_otb: retention_rate_veteran_otb,
+        persistance_rate_veteran_ba: persistance_rate_veteran_ba,
+        persistance_rate_veteran_otb: persistance_rate_veteran_otb,
+        graduation_rate_veteran: graduation_rate_veteran,
+        transfer_out_rate_veteran: transfer_out_rate_veteran
+      )
+    end
   end
 end

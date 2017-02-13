@@ -8,5 +8,9 @@ FactoryGirl.define do
     trait :institution_builder do
       ope '99999999'
     end
+
+    initialize_with do
+      new(ope: ope, hcm_type: hcm_type, hcm_reason: hcm_reason)
+    end
   end
 end

@@ -28,5 +28,18 @@ FactoryGirl.define do
     trait :institution_builder do
       cross '999999'
     end
+
+    initialize_with do
+      new(
+        cross: cross, insturl: insturl, pred_degree_awarded: pred_degree_awarded,
+        locale: locale, undergrad_enrollment: undergrad_enrollment,
+        retention_all_students_ba: retention_all_students_ba,
+        retention_all_students_otb: retention_all_students_otb,
+        salary_all_students: salary_all_students,
+        repayment_rate_all_students: repayment_rate_all_students,
+        avg_stu_loan_debt: avg_stu_loan_debt, c150_4_pooled_supp: c150_4_pooled_supp,
+        c150_l4_pooled_supp: c150_l4_pooled_supp
+      )
+    end
   end
 end

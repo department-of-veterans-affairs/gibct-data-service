@@ -7,7 +7,7 @@
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
 class Weam < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
@@ -19,7 +19,7 @@ class Weam < ActiveRecord::Base
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution, converter: InstitutionConverter },
     'address 1' => { column: :address_1, converter: BaseConverter },
@@ -49,7 +49,7 @@ class Weam < ActiveRecord::Base
   validates :facility_code, :institution, :institution_type_name, presence: true
   validates :bah, numericality: true, allow_blank: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
@@ -60,8 +60,6 @@ class Weam < ActiveRecord::Base
     self.correspondence = correspondence?
     self.approved = approved?
     self.ope6 = Ope6Converter.convert(ope)
-
-    true
   end
 
   # Is this instance an OJT institution?
@@ -134,6 +132,8 @@ class Weam < ActiveRecord::Base
   # benefits, and be a higher learning institution, OJT, flight,
   # correspondence or an institution that is a degree-granting concern.
   def approved?
+    return false if poo_status.blank? || applicable_law_code.blank?
+
     return false unless poo_status =~ Regexp.new('aprvd', 'i')
     return false if applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
 

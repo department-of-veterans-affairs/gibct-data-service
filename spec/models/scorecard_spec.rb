@@ -27,7 +27,6 @@ RSpec.describe Scorecard, type: :model do
     end
 
     it 'prefers c150_4_pooled_supp over c150_l4_pooled_supp' do
-      subject.valid?
       expect(subject.graduation_rate_all_students).to eq(subject.c150_4_pooled_supp)
     end
 

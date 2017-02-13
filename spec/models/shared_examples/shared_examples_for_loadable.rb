@@ -7,10 +7,6 @@ RSpec.shared_examples 'a loadable model' do |options|
     create_list factory_name, 5
   end
 
-  it 'CSV_CONVERTER_INFO must be defined for loadable classes' do
-    expect(described_class::CSV_CONVERTER_INFO).not_to be_nil
-  end
-
   describe 'when loading' do
     context 'with an error-free csv file' do
       let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
@@ -24,7 +20,6 @@ RSpec.shared_examples 'a loadable model' do |options|
 
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(2)
-        expect(results.failed_instances.length).to eq(0)
       end
     end
 
@@ -37,7 +32,6 @@ RSpec.shared_examples 'a loadable model' do |options|
 
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(1)
-        expect(results.failed_instances.length).to eq(1)
       end
     end
   end

@@ -7,5 +7,9 @@ FactoryGirl.define do
     trait :institution_builder do
       cross '999999'
     end
+
+    initialize_with do
+      new(cross: cross, vet_tuition_policy_url: vet_tuition_policy_url)
+    end
   end
 end

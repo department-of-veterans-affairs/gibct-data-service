@@ -14,5 +14,9 @@ FactoryGirl.define do
       ope '99999999'
       cross '999999'
     end
+
+    initialize_with do
+      new(facility_code: facility_code, ope: ope, cross: cross)
+    end
   end
 end
