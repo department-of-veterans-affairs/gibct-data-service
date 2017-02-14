@@ -13,15 +13,9 @@ FactoryGirl.define do
     institution_ipeds_unitid { generate :cross }
     campus_ipeds_unitid { generate :cross }
 
-    agency_name 'American Physical Therapy Association, Commission on Accreditation in Physical Therapy Education'
-    # accreditation_type => { accreditation_type: BaseConverter },
-    # 'agency_name' => { agency_name: BaseConverter },
-    # 'agency_status' => { agency_status: BaseConverter },
-    # 'program_name' => { program_name: BaseConverter },
-    # 'accreditation_status' => { accreditation_csv_status: BaseConverter },
-    # 'accreditation_date_type' => { accreditation_date_type: BaseConverter },
-    # 'periods' => { periods: BaseConverter },
-    # 'last action' => { accreditation_status: BaseConverter }
+    agency_name 'sticky wicket acupuncture association'
+    periods '01/01/2016 - current'
+    csv_accreditation_type 'institutional'
 
     trait :by_campus do
       institution_name nil
@@ -31,6 +25,19 @@ FactoryGirl.define do
     trait :by_institution do
       campus_name nil
       campus_ipeds_unitid nil
+    end
+
+    trait :institution_builder do
+      campus_ipeds_unitid '999999'
+    end
+
+    initialize_with do
+      new(
+        institution_name: institution_name, campus_name: campus_name,
+        ope: ope, institution_ipeds_unitid: institution_ipeds_unitid,
+        campus_ipeds_unitid: campus_ipeds_unitid, agency_name: agency_name,
+        periods: periods, csv_accreditation_type: csv_accreditation_type
+      )
     end
   end
 end

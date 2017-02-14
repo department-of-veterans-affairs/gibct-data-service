@@ -2,13 +2,17 @@
 FactoryGirl.define do
   factory :sec702 do
     sequence :state do |n|
-      StateConverter::STATES.keys[n - 1]
+      StateConverter::STATES.keys[(n - 1) % StateConverter::STATES.length]
     end
 
-    sequence :state_full_name do |n|
-      StateConverter::STATES.values[n - 1]
+    sec_702 false
+
+    trait :institution_builder do
+      state 'NY'
     end
 
-    sec_702 true
+    initialize_with do
+      new(state: state, sec_702: sec_702)
+    end
   end
 end

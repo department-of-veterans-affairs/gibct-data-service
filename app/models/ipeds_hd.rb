@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class IpedsHd < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'instnm' => { column: :institution, converter: InstitutionConverter },
     'addr' => { column: :addr, converter: BaseConverter },

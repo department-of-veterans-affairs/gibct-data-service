@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 class Mou < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
   STATUSES = ['probation - dod', 'title iv non-compliant'].freeze
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },
     'institution name' => { column: :institution, converter: InstitutionConverter },
     'trade name' => { column: :trade_name, converter: BaseConverter },
@@ -17,7 +17,7 @@ class Mou < ActiveRecord::Base
 
   validates :ope, :ope6, presence: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.dodmou = to_dodmou

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class ArfGiBill < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'facility no.' => { column: :facility_code, converter: FacilityCodeConverter },
     'school name' => { column: :institution, converter: InstitutionConverter },
     'station' => { column: :station, converter: BaseConverter },

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class EightKey < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'institution of higher education' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: StateConverter },
@@ -12,7 +12,7 @@ class EightKey < ActiveRecord::Base
   }.freeze
 
   validate :ope_or_cross
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   # Ensure that the record is a legitimate eight_key row rather than embedded state headers or notes
   def ope_or_cross
@@ -24,5 +24,6 @@ class EightKey < ActiveRecord::Base
 
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
+    true
   end
 end

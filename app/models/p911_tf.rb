@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 class P911Tf < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  USE_COLUMNS = [:p911_recipients, :p911_tuition_fees].freeze
+
+  CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'name of institution' => { column: :institution, converter: InstitutionConverter },
     'state' => { column: :state, converter: BaseConverter },

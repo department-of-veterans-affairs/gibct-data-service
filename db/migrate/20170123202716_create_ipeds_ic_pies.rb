@@ -77,7 +77,7 @@ class CreateIpedsIcPies < ActiveRecord::Migration
       t.string :xchg9py1
       t.integer :chg9py1
       t.string :xchg9py2
-      t.integer :chg9py2      
+      t.integer :chg9py2
       t.string :xchg9py3
       t.integer :chg9py3
       t.float :cipcode2

@@ -4,9 +4,17 @@ FactoryGirl.define do
     institution { 'SOME SCHOOL' }
     facility_code { generate :facility_code }
     ope { generate :ope }
-    # cross { generate :cross }
 
     country 'USA'
+    state nil
+
+    correspondence_indicator false
+    flight_indicator false
+    institution_of_higher_learning_indicator false
+    non_college_degree_indicator false
+    poo_status nil
+    applicable_law_code nil
+    ojt_indicator false
 
     # Facility_code second digit is 0
     trait :ojt do
@@ -88,6 +96,26 @@ FactoryGirl.define do
       correspondence_indicator true
       flight_indicator true
       non_college_degree_indicator true
+    end
+
+    trait :institution_builder do
+      facility_code '1ZZZZZZZ'
+      poo_status 'aprvd'
+      applicable_law_code 'educational institution is approved for all chapters'
+      state 'NY'
+
+      institution_of_higher_learning_indicator true
+    end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, institution: institution, ope: ope, state: state,
+        country: country, correspondence_indicator: correspondence_indicator,
+        flight_indicator: flight_indicator, ojt_indicator: ojt_indicator,
+        institution_of_higher_learning_indicator: institution_of_higher_learning_indicator,
+        non_college_degree_indicator: non_college_degree_indicator,
+        poo_status: poo_status, applicable_law_code: applicable_law_code
+      )
     end
   end
 end

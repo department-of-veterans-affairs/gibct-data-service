@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 class Outcome < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  USE_COLUMNS = [
+    :retention_rate_veteran_ba, :retention_rate_veteran_otb,
+    :persistance_rate_veteran_ba, :persistance_rate_veteran_otb,
+    :graduation_rate_veteran, :transfer_out_rate_veteran
+  ].freeze
+
+  CSV_CONVERTER_INFO = {
     'va_facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'va_facility_name' => { column: :institution, converter: InstitutionConverter },
     'school_level_va' => { column: :school_level_va, converter: BaseConverter },

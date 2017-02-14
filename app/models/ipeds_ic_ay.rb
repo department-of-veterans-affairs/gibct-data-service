@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 class IpedsIcAy < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books].freeze
+
+  CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'xtuit1' => { column: :xtuit1, converter: BaseConverter },
     'tuition1' => { column: :tuition1, converter: BaseConverter },
