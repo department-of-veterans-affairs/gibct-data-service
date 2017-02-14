@@ -3,7 +3,7 @@ class Sva < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
-    'id' => { column: :csv_id, converter: BaseConverter },
+    'id' => { column: :csv_id, converter: NumberConverter },
     'school' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },

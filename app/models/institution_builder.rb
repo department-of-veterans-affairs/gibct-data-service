@@ -8,7 +8,7 @@ module InstitutionBuilder
 
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize
-    klass::USE_COLUMNS.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
+    klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
   def self.buildable?
@@ -64,7 +64,7 @@ module InstitutionBuilder
   end
 
   def self.initialize_with_weams(version_number)
-    columns = Weam::USE_COLUMNS.map(&:to_s)
+    columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version) "
     str += Weam.select(columns).select("#{version_number.to_i} as version").where(approved: true).to_sql
@@ -311,7 +311,7 @@ module InstitutionBuilder
   end
 
   def self.add_ipeds_ic_py(version_number)
-    columns = IpedsIcPy::USE_COLUMNS.map(&:to_s).map do |col|
+    columns = IpedsIcPy::COLS_USED_IN_INSTITUTION.map(&:to_s).map do |col|
       %("#{col}" = CASE WHEN institutions.#{col} IS NULL THEN ipeds_ic_pies.#{col} ELSE institutions.#{col} END)
     end.join(', ')
 

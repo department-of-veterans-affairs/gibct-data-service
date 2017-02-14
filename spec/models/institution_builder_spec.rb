@@ -57,7 +57,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        Weam::USE_COLUMNS.each do |column|
+        Weam::COLS_USED_IN_INSTITUTION.each do |column|
           expect(weam[column]).to eq(institution[column])
         end
       end
@@ -72,7 +72,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        Crosswalk::USE_COLUMNS.each do |column|
+        Crosswalk::COLS_USED_IN_INSTITUTION.each do |column|
           expect(crosswalk[column]).to eq(institution[column])
         end
       end
@@ -106,7 +106,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        Vsoc::USE_COLUMNS.each do |column|
+        Vsoc::COLS_USED_IN_INSTITUTION.each do |column|
           expect(vsoc[column]).to eq(institution[column])
         end
       end
@@ -280,7 +280,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        P911Tf::USE_COLUMNS.each do |column|
+        P911Tf::COLS_USED_IN_INSTITUTION.each do |column|
           expect(p911_tf[column]).to eq(institution[column])
         end
       end
@@ -296,7 +296,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        P911Yr::USE_COLUMNS.each do |column|
+        P911Yr::COLS_USED_IN_INSTITUTION.each do |column|
           expect(p911_yr[column]).to eq(institution[column])
         end
       end
@@ -375,7 +375,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        Scorecard::USE_COLUMNS.each do |column|
+        Scorecard::COLS_USED_IN_INSTITUTION.each do |column|
           expect(scorecard[column]).to eq(institution[column])
         end
       end
@@ -391,7 +391,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        IpedsIc::USE_COLUMNS.each do |column|
+        IpedsIc::COLS_USED_IN_INSTITUTION.each do |column|
           expect(ipeds_ic[column]).to eq(institution[column])
         end
       end
@@ -421,7 +421,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        IpedsIcAy::USE_COLUMNS.each do |column|
+        IpedsIcAy::COLS_USED_IN_INSTITUTION.each do |column|
           expect(ipeds_ic_ay[column]).to eq(institution[column])
         end
       end
@@ -432,14 +432,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:ipeds_ic_py) { IpedsIcPy.first }
       let(:ipeds_ic_ay) { IpedsIcAy.first }
 
-      let(:nil_ipeds_ic_ay) { IpedsIcPy::USE_COLUMNS.each_with_object({}) { |v, o| o[v] = nil } }
+      let(:nil_ipeds_ic_ay) { IpedsIcPy::COLS_USED_IN_INSTITUTION.each_with_object({}) { |v, o| o[v] = nil } }
 
       context 'and the institution fields are nil' do
         it 'copies columns used by institutions' do
           create :ipeds_ic_py, :institution_builder
           InstitutionBuilder.run(user)
 
-          IpedsIcPy::USE_COLUMNS.each do |column|
+          IpedsIcPy::COLS_USED_IN_INSTITUTION.each do |column|
             expect(ipeds_ic_py[column]).to eq(institution[column])
           end
         end
@@ -451,11 +451,11 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :ipeds_ic_py, :institution_builder
           InstitutionBuilder.run(user)
 
-          IpedsIcPy::USE_COLUMNS.each do |column|
+          IpedsIcPy::COLS_USED_IN_INSTITUTION.each do |column|
             expect(ipeds_ic_py[column]).not_to eq(institution[column])
           end
 
-          IpedsIcAy::USE_COLUMNS.each do |column|
+          IpedsIcAy::COLS_USED_IN_INSTITUTION.each do |column|
             expect(ipeds_ic_ay[column]).to eq(institution[column])
           end
         end
@@ -680,7 +680,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'copies columns used by institutions' do
-          Complaint::USE_COLUMNS.each do |column|
+          Complaint::COLS_USED_IN_INSTITUTION.each do |column|
             expect(complaint[column]).to eq(institution[column])
           end
         end
@@ -696,7 +696,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'copies columns used by institutions' do
-          Outcome::USE_COLUMNS.each do |column|
+          Outcome::COLS_USED_IN_INSTITUTION.each do |column|
             expect(outcome[column]).to eq(institution[column])
           end
         end

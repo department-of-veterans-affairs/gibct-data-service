@@ -3,7 +3,7 @@ class Accreditation < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
-    'institution_id' => { column: :institution_id, converter: BaseConverter },
+    'institution_id' => { column: :institution_id, converter: NumberConverter },
     'institution_name' => { column: :institution_name, converter: InstitutionConverter },
     'institution_address' => { column: :institution_address, converter: BaseConverter },
     'institution_city' => { column: :institution_city, converter: BaseConverter },
@@ -13,7 +13,7 @@ class Accreditation < ActiveRecord::Base
     'institution_opeid' => { column: :ope, converter: OpeConverter },
     'institution_ipeds_unitid' => { column: :institution_ipeds_unitid, converter: CrossConverter },
     'institution_web_address' => { column: :institution_web_address, converter: BaseConverter },
-    'campus_id' => { column: :campus_id, converter: BaseConverter },
+    'campus_id' => { column: :campus_id, converter: NumberConverter },
     'campus_name' => { column: :campus_name, converter: InstitutionConverter },
     'campus_address' => { column: :campus_address, converter: BaseConverter },
     'campus_city' => { column: :campus_city, converter: BaseConverter },

@@ -23,8 +23,8 @@ class Complaint < ActiveRecord::Base
   # FAC_CODE_TERMS contain substrings in each complaint that identify the type of complaint. There may
   # be several types of complaints for each campus (facility code), and institution (ope6). FAC_CODE_SUMS map the
   # instance's facility code-based summation field with the FAC_CODE_TERM. OPE6_SUMS map the instance's institution
-  # level-based ope6 summation field with the FAC_CODE_TERM. USE_COLUMNS hold those columns that get copied to the
-  # institution table during its build process.
+  # level-based ope6 summation field with the FAC_CODE_TERM. COLS_USED_IN_INSTITUTION holds the columns that get copied
+  # to the institution table during its build process.
   FAC_CODE_TERMS = {
     cfc: /.*/, cfbfc: /financial/, cqbfc: /quality/, crbfc: /refund/, cmbfc: /recruit/, cabfc: /accreditation/,
     cdrbfc: /degree/, cslbfc: /loans/, cgbfc: /grade/, cctbfc: /transfer/, cjbfc: /job/, ctbfc: /transcript/,
@@ -63,7 +63,7 @@ class Complaint < ActiveRecord::Base
     complaints_other_by_ope_id_do_not_sum: :cobfc
   }.freeze
 
-  USE_COLUMNS = (FAC_CODE_ROLL_UP_SUMS.keys + OPE6_ROLL_UP_SUMS.keys).freeze
+  COLS_USED_IN_INSTITUTION = (FAC_CODE_ROLL_UP_SUMS.keys + OPE6_ROLL_UP_SUMS.keys).freeze
 
   CSV_CONVERTER_INFO = {
     'case id' => { column: :case_id, converter: BaseConverter },
