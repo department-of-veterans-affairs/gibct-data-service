@@ -8,6 +8,12 @@ FactoryGirl.define do
     closed_reason 'resolved'
     issues nil
 
+    trait :all_issues do
+      issues %w(
+        financial quality refund recruit accreditation degree loans grade transfer job transcript other
+      ).join(' ')
+    end
+
     trait :institution_builder do
       facility_code '1ZZZZZZZ'
       ope '99999999'

@@ -83,4 +83,19 @@ RSpec.describe Complaint, type: :model do
       expect(complaint.ope6).to eq(crosswalk.ope6)
     end
   end
+
+  describe 'update_sums_by_fac' do
+    before(:each) do
+      create_list :complaint, 2, :all_issues, :institution_builder
+      Complaint.update_sums_by_fac
+    end
+
+    it 'each facility code sum is n if there are n issues by that facility code' do
+      Complaint.all.each do |complaint|
+        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |fc_sum|
+          expect(complaint[fc_sum]).to eq(2)
+        end
+      end
+    end
+  end
 end

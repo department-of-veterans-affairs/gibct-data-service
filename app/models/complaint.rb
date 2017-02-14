@@ -26,9 +26,9 @@ class Complaint < ActiveRecord::Base
   # level-based ope6 summation field with the FAC_CODE_TERM. COLS_USED_IN_INSTITUTION holds the columns that get copied
   # to the institution table during its build process.
   FAC_CODE_TERMS = {
-    cfc: /.*/, cfbfc: /financial/, cqbfc: /quality/, crbfc: /refund/, cmbfc: /recruit/, cabfc: /accreditation/,
-    cdrbfc: /degree/, cslbfc: /loans/, cgbfc: /grade/, cctbfc: /transfer/, cjbfc: /job/, ctbfc: /transcript/,
-    cobfc: /other/
+    cfc: /.*/, cfbfc: /financial/i, cqbfc: /quality/i, crbfc: /refund/i, cmbfc: /recruit/i, cabfc: /accreditation/i,
+    cdrbfc: /degree/i, cslbfc: /loans/i, cgbfc: /grade/i, cctbfc: /transfer/i, cjbfc: /job/i, ctbfc: /transcript/i,
+    cobfc: /other/i
   }.freeze
 
   FAC_CODE_ROLL_UP_SUMS = {
@@ -111,5 +111,25 @@ class Complaint < ActiveRecord::Base
 
   def set_facility_code_complaint
     FAC_CODE_TERMS.each_pair { |complaint, issue_regex| self[complaint] = issues =~ issue_regex ? 1 : 0 }
+  end
+
+  # Sums recurring complaints by facility_code.
+  def self.update_sums_by_fac
+    set_clause = []
+    sum_clause = []
+
+    FAC_CODE_ROLL_UP_SUMS.keys.each do |sum_column|
+      set_clause << %("#{sum_column}" = sums.#{sum_column})
+      sum_clause << %(SUM("#{FAC_CODE_ROLL_UP_SUMS[sum_column]}") AS "#{sum_column}")
+    end
+
+    str = <<-SQL
+      UPDATE complaints SET #{set_clause.join(', ')}
+      FROM
+        (SELECT facility_code, #{sum_clause.join(', ')} FROM complaints GROUP BY facility_code) AS sums
+        WHERE complaints.facility_code = sums.facility_code AND complaints.facility_code IS NOT NULL
+    SQL
+
+    Complaint.connection.update(str)
   end
 end
