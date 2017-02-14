@@ -27,7 +27,6 @@ RSpec.describe IpedsIcPy, type: :model do
     end
 
     it 'sets tuition_in_state and tuition_out_of_state' do
-      subject.valid?
       expect(subject.tuition_in_state).to eq(subject.chg1py3)
       expect(subject.tuition_out_of_state).to eq(subject.chg1py3)
     end

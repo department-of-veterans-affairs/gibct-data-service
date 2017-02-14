@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 class IpedsIcPy < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books].freeze
+
+  CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'prgmofr' => { column: :prgmofr, converter: BaseConverter },
     'cipcode1' => { column: :cipcode1, converter: BaseConverter },
@@ -133,7 +135,7 @@ class IpedsIcPy < ActiveRecord::Base
   validates :chg1py3, numericality: true, allow_blank: true
   validates :books, numericality: true, allow_blank: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.tuition_in_state = chg1py3

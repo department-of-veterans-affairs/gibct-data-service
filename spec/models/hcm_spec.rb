@@ -25,5 +25,9 @@ RSpec.describe Hcm, type: :model do
     it 'requires valid hcm_reason' do
       expect(build(:hcm, hcm_reason: nil)).not_to be_valid
     end
+
+    it 'computes the ope6 from ope' do
+      expect(subject.ope6).to eql(subject.ope[1, 5])
+    end
   end
 end

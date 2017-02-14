@@ -27,7 +27,6 @@ RSpec.describe Weam, type: :model do
     end
 
     it 'computes the ope6 from ope[1, 5]' do
-      subject.valid?
       expect(subject.ope6).to eql(subject.ope[1, 5])
     end
   end
@@ -196,9 +195,7 @@ RSpec.describe Weam, type: :model do
     it 'knows its type' do
       [:flight, :foreign, :correspondence, :ojt, :public, :for_profit, :private].each do |type|
         weam = build :weam, type
-        weam.valid?
-
-        expect(weam.institution_type).to eq(type.to_s.tr('_', ' '))
+        expect(weam.institution_type_name).to eq(type.to_s.tr('_', ' '))
       end
     end
   end
@@ -221,12 +218,6 @@ RSpec.describe Weam, type: :model do
     let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
     let(:title_31_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
     let(:false_indicators) { build :weam }
-
-    before(:each) do
-      subject.valid?
-      withdrawn.valid?
-      non_approved_law_code.valid?
-    end
 
     it 'is true if poo and law code are approved with at least one true indicator' do
       expect(subject.approved?).to be_truthy

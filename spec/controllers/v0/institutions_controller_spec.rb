@@ -5,7 +5,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'autocomplete results' do
     it 'returns collection of matches' do
       7.times { create(:institution, :contains_harv) }
-      get :autocomplete, term: 'harv'
+      get :autocomplete, term: 'harv', version: 1
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
@@ -18,14 +18,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns results' do
-      get :index
+      get :index, version: 1
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns results matching name' do
-      get :index, name: 'chicago'
+      get :index, name: 'chicago', version: 1
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -35,7 +35,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'institution profile' do
     it 'returns profile details' do
       school = create(:institution, :in_chicago)
-      get :show, id: school.facility_code
+
+      get :show, id: school.facility_code, version: school.version
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end

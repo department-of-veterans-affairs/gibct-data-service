@@ -34,14 +34,14 @@ class Version < ActiveRecord::Base
   end
 
   def check_version
-    if version.present? && Version.find_by(version: version).nil?
-      errors.add(:version, "#{version} doesn't exist")
+    if number.present? && Version.find_by(number: number).nil?
+      errors.add(:number, "Version number #{number} doesn't exist")
     end
 
     true
   end
 
   def increment_version
-    self.version = (Version.maximum(:version) || 0) + 1 if version.nil?
+    self.number = (Version.maximum(:number) || 0) + 1 if number.nil?
   end
 end

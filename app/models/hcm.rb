@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Hcm < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },
     'institution name' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
@@ -15,11 +15,10 @@ class Hcm < ActiveRecord::Base
 
   validates :ope, :hcm_type, :hcm_reason, presence: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
-
     true
   end
 end

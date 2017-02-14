@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 class IpedsIc < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
+
+  USE_COLUMNS = [
+    :credit_for_mil_training, :vet_poc, :student_vet_grp_ipeds,
+    :soc_member, :calendar, :online_all
+  ].freeze
 
   # Note do not map the "integer" values to "boolean" values otherwise exports will put true/false instead of 1/0,
   # instead move them to dependent booleans before validation.
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'peo1istr' => { column: :peo1istr, converter: BaseConverter },
     'peo2istr' => { column: :peo2istr, converter: BaseConverter },
@@ -118,7 +123,7 @@ class IpedsIc < ActiveRecord::Base
   validates :vet2, :vet3, :vet4, :vet5, inclusion: { in: (-2..1) }
   validates :distnced, inclusion: { in: [-2, -1, 1, 2] }
   validates :calsys, inclusion: { in: [-2, 1, 2, 3, 4, 5, 6, 7] }
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.credit_for_mil_training = IpedsIc.coded_to_boolean(vet2)

@@ -21,9 +21,10 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = Institution.version(params[:version])
-                            .find_by(facility_code: params[:id])
+      resource = Institution.version(params[:version]).find_by(facility_code: params[:id])
+
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
+
       render json: resource, serializer: InstitutionProfileSerializer,
              meta: { version: params[:version] }
     end

@@ -11,7 +11,7 @@ module Common
         errors&.first&.status&.to_i
       end
 
-      private
+      # private
 
       def i18n_key
         "common.exceptions.#{self.class.name.split('::').last.underscore}"

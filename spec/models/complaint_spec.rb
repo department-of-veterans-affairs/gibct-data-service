@@ -8,53 +8,53 @@ RSpec.describe Complaint, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 7
 
   describe 'when validating' do
-    subject { build :complaint }
+    subject { Complaint.new(attributes_for(:complaint)) }
+
+    let(:complaint_no_fac_code) { build :complaint, facility_code: nil }
+    let(:complaint_no_status) { build :complaint, status: nil }
+    let(:complaint_bad_status) { build :complaint, status: 'blech' }
+    let(:complaint_bad_reason) { build :complaint, closed_reason: 'blech' }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
     end
 
     it 'requires a valid facility_code' do
-      expect(build(:complaint, facility_code: nil)).not_to be_valid
+      expect(complaint_no_fac_code).not_to be_valid
     end
 
     it 'must have a valid, non-nil status' do
-      expect(build(:complaint, status: nil)).not_to be_valid
-      expect(build(:complaint, status: 'blech')).not_to be_valid
+      expect(complaint_no_status).not_to be_valid
+      expect(complaint_bad_status).not_to be_valid
     end
 
     it 'must have a valid closed_reason' do
-      expect(build(:complaint, closed_reason: 'blech')).not_to be_valid
+      expect(complaint_bad_reason).not_to be_valid
     end
 
-    it 'sets the ope6 from the ope' do
-      subject.valid?
+    it 'computes the ope6 from the ope' do
       expect(subject.ope6).to eql(subject.ope[1, 5])
     end
 
     describe 'setting facility code complaints' do
       let(:all) { 'financial quality refund recruit accreditation degree loans grade transfer job transcript other' }
+      let(:complaint_all) { build :complaint, issues: all }
 
-      it 'sets complaints to 1 only if the complaint keyword is  embedded in the issue' do
-        all_issues = build :complaint, issues: all
-
-        subject.valid?
-        all_issues.valid?
-
+      it 'sets complaints to 1 only if the complaint keyword is embedded in the issue' do
         Complaint::FAC_CODE_TERMS.keys.each do |facility_code_col|
           expect(subject[facility_code_col]).to eq(0)
-          expect(all_issues[facility_code_col]).to eq(1)
+          expect(complaint_all[facility_code_col]).to eq(1)
         end
       end
     end
   end
 
   describe 'ok_to_sum?' do
-    subject { build :complaint }
+    subject { Complaint.new(attributes_for(:complaint)) }
 
-    let(:invalid) { build(:complaint, closed_reason: 'invalid') }
-    let(:nil_reason) { build(:complaint, closed_reason: nil) }
-    let(:active) { build(:complaint, status: 'active') }
+    let(:invalid) { Complaint.new(attributes_for(:complaint, closed_reason: 'invalid')) }
+    let(:nil_reason) { Complaint.new(attributes_for(:complaint, closed_reason: nil)) }
+    let(:active) { Complaint.new(attributes_for(:complaint, status: 'active')) }
 
     it 'is true for a closed complaint with any valid reason' do
       expect(subject).to be_ok_to_sum
@@ -75,6 +75,7 @@ RSpec.describe Complaint, type: :model do
 
     it 'replaces the ope with that obtained from the Crosswalk table' do
       Complaint.update_ope_from_crosswalk
+
       crosswalk = Crosswalk.first
       complaint = Complaint.first
 

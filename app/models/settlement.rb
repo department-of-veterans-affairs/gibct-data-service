@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Settlement < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'instnm' => { column: :institution, converter: InstitutionConverter },
     'school_system_code' => { column: :school_system_code, converter: BaseConverter },

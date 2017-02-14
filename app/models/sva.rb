@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Sva < ActiveRecord::Base
-  include Loadable, Exportable
+  include CsvHelper
 
-  MAP = {
+  CSV_CONVERTER_INFO = {
     'id' => { column: :csv_id, converter: BaseConverter },
     'school' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
@@ -15,7 +15,7 @@ class Sva < ActiveRecord::Base
 
   validates :cross, presence: true
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
     self.student_veteran_link = nil if student_veteran_link == 'http://www.studentveterans.org'

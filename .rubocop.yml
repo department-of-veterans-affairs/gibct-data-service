@@ -12,6 +12,11 @@ AllCops:
     - 'Gemfile'
     - 'log/**/*'
 
+Metrics/AbcSize:
+  Exclude:
+    - app/models/institution_builder.rb
+    - app/models/complaint.rb
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
@@ -28,6 +33,12 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   Max: 20
+  Exclude:
+    - 'app/models/institution_builder.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'app/models/institution_builder.rb'
 
 Style/Documentation:
   Enabled: false

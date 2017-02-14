@@ -31,7 +31,7 @@ RSpec.describe Mou, type: :model do
     end
 
     it "sets dod_status if status contains 'dod'" do
-      expect(create(:mou, :by_dod).dod_status).to be_truthy
+      expect(create(:mou).dod_status).to be_truthy
       expect(create(:mou, :by_title_iv).dod_status).to be_falsy
     end
   end

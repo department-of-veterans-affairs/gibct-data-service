@@ -14,6 +14,10 @@ RSpec.describe EightKey, type: :model do
       expect(subject).to be_valid
     end
 
+    it 'computes the ope6 from ope' do
+      expect(subject.ope6).to eql(subject.ope[1, 5])
+    end
+
     it 'requires a cross or an ope to be valid' do
       expect(build(:eight_key, ope: nil)).to be_valid
       expect(build(:eight_key, cross: nil)).to be_valid
