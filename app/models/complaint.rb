@@ -5,7 +5,7 @@
 # arrive at the roll-up sum for the entire institution.
 #
 # To accomplish this, when saving each instance of a complaint, we check the the method :ok_to_sum? when the record is
-# being saved. If not, all complaint counts remain at 0, otherwise we run the method :set_fac_code_terms to set each
+# being saved. If not, all complaint counts remain at 0, otherwise we run the method :set_COMPLAINT_COLUMNS to set each
 # complaint type to a 0 or a 1 based on a regular expression match of the :issue attribute with complaint category
 # keywords. Summing all the complaints for a given facility_code is then done by the method :update_sums_by_fac
 # (called after uploading the complaint CSV). Rolling up complaints to the institution (OPE6 id) is done by the method
@@ -20,12 +20,12 @@ class Complaint < ActiveRecord::Base
   STATUSES = %w(active closed pending reserved).freeze
   CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
 
-  # FAC_CODE_TERMS contain substrings in each complaint that identify the type of complaint. There may
+  # COMPLAINT_COLUMNS contain substrings in each complaint that identify the type of complaint. There may
   # be several types of complaints for each campus (facility code), and institution (ope6). FAC_CODE_SUMS map the
   # instance's facility code-based summation field with the FAC_CODE_TERM. OPE6_SUMS map the instance's institution
   # level-based ope6 summation field with the FAC_CODE_TERM. COLS_USED_IN_INSTITUTION holds the columns that get copied
   # to the institution table during its build process.
-  FAC_CODE_TERMS = {
+  COMPLAINT_COLUMNS = {
     cfc: /.*/, cfbfc: /financial/i, cqbfc: /quality/i, crbfc: /refund/i, cmbfc: /recruit/i, cabfc: /accreditation/i,
     cdrbfc: /degree/i, cslbfc: /loans/i, cgbfc: /grade/i, cctbfc: /transfer/i, cjbfc: /job/i, ctbfc: /transcript/i,
     cobfc: /other/i
@@ -88,6 +88,46 @@ class Complaint < ActiveRecord::Base
 
   after_initialize :derive_dependent_columns
 
+  def derive_dependent_columns
+    self.ope6 = Ope6Converter.convert(ope)
+    set_facility_code_complaint if ok_to_sum?
+  end
+
+  def ok_to_sum?
+    status == 'closed' && closed_reason != 'invalid' && closed_reason.present?
+  end
+
+  def set_facility_code_complaint
+    COMPLAINT_COLUMNS.each_pair { |complaint, issue_regex| self[complaint] = issues =~ issue_regex ? 1 : 0 }
+  end
+
+  def self.rollup_sums(on_column)
+    if on_column == :facility_code
+      rollup_sums = FAC_CODE_ROLL_UP_SUMS
+      update_table = 'complaints'
+    else
+      rollup_sums = OPE6_ROLL_UP_SUMS
+      update_table = 'institutions'
+    end
+
+    set_clause = []
+    sum_clause = []
+
+    rollup_sums.each_pair do |sum_column, complaint_column|
+      set_clause << %("#{sum_column}" = sums.#{sum_column})
+      sum_clause << %(SUM("#{complaint_column}") AS "#{sum_column}")
+    end
+
+    str = <<-SQL
+      UPDATE #{update_table} SET #{set_clause.join(', ')}
+      FROM
+        (SELECT "#{on_column}", #{sum_clause.join(', ')} FROM complaints GROUP BY #{on_column}) AS sums
+        WHERE #{update_table}.#{on_column} = sums.#{on_column} AND #{update_table}.#{on_column} IS NOT NULL
+    SQL
+
+    Complaint.connection.update(str)
+  end
+
   # Updates these unreliable opes with onese from the crosswalk, which are maintained and more reliable.
   def self.update_ope_from_crosswalk
     Complaint.connection.update(<<-SQL)
@@ -96,40 +136,5 @@ class Complaint < ActiveRecord::Base
         FROM crosswalks
         WHERE complaints.facility_code = crosswalks.facility_code AND crosswalks.ope IS NOT NULL
       SQL
-  end
-
-  def derive_dependent_columns
-    self.ope6 = Ope6Converter.convert(ope)
-    set_facility_code_complaint if ok_to_sum?
-
-    true
-  end
-
-  def ok_to_sum?
-    status == 'closed' && closed_reason != 'invalid' && closed_reason.present?
-  end
-
-  def set_facility_code_complaint
-    FAC_CODE_TERMS.each_pair { |complaint, issue_regex| self[complaint] = issues =~ issue_regex ? 1 : 0 }
-  end
-
-  # Sums recurring complaints by facility_code.
-  def self.update_sums_by_fac
-    set_clause = []
-    sum_clause = []
-
-    FAC_CODE_ROLL_UP_SUMS.keys.each do |sum_column|
-      set_clause << %("#{sum_column}" = sums.#{sum_column})
-      sum_clause << %(SUM("#{FAC_CODE_ROLL_UP_SUMS[sum_column]}") AS "#{sum_column}")
-    end
-
-    str = <<-SQL
-      UPDATE complaints SET #{set_clause.join(', ')}
-      FROM
-        (SELECT facility_code, #{sum_clause.join(', ')} FROM complaints GROUP BY facility_code) AS sums
-        WHERE complaints.facility_code = sums.facility_code AND complaints.facility_code IS NOT NULL
-    SQL
-
-    Complaint.connection.update(str)
   end
 end

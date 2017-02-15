@@ -400,7 +400,9 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # TODO: Rollup sums by facility_code and ope6
+    Complaint.update_ope_from_crosswalk
+    Complaint.rollup_sums(:facility_code)
+    Complaint.rollup_sums(:ope6)
   end
 
   def self.add_outcome(version_number)

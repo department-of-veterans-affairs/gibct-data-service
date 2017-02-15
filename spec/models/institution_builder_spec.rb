@@ -676,13 +676,24 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         before(:each) do
           create :complaint, :institution_builder
-          InstitutionBuilder.run(user)
         end
 
         it 'copies columns used by institutions' do
+          InstitutionBuilder.run(user)
+
           Complaint::COLS_USED_IN_INSTITUTION.each do |column|
             expect(complaint[column]).to eq(institution[column])
           end
+        end
+
+        it 'calls update_ope_from_crosswalk' do
+          expect(Complaint).to receive(:update_ope_from_crosswalk)
+          InstitutionBuilder.run(user)
+        end
+
+        it 'calls rollup_sums for facility_code and ope6' do
+          expect(Complaint).to receive(:rollup_sums).twice
+          InstitutionBuilder.run(user)
         end
       end
 

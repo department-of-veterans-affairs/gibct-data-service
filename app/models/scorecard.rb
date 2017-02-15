@@ -152,8 +152,6 @@ class Scorecard < ActiveRecord::Base
   def derive_dependent_columns
     self.graduation_rate_all_students = to_graduation_rate_all_students
     self.ope6 = Ope6Converter.convert(ope)
-
-    true
   end
 
   def to_graduation_rate_all_students

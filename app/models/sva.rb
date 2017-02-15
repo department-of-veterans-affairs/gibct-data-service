@@ -19,6 +19,5 @@ class Sva < ActiveRecord::Base
 
   def derive_dependent_columns
     self.student_veteran_link = nil if student_veteran_link == 'http://www.studentveterans.org'
-    true
   end
 end

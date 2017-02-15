@@ -132,8 +132,6 @@ class IpedsIc < ActiveRecord::Base
     self.soc_member = IpedsIc.coded_to_boolean(vet5)
     self.online_all = IpedsIc.to_online_all(distnced)
     self.calendar = IpedsIc.to_calendar(calsys)
-
-    true
   end
 
   def self.to_calendar(value)

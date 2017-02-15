@@ -66,8 +66,6 @@ class Accreditation < ActiveRecord::Base
     self.ope6 = Ope6Converter.convert(ope)
     self.institution = to_institution
     self.accreditation_type = to_accreditation_type
-
-    true
   end
 
   def to_institution
