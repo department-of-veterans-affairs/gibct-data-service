@@ -15,7 +15,7 @@
 /data/*
 
 # Ignore seeds
-/db/seeds.rb
+# /db/seeds.rb
 
 # Comment out these rules if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
@@ -41,6 +41,9 @@ bower.json
 
 *.rbc
 capybara-*.html
+
+# Ignore local config
+config/application.yml
 
 .rbenv-gemsets
 .rspec

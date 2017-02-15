@@ -1,7 +1,7 @@
 <% if notice.present? %>
-	<aside class="alert alert-info"><%= notice %></aside>
+	<aside class="alert alert-info"><%= notice.html_safe %></aside>
 <% end %>
 
 <% if alert.present? %>
-	<aside class="alert alert-danger"><%= alert %></aside>
+	<aside class="alert alert-danger"><%= alert.html_safe %></aside>
 <% end %>

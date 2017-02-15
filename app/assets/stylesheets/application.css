@@ -19,14 +19,18 @@
 @font-face {
   font-family: 'Glyphicons Halflings';
   src: url('/assets/glyphicons-halflings-regular.eot');
-  src: url('/assets/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),      
-  url('/assets/glyphicons-halflings-regular.woff') format('woff'), 
-  url('/assets/glyphicons-halflings-regular.ttf') format('truetype'), 
+  src: url('/assets/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+  url('/assets/glyphicons-halflings-regular.woff') format('woff'),
+  url('/assets/glyphicons-halflings-regular.ttf') format('truetype'),
   url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
 
 .row-space-6 {
 	padding: 3px 0;
+}
+
+.control-space {
+  margin-top: 1rem
 }
 
 .section-margin-24 {
@@ -36,19 +40,19 @@
 .digg_pagination {
   background: white;
   cursor: default;
-  /* self-clearing method: */ 
+  /* self-clearing method: */
 }
 
 .digg_pagination a, .digg_pagination span, .digg_pagination em {
   padding: 0.2em 0.5em;
   display: block;
   float: left;
-  margin-right: 1px; 
+  margin-right: 1px;
 }
 
 .digg_pagination .disabled {
   color: #999999;
-  border: 1px solid #dddddd; 
+  border: 1px solid #dddddd;
 }
 
 .digg_pagination .current {
@@ -56,18 +60,18 @@
   font-weight: bold;
   background: #2e6ab1;
   color: white;
-  border: 1px solid #2e6ab1; 
+  border: 1px solid #2e6ab1;
 }
 
 .digg_pagination a {
   text-decoration: none;
   color: #105cb6;
-  border: 1px solid #9aafe5; 
+  border: 1px solid #9aafe5;
 }
 
 .digg_pagination a:hover, .digg_pagination a:focus {
     color: #000033;
-    border-color: #000033; 
+    border-color: #000033;
 }
 
 .digg_pagination .page_info {
@@ -76,13 +80,13 @@
   padding: 0.4em 0.6em;
   width: 22em;
   margin-bottom: 0.3em;
-  text-align: center; 
+  text-align: center;
 }
 
 .digg_pagination .page_info b {
     color: #000033;
     background: #6aa6ed;
-    padding: 0.1em 0.25em; 
+    padding: 0.1em 0.25em;
 }
 
 .digg_pagination:after {
@@ -90,15 +94,15 @@
   display: block;
   height: 0;
   clear: both;
-  visibility: hidden; 
+  visibility: hidden;
 }
 
 * html .digg_pagination {
-  height: 1%; 
+  height: 1%;
 }
 
 *:first-child + html .digg_pagination {
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .apple_pagination {
@@ -106,15 +110,15 @@
   border: 1px solid #e5e5e5;
   text-align: center;
   padding: 1em;
-  cursor: default; 
+  cursor: default;
 }
 
 .apple_pagination a, .apple_pagination span {
-  padding: 0.2em 0.3em; 
+  padding: 0.2em 0.3em;
 }
 
 .apple_pagination .disabled {
-  color: #aaaaaa; 
+  color: #aaaaaa;
 }
 
 .apple_pagination .current {
@@ -128,14 +132,14 @@
   -moz-border-radius: 1em;
   -webkit-border-radius: 1em;
   border-radius: 1em;
-  text-shadow: rgba(255, 255, 255, 0.8) 1px 1px 1px; 
+  text-shadow: rgba(255, 255, 255, 0.8) 1px 1px 1px;
 }
 
 .apple_pagination a {
   text-decoration: none;
-  color: black; 
+  color: black;
 }
 
 .apple_pagination a:hover, .apple_pagination a:focus {
-    text-decoration: underline; 
+    text-decoration: underline;
 }
