@@ -1,3 +1,8 @@
+def env_vars = [
+  'HOSTNAME=www.example.com',
+  'SECRET_KEY_BASE=0ae77385a98d4d28886d792832fbbe036152efb4a112fae2d06261850a5b6728'
+]
+
 pipeline {
   agent {
     label 'rails-testing'
