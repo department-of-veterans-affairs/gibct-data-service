@@ -19,6 +19,5 @@ class Hcm < ActiveRecord::Base
 
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
-    true
   end
 end

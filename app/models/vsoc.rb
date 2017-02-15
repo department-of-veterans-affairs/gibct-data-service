@@ -2,7 +2,7 @@
 class Vsoc < ActiveRecord::Base
   include CsvHelper
 
-  USE_COLUMNS = [:vetsuccess_name, :vetsuccess_email].freeze
+  COLS_USED_IN_INSTITUTION = [:vetsuccess_name, :vetsuccess_email].freeze
 
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },

@@ -23,8 +23,6 @@ class Mou < ActiveRecord::Base
     self.dodmou = to_dodmou
     self.dod_status = to_dod_status
     self.ope6 = Ope6Converter.convert(ope)
-
-    true
   end
 
   def to_dodmou

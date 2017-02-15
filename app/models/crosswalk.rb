@@ -2,7 +2,7 @@
 class Crosswalk < ActiveRecord::Base
   include CsvHelper
 
-  USE_COLUMNS = [:ope, :cross, :ope6].freeze
+  COLS_USED_IN_INSTITUTION = [:ope, :cross, :ope6].freeze
 
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
@@ -19,6 +19,5 @@ class Crosswalk < ActiveRecord::Base
 
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
-    true
   end
 end
