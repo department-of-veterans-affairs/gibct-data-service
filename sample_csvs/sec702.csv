@@ -2,7 +2,7 @@ State,State Full Name,Sec702
 AK,Alaska,Yes
 AL,Alabama,Yes
 AR,Arkansas,Yes
-AS,American Samoa,No
+AS,American Samoa,Yes
 AZ,Arizona,Yes
 CA,California,Yes
 CO,Colorado,Yes
@@ -10,7 +10,7 @@ CT,Connecticut,Yes
 DC,District of Columbia,Yes
 DE,Delaware,Yes
 FL,Florida,Yes
-FM,Federated States of Miconeisa,No
+FM,Federated States of Miconeisa,Yes
 GA,Georgia,Yes
 GU,Guam,Yes
 HI,Hawaii,Yes
@@ -20,15 +20,15 @@ IL,Illinois,Yes
 IN,Indiana,Yes
 KS,Kansas,Yes
 KY,Kentucky,Yes
-LA,Louisiana,No
+LA,Louisiana,Yes
 MA,Massachusetts,Yes
 MD,Maryland,Yes
 ME,Maine,Yes
-MH,Marshall Islands,No
+MH,Marshall Islands,Yes
 MI,Michigan,Yes
 MN,Minnesota,Yes
 MO,Missouri,Yes
-MP,Northern Mariana Islands,No
+MP,Northern Mariana Islands,Yes
 MS,Mississippi,Yes
 MT,Montana,Yes
 NC,North Carolina,Yes
@@ -44,7 +44,7 @@ OK,Oklahoma,Yes
 OR,Oregon,Yes
 PA,Pennsylvania,Yes
 PR,Puerto Rico,Yes
-PW,Palau,No
+PW,Palau,Yes
 RI,Rhode Island,Yes
 SC,South Carolina,Yes
 SD,South Dakota,Yes
