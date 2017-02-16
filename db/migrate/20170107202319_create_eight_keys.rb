@@ -14,8 +14,8 @@ class CreateEightKeys < ActiveRecord::Migration
       t.timestamps null: false
 
       t.index :institution
-      t.index :cross, unique: true
-      t.index :ope, unique: true
+      t.index :cross
+      t.index :ope
       t.index :ope6
     end
   end

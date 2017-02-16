@@ -130,8 +130,8 @@ class CreateScorecards < ActiveRecord::Migration
 
       t.timestamps null: false
 
-      t.index :cross, unique: true
-      t.index :ope, unique: true
+      t.index :cross
+      t.index :ope
     end
   end
 end
