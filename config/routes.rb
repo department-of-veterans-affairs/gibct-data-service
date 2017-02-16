@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   match '/v0/*path', to: 'api#cors_preflight', via: [:options]
 
+  get 'status' => 'status#status'
+
   devise_for :user
 
   # For active? helper
