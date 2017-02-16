@@ -1,0 +1,39 @@
+<%= render partial: 'introduction',
+    locals: {
+      new_link: buildable?, export_link: buildable?, list_link: false,
+      push_staging_link: buildable?, push_prod_link: buildable?
+    }
+%>
+
+<header>
+  <section>
+    <p>
+      Each CSV file type is shown below, along with the timestamped
+      name of the csv file in the following format:
+
+      <small>
+        <blockquote>yymmddHHMMSSLLLL_<i>csv-file-type</i>.csv</blockquote>
+      </small>
+
+      Where yy is the year, mm is the month, and so on.
+    </p>
+  </section>
+</header>
+
+<h2><small>Currently Loaded CSV Files</small></h2>
+
+<div class="row">
+  <div class="col-xs-8">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>Name</th>
+        <th>Last Uploaded CSV File</th>
+        <th>Upload Date</th>
+        <th colspan="2">Actions</th>
+      </thead>
+      <tbody>
+        <%#= render partial: 'csv_type', collection: @csv_types %>
+      </tbody>
+    </table>
+  </div>
+</div>
