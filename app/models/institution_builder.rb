@@ -386,6 +386,9 @@ module InstitutionBuilder
   end
 
   def self.add_complaint(version_number)
+    Complaint.update_ope_from_crosswalk
+    Complaint.rollup_sums(:facility_code)
+
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Complaint)}
       FROM complaints
@@ -394,9 +397,6 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
-
-    Complaint.update_ope_from_crosswalk
-    Complaint.rollup_sums(:facility_code)
     Complaint.rollup_sums(:ope6)
   end
 
