@@ -28,6 +28,12 @@ CalculatorConstant.create(constants)
 
 user = User.first
 
+puts 'Deleting old versions'
+Version.delete_all
+
+puts 'Deleting old uploads data'
+Upload.delete_all
+
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
 puts 'Loading Weam'
 Weam.delete_all
