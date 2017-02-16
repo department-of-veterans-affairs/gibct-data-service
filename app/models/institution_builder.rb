@@ -11,10 +11,6 @@ module InstitutionBuilder
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
-  def self.buildable?
-    TABLES.map(&:count).reject(&:positive?).blank?
-  end
-
   def self.default_timestamps_to_now
     query = 'ALTER TABLE institutions ALTER COLUMN updated_at SET DEFAULT now(); '
     query += 'ALTER TABLE institutions ALTER COLUMN created_at SET DEFAULT now();'
@@ -53,7 +49,6 @@ module InstitutionBuilder
   end
 
   def self.run(user)
-    return nil unless buildable?
     version = Version.create(production: false, user: user)
 
     default_timestamps_to_now

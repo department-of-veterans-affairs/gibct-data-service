@@ -9,31 +9,10 @@ RSpec.describe InstitutionBuilder, type: :model do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
   end
 
-  describe '#buildable?' do
-    before(:each) do
-      InstitutionBuilder::TABLES.each { |t| create t.name.underscore.to_sym, :institution_builder }
-    end
-
-    it 'is true when all tables are populated' do
-      expect(InstitutionBuilder).to be_buildable
-    end
-
-    it 'is false at least one csv is not populated' do
-      InstitutionBuilder::TABLES.first.delete_all
-      expect(InstitutionBuilder).not_to be_buildable
-    end
-  end
-
   describe '#run' do
     before(:each) do
       create :weam, :institution_builder
       create :crosswalk, :institution_builder
-      allow(InstitutionBuilder).to receive(:buildable?) { true }
-    end
-
-    it 'returns nil if all csvs are not loaded' do
-      allow(InstitutionBuilder).to receive(:buildable?) { false }
-      expect(InstitutionBuilder.run(user)).to be_nil
     end
 
     it 'returns the new preview version record if sucessful' do

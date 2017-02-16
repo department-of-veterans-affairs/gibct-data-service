@@ -34,9 +34,4 @@ module ApplicationHelper
       )
     end
   end
-
-  # Temporary placeholder for InstitutionBuilder.buildable?
-  def buildable?
-    true
-  end
 end
