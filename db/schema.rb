@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170124200527) do
+ActiveRecord::Schema.define(version: 20170216084207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,10 +154,10 @@ ActiveRecord::Schema.define(version: 20170124200527) do
     t.datetime "updated_at",    null: false
   end
 
-  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", unique: true, using: :btree
+  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
   add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
   add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
-  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", unique: true, using: :btree
+  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
   add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
 
   create_table "eight_keys", force: :cascade do |t|
@@ -1115,6 +1115,20 @@ ActiveRecord::Schema.define(version: 20170124200527) do
   end
 
   add_index "svas", ["cross"], name: "index_svas_on_cross", unique: true, using: :btree
+
+  create_table "uploads", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.string   "filename",                   null: false
+    t.string   "csv_type",                   null: false
+    t.string   "comment"
+    t.boolean  "ok",         default: false, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "uploads", ["csv_type"], name: "index_uploads_on_csv_type", using: :btree
+  add_index "uploads", ["updated_at"], name: "index_uploads_on_updated_at", using: :btree
+  add_index "uploads", ["user_id"], name: "index_uploads_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
