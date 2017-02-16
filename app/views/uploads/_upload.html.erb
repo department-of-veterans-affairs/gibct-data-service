@@ -1,0 +1,8 @@
+<tr>
+  <td><%= upload.csv_type %></td>
+  <td><%= upload.ok ? 'Succeeded' : 'Failed' %></td>
+  <td><%= upload.filename %></td>
+  <td><%= upload.created_at.to_formatted_s(:long_ordinal) %></td>
+  <td><%= upload.user.email %></td>
+  <td><%= upload.comments %></td>
+</tr>

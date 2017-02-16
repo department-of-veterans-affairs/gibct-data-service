@@ -6,26 +6,31 @@ module CsvHelper
       remove_empty_values: true, convert_values_to_numeric: false
     }.freeze
 
-    def load(filename, options = {})
+    def load(file, user, comment = '', options = {})
       delete_all
 
-      records = load_from_csv(filename, options)
+      name = file.is_a?(String) ? file : filename.original_filename
+
+      upload = Upload.new(csv_type: klass.name, user: user, filename: name, comment: comment)
+      records = load_from_csv(file, options)
 
       results = klass.import records[:valid], validate: false, ignore: true
       results.failed_instances = records[:invalid]
+
+      upload.update(ok: true)
       results
     end
 
     private
 
-    def load_from_csv(filename, options)
+    def load_from_csv(file, options)
       records = { valid: [], invalid: [] }
 
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
       row_offset = 2 + (options[:skip_lines] || 0)
 
-      SmarterCSV.process(filename, merge_options(options)).each.with_index do |row, i|
+      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
         record = row_to_record(row, i + row_offset)
         record.errors.any? ? records[:invalid] << record : records[:valid] << record
       end

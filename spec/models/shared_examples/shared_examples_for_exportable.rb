@@ -2,14 +2,15 @@
 RSpec.shared_examples 'an exportable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
-  let(:csv_file) { File.new(Rails.root.join('spec/fixtures', "#{name}.csv")) }
+  let(:csv_file) { "spec/fixtures/#{name}.csv" }
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
   subject { described_class.export }
 
   describe 'when exporting' do
     before(:each) do
-      described_class.load(csv_file, options)
+      user = create :user
+      described_class.load(csv_file, user, '', options)
     end
 
     it 'creates a string representation of a csv_file' do
