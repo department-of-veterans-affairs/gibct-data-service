@@ -154,10 +154,10 @@ ActiveRecord::Schema.define(version: 20170216084207) do
     t.datetime "updated_at",    null: false
   end
 
-  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
+  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", unique: true, using: :btree
   add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
   add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
-  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
+  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", unique: true, using: :btree
   add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
 
   create_table "eight_keys", force: :cascade do |t|

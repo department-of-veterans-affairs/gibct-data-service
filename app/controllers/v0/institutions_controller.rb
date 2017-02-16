@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 module V0
   class InstitutionsController < ApiController
-    before_action :resolve_version
-
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @search_term = params[:term].strip.downcase
-      @data = Institution.version(@version).autocomplete(@search_term)
+      @data = Institution.version(@version[:number]).autocomplete(@search_term)
       @meta = {
         version: @version,
         term: @search_term
@@ -22,14 +20,15 @@ module V0
       downcase_search_query_params!
       @meta = {
         version: @version,
-        count: search_results.count
+        count: search_results.count,
+        facets: facets
       }
       render json: search_results.order(:institution).page(params[:page]), meta: @meta
     end
 
     # GET /v0/institutions/20005123
     def show
-      resource = Institution.version(@version).find_by(facility_code: params[:id])
+      resource = Institution.version(@version[:number]).find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -42,18 +41,16 @@ module V0
     def downcase_search_query_params!
       %i(type_name student_veteran_group
          yellow_ribbon_scholarship principles_of_excellence
-         eight_keys_to_veteran_success caution).each do |k|
+         eight_keys_to_veteran_success caution country).each do |k|
         params[k].try(:downcase!)
       end
-      %i(country state).each do |k|
-        params[k].try(:upcase!)
-      end
+      params[:state].try(:upcase!)
       params[:name].try(:strip!)
     end
 
     # rubocop:disable AbcSize
     def search_results
-      Institution.version(@version)
+      Institution.version(@version[:number])
                  .search(params[:name])
                  .filter(:caution_flag, params[:caution]) # boolean
                  .filter(:institution_type_name, params[:type_name])
@@ -66,10 +63,22 @@ module V0
     end
     # rubocop:enable AbcSize
 
-    # Newest production data version assumed when version param is undefined
-    def resolve_version
-      v = params[:version]
-      @version = v.blank? ? Version.default_version_number : v
+    def facets
+      institution_types = search_results.filter_count(:institution_type_name)
+      {
+        type: {
+          school: institution_types.except('ojt').inject(0){|count,(_t,n)| count + n },
+          employer: institution_types['ojt'].to_i
+        },
+        type_name: institution_types,
+        state: search_results.filter_count(:state),
+        country: search_results.filter_count(:country),
+        caution_flag: search_results.filter_count(:caution_flag),
+        student_vet_group: search_results.filter_count(:student_veteran),
+        yellow_ribbon_scholarship: search_results.filter_count(:yr),
+        principles_of_excellence: search_results.filter_count(:poe),
+        eight_keys_to_veteran_success: search_results.filter_count(:eight_keys)
+      }
     end
   end
 end
