@@ -172,9 +172,9 @@ ActiveRecord::Schema.define(version: 20170216084207) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", unique: true, using: :btree
+  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
   add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
-  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", unique: true, using: :btree
+  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
   add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "hcms", force: :cascade do |t|
@@ -1054,8 +1054,8 @@ ActiveRecord::Schema.define(version: 20170216084207) do
     t.datetime "updated_at",                   null: false
   end
 
-  add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", unique: true, using: :btree
-  add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", unique: true, using: :btree
+  add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
+  add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
 
   create_table "sec702_schools", force: :cascade do |t|
     t.string   "facility_code", null: false
@@ -1114,7 +1114,7 @@ ActiveRecord::Schema.define(version: 20170216084207) do
     t.datetime "updated_at",           null: false
   end
 
-  add_index "svas", ["cross"], name: "index_svas_on_cross", unique: true, using: :btree
+  add_index "svas", ["cross"], name: "index_svas_on_cross", using: :btree
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id",                    null: false

@@ -15,7 +15,7 @@ class CreateSvas < ActiveRecord::Migration
       t.string :sva_yes
       t.timestamps null: false
 
-      t.index :cross, unique: true
+      t.index :cross
     end
   end
 end
