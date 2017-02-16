@@ -1,9 +1,18 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :ipeds_ic_ay do
-    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end
+    cross { generate :cross }
 
-    tuition_in_state { rand(50000) }
-    tuition_out_of_state { rand(50000) }  
-    books { rand(10000) }
+    tuition_in_state 1.0
+    tuition_out_of_state 1.0
+    books 1.0
+
+    trait :institution_builder do
+      cross '999999'
+    end
+
+    initialize_with do
+      new(cross: cross, tuition_in_state: tuition_in_state, tuition_out_of_state: tuition_out_of_state, books: books)
+    end
   end
 end

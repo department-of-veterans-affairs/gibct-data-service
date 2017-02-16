@@ -1,12 +1,23 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :mou do
-    sequence :ope do |n| DS::OpeId.pad(n.to_s) end
+    ope { generate :ope }
+    status 'probation - dod'
 
-    institution { Faker::University.name }
-    status { ["Probation - DoD", "Title IV Non-Compliant"].sample }
+    trait :by_dod do
+      status 'probation - dod'
+    end
 
-    trait :mou_probation do
-      status "Probation - DoD"
+    trait :by_title_iv do
+      status 'title iv non-compliant'
+    end
+
+    trait :institution_builder do
+      ope '99999999'
+    end
+
+    initialize_with do
+      new(ope: ope, status: status)
     end
   end
 end

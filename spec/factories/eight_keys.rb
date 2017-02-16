@@ -1,8 +1,16 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :eight_key do
-    institution { Faker::University.name }
+    ope { generate :ope }
+    cross { generate :cross }
 
-    sequence :ope do |n| DS::OpeId.pad(n.to_s) end
-    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end
+    trait :institution_builder do
+      ope '99999999'
+      cross '999999'
+    end
+
+    initialize_with do
+      new(ope: ope, cross: cross)
+    end
   end
 end

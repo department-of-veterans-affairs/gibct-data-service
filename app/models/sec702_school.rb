@@ -1,16 +1,11 @@
-###############################################################################
-## Sec702School
-## Contains sec 702 compliance on a school by school basis. 
-##
-## USE_COLUMNS hold those columns that get copied to the DataCsv table during
-## the build process.
-###############################################################################
+# frozen_string_literal: true
 class Sec702School < ActiveRecord::Base
-  include Standardizable 
-  
-  validates :facility_code, presence: true, uniqueness: true
+  include CsvHelper
 
-  USE_COLUMNS = [:sec_702]
+  CSV_CONVERTER_INFO = {
+    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'section_702' => { column: :sec_702, converter: BooleanConverter }
+  }.freeze
 
-  override_setters :facility_code, :sec_702
+  validates :facility_code, presence: true
 end

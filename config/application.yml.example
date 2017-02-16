@@ -1,0 +1,4 @@
+ADMIN_EMAIL: 'something...'
+ADMIN_PW: 'something...'
+
+SECRET_KEY_BASE: 'something ...'

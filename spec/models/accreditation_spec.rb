@@ -1,85 +1,51 @@
+# frozen_string_literal: true
 require 'rails_helper'
-require 'support/shared_examples_for_standardizable'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Accreditation, type: :model do
-  it_behaves_like "a standardizable model", Accreditation
+  it_behaves_like 'a loadable model', skip_lines: 0
+  it_behaves_like 'an exportable model', skip_lines: 0
 
-  describe "When creating" do
-    context "with a factory" do
-      it "that factory is valid" do
-        expect(create(:accreditation)).to be_valid
-      end
+  describe 'when validating' do
+    subject { build :accreditation }
+
+    let(:by_campus) { create :accreditation, :by_campus }
+    let(:by_institution) { create :accreditation, :by_institution }
+
+    it 'has a valid factory' do
+      expect(subject).to be_valid
     end
 
-    context "agency_name" do
-      it "are required" do
-        expect(build :accreditation, agency_name: nil).not_to be_valid
-      end
+    it 'computes the ope6 from ope' do
+      expect(subject.ope6).to eq(subject.ope[1, 5])
     end
 
-    context "last_action" do
-      it "are not required" do
-        expect(build :accreditation, accreditation_status: nil).to be_valid
-      end
-
-      it "must be from a list of values" do
-        expect(build :accreditation, accreditation_status: "blah-blah").not_to be_valid
-      end
+    it 'will use either the institution_name or the campus_name if only one is present' do
+      expect(by_campus.institution).to eq(by_campus.campus_name)
+      expect(by_institution.institution).to eq(by_institution.institution_name)
     end
 
-    context "csv_accreditation_type" do
-      it "are not required" do
-        expect(build :accreditation, csv_accreditation_type: nil).to be_valid
-      end
-
-      it "must be from a list of values" do
-        expect(build :accreditation, csv_accreditation_type: "blah-blah").not_to be_valid
-      end
+    it 'prefers campus_name over institution_name' do
+      expect(subject.institution).to eq(subject.campus_name)
     end
 
-    context "institution" do
-      subject { create :accreditation }
-
-      it "gets campus_name if it is not nil" do
-        expect(subject.institution).to match(Regexp.new(subject.campus_name, true))
-      end
-
-      it "gets the institution name if the campus name is nil" do
-        subject.campus_name = nil
-        subject.save
-        expect(subject.institution).to match(Regexp.new(subject.institution_name, true))
-      end
+    it 'will use either the institution_ipeds_unitid or the campus_ipeds_unitid if only one is present' do
+      expect(by_campus.cross).to eq(by_campus.campus_ipeds_unitid)
+      expect(by_institution.cross).to eq(by_institution.institution_ipeds_unitid)
     end
 
-    context "ipeds" do
-      subject { create :accreditation }
-
-      it "gets campus ipeds id if it is not nil" do
-        expect(subject.cross).to eq(subject.campus_ipeds_unitid)
-      end
-
-      it "gets the institution ipeds if the campus ipeds is nil" do
-        subject.campus_ipeds_unitid = nil
-        subject.save
-        expect(subject.cross).to eq(subject.institution_ipeds_unitid)
-      end
+    it 'prefers campus_ipeds_unitid over institution_ipeds_unitid' do
+      expect(subject.cross).to eq(subject.campus_ipeds_unitid)
     end
 
-    context "accreditation_type" do
-      subject { create :accreditation }
-
-      it "gets the accreditation type (according to the GIBCT)" do
-        Accreditation::ACCREDITATIONS.keys.each do |key|
-          Accreditation::ACCREDITATIONS[key].each do |exp|
-            subject.agency_name = "BLAH #{exp}"
-            subject.save
-            expect(subject.accreditation_type).to eq(key)
-          end
+    it 'assigns the accreditation_type based on agency name' do
+      described_class::ACCREDITATIONS.keys.each do |type|
+        described_class::ACCREDITATIONS[type]
+          .map { |regexp| "THE #{regexp.to_s.scan(/:(.*)\)/).flatten.first.upcase} ONE" }
+          .each do |name|
+          expect(create(:accreditation, agency_name: name).accreditation_type).to eq(type)
         end
-
-        subject.agency_name = "BLAH BLAH"
-        subject.save
-        expect(subject.accreditation_type).to be_nil
       end
     end
   end

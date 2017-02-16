@@ -1,16 +1,16 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :hcm do
-    institution { Faker::University.name }
-    sequence :ope do |n| DS::OpeId.pad(n.to_s) end
- 
-    hcm_type { ["HCM - Cash Monitoring 1", "HCM - Cash Monitoring 2"].sample }
-    hcm_reason { ["Financial Responsibility", 
-      "Audit Late/Missing", "Program Review", "Other -CIO Problems (Eligibility)",
-      "F/S Late/Missing", "Program Review - Severe Findings", "OIG", 
-      "Denied Recert - PPA Not Expired", "Payment Method Changed", 
-      "Accreditation Problems", "Administrative Capability",
-      "Provisional Certification"
-      ].sample 
-    }
+    ope { generate :ope }
+    hcm_type 'hcm - cash monitoring 1'
+    hcm_reason 'audit late/missing'
+
+    trait :institution_builder do
+      ope '99999999'
+    end
+
+    initialize_with do
+      new(ope: ope, hcm_type: hcm_type, hcm_reason: hcm_reason)
+    end
   end
 end

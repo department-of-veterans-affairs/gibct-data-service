@@ -1,19 +1,45 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :scorecard do
-    sequence :ope do |n| DS::OpeId.pad(n.to_s) end
-    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end
+    cross { generate :cross }
+    insturl { 'http://abc.123.com' }
+    pred_degree_awarded 0
+    locale 11
+    undergrad_enrollment 12_345
+    retention_all_students_ba 123.45
+    retention_all_students_otb 543.21
+    salary_all_students 100
+    repayment_rate_all_students 0.12_345
+    avg_stu_loan_debt 1_000_000
 
-    institution { Faker::University.name }
-    insturl { Faker::Internet.url("#{institution}.edu") }
-    pred_degree_awarded { Faker::Number.between(0, 4) }
-    locale { [11, 12, 13, 21, 22, 23, 31, 32, 33, 41, 42, 43].sample }
-    undergrad_enrollment { Faker::Number.between(1, 55000) }
-    retention_all_students_ba { Faker::Number.decimal(0, 9) }
-    retention_all_students_otb { Faker::Number.decimal(0, 9) }
-    salary_all_students { Faker::Number.between(1, 99000) }
-    repayment_rate_all_students { Faker::Number.decimal(0, 9) }
-    avg_stu_loan_debt { Faker::Number.between(1, 50000) }
-    c150_4_pooled_supp { Faker::Number.decimal(0, 9) }
-    c150_l4_pooled_supp { Faker::Number.decimal(0, 9) }
+    c150_4_pooled_supp 1
+    c150_l4_pooled_supp 2
+
+    trait :by_c150_4_pooled_supp do
+      c150_4_pooled_supp 1
+      c150_l4_pooled_supp nil
+    end
+
+    trait :by_c150_l4_pooled_supp do
+      c150_4_pooled_supp nil
+      c150_l4_pooled_supp 1
+    end
+
+    trait :institution_builder do
+      cross '999999'
+    end
+
+    initialize_with do
+      new(
+        cross: cross, insturl: insturl, pred_degree_awarded: pred_degree_awarded,
+        locale: locale, undergrad_enrollment: undergrad_enrollment,
+        retention_all_students_ba: retention_all_students_ba,
+        retention_all_students_otb: retention_all_students_otb,
+        salary_all_students: salary_all_students,
+        repayment_rate_all_students: repayment_rate_all_students,
+        avg_stu_loan_debt: avg_stu_loan_debt, c150_4_pooled_supp: c150_4_pooled_supp,
+        c150_l4_pooled_supp: c150_l4_pooled_supp
+      )
+    end
   end
 end

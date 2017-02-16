@@ -1,139 +1,121 @@
+# frozen_string_literal: true
 FactoryGirl.define do
-  sequence(:facility_code) { |n| n.to_s(32).rjust(8, "0") }
-
   factory :weam do
-    institution { Faker::University.name }
+    institution { 'SOME SCHOOL' }
     facility_code { generate :facility_code }
+    ope { generate :ope }
 
-    city { Faker::Address.city }
-    state { DS::State.get_random_state.first[0] }
-    zip { Faker::Address.zip }
     country 'USA'
+    state nil
 
-    poo_status 'aprvd'
-    applicable_law_code 'educational institution is approved for all chapters'
+    correspondence_indicator false
+    flight_indicator false
+    institution_of_higher_learning_indicator false
+    non_college_degree_indicator false
+    poo_status nil
+    applicable_law_code nil
+    ojt_indicator false
 
-    institution_of_higher_learning_indicator 'Yes'
-    ojt_indicator 'Yes'
-    correspondence_indicator 'Yes'
-    flight_indicator 'Yes'
-    non_college_degree_indicator 'Yes'
-
-    ###########################################################################
-    ## ojt
-    ## facility_code second digit is 0
-    ###########################################################################    
+    # Facility_code second digit is 0
     trait :ojt do
-      sequence :facility_code do |n|
-        fc = n.to_s(32).rjust(8, '0')
-        fc[1] = '0'
-        fc
-      end
+      facility_code { generate(:facility_code_ojt) }
     end
 
-    ###########################################################################
-    ## correspondence
-    ## correspondence_indicator is true, flight_indicator is 'no', and the
-    ## other indicators do not matter
-    ###########################################################################
+    # Correspondence_indicator is true, flight_indicator is false,
+    # and the other indicators do not matter
     trait :correspondence do
-      facility_code { x = generate(:facility_code); x[1] = '1'; x }
-      institution_of_higher_learning_indicator 'No'
-      non_college_degree_indicator 'No'
+      facility_code { generate(:facility_code_private) }
+
+      correspondence_indicator true
     end
 
-    ###########################################################################
-    ## flight
-    ## flight_indicator is true other indicators are false
-    ###########################################################################
+    # Flight_indicator is true other indicators are false
     trait :flight do
-      facility_code { x = generate(:facility_code); x[1] = '1'; x }
-      correspondence_indicator 'No'
-      institution_of_higher_learning_indicator 'No'
-      non_college_degree_indicator 'No'
+      facility_code { generate(:facility_code_private) }
+
+      flight_indicator true
     end
 
-    ###########################################################################
-    ## foreign
-    ## country is not 'USA'
-    ###########################################################################
+    # Not located in US
     trait :foreign do
-      facility_code { x = generate(:facility_code); x[1] = '1'; x }
+      facility_code { generate(:facility_code_private) }
 
-      country "CAN"
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+      country 'CAN'
     end
 
-    ###########################################################################
-    ## public
-    ## facility_code first digit is 1
-    ###########################################################################    
+    # Public/state institutions
     trait :public do
-      facility_code { x = generate(:facility_code); x[0,2] = '11'; x }
-
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+      facility_code { generate(:facility_code_public) }
     end
 
-
-    ###########################################################################
-    ## for_profit
-    ## facility_code first digit is 2
-    ###########################################################################    
+    # Schools that are private and for profit
     trait :for_profit do
-       facility_code { x = generate(:facility_code); x[0,2] = '21'; x }
-
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+      facility_code { generate(:facility_code_for_profit) }
     end
 
-    ###########################################################################
-    ## private
-    ## facility_code first digit is not 1 nor 2
-    ###########################################################################    
+    # private schools (not necessarily for profit)
     trait :private do
-      facility_code { x = generate(:facility_code); x[0,2] = '31'; x }
-
-      flight_indicator 'No'
-      correspondence_indicator 'No'
+      facility_code { generate(:facility_code_private) }
     end
 
-    ###########################################################################
-    ## non_approved_poo
-    ## Fails approval because of poo_status
-    ########################################################################### 
-    trait :non_approved_poo do
+    trait :higher_learning do
+      institution_of_higher_learning_indicator true
+    end
+
+    trait :ncd do
+      non_college_degree_indicator true
+    end
+
+    trait :approved_poo_and_law_code do
+      poo_status 'aprvd'
+      applicable_law_code 'educational institution is approved for all chapters'
+    end
+
+    # Fails approval because of poo_status
+    trait :withdrawn_poo do
       poo_status 'withdrn'
+      applicable_law_code 'educational institution is approved for all chapters'
     end
 
-    ###########################################################################
-    ## non_approved_applicable_law_code_not_approved
-    ## Fails approval because of applicable_law_code
-    ########################################################################### 
-    trait :non_approved_applicable_law_code_not_approved do
+    # Fails approval because of applicable_law_code
+    trait :approved_poo_and_non_approved_law_code do
+      poo_status 'aprvd'
       applicable_law_code 'educational institution is not approved'
     end
 
-    ###########################################################################
-    ## non_approved_applicable_law_code_title_31
-    ## Fails approval because of applicable_law_code
-    ########################################################################### 
-    trait :non_approved_applicable_law_code_title_31 do
+    # Fails approval because of applicable_law_code
+    trait :approved_poo_and_law_code_title_31 do
+      poo_status 'aprvd'
       applicable_law_code 'educational institution is approved for chapter 31 only'
     end
 
+    # Passes approval because of all false indicators
+    trait :with_approved_indicators do
+      institution_of_higher_learning_indicator true
+      ojt_indicator true
+      correspondence_indicator true
+      flight_indicator true
+      non_college_degree_indicator true
+    end
 
-    ###########################################################################
-    ## non_approved_indicators
-    ## Fails approval because of all false indicators
-    ########################################################################### 
-    trait :non_approved_indicators do
-      institution_of_higher_learning_indicator 'No'
-      ojt_indicator 'No'
-      correspondence_indicator 'No'
-      flight_indicator 'No'
-      non_college_degree_indicator 'No'
+    trait :institution_builder do
+      facility_code '1ZZZZZZZ'
+      poo_status 'aprvd'
+      applicable_law_code 'educational institution is approved for all chapters'
+      state 'NY'
+
+      institution_of_higher_learning_indicator true
+    end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, institution: institution, ope: ope, state: state,
+        country: country, correspondence_indicator: correspondence_indicator,
+        flight_indicator: flight_indicator, ojt_indicator: ojt_indicator,
+        institution_of_higher_learning_indicator: institution_of_higher_learning_indicator,
+        non_college_degree_indicator: non_college_degree_indicator,
+        poo_status: poo_status, applicable_law_code: applicable_law_code
+      )
     end
   end
 end

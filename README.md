@@ -10,14 +10,12 @@ It is important to note that the bulk update queries used in the DataCsv table t
 2. Install Ruby 2.3. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.3](https://github.com/rbenv/rbenv#installing-ruby-versions)).
 3. Install Bundler to manager dependencies: `gem install bundler`
 
-Since this is a tool that populates the GIBCT application you should, at a minimum, build and run the applicable migrations for the GIBCT in order to push to a GIBCT database. You can run the DS app without the GIBCT database, but any attempt to push data to staging or to production will fail.
-
 ### Database YML Files
-The DS requires 3 database configuration files. 
+The DS requires 3 database configuration files.
 
 - `config/database.yml` - the standard Rails database config for the local DS environment.
-- `config/gibct_staging_database.yml` - the GIBCT database config that is referenced when pushing to the staging database.
-- `config/gibct_staging_database.yml` - the GIBCT database config that is referenced when pushing to the production database.
+- `config/application.yml` - holds the environment variables for the admin user and password
+- `config/csv_file_defaults.yml` - the default delimiters, skipped lines, and newlines for CSV files.
 
 You will probably run the DS and GIBCT in the same dev environment.
 
@@ -32,20 +30,20 @@ You will probably run the DS and GIBCT in the same dev environment.
 1. Run `bundle install` to set up the application.
 2. Create the DS database by running `bundle exec rake db:create`.
 3. Setup the DS database by running `bundle exec rake db:migrate`.
-4. Edit the seeds.rb file to create a user. 
-5. Load test users: `bundle exec rake db:seed` 
+4. Edit the seeds.rb file to create a user.
+5. Load test users: `bundle exec rake db:seed`
 5. Start the application: `bundle exec rails s`
 
 ### The Seeds file
 
 The DS uses authentication, and you need to populate the application's users table with qualified logins. The seeds.rb file has the following form:
 
-	# Destroy previous users ... 
+	# Destroy previous users ...
 	User.destroy_all
 
-	# Add new users ... 
-	User.create(email: 'xxx@xx.gov', password: 'xxx')
-	
+	puts 'Add new users ... '
+	User.create(email: ENV['ADMIN_EMAIL'], password: ENV['ADMIN_PW'])
+
 The db/seeds.rb file on github does not contain real credentials, but feel free to use the samples for local development.
 
 ## How to Contribute
