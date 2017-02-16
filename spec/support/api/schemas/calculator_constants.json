@@ -2,55 +2,66 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "meta": {
-      "type": "object",
-      "properties": {
-        "version": { "type": ["null", "string"] }
-      },
-      "required": [
-        "version"
-      ]
-    },
     "data": {
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
         "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "float_value": {
-            "type": ["null", "number"]
+          "id": {
+            "type": "string"
           },
-          "string_value": {
-            "type": ["null", "string"]
+          "type": {
+            "type": "string"
           },
-          "created_at": { "type": "string" },
-          "updated_at": { "type": "string" }
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": ["null", "number", "string"]
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
         },
         "required": [
           "id",
-          "name",
-          "float_value",
-          "string_value",
-          "created_at",
-          "updated_at"
+          "type",
+          "attributes"
         ]
       }
     },
     "links": {
       "type": "object",
       "properties": {
-        "self": { "type": "string" }
+        "self": {
+          "type": "string"
+        }
       },
       "required": [
         "self"
       ]
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "version"
+      ]
     }
   },
   "required": [
-    "meta",
     "data",
-    "links"
+    "links",
+    "meta"
   ]
 }

@@ -1,23 +1,17 @@
 # Gibct Data Service
 [![Build Status](https://travis-ci.org/department-of-veterans-affairs/gibct-data-service.svg?branch=master)](https://travis-ci.org/department-of-veterans-affairs/gibct-data-service)
 
-The GIBCT Data Service (**DS**) is a tool to create the GI Bill Comparison Tool (**GIBCT**) database from several independent sources. These sources, in the form of CSVs, are imported into the tool and compiled to produce the GIBCT database. Once built inside the DS the data may be exported to a CSV for review, viewed inside the DS, or pushed to a production or staging database server.
+The GIBCT Data Service (**DS**) serves two purposes. First, it is a password-protected tool used by stakeholders to upload several sources of data, in the form of CSV files. Second, it provides the RESTful API used by the GI Bill Comparison Tool front-end to request this combined data.
+
+Once built, the data may be exported to a CSV for review or previewed in the production GIBCT front-end.
 
 ## Developer Setup
-It is important to note that the bulk update queries used in the DataCsv table to populate itself are POSTGRESQL specific.
+Note that queries are PostgreSQL-specific.
 
 1. Install the latest applicable version of **Postgres** on your dev box.
 2. Install Ruby 2.3. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.3](https://github.com/rbenv/rbenv#installing-ruby-versions)).
-3. Install Bundler to manager dependencies: `gem install bundler`
-
-### Database YML Files
-The DS requires 3 database configuration files.
-
-- `config/database.yml` - the standard Rails database config for the local DS environment.
-- `config/application.yml` - holds the environment variables for the admin user and password
-- `config/csv_file_defaults.yml` - the default delimiters, skipped lines, and newlines for CSV files.
-
-You will probably run the DS and GIBCT in the same dev environment.
+3. Install Bundler to manager dependencies: `gem install bundler` and `bundle install`
+4. `npm install -g phantomjs` is necessary for running certain tests.
 
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
@@ -36,15 +30,13 @@ You will probably run the DS and GIBCT in the same dev environment.
 
 ### The Seeds file
 
-The DS uses authentication, and you need to populate the application's users table with qualified logins. The seeds.rb file has the following form:
+The DS uses authentication, and you need to populate the application's users table with qualified logins.
 
 	# Destroy previous users ...
 	User.destroy_all
 
 	puts 'Add new users ... '
 	User.create(email: ENV['ADMIN_EMAIL'], password: ENV['ADMIN_PW'])
-
-The db/seeds.rb file on github does not contain real credentials, but feel free to use the samples for local development.
 
 ## How to Contribute
 

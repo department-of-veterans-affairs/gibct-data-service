@@ -20,7 +20,8 @@ module CustomPaginationLinks
   private
 
   def base_path
-    "#{Rails.application.config.protocol}://#{Rails.application.config.hostname}#{path_partial}"
+    protocol, host = Figaro.env.link_host!.split('://')
+    "#{protocol}://#{host}#{path_partial}"
   end
 
   def path_partial

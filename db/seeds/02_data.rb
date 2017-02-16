@@ -114,4 +114,6 @@ Outcome.load('sample_csvs/outcome.csv')
 puts 'Building Institutions'
 InstitutionBuilder.run(User.first)
 
+Version.update(1, production: true)
+
 puts "Done ... Woo Hoo!"

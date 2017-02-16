@@ -3,16 +3,12 @@ module V0
   class CalculatorConstantsController < ApiController
     # GET /v0/calculator/constants
     def index
-      response = {
-        data: CalculatorConstant.version(params[:version]).all,
-        links: {
-          self: v0_calculator_constants_url(version: params[:version])
-        },
-        meta: {
-          version: params[:version]
-        }
-      }
-      render json: response
+      @version = nil # TODO: params[:version]
+
+      @data = CalculatorConstant.version(@version).all
+      @links = { self: v0_calculator_constants_url(version: @version) }
+      @meta = { version: @version }
+      render json: @data, meta: @meta, links: @links
     end
   end
 end

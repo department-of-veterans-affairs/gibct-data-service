@@ -3,6 +3,10 @@ module V0
   class ApiController < ApplicationController
     skip_before_action :authenticate_user!
 
+    def cors_preflight
+      head(:ok)
+    end
+
     private
 
     rescue_from 'Exception' do |exception|

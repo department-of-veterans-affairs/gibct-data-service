@@ -29,6 +29,9 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
 gem 'activerecord-session_store', '~> 1.0'
 
+# CORS
+gem 'rack-cors', :require => 'rack/cors'
+
 # Mass importing of CSV data
 gem 'activerecord-import'
 gem 'smarter_csv'

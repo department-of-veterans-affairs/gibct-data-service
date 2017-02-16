@@ -9,5 +9,7 @@ class CalculatorConstant < ActiveRecord::Base
     string_value || float_value
   end
 
-  scope :version, ->(version) {}
+  scope :version, lambda { |version|
+    # TODO: where(version: version)
+  }
 end
