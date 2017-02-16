@@ -10,9 +10,12 @@ ALABAMA,Columbia College - Redstone Arsenal Campus,Redstone Arsenal,AL,245600,17
 ALABAMA,Columbia Southern University,Orange Beach,AL,4121500,450933,
 ALABAMA,Culinard - The Culinary Institute of Virginia College,Birmingham,AL,3010600,420307,not separately listed - cf Virginia College Birmingham
 ALABAMA,Culinard - The Culinary Institute of Virginia College,Mobile,AL,3010607,445090,not separately listed - cf Virginia College Mobile
+ALABAMA,University of North Alabama,Florence,AL,101600,101879,
 ALABAMA,Gadsden State Community College,Gadsden,AL,101700,101240,
 ALABAMA,Herzing University-Birmingham,Birmingham,AL,962107,101365,
+ALABAMA,Lawson State Community College,Birmingham,AL,105900,101569,
 ALABAMA,Miles College,Fairfield,AL,102800,101675,
+ALABAMA,Northeast Alabama Community College,Rainsville,AL,103100,101897,
 ALABAMA,Reid State Technical College,Evergreen,AL,569200,101994,
 ALABAMA,Shelton State Community College,Tuscaloosa,AL,569100,102067,
 ALABAMA,South University-Montgomery,Montgomery,AL,1303906,101116,
@@ -126,7 +129,7 @@ ARIZONA,Sessions College for Professional Design,Tempe,AZ,4217600,475839,
 ARIZONA,South Mountain Community College,Phoenix,AZ,2146600,105792,
 ARIZONA,Universal Technical Institute of Arizona - Avondale,Avondale,AZ,822100,106041,
 ARIZONA,Universal Technical Institute - Motorcycle Mechanics Institute Phoenix,Phoenix,AZ,2100500,105215,
-ARIZONA,University of Arizonaæ,Tucson,AZ,108300,104179,
+ARIZONA,University of Arizona ,Tucson,AZ,108300,104179,
 ARIZONA,University of Phoenix-Arizona,Tempe,AZ,2098800,484613,
 ARIZONA,University of Phoenix-Arizona - Northwest Learning Center,Phoenix,AZ,2098800,484613,campus not sepately listed in IPEDS
 ARIZONA,University of Phoenix-Arizona - River Road Learning Center,Tucson,AZ,2098800,484613,campus not sepately listed in IPEDS
@@ -153,6 +156,7 @@ ARKANSAS,Webster University - Fort Smith,Fort Smith,AR,252100,179894,"not separa
 ARKANSAS,Webster University - Little Rock,Little Rock,AR,252100,179894,"not separately listed - cf Webster University, MO"
 ARKANSAS,Webster University - Little Rock Air Force Base,Little Rock,AR,252100,179894,"not separately listed - cf Webster University, MO"
 ,CALIFORNIA,,,,,
+CALIFORNIA,Abraham Lincoln University,Los Angeles,CA,,,not found in IPEDS database
 CALIFORNIA,Academy of Art University,San Francisco,CA,753100,108232,
 CALIFORNIA,Academy of Couture Art,Beverly Hills,CA,4185500,475635,
 CALIFORNIA,Advanced Training Associates,El Cajon,CA,3532400,444361,
@@ -302,7 +306,7 @@ CALIFORNIA,Modesto Junior College,Modesto,CA,124000,118976,
 CALIFORNIA,Monterey Peninsula College,Monterey,CA,124200,119067,
 CALIFORNIA,Moorpark College,Moorpark,CA,711500,119137,
 CALIFORNIA,Moreno Valley College,Moreno Valley,CA,4173500,460394,
-CALIFORNIA,Mount Saint MaryÍs College,Los Angeles,CA,124300,119173,
+CALIFORNIA,Mount Saint Mary’s College,Los Angeles,CA,124300,119173,
 CALIFORNIA,Mt. San Antonio College,Walnut,CA,124500,119164,
 CALIFORNIA,Mt. San Jacinto College,San Jacinto,CA,124600,119216,
 CALIFORNIA,Mt. Sierra College,Monrovia,CA,3128700,398130,
@@ -348,7 +352,7 @@ CALIFORNIA,Skyline College,San Bruno,CA,771300,123509,
 CALIFORNIA,Solano Community College,Fairfield,CA,129200,123563,
 CALIFORNIA,Southwestern College,Chula Vista,CA,129400,123800,
 CALIFORNIA,Taft College,Taft,CA,130900,124113,
-CALIFORNIA,Trident University International,Cypress,CA,4127900,,
+CALIFORNIA,Trident University International,Cypress,CA,4127900,450979,
 CALIFORNIA,Universal Technical Institute of Northern California,Sacramento,CA,2100505,448433,
 CALIFORNIA,Universal Technical Institute - Rancho Cucamonga,Rancho Cucamonga,CA,822103,438504,
 CALIFORNIA,"University of California, Los Angeles",Los Angeles,CA,131500,110662,
@@ -383,6 +387,8 @@ CALIFORNIA,University of Phoenix-California - Sacramento Valley Campus,Sacrament
 CALIFORNIA,University of Phoenix-California - San Diego Campus,San Diego,CA,22098812,484631,campus not sepately listed in IPEDS
 CALIFORNIA,University of Phoenix-California - Visalia Learning Center,Visalia,CA,22098812,484631,campus not sepately listed in IPEDS
 CALIFORNIA,University of Phoenix-California - Woodland Hills Center,Woodland Hills,CA,22098812,484631,campus not sepately listed in IPEDS
+CALIFORNIA,University of San Diego,San Diego,CA,1039500,122436,
+CALIFORNIA,University of Southern California,Los Angeles,CA,132800,123961,
 CALIFORNIA,Vanguard University,Costa Mesa,CA,129300,123651,
 CALIFORNIA,Ventura College,Ventura,CA,133400,125028,
 CALIFORNIA,Victor Valley College,Victorville,CA,133500,125091,
@@ -412,8 +418,6 @@ COLORADO,Colorado Technical University-Westminster,Westminster,CO,1014812,430087
 COLORADO,Colorado Technical University-Pueblo,Pueblo,CO,none,12682701,
 COLORADO,Colorado Technical University-Colorado Springs,Colorado Springs,CO,1014800,126827,
 COLORADO,Colorado Technical University-Greenwood Village,Aurora,CO,1014802,430087,
-COLORADO,Colorado Technical University-Kansas City,North Kansas City,KS,1014814,409838,
-COLORADO,Colorado Technical University-Sioux Falls,Sioux Falls,ID,1014804,402615,
 COLORADO,Colorado Technical University-Online,Colorado Springs,CO,1014805,444158,
 COLORADO,Columbia College - Denver Campus,Denver,CO,245600,177065,"not separately listed - cf Columbia College, MO"
 COLORADO,Concorde Career College-Aurora,Aurora,CO,887100,126687,
@@ -426,6 +430,7 @@ COLORADO,Front Range Community College - Online Learning,Westminster,CO,793300,1
 COLORADO,Heritage College,Denver,CO,2611000,262509,
 COLORADO,Institute of Business & Medical Careers (IBMC College),Fort Collins,CO,3006300,372329,
 COLORADO,Metropolitan State University of Denver,Denver,CO,136000,127565,
+COLORADO,Naropa University,Boulder,CO,2117500,127653,
 COLORADO,National American University-Centennial,Centennial,CO,405723,466161,
 COLORADO,National American University-Colorado Springs,Colorado Springs,CO,405702,127680,
 COLORADO,National American University-Colorado Springs South,Colorado Springs,CO,405725,466189,
@@ -440,10 +445,13 @@ COLORADO,Pueblo Community College - Pueblo Campus,Pueblo,CO,2116300,127884,campu
 COLORADO,Pueblo Community College - Southwest Colorado Community College (East Site),Durango,CO,2116300,127884,campus not sepately listed in IPEDS
 COLORADO,Pueblo Community College - Southwest Colorado Community College (West Site),Mancos,CO,2116300,127884,campus not sepately listed in IPEDS
 COLORADO,Red Rocks Community College,Lakewood,CO,954300,127909,
+COLORADO,"Rock Vista University, Ivins",Ivins,CO,4218900,480790,
+COLORADO,"Rock Vista University, Parker",Parker,CO,4218900,480790,campus not sepately listed in IPEDS
 COLORADO,Sage Truck Driving School,,CO,,,not found in IPEDS database
 COLORADO,"University of Colorado, Denver-Anschutz Medical Campus",Denver,CO,450800,126562,"not separately listed - cf University of Colorado, Denver"
 COLORADO,University of Colorado-Boulder,Boulder,CO,137000,126614,
 COLORADO,University of Colorado-Colorado Springs,Colorado Springs,CO,450900,126580,
+COLORADO,University of Denver,Denver,CO,137100,127060,
 COLORADO,University of Phoenix-Colorado,Lone Tree,CO,2098869,484640,
 COLORADO,University of Phoenix-Colorado - Main Campus,Lone Tree,CO,2098869,484640,campus not sepately listed in IPEDS
 COLORADO,University of Phoenix-Colorado - Colorado Springs Downtown,Colorado Springs,CO,2098869,484640,campus not sepately listed in IPEDS
@@ -462,6 +470,8 @@ CONNECTICUT,Fairfield University,Fairfield,CT,138500,129242,
 CONNECTICUT,Gateway Community College,New Haven,CT,803700,130396,
 CONNECTICUT,Goodwin College,East Hartford,CT,2244900,129154,
 CONNECTICUT,Manchester Community College,Manchester,CT,139200,129695,
+CONNECTICUT,"Middlesex Community College, Middletown Campus ",Middletown,CT,803800,129756,
+CONNECTICUT,"Middlesex Community College, Meriden Center",Meriden,CT,803800,129756,campus not sepately listed in IPEDS - cf U-Conn Waterbury
 CONNECTICUT,Post University,Waterbury,CT,140100,130183,
 CONNECTICUT,Quinnipiac University,Hamden,CT,140200,130226,
 CONNECTICUT,Sacred Heart University,Fairfield,CT,140300,130253,
@@ -566,7 +576,7 @@ FLORIDA,Keiser University-Tallahassee,Tallahassee,FL,2151902,13508102,
 FLORIDA,Keiser University-Tampa,Tampa,FL,2151914,13508109,
 FLORIDA,Keiser University-West Palm Beach,West Palm Beach,FL,2151912,13508112,
 FLORIDA,Lake-Sumter State College,Leesburg,FL,150200,135188,
-FLORIDA,LaSalle Computer Learning Centeræ,Tampa,FL,,,not found in IPEDS database
+FLORIDA,LaSalle Computer Learning Center ,Tampa,FL,,,not found in IPEDS database
 FLORIDA,Marconi International University,Pembroke Pines,FL,,,not found in IPEDS database
 FLORIDA,Miami Dade College,Miami,FL,150600,135717,
 FLORIDA,Miami International University of Art and Design,Miami,FL,887800,134811,
@@ -672,10 +682,14 @@ GEORGIA,Georgia Perimeter College - Newton Campus,Covington,GA,156200,244437,cam
 GEORGIA,Georgia Piedmont Technical College,Clarkston,GA,562200,244446,
 GEORGIA,Georgia Piedmont Technical College - DeKalb Campus,DeKalb,GA,562200,244446,campus not sepately listed in IPEDS
 GEORGIA,Georgia Piedmont Technical College - Newton Campus,Covington,GA,562200,244446,campus not sepately listed in IPEDS
+GEORGIA,Georgia Southern University,Statesboro,GA,157200,139931,
+GEORGIA,Georgia State University,Atlanta,GA,157400,139940,
+GEORGIA,Gupton-Jones College of Funeral Service,Decatur,GA,1077100,139995,
 GEORGIA,Gwinnett Technical College,Lawrenceville,GA,2288400,140012,
 GEORGIA,Herzing University-Atlanta,Atlanta,GA,962106,140340,
 GEORGIA,Kennesaw State University,Kennesaw,GA,157700,140164,
 GEORGIA,Medtech Institute-Atlanta,Atlanta,GA,3804400,444714,
+GEORGIA,Middle Georgia State University,Macon,GA,158100,482158,
 GEORGIA,Morehouse College,Atlanta,GA,158200,140553,
 GEORGIA,Morehouse School of Medicine,Atlanta,GA,2482100,140562,
 GEORGIA,"Oconee Fall Line Technical Collegen, North Campus",Sandersville,GA,3155500,420431,
@@ -726,6 +740,7 @@ GEORGIA,University of Phoenix-Georgia - Atlanta Campus,Sandy Springs,GA,32098829
 GEORGIA,University of Phoenix-Georgia - Augusta Campus,Augusta,GA,32098829,484677,campus not sepately listed in IPEDS
 GEORGIA,University of Phoenix-Georgia - Columbus Georgia Campus,Columbus,GA,32098829,484677,campus not sepately listed in IPEDS
 GEORGIA,University of Phoenix-Georgia - DeKalb Learning Center,DeKalb,GA,32098829,484677,campus not sepately listed in IPEDS
+GEORGIA,University of West Georgia,Carrollton,GA,160100,141334,
 GEORGIA,Virginia College-Augusta,Augusta,GA,3010619,458256,
 GEORGIA,Virginia College-Columbus,Columbus,GA,3010628,475370,
 GEORGIA,Virginia College-Macon,Macon,GA,3010623,460844,
@@ -767,6 +782,7 @@ HAWAII,Windward Community College,Kaneohe,HI,1122000,141990,
 IDAHO,Boise State University,Boise,ID,161600,142115,
 IDAHO,Broadview University-Boise,Meridian,ID,1116604,467793,
 IDAHO,Brown Mackie College-Boise,Boise,ID,4051323,455600,
+IDAHO,Colorado Technical University-Sioux Falls,Sioux Falls,ID,1014804,402615,
 IDAHO,Idaho State University,Pocatello,ID,162000,142276,
 IDAHO,North Idaho College,Coeur d'Alene,ID,162300,142443,
 IDAHO,Webster University - Mountain Home Air Force Base,Mountain Home AFB,ID,252100,179894,"not separately listed - cf Webster University, MO"
@@ -796,6 +812,7 @@ ILLINOIS,Kaskaskia College,Centralia,IL,170100,146366,
 ILLINOIS,Kendall College,Chicago,IL,170300,146393,
 ILLINOIS,Lake Land College,Mattoon,IL,764400,146506,
 ILLINOIS,Lewis University,Romeoville,IL,170700,146612,
+ILLINOIS,Lindenwood University,Belleville,IL,248037,17796801,
 ILLINOIS,Malcolm X College,Chicago,IL,165000,144166,
 ILLINOIS,McHenry County College,Crystal Lake,IL,769100,147004,
 ILLINOIS,McKendree University,Lebanon,IL,172200,147013,
@@ -806,12 +823,13 @@ ILLINOIS,Northern Illinois University,Dekalb,IL,173700,147703,
 ILLINOIS,Northwestern College,Evanston,IL,173900,147767,
 ILLINOIS,Northwood University,Glen Ellyn,IL,407200,: 171492,
 ILLINOIS,Parkland College,Champaign,IL,711800,147916,
+ILLINOIS,Pierce Mortuary Colleges of Dallas Institute of Funeral Service,Broadview,IL,,,not found in IPEDS database
 ILLINOIS,Richard J. Daley College,Chicago,IL,164900,144193,
 ILLINOIS,Roosevelt University,Chicago,IL,174900,148487,
 ILLINOIS,Saint Xavier University,Chicago,IL,176800,148627,
 ILLINOIS,Sauk Valley Community College,Dixon,IL,175200,148672,
-ILLINOIS,Southern Illinois University„Carbondale,Carbondale,IL,175800,149222,
-ILLINOIS,Southern Illinois University„Edwardsville,Edwardsville,IL,175900,149231,
+ILLINOIS,Southern Illinois University—Carbondale,Carbondale,IL,175800,149222,
+ILLINOIS,Southern Illinois University—Edwardsville,Edwardsville,IL,175900,149231,
 ILLINOIS,Southwestern Illinois College,Belleville,IL,163600,143215,
 ILLINOIS,Symbol Training Institute,Skokie,IL,,,not found in IPEDS database
 ILLINOIS,Universal Technical Institute - IIlinois,Lisle,IL,822101,366191,
@@ -822,6 +840,7 @@ ILLINOIS,University of Phoenix-Illinois - Chicago Campus,Schaumburg,IL,32098849,
 ILLINOIS,Webster University - Great Lakes Naval Base,Great Lakes Naval Base,IL,252100,179894,"not separately listed - cf Webster University, MO"
 ILLINOIS,Webster University - Scott Air Force Base,Scott AFB,IL,252100,179894,"not separately listed - cf Webster University, MO"
 ILLINOIS,Western Illinois University,Macomb,IL,178000,149772,
+ILLINOIS,Wilber Wright College,Chicago,IL,,,not found in IPEDS database
 ,INDIANA,,,,,
 INDIANA,Art Institute of Indianapolis,Indianapolis,IN,4051304,448345,
 INDIANA,Brown Mackie College-Fort Wayne,Fort Wayne,IN,4051322,408039,
@@ -838,6 +857,7 @@ INDIANA,Indiana University-Southeast,New Albany,IN,181700,151379,
 INDIANA,Kaplan College-Hammond Campus,Hammond,IN,2201800,152415,
 INDIANA,Kaplan College-Indianapolis,Indianapolis,IN,2201806,458283,
 INDIANA,Martin University,Indianapolis,IN,2140800,151810,
+INDIANA,Mid-America College of Funeral Services,Jeffersonville,IN,1061800,151962,
 INDIANA,National American University-Indianapolis,Indianapolis,IN,405737,482370,
 INDIANA,Purdue University,West Lafayette,IN,182500,243780,
 INDIANA,Purdue University-Calumet,Hammond,IN,182700,152448,
@@ -875,6 +895,7 @@ IOWA,Western Iowa Tech Community College - Mapleton Campus,Mapleton,IA,731600,15
 KANSAS,Art Institutes International-Kansas City,Kansas City,KS,4051301,452018,
 KANSAS,Brown Mackie College-Kansas City,Kansas City,KS,675501,154767,
 KANSAS,Brown Mackie College-Salina,Salina,KS,675500,154776,
+KANSAS,Colorado Technical University-Kansas City,North Kansas City,KS,1014814,409838,
 KANSAS,Dodge City Community College ,Dodge City,KS,191300,154998,
 KANSAS,Grantham University,Lenexa,KS,4122300,442569,
 KANSAS,"Heritage College, Wichita Campus",Wichita,KS,2611000,262509,
@@ -893,6 +914,7 @@ KANSAS,University of Phoenix-Kansas,,KS,,,not found in IPEDS database
 KANSAS,University of Saint Mary,Leavenworth,KS,194300,155812,
 KANSAS,University of Saint Mary - Leavenworth Campus,Leavenworth,KS,194300,155812,campus not sepately listed in IPEDS
 KANSAS,University of Saint Mary - Overland Park Campus,Overland Park,KS,194300,155812,campus not sepately listed in IPEDS
+KANSAS,Washburn University,Topeka,KS,194900,156082,
 KANSAS,Webster University - Fort Leavenworth,Fort Leavenworth,KS,252100,179894,"not separately listed - cf Webster University, MO"
 KANSAS,Webster University - McConnell Air Force Base,McConnell AFB,KS,252100,179894,"not separately listed - cf Webster University, MO"
 ,KENTUCKY,,,,,
@@ -958,8 +980,10 @@ LOUISIANA,Louisiana State University-Shreveport,Shreveport,LA,201300,159416,
 LOUISIANA,Loyola University,New Orleans,LA,201600,159656,
 LOUISIANA,Northshore Technical Community College,Bogalusa,LA,675600,160667,
 LOUISIANA,Northwest Louisiana Technical College,Minden,LA,997500,160010,
+LOUISIANA,Northwestern State University,Natchitoches,LA,202100,160038,
 LOUISIANA,"Northwood University,  New Orleans Campus", New Orleans,LA,,,campus not listed in IPEDS
 LOUISIANA,Nunez Community College,Chalmette,LA,2166100,158884,
+LOUISIANA,"Operation Spark, New Orleans",New Orleans,LA,,,not found in IPEDS database
 LOUISIANA,River Parishes Community College,Gonzales,LA,3789400,436304,
 LOUISIANA,South Central Louisiana Technical College,Morgan City,LA,552600,160913,
 LOUISIANA,South Louisiana Community College,Lafayette,LA,3956300,434061,
@@ -994,9 +1018,9 @@ MARYLAND,Frostburg State University,Frostburg,MD,207200,162584,
 MARYLAND,"Heritage College,  Cleveland Campus",Cleveland,MD,2611000,262509,
 MARYLAND,"Hood College,",Frederick,MD,207600,162760,
 MARYLAND,Howard Community College,Columbia,MD,817500,162779,
-MARYLAND,LÍAcademie de Cuisine,Gaithersburg,MD,,,campus not listed in IPEDS
+MARYLAND,L’Academie de Cuisine,Gaithersburg,MD,,,campus not listed in IPEDS
 MARYLAND,Morgan State University,Baltimore,MD,208300,163453,
-MARYLAND,Mount St. MaryÍs University,Emmitsburg,MD,208600,163462,
+MARYLAND,Mount St. Mary’s University,Emmitsburg,MD,208600,163462,
 MARYLAND,Sojouner-Douglas College,Baltimore,MD,2127900,163921,
 MARYLAND,Stratford University-Baltimore,Baltimore,MD,2541200,438498,"not separately listed - cf Stratford University, VA"
 MARYLAND,University of Baltimore,Baltimore,MD,210200,161873,
@@ -1027,6 +1051,7 @@ MASSACHUSETTS,Marian Court College,Swampscott,MA,687300,166601,
 MASSACHUSETTS,Massachusetts Bay Community College,Wellesley Hills,MA,217100,166647,
 MASSACHUSETTS,Massachusetts Bay Community College - Framingham Campus,Framingham,MA,217100,166647,campus not sepately listed in IPEDS
 MASSACHUSETTS,Massachusetts Bay Community College - Wellesley Hills Campus,Wellesley Hills,MA,217100,166647,campus not sepately listed in IPEDS
+MASSACHUSETTS,Massasoit Community College,Brockton,MA,217700,166823,
 MASSACHUSETTS,Mt. Wachusett Community College,Gardner,MA,217200,166957,
 MASSACHUSETTS,Network Technology Academy Institute ,Somerville,MA,,,not found in IPEDS database
 MASSACHUSETTS,New England College of Business and Finance,Boston,MA,3965300,164438,
@@ -1034,6 +1059,7 @@ MASSACHUSETTS,North Shore Community College,Danvers,MA,217300,167312,
 MASSACHUSETTS,Quinsigamond Community College,Worcester,MA,217500,167534,
 MASSACHUSETTS,Salem State University,Salem,MA,218800,167729,
 MASSACHUSETTS,New England Institute of Art,Brookline,MA,748600,167321,
+MASSACHUSETTS,Springfield Technical Community College,Springfield,MA,370300,231554,
 MASSACHUSETTS,The National Graduate School of Quality Management ,Falmouth,MA,3504300,441478,
 MASSACHUSETTS,Universal Technical Institute  Massachusetts,Norwood,MA,822105,447403,
 MASSACHUSETTS,University of Massachusetts-Amherst,Amherst,MA,222100,166629,
@@ -1041,10 +1067,28 @@ MASSACHUSETTS,University of Massachusetts-Boston,Boston,MA,222200,166638,
 MASSACHUSETTS,University of Massachusetts-Dartmouth,Dartmouth,MA,221000,167987,
 MASSACHUSETTS,University of Massachusetts-Lowell,Lowell,MA,216100,166513,
 MASSACHUSETTS,University of Phoenix-Massachusetts,Braintree,MA,32098874,440420,
+MASSACHUSETTS,Westfield State University,Westfield,MA,218900,168263,
 MASSACHUSETTS,Worcester State University,Worcester,MA,219000,168430,
 ,MICHIGAN,,,,,
 MICHIGAN,Art Institute of Michigan,Novi,MI,1258405,451796,
 MICHIGAN,Art Institute of Michigan-Troy,Troy,MI,1258400,148177,"not separately listed - cf Illinois Institute of Art-Chicago, IL"
+MICHIGAN,Baker Center for Graduate Studies,Flint,MI,467313,16884710,
+MICHIGAN,Baker College Allen Park Campus,Allen Park,MI,467317,16884702,
+MICHIGAN,Baker College Auburn Hills Campus,Auburn Hills,MI,467305,16884703,
+MICHIGAN,Baker College Cadillac Campus,Cadillac,MI,467301,16884704,
+MICHIGAN,Baker College Cass City Campus,Cass City,MI,467300,168847,campus not sepately listed in IPEDS
+MICHIGAN,Baker College Clinton Township Campus,Clinton Township,MI,467302,467301,
+MICHIGAN,Baker College Coldwater Campus,Coldwater,MI,467300,168847,campus not sepately listed in IPEDS
+MICHIGAN,Baker College Flint Campus,Flint ,MI,467300,168847,
+MICHIGAN,Baker College Fremont Campus,Fremont,MI,467300,168847,campus not sepately listed in IPEDS
+MICHIGAN,Baker College Jackson Campus,Jackson ,MI,467309,16884706,
+MICHIGAN,Baker College Muskegon Campus,Muskegon,MI,467303,16884707,
+MICHIGAN,Baker College Owosso Campus,Owosso,MI,467304,16884708,
+MICHIGAN,Baker College Port Huron Campus,Port Huron ,MI,467306,16884709,
+MICHIGAN,Baker College -  Baker On Line,Flint,MI,467300,168847,campus not sepately listed in IPEDS
+MICHIGAN,Baker College - The Auto/Diesel Institute,Owosso,MI,467304,16884701,
+MICHIGAN,"Baker College - The Culinary Institute of Michigan, Muskegon Campus",Muskegon,MI,467300,168847,campus not sepately listed in IPEDS
+MICHIGAN,"Baker College - The Culinary Institute of Michigan, Port Huron Campus",Port Huron ,MI,467300,168847,campus not sepately listed in IPEDS
 MICHIGAN,Brighton Institute of Cosmetology,Brighton,MI,4211200,477002,
 MICHIGAN,Central Michigan University,Mount Pleasant,MI,224300,169248,
 MICHIGAN,Davenport University,Grand Rapids,MI,224900,169479,
@@ -1071,8 +1115,11 @@ MICHIGAN,Kalamazoo Valley Community College - The Groves Campus,Kalamazoo,MI,694
 MICHIGAN,Kalamazoo Valley Community College - Texas Township Campus,Kalamazoo,MI,694900,170541,campus not sepately listed in IPEDS
 MICHIGAN,Lake Superior State University,Marie,MI,229300,170639,
 MICHIGAN,Lansing Community College,Lansing,MI,227800,170657,
+MICHIGAN,MedCerts ,Livonia,MI,,,not found in IPEDS database
+MICHIGAN,Merrill Institute, Alma,MI,,,not found in IPEDS database
 MICHIGAN,MIAT College of Technology,Canton,MI,2060300,169655,
 MICHIGAN,Michigan State University,East Lansing,MI,229000,171100,
+MICHIGAN,Mid-Michigan Community College,Harrison,MI,676800,171155,
 MICHIGAN,Montcalm Community College,Sidney,MI,229500,171234,
 MICHIGAN,Mott Community College,Flint,MI,226100,169275,aka Charles R. Mott CC
 MICHIGAN,Northwestern Michigan College,Traverse City,MI,230200,171483,
@@ -1103,6 +1150,7 @@ MICHIGAN,"Spring Arbor University, Metro Detroit (Southfield) Campus",Southfield
 MICHIGAN,"Spring Arbor University, Metro- Toledo (Lambertville) Campus",Lambertville,MI,231800,172334,campus not sepately listed in IPEDS
 MICHIGAN,"Spring Arbor University, Petoskey Campus", Petoskey,MI,231800,172334,campus not sepately listed in IPEDS
 MICHIGAN,"Spring Arbor University, Traverse City Campus",Traverse City,MI,231800,172334,campus not sepately listed in IPEDS
+MICHIGAN,The Greater Michigan Construction Academy,Midland,MI,,,not found in IPEDS database
 MICHIGAN,University of Detroit Mercy,Detroit,MI,232300,169716,
 MICHIGAN,University of Michigan-Ann Arbor,Ann Arbor,MI,232500,170976,
 MICHIGAN,University of Michigan-Dearborn,Dearborn,MI,232600,171137,
@@ -1110,7 +1158,10 @@ MICHIGAN,University of Michigan-Flint,Flint,MI,232700,171146,
 MICHIGAN,University of Phoenix-Michigan,Southfield,MI,32098879,484695,
 MICHIGAN,University of Phoenix-Michigan - Detroit Main Campus,Southfield,MI,32098879,484695,campus not sepately listed in IPEDS
 MICHIGAN,University of Phoenix-Michigan - Downtown Detroit Learning Center,Detroit,MI,32098879,484695,campus not sepately listed in IPEDS
-MICHIGAN,Walsh College,Troy,MI,407100,172608,
+MICHIGAN,"Walsh College, St. Clair Community College University Center",Troy,MI,407100,172608,
+MICHIGAN,"Walsh College, Novi Campus",Novi,MI,407100,172608,campus not sepately listed in IPEDS
+MICHIGAN,"Walsh College, Macomb University Center",Clinton Township,MI,407100,172608,campus not sepately listed in IPEDS
+MICHIGAN,"Walsh College, St. Clair Community College University Center",Port Huron,MI,407100,172608,campus not sepately listed in IPEDS
 MICHIGAN,Washtenaw Community College,Ann Arbor,MI,232800,172617,
 MICHIGAN,Wayne State University,Detroit,MI,232900,172644,
 MICHIGAN,Western Michigan University,Kalamazoo,MI,233000,172699,
@@ -1214,6 +1265,7 @@ MISSISSIPPI,MGCCC West Harrison County Center,Long Beach,MS,241700,176071,campus
 MISSISSIPPI,Mississippi Valley State Univeristy,Itta Bena,MS,242400,176044,
 MISSISSIPPI,Pearl River Community College,Poplarville,MS,243000,176239,
 MISSISSIPPI,Rust College,Holly Springs,MS,243300,176318,
+MISSISSIPPI,Southeastern Baptist College, Laurel,MS,243500,176336,
 MISSISSIPPI,Tougaloo College,Tougaloo,MS,243900,176406,
 MISSISSIPPI,University of Southern Mississippi,Hattiesburg,MS,244100,176372,
 MISSISSIPPI,Virginia College-Biloxi,Biloxi,MS,3010610,450191,
@@ -1238,9 +1290,10 @@ MISSOURI,"Heritage College, Kansas  City Campus",Kansas City,MO,2611000,262509,
 MISSOURI,Lincoln University ,Jefferson City,MO,247900,177940,
 MISSOURI,Missouri University of Science and Technology,Rolla,MO,251700,178411,
 MISSOURI,National American University-Independence,Independence,MO,405704,247700,
-MISSOURI,National American University-LeeÍs Summit,Lee's Summit,MO,405724,466170,
+MISSOURI,National American University-Lee’s Summit,Lee's Summit,MO,405724,466170,
 MISSOURI,National American University-Weldon Spring,Weldon Springs,MO,405735,482352,
 MISSOURI,National American University-Zona Rosa,Zona Rosa,MO,405719,448585,
+MISSOURI,Ozarks Technical Community College,Springfield,MO,3083000,177472,
 MISSOURI,Park University (PU),Parkville,MO,249800,178721,
 MISSOURI,Paul Mitchell the School,St. Louis,MO,4170700,461421,
 MISSOURI,PU- Parkville Campus,Parkville,MO,249800,178721,campus not sepately listed in IPEDS
@@ -1291,11 +1344,12 @@ NEBRASKA,Bellevue University,Bellevue,NE,974300,180814,
 NEBRASKA,Creighton University,Omaha,NE,254200,181002,
 NEBRASKA,Grace University,Omaha,NE,254700,181093,
 NEBRASKA,Herzing University-Omaha School of Massage and Healthcare,Omaha,NE,962109,407328,
-NEBRASKA,National American University-Bellevue,Bellevue,NE,405726,477996,
+NEBRASKA,National American University-Bellevue Campus,Bellevue,NE,405726,477996,
+NEBRASKA,Wayne State College, Wayne,NE,256600,181783,
 NEBRASKA,University of Nebraska at Omaha,Omaha,NE,255400,181394,
 NEBRASKA,University of Nebraska-Lincoln,Lincoln,NE,256500,181464,
 ,NEVADA,,,,,
-NEVADA,Art Institute of Las Vegas,Henderson,NV,4051303,182111,
+NEVADA,Art Institute of Las Vegas,Henderson,NV,   ,182111,
 NEVADA,Great Basin College,Elko,NV,697700,182306,
 NEVADA,Great Basin College  - Elko Main Campus,Elko,NV,697700,182306,campus not sepately listed in IPEDS
 NEVADA,Great Basin College  - Ely Center,Ely,NV,697700,182306,campus not sepately listed in IPEDS
@@ -1324,8 +1378,11 @@ NEW JERSEY,Advantage Career Institute Medical and Dental School,Eatontown,NJ,,,n
 NEW JERSEY,Berkeley College-Woodland Park,Woodland Park,NJ,750200,183789,
 NEW JERSEY,Centenary College,Hackettstown,NJ,259900,183974,
 NEW JERSEY,Cumberland County College,Vineland,NJ,260100,184205,
+NEW JERSEY,"Institute for Therapeutic Massage, Hackensack Campus",Hackensack,NJ,3536300,441548,
+NEW JERSEY,"Institute for Therapeutic Massage, Tinton Falls Campus",Tinton Falls,NJ,3536300,441548,campus not sepately listed in IPEDS
 NEW JERSEY,Middlesex County College,Edison,NJ,261500,185536,
 NEW JERSEY,Montclair State University,Montclair,NJ,261700,185590,
+NEW JERSEY,New Jersey Institute of Technology,Newark,NJ,262100,185828,
 NEW JERSEY,Rowan University,Glassboro,NJ,260900,184782,
 NEW JERSEY,Rutgers University-Camden,Camden,NJ,262901,186371,
 NEW JERSEY,Rutgers University-New Brunswick,New Brunswick,NJ,262900,186380,
@@ -1355,6 +1412,7 @@ NEW MEXICO,University of Phoenix-New Mexico - Santa Teresa Learning Center,Santa
 NEW MEXICO,Webster University - Albuquerque,Albuquerque,NM,252100,179894,"not separately listed - cf Webster University, MO"
 NEW MEXICO,Webster University - Kirkland Air Force Base,Kirkland AFB,NM,252100,179894,"not separately listed - cf Webster University, MO"
 ,NEW YORK,,,,,
+NEW YORK,Academy of Cosmetology & Esthetics,Staten Island,NY,4156000,457855,
 NEW YORK,Albany Technical College,Allbany,NY,,,not found in IPEDS database
 NEW YORK,Art Institute of New York City,New York,NY,2525600,365055,
 NEW YORK,Berkeley College-New York,New York,NY,739400,189228,
@@ -1375,27 +1433,28 @@ NEW YORK,Cayuga Community College SUNY - Auburn Campus,Auburn,NY,286100,189839,c
 NEW YORK,Cayuga Community College SUNY - Fulton Campus,Fulton,NY,286100,189839,campus not sepately listed in IPEDS
 NEW YORK,Columbia College - Fort Drum Campus,Fort Drum,NY,245600,177065,"not separately listed - cf Webster University, MO"
 NEW YORK,Columbia College - Hancock Field Campus,Hancock Field,NY,245600,177065,"not separately listed - cf Webster University, MO"
-NEW YORK,CUNY„Baruch College,New York,NY,727300,190512,
-NEW YORK,CUNY„Borough of Manhattan Community College,New York,NY,269100,190521,
-NEW YORK,CUNY„Bronx Community College,Bronx,NY,269200,190530,
-NEW YORK,CUNY„Brooklyn College,Brooklyn,NY,268700,190549,
-NEW YORK,CUNY„City College,New York,NY,268800,190567,
-NEW YORK,CUNY„College of Staten Island,Staten Island,NY,269800,190558,
-NEW YORK,CUNY„Hostos Community College,Bronx,NY,861100,190585,
-NEW YORK,CUNY„Hunter College,New York,NY,268900,190594,
-NEW YORK,CUNY„John Jay College of Criminal Justice,New York,NY,269300,190600,
-NEW YORK,CUNY„Kingsborough Community College,Brooklyn,NY,269400,190619,
-NEW YORK,CUNY„LaGuardia Community College,Long Island City,NY,1005100,190628,
-NEW YORK,CUNY„Lehman College,Bronx,NY,702200,190637,
-NEW YORK,CUNY„Medgar Evers College,Brooklyn,NY,1009700,190646,
-NEW YORK,CUNY„Queens College,Flushing,NY,269000,190664,
-NEW YORK,CUNY„Queensborough Community College,Bayside,NY,269700,190673,
-NEW YORK,CUNY„Stella and Charles Guttman Community College,New York,NY,4210100,475565,
-NEW YORK,CUNY„York College,Jamaica,NY,475900,190691,
+NEW YORK,CUNY—Baruch College,New York,NY,727300,190512,
+NEW YORK,CUNY—Borough of Manhattan Community College,New York,NY,269100,190521,
+NEW YORK,CUNY—Bronx Community College,Bronx,NY,269200,190530,
+NEW YORK,CUNY—Brooklyn College,Brooklyn,NY,268700,190549,
+NEW YORK,CUNY—City College,New York,NY,268800,190567,
+NEW YORK,CUNY—College of Staten Island,Staten Island,NY,269800,190558,
+NEW YORK,CUNY—Hostos Community College,Bronx,NY,861100,190585,
+NEW YORK,CUNY—Hunter College,New York,NY,268900,190594,
+NEW YORK,CUNY—John Jay College of Criminal Justice,New York,NY,269300,190600,
+NEW YORK,CUNY—Kingsborough Community College,Brooklyn,NY,269400,190619,
+NEW YORK,CUNY—LaGuardia Community College,Long Island City,NY,1005100,190628,
+NEW YORK,CUNY—Lehman College,Bronx,NY,702200,190637,
+NEW YORK,CUNY—Medgar Evers College,Brooklyn,NY,1009700,190646,
+NEW YORK,CUNY—Queens College,Flushing,NY,269000,190664,
+NEW YORK,CUNY—Queensborough Community College,Bayside,NY,269700,190673,
+NEW YORK,CUNY—Stella and Charles Guttman Community College,New York,NY,4210100,475565,
+NEW YORK,CUNY—York College,Jamaica,NY,475900,190691,
 NEW YORK,"Daemen College, Amherst", Amherst,NY,280800,190725,
 NEW YORK,Excelsior College,Albany,NY,283400,196680,
 NEW YORK,Fordham University,Bronx,NY,272200,191241,
 NEW YORK,Fulton-Montgomery Community College,Johnstown,NY,286700,191302,
+NEW YORK,"Hilbert College, Hamburg",Hamburg,NY,273500,191621,
 NEW YORK,Jefferson Community College,Watertown,NY,287000,1902022,
 NEW YORK,Medaille College, Buffalo,NY,277700,192925,
 NEW YORK,Medaille College - Buffalo Campus, Buffalo,NY,277700,192925,campus not sepately listed in IPEDS
@@ -1405,14 +1464,16 @@ NEW YORK,Molloy College,Rockville Centre,NY,277500,193292,
 NEW YORK,Monroe College ,Bronx,NY,479900,193308,
 NEW YORK,Monroe College - Bronx Campus,Bronx,NY,479900,193308,campus not sepately listed in IPEDS
 NEW YORK,Monroe College - New Rochelle Campus,New Rochelle,NY,479900,193308,campus not sepately listed in IPEDS
-NEW YORK,Monroe College - St. Lucia Campus ,"St. Lucia, Caribbean",,479900,193308,campus not sepately listed in IPEDS
+NEW YORK,Monroe College - St. Lucia Campus ,"St. Lucia, Caribbean",NY,479900,193308,campus not sepately listed in IPEDS
 NEW YORK,Monroe Community College,Rochester,NY,287200,193326,
 NEW YORK,Morrisville State College,Morrisville,NY,285900,196051,
 NEW YORK,Nassau Community College,Garden City,NY,287300,193478,
 NEW YORK,Nazareth College,Rochester,NY,277900,193584,
 NEW YORK,Neighborhood Playhouse School of Theater,New York,NY,902900,193609,
+NEW YORK,New York College of Podiatric Medicine,New York,NY,274900,194073,
 NEW YORK,New York Film Academy - Union Square,New York,NY,4118800,461148,"not separately listed - cf NY Film Academy, Burbank, CA"
 NEW YORK,New York Film Academy - Downtown,New York,NY,4118800,461148,"not separately listed - cf NY Film Academy, Burbank, CA"
+NEW YORK,New York University,New York,NY,278500,193900,
 NEW YORK,Niagara County Community College,Sanborn,NY,287400,193946,
 NEW YORK,Niagara University,Niagara University,NY,278800,193973,
 NEW YORK,NYACK College,Nyack,NY,279000,194161,
@@ -1441,6 +1502,7 @@ NEW YORK,SUNY College of Technology at Canton,Canton,NY,285500,196015,
 NEW YORK,SUNY College of Technology at Delhi,Delhi,NY,285700,196024,
 NEW YORK,SUNY Empire State College,Saratoga Springs,NY,1028600,196264,
 NEW YORK,Syracuse University,Syracuse,NY,288200,196413,
+NEW YORK,Technical Carrer Institutes (TCI) College of Technology,New York,NY,1103100,196477,
 NEW YORK,Trocaire College,Buffalo,NY,281200,196653,
 NEW YORK,University of Buffalo,Buffalo,NY,283700,196088,
 NEW YORK,Vaughn College of Aeronautics and Technology,Flushing,NY,266500,188340,
@@ -1491,6 +1553,7 @@ NORTH CAROLINA,Sandhills Community College - Sandhills Hoke Center,Raeford,NC,29
 NORTH CAROLINA,Sandhills Community College - James H. Garner Center for Community Education,Robbins,NC,296100,199634,campus not sepately listed in IPEDS
 NORTH CAROLINA,Sandhills Community College - Larry R. Cardell Public Safety Training Center,Carthage,NC,296100,199634,campus not sepately listed in IPEDS
 NORTH CAROLINA,Shaw University,Raleigh,NC,296200,199643,
+NORTH CAROLINA,South College,Asheville,NC,1026400,198242,
 NORTH CAROLINA,South University-High Point,High Point,NC,1303923,481720,
 NORTH CAROLINA,St. Andrews University,Laurinburg,NC,154001,199698,
 NORTH CAROLINA,St. Augustine's University,Raleigh,NC,296800,199582,
@@ -1540,10 +1603,12 @@ OHIO,Clark State Community College - Greene Center,Beavercreek,OH,485200,201973,
 OHIO,Clark State Community College - Logan County Campus,Bellefontaine,OH,485200,201973,campus not sepately listed in IPEDS
 OHIO,Cleveland State University,Cleveland,OH,303200,202134,
 OHIO,Columbus State Community College,Columbus,OH,686700,202222,
+OHIO, Continents Academy,Columbus,OH,,,not found in IPEDS database
 OHIO,Cuyahoga Community College,Cleveland,OH,304000,202356,
 OHIO,Davis College,Toledo,OH,485500,202435,
 OHIO,"Heritage College, Columbus Campus",Columbus,OH,2611000,262509,
 OHIO,Herzing University-Toledo,Toledo,OH,962102,457022,
+OHIO,Hocking College,Nelsonville,OH,759800,203155,
 OHIO,John Carroll University,University Heights,OH,305000,203368,
 OHIO,Kaplan College-Dayton,Dayton,OH,2052000,204626,
 OHIO,Lake Erie College,Painesville,OH,306600,203580,
@@ -1560,6 +1625,8 @@ OHIO,Owens Community College,Perrysburg,OH,575300,204945,
 OHIO,Shawnee State University,Portsmouth,OH,994200,205443,
 OHIO,South University-Cleveland,Cleveland,OH,1303922,480082,
 OHIO,Stark State College,North Canton,OH,1088100,205841,
+OHIO,The University of Akron,Akron,OH,312300,200800,
+OHIO,Union Institute & University,Cincinnati,OH,1092300,206279,
 OHIO,University of Phoenix-Ohio,Beachwood,OH,42098834,439297,
 OHIO,University of Toledo,Toledo,OH,313100,206084,
 OHIO,Wright State University,Dayton,OH,307800,206604,
@@ -1576,8 +1643,9 @@ OKLAHOMA,Langston University,Langston,OK,315700,207209,
 OKLAHOMA,Mid-America Christian University,Oklahoma City,OK,694200,245953,
 OKLAHOMA,National American University-Tulsa,Tulsa,OK,405722,466152,
 OKLAHOMA,Oklahoma City Community College,Oklahoma City,OK,1039100,207449,
+OKLAHOMA,"Oklahoma State University, Stillwater",Stillwater,OK,317000,207388,
 OKLAHOMA,Oklahoma State University Institute of Technology,Okmulgee,OK,317200,207564,
-OKLAHOMA,Oklahoma Technical Collegeæ,Tulsa,OK,3367402,469629,
+OKLAHOMA,Oklahoma Technical College ,Tulsa,OK,3367402,469629,
 OKLAHOMA,Rhema Bible Training College,Tulsa,OK,,,not found in IPEDS database
 OKLAHOMA,Rose State College,Midwest City,OK,918500,207670,
 OKLAHOMA,Southern Nazarene University,Bethany,OK,314900,206862,
@@ -1647,14 +1715,18 @@ PENNSYLVANIA,Mount Aloysius College,Cresson,PA,330200,214166,
 PENNSYLVANIA,New Castle School of Trades,New Castle,PA,778000,214290,
 PENNSYLVANIA,New Castle School of Trades,Pulaski,PA,778002,21429001,
 PENNSYLVANIA,Peirce College,Philadelphia,PA,330900,214883,
+PENNSYLVANIA,Penn Commercial Business / Technical School,Washington,PA,,,not found in IPEDS database
 PENNSYLVANIA,Pennsylvania State University-Fayette-Eberly,Lemont Furnace,PA,332908,214759,
 PENNSYLVANIA,Pennsylvania State University-Main Campus,University Park,PA,332900,214777,
 PENNSYLVANIA,Pennsylvania State University-Mont Alto,Mont Alto,PA,332911,214795,
 PENNSYLVANIA,Pennsylvania State University-Schuylkill,Schuylkill Haven,PA,332914,214810,
+PENNSYLVANIA,"Pennsylvania State Unversity, PennState Shenango",Sharon,PA,332916,214634,
+PENNSYLVANIA,Robert Morris University,Moon Township,PA,335900,215655,
 PENNSYLVANIA,Saint Francis University,Loretto,PA,336600,215743,
 PENNSYLVANIA,Saint Joseph's University,Philadelphia,PA,336700,215770,
 PENNSYLVANIA,Universal Technical Institute - Pennsylvaina ,Exton,PA,2362002,445799,
 PENNSYLVANIA,University of Phoenix-Pennsylvania,Philadelphia,PA,42098854,484783,
+PENNSYLVANIA,West Chester University of Pennsylvania,West Chester,PA,332800,216764,
 PENNSYLVANIA,Wilkes University,Wilkes-Barre,PA,339400,216931,
 ,PUERTO RICO,,,,,
 PUERTO RICO,Atenas College,Manati,PR,3544300,440651,
@@ -1679,7 +1751,8 @@ SOUTH CAROLINA,ECPI University-Charleston,Charleston,SC,1019809,24893406,
 SOUTH CAROLINA,ECPI University-Columbia,Columbia,SC,1019811,24893408,
 SOUTH CAROLINA,ECPI University-Greenville,Greenville,SC,1019806,24893404,
 SOUTH CAROLINA,Golf Academy of America-Myrtle Beach,Myrtle Beach,SC,3010614,434690,
-SOUTH CAROLINA,Greenville Technical College,Greenville,SC,399100,218113,
+SOUTH CAROLINA,Greenville Technical College ,Greenville,SC,399100,218113,
+SOUTH CAROLINA,"International Diving Institute, LLC",Greenville ,SC,,,not found in IPEDS database
 SOUTH CAROLINA,Limestone College,Gaffney,SC,343600,218238,
 SOUTH CAROLINA,Midlands Technical College,West Columbia,SC,399300,218353,
 SOUTH CAROLINA,South University-Columbia,Columbia,SC,1303907,251312,
@@ -1689,6 +1762,7 @@ SOUTH CAROLINA,Beaufort Campus,Beaufort,SC,991000,217712,campus not sepately lis
 SOUTH CAROLINA,New River Campus,Bluffton,SC,991000,217712,campus not sepately listed in IPEDS
 SOUTH CAROLINA,Hampton Campus,Varnville,SC,991000,217712,campus not sepately listed in IPEDS
 SOUTH CAROLINA,Tri-County Technical College,Pendelton,SC,492600,218885,
+SOUTH CAROLINA,Trident Technical College,Charlston,SC,492000,218894,
 SOUTH CAROLINA,University of South Carolina-Aiken,Aiken,SC,344900,218645,
 SOUTH CAROLINA,University of South Carolina-Beaufort,Bluffton,SC,345000,218654,
 SOUTH CAROLINA,Virginia College-Charleston,North Charleston,SC,3010620,456056,
@@ -1744,7 +1818,9 @@ TENNESSEE,Nashville State Community College,Nashville,TN,814500,221184,
 TENNESSEE,Northeast State Community College,Blountville,TN,537800,221908,
 TENNESSEE,Peak Technical Institute,Maryville,TN,,,not found in IPEDS database
 TENNESSEE,Pellissippi State Community College,Knoxville,TN,1269300,221643,
+TENNESSEE,Pentecostal Theological Seminary,Cleveland,TN,2188300,219842,
 TENNESSEE,Roane State Community College,Harriman,TN,991400,221397,
+TENNESSEE,South College,Knoxville,TN,493800,220552,
 TENNESSEE,Southern Adventist University,Collegedale,TN,351800,221661,
 TENNESSEE,Tennessee State University,Nashville,TN,352200,221838,
 TENNESSEE,Tennessee Technological University,Cookeville,TN,352300,221847,
@@ -1783,6 +1859,7 @@ TEXAS,Brookhaven College,Farmers Branch,TX,2100200,223524,
 TEXAS,Brown Mackie College-Dallas,Bedford,TX,4051342,482954,
 TEXAS,Brown Mackie College-San Antonio,San Antonio,TX,4051332,460613,
 TEXAS,Cedar Valley College,Lancaster,TX,356100,223773,
+TEXAS,"Center for Advanced Legal Studies, Paralegal.edu",Houston,TX,2604700,379782,
 TEXAS,Central Texas College,Killeen,TX,400300,223816,
 TEXAS,Collin College Campuses (CC),McKinney,TX,2361400,247834,
 TEXAS,CC- Central Park Campus,McKinney,TX,2361400,247834,campus not sepately listed in IPEDS
@@ -1797,12 +1874,13 @@ TEXAS,Concorde Career College-Dallas,Dallas,TX,887101,460181,
 TEXAS,Concorde Career College-Grand Prairie,Grand Prairie,TX,3542300,441742,
 TEXAS,Concorde Career College-San Antonio,San Antonio,TX,2361602,460206,
 TEXAS,Dallas Baptist University,Dallas,TX,356000,224226,
+TEXAS,Dallas Institute of Funeral Service,Dallas,TX,1076100,224271,
 TEXAS,Del Mar College,Corpus Christi,TX,356300,224350,
 TEXAS,Eastfield College,Mesquite,TX,851000,224572,
 TEXAS,El Centro College,Dallas,TX,445300,224615,
 TEXAS,Golf Academy of America-Farmers Branch,Framers Branch,TX,3010629,476337,
 TEXAS,Hallmark University,San Antonio,TX,1050900,225201,
-TEXAS,Houston Community Collegeæ,Houston,TX,1063300,225423,
+TEXAS,Houston Community College ,Houston,TX,1063300,225423,
 TEXAS,Jarvis Christian College,Hawkins,TX,363700,225885,
 TEXAS,Kaplan College-Arlington,Arlington,TX,3272303,458690,
 TEXAS,Kaplan College-Beaumont,Beaumont,TX,3115803,440323,
@@ -1851,9 +1929,10 @@ TEXAS,Richland College,Dallas,TX,850400,227766,
 TEXAS,San Jacinto Community College,Pasadena,TX,360900,227979,
 TEXAS,San Jacinto Community College-North,Houston,TX,360901,22797901,
 TEXAS,San Jacinto Community College-South,Houston,TX,360903,22797902,
+TEXAS,School of Automotive Machinists & Technology (SAM TECH),Dallas,TX,3032300,377218,
 TEXAS,South Texas College,McAllen,TX,3103400,409315,
 TEXAS,South University-Austin,Austin,TX,1303915,480073,
-TEXAS,St MaryÍs University,San Antonia,TX,362300,228149,
+TEXAS,St Mary’s University,San Antonia,TX,362300,228149,
 TEXAS,St. Philip's College,San Antonio,TX,360800,227854,
 TEXAS,Tarleton State University,Stephenville,TX,363100,228529,
 TEXAS,Tarrant County College,Fort Worth,TX,362600,228547,
@@ -1874,22 +1953,29 @@ TEXAS,Texas A&M University-Galveston,Galveston,TX,363200,228723,not separately l
 TEXAS,Texas A&M University-Kingsville,Kingsville,TX,363900,228705,
 TEXAS,Texas A&M University-San Antonio,San Antonio,TX,363901,22870501,
 TEXAS,Texas A&M University-Texarkana,Texarkana,TX,3170300,224545,
-TEXAS,Texas WomanÍs University (TWU),,,,,not found in IPEDS database
-TEXAS,TWU Denton Campus,Denton,TX,,,not found in IPEDS database
-TEXAS,TWU Institute of Health Sciences,Houston,TX,,,not found in IPEDS database
-TEXAS,TWU T. Boone Pickens Institute of Health Sciences,Dallas,TX,,,not found in IPEDS database
+TEXAS,Texas Lutheran University,Seguin,TX,364100,228981,
+TEXAS,Texas Woman’s University (TWU),Denton,TX,364600,229179,
+TEXAS,TWU Denton Campus,Denton,TX,364600,229179,campus not sepately listed in IPEDS
+TEXAS,TWU Institute of Health Sciences,Houston,TX,364600,229179,campus not sepately listed in IPEDS
+TEXAS,TWU T. Boone Pickens Institute of Health Sciences,Dallas,TX,364600,229179,campus not sepately listed in IPEDS
 TEXAS,Texas State Technical College-Harlingen,Harlingen,TX,922500,229319,
 TEXAS,Texas State Technical College-Marshall,Marshall,TX,3396500,408394,
 TEXAS,Texas State Technical College-Waco,Waco,TX,363400,228680,
 TEXAS,Texas State Technical College-West Texas,Sweetwater,TX,993200,229328,
 TEXAS,Texas Tech University,Lubbock,TX,364400,229115,
+TEXAS,"Vernon College, Century City Center",Wichita Falls,TX,1006000,229504,not separately listed - cf Texas A&M University College Station
+TEXAS,"Vernon College, Seymour Learning Center",Seymour,TX,1006000,229504,not separately listed - cf Texas A&M University College Station
+TEXAS,"Vernon College, Sheppard Learning Center", Sheppard AFB,TX,1006000,229504,not separately listed - cf Texas A&M University College Station
+TEXAS,"Vernon College, Skills Training Center",Wichita Falls,TX,1006000,229504,not separately listed - cf Texas A&M University College Station
+TEXAS,"Vernon College, Vernon Campus", Vernon,TX,1006000,229504,not separately listed - cf Texas A&M University College Station
 TEXAS,Universal Technical Institute - Dallas Fort Worth,Irving,TX,2362003,460543,
 TEXAS,Universal Technical Institute - Houston,Houston,TX,229416,2362000,
 TEXAS,University of Houston,Houston,TX,365200,225511,
 TEXAS,University of Houston-Clear Lake,Houston,TX,1171100,225414,
 TEXAS,University of Houston-Downtown,Houston,TX,361200,225432,
-TEXAS,University of Houston„Victoria,Victoria,TX,1323100,225502,
+TEXAS,University of Houston—Victoria,Victoria,TX,1323100,225502,
 TEXAS,University of Mary Hardin-Baylor,Belton,TX,358800,226471,
+TEXAS,University of North Texas ,Denton,TX,359400,227216,
 TEXAS,University of Phoenix-Texas,Houston,TX,42098871,484756,
 TEXAS,University of Phoenix-Texas - Austin Campus,Austin,TX,42098871,484756,campus not sepately listed in IPEDS
 TEXAS,University of Phoenix-Texas - Dallas Campus,Dallas,TX,42098871,484756,campus not sepately listed in IPEDS
@@ -1900,11 +1986,17 @@ TEXAS,University of Phoenix-Texas - Resource Center at Arlington Highlands,Arlin
 TEXAS,University of Phoenix-Texas - San Antonio Campus,San Antonio,TX,42098871,484756,campus not sepately listed in IPEDS
 TEXAS,University of Phoenix-Texas - West Loop Learning Center,Houston,TX,42098871,484756,campus not sepately listed in IPEDS
 TEXAS,University of Phoenix-Texas - Woodlands Learning Center,Spring,TX,42098871,484756,campus not sepately listed in IPEDS
+TEXAS,University of Texas Arlington,Arlington,TX,365600,228769,
 TEXAS,University of Texas at Dallas,Richardson,TX,974100,228787,
 TEXAS,University of Texas at El Paso,El Paso,TX,366100,228796,
 TEXAS,University of Texas Medical Branch,Galveston,TX,495200,228653,
 TEXAS,University of Texas-Pan American,Edinburg,TX,359900,227368,
 TEXAS,University of the Incarnate Word,San Antonio,TX,357800,225627,
+TEXAS,"Vantage College, Austin",Austin,TX,4184802,47657702,
+TEXAS,"Vantage College, El Paso East",El Paso,TX,4184801,47657701,
+TEXAS,"Vantage College, El Paso Central,",El Paso,TX,4184801,47657701,campus not sepately listed in IPEDS
+TEXAS,"Vantage College, San Antonio North",San Antonio,TX,4184802,47657702,campus not sepately listed in IPEDS
+TEXAS,"Vantage College, San Antonio South",San Antonio,TX,4184802,47657702,campus not sepately listed in IPEDS
 TEXAS,Virginia College-Austin,Austin,TX,3010604,441928,
 TEXAS,Virginia College-Lubbock,Lubbock,TX,3010636,483319,
 TEXAS,Webster University - Fort Bliss,Fort Bliss,TX,252100,179894,"not separately listed - cf Webster University, MO"
@@ -1961,7 +2053,7 @@ VERMONT,Green Mountain College,Poultney,VT,368700,230898,
 VERMONT,Lyndon State College,Lyndonville,VT,368900,230931,
 VERMONT,New England Culinary Institute,Montpelier,VT,2254000,230977,
 VERMONT,Norwich University,Northfield,VT,369200,230995,
-VERMONT,Saint MichaelÍs College,Colchester,VT,,,not found in IPEDS database
+VERMONT,Saint Michael’s College,Colchester,VT,,,not found in IPEDS database
 VERMONT,Southern Vermont College,Bennington,VT,369300,231086,
 ,VIRGIN ISLANDS,,,,,
 VIRGIN ISLANDS,University of the Virgin Islands,Charlotte Amalie,VI,394600,243665,
@@ -1984,6 +2076,7 @@ VIRGINIA,Averett University - Roanoke Center,Roanoke,VA,370200,231420,campus not
 VIRGINIA,Averett University - South Boston Center,South Boston,VA,370200,231420,campus not sepately listed in IPEDS
 VIRGINIA,Averett University - Watkins Center,Midlothian,VA,370200,231420,campus not sepately listed in IPEDS
 VIRGINIA,Averett University-Non-Traditional Programs,Danville,VA,370200,449931,
+VIRGINIA,Bluefield College,Bluefield,VA,370300,231554,
 VIRGINIA,Blue Ridge Community College,Weyers Cave,VA,681900,231536,
 VIRGINIA,Bryant & Stratton College-Hampton,Hampton,VA,267816,459107,
 VIRGINIA,Bryant & Stratton College-Richmond,North Chesterfield,VA,267812,231828,
@@ -2082,7 +2175,7 @@ WASHINGTON,"University Of Washington, Tacoma Campus",Tacoma,WA,379801,377564,
 WASHINGTON,Webster University,Fairchild AFB,WA,252100,179894,"not separately listed - cf Webster University, MO"
 WASHINGTON,Western Washington University,Bellingham,WA,380200,237011,
 WASHINGTON,Whatcom Community College,Bellingham,WA,1036400,237039,
-WASHINGTON,Whatcom Community College - Fairchild Air Force Base,Fairchild AFB,WA,1036400,237039,campus not sepately listed in IPEDS
+WASHINGTON,Whitworth University,Spokane,WA,380400,237066,
 ,WEST VIRGINIA,,,,,
 WEST VIRGINIA,American Military University,Charles Town,WV,3819300,449339,not separately listed - cf American Public University
 WEST VIRGINIA,American Public University,Charles Town,WV,3819300,449339,
@@ -2090,15 +2183,21 @@ WEST VIRGINIA,Blue Ridge Community and Technical College,Martinsburg,WV,3957300,
 WEST VIRGINIA,Bluefield State College,Bluefield,WV,380900,237215,
 WEST VIRGINIA,"BridgeValley Community and Technical College,  South Charleston Campus",South Charleston ,WV,4038600,484932,
 WEST VIRGINIA,"BridgeValley Community and Technical College,  Montgomery Campus",Montgomery,WV,4038600,484932,campus not sepately listed in IPEDS
+WEST VIRGINIA,"Concord University, Athens",Athens,WV,381000,237330,
 WEST VIRGINIA,Eastern West Virginia Community and Technical College,Moorefield,WV,4119000,438708,
 WEST VIRGINIA,Fairmont State University,Fairmont,WV,381200,237367,
+WEST VIRGINIA,Glenville State College,Glenville,WV,237385,237385,
+WEST VIRGINIA,"Institute of Technology West Virginia University, Beckley Campus",Beckley,WV,382721,237950,campus not sepately listed in IPEDS
+WEST VIRGINIA,"Institute of Technology West Virginia University, Montgomery Campus",Montgomery,WV,382721,237950,
 WEST VIRGINIA,Mountwest Community and Technical College,Huntington,WV,4041400,444954,
 WEST VIRGINIA,New River Community and Technical College,Beaver,WV,3960300,447582,
 WEST VIRGINIA,New River Community and Technical College - Greenbrier Valley Campus,Lewisburg,WV,3960300,447582,campus not sepately listed in IPEDS
 WEST VIRGINIA,Martinsburg College,Martinsburg,WV,,,not found in IPEDS database
+WEST VIRGINIA,"Marshall University, Huntington", Huntington,WV,381500,237525,
 WEST VIRGINIA,New River Community and Technical College - Mercer County Campus,Princeton,WV,3960300,447582,campus not sepately listed in IPEDS
 WEST VIRGINIA,New River Community and Technical College - Nicholas County Campus,Summersvilile,WV,3960300,447582,campus not sepately listed in IPEDS
 WEST VIRGINIA,New River Community and Technical College - Raleigh County Campus,Beaver,WV,3960300,447582,campus not sepately listed in IPEDS
+WEST VIRGINIA,Parkersburg West Virginia University,Parkersburg,WV,382800,237686,
 WEST VIRGINIA,Pierpont Community and Technical College,Fairmont,WV,4038500,443492,
 WEST VIRGINIA,Shepherd University,Shepherdstown,WV,382200,237792,
 WEST VIRGINIA,Southern West Virginia Community and Technical College,Mt. Gay,WV,381600,237817,
@@ -2109,9 +2208,11 @@ WEST VIRGINIA,University of Charleston - Online,Charleston,WV,381800,237312,camp
 WEST VIRGINIA,Valley College-Beckley,Beckley,WV,3084400,377652,
 WEST VIRGINIA,Valley College-Martinsburg,Martinsburg,WV,2609400,377661,
 WEST VIRGINIA,Valley College-Princeton,Princeton,WV,3084200,377670,
+WEST VIRGINIA,West Liberty University,West Liberty,WV,382300,237932,
 WEST VIRGINIA,"West Virginia Northern Community College,  Wheeling",Wheeling,WV,905400,238014,
 WEST VIRGINIA,"West Virginia Northern Community College,  New Martinsville",New Martinsville,WV,905400,238014,campus not sepately listed in IPEDS
 WEST VIRGINIA,"West Virginia Northern Community College, Weirton",Weirton,WV,905400,238014,campus not sepately listed in IPEDS
+WEST VIRGINIA,West Virginia University,Parkersburg,WV,382800,237686,
 ,WISCONSIN,,,,,
 WISCONSIN,Alverno College,Milwaukee,WI,383200,238193,
 WISCONSIN,Art Institute of Wisconsin,Milwaukee,WI,4051302,470092,
@@ -2134,6 +2235,9 @@ WISCONSIN,Lakeshore Technical College,Cleveland,WI,919400,239008,
 WISCONSIN,Madison Area Technical College,Madison,WI,400700,238263,
 WISCONSIN,Marian University,Fond du Lac,WI,386100,239080,
 WISCONSIN,Medical College of Wisconsin,Milwaukee,WI,2453500,239169,
+WISCONSIN,"Moraine Park Technical College, Fond du Lac  Campus",Fond du Lac,WI,925600,239372,
+WISCONSIN,"Moraine Park Technical College, Beaver Dam  Campus",Beaver Dam,WI,925600,239372,campus not sepately listed in IPEDS
+WISCONSIN,"Moraine Park Technical College, West Bend  Campus",West Bend,WI,925600,239372,campus not sepately listed in IPEDS
 WISCONSIN,Northeast Wisconsin Technical College,Green Bay,WI,530100,239488,
 WISCONSIN,Northeast Wisconsin Technical College - Green Bay Campus,Green Bay,WI,530100,239488,campus not sepately listed in IPEDS
 WISCONSIN,Northeast Wisconsin Technical College - Marinette Campus,Marinette,WI,530100,239488,campus not sepately listed in IPEDS
@@ -2141,16 +2245,20 @@ WISCONSIN,Northeast Wisconsin Technical College - Sturgeon Bay Campus,Sturgeon B
 WISCONSIN,Northland College,Ashland,WI,387500,239512,
 WISCONSIN,University of Phoenix-Wisconsin,Milwaukee,WI,72098832,440457,
 WISCONSIN,University of Wisconsin-Eau Claire,Eau Claire,WI,391700,240268,
+WISCONSIN,University of Wisconsin-Green Bay,Green Bay,WI,389900,240277,
 WISCONSIN,University of Wisconsin-La Crosse,La Crosse,WI,391900,240329,
+WISCONSIN,University of Wisconsin-Milwaukee,Milwaukee,WI,389600,240453,
 WISCONSIN,University of Wisconsin-Oshkosh,Oshkosh,WI,392000,240365,
 WISCONSIN,University of Wisconsin-Parkside,Kenosha,WI,501500,240374,
 WISCONSIN,University of Wisconsin-Platteville,Platteville,WI,392100,240462,
 WISCONSIN,University of Wisconsin-River Falls,River Falls,WI,392300,240471,
 WISCONSIN,University of Wisconsin-Stevens Point,Stevens Point,WI,392400,240480,
 WISCONSIN,Iuniversity of Wisconsin- Stout,Menomonie,WI,391500,240417,
+WISCONSIN,University of Wisconsin – Superior,Superior,WI,392500,240426,
 WISCONSIN,University of Wisconsin-Whitewater,Whitewater,WI,392600,240189,
 WISCONSIN,Waukesha County Technical College,Pewaukee,WI,529400,240125,
 WISCONSIN,Western Technical College,La Crosse,WI,384000,240170,
+WISCONSIN,Wisconsin Indianhead Technical College,Shell Lake,WI,1182400,240198,
 ,WYOMING,,,,,
 WYOMING,Casper College,Casper,WY,392800,240505,
 WYOMING,CollegeAmerica-Cheyenne,Cheyenne,WY,2594303,451705,
@@ -2165,5 +2273,5 @@ WYOMING,University of Wyoming,Laramie,WY,393200,240727,
 ,"To help determine whether a school meets an individual's needs or interests, the Department of Education recommends seeking out additional information from the school or schools that are being considered. Individuals may also wish to seek additional information from current or former students, and other sources.",,,,,
 ,,,,,,
 ,,,,,,
-,Last Updated: 4-4-2016,,,,,
-,Total Number: 2035,,,,,
+,Last Updated: 12-20-2016,,,,,
+,Total Number: 2144,,,,,

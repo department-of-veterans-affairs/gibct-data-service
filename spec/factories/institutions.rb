@@ -48,5 +48,12 @@ FactoryGirl.define do
       state 'ma'
       country 'usa'
     end
+
+    trait :institution_builder do
+      facility_code '1ZZZZZZZ'
+      ope '99999999'
+      ope6 '99999'
+      cross '999999'
+    end
   end
 end

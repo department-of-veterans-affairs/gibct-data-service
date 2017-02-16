@@ -20,7 +20,10 @@ module CsvHelper
 
     def load_from_csv(filename, options)
       records = { valid: [], invalid: [] }
-      row_offset = 1 + (options[:skip_lines] || 0)
+
+      # Since row indexes start at 0 and spreadsheets on line 1,
+      # add 1 for the difference in indexes and 1 for the header row itself.
+      row_offset = 2 + (options[:skip_lines] || 0)
 
       SmarterCSV.process(filename, merge_options(options)).each.with_index do |row, i|
         record = row_to_record(row, i + row_offset)
@@ -32,7 +35,7 @@ module CsvHelper
 
     def row_to_record(row, i)
       record = klass.new(row)
-      record.errors.add(:base, "Csv upload error on line #{i + 1}") unless record.valid?
+      record.errors.add(:base, "Csv upload error on line #{i}") unless record.valid?
 
       record
     end

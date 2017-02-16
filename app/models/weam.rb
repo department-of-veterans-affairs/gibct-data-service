@@ -12,7 +12,7 @@ class Weam < ActiveRecord::Base
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
 
-  USE_COLUMNS = [
+  COLS_USED_IN_INSTITUTION = [
     :facility_code, :institution, :city, :state, :zip,
     :country, :accredited, :bah, :poe, :yr,
     :institution_type_name, :va_highest_degree_offered, :flight, :correspondence
@@ -30,7 +30,7 @@ class Weam < ActiveRecord::Base
     'institution zip code' => { column: :zip, converter: ZipConverter },
     'institution country' => { column: :country, converter: BaseConverter },
     'accredited' => { column: :accredited, converter: BooleanConverter },
-    'current academic year bah rate' => { column: :bah, converter: BaseConverter },
+    'current academic year bah rate' => { column: :bah, converter: NumberConverter },
     'principles of excellence' => { column: :poe, converter: BooleanConverter },
     'current academic year yellow ribbon' => { column: :yr, converter: BooleanConverter },
     'poo status' => { column: :poo_status, converter: BaseConverter },

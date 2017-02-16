@@ -41,7 +41,7 @@ RSpec.describe Complaint, type: :model do
       let(:complaint_all) { build :complaint, issues: all }
 
       it 'sets complaints to 1 only if the complaint keyword is embedded in the issue' do
-        Complaint::FAC_CODE_TERMS.keys.each do |facility_code_col|
+        Complaint::COMPLAINT_COLUMNS.keys.each do |facility_code_col|
           expect(subject[facility_code_col]).to eq(0)
           expect(complaint_all[facility_code_col]).to eq(1)
         end
@@ -81,6 +81,43 @@ RSpec.describe Complaint, type: :model do
 
       expect(complaint.ope).to eq(crosswalk.ope)
       expect(complaint.ope6).to eq(crosswalk.ope6)
+    end
+  end
+
+  describe 'rollup_sums' do
+    describe 'by facility_code' do
+      before(:each) do
+        create_list :complaint, 2, :all_issues, :institution_builder
+        Complaint.rollup_sums(:facility_code)
+      end
+
+      it 'the facility code sum fields contain the sums grouped by facility_code' do
+        Complaint.all.each do |complaint|
+          Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |fc_sum|
+            expect(complaint[fc_sum]).to eq(2)
+          end
+        end
+      end
+    end
+
+    describe 'by ope6' do
+      before(:each) do
+        # Different facility codes, same ope
+        create :institution, :institution_builder
+        create :institution, :institution_builder, facility_code: 'ZZZZZZZZ'
+
+        # Generate complaints for only one of the facility_codes
+        create_list :complaint, 5, :all_issues, :institution_builder
+        Complaint.rollup_sums(:ope6)
+      end
+
+      it 'the institution receives the sums grouped by ope6' do
+        Institution.all.each do |institution|
+          Complaint::OPE6_ROLL_UP_SUMS.keys.each do |ope6_sum|
+            expect(institution[ope6_sum]).to eq(5)
+          end
+        end
+      end
     end
   end
 end

@@ -3,7 +3,7 @@ class Sva < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
-    'id' => { column: :csv_id, converter: BaseConverter },
+    'id' => { column: :csv_id, converter: NumberConverter },
     'school' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
@@ -19,6 +19,5 @@ class Sva < ActiveRecord::Base
 
   def derive_dependent_columns
     self.student_veteran_link = nil if student_veteran_link == 'http://www.studentveterans.org'
-    true
   end
 end
