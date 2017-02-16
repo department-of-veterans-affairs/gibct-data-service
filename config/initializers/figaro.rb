@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 Figaro.require_keys(
-  'HOSTNAME',
+  'LINK_HOST',
   'SECRET_KEY_BASE'
 )
