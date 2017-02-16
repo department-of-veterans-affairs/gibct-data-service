@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Upload < ActiveRecord::Base
   belongs_to :user, inverse_of: :versions
 
