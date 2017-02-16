@@ -39,7 +39,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2155,CALIFORNIA POLYTECHNIC STATE UNIVERSITY-SAN LUIS OBISPO,San Luis Obispo,California,110422,http://www.facebook.com/groups/154104278021405/,110422,Yes
 2156,ALLIANT INTERNATIONAL UNIVERSITY- SAN DIEGO,San Diego,California,110468,http://www.studentveterans.org,110468,Yes
 2157,CALIFORNIA STATE UNIVERSITY-BAKERSFIELD,Bakersfield,California,110486,http://www.studentveterans.org,110486,Yes
-2158,CALIFORNIA STATE UNIVERSITY-SAN BERNARDINO PALM DESERT,Palm Desert,California,110510,http://www.studentveterans.org,110510,Yes
 2159,CALIFORNIA STATE UNIVERSITY-SAN BERNARDINO,San Bernardino,California,110510,http://www.studentveterans.org,110510,Yes
 2160,CALIFORNIA STATE UNIVERSITY-CHICO,Chico,California,110538,http://www.studentveterans.org,110538,Yes
 2161,CALIFORNIA STATE UNIVERSITY-DOMINGUEZ HILLS,Carson,California,110547,http://www3.csudh.edu/student-affairs/veterans-affairs/veterans-alliance/default.html,110547,Yes
@@ -95,7 +94,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2211,OXNARD COLLEGE,Oxnard,California,120421,http://facebook.com/Ocvetsclub,120421,Yes
 2212,PALO ALTO UNIVERSITY,Palo Alto,California,120698,http://www.studentveterans.org,120698,Yes
 2213,UNIVERSITY OF THE PACIFIC-MCGEORGE SCHOOL OF LAW,Sacramento,California,120883,http://blogs.mcgeorge.edu/mls/,120883,Yes
-2214,UNIVERSITY OF THE PACIFIC,Stockton,California,120883,http://www.studentveterans.org,120883,Yes
 2215,PALOMAR COLLEGE,San Marcos,California,120971,http://www.studentveterans.org,120971,Yes
 2216,PASADENA CITY COLLEGE,Pasadena,California,121044,http://www.studentveterans.org,121044,Yes
 2217,SANTA ANA COLLEGE,Santa Ana,California,121619,http://www.studentveterans.org,121619,Yes
@@ -133,8 +131,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2249,COLORADO SCHOOL OF TRADES,Lakewood,Colorado,126784,http://www.studentveterans.org,126784,Yes
 2250,COLORADO TECHNICAL UNIVERSITY-COLORADO SPRINGS,Colorado Springs,Colorado,126827,http://www.studentveterans.org,126827,Yes
 2251,UNIVERSITY OF DENVER,Denver,Colorado,127060,https://www.DUSVA.com,127060,Yes
-2252,UNIVERSITY OF DENVER-STURM COLLEGE OF LAW,Denver,Colorado,127060,http://www.studentveterans.org,127060,Yes
-2253,FRONT RANGE COMMUNITY COLLEGE-WESTMINSTER,Westminster,Colorado,127200,http://www.studentveterans.org,127200,Yes
 2254,FRONT RANGE COMMUNITY COLLEGE-BOULDER COUNTY,Longmont,Colorado,127200,http://www.facebook.com/studentvetorg.bcc,127200,Yes
 2255,COLORADO MESA UNIVERSITY,Grand Junction,Colorado,127556,https://www.facebook.com/SVA.ColoradoMesaUniversity,127556,Yes
 2256,METROPOLITAN STATE UNIVERSITY-DENVER,Denver,Colorado,127565,https://www.facebook.com/groups/338731390154/,127565,Yes
@@ -155,15 +151,11 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2271,UNIVERSITY OF DELAWARE,Newark,Delaware,130943,http://www.studentveterans.org,130943,Yes
 2272,WILMINGTON UNIVERSITY,New Castle,Delaware,131113,http://www.studentveterans.org,131113,Yes
 2273,AMERICAN UNIVERSITY-WASHINGTON DC,Washington,District of Columbia,131159,http://www.auvets.com/,131159,Yes
-2274,AMERICAN UNIVERSITY-PARIS,Paris,France,131159,,131159,Yes
-2275,THE AMERICAN UNIVERSITY OF ROME,Rome,Lazio,131159,,131159,Yes
 2276,GEORGE WASHINGTON UNIVERSITY,Washington,District of Columbia,131469,http://www.gwveterans.com/,131469,Yes
 2277,GEORGETOWN UNIVERSITY,Washington,District of Columbia,131496,http://www.georgetown.edu/student-veteran-groups.html,131496,Yes
-2278,GEORGETOWN UNIVERSITY LAW CENTER,Washington,District of Columbia,131496,,131496,Yes
 2279,WYOTECH-DAYTONA,Ormond Beach,Florida,132268,http://www.studentveterans.org,132268,Yes
 2280,EASTERN FLORIDA STATE COLLEGE,Cocoa,Florida,132693,http://www.studentveterans.org,132693,Yes
 2281,BROWARD COLLEGE,Coconut Creek,Florida,132709,http://www.facebook.com/svabrowardcollege,132709,Yes
-2282,BROWARD COLLEGE-CENTRAL,Davie,Florida,132709,http://www.studentveterans.org,132709,Yes
 2283,UNIVERSITY OF CENTRAL FLORIDA,Orlando,Florida,132903,http://www.facebook.com/UCFSVA,132903,Yes
 2284,DAYTONA STATE COLLEGE,Daytona Beach,Florida,133386,http://www.studentveterans.org,133386,Yes
 2285,SOUTH UNIVERSITY-WEST PALM BEACH,Royal Palm Beach,Florida,133465,http://www.studentveterans.org,133465,Yes
@@ -175,7 +167,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2291,FLORIDA INTERNATIONAL UNIVERSITY,Miami,Florida,133951,http://www.studentveterans.org,133951,Yes
 2292,FLORIDA MEMORIAL UNIVERSITY,Miami Gardens,Florida,133979,http://www.studentveterans.org,133979,Yes
 2293,FLORIDA STATE UNIVERSITY,Tallahassee,Florida,134097,http://veterans.fsu.edu/Collegiate-Veterans-Association,134097,Yes
-2294,FLORIDA STATE UNIVERSITY-PANAMA CITY,Panama City,Florida,134097,http://www.studentveterans.org,134097,Yes
 2295,FLORIDA TECHNICAL COLLEGE - KISSIMMEE,Kissimmee,Florida,134112,http://www.studentveterans.org,134112,Yes
 2296,UNIVERSITY OF FLORIDA,Gainesville,Florida,134130,https://ufl.collegiatelink.net/organization/cvs,134130,Yes
 2297,GULF COAST STATE COLLEGE,Panama City,Florida,134343,http://www.studentveterans.org,134343,Yes
@@ -184,17 +175,13 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2300,JACKSONVILLE UNIVERSITY,Jacksonville,Florida,134945,http://www.studentveterans.org,134945,Yes
 2301,FLORIDA GATEWAY COLLEGE,Lake City,Florida,135160,http://www.studentveterans.org,135160,Yes
 2302,STATE COLLEGE OF FLORIDA-MANATEE-SARASOTA,Venice,Florida,135391,http://www.studentveterans.org,135391,Yes
-2303,STATE COLLEGE OF FLORIDA-BRANDENTON,Brandenton,Florida,135391,http://www.studentveterans.org,135391,Yes
 2304,MIAMI DADE COLLEGE-INTERAMERICAN,Miami,Florida,135717,http://www.studentveterans.org,135717,Yes
-2305,MIAMI DADE COLLEGE-KENDALL,Miami,Florida,135717,http://www.studentveterans.org,135717,Yes
-2306,MIAMI DADE COLLEGE-WOLFSON NEW WORLD,Miami,Florida,135717,http://www.studentveterans.org,135717,Yes
 2307,UNIVERSITY OF MIAMI,Coral Gables,Florida,135726,https://www.facebook.com/groups/UMVets/,135726,Yes
 2308,MIAMI UNIVERSITY,Oxford,Ohio,204024,https://www.facebook.com/MiamiOxfordSVA,204024,Yes
 2309,UNIVERSITY OF NORTH FLORIDA,Jacksonville,Florida,136172,http://www.facebook.com/groups/262635680472659/,136172,Yes
 2310,NOVA SOUTHEASTERN UNIVERSITY,Davie,Florida,136215,http://www.studentveterans.org,136215,Yes
 2311,PALM BEACH ATLANTIC UNIVERSITY,West Palm Beach,Florida,136330,http://www.studentveterans.org,136330,Yes
 2312,PALM BEACH STATE COLLEGE-North,Palm Beach Gardens,Florida,136358,http://www.facebook.com/pbscsvc,136358,Yes
-2313,PALM BEACH STATE COLLEGE-CENTRAL,Weat Palm Beach,Florida,136358,http://www.studentveterans.org,136358,Yes
 2314,PENSACOLA STATE COLLEGE,Pensacola,Florida,136473,http://www.studentveterans.org,136473,Yes
 2315,ROLLINS COLLEGE,Winter Park,Florida,136950,http://www.studentveterans.org,136950,Yes
 2316,SAINT LEO UNIVERSITY,Saint Leo,Florida,137032,http://www.saintleo.edu/resources/veteran-services.aspx,137032,Yes
@@ -205,7 +192,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2321,STETSON UNIVERSITY,Deland,Florida,137546,https://orgsync.com/50618/chapter,137546,Yes
 2322,TALLAHASSEE COMMUNITY COLLEGE,Tallahassee,Florida,137759,http://www.studentveterans.org,137759,Yes
 2323,UNIVERSITY OF TAMPA,Tampa,Florida,137847,http://www.studentveterans.org,137847,Yes
-2324,VALENCIA COLLEGE-EAST CAMPUS,Orlando,Florida,138187,http://www.studentveterans.org,138187,Yes
 2325,VALENCIA COLLEGE-WEST CAMPUS,Orlando,Florida,138187,http://valenciastudentveterans.weebly.com/vsva-officers---west.html,138187,Yes
 2326,UNIVERSITY OF WEST FLORIDA,Pensacola,Florida,138354,http://uwf.collegiatelink.net/organization/sva/about,138354,Yes
 2327,DARTON STATE COLLEGE,Albany,Georgia,138691,http://www.facebook.com/#!/pages/Darton-College-Military-Student-Organization/133763260036844,138691,Yes
@@ -324,7 +310,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2440,SEWARD COUNTY COMMUNITY COLLEGE AND AREA TECHNICAL SCHOOL,Liberal,Kansas,155858,http://www.swveteran.org,155858,Yes
 2441,BLUEGRASS COMMUNITY & TECHNICAL COLLEGE,Lexington,Kentucky,156392,http://www.studentveterans.org,156392,Yes
 2442,EASTERN KENTUCKY UNIVERSITY,Richmond,Kentucky,156620,http://www.ekuvets.org,156620,Yes
-2443,EASTERN MAINE COMMUNITY COLLEGE,Bangor,Maine,156620,http://www.studentveterans.org,156620,Yes
 2444,HOPKINSVILLE COMMUNITY COLLEGE,Hopkinsville,Kentucky,156860,https://www.facebook.com/HCCVetConnect,156860,Yes
 2445,UNIVERSITY OF KENTUCKY,Lexington,Kentucky,157085,http://www.wix.com/lukeagoodwin/uksva#!home/mainPage,157085,Yes
 2446,SULLIVAN COLLEGE OF TECHNOLOGY AND DESIGN,Louisville,Kentucky,157270,http://www.studentveterans.org,157270,Yes
@@ -345,10 +330,8 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2461,CENTRAL MAINE COMMUNITY COLLEGE,Auburn,Maine,161077,http://www.cmcc.edu/campus_life/clubs.asp#V,161077,Yes
 2462,HUSSON UNIVERSITY,Bangor,Maine,161165,http://www.husson.edu/club-directory/?page=3,161165,Yes
 2463,UNIVERSITY OF MAINE-ORONO,Orono,Maine,161253,https://www.facebook.com/pages/UMaine-Veterans-Association/215571395194197,161253,Yes
-2464,UNIVERSITY OF MAINE-SCHOOL OF LAW,Portland,Maine,161253,http://www.studentveterans.org,161253,Yes
 2465,SOUTHERN MAINE COMMUNITY COLLEGE,South Portland,Maine,161545,https://www.facebook.com/SMCCVCO,161545,Yes
 2466,UNIVERSITY OF SOUTHERN MAINE,Portand,Maine,161554,http://m.facebook.com/profile.php?id=100002021055064,161554,Yes
-2467,UNIVERSITY OF SOUTHERN MAINE-LEWISTON-AUBURN COLLEGE,Lewiston,North Dakota,161554,,161554,Yes
 2468,ANNE ARUNDEL COMMUNITY COLLEGE,Arnold,Maryland,161767,http://www.aacc.edu/military/,161767,Yes
 2469,UNIVERSITY OF BALTIMORE,Baltimore,Maryland,161873,http://www.ubalt.edu/campus-life/veterans/,161873,Yes
 2470,COLLEGE OF SOUTHERN MARYLAND,"LaPlata,",Maryland,162122,http://www.csmd.edu/pub/moroney/veteransclub/,162122,Yes
@@ -414,12 +397,10 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2530,WAYNE STATE UNIVERSITY,Detroit,Michigan,172644,http://wsusvo.org,172644,Yes
 2531,WEST SHORE COMMUNITY COLLEGE,Scottville,Michigan,172671,http://www.studentveterans.org,172671,Yes
 2532,WESTERN MICHIGAN UNIVERSITY,Kalamazoo,Michigan,172699,http://www.studentveterans.org,172699,Yes
-2533,ANOKA-RAMSEY COMMUNITY COLLEGE,Cambridge,Minnesota,172963,http://www.studentveterans.org,172963,Yes
 2534,ANOKA-RAMSEY COMMUNITY COLLEGE - COON RAPIDS CAMPUS,Coon Rapids,Minnesota,172963,http://www.anokaramsey.edu/resources/studentInfo/Veterans.aspx,172963,Yes
 2535,BEMIDJI STATE UNIVERSITY,Bemidji,Minnesota,173124,https://bemidjistate.collegiatelink.net/organization/veterans-club,173124,Yes
 2536,GLOBE UNIVERSITY-WOODBURY,Woodbury,Minnesota,173629,http://www.studentveterans.org,173629,Yes
 2537,GUSTAVUS ADOLPHUS COLLEGE,Saint Peter,Minnesota,173647,http://www.facebook.com/gacstudentvets,173647,Yes
-2538,HAMLINE UNIVERSITY SCHOOL OF LAW,Saint Paul,Minnesota,173665,,173665,Yes
 2539,HAMLINE UNIVERSITY,Saint Paul,Minnesota,173665,https://www.facebook.com/groups/hamlineveterans/?fref=ts,173665,Yes
 2540,INVER HILLS COMMUNITY COLLEGE,Inver Hills,Minnesota,173799,http://www.studentveterans.org,173799,Yes
 2541,MINNESOTA STATE UNIVERSITY-MANKATO,Mankato,Minnesota,173920,http://www.studentveterans.org,173920,Yes
@@ -433,7 +414,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2549,UNIVERSITY OF MISSISSIPPI,University,Mississippi,176017,http://www.olemiss.edu/depts/veterans/omsva.html,176017,Yes
 2550,MISSISSIPPI STATE UNIVERSITY,Mississippi State University,Mississippi,176080,http://www.veterans.msstate.edu/mission/,176080,Yes
 2551,UNIVERSITY OF SOUTHERN MISSISSIPPI,Hattiesburg,Mississippi,176372,https://www.facebook.com/southernmissvets,176372,Yes
-2552,UNIVERSITY OF SOUTHERN MISSISSIPPI-GULF PARK,Long Beach,Mississippi,176372,,176372,Yes
 2553,CALVARY BIBLE COLLEGE AND THEOLOGICAL SEMINARY,Kansas City,Missouri,176789,http://www.studentveterans.org,176789,Yes
 2554,UNIVERSITY OF CENTRAL MISSOURI,Warrensburg,Missouri,176965,http://www.studentveterans.org,176965,Yes
 2555,COLUMBIA COLLEGE-MISSOURI,Columbia,Missouri,177065,https://www.facebook.com/#!/CCVeteransServices,177065,Yes
@@ -450,9 +430,7 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2566,UNIVERSITY OF MISSOURI-SAINT LOUIS,Saint Louis,Missouri,178420,http://www.umsl.edu/veterans/Student%20Veterans%20Organization/index.html,178420,Yes
 2567,NORTHWEST MISSOURI STATE UNIVERSITY,Maryville,Missouri,178624,https://twitter.com/NW_StudentVets,178624,Yes
 2568,PARK UNIVERSITY,Parkville,Missouri,178721,http://military.park.edu/psva.pdf,178721,Yes
-2569,SAINT LOUIS UNIVERSITY-LAW,St Louis,Missouri,179159,http://www.studentveterans.org,179159,Yes
 2570,SAINT LOUIS UNIVERSITY,St Louis,Missouri,179159,http://www.studentveterans.org,179159,Yes
-2571,ST. LOUIS COMMUNITY COLLEGE-MERAMEC,Saint Louis,Missouri,179308,http://www.studentveterans.org,179308,Yes
 2572,ST. LOUIS COMMUNITY COLLEGE-FOREST PARK,St. Louis,Missouri,179308,http://www.studentveterans.org,179308,Yes
 2573,MISSOURI STATE UNIVERSITY-WEST PLAINS,West Plains,Missouri,179344,http://www.studentveterans.org,179344,Yes
 2574,SOUTHEAST MISSOURI STATE UNIVERSITY,Cape Girardeau,Missouri,179557,https://www.facebook.com/groups/113365822024464/?fref=ts,179557,Yes
@@ -460,9 +438,7 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2576,WASHINGTON UNIVERSITY IN SAINT LOUIS,Saint Louis,Missouri,179867,http://ucollege.wustl.edu/yellowribbon,179867,Yes
 2577,WEBSTER UNIVERSITY-ST. LOUIS,Saint Louis,Missouri,179894,https://involved.webster.edu/organization/SVO,179894,Yes
 2578,BELLEVUE UNIVERSITY- Bellevue,Bellevue,Nebraska,180814,http://www.bellevue.edu/military/student-veterans.aspx,180814,Yes
-2579,CENTRAL COMMUNITY COLLEGE-COLUMBUS,Columbus,Nebraska,180902,,180902,Yes
 2580,CENTRAL COMMUNITY COLLEGE-GRAND ISLAND,Grand Island,Nebraska,180902,http://www.cccneb.edu/veterans,180902,Yes
-2581,CENTRAL COMMUNITY COLLEGE-HASTINGS,Hastings,Nebraska,180902,,180902,Yes
 2582,METROPOLITAN COMMUNITY COLLEGE-NEBRASKA,Omaha,Nebraska,181303,http://www.studentveterans.org,181303,Yes
 2583,UNIVERSITY OF NEBRASKA-OMAHA,Omaha,Nebraska,181394,http://www.unomaha.edu/vso,181394,Yes
 2584,UNIVERSITY OF NEBRASKA-LINCOLN,Lincoln,Nebraska,181464,http://www.svo.unl.edu,181464,Yes
@@ -507,7 +483,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2623,ADELPHI UNIVERSITY,Garden City,New York,188429,http://www.studentveterans.org,188429,Yes
 2624,SUNY-ADIRONDACK,Queensbury,New York,188438,http://www.studentveterans.org,188438,Yes
 2625,BERKELEY COLLEGE-NEW YORK,New York,New York,189228,http://www.studentveterans.org,189228,Yes
-2626,CAYUGA COMMUNITY COLLEGE- AUBURN,Auburn,New York,189839,http://www.studentveterans.org,189839,Yes
 2627,CAYUGA COMMUNITY COLLEGE- FULTON,Fulton,New York,189839,https://www.facebook.co m /CayugaCommunityCollegeVeteransClub,189839,Yes
 2628,CLINTON COMMUNITY COLLEGE-IOWA,Clinton,Iowa,190053,http://www.studentveterans.org,190053,Yes
 2629,METROPOLITAN COLLEGE OF NEW YORK,New York,New York,190114,http://www.studentveterans.org,190114,Yes
@@ -538,7 +513,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2654,NIAGARA UNIVERSITY,Niagara University,New York,193973,http://www.facebook.com/NiagaraUniversityStudentVeteransOrganization?ref=ts,193973,Yes
 2655,NEW YORK INSTITUTE OF TECHNOLOGY,Old Westbury,New York,194091,http://www.studentveterans.org,194091,Yes
 2656,SUNY-ORANGE COUNTY COMMUNITY COLLEGE,Middletown,New York,194240,http://www.studentveterans.org,194240,Yes
-2657,PACE UNIVERSITY-WESTCHESTER,Pleasantville,New York,194310,http://www.studentveterans.org,194310,Yes
 2658,PACE UNIVERSITY-NEW YORK,New York,New York,194310,http://www.studentveterans.org,194310,Yes
 2659,PAUL SMITH'S COLLEGE OF ARTS AND SCIENCE,Paul Smiths,New York,194392,http://www.studentveterans.org,194392,Yes
 2660,RENSSELAER POLYTECHNIC INSTITUTE,Troy,New York,194824,http://www.studentveterans.org,194824,Yes
@@ -548,7 +522,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2664,THE COLLEGE OF SAINT ROSE,Albany,New York,195234,http://www.strose.edu/officesandresources/registrar/veteransinformation,195234,Yes
 2665,SCHENECTADY COUNTY COMMUNITY COLLEGE,Schenectady,New York,195322,http://www.studentveterans.org,195322,Yes
 2666,SAINT JOSEPH'S COLLEGE-LONG ISLAND,Patchogue,New York,195544,http://www.sjcny.edu/CampusLife/Armed-Forces-Club/1259/,195544,Yes
-2667,SAINT JOSEPH'S COLLEGE-NEW YORK,Brooklyn,New York,195544,http://www.studentveterans.org,195544,Yes
 2668,SAINT JOHN FISHER COLLEGE,Rochester,New York,195720,http://www.studentveterans.org,195720,Yes
 2669,SUNY COLLEGE OF TECHNOLOGY AT DELHI,Delhi,New York,196024,http://www.delhi.edu/veterans,196024,Yes
 2670,SUNY COLLEGE OF AGRICULTURE AND TECHNOLOGY AT COBLESKILL,Cobleskill,New York,196033,http://www.cobleskill.edu/veterans,196033,Yes
@@ -741,7 +714,6 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2857,ART INSTITUTE OF DALLAS,Dallas,Texas,224776,http://www.studentveterans.org,224776,Yes
 2858,UNIVERSITY OF HOUSTON-CLEAR LAKE,Houston,Texas,225414,http://www.studentveterans.org,225414,Yes
 2859,UNIVERSITY OF HOUSTON DOWNTOWN,Houston,Tennessee,225432,http://www.uhd.edu/veterans/,225432,Yes
-2860,UNIVERSITY OF HOUSTON-DOWNTOWN,Houston,Texas,225432,http://www.studentveterans.org,225432,Yes
 2861,UNIVERSITY OF HOUSTON,Houston,Texas,225511,https://uh.collegiatelink.net/organization/veteranscollegiatesociety,225511,Yes
 2862,HOWARD COLLEGE-SAN ANGELO,San Angelo,Texas,225520,https://www.facebook.com/HowardCollegeAssociationOfVeterans,225520,Yes
 2863,LAMAR UNIVERSITY,Beaumont,Texas,226091,https://orgsync.com/75952/chapter,226091,Yes
@@ -764,10 +736,8 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2880,SOUTHERN METHODIST UNIVERSITY,Dallas,Texas,228246,http://www.usmilitaryveteransofsmu.com/,228246,Yes
 2881,TEXAS STATE UNIVERSITY,San Marcos,Texas,228459,http://www.sdi.txstate.edu/vats,228459,Yes
 2882,TARLETON STATE UNIVERSITY,Stephenville,Texas,228529,http://www.studentveterans.org,228529,Yes
-2883,TARRANT COUNTY COLLEGE-NORTHEAST,Fort Worth,Texas,228547,http://www.studentveterans.org,228547,Yes
 2884,TARRANT COUNTY COLLEGE-NORTHWEST,Fort Worth,Texas,228547,http://www.studentveterans.org,228547,Yes
 2885,TEMPLE COLLEGE,Temple,Texas,228608,http://www.studentveterans.org,228608,Yes
-2886,TEXAS A&M UNIVERSITY-GALVESTON,Galveston,Texas,228723,,228723,Yes
 2887,TEXAS A&M UNIVERSITY-COLLEGE STATION,College Station,Texas,228723,http://tamuveterans.tamu.edu/,228723,Yes
 2888,UNIVERSITY OF TEXAS-ARLINGTON,Arlington,Texas,228769,https://mavorgs.collegiatelink.net/organization/svo,228769,Yes
 2889,UNIVERSITY OF TEXAS-AUSTIN,Austin,Texas,228778,http://www.texasvets.org,228778,Yes
@@ -806,14 +776,12 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2922,DABNEY S. LANCASTER COMMUNITY COLLEGE,Clifton Forge,Virginia,231873,http://www.studentveterans.org,231873,Yes
 2923,DANVILLE COMMUNITY COLLEGE,Danville,Virginia,231882,http://www.dcc.vccs.edu/Veterans/DCC%20SVO%20CWA/default.htm,231882,Yes
 2924,GERMANNA COMMUNITY COLLEGE,Locust Grove,Virginia,232195,http://www.studentveterans.org,232195,Yes
-2925,PIEDMONT VIRGINIA COMMUNITY COLLEGE,Charlottesville,Virginia,232414,http://www.studentveterans.org,232414,Yes
 2926,J SARGEANT REYNOLDS COMMUNITY COLLEGE,Richmond,Virginia,232414,http://www.reynolds.edu/student_services/veterans/default.aspx,232414,Yes
 2927,JAMES MADISON UNIVERSITY,Harrisonburg,Virginia,232423,http://www.studentveterans.org,232423,Yes
 2928,JOHN TYLER COMMUNITY COLLEGE,Chester,Virginia,232450,http://www.jtcc.edu,232450,Yes
 2929,MARYMOUNT UNIVERSITY,Arlington,Virginia,232706,http://www.studentveterans.org,232706,Yes
 2930,MOUNTAIN EMPIRE COMMUNITY COLLEGE,big stone gap,Virginia,232788,http://www.mecc.edu/veterans,232788,Yes
 2931,NORTHERN VIRGINIA COMMUNITY COLLEGE-ALEXANDRIA,Alexandria,Virginia,232946,http://www.studentveterans.org,232946,Yes
-2932,NORTHERN VIRGINIA COMMUNITY COLLEGE-ANNANDALE,Annandale,Virginia,232946,http://www.studentveterans.org,232946,Yes
 2933,OLD DOMINION UNIVERSITY,Norfolk,Virginia,232982,https://www.facebook.com/ODUSVA,232982,Yes
 2934,RADFORD UNIVERSITY,Radford,Virginia,233277,http://www.studentveterans.org,233277,Yes
 2935,SOUTHSIDE VIRGINIA COMMUNITY COLLEGE,Alberta,Virginia,233639,http://www.studentveterans.org,233639,Yes
@@ -867,11 +835,8 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 2983,NORTHCENTRAL TECHNICAL COLLEGE,Wausau,Wisconsin,239460,https://www.facebook.com/NTCVetsClub,239460,Yes
 2984,NORTHEAST WISCONSIN TECH COLLEGE,Green Bay,Wisconsin,239488,http://www.studentveterans.org,239488,Yes
 2985,UNIVERSITY OF WISCONSIN-SHEBOYGAN,Sheboygan,Wisconsin,240055,http://www.studentveterans.org,240055,Yes
-2986,UNIVERSITY OF WISCONSIN-WASHINGTON COUNTY,West Bend,Wisconsin,240055,http://www.studentveterans.org,240055,Yes
-2987,UNIVERSITY OF WISCONSIN-WAUKESHA,Waukesha,Wisconsin,240055,http://www.studentveterans.org,240055,Yes
 2988,VITERBO UNIVERSITY,La Crosse,Wisconsin,240107,http://www.studentveterans.org,240107,Yes
 2989,UNIVERSITY OF WISCONSIN-GREEN BAY,Green bay,Wisconsin,240277,http://www.uwgb.edu/veterans/,240277,Yes
-2990,UNIVERSITY OF WISCONSIN-BARABOO/SAUK COUNTY,Baraboo,Wisconsin,240277,http://www.studentveterans.org,240277,Yes
 2991,UNIVERSITY OF WISCONSIN-LA CROSSE,La Crosse,Wisconsin,240329,http://www.studentveterans.org,240329,Yes
 2992,UNIVERSITY OF WISCONSIN-OSHKOSH,Oshkosh,Wisconsin,240365,http://www.studentveterans.org,240365,Yes
 2993,UNIVERSITY OF WISCONSIN-PARKSIDE,Kenosha,Wisconsin,240374,http://www.studentveterans.org,240374,Yes
@@ -901,9 +866,7 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 3017,LE CORDON BLEU COLLEGE OF CULINARY ARTS - SCOTTSDALE,Scottsdale,Arizona,262332,http://www.studentveterans.org,262332,Yes
 3018,PARADISE VALLEY COMMUNITY COLLEGE,Phoenix,Arizona,364016,http://www.studentveterans.org,364016,Yes
 3019,CHANDLER-GILBERT COMMUNITY COLLEGE,Chandler,Arizona,364025,https://www.facebook.com/pages/CGCC-Student-Veterans-Organization/277975655645737,364025,Yes
-3020,SUFFOLK COUNTY COMMUNITY COLLEGE-AMMERMAN,Selden,New York,366395,http://www.studentveterans.org,366395,Yes
 3021,SUFFOLK COUNTY COMMUNITY COLLEGE-EASTERN,Riverhead,New York,366395,http://www.facebook.com/home.php#!/SUNYSuffolkSVA?fref=ts,366395,Yes
-3022,SUFFOLK COUNTY COMMUNITY COLLEGE-GRANT,Brentwood,New York,366395,http://www.studentveterans.org,366395,Yes
 3023,LAS POSITAS COLLEGE,Liverrmore,California,366401,http://www.laspositascollege.edu/veterans/VACLUB.php,366401,Yes
 3024,CALIFORNIA STATE UNIVERSITY-SAN MARCOS,San Marcos,California,366711,http://www.studentveterans.org,366711,Yes
 3025,YTI CAREER INSTITUTE-ALTOONA,Altoona,Pennsylvania,375939,http://www.yti.edu,375939,Yes
@@ -928,15 +891,11 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 3044,WESTERN GOVERNORS UNIVERSITY-INDIANA,Indianapolis,Indiana,433387,http://www.studentveterans.org,433387,Yes
 3045,FLORIDA GULF COAST UNIVERSITY,Fort Myers,Florida,433660,http://www.studentveterans.org,433660,Yes
 3046,LINCOLN COLLEGE OF TECHNOLOGY - MARIETTA,Marietta,Georgia,434159,http://www.studentveterans.org,434159,Yes
-3047,COMMUNITY COLLEGE OF BALTIMORE COUNTY-DUNDALK CAMPUS,Baltimore,Maryland,434672,,434672,Yes
 3048,COMMUNITY COLLEGE OF BALTIMORE COUNTY-CATONSVILLE,Baltimore,Maryland,434672,https://www.facebook.com/pages/CCBC-Catonsville-Student-Veterans-Association/314922278581972,434672,Yes
-3049,COMMUNITY COLLEGE OF BALTIMORE COUNTY-ESSEX,Baltimore,Maryland,434672,,434672,Yes
 3050,GOLF ACADEMY OF AMERICA-MYRTLE BEACH,Myrtle Beach,South Carolina,434690,http://www.studentveterans.org,434690,Yes
 3051,LOS ANGELES FILM SCHOOL,Hollywood,California,436429,http://www.lafilm.edu/military,436429,Yes
 3052,BATON ROUGE COMMUNITY COLLEGE,Baton Rouge Community College,Louisiana,437103,https://www.facebook.com/VetsatBatonRougeCommunityCollege?ref=hl,437103,Yes
-3053,STRATFORD UNIVERSITY-BALTIMORE,Baltimore,Maryland,438498,http://www.stratford.edu,438498,Yes
 3054,STRATFORD UNIVERSITY-WOODBRIDGE,Woodbridge,Virginia,438498,,438498,Yes
-3055,STRATFORD UNIVERSITY-GLEN ALLEN,Glen Allen,Virginia,438498,,438498,Yes
 3056,UNIVERSITY OF PITTSBURGH,Pittsburgh,Pennsylvania,438629,https://www.facebook.com/pages/PITT-VETS/190091744429744,438629,Yes
 3057,PIERCE COLLEGE AT PUYALLUP,Puyallup,Washington,439145,http://www.studentveterans.org,439145,Yes
 3058,CASCADIA COMMUNITY COLLEGE,Bothell,Washington,439190,http://www.studentveterans.org,439190,Yes
@@ -980,7 +939,7 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 3096,LE CORDON BLEU COLLEGE OF CULINARY ARTS-DALLAS,Dallas,Texas,452063,http://www.studentveterans.org,452063,Yes
 3097,VIRGINIA COLLEGE-MONTGOMERY,Montgomery,Alabama,452115,http://www.studentveterans.org,452115,Yes
 3098,LE CORDON BLEU COLLEGE OF CULINARY ARTS - ST LOUIS,St.Peters,Missouri,456302,http://www.facebook.com/svalcbstl,456302,Yes
-3099,ARIZONA STATE UNIVERSITY-DOWNTOWN PHOENIX,Phoenix,Arizona,456348,http://www.facebook.com/ASUDowntownVeterans,456348,Yes
+3099,ARIZONA STATE UNIVERSITY-DOWNTOWN PHOENIX,Phoenix,Arizona,448886,http://www.facebook.com/ASUDowntownVeterans,448886,Yes
 3100,ARGOSY UNIVERSITY-ONLINE,Phoenix,Arizona,456348,http://www.studentveterans.org,456348,Yes
 3101,ITT TECHNICAL INSTITUTE-CONCORD,Concord,California,456427,http://www.studentveterans.org,456427,Yes
 3102,COMMONWEALTH MEDICAL COLLEGE,Scranton,Pennsylvania,456542,http://www.studentveterans.org,456542,Yes
@@ -995,12 +954,10 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 3111,GRACE COLLEGE OF DIVINITY,Fayetteville,North Carolina,461528,"http://gcd.edu/, https://www.facebook.com/VeteranstudentsforChrist?skip_nax_wizard=true",461528,Yes
 3112,THE ART INSTITUTE OF WISCONSIN-MILWAUKEE,Milwaukee,Wisconsin,470092,http://www.studentveterans.org,470092,Yes
 3113,SOUTH UNIVERSITY ONLINE,Savannah,Georgia,475121,http://suconnect.thecampuscommon.com/sva,475121,Yes
-3114,COLORADO STATE UNIVERSITY-FT COLLINS,Fort Collins,Colorado,476975,http://www.studentveterans.org,476975,Yes
-3115,COLORADO STATE UNIVERSITY-GLOBAL CAMPUS,Greenwood Village,Colorado,476975,http://www.csuglobal.edu,476975,Yes
+3115,COLORADO STATE UNIVERSITY-GLOBAL CAMPUS,Greenwood Village,Colorado,476975,,476975,Yes
 3116,PENNSYLVANIA STATE UNIVERSITY-WORLD CAMPUS,University Park,Pennsylvania,479956,http://www.clubs.psu.edu/up/psuvo,479956,Yes
 3117,SOUTH UNIVERSITY-AUSTIN,Austin,Texas,480073,http://www.studentveterans.org,480073,Yes
 3118,GEORGIA REGENTS UNIVERSITY,Augusta,Georgia,482149,http://www.studentveterans.org,482149,Yes
-3119,DEVRY UNIVERSITY-LONG BEACH,Long Beach,California,482431,http://www.studentveterans.org,482431,Yes
 3120,DEVRY UNIVERSITY,San Diego,California,482431,http://www.facebook.com/SanDiegoDMRC,482431,Yes
 3121,DEVRY UNIVERSITY-ORLANDO,Orlando,Florida,482459,http://www.studentveterans.org,482459,Yes
 3122,DEVRY UNIVERSITY-ADDISON,Addison,Illinois,482477,http://www.add.devry.edu/DMRC.html,482477,Yes
@@ -1009,41 +966,17 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 3125,DEVRY UNIVERSITY-CHESAPEAKE,Chesapeake,Virginia,482653,http://www.studentveterans.org,482653,Yes
 3126,DEVRY UNIVERSITY-FEDERAL WAY,Federal Way,Washington,482662,http://www.sea.devry.edu/VeteransClub.html,482662,Yes
 3127,NORTH GEORGIA COLLEGE & STATE UNIVERSITY,Dahlonega,Georgia,482680,http://svng.org,482680,Yes
-3128,UNIVERSITY OF NORTH GEORGIA-GAINESVILLE,Oakwood,Georgia,482680,http://www.studentveterans.org,482680,Yes
 3129,GEORGIA MILITARY COLLEGE-MILLEDGEVILLE,Milledgeville,Georgia,482857,http://www.studentveterans.org,482857,Yes
 3130,AIKEN TECHNICAL COLLEGE,Graniteville,South Carolina,100560,http://www.facebook.com/atcsva,100560,Yes
-3131,KEISER UNIVERSITY-PEMBROKE PINES,Pembroke Pines,Florida,2151913,http://www.studentveterans.org,215191,Yes
 3132,KEISER UNIVERSITY - TAMPA,Tampa,Florida,2151914,http://www.facebook.com/KeiserUnivOutOnPatrol,215191,Yes
-3133,ALLIANT INTERNATIONAL UNIVERSITY- FRESNO,Fresno,California,11046801,http://www.studentveterans.org,110468,Yes
-3134,KEISER UNIVERSITY-MELBOURNE,Melbourne,Florida,13508101,http://www.studentveterans.org,135081,Yes
 3135,KEISER UNIVERSITY- ORLANDO,Orlando,Florida,13508106,https://www.facebook.com/#!/SVAKeiserUniversityOrlando,135081,Yes
-3136,KEISER UNIVERSITY COLLEGE OF GOLF AND SPORT MANAGEMENT-PORT ST LUCIE,Port Saint Lucie,Florida,13508111,http://www.studentveterans.org,135081,Yes
-3137,KEISER UNIVERSITY-PORT ST. LUCIE,Port St. Lucie,Florida,13508111,http://www.studentveterans.org,135081,Yes
-3138,KEISER UNIVERSITY - FT. MYERS,Fort Myers,Florida,13508113,http://www.studentveterans.org,135081,Yes
-3139,IVY TECH COMMUNITY COLLEGE-NORTH CENTRAL,South Bend,Indiana,15098701,http://www.studentveterans.org,150987,Yes
-3140,IVY TECH COMMUNITY COLLEGE-EAST CENTRAL,Muncie,Indiana,15098703,http://www.studentveterans.org,150987,Yes
 3141,IVY TECH COMMUNITY COLLEGE-LAFAYETTE,Lafayette,Indiana,15098705,http://www.facebook.com/#!/groups/223242275211/,150987,Yes
-3142,IVY TECH COMMUNITY COLLEGE-SOUTH CENTRAL,Sellersburg,Indiana,15098707,http://www.studentveterans.org,150987,Yes
-3143,IVY TECH COMMUNITY COLLEGE-WABASH VALLEY,Terre Haute,Indiana,15098709,http://www.studentveterans.org,150987,Yes
-3144,IVY TECH COMMUNITY COLLEGE-RICHMOND,Richmond,Indiana,15098710,http://www.studentveterans.org,150987,Yes
-3145,IVY TECH COMMUNITY COLLEGE-BLOOMINGTON,Bloomington,Indiana,15098713,http://www.studentveterans.org,150987,Yes
 3146,CLEARY UNIVERSITY-HOWELL,Howell,Michigan,16932701,http://www.facebook.com/groups/172988246133435/,169327,Yes
 3147,DAVENPORT UNIVERSITY-GRAND RAPIDS,Grand Rapids,Michigan,16947920,http://www.studentveterans.org,169479,Yes
 3148,PEARL RIVER COMMUNITY COLLEGE-FORREST COUNTY CENTER,Hattiesburg,Mississippi,17623901,http://www.studentveterans.org,176239,Yes
 3149,UNIVERSITY OF MONTANA-MISSOULA,Missoula,Montana,18048901,http://www.studentveterans.org,180489,Yes
-3150,SAN JACINTO COLLEGE-NORTH CAMPUS,Houston,Texas,22797901,,227979,Yes
-3151,SAN JACINTO COLLEGE-SOUTH CAMPUS,Houston,Texas,22797902,,227979,Yes
 3152,TEXAS A&M UNIVERSITY-SAN ANTONIO,San Antonio,Texas,22870501,http://www.facebook.com/pages/SVA-Chapter-at-Texas-AM-University-San-Antonio/190412557648440?ref=hl,228705,Yes
-3153,WASHINGTON STATE UNIVERSITY-TRI CITIES,Richland,Washington,23693903,http://www.studentveterans.org,236939,Yes
-3154,ECPI UNIVERSITY-NEWPORT NEWS,Newport News,Virginia,24893401,http://www.studentveterans.org,248934,Yes
-3155,ECPI UNIVERSITY- MANASSAS/NORTHERN VIRGINIA,Manassas,Virginia,24893405,http://www.studentveterans.org,248934,Yes
-3156,ECPI UNIVERSITY-CHARLESTON,North Charleston,South Carolina,24893406,http://www.ecpi.edu,248934,Yes
-3157,ECPI UNIVERSITY-RALEIGH,Raleigh,North Carolina,24893407,http://www.studentveterans.org,248934,Yes
-3158,ECPI UNIVERSITY-COLUMBIA,Columbia,South Carolina,24893408,http://www.studentveterans.org,248934,Yes
-3159,ECPI UNIVERSITY-VIRGINIA BEACH,Virginia Beach,Virginia,24893411,http://www.studentveterans.org,248934,Yes
-3160,ECPI UNIVERSITY-RICHMOND WEST,Richmond,Virginia,24893414,http://www.studentveterans.org,248934,Yes
-3161,COLORADO TECHNICAL UNIVERSITY-DENVER,Aurora,Colorado,43008701,http://www.studentveterans.org,430087,Yes
-3162,GEORGIA MILITARY COLLEGE-FAIRBURN,Fairburn,Georgia,48285702,http://www.studentveterans.org,482857,Yes
+3156,ECPI UNIVERSITY-CHARLESTON,North Charleston,South Carolina,24893406,,248934,Yes
 3163,TRAINING TO YOU CAREER COLLEGE,Phoenix,Arizona,,http://www.ttycareercollege.edu,,Yes
 3164,DEVRY UNIVERSITY-ELK GROVE,Elk Grove,California,,http://www.studentveterans.org,,Yes
 3165,UNIVERSITY TECHNICAL INSTITUTE-SACRAMENTO,Sacramento,California,,http://www.studentveterans.org,,Yes
@@ -1078,3 +1011,16 @@ ID,School,City,State,IPEDs Code,Website,IPEDS_6,SVA_Yes
 3195,Mid Michigan Community College,Harrison,MI,171155,,171155,Yes
 3196,University of Minnesota,Minneapolis,MN,174066,http://sua.umn.edu/groups/directory/group/1474/,174066,Yes
 3197,University of Wisconsin-Whitewater,Whitewater,WI,240189,,240189,Yes
+3198,Flagler College-St Augustine,St Augustine,Florida,133711,https://www.facebook.com/flaglercollegeveteransclub/,133711,Yes
+3199,Ringling College of Art and Design,Sarasota,Florida,136774,,136774,Yes
+3200,Holy Names University ,Oakland,California,115728,,115728,Yes
+3201,Springfield Technical Community College,Springfield,Massachusetts,167905,https://www.facebook.com/veteransSTCC/,167905,Yes
+3202,Wentworth Institute of Technolgy,Boston,Massachusetts,168227,,168227,Yes
+3203,Kaskaskia College,Centralia,Illinois,146366,http://kaskaskia.edu/StudentActivities/Vet.aspx ,146366,Yes
+3204,Michigan Technological University,Houghton,Michigan,171128,https://www.involvement.mtu.edu/organization/veterans,171128,Yes
+3205,McMurray University,Abilene,Texas,226587,,226587,Yes
+3206,Pacific Lutheran University ,Tacoma,Washington,236230,http://studentveterans.org/chapter/directory/2583-pacific-lutheran-university,236230,Yes
+3207,Liberty University ,Lynchburg,Virginia,232557,,232557,Yes
+3208,Naropa University ,Boulder,Colorado,127653,,127653,Yes
+3209,St. Edward's University,Austin,Texas,227845,https://www.stedwards.edu/veteran-affairs,227845,Yes
+3210,Catholic University of America,Washington,District of Columbia,131283,https://nest.cua.edu/organization/CUAHomefront,131283,Yes
