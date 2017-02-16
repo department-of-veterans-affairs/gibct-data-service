@@ -2,12 +2,25 @@
 module V0
   class ApiController < ApplicationController
     skip_before_action :authenticate_user!
+    before_action :resolve_version
 
     def cors_preflight
       head(:ok)
     end
 
     private
+
+    # Newest production data version assumed when version param is undefined
+    def resolve_version
+      v = params[:version]
+      version = v.present? ? Version.find_by_number(v) : Version.default_version
+      raise ActiveRecord::RecordNotFound, "Version #{v} not found" unless version.try(:number)
+      @version = {
+        number: version.number,
+        created_at: version.created_at,
+        preview: version.preview?
+      }
+    end
 
     rescue_from 'Exception' do |exception|
       log_error(exception)
