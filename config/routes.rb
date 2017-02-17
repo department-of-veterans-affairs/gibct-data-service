@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   get '/dashboards' => 'dashboards#index'
   root 'dashboards#index'
 
-  resources :uploads, except: :destroy
+  resources :uploads, except: [:new, :destroy, :edit, :update] do
+    get '(:csv_type)' => 'uploads#new', on: :new, as: ''
+  end
 
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'

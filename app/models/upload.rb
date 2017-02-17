@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class Upload < ActiveRecord::Base
+  attr_accessor :skip_lines, :upload
+
   belongs_to :user, inverse_of: :versions
 
   validates_associated :user

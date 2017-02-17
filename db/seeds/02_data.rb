@@ -36,92 +36,72 @@ Upload.delete_all
 
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
 puts 'Loading Weam'
-Weam.delete_all
-Weam.load('sample_csvs/weam.csv', user)
+Weam.load('sample_csvs/weam.csv', user, 'Loaded via seeds')
 
 puts 'Loading Crosswalk'
-Crosswalk.delete_all
-Crosswalk.load('sample_csvs/crosswalk.csv', user)
+Crosswalk.load('sample_csvs/crosswalk.csv', user, 'Loaded via seeds')
 
 puts 'Loading EightKey'
-EightKey.delete_all
-EightKey.load('sample_csvs/eight_key.csv', user, '', skip_lines: 1)
+EightKey.load('sample_csvs/eight_key.csv', user, 'Loaded via seeds', skip_lines: 1)
 
 puts 'Loading Accreditation'
-Accreditation.delete_all
-Accreditation.load('sample_csvs/accreditation.csv', user)
+Accreditation.load('sample_csvs/accreditation.csv', user, 'Loaded via seeds')
 
 puts 'Loading ArfGiBill'
-ArfGiBill.delete_all
-ArfGiBill.load('sample_csvs/arf.csv', user)
+ArfGiBill.load('sample_csvs/arf.csv', user, 'Loaded via seeds')
 
 puts 'Loading Scorecard'
-Scorecard.delete_all
-Scorecard.load('sample_csvs/scorecard.csv', user)
+Scorecard.load('sample_csvs/scorecard.csv', user, 'Loaded via seeds')
 
 puts 'Loading P911Tf'
-P911Tf.delete_all
-P911Tf.load('sample_csvs/p911_tf.csv', user)
+P911Tf.load('sample_csvs/p911_tf.csv', user, 'Loaded via seeds')
 
 puts 'Loading P911Yr'
-P911Yr.delete_all
-P911Yr.load('sample_csvs/p911_yr.csv', user)
+P911Yr.load('sample_csvs/p911_yr.csv', user, 'Loaded via seeds')
 
 puts 'Loading Vsoc'
-Vsoc.delete_all
-Vsoc.load('sample_csvs/vsoc.csv', user)
+Vsoc.load('sample_csvs/vsoc.csv', user, 'Loaded via seeds')
 
 puts 'Loading Sva'
-Sva.delete_all
-Sva.load('sample_csvs/sva.csv', user)
+Sva.load('sample_csvs/sva.csv', user, 'Loaded via seeds')
 
 puts 'Loading Sec702'
-Sec702.delete_all
-Sec702.load('sample_csvs/sec702.csv', user)
+Sec702.load('sample_csvs/sec702.csv', user, 'Loaded via seeds')
 
 puts 'Loading Sec702School'
-Sec702School.delete_all
-Sec702School.load('sample_csvs/sec702_school.csv', user)
+Sec702School.load('sample_csvs/sec702_school.csv', user, 'Loaded via seeds')
 
 puts 'Loading Mou'
-Mou.delete_all
-Mou.load('sample_csvs/mou.csv', user, '', skip_lines: 1)
+Mou.load('sample_csvs/mou.csv', user, 'Loaded via seeds', skip_lines: 1)
 
 puts 'Loading Hcm'
-Hcm.delete_all
-Hcm.load('sample_csvs/hcm.csv', user, '', skip_lines: 2)
+Hcm.load('sample_csvs/hcm.csv', user, 'Loaded via seeds', skip_lines: 2)
 
 puts 'Loading Settlement'
-Settlement.delete_all
-Settlement.load('sample_csvs/settlement.csv', user)
+Settlement.load('sample_csvs/settlement.csv', user, 'Loaded via seeds')
 
 puts 'Loading IpedsIc'
-IpedsIc.delete_all
-IpedsIc.load('sample_csvs/ipeds_ic.csv', user)
+IpedsIc.load('sample_csvs/ipeds_ic.csv', user, 'Loaded via seeds')
 
 puts 'Loading IpedsIcAy'
-IpedsIcAy.delete_all
-IpedsIcAy.load('sample_csvs/ipeds_ic_ay.csv', user)
+IpedsIcAy.load('sample_csvs/ipeds_ic_ay.csv', user, 'Loaded via seeds')
 
 puts 'Loading IpedsIcPy'
-IpedsIcPy.delete_all
-IpedsIcPy.load('sample_csvs/ipeds_ic_py.csv', user)
+IpedsIcPy.load('sample_csvs/ipeds_ic_py.csv', user, 'Loaded via seeds')
 
 puts 'Loading IpedsHd'
-IpedsHd.delete_all
-IpedsHd.load('sample_csvs/ipeds_hd.csv', user)
+IpedsHd.load('sample_csvs/ipeds_hd.csv', user, 'Loaded via seeds')
 
 puts 'Loading Complaint'
-Complaint.delete_all
-Complaint.load('sample_csvs/complaint.csv', user, '', skip_lines: 7)
+Complaint.load('sample_csvs/complaint.csv', user, 'Loaded via seeds', skip_lines: 7)
 
 puts 'Loading Outcome'
-Outcome.delete_all
-Outcome.load('sample_csvs/outcome.csv', user)
+Outcome.load('sample_csvs/outcome.csv', user, 'Loaded via seeds')
 
 puts 'Building Institutions'
-InstitutionBuilder.run(user)
+version = InstitutionBuilder.run(user)
 
-Version.update(1, production: true)
+puts "Setting version: #{version.number} as production"
+Version.create(user: user, number: version.number, production: true)
 
 puts "Done ... Woo Hoo!"
