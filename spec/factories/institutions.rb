@@ -54,6 +54,7 @@ FactoryGirl.define do
       ope '99999999'
       ope6 '99999'
       cross '999999'
+      version 1
     end
   end
 end

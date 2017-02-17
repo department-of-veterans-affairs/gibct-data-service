@@ -492,203 +492,211 @@ RSpec.describe InstitutionBuilder, type: :model do
             expect(institutions.first.sec_702).to be_truthy
           end
         end
+      end
 
-        describe 'the caution_flag' do
-          it 'is set from Section702 when sec_702 is false' do
-            create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
+      describe 'the caution_flag' do
+        it 'is set from Section702 when sec_702 is false' do
+          create :sec702, :institution_builder
+          InstitutionBuilder.run(user)
 
-            expect(institutions.first.caution_flag).not_to be_nil
-            expect(institutions.first.caution_flag).to be_truthy
-          end
-
-          it 'is set from Section702School when sec_702 is false' do
-            create :sec702_school, :institution_builder
-            InstitutionBuilder.run(user)
-
-            expect(institutions.first.caution_flag).not_to be_nil
-            expect(institutions.first.caution_flag).to be_truthy
-          end
-
-          it 'prefers Sec702School over Section702' do
-            create :weam, :institution_builder, :private
-            create :sec702_school, :institution_builder, sec_702: true
-            create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
-
-            expect(institutions.first.caution_flag).to be_falsey
-          end
+          expect(institutions.first.caution_flag).not_to be_nil
+          expect(institutions.first.caution_flag).to be_truthy
         end
 
-        describe 'the caution_flag_reason' do
-          let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
+        it 'is set from Section702School when sec_702 is false' do
+          create :sec702_school, :institution_builder
+          InstitutionBuilder.run(user)
 
-          it 'is set from Section702 when sec_702 is false' do
-            create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
+          expect(institutions.first.caution_flag).not_to be_nil
+          expect(institutions.first.caution_flag).to be_truthy
+        end
 
-            expect(institutions.first.caution_flag_reason).not_to be_nil
-            expect(institutions.first.caution_flag_reason).to eq(reason)
-          end
+        it 'prefers Sec702School over Section702' do
+          create :weam, :institution_builder, :private
+          create :sec702_school, :institution_builder, sec_702: true
+          create :sec702, :institution_builder
+          InstitutionBuilder.run(user)
 
-          it 'is set from Section702School when sec_702 is false' do
-            create :sec702_school, :institution_builder
-            InstitutionBuilder.run(user)
-
-            expect(institutions.first.caution_flag_reason).not_to be_nil
-            expect(institutions.first.caution_flag_reason).to eq(reason)
-          end
-
-          it 'prefers Sec702School over Section702' do
-            create :weam, :institution_builder, :private
-            create :sec702_school, :institution_builder, sec_702: true
-            create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
-
-            expect(institutions.first.caution_flag_reason).to be_nil
-          end
-
-          it 'concatenates the sec_702 reason when sec_702 is false' do
-            create :accreditation, :institution_builder, accreditation_status: 'probation'
-            create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
-
-            expect(institutions.first.caution_flag_reason).to match(/Accreditation/).and match(/Tuition/)
-          end
-
-          it 'is left unaltered when sec_702 is true' do
-            create :accreditation, :institution_builder, accreditation_status: 'probation'
-            create :sec702_school, :institution_builder, sec_702: true
-            InstitutionBuilder.run(user)
-
-            expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
-            expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
-          end
+          expect(institutions.first.caution_flag).to be_falsey
         end
       end
 
-      describe 'when adding Settlement data' do
-        let(:institution) { institutions.find_by(cross: settlement.cross) }
-        let(:settlement) { Settlement.first }
+      describe 'the caution_flag_reason' do
+        let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
 
-        describe 'the caution_flag' do
-          it 'is set for every settlement' do
-            create :settlement, :institution_builder
-            InstitutionBuilder.run(user)
+        it 'is set from Section702 when sec_702 is false' do
+          create :sec702, :institution_builder
+          InstitutionBuilder.run(user)
 
-            expect(institution.caution_flag).to be_truthy
-          end
+          expect(institutions.first.caution_flag_reason).not_to be_nil
+          expect(institutions.first.caution_flag_reason).to eq(reason)
         end
 
-        describe 'the caution_flag_reason' do
-          it 'is set to the settlement_description' do
-            create :settlement, :institution_builder
-            InstitutionBuilder.run(user)
+        it 'is set from Section702School when sec_702 is false' do
+          create :sec702_school, :institution_builder
+          InstitutionBuilder.run(user)
 
-            expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
-          end
+          expect(institutions.first.caution_flag_reason).not_to be_nil
+          expect(institutions.first.caution_flag_reason).to eq(reason)
+        end
 
-          it 'is set with multiple descriptions' do
-            create :settlement, :institution_builder
-            create :settlement, :institution_builder, settlement_description: 'another description'
-            InstitutionBuilder.run(user)
+        it 'prefers Sec702School over Section702' do
+          create :weam, :institution_builder, :private
+          create :sec702_school, :institution_builder, sec_702: true
+          create :sec702, :institution_builder
+          InstitutionBuilder.run(user)
 
-            expect(institution.caution_flag_reason).to match(settlement.settlement_description)
-              .and match('another description')
-          end
+          expect(institutions.first.caution_flag_reason).to be_nil
+        end
 
-          it 'is concatenated with the settlement_description' do
-            create :accreditation, :institution_builder, accreditation_status: 'probation'
-            create :settlement, :institution_builder
-            InstitutionBuilder.run(user)
+        it 'concatenates the sec_702 reason when sec_702 is false' do
+          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :sec702, :institution_builder
+          InstitutionBuilder.run(user)
 
-            expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
-              .and match(settlement.settlement_description)
-          end
+          expect(institutions.first.caution_flag_reason).to match(/Accreditation/).and match(/Tuition/)
+        end
+
+        it 'is left unaltered when sec_702 is true' do
+          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :sec702_school, :institution_builder, sec_702: true
+          InstitutionBuilder.run(user)
+
+          expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+          expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
+        end
+      end
+    end
+
+    describe 'when adding Settlement data' do
+      let(:institution) { institutions.find_by(cross: settlement.cross) }
+      let(:settlement) { Settlement.first }
+
+      describe 'the caution_flag' do
+        it 'is set for every settlement' do
+          create :settlement, :institution_builder
+          InstitutionBuilder.run(user)
+
+          expect(institution.caution_flag).to be_truthy
         end
       end
 
-      describe 'when adding Hcm data' do
-        let(:institution) { institutions.find_by(ope6: hcm.ope6) }
-        let(:hcm) { Hcm.first }
+      describe 'the caution_flag_reason' do
+        it 'is set to the settlement_description' do
+          create :settlement, :institution_builder
+          InstitutionBuilder.run(user)
 
-        describe 'the caution_flag' do
-          it 'is set for every heightened cash monitoring notice' do
-            create :hcm, :institution_builder
-            InstitutionBuilder.run(user)
-
-            expect(institution.caution_flag).to be_truthy
-          end
+          expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
         end
 
-        describe 'the caution_flag_reason' do
-          it 'is set to the hcm_reason' do
-            create :hcm, :institution_builder
-            InstitutionBuilder.run(user)
+        it 'is set with multiple descriptions' do
+          create :settlement, :institution_builder
+          create :settlement, :institution_builder, settlement_description: 'another description'
+          InstitutionBuilder.run(user)
 
-            expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
-          end
+          expect(institution.caution_flag_reason).to match(settlement.settlement_description)
+            .and match('another description')
+        end
 
-          it 'is set with multiple hcm_reason' do
-            create :hcm, :institution_builder
-            create :hcm, :institution_builder, hcm_reason: 'another reason'
-            InstitutionBuilder.run(user)
+        it 'is concatenated with the settlement_description' do
+          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :settlement, :institution_builder
+          InstitutionBuilder.run(user)
 
-            expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
-              .and match(/another reason/)
-          end
+          expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+            .and match(settlement.settlement_description)
+        end
+      end
+    end
 
-          it 'is concatenated with the hcm_reason' do
-            create :accreditation, :institution_builder, accreditation_status: 'probation'
-            create :hcm, :institution_builder
-            InstitutionBuilder.run(user)
+    describe 'when adding Hcm data' do
+      let(:institution) { institutions.find_by(ope6: hcm.ope6) }
+      let(:hcm) { Hcm.first }
 
-            expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
-              .and match(Regexp.new(hcm.hcm_reason))
-          end
+      describe 'the caution_flag' do
+        it 'is set for every heightened cash monitoring notice' do
+          create :hcm, :institution_builder
+          InstitutionBuilder.run(user)
+
+          expect(institution.caution_flag).to be_truthy
         end
       end
 
-      describe 'when adding Complaint data' do
-        let(:institution) { institutions.find_by(facility_code: complaint.facility_code) }
-        let(:complaint) { Complaint.first }
-
-        before(:each) do
-          create :complaint, :institution_builder
-        end
-
-        it 'copies columns used by institutions' do
+      describe 'the caution_flag_reason' do
+        it 'is set to the hcm_reason' do
+          create :hcm, :institution_builder
           InstitutionBuilder.run(user)
 
-          Complaint::COLS_USED_IN_INSTITUTION.each do |column|
-            expect(complaint[column]).to eq(institution[column])
-          end
+          expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
         end
 
-        it 'calls update_ope_from_crosswalk' do
-          expect(Complaint).to receive(:update_ope_from_crosswalk)
+        it 'is set with multiple hcm_reason' do
+          create :hcm, :institution_builder
+          create :hcm, :institution_builder, hcm_reason: 'another reason'
           InstitutionBuilder.run(user)
+
+          expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
+            .and match(/another reason/)
         end
 
-        it 'calls rollup_sums for facility_code and ope6' do
-          expect(Complaint).to receive(:rollup_sums).twice
+        it 'is concatenated with the hcm_reason' do
+          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :hcm, :institution_builder
           InstitutionBuilder.run(user)
+
+          expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+            .and match(Regexp.new(hcm.hcm_reason))
+        end
+      end
+    end
+
+    describe 'when adding Complaint data' do
+      let(:institution) { institutions.find_by(facility_code: complaint.facility_code) }
+      let(:complaint) { Complaint.first }
+
+      before(:each) do
+        create_list :complaint, 2, :institution_builder, :all_issues
+      end
+
+      it 'calls update_ope_from_crosswalk' do
+        expect(Complaint).to receive(:update_ope_from_crosswalk)
+        InstitutionBuilder.run(user)
+      end
+
+      it 'calls rollup_sums for facility_code and ope6' do
+        expect(Complaint).to receive(:rollup_sums).twice
+        InstitutionBuilder.run(user)
+      end
+
+      it 'sums complaints by facility_code' do
+        InstitutionBuilder.run(user)
+
+        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |column|
+          expect(institution[column]).to eq(2)
         end
       end
 
-      describe 'when adding Outcome data' do
-        let(:institution) { institutions.find_by(facility_code: outcome.facility_code) }
-        let(:outcome) { Outcome.first }
+      it 'sums complaints by ope6' do
+        InstitutionBuilder.run(user)
 
-        before(:each) do
-          create :outcome, :institution_builder
-          InstitutionBuilder.run(user)
+        Complaint::OPE6_ROLL_UP_SUMS.keys.each do |column|
+          expect(institution[column]).to eq(2)
         end
+      end
+    end
 
-        it 'copies columns used by institutions' do
-          Outcome::COLS_USED_IN_INSTITUTION.each do |column|
-            expect(outcome[column]).to eq(institution[column])
-          end
+    describe 'when adding Outcome data' do
+      let(:institution) { institutions.find_by(facility_code: outcome.facility_code) }
+      let(:outcome) { Outcome.first }
+
+      before(:each) do
+        create :outcome, :institution_builder
+        InstitutionBuilder.run(user)
+      end
+
+      it 'copies columns used by institutions' do
+        Outcome::COLS_USED_IN_INSTITUTION.each do |column|
+          expect(outcome[column]).to eq(institution[column])
         end
       end
     end
