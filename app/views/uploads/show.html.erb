@@ -1,0 +1,68 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <%= render partial: 'introduction' %>
+  </div>
+</div>
+
+<div class="row row-space-6">
+  <div class="col-xs-2">
+    <strong>Id: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.id %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Type: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.csv_type %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Source File: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.filename %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Upload Status: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.ok ? 'succeeded' : 'failed' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Uploaded By: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.user.email %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-2">
+    <strong>Uploaded On: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.created_at.strftime('%b %e, %Y %H:%M:%S') %>
+  </div>
+</div>
+
+<div class="row" style: "padding-bottom: 20px">
+  <div class="col-xs-2">
+    <strong>Comments: </strong>
+  </div>
+  <div class="col-xs-3">
+    <%= @upload.comment %>
+  </div>
+</div>

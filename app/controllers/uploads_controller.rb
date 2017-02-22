@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class UploadsController < ApplicationController
   def index
-    @uploads = Upload.paginate(page: params[:page]).order(:created_at)
+    @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
 
   def new
@@ -21,6 +21,11 @@ class UploadsController < ApplicationController
     else
       render :new, alert: errors_for_alert([@upload]), notice: "Failed to upload #{original_filename}."
     end
+  end
+
+  def show
+    @upload = Upload.find_by(id: params[:id])
+    redirect_to uploads_path, alert: ["Upload with id: '#{params[:id]}' not found"] unless @upload
   end
 
   private
