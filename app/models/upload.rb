@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Upload < ActiveRecord::Base
-  attr_accessor :skip_lines, :upload
+  attr_accessor :skip_lines, :upload_file
 
   belongs_to :user, inverse_of: :versions
 
@@ -8,5 +8,8 @@ class Upload < ActiveRecord::Base
   validates :user_id, presence: true
 
   validates :filename, presence: true
-  validates :csv_type, inclusion: { in: InstitutionBuilder::TABLES.map(&:name) }
+  validates :csv_type, inclusion: {
+    in: InstitutionBuilder::TABLES.map(&:name),
+    message: '%{value} is not a valid CSV type'
+  }
 end

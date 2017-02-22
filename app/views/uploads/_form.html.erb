@@ -8,13 +8,13 @@
       <% end %>
 
       <div class="form-group">
-        <%= f.label(:skip_line) %><br />
+        <%= f.label(:skip_lines_before_header) %><br />
         <%= f.text_field(:skip_lines) %>
       </div>
 
       <div class="form-group">
-        <%= f.label(:upload, "The CSV File to Upload (*.csv)") %>
-        <%= f.file_field(:upload, class: "form-control", required: true, accept: "text/csv") %>
+        <%= f.label(:upload_file) %>
+        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: "text/csv") %>
       </div>
 
       <div class="form-group">

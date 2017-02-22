@@ -27,6 +27,7 @@ module ApplicationHelper
 
       concat(
         content_tag(:ul) do
+          errors = [errors] unless errors.is_a? Array
           errors.map do |error|
             concat content_tag(:li, error)
           end
