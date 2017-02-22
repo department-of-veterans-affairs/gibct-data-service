@@ -1,5 +1,4 @@
-# Gibct Data Service
-[![Build Status](https://travis-ci.org/department-of-veterans-affairs/gibct-data-service.svg?branch=master)](https://travis-ci.org/department-of-veterans-affairs/gibct-data-service)
+# Gibct Data Service [![Build Status](https://dev.vets.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/) 
 
 The GIBCT Data Service (**DS**) serves two purposes. First, it is a password-protected tool used by stakeholders to upload several sources of data, in the form of CSV files. Second, it provides the RESTful API used by the GI Bill Comparison Tool front-end to request this combined data.
 
