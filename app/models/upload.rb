@@ -12,4 +12,10 @@ class Upload < ActiveRecord::Base
     in: InstitutionBuilder::TABLES.map(&:name),
     message: '%{value} is not a valid CSV type'
   }
+
+  before_validation :derive_dependent_columns
+
+  def derive_dependent_columns
+    self.filename = upload_file.try(:original_filename)
+  end
 end

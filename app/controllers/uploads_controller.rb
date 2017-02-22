@@ -53,7 +53,7 @@ class UploadsController < ApplicationController
     end
 
     remaining = invalid_records.length - 15
-    error_list << "Plus #{remaining} #{'warning'.pluralize(remaining)} not listed ..." if remaining > 0
+    error_list << "Plus #{remaining} #{'warning'.pluralize(remaining)} not listed ..." if remaining.positive?
 
     error_list
   end

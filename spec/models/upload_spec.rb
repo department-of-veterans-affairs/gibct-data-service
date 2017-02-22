@@ -13,8 +13,8 @@ RSpec.describe Upload, type: :model do
       expect(build(:upload, user: nil)).not_to be_valid
     end
 
-    it 'requires a filename' do
-      expect(build(:upload, filename: nil)).not_to be_valid
+    it 'requires an upload_file to produce a filename' do
+      expect(build(:upload, no_upload: true)).not_to be_valid
     end
 
     it 'requires a csv_type' do
