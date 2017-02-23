@@ -13,7 +13,7 @@ module V0
     # Newest production data version assumed when version param is undefined
     def resolve_version
       v = params[:version]
-      version = v.present? ? Version.find_by_number(v) : Version.default_version
+      version = v.present? ? Version.find_by(number: v) : Version.default_version
       raise ActiveRecord::RecordNotFound, "Version #{v} not found" unless version.try(:number)
       @version = {
         number: version.number,
