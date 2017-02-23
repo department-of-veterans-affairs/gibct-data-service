@@ -20,26 +20,10 @@ pipeline {
       }
     }
 
-    stage('Audit') {
+    stage('Prepare database') {
       steps {
         withEnv(env_vars) {
-          sh 'bash --login -c "bundle exec rake ci"'
-        }
-      }
-    }
-
-    stage('Prepare') {
-      steps {
-        withEnv(env_vars) {
-          sh 'bash --login -c "bundle exec rake db:drop"'
-        }
-      }
-    }
-
-    stage('Ensure database exists') {
-      steps {
-        withEnv(env_vars) {
-          sh 'bash --login -c "bundle exec rake db:create db:migrate"'
+          sh 'bash --login -c "bundle exec rake db:drop db:create db:schema:load"'
         }
       }
     }
@@ -47,7 +31,7 @@ pipeline {
     stage('Run tests') {
       steps {
         withEnv(env_vars) {
-          sh 'bash --login -c "bundle exec rspec"'
+          sh 'bash --login -c "bundle exec rake ci"'
         }
       }
     }
