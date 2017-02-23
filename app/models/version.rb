@@ -30,7 +30,7 @@ class Version < ActiveRecord::Base
   }
 
   def preview?
-    self.number != Version.production_version.number
+    number != Version.production_version.number
   rescue
     true
   end

@@ -61,13 +61,12 @@ module V0
                  .filter(:poe, params[:principles_of_excellence]) # boolean
                  .filter(:eight_keys, params[:eight_keys_to_veteran_success]) # boolean
     end
-    # rubocop:enable AbcSize
 
     def facets
       institution_types = search_results.filter_count(:institution_type_name)
       {
         type: {
-          school: institution_types.except('ojt').inject(0){|count,(_t,n)| count + n },
+          school: institution_types.except('ojt').inject(0) { |count, (_t, n)| count + n },
           employer: institution_types['ojt'].to_i
         },
         type_name: institution_types,
@@ -80,5 +79,6 @@ module V0
         eight_keys_to_veteran_success: search_results.filter_count(:eight_keys)
       }
     end
+    # rubocop:enable AbcSize
   end
 end
