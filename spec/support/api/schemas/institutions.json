@@ -5,7 +5,20 @@
     "meta": {
       "type": "object",
       "properties": {
-        "version": { "type": ["null", "string"] }
+        "version": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number"
+            },
+            "created_at": {
+              "type": "string"
+            },
+            "preview": {
+              "type": "boolean"
+            }
+          }
+        }
       },
       "required": [
         "version"
