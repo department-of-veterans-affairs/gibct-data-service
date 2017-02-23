@@ -3,7 +3,7 @@ class CreateUploads < ActiveRecord::Migration
     create_table :uploads do |t|
       t.belongs_to :user, null: false
 
-      t.string :filename, null: false
+      t.string :csv, null: false
       t.string :csv_type, null: false
       t.string :comment
       t.boolean :ok, null: false, default: false

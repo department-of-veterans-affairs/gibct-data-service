@@ -24,5 +24,12 @@ RSpec.describe Upload, type: :model do
     it 'defaults to !ok' do
       expect(build(:upload, csv_type: nil).ok).to be_falsey
     end
+
+    it 'initializes csv column when not persisted' do
+      expect(subject.csv).not_to be_blank
+
+      subject.save
+      expect(Upload.first.csv).not_to be_nil
+    end
   end
 end

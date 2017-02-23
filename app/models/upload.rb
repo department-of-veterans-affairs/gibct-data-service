@@ -7,15 +7,15 @@ class Upload < ActiveRecord::Base
   validates_associated :user
   validates :user_id, presence: true
 
-  validates :filename, presence: true
+  validates :csv, presence: true
   validates :csv_type, inclusion: {
     in: InstitutionBuilder::TABLES.map(&:name),
     message: '%{value} is not a valid CSV type'
   }
 
-  before_validation :derive_dependent_columns
+  after_initialize :derive_dependent_columns, unless: :persisted?
 
   def derive_dependent_columns
-    self.filename = upload_file.try(:original_filename)
+    self.csv = upload_file.try(:original_filename)
   end
 end

@@ -67,7 +67,7 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.merge(filename: original_filename, user: current_user)
+    upload_params.merge(csv: original_filename, user: current_user)
   end
 
   def upload_params

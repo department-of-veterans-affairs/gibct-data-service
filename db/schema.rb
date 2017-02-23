@@ -1092,7 +1092,7 @@ ActiveRecord::Schema.define(version: 20170216084207) do
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id",                    null: false
-    t.string   "filename",                   null: false
+    t.string   "csv",                        null: false
     t.string   "csv_type",                   null: false
     t.string   "comment"
     t.boolean  "ok",         default: false, null: false
