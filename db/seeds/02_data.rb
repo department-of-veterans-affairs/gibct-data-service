@@ -1,3 +1,23 @@
+def seed_table(klass, user, options = {})
+  csv_name = "#{klass.name.underscore}.csv"
+  csv_type = klass.name
+  csv_path = 'sample_csvs'
+
+  print "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
+
+  uf = ActionDispatch::Http::UploadedFile.new(
+    tempfile: File.new(Rails.root.join(csv_path, csv_name)),
+    filename: csv_name,
+    type: 'text/csv'
+  )
+
+  upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
+  klass.load("#{csv_path}/#{csv_name}", options)
+  upload.update(ok: true)
+
+  puts 'Done!'
+end
+
 puts 'Creating sample constants'
 constants = {
   'TFCAP' => 21970.46,
@@ -35,90 +55,27 @@ puts 'Deleting old uploads data'
 Upload.delete_all
 
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
-puts 'Loading Weam'
-Weam.load('sample_csvs/weam.csv')
-Upload.create(original_filename: 'weam.csv', csv_type: 'Weam', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Crosswalk'
-Crosswalk.load('sample_csvs/crosswalk.csv')
-Upload.create(original_filename: 'crosswalk.csv', csv_type: 'Crosswalk', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading EightKey'
-EightKey.load('sample_csvs/eight_key.csv', skip_lines: 1)
-Upload.create(original_filename: 'eight_key.csv', csv_type: 'EightKey', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Accreditation'
-Accreditation.load('sample_csvs/accreditation.csv')
-Upload.create(original_filename: 'accreditation.csv',
-              csv_type: 'Accreditation', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading ArfGiBill'
-ArfGiBill.load('sample_csvs/arf.csv')
-Upload.create(original_filename: 'arf.csv', csv_type: 'ArfGiBill', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Scorecard'
-Scorecard.load('sample_csvs/scorecard.csv')
-Upload.create(original_filename: 'scorecard.csv', csv_type: 'Scorecard', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading P911Tf'
-P911Tf.load('sample_csvs/p911_tf.csv')
-Upload.create(original_filename: 'p911_tf.csv', csv_type: 'P911Tf', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading P911Yr'
-P911Yr.load('sample_csvs/p911_yr.csv')
-Upload.create(original_filename: 'p911_yr.csv', csv_type: 'P911Yr', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Vsoc'
-Vsoc.load('sample_csvs/vsoc.csv')
-Upload.create(original_filename: 'vsoc.csv', csv_type: 'Vsoc', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Sva'
-Sva.load('sample_csvs/sva.csv')
-Upload.create(filename: 'sva.csv', csv_type: 'Sva', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Sec702'
-Sec702.load('sample_csvs/sec702.csv')
-Upload.create(original_filename: 'sec702.csv', csv_type: 'Sec702', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Sec702School'
-Sec702School.load('sample_csvs/sec702_school.csv')
-Upload.create(original_filename: 'sec702_school.csv', csv_type: 'Sec702School', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Mou'
-Mou.load('sample_csvs/mou.csv', skip_lines: 1)
-Upload.create(original_filename: 'mou.csv', csv_type: 'Mou', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Hcm'
-Hcm.load('sample_csvs/hcm.csv', skip_lines: 2)
-Upload.create(original_filename: 'hcm.csv', csv_type: 'Hcm', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Settlement'
-Settlement.load('sample_csvs/settlement.csv')
-Upload.create(original_filename: 'settlement.csv', csv_type: 'Settlement', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading IpedsIc'
-IpedsIc.load('sample_csvs/ipeds_ic.csv')
-Upload.create(original_filename: 'ipeds_ic.csv', csv_type: 'IpedsIc', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading IpedsIcAy'
-IpedsIcAy.load('sample_csvs/ipeds_ic_ay.csv')
-Upload.create(original_filename: 'ipeds_ic_ay.csv', csv_type: 'IpedsIcAy', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading IpedsIcPy'
-IpedsIcPy.load('sample_csvs/ipeds_ic_py.csv')
-Upload.create(original_filename: 'ipeds_ic_py.csv', csv_type: 'IpedsIcPy', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading IpedsHd'
-IpedsHd.load('sample_csvs/ipeds_hd.csv')
-Upload.create(original_filename: 'ipeds_hd.csv', csv_type: 'IpedsHd', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Complaint'
-Complaint.load('sample_csvs/complaint.csv', skip_lines: 7)
-Upload.create(original_filename: 'complaint.csv', csv_type: 'Complaint', comment: 'Seeds.', user: user, ok: true)
-
-puts 'Loading Outcome'
-Outcome.load('sample_csvs/outcome.csv')
-Upload.create(original_filename: 'outcome.csv', csv_type: 'Outcome', comment: 'Seeds.', user: user, ok: true)
+seed_table(Weam, user)
+seed_table(Crosswalk, user)
+seed_table(EightKey, user, skip_lines: 1)
+seed_table(Accreditation, user)
+seed_table(ArfGiBill, user)
+seed_table(Scorecard, user)
+seed_table(P911Tf, user)
+seed_table(P911Yr, user)
+seed_table(Vsoc, user)
+seed_table(Sva, user)
+seed_table(Sec702, user)
+seed_table(Sec702School, user)
+seed_table(Mou, user, skip_lines: 1)
+seed_table(Hcm, user, skip_lines: 2)
+seed_table(Settlement, user)
+seed_table(IpedsIc, user)
+seed_table(IpedsIcAy, user)
+seed_table(IpedsIcPy, user)
+seed_table(IpedsHd, user)
+seed_table(Complaint, user, skip_lines: 7)
+seed_table(Outcome, user)
 
 puts 'Building Institutions'
 version = InstitutionBuilder.run(user)

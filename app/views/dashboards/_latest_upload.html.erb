@@ -5,5 +5,8 @@
   <td><%= upload.created_at.to_formatted_s(:long_ordinal) %></td>
   <td><%= upload.user.email %></td>
   <td><%= upload.comment.blank? ? '-' : upload.comment %></td>
-  <td></td>
+  <td>
+    <%= link_to 'Upload', new_upload_path(upload.csv_type),
+        class: "btn btn-success btn-xs", role: "button" %>
+  </td>
 </tr>

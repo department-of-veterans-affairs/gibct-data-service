@@ -25,11 +25,15 @@ RSpec.describe Upload, type: :model do
       expect(build(:upload, csv_type: nil).ok).to be_falsey
     end
 
-    it 'initializes csv column when not persisted' do
-      expect(subject.csv).not_to be_blank
+    describe 'and deriving columns' do
+      it 'initializes csv column when not persisted' do
+        expect(subject.csv).not_to be_blank
+      end
 
-      subject.save
-      expect(Upload.first.csv).not_to be_nil
+      it 'does not initalize csv column if persisted' do
+        subject.save
+        expect(Upload.first.csv).not_to be_blank
+      end
     end
   end
 
