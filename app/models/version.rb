@@ -29,6 +29,12 @@ class Version < ActiveRecord::Base
     where('created_at <= ?', time).newest
   }
 
+  def preview?
+    number != Version.production_version.number
+  rescue
+    true
+  end
+
   def self.production_version
     Version.production.newest
   end
@@ -37,10 +43,8 @@ class Version < ActiveRecord::Base
     Version.preview.newest
   end
 
-  def self.default_version_number
-    Version.production.newest.number
-  rescue
-    nil
+  def self.default_version
+    Version.production.newest
   end
 
   def self.production_version_by_time(time)

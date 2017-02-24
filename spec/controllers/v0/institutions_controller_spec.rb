@@ -4,6 +4,7 @@ require 'rails_helper'
 RSpec.describe V0::InstitutionsController, type: :controller do
   context 'autocomplete results' do
     it 'returns collection of matches' do
+      create(:version, :production)
       7.times { create(:institution, :contains_harv) }
       get :autocomplete, term: 'harv', version: 1
       expect(response.content_type).to eq('application/json')
@@ -13,6 +14,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
   context 'search results' do
     before(:each) do
+      create(:version, :production)
       2.times { create(:institution, :in_nyc) }
       create(:institution, :in_chicago)
     end
@@ -33,6 +35,10 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'institution profile' do
+    before(:each) do
+      create(:version, :production)
+    end
+
     it 'returns profile details' do
       school = create(:institution, :in_chicago)
 

@@ -104,8 +104,18 @@ class Institution < ActiveRecord::Base
       where(field => true)
     when 'false', 'no'
       where.not(field => true)
+    when 'school' # field: institution_type_name
+      where.not(field => EMPLOYER)
+    when 'employer' # field: institution_type_name
+      where(field => EMPLOYER)
+    else
+      where(field => value)
     end
   }
 
-  scope :version, ->(version) { where(version: version) }
+  scope :filter_count, lambda { |field|
+    group(field).where.not(field => nil).order(field).count
+  }
+
+  scope :version, ->(n) { where(version: n) }
 end
