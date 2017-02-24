@@ -21,7 +21,10 @@ RSpec.describe V0::ApiController, type: :controller do
 
   context 'Parameter Missing' do
     subject { JSON.parse(response.body)['errors'].first }
-    before(:each) { routes.draw { get 'parameter_missing' => 'v0/api#parameter_missing' } }
+    before(:each) do
+      routes.draw { get 'parameter_missing' => 'v0/api#parameter_missing' }
+      create(:version, :production)
+    end
 
     context 'with Rails.env.test or Rails.env.development' do
       it 'renders json object with developer attributes' do
@@ -45,7 +48,10 @@ RSpec.describe V0::ApiController, type: :controller do
 
   context 'Internal Server Error' do
     subject { JSON.parse(response.body)['errors'].first }
-    before(:each) { routes.draw { get 'internal_server_error' => 'v0/api#internal_server_error' } }
+    before(:each) do
+      routes.draw { get 'internal_server_error' => 'v0/api#internal_server_error' }
+      create(:version, :production)
+    end
 
     context 'with Rails.env.test or Rails.env.development' do
       it 'renders json object with developer attributes' do
@@ -69,7 +75,10 @@ RSpec.describe V0::ApiController, type: :controller do
 
   context 'Unauthorized' do
     subject { JSON.parse(response.body)['errors'].first }
-    before(:each) { routes.draw { get 'unauthorized' => 'v0/api#unauthorized' } }
+    before(:each) do
+      routes.draw { get 'unauthorized' => 'v0/api#unauthorized' }
+      create(:version, :production)
+    end
 
     context 'with Rails.env.test or Rails.env.development' do
       it 'renders json object with developer attributes' do

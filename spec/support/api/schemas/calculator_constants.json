@@ -51,7 +51,18 @@
       "type": "object",
       "properties": {
         "version": {
-          "type": "null"
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number"
+            },
+            "created_at": {
+              "type": "string"
+            },
+            "preview": {
+              "type": "boolean"
+            }
+          }
         }
       },
       "required": [
