@@ -14,7 +14,7 @@ module V0
     def resolve_version
       v = params[:version]
       version = v.present? ? Version.find_by(number: v) : Version.default_version
-      raise ActiveRecord::RecordNotFound, "Version #{v} not found" unless version.try(:number)
+      raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless version.try(:number)
       @version = {
         number: version.number,
         created_at: version.created_at,

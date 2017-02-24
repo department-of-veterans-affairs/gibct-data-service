@@ -17,7 +17,6 @@ module V0
 
     # GET /v0/institutions?name=duluth&x=y
     def index
-      downcase_search_query_params!
       @meta = {
         version: @version,
         count: search_results.count,
@@ -38,28 +37,31 @@ module V0
 
     private
 
-    def downcase_search_query_params!
-      %i(type_name student_veteran_group
-         yellow_ribbon_scholarship principles_of_excellence
-         eight_keys_to_veteran_success caution country).each do |k|
-        params[k].try(:downcase!)
+    def normalized_query_params
+      query = params.deep_dup
+      query.tap do
+        query[:name].try(:strip!)
+        query[:state].try(:upcase!)
+        %i(type_name student_veteran_group yellow_ribbon_scholarship principles_of_excellence
+           eight_keys_to_veteran_success caution country).each do |k|
+          query[k].try(:downcase!)
+        end
       end
-      params[:state].try(:upcase!)
-      params[:name].try(:strip!)
     end
 
     # rubocop:disable AbcSize
     def search_results
+      @query ||= normalized_query_params
       Institution.version(@version[:number])
-                 .search(params[:name])
-                 .filter(:caution_flag, params[:caution]) # boolean
-                 .filter(:institution_type_name, params[:type_name])
-                 .filter(:country, params[:country])
-                 .filter(:state, params[:state])
-                 .filter(:student_veteran, params[:student_veteran_group]) # boolean
-                 .filter(:yr, params[:yellow_ribbon_scholarship]) # boolean
-                 .filter(:poe, params[:principles_of_excellence]) # boolean
-                 .filter(:eight_keys, params[:eight_keys_to_veteran_success]) # boolean
+                 .search(@query[:name])
+                 .filter(:caution_flag, @query[:caution]) # boolean
+                 .filter(:institution_type_name, @query[:type_name])
+                 .filter(:country, @query[:country])
+                 .filter(:state, @query[:state])
+                 .filter(:student_veteran, @query[:student_veteran_group]) # boolean
+                 .filter(:yr, @query[:yellow_ribbon_scholarship]) # boolean
+                 .filter(:poe, @query[:principles_of_excellence]) # boolean
+                 .filter(:eight_keys, @query[:eight_keys_to_veteran_success]) # boolean
     end
 
     def facets
