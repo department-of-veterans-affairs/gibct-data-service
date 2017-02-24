@@ -58,4 +58,28 @@ RSpec.describe DashboardsController, type: :controller do
       expect(Institution.count).to be_positive
     end
   end
+
+  describe 'GET export' do
+    login_user
+
+    before(:each) do
+      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+
+      InstitutionBuilder::TABLES.each do |klass|
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+      end
+
+      get :build
+    end
+
+    it 'causes a CSV to be exported' do
+      expect(Weam).to receive(:export)
+      get :export, csv_type: 'Weam', format: :csv
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export, csv_type: 'BlahBlah', format: :csv)).to redirect_to(action: :index)
+      expect(get(:export, csv_type: 'Weam', format: :xml)).to redirect_to(action: :index)
+    end
+  end
 end

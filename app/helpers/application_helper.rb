@@ -19,20 +19,22 @@ module ApplicationHelper
   end
 
   # Wraps an array of error messages in an html list with a label (optional) above it
-  def pretty_error(errors, label = '')
-    return '' if errors.blank?
+  def pretty_error(errors, error_label = '')
+    return '' if errors.blank? && error_label.blank?
 
     content_tag(:div, class: 'errors') do
-      concat(content_tag(:p, label)) if label.present?
+      concat(content_tag(:p, error_label)) if error_label.present?
 
-      concat(
-        content_tag(:ul) do
-          errors = [errors] unless errors.is_a? Array
-          errors.map do |error|
-            concat content_tag(:li, error)
+      if errors.present?
+        concat(
+          content_tag(:ul) do
+            errors = [errors] unless errors.is_a? Array
+            errors.map do |error|
+              concat content_tag(:li, error)
+            end
           end
-        end
-      )
+        )
+      end
     end
   end
 end
