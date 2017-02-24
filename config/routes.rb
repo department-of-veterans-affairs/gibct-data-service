@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   # For active? helper
   get '/dashboards' => 'dashboards#index'
+  get '/dashboards/build' => 'dashboards#build', as: :dashboard_build
   root 'dashboards#index'
 
   resources :uploads, except: [:new, :destroy, :edit, :update] do

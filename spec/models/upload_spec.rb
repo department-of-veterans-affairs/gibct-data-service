@@ -32,4 +32,28 @@ RSpec.describe Upload, type: :model do
       expect(Upload.first.csv).not_to be_nil
     end
   end
+
+  describe 'last_uploads' do
+    before(:each) do
+      # 3 Weam upload records
+      create_list :upload, 3
+      Upload.all[1].update(ok: true)
+
+      create_list :upload, 3, csv_name: 'crosswalk.csv', csv_type: 'Crosswalk'
+      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
+    end
+
+    it 'gets the latest upload for each csv_type' do
+      expect(Upload.last_uploads.length).to eq(2)
+    end
+
+    it 'gets only the latest upload for each csv_type' do
+      max_weam = Upload.find_by(csv_type: 'Weam', ok: true)
+      max_crosswalk = Upload.find_by(csv_type: 'Crosswalk', ok: true)
+      uploads = Upload.last_uploads
+
+      expect(uploads.where(csv_type: 'Weam').first).to eq(max_weam)
+      expect(uploads.where(csv_type: 'Crosswalk').first).to eq(max_crosswalk)
+    end
+  end
 end
