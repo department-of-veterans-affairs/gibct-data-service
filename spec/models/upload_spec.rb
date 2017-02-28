@@ -37,6 +37,14 @@ RSpec.describe Upload, type: :model do
     end
   end
 
+  describe 'ok?' do
+    it 'returns the value of the ok column' do
+      expect(subject.ok?).to eq(subject.ok)
+      subject.ok = !subject.ok
+      expect(subject.ok?).to eq(subject.ok)
+    end
+  end
+
   describe 'last_uploads' do
     before(:each) do
       # 3 Weam upload records

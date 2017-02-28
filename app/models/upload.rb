@@ -15,6 +15,10 @@ class Upload < ActiveRecord::Base
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
+  def ok?
+    ok
+  end
+
   def derive_dependent_columns
     self.csv = upload_file.try(:original_filename)
   end

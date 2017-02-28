@@ -10,7 +10,7 @@ class UploadsController < ApplicationController
     csv_type = params[:csv_type]
 
     @upload = Upload.new(csv_type: csv_type)
-    @upload.skip_lines = defaults[csv_type || 'generic']['skip_lines']
+    @upload.skip_lines = defaults(csv_type)['skip_lines']
   end
 
   def create
@@ -46,8 +46,8 @@ class UploadsController < ApplicationController
     @f ||= upload_params[:upload_file].try(:original_filename)
   end
 
-  def defaults
-    @defaults ||= YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+  def defaults(csv_type)
+    Rails.application.config.csv_defaults[csv_type || 'generic']
   end
 
   def merged_params
