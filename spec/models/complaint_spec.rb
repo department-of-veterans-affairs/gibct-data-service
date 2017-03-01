@@ -87,28 +87,32 @@ RSpec.describe Complaint, type: :model do
   describe 'rollup_sums' do
     describe 'by facility_code' do
       before(:each) do
+        institution = create :institution, :institution_builder
         create_list :complaint, 2, :all_issues, :institution_builder
-        Complaint.rollup_sums(:facility_code)
+
+        Complaint.rollup_sums(:facility_code, institution.version)
       end
 
       it 'the facility code sum fields contain the sums grouped by facility_code' do
-        Complaint.all.each do |complaint|
-          Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |fc_sum|
-            expect(complaint[fc_sum]).to eq(2)
-          end
+        institution = Institution.first
+
+        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |fc_sum|
+          expect(institution[fc_sum]).to eq(2)
         end
       end
     end
 
     describe 'by ope6' do
+      let(:version_number) {}
+
       before(:each) do
         # Different facility codes, same ope
-        create :institution, :institution_builder
+        institution = create :institution, :institution_builder
         create :institution, :institution_builder, facility_code: 'ZZZZZZZZ'
 
         # Generate complaints for only one of the facility_codes
         create_list :complaint, 5, :all_issues, :institution_builder
-        Complaint.rollup_sums(:ope6)
+        Complaint.rollup_sums(:ope6, institution.version)
       end
 
       it 'the institution receives the sums grouped by ope6' do

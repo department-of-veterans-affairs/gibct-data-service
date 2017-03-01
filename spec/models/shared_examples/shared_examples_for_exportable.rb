@@ -9,8 +9,7 @@ RSpec.shared_examples 'an exportable model' do |options|
 
   describe 'when exporting' do
     before(:each) do
-      user = create :user
-      described_class.load(csv_file, user, '', options)
+      described_class.load(csv_file, options)
     end
 
     it 'creates a string representation of a csv_file' do

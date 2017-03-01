@@ -13,17 +13,13 @@ RSpec.shared_examples 'a loadable model' do |options|
     let(:csv_file_invalid) { "./spec/fixtures/#{name}_invalid.csv" }
     let(:user) { User.first }
 
-    it 'adds a new upload record' do
-      expect { described_class.load(csv_file, user, '', options) }.to change { Upload.count }.by(1)
-    end
-
     context 'with an error-free csv file' do
       it 'deletes the old table content' do
-        expect { described_class.load(csv_file, user, '', options) }.to change { described_class.count }.from(5).to(2)
+        expect { described_class.load(csv_file, options) }.to change { described_class.count }.from(5).to(2)
       end
 
       it 'loads the table' do
-        results = described_class.load(csv_file, user, '', options)
+        results = described_class.load(csv_file, options)
 
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(2)
@@ -34,7 +30,7 @@ RSpec.shared_examples 'a loadable model' do |options|
       let(:csv_rows) { 2 }
 
       it 'does not load invalid records into the table' do
-        results = described_class.load(csv_file_invalid, user, '', options)
+        results = described_class.load(csv_file_invalid, options)
 
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(1)

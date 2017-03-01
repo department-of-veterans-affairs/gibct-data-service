@@ -18,8 +18,11 @@ class EightKey < ActiveRecord::Base
   def ope_or_cross
     return if ope.present? || cross.present?
 
-    errors.add(:ope, 'Ope cannot both be blank if cross (ipeds_id) is blank')
-    errors.add(:cross, 'Cross (ipeds_id) cannot both be blank if ope is blank')
+    msg = institution.present? ? "Institution '#{institution}' " : 'Institution '
+    msg += 'must have either an Ope or an Ipeds id, or both'
+
+    errors.add(:ope_and_cross, msg)
+    # errors.add(:cross, msg)
   end
 
   def derive_dependent_columns

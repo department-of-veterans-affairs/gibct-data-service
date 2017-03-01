@@ -63,8 +63,6 @@ class Complaint < ActiveRecord::Base
     complaints_other_by_ope_id_do_not_sum: :cobfc
   }.freeze
 
-  COLS_USED_IN_INSTITUTION = (FAC_CODE_ROLL_UP_SUMS.keys + OPE6_ROLL_UP_SUMS.keys).freeze
-
   CSV_CONVERTER_INFO = {
     'case id' => { column: :case_id, converter: BaseConverter },
     'level' => { column: :level, converter: BaseConverter },
@@ -101,14 +99,8 @@ class Complaint < ActiveRecord::Base
     COMPLAINT_COLUMNS.each_pair { |complaint, issue_regex| self[complaint] = issues =~ issue_regex ? 1 : 0 }
   end
 
-  def self.rollup_sums(on_column)
-    if on_column == :facility_code
-      rollup_sums = FAC_CODE_ROLL_UP_SUMS
-      update_table = 'complaints'
-    else
-      rollup_sums = OPE6_ROLL_UP_SUMS
-      update_table = 'institutions'
-    end
+  def self.rollup_sums(on_column, version_number)
+    rollup_sums = on_column == :facility_code ? FAC_CODE_ROLL_UP_SUMS : OPE6_ROLL_UP_SUMS
 
     set_clause = []
     sum_clause = []
@@ -119,10 +111,11 @@ class Complaint < ActiveRecord::Base
     end
 
     str = <<-SQL
-      UPDATE #{update_table} SET #{set_clause.join(', ')}
+      UPDATE institutions SET #{set_clause.join(', ')}
       FROM
         (SELECT "#{on_column}", #{sum_clause.join(', ')} FROM complaints GROUP BY #{on_column}) AS sums
-        WHERE #{update_table}.#{on_column} = sums.#{on_column} AND #{update_table}.#{on_column} IS NOT NULL
+        WHERE institutions.#{on_column} = sums.#{on_column} AND
+          institutions.version = #{version_number} AND institutions.#{on_column} IS NOT NULL
     SQL
 
     Complaint.connection.update(str)

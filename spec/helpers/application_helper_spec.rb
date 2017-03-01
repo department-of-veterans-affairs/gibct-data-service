@@ -41,6 +41,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     let(:ul) { '<ul><li>error1</li><li>error2</li></ul>' }
     let(:ul_with_label) { '<p>some label</p>' + ul }
+    let(:label_alone) { '<p>some label</p>' }
 
     def div_helper(inner)
       '<div class="errors">' + inner + '</div>'
@@ -61,8 +62,8 @@ RSpec.describe ApplicationHelper, type: :helper do
         expect(helper.pretty_error(errors, label)).to eq(div_helper(ul_with_label))
       end
 
-      it 'returns an empty string when there are no errors' do
-        expect(helper.pretty_error([], label)).to be_blank
+      it 'returns the label when there are no errors' do
+        expect(helper.pretty_error([], label)).to eq(div_helper(label_alone))
       end
     end
   end
