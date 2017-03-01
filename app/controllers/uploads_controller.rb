@@ -17,7 +17,7 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
     data = load_csv
 
-    if @upload.ok
+    if @upload.ok?
       failed_instances = data.failed_instances
       redirect_to @upload, alert: errors_for_alert(failed_instances), notice: message_for_notice(failed_instances)
     else
