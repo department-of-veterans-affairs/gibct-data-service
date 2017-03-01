@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Institution, type: :model do
+  describe 'when importing or exporting' do
+    before(:each) { create :version, production: false }
+
+    it_behaves_like 'a loadable model', skip_lines: 0
+    it_behaves_like 'an exportable model', skip_lines: 0
+  end
+
   describe 'when validating' do
     subject { create :institution }
 

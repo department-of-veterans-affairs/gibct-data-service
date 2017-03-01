@@ -18,10 +18,17 @@ module CsvHelper
       CSV.generate do |csv|
         csv << csv_headers.values
 
-        klass.find_each do |record|
+        set_scope.find_each do |record|
           csv << csv_headers.keys.map { |k| record[k] }
         end
       end
+    end
+
+    def set_scope
+      return klass unless klass == Institution
+
+      version = Version.preview_version
+      version.present? ? Institution.version(version.number) : Institution
     end
   end
 end

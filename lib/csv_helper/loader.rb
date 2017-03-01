@@ -8,7 +8,13 @@ module CsvHelper
 
     def load(file, options = {})
       delete_all
-      records = load_from_csv(file, options)
+      records = { valid: [], invalid: [] }
+
+      records = if klass == Institution
+                  load_from_csv_with_version(file, records, options)
+                else
+                  load_from_csv(file, records, options)
+                end
 
       results = klass.import records[:valid], validate: false, ignore: true
       results.failed_instances = records[:invalid]
@@ -18,18 +24,32 @@ module CsvHelper
 
     private
 
-    def load_from_csv(file, options)
-      records = { valid: [], invalid: [] }
-
+    def load_from_csv(file, records, options)
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
       row_offset = 2 + (options[:skip_lines] || 0)
       SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
         record = row_to_record(row, i + row_offset)
-        record.errors.any? ? records[:invalid] << record : records[:valid] << record
+        save_record_to_records(records, record)
       end
 
       records
+    end
+
+    def load_from_csv_with_version(file, records, options)
+      version = Version.preview_version
+      row_offset = 2 + (options[:skip_lines] || 0)
+
+      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
+        record = row_to_record(row.merge(version: version.number), i + row_offset)
+        save_record_to_records(records, record)
+      end
+
+      records
+    end
+
+    def save_record_to_records(records, record)
+      record.errors.any? ? records[:invalid] << record : records[:valid] << record
     end
 
     def row_to_record(row, i)
