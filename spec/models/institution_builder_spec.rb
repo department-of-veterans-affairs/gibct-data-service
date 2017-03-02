@@ -16,10 +16,36 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     it 'returns the new preview version record if sucessful' do
-      version = InstitutionBuilder.run(user)
+      create :version
+      old_version = Version.preview_version
+
+      version = InstitutionBuilder.run(user)[:version]
 
       expect(version).to eq(Version.preview_version)
+      expect(version).not_to eq(old_version)
       expect(version.production).to be_falsey
+    end
+
+    it 'returns a nil error_msg if sucessful' do
+      error_msg = InstitutionBuilder.run(user)[:error_msg]
+      expect(error_msg).to be_nil
+    end
+
+    it 'returns an error message if not successful' do
+      allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+
+      error_msg = InstitutionBuilder.run(user)[:error_msg]
+      expect(error_msg).not_to be_nil
+    end
+
+    it 'does not change the institutions or versions if not successful' do
+      allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+      create :version
+      version = Version.preview_version
+
+      InstitutionBuilder.run(user)
+      expect(Institution.count).to be_zero
+      expect(Version.preview_version).to eq(version)
     end
 
     describe 'when initializing with Weam data' do

@@ -7,7 +7,16 @@ class DashboardsController < ApplicationController
   end
 
   def build
-    @version = InstitutionBuilder.run(current_user)
+    results = InstitutionBuilder.run(current_user)
+
+    @version = results[:version]
+    @error_msg = results[:error_msg]
+
+    if @error_msg.present?
+      flash.alert = "Preview Data not built: #{@error_msg}"
+    else
+      flash.notice = "Preview Data (#{@version.number}) built successfully"
+    end
   end
 
   def export

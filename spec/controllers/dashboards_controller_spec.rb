@@ -49,13 +49,21 @@ RSpec.describe DashboardsController, type: :controller do
       InstitutionBuilder::TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
-
-      get :build
     end
 
-    it 'builds a new institutions table and returns the version' do
+    it 'builds a new institutions table and returns the version when successful' do
+      get :build
+
       expect(assigns(:version)).not_to be_nil
       expect(Institution.count).to be_positive
+    end
+
+    it 'does not change the institutions table when not successful' do
+      allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+      get :build
+
+      expect(assigns(:error_msg)).to eq('BOOM!')
+      expect(Institution.count).to be_zero
     end
   end
 
