@@ -130,7 +130,7 @@ RSpec.describe DashboardsController, type: :controller do
 
         it 'returns an error message' do
           get :push
-          expect(flash.alert).not_to be_blank
+          expect(flash.alert).to eq('Production data not updated, remains at previous production version')
         end
       end
     end

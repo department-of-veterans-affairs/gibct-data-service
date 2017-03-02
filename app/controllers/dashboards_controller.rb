@@ -42,8 +42,7 @@ class DashboardsController < ApplicationController
       if pv.persisted?
         flash.notice = 'Production data updated'
       else
-
-        flash.alert = "Production data not updated: #{version.inspect} #{pv.errors.inspect}"
+        flash.alert = 'Production data not updated, remains at previous production version'
       end
     end
 

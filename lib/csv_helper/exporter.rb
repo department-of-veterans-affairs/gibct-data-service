@@ -18,13 +18,13 @@ module CsvHelper
       CSV.generate do |csv|
         csv << csv_headers.values
 
-        set_scope.find_each do |record|
+        set_class_for_export.find_each do |record|
           csv << csv_headers.keys.map { |k| record[k] }
         end
       end
     end
 
-    def set_scope
+    def set_class_for_export
       return klass unless klass == Institution
 
       version = Version.preview_version

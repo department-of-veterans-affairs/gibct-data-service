@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module CsvHelper
   module Loader
+    CSV_FIRST_LINE = 2
+
     SMARTER_CSV_OPTIONS = {
       force_utf8: true, remove_zero_values: false, remove_empty_hashes: true,
       remove_empty_values: true, convert_values_to_numeric: false, remove_unmapped_keys: true
@@ -27,7 +29,7 @@ module CsvHelper
     def load_from_csv(file, records, options)
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
-      row_offset = 2 + (options[:skip_lines] || 0)
+      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
       SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
         record = row_to_record(row, i + row_offset)
         save_record_to_records(records, record)
@@ -38,7 +40,7 @@ module CsvHelper
 
     def load_from_csv_with_version(file, records, options)
       version = Version.preview_version
-      row_offset = 2 + (options[:skip_lines] || 0)
+      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
         record = row_to_record(row.merge(version: version.number), i + row_offset)
