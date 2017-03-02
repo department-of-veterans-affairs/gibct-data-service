@@ -9,7 +9,7 @@ class Upload < ActiveRecord::Base
 
   validates :csv, presence: true
   validates :csv_type, inclusion: {
-    in: InstitutionBuilder::TABLES.map(&:name),
+    in: InstitutionBuilder::TABLES.map(&:name).push(Institution),
     message: '%{value} is not a valid CSV type'
   }
 

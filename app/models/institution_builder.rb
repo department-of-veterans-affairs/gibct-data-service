@@ -26,6 +26,8 @@ module InstitutionBuilder
   end
 
   def self.run_insertions(version_number)
+    Institution.connection.execute('BEGIN;')
+
     initialize_with_weams(version_number)
     add_crosswalk(version_number)
     add_sva(version_number)
@@ -46,15 +48,22 @@ module InstitutionBuilder
     add_hcm(version_number)
     add_complaint(version_number)
     add_outcome(version_number)
+
+    Institution.connection.execute('COMMIT;')
+    nil
+  rescue StandardError => e
+    Institution.connection.execute('ROLLBACK;')
+    e.message
   end
 
   def self.run(user)
     version = Version.create(production: false, user: user)
 
     default_timestamps_to_now
-    run_insertions(version.number)
+    error_msg = run_insertions(version.number)
     drop_default_timestamps
 
+    raise(StandardError, error_msg) if error_msg.present?
     version
   end
 
