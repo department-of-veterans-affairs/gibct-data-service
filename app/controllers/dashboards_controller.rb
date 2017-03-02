@@ -34,7 +34,7 @@ class DashboardsController < ApplicationController
   def push
     version = Version.preview_version
 
-    if version.nil?
+    if version.blank?
       flash.alert = 'No preview version available'
     else
       pv = Version.create(number: version.number, production: true, user: current_user)
@@ -45,9 +45,9 @@ class DashboardsController < ApplicationController
 
         flash.alert = "Production data not updated: #{version.inspect} #{pv.errors.inspect}"
       end
-
-      redirect_to dashboards_path
     end
+
+    redirect_to dashboards_path
   end
 
   private

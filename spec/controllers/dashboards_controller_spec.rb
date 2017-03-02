@@ -90,4 +90,49 @@ RSpec.describe DashboardsController, type: :controller do
       expect(get(:export, csv_type: 'Weam', format: :xml)).to redirect_to(action: :index)
     end
   end
+
+  describe 'GET push' do
+    login_user
+
+    context 'with no existing preview records' do
+      it 'returns an error message' do
+        get :push
+
+        expect(flash.alert).to eq('No preview version available')
+        expect(Version.production_version).to be_blank
+      end
+    end
+
+    describe 'with existing preview records' do
+      before(:each) do
+        create :version
+      end
+
+      context 'and is sucessful' do
+        it 'adds a new version record' do
+          expect { get(:push) }.to change { Version.count }.by(1)
+        end
+
+        it 'sets the new production version number to the preview number' do
+          get :push
+          expect(Version.production_version.number).to eq(Version.preview_version.number)
+        end
+      end
+
+      context 'and is not successful' do
+        before(:each) do
+          allow(Version).to receive(:create).and_return(Version.new)
+        end
+
+        it 'does not add a new version' do
+          expect { get(:push) }.to change { Version.count }.by(0)
+        end
+
+        it 'returns an error message' do
+          get :push
+          expect(flash.alert).not_to be_blank
+        end
+      end
+    end
+  end
 end
