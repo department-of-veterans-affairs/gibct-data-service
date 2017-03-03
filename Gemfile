@@ -80,6 +80,7 @@ group :development, :test do
   gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
+  gem 'rubyzip', '~> 1.0', '>= 1.2.1'
 end
 
 group :development do
