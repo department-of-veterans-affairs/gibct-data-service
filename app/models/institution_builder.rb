@@ -59,11 +59,24 @@ module InstitutionBuilder
         run_insertions(version.number)
         drop_default_timestamps
       end
+
+      notice = 'Institution build was successful'
+      success = true
+    rescue ActiveRecord::StatementInvalid => e
+      notice = 'There was an error occurring at the database level'
+      error_msg = e.original_exception.result.error_message
+      Rails.logger.error "#{notice}: #{error_msg}"
+
+      success = false
     rescue StandardError => e
+      notice = 'There was an error of unexpected origin'
       error_msg = e.message
+      Rails.logger.error "#{notice}: #{error_msg}"
+
+      success = false
     end
 
-    { version: Version.preview_version, error_msg: error_msg }
+    { version: Version.preview_version, error_msg: error_msg, notice: notice, success: success }
   end
 
   def self.initialize_with_weams(version_number)

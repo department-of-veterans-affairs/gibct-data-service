@@ -15,37 +15,70 @@ RSpec.describe InstitutionBuilder, type: :model do
       create :crosswalk, :institution_builder
     end
 
-    it 'returns the new preview version record if sucessful' do
-      create :version
-      old_version = Version.preview_version
+    context 'when successful' do
+      it 'returns a success = true' do
+        expect(InstitutionBuilder.run(user)[:success]).to be_truthy
+      end
 
-      version = InstitutionBuilder.run(user)[:version]
+      it 'returns the new preview version record if sucessful' do
+        create :version
+        old_version = Version.preview_version
 
-      expect(version).to eq(Version.preview_version)
-      expect(version).not_to eq(old_version)
-      expect(version.production).to be_falsey
+        version = InstitutionBuilder.run(user)[:version]
+
+        expect(version).to eq(Version.preview_version)
+        expect(version).not_to eq(old_version)
+        expect(version.production).to be_falsey
+      end
+
+      it 'returns a nil error_msg if sucessful' do
+        expect(InstitutionBuilder.run(user)[:error_msg]).to be_nil
+      end
+
+      it 'returns a success notice when successful' do
+        expect(InstitutionBuilder.run(user)[:notice]).to eq('Institution build was successful')
+      end
     end
 
-    it 'returns a nil error_msg if sucessful' do
-      error_msg = InstitutionBuilder.run(user)[:error_msg]
-      expect(error_msg).to be_nil
-    end
+    context 'when not successful' do
+      it 'returns a success = false' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        expect(InstitutionBuilder.run(user)[:success]).to be_falsey
+      end
 
-    it 'returns an error message if not successful' do
-      allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+      it 'returns an error message' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        expect(InstitutionBuilder.run(user)[:error_msg]).to eq('BOOM!')
+      end
 
-      error_msg = InstitutionBuilder.run(user)[:error_msg]
-      expect(error_msg).not_to be_nil
-    end
+      it 'logs errors at the database level' do
+        pg_result = double('PG::Result Double', error_message: 'BOOM!')
+        pg_error = double('PG::Error Double', result: pg_result)
 
-    it 'does not change the institutions or versions if not successful' do
-      allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-      create :version
-      version = Version.preview_version
+        statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
+        statement_invalid.set_backtrace(%(backtrace))
 
-      InstitutionBuilder.run(user)
-      expect(Institution.count).to be_zero
-      expect(Version.preview_version).to eq(version)
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(statement_invalid)
+        expect(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
+        InstitutionBuilder.run(user)
+      end
+
+      it 'logs errors at the Rails level' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+
+        expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
+        InstitutionBuilder.run(user)
+      end
+
+      it 'does not change the institutions or versions if not successful' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        create :version
+        version = Version.preview_version
+
+        InstitutionBuilder.run(user)
+        expect(Institution.count).to be_zero
+        expect(Version.preview_version).to eq(version)
+      end
     end
 
     describe 'when initializing with Weam data' do
