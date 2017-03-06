@@ -168,7 +168,7 @@ module InstitutionBuilder
         AND accreditations.accreditation_status =
     SQL
 
-    ['probation', 'show cause'].each do |acc_status|
+    ['Probation', 'Show Cause'].each do |acc_status|
       Institution.connection.update(str + " '#{acc_status}';")
     end
 
@@ -340,7 +340,7 @@ module InstitutionBuilder
       UPDATE institutions SET
         sec_702 = s702_list.sec_702, caution_flag = NOT s702_list.sec_702,
         caution_flag_reason = CASE WHEN NOT s702_list.sec_702
-          THEN concat_ws(',', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
+          THEN concat_ws(', ', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
         END
       FROM (
         SELECT facility_code, sec702s.sec_702 FROM institutions
@@ -362,7 +362,7 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(',', caution_flag_reason, settlement_list.descriptions)
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, settlement_list.descriptions)
       FROM (
         SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
         FROM settlements

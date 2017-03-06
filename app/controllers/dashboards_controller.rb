@@ -22,12 +22,11 @@ class DashboardsController < ApplicationController
   def export
     klass = csv_model(params[:csv_type])
     csv_data = klass.export
-    raise StandardError, 'No data to export.' if csv_data.blank?
 
     respond_to do |format|
       format.csv { send_data csv_data, type: 'text/csv' }
     end
-  rescue StandardError => e
+  rescue CsvTypeError => e
     redirect_to dashboards_path, alert: e.message
   end
 
@@ -53,6 +52,10 @@ class DashboardsController < ApplicationController
 
   def csv_model(csv_type)
     return Institution if csv_type == 'Institution'
-    InstitutionBuilder::TABLES.select { |model| model.name == csv_type }.first
+
+    model = InstitutionBuilder::TABLES.select { |klass| klass.name == csv_type }.first
+    raise CsvTypeError, csv_type if model.blank?
+
+    model
   end
 end
