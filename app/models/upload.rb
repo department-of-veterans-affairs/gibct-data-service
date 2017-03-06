@@ -17,7 +17,7 @@ class Upload < ActiveRecord::Base
   end
 
   def csv_type_check?
-    return true if InstitutionBuilder::TABLES.map(&:name).push(Institution).include?(csv_type)
+    return true if InstitutionBuilder::TABLES.map(&:name).push('Institution').include?(csv_type)
 
     errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
     false
