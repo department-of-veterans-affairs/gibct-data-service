@@ -1,4 +1,5 @@
 <div class="form-group">
   <%= f.label(:csv_file_type) %><br />
-  <%= f.text_field(:csv_type, disabled: true) %>
+  <%= f.text_field(:csv_type, disabled: true, name: "csv_type_display", id: "csv_type_display") %>
+  <%= f.hidden_field(:csv_type) %>
 </div>

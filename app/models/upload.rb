@@ -8,15 +8,19 @@ class Upload < ActiveRecord::Base
   validates :user_id, presence: true
 
   validates :csv, presence: true
-  validates :csv_type, inclusion: {
-    in: InstitutionBuilder::TABLES.map(&:name).push(Institution),
-    message: '%{value} is not a valid CSV type'
-  }
+  validate :csv_type_check?
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
   def ok?
     ok
+  end
+
+  def csv_type_check?
+    return true if InstitutionBuilder::TABLES.map(&:name).push(Institution).include?(csv_type)
+
+    errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
+    false
   end
 
   def derive_dependent_columns

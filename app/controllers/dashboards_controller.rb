@@ -21,12 +21,12 @@ class DashboardsController < ApplicationController
 
   def export
     klass = csv_model(params[:csv_type])
-    csv_data = klass.export
 
     respond_to do |format|
-      format.csv { send_data csv_data, type: 'text/csv' }
+      format.csv { send_data klass.export, type: 'text/csv' }
     end
-  rescue CsvTypeError => e
+  rescue ArgumentError, ActionController::UnknownFormat => e
+    Rails.logger.error e.message
     redirect_to dashboards_path, alert: e.message
   end
 
@@ -54,8 +54,8 @@ class DashboardsController < ApplicationController
     return Institution if csv_type == 'Institution'
 
     model = InstitutionBuilder::TABLES.select { |klass| klass.name == csv_type }.first
-    raise CsvTypeError, csv_type if model.blank?
+    return model if model.present?
 
-    model
+    raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
   end
 end
