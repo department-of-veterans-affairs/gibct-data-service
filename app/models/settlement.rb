@@ -7,7 +7,7 @@ class Settlement < ActiveRecord::Base
     'instnm' => { column: :institution, converter: InstitutionConverter },
     'school_system_code' => { column: :school_system_code, converter: NumberConverter },
     'school_system_name' => { column: :school_system_name, converter: BaseConverter },
-    'settlement_description' => { column: :settlement_description, converter: BaseConverter },
+    'settlement_description' => { column: :settlement_description, converter: DisplayConverter },
     'settlement_date' => { column: :settlement_date, converter: BaseConverter },
     'settlement_link' => { column: :settlement_link, converter: BaseConverter }
   }.freeze
