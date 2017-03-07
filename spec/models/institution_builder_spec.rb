@@ -15,11 +15,70 @@ RSpec.describe InstitutionBuilder, type: :model do
       create :crosswalk, :institution_builder
     end
 
-    it 'returns the new preview version record if sucessful' do
-      version = InstitutionBuilder.run(user)
+    context 'when successful' do
+      it 'returns a success = true' do
+        expect(InstitutionBuilder.run(user)[:success]).to be_truthy
+      end
 
-      expect(version).to eq(Version.preview_version)
-      expect(version.production).to be_falsey
+      it 'returns the new preview version record if sucessful' do
+        create :version
+        old_version = Version.preview_version
+
+        version = InstitutionBuilder.run(user)[:version]
+
+        expect(version).to eq(Version.preview_version)
+        expect(version).not_to eq(old_version)
+        expect(version.production).to be_falsey
+      end
+
+      it 'returns a nil error_msg if sucessful' do
+        expect(InstitutionBuilder.run(user)[:error_msg]).to be_nil
+      end
+
+      it 'returns a success notice when successful' do
+        expect(InstitutionBuilder.run(user)[:notice]).to eq('Institution build was successful')
+      end
+    end
+
+    context 'when not successful' do
+      it 'returns a success = false' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        expect(InstitutionBuilder.run(user)[:success]).to be_falsey
+      end
+
+      it 'returns an error message' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        expect(InstitutionBuilder.run(user)[:error_msg]).to eq('BOOM!')
+      end
+
+      it 'logs errors at the database level' do
+        pg_result = double('PG::Result Double', error_message: 'BOOM!')
+        pg_error = double('PG::Error Double', result: pg_result)
+
+        statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
+        statement_invalid.set_backtrace(%(backtrace))
+
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(statement_invalid)
+        expect(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
+        InstitutionBuilder.run(user)
+      end
+
+      it 'logs errors at the Rails level' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+
+        expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
+        InstitutionBuilder.run(user)
+      end
+
+      it 'does not change the institutions or versions if not successful' do
+        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        create :version
+        version = Version.preview_version
+
+        InstitutionBuilder.run(user)
+        expect(Institution.count).to be_zero
+        expect(Version.preview_version).to eq(version)
+      end
     end
 
     describe 'when initializing with Weam data' do
@@ -118,7 +177,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'does not add non-current accreditations' do
-          create :accreditation, :institution_builder, periods: 'expired accreditation'
+          create :accreditation, :institution_builder, periods: 'Expired accreditation'
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).to be_nil
@@ -172,14 +231,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the accreditation status' do
-        it "is set only for probation and 'show cause'" do
-          create :accreditation, :institution_builder, accreditation_status: 'expired'
+        it "is set only for 'Probation' and 'Show Cause'" do
+          create :accreditation, :institution_builder, accreditation_status: 'Expired'
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_status).to be_nil
         end
 
-        ['probation', 'show cause'].each do |status|
+        ['Probation', 'Show Cause'].each do |status|
           it "is set for #{status}" do
             create :accreditation, :institution_builder, accreditation_status: status
             InstitutionBuilder.run(user)
@@ -188,26 +247,26 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
 
-        it "prefers 'show cause' over probation for the same accreditation type" do
-          create :accreditation, :institution_builder, accreditation_status: 'show cause'
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+        it "prefers 'Show Cause' over 'Probation' for the same accreditation type" do
+          create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           InstitutionBuilder.run(user)
 
-          expect(institution.accreditation_status).to eq('show cause')
+          expect(institution.accreditation_status).to eq('Show Cause')
         end
 
         it 'only uses the accreditation_status for the accreditation_type' do
-          create :accreditation, :institution_builder, accreditation_status: 'show cause'
-          create :accreditation, :institution_builder, accreditation_status: 'probation', agency_name: 'Biblical'
+          create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation', agency_name: 'Biblical'
           InstitutionBuilder.run(user)
 
-          expect(institution.accreditation_status).to eq('probation')
+          expect(institution.accreditation_status).to eq('Probation')
         end
       end
 
       describe 'the caution_flag' do
         it 'is set to true for any non-nil status' do
-          create :accreditation, :institution_builder, accreditation_status: 'expired'
+          create :accreditation, :institution_builder, accreditation_status: 'Expired'
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag).to be_truthy
@@ -223,14 +282,14 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       describe 'the caution_flag_reason' do
         it 'concatentates multiple accreditation cautions' do
-          create :accreditation, :institution_builder, accreditation_status: 'show cause'
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
-          create :accreditation, :institution_builder, accreditation_status: 'expired'
+          create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Expired'
           InstitutionBuilder.run(user)
 
           expect(
             institution.caution_flag_reason
-          ).to match(/show cause/).and match(/probation/).and match(/expired/)
+          ).to match(/Show Cause/).and match(/Probation/).and match(/Expired/)
         end
       end
     end
@@ -325,15 +384,15 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'contentates the existing reasons when dod_status is true' do
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :mou, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institution.caution_flag_reason).to match(/Accreditation/).and match(/probation/)
+          expect(institution.caution_flag_reason).to match(/Accreditation/).and match(/Probation/)
         end
 
         it 'is unaltered when dod_status is not true' do
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :mou, :institution_builder, :by_title_iv
 
           InstitutionBuilder.run(user)
@@ -550,7 +609,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'concatenates the sec_702 reason when sec_702 is false' do
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :sec702, :institution_builder
           InstitutionBuilder.run(user)
 
@@ -558,7 +617,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is left unaltered when sec_702 is true' do
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :sec702_school, :institution_builder, sec_702: true
           InstitutionBuilder.run(user)
 
@@ -599,7 +658,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is concatenated with the settlement_description' do
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :settlement, :institution_builder
           InstitutionBuilder.run(user)
 
@@ -640,7 +699,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is concatenated with the hcm_reason' do
-          create :accreditation, :institution_builder, accreditation_status: 'probation'
+          create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :hcm, :institution_builder
           InstitutionBuilder.run(user)
 

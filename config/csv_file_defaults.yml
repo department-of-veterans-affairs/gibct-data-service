@@ -107,3 +107,8 @@ Outcome:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+Institution:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"

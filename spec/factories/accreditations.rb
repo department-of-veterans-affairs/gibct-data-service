@@ -16,6 +16,7 @@ FactoryGirl.define do
     agency_name 'sticky wicket acupuncture association'
     periods '01/01/2016 - current'
     csv_accreditation_type 'institutional'
+    accreditation_status 'Resigned'
 
     trait :by_campus do
       institution_name nil
@@ -36,7 +37,8 @@ FactoryGirl.define do
         institution_name: institution_name, campus_name: campus_name,
         ope: ope, institution_ipeds_unitid: institution_ipeds_unitid,
         campus_ipeds_unitid: campus_ipeds_unitid, agency_name: agency_name,
-        periods: periods, csv_accreditation_type: csv_accreditation_type
+        periods: periods, csv_accreditation_type: csv_accreditation_type,
+        accreditation_status: accreditation_status
       )
     end
   end

@@ -27,7 +27,7 @@ class Accreditation < ActiveRecord::Base
     'accreditation_status' => { column: :accreditation_csv_status, converter: BaseConverter },
     'accreditation_date_type' => { column: :accreditation_date_type, converter: BaseConverter },
     'periods' => { column: :periods, converter: BaseConverter },
-    'last action' => { column: :accreditation_status, converter: BaseConverter }
+    'last action' => { column: :accreditation_status, converter: DisplayConverter }
   }.freeze
 
   # The ACCREDITATIONS hash maps accreditation types (Regional, National, or
@@ -47,9 +47,9 @@ class Accreditation < ActiveRecord::Base
   # LAST_ACTIONS are an array of strings that refer to changes to accreditation
   # from which caution flags are derived ('show cause' and 'probation').
   LAST_ACTIONS = [
-    'resigned', 'terminated', 'closed by institution', 'probation',
-    'show cause', 'expired', 'no longer recognized', 'accredited',
-    'resigned under show cause', 'denied full accreditation', 'pre-accredited'
+    'Resigned', 'Terminated', 'Closed By Institution', 'Probation',
+    'Show Cause', 'Expired', 'No Longer Recognized', 'Accredited',
+    'Resigned Under Show Cause', 'Denied Full Accreditation', 'Pre-Accredited'
   ].freeze
 
   # CSV_ACCREDITATION_TYPES are used to detail accreditation types in the CSV.
@@ -58,6 +58,7 @@ class Accreditation < ActiveRecord::Base
 
   validates :agency_name, presence: true
   validates :accreditation_status, inclusion: { in: LAST_ACTIONS }, allow_blank: true
+  validates :csv_accreditation_type, inclusion: { in: CSV_ACCREDITATION_TYPES }, allow_blank: false
 
   after_initialize :derive_dependent_columns
 

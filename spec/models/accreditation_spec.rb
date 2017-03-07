@@ -48,5 +48,18 @@ RSpec.describe Accreditation, type: :model do
         end
       end
     end
+
+    it 'requires an agency_name' do
+      expect(build(:accreditation, agency_name: nil)).not_to be_valid
+    end
+
+    it 'requires a valid accreditation_status' do
+      expect(build(:accreditation, accreditation_status: 'porcupine')).not_to be_valid
+    end
+
+    it 'requires a valid csv_accreditation_type' do
+      expect(build(:accreditation, csv_accreditation_type: nil)).not_to be_valid
+      expect(build(:accreditation, csv_accreditation_type: 'porcupine')).not_to be_valid
+    end
   end
 end

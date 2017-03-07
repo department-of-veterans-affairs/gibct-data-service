@@ -49,13 +49,34 @@ module InstitutionBuilder
   end
 
   def self.run(user)
-    version = Version.create(production: false, user: user)
+    error_msg = nil
 
-    default_timestamps_to_now
-    run_insertions(version.number)
-    drop_default_timestamps
+    begin
+      Institution.transaction do
+        version = Version.create!(production: false, user: user)
 
-    version
+        default_timestamps_to_now
+        run_insertions(version.number)
+        drop_default_timestamps
+      end
+
+      notice = 'Institution build was successful'
+      success = true
+    rescue ActiveRecord::StatementInvalid => e
+      notice = 'There was an error occurring at the database level'
+      error_msg = e.original_exception.result.error_message
+      Rails.logger.error "#{notice}: #{error_msg}"
+
+      success = false
+    rescue StandardError => e
+      notice = 'There was an error of unexpected origin'
+      error_msg = e.message
+      Rails.logger.error "#{notice}: #{error_msg}"
+
+      success = false
+    end
+
+    { version: Version.preview_version, error_msg: error_msg, notice: notice, success: success }
   end
 
   def self.initialize_with_weams(version_number)
@@ -117,49 +138,39 @@ module InstitutionBuilder
     # Set the accreditation_type according to the hierarchy hybrid < national < regional
     # We include only those accreditation that are institutional and currently active.
     str = <<-SQL
-      UPDATE institutions SET accreditation_type = CASE
-        WHEN at_types @> '{ regional }' THEN 'regional'
-        WHEN at_types @> '{ national }' THEN 'national'
-        WHEN at_types @> '{ hybrid }' THEN 'hybrid'
-        ELSE NULL
-      END
-      FROM (
-        SELECT "cross", array_agg(DISTINCT(accreditation_type)) AS at_types
-        FROM accreditations
-        WHERE "cross" IS NOT NULL
-          AND accreditation_type IS NOT NULL
-          AND periods LIKE '%current%'
-          AND csv_accreditation_type = 'institutional'
-        GROUP BY "cross") AS cross_type_arr
-      WHERE cross_type_arr.cross = institutions.cross
-        AND institutions.version = #{version_number};
+      UPDATE institutions SET
+        accreditation_type = accreditations.accreditation_type
+      FROM accreditations
+      WHERE institutions.cross = accreditations.cross
+        AND accreditations.cross IS NOT NULL
+        AND accreditations.periods LIKE '%current%'
+        AND accreditations.csv_accreditation_type = 'institutional'
+        AND institutions.version = #{version_number}
+        AND accreditations.accreditation_type =
     SQL
 
-    Institution.connection.update(str)
+    %w(hybrid national regional).each do |acc_type|
+      Institution.connection.update(str + " '#{acc_type}';")
+    end
 
     # Set the accreditation_status according to the hierarchy probation < show cause aligned by
     # accreditation_type
     str = <<-SQL
-      UPDATE institutions SET accreditation_status = CASE
-        WHEN as_statuses @> '{ show cause }' THEN 'show cause'
-        WHEN as_statuses @> '{ probation }' THEN 'probation'
-        ELSE NULL
-      END
-      FROM (
-        SELECT "cross", accreditation_type, array_agg(DISTINCT(accreditation_status)) AS as_statuses
-        FROM accreditations
-        WHERE "cross" IS NOT NULL
-          AND accreditation_type IS NOT NULL
-          AND (accreditation_status = 'probation' OR accreditation_status = 'show cause')
-          AND periods LIKE '%current%'
-          AND csv_accreditation_type = 'institutional'
-        GROUP BY "cross", accreditation_type) AS cross_status_arr
-      WHERE institutions.cross = cross_status_arr.cross
-        AND institutions.accreditation_type = cross_status_arr.accreditation_type
-        AND institutions.version = #{version_number};
+      UPDATE institutions SET
+        accreditation_status = accreditations.accreditation_status
+      FROM accreditations
+      WHERE institutions.cross = accreditations.cross
+        AND institutions.accreditation_type = accreditations.accreditation_type
+        AND accreditations.cross IS NOT NULL
+        AND accreditations.periods LIKE '%current%'
+        AND accreditations.csv_accreditation_type = 'institutional'
+        AND institutions.version = #{version_number}
+        AND accreditations.accreditation_status =
     SQL
 
-    Institution.connection.update(str)
+    ['Probation', 'Show Cause'].each do |acc_status|
+      Institution.connection.update(str + " '#{acc_status}';")
+    end
 
     # Sets the caution flag for all accreditations that have a non-null status. Note,
     # that institutional type accreditations are always, null, probation, or show cause.
@@ -329,7 +340,7 @@ module InstitutionBuilder
       UPDATE institutions SET
         sec_702 = s702_list.sec_702, caution_flag = NOT s702_list.sec_702,
         caution_flag_reason = CASE WHEN NOT s702_list.sec_702
-          THEN concat_ws(',', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
+          THEN concat_ws(', ', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
         END
       FROM (
         SELECT facility_code, sec702s.sec_702 FROM institutions
@@ -351,7 +362,7 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(',', caution_flag_reason, settlement_list.descriptions)
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, settlement_list.descriptions)
       FROM (
         SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
         FROM settlements

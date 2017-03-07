@@ -2,6 +2,8 @@
 class UploadsController < ApplicationController
   include Flashable
 
+  VALID_CSVS = InstitutionBuilder::TABLES.map(&:name)
+
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
@@ -11,6 +13,11 @@ class UploadsController < ApplicationController
 
     @upload = Upload.new(csv_type: csv_type)
     @upload.skip_lines = defaults(csv_type)['skip_lines']
+
+    return if @upload.csv_type_check?
+
+    flash.alert = errors_for_alert([@upload])
+    @upload.csv_type = nil
   end
 
   def create
@@ -19,7 +26,11 @@ class UploadsController < ApplicationController
 
     if @upload.ok?
       failed_instances = data.failed_instances
-      redirect_to @upload, alert: errors_for_alert(failed_instances), notice: message_for_notice(failed_instances)
+      warnings = errors_for_alert(failed_instances)
+
+      Rails.logger.warn warnings
+
+      redirect_to @upload, alert: warnings, notice: message_for_notice(failed_instances)
     else
       render :new, alert: errors_for_alert([@upload]), notice: "Failed to upload #{original_filename}."
     end
@@ -47,7 +58,7 @@ class UploadsController < ApplicationController
   end
 
   def defaults(csv_type)
-    Rails.application.config.csv_defaults[csv_type || 'generic']
+    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
   end
 
   def merged_params
