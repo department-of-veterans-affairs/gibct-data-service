@@ -78,9 +78,9 @@ seed_table(Complaint, user, skip_lines: 7)
 seed_table(Outcome, user)
 
 puts 'Building Institutions'
-version = InstitutionBuilder.run(user)
+result = InstitutionBuilder.run(user)
 
-puts "Setting version: #{version.number} as production"
-Version.create(user: user, number: version.number, production: true)
+puts "Setting version: #{result[:version].number} as production"
+Version.create(user: user, number: result[:version].number, production: true)
 
 puts "Done ... Woo Hoo!"
