@@ -14,7 +14,7 @@ class UploadsController < ApplicationController
     @upload = Upload.new(csv_type: csv_type)
     @upload.skip_lines = defaults(csv_type)['skip_lines']
 
-    return if @upload.csv_type_check?
+    return if @upload.csv_type.blank? || @upload.csv_type_check?
 
     flash.alert = errors_for_alert([@upload])
     @upload.csv_type = nil
