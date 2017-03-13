@@ -26,7 +26,7 @@ class Mou < ActiveRecord::Base
   end
 
   def to_dodmou
-    STATUSES.include?(status)
+    !STATUSES.include?(status)
   end
 
   def to_dod_status

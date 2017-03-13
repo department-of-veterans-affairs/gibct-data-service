@@ -23,10 +23,10 @@ RSpec.describe Mou, type: :model do
       expect(subject.ope6).to eql(subject.ope[1, 5])
     end
 
-    it 'sets dodmou if status is set' do
+    it 'sets dodmou to false if status is set' do
       described_class::STATUSES.each do |status|
         mou = create :mou, status: status
-        expect(mou.dodmou).to be_truthy
+        expect(mou.dodmou).to be_falsy
       end
     end
 
