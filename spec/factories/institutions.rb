@@ -7,7 +7,7 @@ FactoryGirl.define do
     sequence(:institution) { |n| "institution #{n}" }
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
-    institution_type_name 'private'
+    institution_type_name 'PRIVATE'
     version 1
 
     trait :in_nyc do

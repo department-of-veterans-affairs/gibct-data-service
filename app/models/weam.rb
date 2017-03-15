@@ -25,10 +25,10 @@ class Weam < ActiveRecord::Base
     'address 1' => { column: :address_1, converter: BaseConverter },
     'address 2' => { column: :address_2, converter: BaseConverter },
     'address 3' => { column: :address_3, converter: BaseConverter },
-    'institution city' => { column: :city, converter: BaseConverter },
+    'institution city' => { column: :city, converter: UpcaseConverter },
     'institution state' => { column: :state, converter: StateConverter },
     'institution zip code' => { column: :zip, converter: ZipConverter },
-    'institution country' => { column: :country, converter: BaseConverter },
+    'institution country' => { column: :country, converter: UpcaseConverter },
     'accredited' => { column: :accredited, converter: BooleanConverter },
     'current academic year bah rate' => { column: :bah, converter: NumberConverter },
     'principles of excellence' => { column: :poe, converter: BooleanConverter },
@@ -114,9 +114,9 @@ class Weam < ActiveRecord::Base
   # Gets the type of institution (public, private, ... )
   def derive_type
     {
-      'ojt' => ojt?, 'correspondence' => correspondence?, 'flight' => flight?,
-      'foreign' => foreign?, 'public' => public?, 'for profit' => for_profit?,
-      'private' => private?
+      'OJT' => ojt?, 'CORRESPONDENCE' => correspondence?, 'FLIGHT' => flight?,
+      'FOREIGN' => foreign?, 'PUBLIC' => public?, 'FOR PROFIT' => for_profit?,
+      'PRIVATE' => private?
     }.key(true)
   end
 

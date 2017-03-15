@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216084207) do
+ActiveRecord::Schema.define(version: 20170315173613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -853,17 +853,17 @@ ActiveRecord::Schema.define(version: 20170216084207) do
   add_index "mous", ["ope6"], name: "index_mous_on_ope6", using: :btree
 
   create_table "outcomes", force: :cascade do |t|
-    t.string   "facility_code",                              null: false
-    t.float    "retention_rate_veteran_ba",    default: 0.0
-    t.float    "retention_rate_veteran_otb",   default: 0.0
-    t.float    "persistance_rate_veteran_ba",  default: 0.0
-    t.float    "persistance_rate_veteran_otb", default: 0.0
-    t.float    "graduation_rate_veteran",      default: 0.0
-    t.float    "transfer_out_rate_veteran",    default: 0.0
+    t.string   "facility_code",                null: false
+    t.float    "retention_rate_veteran_ba"
+    t.float    "retention_rate_veteran_otb"
+    t.float    "persistance_rate_veteran_ba"
+    t.float    "persistance_rate_veteran_otb"
+    t.float    "graduation_rate_veteran"
+    t.float    "transfer_out_rate_veteran"
     t.string   "institution"
     t.string   "school_level_va"
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   add_index "outcomes", ["facility_code"], name: "index_outcomes_on_facility_code", unique: true, using: :btree
