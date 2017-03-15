@@ -350,7 +350,7 @@ module InstitutionBuilder
             UNION SELECT facility_code, sec_702 FROM sec702_schools
       ) AS s702_list
       WHERE institutions.facility_code = s702_list.facility_code
-        AND institutions.institution_type_name = 'public'
+        AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version = #{version_number};
     SQL
 

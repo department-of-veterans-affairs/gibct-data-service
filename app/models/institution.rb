@@ -2,7 +2,7 @@
 class Institution < ActiveRecord::Base
   include CsvHelper
 
-  EMPLOYER = 'ojt'
+  EMPLOYER = 'OJT'
 
   LOCALE = {
     11 => 'city', 12 => 'city', 13 => 'city',
@@ -22,16 +22,16 @@ class Institution < ActiveRecord::Base
     '4-year' => 4
   }.freeze
 
-  TYPES = ['ojt', 'private', 'foreign', 'correspondence', 'flight', 'for profit', 'public'].freeze
+  TYPES = ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE', 'FLIGHT', 'FOR PROFIT', 'PUBLIC'].freeze
 
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
-    'city' => { column: :city, converter: BaseConverter },
+    'city' => { column: :city, converter: UpcaseConverter },
     'state' => { column: :state, converter: StateConverter },
     'zip' => { column: :zip, converter: ZipConverter },
-    'country' => { column: :country, converter: BaseConverter },
-    'type' => { column: :institution_type_name, converter: BaseConverter },
+    'country' => { column: :country, converter: UpcaseConverter },
+    'type' => { column: :institution_type_name, converter: UpcaseConverter },
     'correspondence' => { column: :correspondence, converter: BooleanConverter },
     'flight' => { column: :flight, converter: BooleanConverter },
     'bah' => { column: :bah, converter: NumberConverter },
@@ -189,7 +189,7 @@ class Institution < ActiveRecord::Base
   end
 
   def school?
-    institution_type_name != 'ojt'
+    institution_type_name != 'OJT'
   end
 
   # Given a search term representing a partial school name, returns all

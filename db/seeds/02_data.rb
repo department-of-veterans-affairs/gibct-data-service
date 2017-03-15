@@ -54,6 +54,9 @@ Version.delete_all
 puts 'Deleting old uploads data'
 Upload.delete_all
 
+puts 'Deleting old institutions'
+Institution.delete_all
+
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
 seed_table(Weam, user)
 seed_table(Crosswalk, user)

@@ -52,7 +52,7 @@ RSpec.describe Institution, type: :model do
     end
 
     it 'returns nil if the institution is not a school' do
-      expect(build(:institution, institution_type_name: 'ojt')).not_to be_nil
+      expect(build(:institution, institution_type_name: 'OJT')).not_to be_nil
     end
   end
 
@@ -129,8 +129,8 @@ RSpec.describe Institution, type: :model do
 
   describe 'school?' do
     it 'returns true if an institution is not ojt' do
-      expect(build(:institution, institution_type_name: 'ojt')).not_to be_school
-      expect(build(:institution, institution_type_name: 'private')).to be_school
+      expect(build(:institution, institution_type_name: 'OJT')).not_to be_school
+      expect(build(:institution, institution_type_name: 'PRIVATE')).to be_school
     end
   end
 

@@ -38,9 +38,9 @@
             "type": {
               "type": "string",
               "enum": [
-                "ojt", "private", "foreign",
-                "correspondence", "flight",
-                "for profit", "public"
+                "OJT", "PRIVATE", "FOREIGN",
+                "CORRESPONDENCE", "FLIGHT",
+                "FOR PROFIT", "PUBLIC"
               ]
             },
             "city": { "type": ["null", "string"] },
