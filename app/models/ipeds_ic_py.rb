@@ -1,31 +1,143 @@
-###############################################################################
-## IpedsIcPy
-## Provieds tuiton and book cost data, but the inormation here is secondary to
-## the information in the IpedsIcAy table.
-##
-## USE_COLUMNS hold those columns that get copied to the DataCsv table during
-## the build process.
-###############################################################################
+# frozen_string_literal: true
 class IpedsIcPy < ActiveRecord::Base
-  include Standardizable
+  include CsvHelper
+
+  COLS_USED_IN_INSTITUTION = [:tuition_in_state, :tuition_out_of_state, :books].freeze
+
+  CSV_CONVERTER_INFO = {
+    'unitid' => { column: :cross, converter: CrossConverter },
+    'prgmofr' => { column: :prgmofr, converter: NumberConverter },
+    'cipcode1' => { column: :cipcode1, converter: NumberConverter },
+    'xciptui1' => { column: :xciptui1, converter: BaseConverter },
+    'ciptuit1' => { column: :ciptuit1, converter: NumberConverter },
+    'xcipsup1' => { column: :xcipsup1, converter: BaseConverter },
+    'cipsupp1' => { column: :cipsupp1, converter: NumberConverter },
+    'xciplgt1' => { column: :xciplgt1, converter: BaseConverter },
+    'ciplgth1' => { column: :ciplgth1, converter: NumberConverter },
+    'prgmsr1' => { column: :prgmsr1, converter: NumberConverter },
+    'xmthcmp1' => { column: :xmthcmp1, converter: BaseConverter },
+    'mthcmp1' => { column: :mthcmp1, converter: NumberConverter },
+    'xwkcmp1' => { column: :xwkcmp1, converter: BaseConverter },
+    'wkcmp1' => { column: :wkcmp1, converter: NumberConverter },
+    'xlnayhr1' => { column: :xlnayhr1, converter: BaseConverter },
+    'lnayhr1' => { column: :lnayhr1, converter: NumberConverter },
+    'xlnaywk1' => { column: :xlnaywk1, converter: BaseConverter },
+    'lnaywk1' => { column: :lnaywk1, converter: NumberConverter },
+    'xchg1py0' => { column: :xchg1py0, converter: BaseConverter },
+    'chg1py0' => { column: :chg1py0, converter: NumberConverter },
+    'xchg1py1' => { column: :xchg1py1, converter: BaseConverter },
+    'chg1py1' => { column: :chg1py1, converter: NumberConverter },
+    'xchg1py2' => { column: :xchg1py2, converter: BaseConverter },
+    'chg1py2' => { column: :chg1py2, converter: NumberConverter },
+    'xchg1py3' => { column: :xchg1py3, converter: BaseConverter },
+    'chg1py3' => { column: :chg1py3, converter: NumberConverter },
+    'xchg4py0' => { column: :xchg4py0, converter: BaseConverter },
+    'chg4py0' => { column: :chg4py0, converter: NumberConverter },
+    'xchg4py1' => { column: :xchg4py1, converter: BaseConverter },
+    'chg4py1' => { column: :chg4py1, converter: NumberConverter },
+    'xchg4py2' => { column: :xchg4py2, converter: BaseConverter },
+    'chg4py2' => { column: :chg4py2, converter: NumberConverter },
+    'xchg4py3' => { column: :xchg4py3, converter: BaseConverter },
+    'chg4py3' => { column: :books, converter: NumberConverter },
+    'xchg5py0' => { column: :xchg5py0, converter: BaseConverter },
+    'chg5py0' => { column: :chg5py0, converter: NumberConverter },
+    'xchg5py1' => { column: :xchg5py1, converter: BaseConverter },
+    'chg5py1' => { column: :chg5py1, converter: NumberConverter },
+    'xchg5py2' => { column: :xchg5py2, converter: BaseConverter },
+    'chg5py2' => { column: :chg5py2, converter: NumberConverter },
+    'xchg5py3' => { column: :xchg5py3, converter: BaseConverter },
+    'chg5py3' => { column: :chg5py3, converter: NumberConverter },
+    'xchg6py0' => { column: :xchg6py0, converter: BaseConverter },
+    'chg6py0' => { column: :chg6py0, converter: NumberConverter },
+    'xchg6py1' => { column: :xchg6py1, converter: BaseConverter },
+    'chg6py1' => { column: :chg6py1, converter: NumberConverter },
+    'xchg6py2' => { column: :xchg6py2, converter: BaseConverter },
+    'chg6py2' => { column: :chg6py2, converter: NumberConverter },
+    'xchg6py3' => { column: :xchg6py3, converter: BaseConverter },
+    'chg6py3' => { column: :chg6py3, converter: NumberConverter },
+    'xchg7py0' => { column: :xchg7py0, converter: BaseConverter },
+    'chg7py0' => { column: :chg7py0, converter: NumberConverter },
+    'xchg7py1' => { column: :xchg7py1, converter: BaseConverter },
+    'chg7py1' => { column: :chg7py1, converter: NumberConverter },
+    'xchg7py2' => { column: :xchg7py2, converter: BaseConverter },
+    'chg7py2' => { column: :chg7py2, converter: NumberConverter },
+    'xchg7py3' => { column: :xchg7py3, converter: BaseConverter },
+    'chg7py3' => { column: :chg7py3, converter: NumberConverter },
+    'xchg8py0' => { column: :xchg8py0, converter: BaseConverter },
+    'chg8py0' => { column: :chg8py0, converter: NumberConverter },
+    'xchg8py1' => { column: :xchg8py1, converter: BaseConverter },
+    'chg8py1' => { column: :chg8py1, converter: NumberConverter },
+    'xchg8py2' => { column: :xchg8py2, converter: BaseConverter },
+    'chg8py2' => { column: :chg8py2, converter: NumberConverter },
+    'xchg8py3' => { column: :xchg8py3, converter: BaseConverter },
+    'chg8py3' => { column: :chg8py3, converter: NumberConverter },
+    'xchg9py0' => { column: :xchg9py0, converter: BaseConverter },
+    'chg9py0' => { column: :chg9py0, converter: NumberConverter },
+    'xchg9py1' => { column: :xchg9py1, converter: BaseConverter },
+    'chg9py1' => { column: :chg9py1, converter: NumberConverter },
+    'xchg9py2' => { column: :xchg9py2, converter: BaseConverter },
+    'chg9py2' => { column: :chg9py2, converter: NumberConverter },
+    'xchg9py3' => { column: :xchg9py3, converter: BaseConverter },
+    'chg9py3' => { column: :chg9py3, converter: NumberConverter },
+    'cipcode2' => { column: :cipcode2, converter: NumberConverter },
+    'xciptui2' => { column: :xciptui2, converter: BaseConverter },
+    'ciptuit2' => { column: :ciptuit2, converter: NumberConverter },
+    'xcipsup2' => { column: :xcipsup2, converter: BaseConverter },
+    'cipsupp2' => { column: :cipsupp2, converter: NumberConverter },
+    'xciplgt2' => { column: :xciplgt2, converter: BaseConverter },
+    'ciplgth2' => { column: :ciplgth2, converter: NumberConverter },
+    'prgmsr2' => { column: :prgmsr2, converter: NumberConverter },
+    'xmthcmp2' => { column: :xmthcmp2, converter: BaseConverter },
+    'mthcmp2' => { column: :mthcmp2, converter: NumberConverter },
+    'cipcode3' => { column: :cipcode3, converter: NumberConverter },
+    'xciptui3' => { column: :xciptui3, converter: BaseConverter },
+    'ciptuit3' => { column: :ciptuit3, converter: NumberConverter },
+    'xcipsup3' => { column: :xcipsup3, converter: BaseConverter },
+    'cipsupp3' => { column: :cipsupp3, converter: NumberConverter },
+    'xciplgt3' => { column: :xciplgt3, converter: BaseConverter },
+    'ciplgth3' => { column: :ciplgth3, converter: NumberConverter },
+    'prgmsr3' => { column: :prgmsr3, converter: NumberConverter },
+    'xmthcmp3' => { column: :xmthcmp3, converter: BaseConverter },
+    'mthcmp3' => { column: :mthcmp3, converter: NumberConverter },
+    'cipcode4' => { column: :cipcode4, converter: NumberConverter },
+    'xciptui4' => { column: :xciptui4, converter: BaseConverter },
+    'ciptuit4' => { column: :ciptuit4, converter: NumberConverter },
+    'xcipsup4' => { column: :xcipsup4, converter: BaseConverter },
+    'cipsupp4' => { column: :cipsupp4, converter: NumberConverter },
+    'xciplgt4' => { column: :xciplgt4, converter: BaseConverter },
+    'ciplgth4' => { column: :ciplgth4, converter: NumberConverter },
+    'prgmsr4' => { column: :prgmsr4, converter: NumberConverter },
+    'xmthcmp4' => { column: :xmthcmp4, converter: BaseConverter },
+    'mthcmp4' => { column: :mthcmp4, converter: NumberConverter },
+    'cipcode5' => { column: :cipcode5, converter: NumberConverter },
+    'xciptui5' => { column: :xciptui5, converter: BaseConverter },
+    'ciptuit5' => { column: :ciptuit5, converter: NumberConverter },
+    'xcipsup5' => { column: :xcipsup5, converter: BaseConverter },
+    'cipsupp5' => { column: :cipsupp5, converter: NumberConverter },
+    'xciplgt5' => { column: :xciplgt5, converter: BaseConverter },
+    'ciplgth5' => { column: :ciplgth5, converter: NumberConverter },
+    'prgmsr5' => { column: :prgmsr5, converter: NumberConverter },
+    'xmthcmp5' => { column: :xmthcmp5, converter: BaseConverter },
+    'mthcmp5' => { column: :mthcmp5, converter: NumberConverter },
+    'cipcode6' => { column: :cipcode6, converter: NumberConverter },
+    'xciptui6' => { column: :xciptui6, converter: BaseConverter },
+    'ciptuit6' => { column: :ciptuit6, converter: NumberConverter },
+    'xcipsup6' => { column: :xcipsup6, converter: BaseConverter },
+    'cipsupp6' => { column: :cipsupp6, converter: NumberConverter },
+    'xciplgt6' => { column: :xciplgt6, converter: BaseConverter },
+    'ciplgth6' => { column: :ciplgth6, converter: NumberConverter },
+    'prgmsr6' => { column: :prgmsr6, converter: NumberConverter },
+    'xmthcmp6' => { column: :xmthcmp6, converter: BaseConverter },
+    'mthcmp6' => { column: :mthcmp6, converter: NumberConverter }
+  }.freeze
 
   validates :cross, presence: true
   validates :chg1py3, numericality: true, allow_blank: true
   validates :books, numericality: true, allow_blank: true
 
-  before_save :set_derived_fields
+  after_initialize :derive_dependent_columns
 
-  USE_COLUMNS = [:tuition_in_state, :tuition_out_of_state, :books]
-
-  override_setters :cross, :chg1py3, :tuition_in_state, :tuition_out_of_state, 
-    :books
-
-  #############################################################################
-  ## set_derived_fields=
-  ## Computes the values of derived fields just prior to saving. Note that 
-  ## any fields here cannot be part of validations.
-  #############################################################################
-  def set_derived_fields
+  def derive_dependent_columns
     self.tuition_in_state = chg1py3
     self.tuition_out_of_state = chg1py3
   end

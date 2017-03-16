@@ -1,22 +1,21 @@
+# frozen_string_literal: true
 require 'rails_helper'
-require 'support/shared_examples_for_standardizable'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Sva, type: :model do
-  it_behaves_like "a standardizable model", Sva
+  it_behaves_like 'a loadable model', skip_lines: 0
+  it_behaves_like 'an exportable model', skip_lines: 0
 
-  describe "When creating" do
-    context "with a factory" do
-      it "that factory is valid" do
-        expect(create(:sva)).to be_valid
-      end
+  describe 'when validating' do
+    subject { build :sva }
+
+    it 'has a valid factory' do
+      expect(subject).to be_valid
     end
-  end
 
-  describe "student_veteran_link" do
-    subject { create(:sva, student_veteran_link: "http://www.studentveterans.org") }
-
-    it "sets http://www.studentveterans.org to nil" do
-      expect(subject.student_veteran_link).to be_nil
+    it 'requires a valid cross' do
+      expect(build(:sva, cross: nil)).not_to be_valid
     end
   end
 end

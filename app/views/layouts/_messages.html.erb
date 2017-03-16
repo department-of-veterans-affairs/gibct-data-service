@@ -1,7 +1,5 @@
-<% if notice.present? %>
-	<aside class="alert alert-info"><%= notice %></aside>
-<% end %>
-
 <% if alert.present? %>
-	<aside class="alert alert-danger"><%= alert %></aside>
+	<aside class="alert alert-danger"><%= pretty_error(alert, notice || '') %></aside>
+<% elsif notice.present? %>
+	<aside class="alert alert-info"><%= notice.html_safe %></aside>
 <% end %>

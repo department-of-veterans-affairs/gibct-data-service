@@ -1,8 +1,18 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :sva do
-    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end      
+    sequence :student_veteran_link do |n|
+      "http://someplace_nice#{n}.com"
+    end
 
-    institution { Faker::University.name }
-    student_veteran_link { Faker::Internet.url("#{institution}.edu") }
+    cross { generate :cross }
+
+    trait :institution_builder do
+      cross '999999'
+    end
+
+    initialize_with do
+      new(cross: cross, student_veteran_link: student_veteran_link)
+    end
   end
 end

@@ -1,8 +1,16 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :settlement do
-    institution { Faker::University.name }
-    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end      
+    cross { generate :cross }
 
-    settlement_description { "Settlement with U.S. Government" }    
+    settlement_description { 'Settlement with U.S. Government' }
+
+    trait :institution_builder do
+      cross '999999'
+    end
+
+    initialize_with do
+      new(cross: cross, settlement_description: settlement_description)
+    end
   end
 end

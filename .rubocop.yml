@@ -8,19 +8,54 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'bin/**/*'
+    - 'Gemfile'
+    - 'log/**/*'
 
-Style/StringLiterals:
-  EnforcedStyle: double_quotes
+Metrics/AbcSize:
+  Exclude:
+    - app/models/institution_builder.rb
+    - app/models/complaint.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'app/models/scorecard.rb'
+    - 'app/models/ipeds_ic.rb'
+    - 'app/models/ipeds_ic_ay.rb'
+    - 'app/models/ipeds_ic_py.rb'
+    - 'app/models/institution.rb'
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'app/models/institution_builder.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'app/models/institution_builder.rb'
 
 Style/Documentation:
   Enabled: false
 
-Metrics/LineLength:
-  Max: 100
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
 
 Rails:
   Enabled: true
 
+Rails/HttpPositionalArguments:
+  Enabled: false
+
 Rails/Output:
   Exclude:
     - 'lib/**/*.rb'
+
+Style/Tab:
+  Enabled: false

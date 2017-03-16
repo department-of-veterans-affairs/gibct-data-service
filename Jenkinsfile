@@ -1,3 +1,8 @@
+def env_vars = [
+  'SECRET_KEY_BASE=0ae77385a98d4d28886d792832fbbe036152efb4a112fae2d06261850a5b6728',
+  'LINK_HOST=https://www.example.com'
+]
+
 pipeline {
   agent {
     label 'rails-testing'
@@ -6,51 +11,28 @@ pipeline {
     stage('Checkout Code') {
       steps {
         checkout scm
-
-        sh 'rm -rf gi-bill-comparison-tool'
-        sh 'git clone https://github.com/department-of-veterans-affairs/gi-bill-comparison-tool'
       }
     }
 
     stage('Install bundle') {
       steps {
         sh 'bash --login -c "bundle install -j 4 --without development"'
-
-        dir('gi-bill-comparison-tool') {
-          sh 'bash --login -c "bundle install -j 4 --without development"'
-        }
       }
     }
 
-    stage('Audit') {
+    stage('Prepare database') {
       steps {
-        sh 'bash --login -c "bundle exec rake ci"'
-      }
-    }
-
-    stage('Prepare') {
-      steps {
-        sh 'bash --login -c "bundle exec rake db:drop"'
-
-        dir('gi-bill-comparison-tool') {
-          sh 'bash --login -c "RAILS_ENV=test bundle exec rake db:drop"'
-        }
-      }
-    }
-
-    stage('Ensure database exists') {
-      steps {
-        sh 'bash --login -c "bundle exec rake db:create db:migrate"'
-
-        dir('gi-bill-comparison-tool') {
-          sh 'bash --login -c "RAILS_ENV=test bundle exec rake db:create db:migrate"'
+        withEnv(env_vars) {
+          sh 'bash --login -c "bundle exec rake db:drop db:create db:schema:load"'
         }
       }
     }
 
     stage('Run tests') {
       steps {
-        sh 'bash --login -c "bundle exec rspec"'
+        withEnv(env_vars) {
+          sh 'bash --login -c "bundle exec rake ci"'
+        }
       }
     }
   }

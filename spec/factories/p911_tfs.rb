@@ -1,9 +1,19 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :p911_tf do
-    sequence :facility_code do |n| n.to_s(32).rjust(8, "0") end
-    institution { Faker::University.name }
+    facility_code { generate :facility_code }
+    p911_tuition_fees { 1 }
+    p911_recipients { 1 }
 
-    p911_recipients { Faker::Number.between(1, 22000) }
-    p911_tuition_fees { Faker::Number.decimal(9) }
+    trait :institution_builder do
+      facility_code '1ZZZZZZZ'
+    end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, p911_tuition_fees: p911_tuition_fees,
+        p911_recipients: p911_recipients
+      )
+    end
   end
 end

@@ -1,17 +1,15 @@
-###############################################################################
-## Vsoc
-## Contains the email and name of the Vet's success rep on campus.
-##
-## USE_COLUMNS hold those columns that get copied to the DataCsv table during
-## the build process.
-###############################################################################
+# frozen_string_literal: true
 class Vsoc < ActiveRecord::Base
-  include Standardizable
+  include CsvHelper
 
-  validates :facility_code, presence: true, uniqueness: true
-  
-  USE_COLUMNS = [:vetsuccess_name, :vetsuccess_email]
+  COLS_USED_IN_INSTITUTION = [:vetsuccess_name, :vetsuccess_email].freeze
 
-  override_setters :facility_code, :institution, :vetsuccess_name, 
-    :vetsuccess_email
+  CSV_CONVERTER_INFO = {
+    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'institution' => { column: :institution, converter: InstitutionConverter },
+    'vetsuccess_name' => { column: :vetsuccess_name, converter: BaseConverter },
+    'vetsuccess_email' => { column: :vetsuccess_email, converter: BaseConverter }
+  }.freeze
+
+  validates :facility_code, presence: true
 end

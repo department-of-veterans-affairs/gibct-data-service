@@ -1,128 +1,105 @@
+# frozen_string_literal: true
 require 'rails_helper'
-require 'support/shared_examples_for_standardizable'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe IpedsIc, type: :model do
-  it_behaves_like "a standardizable model", IpedsIc
+  it_behaves_like 'a loadable model', skip_lines: 0
+  it_behaves_like 'an exportable model', skip_lines: 0
 
-  describe "When creating" do
-    context "with a factory" do
-      it "that factory is valid" do
-        expect(create(:ipeds_ic)).to be_valid
+  describe 'when validating' do
+    subject { build :ipeds_ic }
+
+    it 'has a valid factory' do
+      expect(subject).to be_valid
+    end
+
+    it 'requires a valid cross' do
+      expect(build(:ipeds_ic, cross: nil)).not_to be_valid
+    end
+
+    describe 'credit_for_mil_training' do
+      it 'requires a numerical vet2 in the range (-2..1)' do
+        expect(build(:ipeds_ic, vet2: 3)).not_to be_valid
+        expect(build(:ipeds_ic, vet2: nil)).not_to be_valid
+      end
+
+      it 'is set using 1 as true, 0 as false, -1 and -2 as nil' do
+        expect(create(:ipeds_ic, vet2: -2).credit_for_mil_training).to be_nil
+        expect(create(:ipeds_ic, vet2: -1).credit_for_mil_training).to be_nil
+        expect(create(:ipeds_ic, vet2: 0).credit_for_mil_training).to be_falsey
+        expect(create(:ipeds_ic, vet2: 1).credit_for_mil_training).to be_truthy
       end
     end
 
-    context "cross" do
-      it "are required" do
-        expect(build :ipeds_ic, cross: nil).not_to be_valid
+    describe 'vet_poc' do
+      it 'requires a numerical vet3 in the range (-2..1)' do
+        expect(build(:ipeds_ic, vet3: 3)).not_to be_valid
+        expect(build(:ipeds_ic, vet3: nil)).not_to be_valid
+      end
+
+      it 'is set using 1 as true, 0 as false, -1 and -2 as nil' do
+        expect(create(:ipeds_ic, vet3: -2).vet_poc).to be_nil
+        expect(create(:ipeds_ic, vet3: -1).vet_poc).to be_nil
+        expect(create(:ipeds_ic, vet3: 0).vet_poc).to be_falsey
+        expect(create(:ipeds_ic, vet3: 1).vet_poc).to be_truthy
       end
     end
 
-    %w(vet2 vet3 vet4 vet5).each do |col|
-      context col do
-        it "is required" do
-          expect(build :ipeds_ic, col.to_sym => nil).not_to be_valid
-        end
-
-        it "must be between -2 and 1" do
-          [-2, -1, 0, 1].each do |n|
-            expect(build :ipeds_ic, col.to_sym => n).to be_valid
-          end
-        end
-
-        it "is not valid for numbers less than -2 or greater than 1" do
-          expect(build :ipeds_ic, col.to_sym => -3).not_to be_valid
-          expect(build :ipeds_ic, col.to_sym => 2).not_to be_valid
-        end
-      end      
-    end
-
-    context "calsys" do
-      it "is required" do
-        expect(build :ipeds_ic, calsys: nil).not_to be_valid
+    describe 'student_vet_grp_ipeds' do
+      it 'requires a numerical vet4 in the range (-2..1)' do
+        expect(build(:ipeds_ic, vet4: 3)).not_to be_valid
+        expect(build(:ipeds_ic, vet4: nil)).not_to be_valid
       end
 
-      it "must be one of -2 or [1, 7]" do
-        [-2, 1, 2, 3, 4, 5, 6, 7].each do |n|
-          expect(build :ipeds_ic, calsys: n).to be_valid
-        end
-      end
-
-      it "is not valid for 0, -1 or any number less than -2 or greater than 7" do
-        [-3, -1, 0, 8].each do |n|
-          expect(build :ipeds_ic, calsys: n).not_to be_valid
-        end      
+      it 'is set using 1 as true, 0 as false, -1 and -2 as nil' do
+        expect(create(:ipeds_ic, vet4: -2).student_vet_grp_ipeds).to be_nil
+        expect(create(:ipeds_ic, vet4: -1).student_vet_grp_ipeds).to be_nil
+        expect(create(:ipeds_ic, vet4: 0).student_vet_grp_ipeds).to be_falsey
+        expect(create(:ipeds_ic, vet4: 1).student_vet_grp_ipeds).to be_truthy
       end
     end
 
-    context "distnced" do
-      it "is required" do
-        expect(build :ipeds_ic, distnced: nil).not_to be_valid
+    describe 'soc_member' do
+      it 'requires a numerical vet5 in the range (-2..1)' do
+        expect(build(:ipeds_ic, vet5: 3)).not_to be_valid
+        expect(build(:ipeds_ic, vet5: nil)).not_to be_valid
       end
 
-      it "must be one of -2, -1, 1, 2" do
-        [-2, -1, 1, 2].each do |n|
-          expect(build :ipeds_ic, distnced: n).to be_valid
-        end
-      end
-
-      it "is not valid for 0 or any number less than -2 or greater than 2" do
-        [-3, 0, 3].each do |n|
-          expect(build :ipeds_ic, distnced: n).not_to be_valid
-        end      
-      end
-    end
-  end
-
-  describe "derived columns" do
-    { 
-      credit_for_mil_training: :vet2, 
-      vet_poc: :vet3,
-      student_vet_grp_ipeds: :vet4,  
-      soc_member: :vet5 
-    }.each_pair do |dcol, ocol|
-      context dcol.to_s do
-        it "receives the value 'yes' when #{ocol.to_s} is 1" do
-          expect(create(:ipeds_ic, ocol => 1)[dcol]).to be_truthy
-        end
-
-        it "is nil when #{ocol.to_s} is not 1" do
-          [-2, -1, 0].each do |n|
-            expect(create(:ipeds_ic, ocol => n)[dcol]).to be_nil
-          end
-        end        
+      it 'is set using 1 as true, 0 as false, -1 and -2 as nil' do
+        expect(create(:ipeds_ic, vet5: -2).soc_member).to be_nil
+        expect(create(:ipeds_ic, vet5: -1).soc_member).to be_nil
+        expect(create(:ipeds_ic, vet5: 0).soc_member).to be_falsey
+        expect(create(:ipeds_ic, vet5: 1).soc_member).to be_truthy
       end
     end
 
-    context "calendar" do
-      it "equals 'semesters' when calsys is 1" do
-        expect(create(:ipeds_ic, calsys: 1).calendar).to eq('semesters')
+    describe 'online_all' do
+      it 'requires a numerical distnced in [-2, -1, 1, 2]' do
+        expect(build(:ipeds_ic, distnced: 0)).not_to be_valid
+        expect(build(:ipeds_ic, distnced: nil)).not_to be_valid
       end
 
-      it "equals 'quarters' when calsys is 2" do
-        expect(create(:ipeds_ic, calsys: 2).calendar).to eq('quarters')
+      it 'is set using 1 as false, 2 as true, -1 and -2 as nil' do
+        expect(create(:ipeds_ic, distnced: -2).online_all).to be_nil
+        expect(create(:ipeds_ic, distnced: -1).online_all).to be_nil
+        expect(create(:ipeds_ic, distnced: 1).online_all).to be_falsey
+        expect(create(:ipeds_ic, distnced: 2).online_all).to be_truthy
+      end
+    end
+
+    describe 'calendar' do
+      it 'requires a numerical calsys in [-2, 1, 2, 3, 4, 5, 6, 7]' do
+        expect(build(:ipeds_ic, calsys: 0)).not_to be_valid
+        expect(build(:ipeds_ic, calsys: nil)).not_to be_valid
       end
 
-      it "equals 'nontraditional' when calsys > 2" do
-        [3, 4, 5, 6, 7].each do |calsys|
-          expect(create(:ipeds_ic, calsys: calsys).calendar).to eq('nontraditional')
-        end
-      end
-
-      it "is nil when calsys is -2" do
+      it 'is set using -2 as nil, 1 as semesters, 2 as quarters, and all else as nontraditional' do
         expect(create(:ipeds_ic, calsys: -2).calendar).to be_nil
+        expect(create(:ipeds_ic, calsys: 1).calendar).to eq('semesters')
+        expect(create(:ipeds_ic, calsys: 2).calendar).to eq('quarters')
+        expect(create(:ipeds_ic, calsys: 3).calendar).to eq('nontraditional')
       end
-    end
-
-    context "online_all" do
-      it "receives the value 'true' when distnced is 1" do
-        expect(create(:ipeds_ic, distnced: 1).online_all).to be_truthy
-      end
-
-      it "is nil when distnced is not 1" do
-        [-2, -1, 2].each do |n|
-          expect(create(:ipeds_ic, distnced: n).online_all).to be_nil
-        end
-      end   
     end
   end
 end
