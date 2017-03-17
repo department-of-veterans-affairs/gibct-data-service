@@ -32,6 +32,13 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
+
+    it 'search returns case-insensitive results' do
+      get :index, name: 'CHICAGO', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
   end
 
   context 'institution profile' do
