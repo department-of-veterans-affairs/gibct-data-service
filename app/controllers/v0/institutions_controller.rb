@@ -3,14 +3,17 @@ module V0
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
-      @search_term = params[:term].strip.downcase
-      @data = Institution.version(@version[:number]).autocomplete(@search_term)
+      @data = []
+      if params[:term]
+        @search_term = params[:term]&.strip&.downcase
+        @data = Institution.version(@version[:number]).autocomplete(@search_term)
+      end
       @meta = {
         version: @version,
         term: @search_term
       }
       @links = {
-        self: autocomplete_v0_institutions_url(term: params[:term])
+        self: autocomplete_v0_institutions_url(term: @search_term)
       }
       render json: { data: @data, links: @links, meta: @meta }, adapter: :json
     end
