@@ -3,8 +3,11 @@ module V0
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
-      @search_term = params[:term].strip.downcase
-      @data = Institution.version(@version[:number]).autocomplete(@search_term)
+      @data = []
+      if params[:term]
+        @search_term = params[:term]&.strip&.downcase
+        @data = Institution.version(@version[:number]).autocomplete(@search_term)
+      end
       @meta = {
         version: @version,
         term: @search_term

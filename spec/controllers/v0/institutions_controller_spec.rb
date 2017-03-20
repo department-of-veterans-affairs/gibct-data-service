@@ -10,6 +10,15 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
+
+    it 'returns empty collection on missing term parameter' do
+      create(:version, :production)
+      7.times { create(:institution, :contains_harv) }
+      get :autocomplete, term: nil, version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
   end
 
   context 'search results' do
