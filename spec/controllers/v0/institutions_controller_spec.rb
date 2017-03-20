@@ -17,17 +17,32 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
       2.times { create(:institution, :in_nyc) }
       create(:institution, :in_chicago)
+      create(:institution, :in_new_rochelle)
     end
 
     it 'search returns results' do
       get :index, version: 1
-      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(JSON.parse(response.body)['data'].count).to eq(4)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns results matching name' do
       get :index, name: 'chicago', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'search returns case-insensitive results' do
+      get :index, name: 'CHICAGO', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'search with space returns results' do
+      get :index, name: 'New Roch', version: 1
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
