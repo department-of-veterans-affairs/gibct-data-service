@@ -13,7 +13,7 @@ module V0
         term: @search_term
       }
       @links = {
-        self: autocomplete_v0_institutions_url(term: @search_term)
+        self: autocomplete_v0_institutions_url(term: params[:term])
       }
       render json: { data: @data, links: @links, meta: @meta }, adapter: :json
     end
