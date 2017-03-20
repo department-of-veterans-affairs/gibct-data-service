@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module V0
   class InstitutionsController < ApiController
+    OJT_TYPE = 'OJT'
+
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @search_term = params[:term].strip.downcase
@@ -68,8 +70,8 @@ module V0
       institution_types = search_results.filter_count(:institution_type_name)
       {
         type: {
-          school: institution_types.except('ojt').inject(0) { |count, (_t, n)| count + n },
-          employer: institution_types['ojt'].to_i
+          school: institution_types.except(OJT_TYPE).inject(0) { |count, (_t, n)| count + n },
+          employer: institution_types[OJT_TYPE].to_i
         },
         type_name: institution_types,
         state: search_results.filter_count(:state),
