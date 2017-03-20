@@ -72,8 +72,8 @@ module V0
       institution_types = search_results.filter_count(:institution_type_name)
       {
         type: {
-          school: institution_types.except('ojt').inject(0) { |count, (_t, n)| count + n },
-          employer: institution_types['ojt'].to_i
+          school: institution_types.except(Institution::EMPLOYER).inject(0) { |count, (_t, n)| count + n },
+          employer: institution_types[Institution::EMPLOYER].to_i
         },
         type_name: institution_types,
         state: search_results.filter_count(:state),
