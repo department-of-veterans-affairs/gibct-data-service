@@ -11,42 +11,42 @@ FactoryGirl.define do
     version 1
 
     trait :in_nyc do
-      city 'new york'
-      state 'ny'
-      country 'usa'
+      city 'NEW YORK'
+      state 'NY'
+      country 'USA'
     end
 
     trait :in_new_rochelle do
-      city 'new rochelle'
-      state 'ny'
-      country 'usa'
+      city 'NEW ROCHELLE'
+      state 'NY'
+      country 'USA'
     end
 
     trait :in_chicago do
-      city 'chicago'
-      state 'il'
-      country 'usa'
+      city 'CHICAGO'
+      state 'IL'
+      country 'USA'
     end
 
     trait :uchicago do
-      institution 'university of chicago - not in chicago'
-      city 'some other city'
-      state 'il'
-      country 'usa'
+      institution 'UNIVERSITY OF CHICAGO - NOT IN CHICAGO'
+      city 'SOME OTHER CITY'
+      state 'IL'
+      country 'USA'
     end
 
     trait :start_like_harv do
-      sequence(:institution) { |n| ["harv#{n}", "harv #{n}"].sample }
-      city 'boston'
-      state 'ma'
-      country 'usa'
+      sequence(:institution) { |n| ["HARV#{n}", "HARV #{n}"].sample }
+      city 'BOSTON'
+      state 'MA'
+      country 'USA'
     end
 
     trait :contains_harv do
-      sequence(:institution) { |n| ["hasharv#{n}", "has harv #{n}"].sample }
-      city 'boston'
-      state 'ma'
-      country 'usa'
+      sequence(:institution) { |n| ["HASHARV#{n}", "HAS HARV #{n}"].sample }
+      city 'BOSTON'
+      state 'MA'
+      country 'USA'
     end
 
     trait :institution_builder do

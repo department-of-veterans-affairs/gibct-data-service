@@ -56,6 +56,34 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
+
+    it 'filter by uppercase country returns results' do
+      get :index, name: 'chicago', country: 'USA', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filter by lowercase country returns results' do
+      get :index, name: 'chicago', country: 'usa', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filter by uppercase state returns results' do
+      get :index, name: 'new', state: 'NY', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filter by lowercase state returns results' do
+      get :index, name: 'new', state: 'ny', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
   end
 
   context 'institution profile' do

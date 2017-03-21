@@ -45,9 +45,11 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
-        query[:state].try(:upcase!)
+        %i(state country).each do |k|
+          query[k].try(:upcase!)
+        end
         %i(type_name student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success caution country).each do |k|
+           eight_keys_to_veteran_success caution).each do |k|
           query[k].try(:downcase!)
         end
       end
