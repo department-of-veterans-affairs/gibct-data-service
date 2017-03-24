@@ -80,7 +80,7 @@ module V0
         },
         type: institution_types,
         state: search_results.filter_count(:state),
-        country: search_results.filter_count(:country),
+        country: embed(search_results.filter_count(:country)),
         caution_flag: search_results.filter_count(:caution_flag),
         student_vet_group: search_results.filter_count(:student_veteran),
         yellow_ribbon_scholarship: search_results.filter_count(:yr),
@@ -89,5 +89,14 @@ module V0
       }
     end
     # rubocop:enable AbcSize
+
+    # Embed search result counts as a list of hashes with "name"/"count"
+    # keys so that open-ended strings such as country names do not
+    # get interpreted/mutated as JSON keys.
+    def embed(group_counts)
+      group_counts.each_with_object([]) do |(k, v), array|
+        array << { name: k, count: v }
+      end
+    end
   end
 end

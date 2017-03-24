@@ -84,6 +84,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
+
+    it 'has facet metadata' do
+      get :index, name: 'chicago', version: 1
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['state']['il']).to eq(1)
+      expect(facets['country'].count).to eq(1)
+      expect(facets['country'][0]['name']).to eq('USA')
+    end
   end
 
   context 'category and type search results' do
