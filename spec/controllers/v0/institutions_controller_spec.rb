@@ -94,6 +94,42 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
+  context 'category and type search results' do
+    before(:each) do
+      create(:version, :production)
+      create(:institution, :in_nyc)
+      create(:institution, :ca_employer)
+    end
+
+    it 'filters by employer category' do
+      get :index, category: 'employer', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filters by school category' do
+      get :index, category: 'school', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filters by employer type' do
+      get :index, type: 'ojt', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filters by school type' do
+      get :index, type: 'private', version: 1
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+  end
+
   context 'institution profile' do
     before(:each) do
       create(:version, :production)

@@ -49,6 +49,14 @@ FactoryGirl.define do
       country 'USA'
     end
 
+    trait :ca_employer do
+      institution 'ACME INC'
+      city 'LOS ANGELES'
+      state 'CA'
+      country 'USA'
+      institution_type_name 'OJT'
+    end
+
     trait :institution_builder do
       facility_code '1ZZZZZZZ'
       ope '99999999'

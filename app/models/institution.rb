@@ -221,17 +221,22 @@ class Institution < ActiveRecord::Base
   scope :filter, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
-    case value
-    when 'true', 'yes'
-      where(field => true)
-    when 'false', 'no'
-      where.not(field => true)
-    when 'school' # field: institution_type_name
-      where.not(field => EMPLOYER)
-    when 'employer' # field: institution_type_name
-      where(field => EMPLOYER)
+    if field == :category
+      case value
+      when 'school'
+        where.not(institution_type_name: EMPLOYER)
+      when 'employer'
+        where(institution_type_name: EMPLOYER)
+      end
     else
-      where(field => value)
+      case value
+      when 'true', 'yes'
+        where(field => true)
+      when 'false', 'no'
+        where.not(field => true)
+      else
+        where(field => value)
+      end
     end
   }
 

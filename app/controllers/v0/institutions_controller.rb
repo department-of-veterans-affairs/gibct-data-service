@@ -45,10 +45,10 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
-        %i(state country).each do |k|
+        %i(state country type).each do |k|
           query[k].try(:upcase!)
         end
-        %i(type_name student_veteran_group yellow_ribbon_scholarship principles_of_excellence
+        %i(category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success caution).each do |k|
           query[k].try(:downcase!)
         end
@@ -61,7 +61,8 @@ module V0
       Institution.version(@version[:number])
                  .search(@query[:name])
                  .filter(:caution_flag, @query[:caution]) # boolean
-                 .filter(:institution_type_name, @query[:type_name])
+                 .filter(:institution_type_name, @query[:type])
+                 .filter(:category, @query[:category])
                  .filter(:country, @query[:country])
                  .filter(:state, @query[:state])
                  .filter(:student_veteran, @query[:student_veteran_group]) # boolean
@@ -73,11 +74,11 @@ module V0
     def facets
       institution_types = search_results.filter_count(:institution_type_name)
       {
-        type: {
+        category: {
           school: institution_types.except(Institution::EMPLOYER).inject(0) { |count, (_t, n)| count + n },
           employer: institution_types[Institution::EMPLOYER].to_i
         },
-        type_name: institution_types,
+        type: institution_types,
         state: search_results.filter_count(:state),
         country: embed(search_results.filter_count(:country)),
         caution_flag: search_results.filter_count(:caution_flag),
