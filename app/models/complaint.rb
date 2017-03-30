@@ -107,7 +107,7 @@ class Complaint < ActiveRecord::Base
 
     rollup_sums.each_pair do |sum_column, complaint_column|
       set_clause << %("#{sum_column}" = sums.#{sum_column})
-      sum_clause << %(SUM("#{complaint_column}") AS "#{sum_column}")
+      sum_clause << %(SUM(COALESCE("#{complaint_column}", 0)) AS "#{sum_column}")
     end
 
     str = <<-SQL
