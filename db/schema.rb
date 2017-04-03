@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315173613) do
+ActiveRecord::Schema.define(version: 20170330161442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -168,7 +168,7 @@ ActiveRecord::Schema.define(version: 20170315173613) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institutions", force: :cascade do |t|
-    t.integer  "version",                                                             null: false
+    t.integer  "version",                                             null: false
     t.string   "institution_type_name"
     t.string   "facility_code"
     t.string   "institution"
@@ -176,8 +176,8 @@ ActiveRecord::Schema.define(version: 20170315173613) do
     t.string   "state"
     t.string   "zip"
     t.string   "country"
-    t.boolean  "flight",                                              default: false
-    t.boolean  "correspondence",                                      default: false
+    t.boolean  "flight"
+    t.boolean  "correspondence"
     t.float    "bah"
     t.string   "cross"
     t.string   "ope"
@@ -186,14 +186,14 @@ ActiveRecord::Schema.define(version: 20170315173613) do
     t.string   "vet_tuition_policy_url"
     t.integer  "pred_degree_awarded"
     t.integer  "locale"
-    t.integer  "gibill",                                              default: 0
+    t.integer  "gibill"
     t.integer  "undergrad_enrollment"
-    t.boolean  "yr",                                                  default: false
-    t.boolean  "student_veteran",                                     default: false
+    t.boolean  "yr"
+    t.boolean  "student_veteran"
     t.string   "student_veteran_link"
-    t.boolean  "poe",                                                 default: false
-    t.boolean  "eight_keys",                                          default: false
-    t.boolean  "dodmou",                                              default: false
+    t.boolean  "poe"
+    t.boolean  "eight_keys"
+    t.boolean  "dodmou"
     t.boolean  "sec_702"
     t.string   "vetsuccess_name"
     t.string   "vetsuccess_email"
@@ -220,44 +220,44 @@ ActiveRecord::Schema.define(version: 20170315173613) do
     t.integer  "tuition_out_of_state"
     t.integer  "books"
     t.boolean  "online_all"
-    t.float    "p911_tuition_fees",                                   default: 0.0
-    t.integer  "p911_recipients",                                     default: 0
-    t.float    "p911_yellow_ribbon",                                  default: 0.0
-    t.integer  "p911_yr_recipients",                                  default: 0
-    t.boolean  "accredited",                                          default: false
+    t.float    "p911_tuition_fees"
+    t.integer  "p911_recipients"
+    t.float    "p911_yellow_ribbon"
+    t.integer  "p911_yr_recipients"
+    t.boolean  "accredited"
     t.string   "accreditation_type"
     t.string   "accreditation_status"
-    t.boolean  "caution_flag",                                        default: false
+    t.boolean  "caution_flag"
     t.string   "caution_flag_reason"
-    t.integer  "complaints_facility_code",                            default: 0
-    t.integer  "complaints_financial_by_fac_code",                    default: 0
-    t.integer  "complaints_quality_by_fac_code",                      default: 0
-    t.integer  "complaints_refund_by_fac_code",                       default: 0
-    t.integer  "complaints_marketing_by_fac_code",                    default: 0
-    t.integer  "complaints_accreditation_by_fac_code",                default: 0
-    t.integer  "complaints_degree_requirements_by_fac_code",          default: 0
-    t.integer  "complaints_student_loans_by_fac_code",                default: 0
-    t.integer  "complaints_grades_by_fac_code",                       default: 0
-    t.integer  "complaints_credit_transfer_by_fac_code",              default: 0
-    t.integer  "complaints_credit_job_by_fac_code",                   default: 0
-    t.integer  "complaints_job_by_fac_code",                          default: 0
-    t.integer  "complaints_transcript_by_fac_code",                   default: 0
-    t.integer  "complaints_other_by_fac_code",                        default: 0
-    t.integer  "complaints_main_campus_roll_up",                      default: 0
-    t.integer  "complaints_financial_by_ope_id_do_not_sum",           default: 0
-    t.integer  "complaints_quality_by_ope_id_do_not_sum",             default: 0
-    t.integer  "complaints_refund_by_ope_id_do_not_sum",              default: 0
-    t.integer  "complaints_marketing_by_ope_id_do_not_sum",           default: 0
-    t.integer  "complaints_accreditation_by_ope_id_do_not_sum",       default: 0
-    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum", default: 0
-    t.integer  "complaints_student_loans_by_ope_id_do_not_sum",       default: 0
-    t.integer  "complaints_grades_by_ope_id_do_not_sum",              default: 0
-    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum",     default: 0
-    t.integer  "complaints_jobs_by_ope_id_do_not_sum",                default: 0
-    t.integer  "complaints_transcript_by_ope_id_do_not_sum",          default: 0
-    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
-    t.datetime "created_at",                                                          null: false
-    t.datetime "updated_at",                                                          null: false
+    t.integer  "complaints_facility_code"
+    t.integer  "complaints_financial_by_fac_code"
+    t.integer  "complaints_quality_by_fac_code"
+    t.integer  "complaints_refund_by_fac_code"
+    t.integer  "complaints_marketing_by_fac_code"
+    t.integer  "complaints_accreditation_by_fac_code"
+    t.integer  "complaints_degree_requirements_by_fac_code"
+    t.integer  "complaints_student_loans_by_fac_code"
+    t.integer  "complaints_grades_by_fac_code"
+    t.integer  "complaints_credit_transfer_by_fac_code"
+    t.integer  "complaints_credit_job_by_fac_code"
+    t.integer  "complaints_job_by_fac_code"
+    t.integer  "complaints_transcript_by_fac_code"
+    t.integer  "complaints_other_by_fac_code"
+    t.integer  "complaints_main_campus_roll_up"
+    t.integer  "complaints_financial_by_ope_id_do_not_sum"
+    t.integer  "complaints_quality_by_ope_id_do_not_sum"
+    t.integer  "complaints_refund_by_ope_id_do_not_sum"
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum"
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum"
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum"
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum"
+    t.integer  "complaints_grades_by_ope_id_do_not_sum"
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum"
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum"
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum"
+    t.integer  "complaints_other_by_ope_id_do_not_sum"
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
   end
 
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
