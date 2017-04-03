@@ -6,7 +6,7 @@ module CsvHelper
 
       klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
         key = info[:column]
-        csv_headers[key] = csv_column.split(/\s/).map(&:capitalize).join(' ')
+        csv_headers[key] = csv_column.split(/\s/).map(&:downcase).join(' ')
       end
 
       generate(csv_headers)
