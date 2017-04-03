@@ -53,7 +53,7 @@
               "highest_degree": { "type": ["null", "integer"] },
               "locale_type": { "type": ["null", "string"] },
               "student_count": { "type": ["null", "integer"] },
-              "caution_flag": { "type": "boolean" },
+              "caution_flag": { "type": ["null", "boolean"] },
               "caution_flag_reason": { "type": ["null", "string"] },
               "created_at": { "type": "string" },
               "updated_at": { "type": "string" },
@@ -61,10 +61,10 @@
               "tuition_in_state": { "type": ["null", "number"] },
               "tuition_out_of_state": { "type": ["null", "number"] },
               "books": { "type": ["null", "number"] },
-              "student_veteran": { "type": "boolean" },
-              "yr": { "type": "boolean" },
-              "poe": { "type": "boolean" },
-              "eight_keys": { "type": "boolean" }
+              "student_veteran": { "type": ["null", "boolean"] },
+              "yr": { "type": ["null", "boolean"] },
+              "poe": { "type": ["null", "boolean"] },
+              "eight_keys": { "type": ["null", "boolean"] }
             },
             "required": [
               "name",
