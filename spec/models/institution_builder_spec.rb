@@ -289,7 +289,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(
             institution.caution_flag_reason
-          ).to match(/Show Cause/).and match(/Probation/).and match(/Expired/)
+          ).to match(/Show Cause/i).and match(/Probation/i).and match(/Expired/i)
         end
       end
     end
@@ -345,7 +345,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:reason) { 'DoD Probation For Military Tuition Assistance' }
       let(:mou) { Mou.first }
 
-      Mou::STATUSES.each do |status|
+      ['PRoBATIon Dod', 'title IV NON-comPliant'].each do |status|
         it "sets dodmou TRUE for status '#{status}'" do
           create :mou, :institution_builder, status: status
           InstitutionBuilder.run(user)

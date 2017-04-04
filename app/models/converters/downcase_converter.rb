@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class UpcaseConverter < BaseConverter
+class DowncaseConverter < BaseConverter
   def self.convert(value)
     value = super(value.to_s)
-    value.blank? ? nil : value.upcase
+    value.blank? ? nil : value.downcase
   end
 end

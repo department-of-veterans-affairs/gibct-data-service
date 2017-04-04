@@ -10,7 +10,7 @@ class Hcm < ActiveRecord::Base
     'country' => { column: :country, converter: BaseConverter },
     'institution type' => { column: :institution_type, converter: BaseConverter },
     'stop pay/monitor method' => { column: :hcm_type, converter: BaseConverter },
-    'method reason desc' => { column: :hcm_reason, converter: DisplayConverter }
+    'method reason desc' => { column: :hcm_reason, converter: BaseConverter }
   }.freeze
 
   validates :ope, :hcm_type, :hcm_reason, presence: true

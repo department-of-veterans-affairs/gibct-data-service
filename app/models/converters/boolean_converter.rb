@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class BooleanConverter < BaseConverter
-  TRUTHS = %w(true t yes ye y 1 on).freeze
-
   def self.convert(value)
     value = super(value)
-    value.blank? ? nil : TRUTHS.include?(value.to_s)
+
+    return nil if value.blank?
+    value.to_s.match(/\A(true|t|yes|ye|y|1|on)\z/i).present? ? true : false
   end
 end

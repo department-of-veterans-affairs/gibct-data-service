@@ -66,7 +66,7 @@ class Complaint < ActiveRecord::Base
   CSV_CONVERTER_INFO = {
     'case id' => { column: :case_id, converter: BaseConverter },
     'level' => { column: :level, converter: BaseConverter },
-    'status' => { column: :status, converter: BaseConverter },
+    'status' => { column: :status, converter: DowncaseConverter },
     'case owner' => { column: :case_owner, converter: BaseConverter },
     'school' => { column: :institution, converter: InstitutionConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
@@ -75,7 +75,7 @@ class Complaint < ActiveRecord::Base
     'school state' => { column: :state, converter: BaseConverter },
     'submitted' => { column: :submitted, converter: BaseConverter },
     'closed' => { column: :closed, converter: BaseConverter },
-    'closed reason' => { column: :closed_reason, converter: BaseConverter },
+    'closed reason' => { column: :closed_reason, converter: DowncaseConverter },
     'issues' => { column: :issues, converter: BaseConverter },
     'education benefits' => { column: :education_benefits, converter: BaseConverter }
   }.freeze

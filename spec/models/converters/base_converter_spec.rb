@@ -14,15 +14,16 @@ RSpec.describe BaseConverter do
     end
   end
 
+  it 'does not convert strings containing more than forbidden words to nil' do
+    str = 'a string containing null and a period.'
+    expect(subject.convert(str)).to eq(str)
+  end
+
   it 'converts nil to nil' do
     expect(subject.convert(nil)).to be_nil
   end
 
   it 'converts blanks to an empty string' do
     expect(subject.convert('      ')).to be_blank
-  end
-
-  it 'converts all strings to lower case' do
-    expect(subject.convert('This Is A String')).to eq('this is a string')
   end
 end

@@ -12,4 +12,8 @@ RSpec.describe CrossConverter do
     expect(subject.convert(nil)).to be_nil
     expect(subject.convert('   ')).to be_nil
   end
+
+  it 'converts any letters to upcase' do
+    expect(subject.convert('123Xx4')).to eq('00123XX4')
+  end
 end

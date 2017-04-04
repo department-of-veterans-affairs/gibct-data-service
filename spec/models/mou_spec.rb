@@ -24,7 +24,7 @@ RSpec.describe Mou, type: :model do
     end
 
     it 'sets dodmou to false if status is set' do
-      described_class::STATUSES.each do |status|
+      ['PRoBATIon - Dod', 'title IV NON-comPliant'].each do |status|
         mou = create :mou, status: status
         expect(mou.dodmou).to be_falsy
       end
