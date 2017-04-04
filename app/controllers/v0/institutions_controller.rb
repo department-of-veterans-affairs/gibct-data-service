@@ -60,7 +60,6 @@ module V0
       @query ||= normalized_query_params
       Institution.version(@version[:number])
                  .search(@query[:name])
-                 .filter(:caution_flag, @query[:caution]) # boolean
                  .filter(:institution_type_name, @query[:type])
                  .filter(:category, @query[:category])
                  .filter(:country, @query[:country])
