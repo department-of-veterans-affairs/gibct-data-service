@@ -49,7 +49,7 @@ module V0
           query[k].try(:upcase!)
         end
         %i(category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success caution).each do |k|
+           eight_keys_to_veteran_success).each do |k|
           query[k].try(:downcase!)
         end
       end
