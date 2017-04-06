@@ -281,7 +281,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the caution_flag_reason' do
-        it 'concatentates multiple accreditation cautions' do
+        it 'concatenates multiple accreditation cautions' do
           create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
           create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :accreditation, :institution_builder, accreditation_status: 'Expired'
@@ -290,6 +290,15 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect(
             institution.caution_flag_reason
           ).to match(/Show Cause/i).and match(/Probation/i).and match(/Expired/i)
+        end
+
+        it 'concatenates new reasons to the existing caution_flag_reason' do
+          result = InstitutionBuilder.run(user)
+          create :accreditation, :institution_builder, accreditation_status: 'Expired'
+          Institution.find_by(cross: accreditation.cross).update(caution_flag_reason: 'blah-blah')
+          InstitutionBuilder.add_accreditation(result[:version].number)
+
+          expect(institution.caution_flag_reason).to eq('blah-blah, Accreditation (Expired)')
         end
       end
     end
@@ -383,12 +392,12 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect(institution.caution_flag_reason).to eq(reason)
         end
 
-        it 'contentates the existing reasons when dod_status is true' do
+        it 'contentates the existing reasons' do
           create :accreditation, :institution_builder, accreditation_status: 'Probation'
           create :mou, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institution.caution_flag_reason).to match(/Accreditation/).and match(/Probation/)
+          expect(institution.caution_flag_reason).to match(/Accreditation/).and match(/DoD Probation/)
         end
 
         it 'is unaltered when dod_status is not true' do
