@@ -245,7 +245,7 @@ module InstitutionBuilder
   def self.add_mou(version_number)
     reason = 'DoD Probation For Military Tuition Assistance'
 
-    # Sets the caution flag for any approved school having a probatiton or title IV non-compliance (status == true)
+    # Sets the caution flag for any approved school having a probatiton (status == true)
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous.dodmou,
@@ -383,7 +383,7 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(',', caution_flag_reason, hcm_list.reasons)
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, hcm_list.reasons)
       FROM (
         SELECT "ope6",
           array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons

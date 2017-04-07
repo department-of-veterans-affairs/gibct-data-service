@@ -5,7 +5,7 @@ class EightKey < ActiveRecord::Base
   CSV_CONVERTER_INFO = {
     'institution of higher education' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
-    'state' => { column: :state, converter: StateConverter },
+    'state' => { column: :state, converter: BaseConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
     'ipeds_id' => { column: :cross, converter: CrossConverter },
     'notes' => { column: :notes, converter: BaseConverter }

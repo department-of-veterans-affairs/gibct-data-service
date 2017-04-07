@@ -20,13 +20,13 @@ class Accreditation < ActiveRecord::Base
     'campus_state' => { column: :campus_state, converter: BaseConverter },
     'campus_zip' => { column: :campus_zip, converter: BaseConverter },
     'campus_ipeds_unitid' => { column: :campus_ipeds_unitid, converter: CrossConverter },
-    'accreditation_type' => { column: :csv_accreditation_type, converter: BaseConverter },
+    'accreditation_type' => { column: :csv_accreditation_type, converter: DowncaseConverter },
     'agency_name' => { column: :agency_name, converter: BaseConverter },
     'agency_status' => { column: :agency_status, converter: BaseConverter },
     'program_name' => { column: :program_name, converter: BaseConverter },
     'accreditation_status' => { column: :accreditation_csv_status, converter: BaseConverter },
     'accreditation_date_type' => { column: :accreditation_date_type, converter: BaseConverter },
-    'periods' => { column: :periods, converter: BaseConverter },
+    'periods' => { column: :periods, converter: DowncaseConverter },
     'last action' => { column: :accreditation_status, converter: DisplayConverter }
   }.freeze
 

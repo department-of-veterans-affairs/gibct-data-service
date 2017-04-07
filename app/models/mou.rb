@@ -2,7 +2,7 @@
 class Mou < ActiveRecord::Base
   include CsvHelper
 
-  STATUSES = ['probation - dod', 'title iv non-compliant'].freeze
+  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
 
   CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },
@@ -26,10 +26,10 @@ class Mou < ActiveRecord::Base
   end
 
   def to_dodmou
-    !STATUSES.include?(status)
+    (status =~ STATUSES).nil?
   end
 
   def to_dod_status
-    (status =~ /dod/).present?
+    (status =~ /dod/i).present?
   end
 end

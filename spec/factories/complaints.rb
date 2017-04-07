@@ -10,7 +10,7 @@ FactoryGirl.define do
 
     trait :all_issues do
       issues %w(
-        financial quality refund recruit accreditation degree loans grade transfer job transcript other
+        FinanCial QUALITY RefuND REcruiT Accreditation deGree LOANS GraDe TranSFer jOb TranScript oTHER
       ).join(' ')
     end
 
