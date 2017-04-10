@@ -8,9 +8,9 @@ Rails.application.routes.draw do
 
   # For active? helper
   get '/dashboards' => 'dashboards#index'
-  get '/dashboards/build' => 'dashboards#build', as: :dashboard_build
+  post '/dashboards/build' => 'dashboards#build', as: :dashboard_build
   get '/dashboards/export/:csv_type' => 'dashboards#export', as: :dashboard_export, defaults: { format: 'csv' }
-  get '/dashboards/push' => 'dashboards#push', as: :dashboard_push
+  post '/dashboards/push' => 'dashboards#push', as: :dashboard_push
 
   resources :uploads, except: [:new, :destroy, :edit, :update] do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
