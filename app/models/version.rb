@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'securerandom'
+
 class Version < ActiveRecord::Base
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
@@ -7,6 +9,7 @@ class Version < ActiveRecord::Base
   validates :user_id, presence: true
 
   before_validation :check_version
+  before_create :generate_uuid
   before_save :increment_version
 
   def check_version
@@ -14,6 +17,10 @@ class Version < ActiveRecord::Base
       errors.add(:number, "Version number #{number} doesn't exist")
     end
     true
+  end
+
+  def generate_uuid
+    self.uuid = SecureRandom.uuid
   end
 
   def increment_version

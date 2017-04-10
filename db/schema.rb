@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170330161442) do
+ActiveRecord::Schema.define(version: 20170410221932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,19 +86,45 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.string   "facility_code"
     t.string   "closed_reason"
     t.string   "issues"
-    t.integer  "cfc",                default: 0
-    t.integer  "cfbfc",              default: 0
-    t.integer  "cqbfc",              default: 0
-    t.integer  "crbfc",              default: 0
-    t.integer  "cmbfc",              default: 0
-    t.integer  "cabfc",              default: 0
-    t.integer  "cdrbfc",             default: 0
-    t.integer  "cslbfc",             default: 0
-    t.integer  "cgbfc",              default: 0
-    t.integer  "cctbfc",             default: 0
-    t.integer  "cjbfc",              default: 0
-    t.integer  "ctbfc",              default: 0
-    t.integer  "cobfc",              default: 0
+    t.integer  "cfc",                                                 default: 0
+    t.integer  "cfbfc",                                               default: 0
+    t.integer  "cqbfc",                                               default: 0
+    t.integer  "crbfc",                                               default: 0
+    t.integer  "cmbfc",                                               default: 0
+    t.integer  "cabfc",                                               default: 0
+    t.integer  "cdrbfc",                                              default: 0
+    t.integer  "cslbfc",                                              default: 0
+    t.integer  "cgbfc",                                               default: 0
+    t.integer  "cctbfc",                                              default: 0
+    t.integer  "cjbfc",                                               default: 0
+    t.integer  "ctbfc",                                               default: 0
+    t.integer  "cobfc",                                               default: 0
+    t.integer  "complaints_facility_code",                            default: 0
+    t.integer  "complaints_financial_by_fac_code",                    default: 0
+    t.integer  "complaints_quality_by_fac_code",                      default: 0
+    t.integer  "complaints_refund_by_fac_code",                       default: 0
+    t.integer  "complaints_marketing_by_fac_code",                    default: 0
+    t.integer  "complaints_accreditation_by_fac_code",                default: 0
+    t.integer  "complaints_degree_requirements_by_fac_code",          default: 0
+    t.integer  "complaints_student_loans_by_fac_code",                default: 0
+    t.integer  "complaints_grades_by_fac_code",                       default: 0
+    t.integer  "complaints_credit_transfer_by_fac_code",              default: 0
+    t.integer  "complaints_job_by_fac_code",                          default: 0
+    t.integer  "complaints_transcript_by_fac_code",                   default: 0
+    t.integer  "complaints_other_by_fac_code",                        default: 0
+    t.integer  "complaints_main_campus_roll_up",                      default: 0
+    t.integer  "complaints_financial_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_quality_by_ope_id_do_not_sum",             default: 0
+    t.integer  "complaints_refund_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum",           default: 0
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum", default: 0
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum",       default: 0
+    t.integer  "complaints_grades_by_ope_id_do_not_sum",              default: 0
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum",     default: 0
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum",                default: 0
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum",          default: 0
+    t.integer  "complaints_other_by_ope_id_do_not_sum",               default: 0
     t.string   "case_id"
     t.string   "level"
     t.string   "case_owner"
@@ -108,8 +134,8 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.string   "submitted"
     t.string   "closed"
     t.string   "education_benefits"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
   end
 
   add_index "complaints", ["facility_code"], name: "index_complaints_on_facility_code", using: :btree
@@ -128,10 +154,10 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.datetime "updated_at",    null: false
   end
 
-  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
+  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", unique: true, using: :btree
   add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
   add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
-  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
+  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", unique: true, using: :btree
   add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
 
   create_table "eight_keys", force: :cascade do |t|
@@ -146,9 +172,9 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
+  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", unique: true, using: :btree
   add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
-  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
+  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", unique: true, using: :btree
   add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "hcms", force: :cascade do |t|
@@ -1028,8 +1054,8 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.datetime "updated_at",                   null: false
   end
 
-  add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
-  add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
+  add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", unique: true, using: :btree
+  add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", unique: true, using: :btree
 
   create_table "sec702_schools", force: :cascade do |t|
     t.string   "facility_code", null: false
@@ -1088,7 +1114,7 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.datetime "updated_at",           null: false
   end
 
-  add_index "svas", ["cross"], name: "index_svas_on_cross", using: :btree
+  add_index "svas", ["cross"], name: "index_svas_on_cross", unique: true, using: :btree
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id",                    null: false
@@ -1128,10 +1154,12 @@ ActiveRecord::Schema.define(version: 20170330161442) do
     t.boolean  "production", default: false, null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.binary   "uuid",                       null: false
   end
 
   add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
   add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
+  add_index "versions", ["uuid"], name: "index_versions_on_uuid", unique: true, using: :btree
 
   create_table "vsocs", force: :cascade do |t|
     t.string   "facility_code",    null: false
