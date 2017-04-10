@@ -13,7 +13,9 @@ module V0
     # Newest production data version assumed when version param is undefined
     def resolve_version
       v = params[:version]
-      version = v.present? ? Version.find_by(number: v) : Version.default_version
+      version = v.try(:downcase) == 'preview' ? Version.preview_version : Version.production_version
+
+      # version = v.present? ? Version.find_by(number: v) : Version.default_version
       raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless version.try(:number)
       @version = {
         number: version.number,

@@ -6,5 +6,9 @@ FactoryGirl.define do
     trait :production do
       production true
     end
+
+    trait :preview do
+      production false
+    end
   end
 end
