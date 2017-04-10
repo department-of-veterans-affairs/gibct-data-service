@@ -170,15 +170,15 @@ RSpec.describe Institution, type: :model do
 
     context 'search scope' do
       it 'should return nil if no search term is provided' do
-        expect(described_class.search(name: nil)).to be_empty
+        expect(described_class.search(nil)).to be_empty
       end
 
       it 'should search when attribute is provided' do
-        expect(described_class.search(name: 'chicago').to_sql)
+        expect(described_class.search('chicago').to_sql)
           .to include(
-            "WHERE (lower(facility_code) = ('---\n- :name\n- chicago\n')",
-            "OR lower(institution) LIKE ('%{:name=>\"chicago\"}%')",
-            "OR lower(city) LIKE ('%{:name=>\"chicago\"}%'))"
+            "WHERE (facility_code = ('CHICAGO')",
+            "OR lower(institution) LIKE ('%chicago%')",
+            "OR lower(city) LIKE ('%chicago%'))"
           )
       end
     end
