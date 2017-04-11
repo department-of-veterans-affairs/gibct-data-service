@@ -140,8 +140,8 @@ RSpec.describe Institution, type: :model do
         i = create_list :institution, 2, version: 1
         j = create_list :institution, 2, version: 2
 
-        expect(Institution.version(i.first.version)).to eq(i.to_a)
-        expect(Institution.version(j.first.version)).to eq(j.to_a)
+        expect(Institution.version(i.first.version)).to match_array(i.to_a)
+        expect(Institution.version(j.first.version)).to match_array(j.to_a)
       end
 
       it 'returns blank if a nil or non-existent version number is supplied' do
