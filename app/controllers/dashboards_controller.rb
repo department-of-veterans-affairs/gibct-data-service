@@ -4,6 +4,8 @@ class DashboardsController < ApplicationController
 
   def index
     @uploads = Upload.last_uploads
+    @production = Version.includes(:user).where(production: true).order(created_at: :desc).limit(1)
+    @preview_versions = Version.includes(:user).where(production: false).order(created_at: :desc).limit(1)
   end
 
   def build

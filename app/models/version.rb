@@ -42,6 +42,15 @@ class Version < ActiveRecord::Base
     true
   end
 
+  def gibct_link
+    base_link = ENV['LINK_HOST'].gsub(/(^\w+:|^)\/\//, '').split('.')
+    if base_link.size == 3 # dev, staging, or production
+      "https://#{base_link[0].gsub(/(-api|api)/, '')}.vets.gov"
+    else # localhost (where 3000 gids, 3001 vets-api, and 3002 vets-website)
+      "localhost:3002"
+    end
+  end
+
   def self.production_version
     Version.production.newest
   end
