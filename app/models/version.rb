@@ -46,12 +46,12 @@ class Version < ActiveRecord::Base
     version_info = production? ? '' : "?version=#{uuid}"
     return "#{ENV['GIBCT_HOST']}#{version_info}" if ENV['GIBCT_HOST']
 
-    base_link = ENV['LINK_HOST'].gsub(/(^\w+:|^)\/\//, '').split('.')
+    base_link = ENV['LINK_HOST'].gsub(%r{(^\w+:|^)\/\/}, '').split('.')
     base_link = if base_link.size == 3 # dev, staging, or production
                   "https://#{base_link[0].gsub(/(-api|api)/, '')}.vets.gov"
                 else # localhost (where 3000 gids, 3001 vets-api, and 3002 vets-website)
                   'http://localhost:3002'
-    end
+                end
     "#{base_link}/gi-bill-comparison-tool#{version_info}"
   end
 

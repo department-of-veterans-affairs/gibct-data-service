@@ -55,7 +55,6 @@ module V0
       end
     end
 
-    # rubocop:disable AbcSize
     def search_results
       @query ||= normalized_query_params
       Institution.version(@version[:number])
@@ -87,7 +86,6 @@ module V0
         eight_keys_to_veteran_success: search_results.filter_count(:eight_keys)
       }
     end
-    # rubocop:enable AbcSize
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not
