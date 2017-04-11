@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 20170410215512) do
+ActiveRecord::Schema.define(version: 20170410221932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1132,10 +1131,12 @@ ActiveRecord::Schema.define(version: 20170410215512) do
     t.boolean  "production", default: false, null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.binary   "uuid",                       null: false
   end
 
   add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
   add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
+  add_index "versions", ["uuid"], name: "index_versions_on_uuid", unique: true, using: :btree
 
   create_table "vsocs", force: :cascade do |t|
     t.string   "facility_code",    null: false
