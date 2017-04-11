@@ -9,14 +9,10 @@ class UploadsController < ApplicationController
   end
 
   def new
-    csv_type = params[:csv_type]
-
-    @upload = Upload.new(csv_type: csv_type)
-    @upload.skip_lines = defaults(csv_type)['skip_lines']
-
+    @upload = new_upload(params[:csv_type])
     return if @upload.csv_type.blank? || @upload.csv_type_check?
 
-    flash.alert = errors_for_alert([@upload])
+    log_and_display_error(errors_for_alert([@upload]), 'Warning')
     @upload.csv_type = nil
   end
 
@@ -25,23 +21,45 @@ class UploadsController < ApplicationController
 
     begin
       data = load_csv
+      display_failed_instances(data.failed_instances)
 
-      failed_instances = data.failed_instances
-      warnings = errors_for_alert(failed_instances)
-
-      redirect_to @upload, alert: warnings, notice: message_for_notice(failed_instances)
+      redirect_to @upload
     rescue StandardError => e
-      Rails.logger.error e.message
-      render :new, alert: e.message, notice: "Failed to upload #{original_filename}."
+      log_and_display_error(e.message, "Failed to upload #{original_filename}.", e.backtrace)
+      @upload = new_upload(merged_params[:csv_type])
+
+      render :new
     end
   end
 
   def show
     @upload = Upload.find_by(id: params[:id])
-    redirect_to uploads_path, alert: ["Upload with id: '#{params[:id]}' not found"] unless @upload
+    return if @upload.present?
+
+    log_and_display_error("Upload with id: '#{params[:id]}' not found", 'Error')
+    redirect_to uploads_path
   end
 
   private
+
+  def new_upload(csv_type)
+    upload = Upload.new(csv_type: csv_type)
+    upload.skip_lines = defaults(csv_type)['skip_lines']
+
+    upload
+  end
+
+  def display_failed_instances(failed_instances)
+    log_and_display_error(errors_for_alert(failed_instances), message_for_notice(failed_instances))
+  end
+
+  def log_and_display_error(alert, notice, backtrace = [])
+    Rails.logger.error "@@@@@@@@ #{notice}: #{alert}"
+    Rails.logger.error backtrace.join("\n") unless backtrace.blank?
+
+    flash.alert = alert
+    flash.notice = notice
+  end
 
   def load_csv
     return unless @upload.persisted?
@@ -69,7 +87,7 @@ class UploadsController < ApplicationController
     data = @upload.csv_type.constantize.load(file, skip_lines: @upload.skip_lines.try(:to_i))
 
     @upload.update(ok: data.present? && data.ids.present?)
-    raise StandardError, 'Uploading failed to return or upload data' unless @upload.ok?
+    raise StandardError, errors_for_alert([@upload]) unless @upload.ok?
 
     data
   end
