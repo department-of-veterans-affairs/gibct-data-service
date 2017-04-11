@@ -54,6 +54,8 @@ RSpec.configure do |config|
   # Allow skip_before_action in rspec controller tests
   config.include Devise::TestHelpers, type: :controller
 
+  config.include Warden::Test::Helpers, type: :request
+
   # database_cleaner configuration
   # Clear the entire DB before tests begin
   config.before(:suite) do
