@@ -12,10 +12,8 @@ module V0
         version: @version,
         term: @search_term
       }
-      @links = {
-        self: autocomplete_v0_institutions_url(term: params[:term], version: params[:version])
-      }
-      render json: { data: @data, links: @links, meta: @meta }, adapter: :json
+      @links = { self: self_link }
+      render json: { data: @data, meta: @meta, links: @links }, adapter: :json
     end
 
     # GET /v0/institutions?name=duluth&x=y
@@ -34,8 +32,9 @@ module V0
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
+      @links = { self: self_link }
       render json: resource, serializer: InstitutionProfileSerializer,
-             meta: { version: @version }
+             meta: { version: @version }, links: @links
     end
 
     private

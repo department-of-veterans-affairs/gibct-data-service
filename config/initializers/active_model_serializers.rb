@@ -20,14 +20,9 @@ module CustomPaginationLinks
   private
 
   def base_path
-    protocol, host = Figaro.env.link_host!.split('://')
-    "#{protocol}://#{host}#{path_partial}"
+    URI.join(Figaro.env.link_host, URI.parse(request_url).path).to_s
   end
-
-  def path_partial
-    URI.parse(request_url).path
-  end
-
+  
   # Changed these to allow nil values, this way the keys are always present, but possibly null
   def pages_from
     # return {} if collection.total_pages <= FIRST_PAGE
