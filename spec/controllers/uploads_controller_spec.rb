@@ -27,25 +27,6 @@ RSpec.describe UploadsController, type: :controller do
   describe 'GET new' do
     login_user
 
-    it 'assigns a blank upload record' do
-      get :new
-      expect(assigns(:upload)).to be_a_new(Upload)
-    end
-
-    context 'without specifying a csv_type' do
-      before(:each) do
-        get :new
-      end
-
-      it 'assigns a generic skip_lines' do
-        expect(assigns(:upload).skip_lines).to eq(0)
-      end
-
-      it 'returns http success' do
-        expect(response).to have_http_status(:success)
-      end
-    end
-
     context 'specifying a csv_type' do
       before(:each) do
         get :new, csv_type: 'Complaint'
@@ -60,12 +41,31 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    context 'specifying and invalid csv_type' do
-      before(:each) do
-        get :new, csv_type: 'FexumGibberit'
+    context 'specifying an invalid csv_type' do
+      it 'redirects to the dashboard' do
+        expect(
+          get(:new, csv_type: 'FexumGibberit')
+        ).to redirect_to('/dashboards')
       end
 
       it 'formats an error message in the flash' do
+        get :new, csv_type: 'FexumGibberit'
+
+        expect(flash[:alert]).to be_present
+        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+      end
+    end
+
+    context 'specifying no csv_type' do
+      it 'redirects to the dashboard' do
+        expect(
+          get(:new)
+        ).to redirect_to('/dashboards')
+      end
+
+      it 'formats an error message in the flash' do
+        get :new
+
         expect(flash[:alert]).to be_present
         expect(flash[:alert].first).to match(/is not a valid CSV data source/)
       end
