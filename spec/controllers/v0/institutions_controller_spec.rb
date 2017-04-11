@@ -12,23 +12,23 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institutions')
     end
 
-    it 'accepts production as a version parameter and returns production data' do
+    it 'accepts invalid version parameter and returns production data' do
       create(:version, :production)
       create(:institution, :contains_harv)
 
-      get :index, version: 'production'
+      get :index, version: 'invalid_data'
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
       expect(body['meta']['version']['number'].to_i).to eq(Version.production_version.number)
     end
 
-    it 'accepts preview as a version parameter and returns preview data' do
+    it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
-      create(:version, :preview)
+      v = create(:version, :preview)
       create(:institution, :contains_harv, version: Version.preview_version.number)
 
-      get :index, version: 'preview'
+      get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body

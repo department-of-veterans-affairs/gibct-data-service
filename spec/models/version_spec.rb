@@ -2,6 +2,26 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
+  describe 'attributes' do
+    subject { build :version, :production }
+
+    it 'does not have a uuid until saved' do
+      expect(subject.uuid).to be_nil
+      subject.save
+      expect(subject.uuid).not_to be_nil
+    end
+
+    it 'has gibct_link based on current environment' do
+      subject.save
+      original_env_var = ENV['LINK_HOST']
+      ENV['LINK_HOST'] = 'http://localhost:3000'
+      expect(subject.gibct_link).to eq('http://localhost:3002/gi-bill-comparison-tool')
+      ENV['LINK_HOST'] = 'http://dev-api.vets.gov'
+      expect(subject.gibct_link).to eq('https://dev.vets.gov/gi-bill-comparison-tool')
+      ENV['LINK_HOST'] = original_env_var
+    end
+  end
+
   describe 'when validating' do
     subject { build :version, :production }
 
