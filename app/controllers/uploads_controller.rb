@@ -54,7 +54,7 @@ class UploadsController < ApplicationController
   end
 
   def log_and_display_error(alert, notice, backtrace = [])
-    Rails.logger.error "@@@@@@@@ #{notice}: #{alert}"
+    Rails.logger.error "#{notice}: #{alert}"
     Rails.logger.error backtrace.join("\n") unless backtrace.blank?
 
     flash.alert = alert

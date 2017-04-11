@@ -59,6 +59,17 @@ RSpec.describe UploadsController, type: :controller do
         expect(response).to have_http_status(:success)
       end
     end
+
+    context 'specifying and invalid csv_type' do
+      before(:each) do
+        get :new, csv_type: 'FexumGibberit'
+      end
+
+      it 'formats an error message in the flash' do
+        expect(flash[:alert]).to be_present
+        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+      end
+    end
   end
 
   describe 'POST create' do
@@ -93,6 +104,24 @@ RSpec.describe UploadsController, type: :controller do
           expect(
             post(:create, upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
           ).to render_template(:new)
+        end
+      end
+
+      context 'with a mal-formed csv file' do
+        it 'renders the new view' do
+          file = 'weam_missing_column.csv'
+
+          expect(
+            post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+          ).to render_template(:new)
+        end
+
+        it 'formats an error message in the flash' do
+          upload_file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
+          post(:create, upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+
+          expect(flash[:alert]).to be_present
+          expect(flash[:alert]).to match(/has an issue with headers/)
         end
       end
     end

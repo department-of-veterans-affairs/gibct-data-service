@@ -11,6 +11,7 @@ RSpec.shared_examples 'a loadable model' do |options|
   describe 'when loading' do
     let(:csv_file) { "./spec/fixtures/#{name}.csv" }
     let(:csv_file_invalid) { "./spec/fixtures/#{name}_invalid.csv" }
+    let(:csv_file_missing_column) { "./spec/fixtures/#{name}_missing_column.csv" }
     let(:user) { User.first }
 
     context 'with an error-free csv file' do
