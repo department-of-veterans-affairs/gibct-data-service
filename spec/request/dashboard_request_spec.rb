@@ -11,7 +11,8 @@ RSpec.describe 'Dashboard', type: :request do
 
   it 'responds to POST #build' do
     post dashboard_build_path
-    expect(response).to have_http_status(:ok)
+    expect(response).to redirect_to('/dashboards')
+    expect(flash[:notice]).to match "Preview Data (1) built successfully"
   end
 
   it 'responds to POST #push' do
