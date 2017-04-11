@@ -18,6 +18,7 @@ RSpec.describe Version, type: :model do
       expect(subject.gibct_link).to eq('http://localhost:3002/gi-bill-comparison-tool')
       ENV['LINK_HOST'] = 'http://dev-api.vets.gov'
       expect(subject.gibct_link).to eq('https://dev.vets.gov/gi-bill-comparison-tool')
+      ENV['LINK_HOST'] = original_env_var
     end
   end
 

@@ -42,6 +42,7 @@ class Version < ActiveRecord::Base
     true
   end
 
+  # TODO: BEFORE PRODUCTION RELEASE, consider adding the GIBCT_HOST link and removing additional logic
   def gibct_link
     version_info = production? ? '' : "?version=#{uuid}"
     return "#{ENV['GIBCT_HOST']}#{version_info}" if ENV['GIBCT_HOST']
