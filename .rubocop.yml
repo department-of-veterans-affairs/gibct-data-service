@@ -13,9 +13,7 @@ AllCops:
     - 'log/**/*'
 
 Metrics/AbcSize:
-  Exclude:
-    - app/models/institution_builder.rb
-    - app/models/complaint.rb
+  Max: 40
 
 Metrics/BlockLength:
   Exclude:
