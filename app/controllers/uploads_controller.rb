@@ -9,48 +9,61 @@ class UploadsController < ApplicationController
   end
 
   def new
-    csv_type = params[:csv_type]
+    @upload = new_upload(params[:csv_type])
+    return if @upload.csv_type_check?
 
-    @upload = Upload.new(csv_type: csv_type)
-    @upload.skip_lines = defaults(csv_type)['skip_lines']
-
-    return if @upload.csv_type.blank? || @upload.csv_type_check?
-
-    flash.alert = errors_for_alert([@upload])
-    @upload.csv_type = nil
+    log_and_display_error(errors_for_alert([@upload]), 'Warning')
+    redirect_to dashboards_path
   end
 
   def create
     @upload = Upload.create(merged_params)
-    data = load_csv
 
-    if @upload.ok?
-      failed_instances = data.failed_instances
-      warnings = errors_for_alert(failed_instances)
+    begin
+      data = load_csv
+      display_failed_instances(data.failed_instances)
 
-      Rails.logger.warn warnings
+      redirect_to @upload
+    rescue StandardError => e
+      log_and_display_error(e.message, "Failed to upload #{original_filename}.", e.backtrace)
+      @upload = new_upload(merged_params[:csv_type])
 
-      redirect_to @upload, alert: warnings, notice: message_for_notice(failed_instances)
-    else
-      render :new, alert: errors_for_alert([@upload]), notice: "Failed to upload #{original_filename}."
+      render :new
     end
   end
 
   def show
     @upload = Upload.find_by(id: params[:id])
-    redirect_to uploads_path, alert: ["Upload with id: '#{params[:id]}' not found"] unless @upload
+    return if @upload.present?
+
+    log_and_display_error("Upload with id: '#{params[:id]}' not found", 'Error')
+    redirect_to uploads_path
   end
 
   private
 
+  def new_upload(csv_type)
+    upload = Upload.new(csv_type: csv_type)
+    upload.skip_lines = defaults(csv_type)['skip_lines']
+
+    upload
+  end
+
+  def display_failed_instances(failed_instances)
+    log_and_display_error(errors_for_alert(failed_instances), message_for_notice(failed_instances))
+  end
+
+  def log_and_display_error(alert, notice, backtrace = [])
+    Rails.logger.error "#{notice}: #{alert}"
+    Rails.logger.error backtrace.join("\n") unless backtrace.blank?
+
+    flash.alert = alert
+    flash.notice = notice
+  end
+
   def load_csv
     return unless @upload.persisted?
-
-    file = @upload.upload_file.tempfile
-    data = @upload.csv_type.constantize.load(file, skip_lines: @upload.skip_lines.try(:to_i))
-
-    @upload.update(ok: data.present? && data.ids.present?)
-    data
+    call_load
   end
 
   def original_filename
@@ -67,5 +80,15 @@ class UploadsController < ApplicationController
 
   def upload_params
     @u ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+  end
+
+  def call_load
+    file = @upload.upload_file.tempfile
+    data = @upload.csv_type.constantize.load(file, skip_lines: @upload.skip_lines.try(:to_i))
+
+    @upload.update(ok: data.present? && data.ids.present?)
+    raise StandardError, errors_for_alert([@upload]) unless @upload.ok?
+
+    data
   end
 end
