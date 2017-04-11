@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require './app/models/errors/csv_header_error'
 module CsvHelper
   module Loader
     CSV_FIRST_LINE = 2
@@ -9,24 +10,44 @@ module CsvHelper
     }.freeze
 
     def load(file, options = {})
+      # Tackle all upload killers we can predict before deleting database
+      diffed = diffed_headers(file, options[:skip_lines] || 0)
+      raise ::CsvHeaderError.new(klass, diffed[:missing], diffed[:extra]) if diffed[:errors]
+
       delete_all
+      load_records(file, options)
+    end
+
+    private
+
+    def csv_file_headers(file, skip_lines)
+      csv = CSV.open(file, return_headers: true, encoding: 'ISO-8859-1')
+      skip_lines.times { csv.readline }
+
+      (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
+    end
+
+    def diffed_headers(file, skip_lines)
+      model_headers = klass::CSV_CONVERTER_INFO.keys
+      file_headers = csv_file_headers(file, skip_lines)
+
+      response = { missing: model_headers - file_headers, extra: file_headers - model_headers }
+      response[:errors] = response[:missing].present? || response[:extra].present?
+
+      response
+    end
+
+    def load_records(file, options)
       records = { valid: [], invalid: [] }
 
-      records = if klass == Institution
-                  load_from_csv_with_version(file, records, options)
-                else
-                  load_from_csv(file, records, options)
-                end
-
+      records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
       results = klass.import records[:valid], validate: false, ignore: true
       results.failed_instances = records[:invalid]
 
       results
     end
 
-    private
-
-    def load_from_csv(file, records, options)
+    def load_csv(file, records, options)
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
@@ -38,7 +59,7 @@ module CsvHelper
       records
     end
 
-    def load_from_csv_with_version(file, records, options)
+    def load_csv_with_version(file, records, options)
       version = Version.preview_version
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 

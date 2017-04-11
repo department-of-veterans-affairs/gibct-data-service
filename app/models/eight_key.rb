@@ -7,7 +7,7 @@ class EightKey < ActiveRecord::Base
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
-    'ipeds_id' => { column: :cross, converter: CrossConverter },
+    'ipeds id' => { column: :cross, converter: CrossConverter },
     'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 

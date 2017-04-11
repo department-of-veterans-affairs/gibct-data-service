@@ -22,17 +22,17 @@ class UploadsController < ApplicationController
 
   def create
     @upload = Upload.create(merged_params)
-    data = load_csv
 
-    if @upload.ok?
+    begin
+      data = load_csv
+
       failed_instances = data.failed_instances
       warnings = errors_for_alert(failed_instances)
 
-      Rails.logger.warn warnings
-
       redirect_to @upload, alert: warnings, notice: message_for_notice(failed_instances)
-    else
-      render :new, alert: errors_for_alert([@upload]), notice: "Failed to upload #{original_filename}."
+    rescue StandardError => e
+      Rails.logger.error e.message
+      render :new, alert: e.message, notice: "Failed to upload #{original_filename}."
     end
   end
 
@@ -45,12 +45,7 @@ class UploadsController < ApplicationController
 
   def load_csv
     return unless @upload.persisted?
-
-    file = @upload.upload_file.tempfile
-    data = @upload.csv_type.constantize.load(file, skip_lines: @upload.skip_lines.try(:to_i))
-
-    @upload.update(ok: data.present? && data.ids.present?)
-    data
+    call_load
   end
 
   def original_filename
@@ -67,5 +62,15 @@ class UploadsController < ApplicationController
 
   def upload_params
     @u ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+  end
+
+  def call_load
+    file = @upload.upload_file.tempfile
+    data = @upload.csv_type.constantize.load(file, skip_lines: @upload.skip_lines.try(:to_i))
+
+    @upload.update(ok: data.present? && data.ids.present?)
+    raise StandardError, 'Uploading failed to return or upload data' unless @upload.ok?
+
+    data
   end
 end
