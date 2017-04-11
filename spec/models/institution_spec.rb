@@ -140,8 +140,8 @@ RSpec.describe Institution, type: :model do
         i = create_list :institution, 2, version: 1
         j = create_list :institution, 2, version: 2
 
-        expect(Institution.version(i.first.version)).to eq(i.to_a)
-        expect(Institution.version(j.first.version)).to eq(j.to_a)
+        expect(Institution.version(i.first.version)).to match_array(i.to_a)
+        expect(Institution.version(j.first.version)).to match_array(j.to_a)
       end
 
       it 'returns blank if a nil or non-existent version number is supplied' do
@@ -170,15 +170,15 @@ RSpec.describe Institution, type: :model do
 
     context 'search scope' do
       it 'should return nil if no search term is provided' do
-        expect(described_class.search(name: nil)).to be_empty
+        expect(described_class.search(nil)).to be_empty
       end
 
       it 'should search when attribute is provided' do
-        expect(described_class.search(name: 'chicago').to_sql)
+        expect(described_class.search('chicago').to_sql)
           .to include(
-            "WHERE (lower(facility_code) = ('---\n- :name\n- chicago\n')",
-            "OR lower(institution) LIKE ('%{:name=>\"chicago\"}%')",
-            "OR lower(city) LIKE ('%{:name=>\"chicago\"}%'))"
+            "WHERE (facility_code = ('CHICAGO')",
+            "OR lower(institution) LIKE ('%chicago%')",
+            "OR lower(city) LIKE ('%chicago%'))"
           )
       end
     end
