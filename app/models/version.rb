@@ -48,9 +48,9 @@ class Version < ActiveRecord::Base
 
     base_link = ENV['LINK_HOST'].gsub(/(^\w+:|^)\/\//, '').split('.')
     base_link = if base_link.size == 3 # dev, staging, or production
-      "https://#{base_link[0].gsub(/(-api|api)/, '')}.vets.gov"
-    else # localhost (where 3000 gids, 3001 vets-api, and 3002 vets-website)
-      "http://localhost:3002"
+                  "https://#{base_link[0].gsub(/(-api|api)/, '')}.vets.gov"
+                else # localhost (where 3000 gids, 3001 vets-api, and 3002 vets-website)
+                  'http://localhost:3002'
     end
     "#{base_link}/gi-bill-comparison-tool#{version_info}"
   end
