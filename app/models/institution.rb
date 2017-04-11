@@ -206,12 +206,12 @@ class Institution < ActiveRecord::Base
   scope :search, lambda { |search_term|
     return if search_term.blank?
     clause = [
-      'lower(facility_code) = (?)',
+      'facility_code = (?)',
       'lower(institution) LIKE (?)',
       'lower(city) LIKE (?)'
     ].join(' OR ')
     terms = [
-      search_term,
+      search_term.upcase,
       "%#{search_term}%",
       "%#{search_term}%"
     ]
