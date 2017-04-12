@@ -15,7 +15,6 @@ module V0
       v = params[:version]
       version = Version.find_by(uuid: v) || Version.production_version
 
-      # version = v.present? ? Version.find_by(number: v) : Version.default_version
       raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless version.try(:number)
       @version = {
         number: version.number,
