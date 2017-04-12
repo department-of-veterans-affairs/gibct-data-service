@@ -28,7 +28,7 @@ RSpec.describe 'institutions', type: :request do
 
   context '#show' do
     it 'uses LINK_HOST in self link' do
-      school = create(:institution, :contains_harv, version: Version.production_version.number)
+      school = create(:institution, :contains_harv, version: Version.current_production.number)
       get "/v0/institutions/#{school.facility_code}"
       links = JSON.parse(response.body)['links']
       expect(links['self']).to start_with(ENV['LINK_HOST'])

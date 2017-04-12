@@ -18,11 +18,11 @@ class Version < ActiveRecord::Base
   scope :newest, -> { order(created_at: :desc) }
 
   # class methods
-  def self.production_version
+  def self.current_production
     Version.production.newest.first
   end
 
-  def self.preview_version
+  def self.current_preview
     Version.preview.newest.first
   end
 

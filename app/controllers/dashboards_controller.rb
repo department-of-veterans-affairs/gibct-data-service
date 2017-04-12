@@ -35,7 +35,7 @@ class DashboardsController < ApplicationController
   end
 
   def push
-    version = Version.preview_version
+    version = Version.current_preview
 
     if version.blank?
       flash.alert = 'No preview version available'

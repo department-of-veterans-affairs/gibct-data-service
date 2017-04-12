@@ -63,7 +63,7 @@ RSpec.describe Version, type: :model do
     end
 
     context 'latest production version' do
-      let(:subject) { Version.production_version }
+      let(:subject) { Version.current_production }
 
       it 'has correct number' do
         expect(subject.number).to eq(3)
@@ -79,7 +79,7 @@ RSpec.describe Version, type: :model do
     end
 
     context 'latest preview version' do
-      let(:subject) { Version.preview_version }
+      let(:subject) { Version.current_preview }
 
       it 'has correct number' do
         expect(subject.number).to eq(4)
