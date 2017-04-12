@@ -29,7 +29,7 @@ class DashboardsController < ApplicationController
     klass = csv_model(params[:csv_type])
 
     respond_to do |format|
-      format.csv { send_data klass.export, type: 'text/csv' }
+      format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
     end
   rescue ArgumentError, ActionController::UnknownFormat => e
     Rails.logger.error e.message
