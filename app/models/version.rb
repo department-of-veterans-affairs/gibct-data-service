@@ -38,12 +38,12 @@ class Version < ActiveRecord::Base
   def current_preview?
     preview? && number == Version.preview.maximum(:number)
   end
-  alias_method :latest_preview?, :current_preview?
+  alias latest_preview? current_preview?
 
   def current_production?
     production? && number == Version.production.maximum(:number)
   end
-  alias_method :latest_production?, :current_production?
+  alias latest_production? current_production?
 
   def gibct_link
     version_info = production? ? '' : "?version=#{uuid}"
