@@ -4,7 +4,7 @@ class DashboardsController < ApplicationController
 
   def index
     @uploads = Upload.last_uploads
-    @production = Version.production.newest.includes(:user).limit(1)
+    @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
   end
 
