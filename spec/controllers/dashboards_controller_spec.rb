@@ -85,6 +85,16 @@ RSpec.describe DashboardsController, type: :controller do
       get :export, csv_type: 'Weam', format: :csv
     end
 
+    it 'includes filename parameter in content-disposition header' do
+      get :export, csv_type: 'Sva', format: :csv
+      expect(response.headers['Content-Disposition']).to include('filename="Sva.csv"')
+    end
+
+    it 'includes filename parameter in content-disposition header for institution' do
+      get :export, csv_type: 'Institution', format: :csv
+      expect(response.headers['Content-Disposition']).to include('filename="Institution.csv"')
+    end
+
     it 'redirects to index on error' do
       expect(get(:export, csv_type: 'BlahBlah', format: :csv)).to redirect_to(action: :index)
       expect(get(:export, csv_type: 'Weam', format: :xml)).to redirect_to(action: :index)
