@@ -21,7 +21,7 @@ class DashboardsController < ApplicationController
     else
       flash.notice = "Preview Data (#{@version.number}) built successfully"
     end
-    
+
     redirect_to dashboards_path
   end
 

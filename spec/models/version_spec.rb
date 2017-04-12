@@ -11,14 +11,9 @@ RSpec.describe Version, type: :model do
       expect(subject.uuid).not_to be_nil
     end
 
-    it 'has gibct_link based on current environment' do
+    it 'has gibct_link based on configuration' do
       subject.save
-      original_env_var = ENV['LINK_HOST']
-      ENV['LINK_HOST'] = 'http://localhost:3000'
-      expect(subject.gibct_link).to eq('http://localhost:3002/gi-bill-comparison-tool')
-      ENV['LINK_HOST'] = 'http://dev-api.vets.gov'
-      expect(subject.gibct_link).to eq('https://dev.vets.gov/gi-bill-comparison-tool')
-      ENV['LINK_HOST'] = original_env_var
+      expect(subject.gibct_link).to eq(ENV['GIBCT_URL'])
     end
   end
 

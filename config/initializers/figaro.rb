@@ -2,5 +2,6 @@
 
 Figaro.require_keys(
   'LINK_HOST',
-  'SECRET_KEY_BASE'
+  'SECRET_KEY_BASE',
+  'GIBCT_URL'
 )
