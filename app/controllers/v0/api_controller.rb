@@ -19,7 +19,7 @@ module V0
       @version = {
         number: version.number,
         created_at: version.created_at,
-        preview: !version.production?
+        preview: version.preview?
       }
     end
 
