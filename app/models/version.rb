@@ -28,9 +28,19 @@ class Version < ActiveRecord::Base
 
   # public instance methods
   def preview?
-    number != Version.production_version.number
-  rescue
-    true
+    !production?
+  end
+
+  def publishable?
+    preview? && number > Version.production.maximum(:number)
+  end
+
+  def latest_preview?
+    preview? && number == Version.preview.maximum(:number)
+  end
+
+  def latest_production?
+    production? && number == Version.production.maximum(:number)
   end
 
   def gibct_link

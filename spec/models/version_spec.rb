@@ -62,12 +62,36 @@ RSpec.describe Version, type: :model do
       create :version, created_at: 0.days.ago
     end
 
-    it 'can find the latest production_version' do
-      expect(Version.production_version.number).to eq(3)
+    context 'latest production version' do
+      let(:subject) { Version.production_version }
+
+      it 'has correct number' do
+        expect(subject.number).to eq(3)
+      end
+
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_truthy
+        expect(subject.production?).to be_truthy
+        expect(subject.preview?).to be_falsey
+        expect(subject.latest_preview?).to be_falsey
+        expect(subject.publishable?).to be_falsey
+      end
     end
 
-    it 'can find the latest preview_version' do
-      expect(Version.preview_version.number).to eq(4)
+    context 'latest preview version' do
+      let(:subject) { Version.preview_version }
+
+      it 'has correct number' do
+        expect(subject.number).to eq(4)
+      end
+
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_falsey
+        expect(subject.production?).to be_falsey
+        expect(subject.preview?).to be_truthy
+        expect(subject.latest_preview?).to be_truthy
+        expect(subject.publishable?).to be_truthy
+      end
     end
   end
 end
