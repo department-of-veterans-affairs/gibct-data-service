@@ -53,6 +53,9 @@ gem 'virtus', '~> 1.0.5'
 gem "puma", "~> 3.6"
 gem 'figaro'
 
+# Sentry
+gem 'sentry-raven'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
