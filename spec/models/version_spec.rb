@@ -69,21 +69,5 @@ RSpec.describe Version, type: :model do
     it 'can find the latest preview_version' do
       expect(Version.preview_version.number).to eq(4)
     end
-
-    it 'can find the production_version on a given date and time as string' do
-      expect(Version.production_version_by_time(2.days.ago.to_s).number).to eq(1)
-    end
-
-    it 'can find the production_version on a given date and time as Time' do
-      expect(Version.production_version_by_time(2.days.ago).number).to eq(1)
-    end
-
-    it 'can find the preview_version on a given date and time as string' do
-      expect(Version.preview_version_by_time(1.day.ago.to_s).number).to eq(2)
-    end
-
-    it 'can find the preview_version on a given date and time as Time' do
-      expect(Version.preview_version_by_time(1.day.ago).number).to eq(2)
-    end
   end
 end
