@@ -4,7 +4,7 @@
   </div>
 </div>
 
-<h3>Latest Production</h3>
+<h3>Latest Production Version</h3>
 <div class="row row-space-6">
   <div class="col-xs-12">
     <table class="table table-hover table-condensed table-bordered table-responsive">
@@ -16,7 +16,8 @@
         <th width=30%>Actions</th>
       </thead>
       <tbody>
-        <%= render partial: 'version', collection: @production, as: :version %>
+        <%= render partial: 'version',
+          collection: @production, as: :version %>
       </tbody>
     </table>
   </div>
@@ -34,7 +35,8 @@
         <th width=30%>Actions</th>
       </thead>
       <tbody>
-        <%= render partial: 'version', collection: @preview_versions, as: :version %>
+        <%= render partial: 'version',
+          collection: @preview_versions, as: :version, locals: { production: @production.first } %>
       </tbody>
     </table>
   </div>
