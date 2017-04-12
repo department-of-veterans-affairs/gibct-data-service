@@ -10,7 +10,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = new_upload(params[:csv_type])
-    return if @upload.csv_type_check?
+    return if @upload.csv_type.blank? || @upload.csv_type_check?
 
     log_and_display_error(errors_for_alert([@upload]), 'Warning')
     redirect_to dashboards_path

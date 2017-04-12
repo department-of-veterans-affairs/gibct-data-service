@@ -57,17 +57,11 @@ RSpec.describe UploadsController, type: :controller do
     end
 
     context 'specifying no csv_type' do
-      it 'redirects to the dashboard' do
-        expect(
-          get(:new)
-        ).to redirect_to('/dashboards')
-      end
+      it 'generates a new Upload and renders form' do
+        get(:new)
 
-      it 'formats an error message in the flash' do
-        get :new
-
-        expect(flash[:alert]).to be_present
-        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+        expect(assigns(:upload).skip_lines).to eq(0)
+        expect(response).to render_template('new')
       end
     end
   end
