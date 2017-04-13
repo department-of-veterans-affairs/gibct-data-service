@@ -27,9 +27,16 @@ class Version < ActiveRecord::Base
   end
 
   def self.buildable?
+    Version.buildable_state.to_s.match('can_create')
+  end
+
+  def self.buildable_state
     upload_dates = Upload.last_uploads.to_a.map(&:updated_at)
-    upload_dates.length == InstitutionBuilder::TABLES.length &&
-    upload_dates.max > Version.current_preview.created_at
+    return :not_enough_uploads if upload_dates.length < InstitutionBuilder::TABLES.length
+    return :too_many_uploads if upload_dates.length > InstitutionBuilder::TABLES.length
+    return :can_create_first_preview if Version.current_preview.nil?
+    return :can_create_new_preview if upload_dates.max > Version.current_preview.created_at
+    :no_new_uploads
   end
 
   # public instance methods

@@ -2,6 +2,64 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
+  describe 'buildable?' do
+    subject { described_class }
+
+    let(:preview_date) { Faker::Time.between(2.days.ago, Date.today, :all) }
+    let(:after_preview_date) { Faker::Date.between(preview_date + 1, preview_date + 2.days.to_i) }
+    let(:before_preview_date) { Faker::Date.between(preview_date - 2.days.to_i, preview_date - 1) }
+    let(:upload_dates_after) { [after_preview_date ] * 21}
+    let(:upload_dates_before) { [before_preview_date] * 21 }
+
+    it 'returns false if upload dates is less than institution table count' do
+      allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+        .and_return(upload_dates_after[0..19])
+      expect(subject.buildable_state).to eq(:not_enough_uploads)
+      expect(subject.buildable?).to be_falsey
+    end
+
+    it 'returns false if upload dates is more than institution table count' do
+      allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+        .and_return(upload_dates_after + [upload_dates_after.first])
+      expect(subject.buildable_state).to eq(:too_many_uploads)
+      expect(subject.buildable?).to be_falsey
+    end
+
+    context 'with no preview version' do
+      it 'returns true if upload dates are before' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_before)
+        expect(subject.buildable_state).to eq(:can_create_first_preview)
+        expect(subject.buildable?).to be_truthy
+      end
+
+      it 'returns true if upload dates are after' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_after)
+        expect(subject.buildable_state).to eq(:can_create_first_preview)
+        expect(subject.buildable?).to be_truthy
+      end
+    end
+
+    context 'with preview version' do
+      before(:each) { create :version, created_at: preview_date }
+
+      it 'returns false if upload dates are before' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_before)
+        expect(subject.buildable_state).to eq(:no_new_uploads)
+        expect(subject.buildable?).to be_falsey
+      end
+
+      it 'returns false if upload dates are before' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_after)
+        expect(subject.buildable_state).to eq(:can_create_new_preview)
+        expect(subject.buildable?).to be_truthy
+      end
+    end
+  end
+
   describe 'attributes' do
     subject { build :version, :production }
 
