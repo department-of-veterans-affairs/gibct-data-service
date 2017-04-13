@@ -26,6 +26,12 @@ class Version < ActiveRecord::Base
     Version.preview.newest.first
   end
 
+  def self.buildable?
+    upload_dates = Upload.last_uploads.to_a.map(&:updated_at)
+    upload_dates.length == InstitutionBuilder::TABLES.length &&
+    upload_dates.max > Version.current_preview.created_at
+  end
+
   # public instance methods
   def preview?
     !production?
