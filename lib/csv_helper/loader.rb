@@ -10,32 +10,11 @@ module CsvHelper
     }.freeze
 
     def load(file, options = {})
-      # Tackle all upload killers we can predict before deleting database
-      diffed = diffed_headers(file, options[:skip_lines] || 0)
-      raise ::CsvHeaderError.new(klass, diffed[:missing], diffed[:extra]) if diffed[:errors]
-
       delete_all
       load_records(file, options)
     end
 
     private
-
-    def csv_file_headers(file, skip_lines)
-      csv = CSV.open(file, return_headers: true, encoding: 'ISO-8859-1')
-      skip_lines.times { csv.readline }
-
-      (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
-    end
-
-    def diffed_headers(file, skip_lines)
-      model_headers = klass::CSV_CONVERTER_INFO.keys
-      file_headers = csv_file_headers(file, skip_lines)
-
-      response = { missing: model_headers - file_headers, extra: file_headers - model_headers }
-      response[:errors] = response[:missing].present? || response[:extra].present?
-
-      response
-    end
 
     def load_records(file, options)
       records = { valid: [], invalid: [] }

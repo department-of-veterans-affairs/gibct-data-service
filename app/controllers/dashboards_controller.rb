@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class DashboardsController < ApplicationController
-  include Flashable
-
   def index
     @uploads = Upload.last_uploads
     # TODO: fix the scopes on Version, particularly .newest so that it returns a AR:Relation

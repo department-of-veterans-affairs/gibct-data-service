@@ -52,7 +52,9 @@ RSpec.describe UploadsController, type: :controller do
         get :new, csv_type: 'FexumGibberit'
 
         expect(flash[:alert]).to be_present
-        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+        expect(
+          flash[:alert]['Error specifying Csv type: '].first
+        ).to match('Csv type FexumGibberit is not a valid CSV data source')
       end
     end
 
@@ -67,7 +69,7 @@ RSpec.describe UploadsController, type: :controller do
         get :new
 
         expect(flash[:alert]).to be_present
-        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+        expect(flash[:alert]['Error specifying Csv type: '].first).to match('No Csv type was specified')
       end
     end
   end
@@ -120,8 +122,8 @@ RSpec.describe UploadsController, type: :controller do
           upload_file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
           post(:create, upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
 
-          expect(flash[:alert]).to be_present
-          expect(flash[:alert]).to match(/has an issue with headers/)
+          expect(flash[:notice]).to be_present
+          expect(flash[:notice]['The following headers were missing: '].first).to match(/address 1/)
         end
       end
     end

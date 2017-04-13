@@ -12,7 +12,11 @@ class UploadsController < ApplicationController
     @upload = new_upload(params[:csv_type])
     return if @upload.csv_type_check?
 
-    log_and_display_error(errors_for_alert([@upload]), 'Warning')
+    msgs = params[:csv_type].blank? ? ['No Csv type was specified'] : @upload.errors.full_messages
+
+    add_alerts('Error specifying Csv type: ', msgs)
+    set_flash
+
     redirect_to dashboards_path
   end
 
@@ -20,14 +24,23 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
 
     begin
-      data = load_csv
-      display_failed_instances(data.failed_instances)
+      results = load_csv
 
+      failed = errors_for_alert(results[:data].failed_instances)
+      diff_headers = results[:diffed_headers]
+
+      add_notices("The upload of #{@upload.csv_type} succeeded.", [])
+      add_notices('But following rows should be checked: ', failed) unless failed.empty?
+      add_notices('The following headers were missing: ', diff_headers[:missing]) unless diff_headers[:missing].empty?
+      add_notices('The following headers are extra: ', diff_headers[:extra]) unless diff_headers[:extra].empty?
+
+      set_flash
       redirect_to @upload
     rescue StandardError => e
-      log_and_display_error(e.message, "Failed to upload #{original_filename}.", e.backtrace)
+      add_alerts("Failed to upload #{original_filename}.", [e.message], e.backtrace)
       @upload = new_upload(merged_params[:csv_type])
 
+      set_flash
       render :new
     end
   end
@@ -36,7 +49,9 @@ class UploadsController < ApplicationController
     @upload = Upload.find_by(id: params[:id])
     return if @upload.present?
 
-    log_and_display_error("Upload with id: '#{params[:id]}' not found", 'Error')
+    add_alerts('Could not display upload: ', ["Upload with id: '#{params[:id]}' not found"])
+    set_flash
+
     redirect_to uploads_path
   end
 
@@ -47,18 +62,6 @@ class UploadsController < ApplicationController
     upload.skip_lines = defaults(csv_type)['skip_lines']
 
     upload
-  end
-
-  def display_failed_instances(failed_instances)
-    log_and_display_error(errors_for_alert(failed_instances), message_for_notice(failed_instances))
-  end
-
-  def log_and_display_error(alert, notice, backtrace = [])
-    Rails.logger.error "#{notice}: #{alert}"
-    Rails.logger.error backtrace.join("\n") unless backtrace.blank?
-
-    flash.alert = alert
-    flash.notice = notice
   end
 
   def load_csv
@@ -84,11 +87,32 @@ class UploadsController < ApplicationController
 
   def call_load
     file = @upload.upload_file.tempfile
-    data = @upload.csv_type.constantize.load(file, skip_lines: @upload.skip_lines.try(:to_i))
+    skip_lines = @upload.skip_lines.try(:to_i)
+    data = klass.load(file, skip_lines: skip_lines)
 
     @upload.update(ok: data.present? && data.ids.present?)
-    raise StandardError, errors_for_alert([@upload]) unless @upload.ok?
+    raise(StandardError, "There was no saved #{klass} data!") unless @upload.ok?
 
-    data
+    { data: data, diffed_headers: diffed_headers(file, skip_lines) }
+  end
+
+  def diffed_headers(file, skip_lines)
+    file = @upload.upload_file.tempfile
+    skip_lines = @upload.skip_lines.try(:to_i)
+    model_headers = klass::CSV_CONVERTER_INFO.keys
+    file_headers = csv_file_headers(file, skip_lines)
+
+    { missing: model_headers - file_headers, extra: file_headers - model_headers }
+  end
+
+  def csv_file_headers(file, skip_lines)
+    csv = CSV.open(file, return_headers: true, encoding: 'ISO-8859-1')
+    skip_lines.times { csv.readline }
+
+    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
+  end
+
+  def klass
+    @upload.csv_type.constantize
   end
 end
