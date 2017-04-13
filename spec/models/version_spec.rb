@@ -51,7 +51,7 @@ RSpec.describe Version, type: :model do
         expect(subject.buildable?).to be_falsey
       end
 
-      it 'returns false if upload dates are before' do
+      it 'returns true if upload dates are after' do
         allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
           .and_return(upload_dates_after)
         expect(subject.buildable_state).to eq(:can_create_new_preview)
