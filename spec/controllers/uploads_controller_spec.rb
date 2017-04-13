@@ -90,6 +90,13 @@ RSpec.describe UploadsController, type: :controller do
           post(:create, upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
+
+      it 'formats an notice message when some records do not validate' do
+        file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
+        post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+
+        expect(flash[:notice]['But following rows should be checked: ']).to be_present
+      end
     end
 
     context 'having invalid form input' do
@@ -108,23 +115,23 @@ RSpec.describe UploadsController, type: :controller do
           ).to render_template(:new)
         end
       end
+    end
 
-      context 'with a mal-formed csv file' do
-        it 'renders the new view' do
-          file = 'weam_missing_column.csv'
+    context 'with a mal-formed csv file' do
+      it 'renders the show view' do
+        file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
 
-          expect(
-            post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
-          ).to render_template(:new)
-        end
+        expect(
+          post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+        ).to redirect_to(action: :show, id: assigns(:upload).id)
+      end
 
-        it 'formats an error message in the flash' do
-          upload_file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
-          post(:create, upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+      it 'formats an notice message in the flash' do
+        file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
+        post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
 
-          expect(flash[:notice]).to be_present
-          expect(flash[:notice]['The following headers were missing: '].first).to match(/address 1/)
-        end
+        expect(flash[:notice]).to be_present
+        expect(flash[:notice]['The following headers were missing: '].first).to match(/address 1/)
       end
     end
   end
