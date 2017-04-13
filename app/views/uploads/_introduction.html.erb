@@ -12,27 +12,13 @@
   </div>
 
   <div class="col-xs-3">
-    <% if action_name == 'new' %>
-      <div class="row row-space-6">
-        <div class="col-xs-12">
-          <%= link_to 'View All Uploads', uploads_path,
-              class: "btn btn-info btn-xs", role: "button", style: 'width: 70%' %>
-        </div>
+    <% if action_name == 'new' or action_name == 'show' %>
+    <div class="row row-space-6">
+      <div class="col-xs-12">
+        <%= link_to 'View All Uploads', uploads_path,
+            class: "btn btn-info btn-xs", role: "button", style: 'width: 70%' %>
       </div>
-    <% elsif action_name == 'index' %>
-      <div class="row row-space-6">
-        <div class="col-xs-12">
-           <%= link_to 'Upload a File', new_upload_path,
-               class: "btn btn-success btn-xs", role: "button", style: 'width: 70%' %>
-        </div>
-      </div>
-    <% elsif action_name == 'show' %>
-      <div class="row row-space-6">
-        <div class="col-xs-12">
-           <%= link_to 'View All Uploads', uploads_path,
-               class: "btn btn-info btn-xs", role: "button", style: 'width: 70%' %>
-        </div>
-      </div>
+    </div>
     <% end %>
 
     <div class="row row-space-6">

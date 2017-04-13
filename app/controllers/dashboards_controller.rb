@@ -4,10 +4,8 @@ class DashboardsController < ApplicationController
 
   def index
     @uploads = Upload.last_uploads
-    # TODO: fix the scopes on Version, particularly .newest so that it returns a AR:Relation
-    # TODO: eventually export and push should support passing in a version uuid
-    @production = Version.includes(:user).where(production: true).order(created_at: :desc).limit(1)
-    @preview_versions = Version.includes(:user).where(production: false).order(created_at: :desc).limit(1)
+    @production_versions = Version.production.newest.includes(:user).limit(1)
+    @preview_versions = Version.preview.newest.includes(:user).limit(1)
   end
 
   def build
@@ -29,7 +27,7 @@ class DashboardsController < ApplicationController
     klass = csv_model(params[:csv_type])
 
     respond_to do |format|
-      format.csv { send_data klass.export, type: 'text/csv' }
+      format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
     end
   rescue ArgumentError, ActionController::UnknownFormat => e
     Rails.logger.error e.message
@@ -37,7 +35,7 @@ class DashboardsController < ApplicationController
   end
 
   def push
-    version = Version.preview_version
+    version = Version.current_preview
 
     if version.blank?
       flash.alert = 'No preview version available'

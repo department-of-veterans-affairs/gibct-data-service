@@ -85,6 +85,16 @@ RSpec.describe DashboardsController, type: :controller do
       get :export, csv_type: 'Weam', format: :csv
     end
 
+    it 'includes filename parameter in content-disposition header' do
+      get :export, csv_type: 'Sva', format: :csv
+      expect(response.headers['Content-Disposition']).to include('filename="Sva.csv"')
+    end
+
+    it 'includes filename parameter in content-disposition header for institution' do
+      get :export, csv_type: 'Institution', format: :csv
+      expect(response.headers['Content-Disposition']).to include('filename="Institution.csv"')
+    end
+
     it 'redirects to index on error' do
       expect(get(:export, csv_type: 'BlahBlah', format: :csv)).to redirect_to(action: :index)
       expect(get(:export, csv_type: 'Weam', format: :xml)).to redirect_to(action: :index)
@@ -99,7 +109,7 @@ RSpec.describe DashboardsController, type: :controller do
         get :push
 
         expect(flash.alert).to eq('No preview version available')
-        expect(Version.production_version).to be_blank
+        expect(Version.current_production).to be_blank
       end
     end
 
@@ -115,7 +125,7 @@ RSpec.describe DashboardsController, type: :controller do
 
         it 'sets the new production version number to the preview number' do
           get :push
-          expect(Version.production_version.number).to eq(Version.preview_version.number)
+          expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
       end
 

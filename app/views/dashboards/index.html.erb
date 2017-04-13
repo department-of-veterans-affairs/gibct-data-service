@@ -16,8 +16,7 @@
         <th width=30%>Actions</th>
       </thead>
       <tbody>
-        <%= render partial: 'version',
-          collection: @production, as: :version %>
+        <%= render partial: 'version', collection: @production_versions, as: :version %>
       </tbody>
     </table>
   </div>
@@ -36,7 +35,7 @@
       </thead>
       <tbody>
         <%= render partial: 'version',
-          collection: @preview_versions, as: :version, locals: { production: @production.first } %>
+          collection: @preview_versions, as: :version %>
       </tbody>
     </table>
   </div>

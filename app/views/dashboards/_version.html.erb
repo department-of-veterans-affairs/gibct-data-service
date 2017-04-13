@@ -9,7 +9,7 @@
     <% unless version.production? %>
       <%= link_to 'Download Export CSV', dashboard_export_path('Institution'),
           class: "btn btn-warning btn-xs", role: "button" %>
-      <% if version.number != production.number %>
+      <% if version.publishable? %>
         <%= link_to 'Publish to Production', dashboard_push_path, method: :post,
             data: { confirm: 'Are you sure?' },
             class: "btn btn-danger btn-xs",

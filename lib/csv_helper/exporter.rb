@@ -27,7 +27,7 @@ module CsvHelper
     def set_class_for_export
       return klass unless klass == Institution
 
-      version = Version.preview_version
+      version = Version.current_preview
       version.present? ? Institution.version(version.number) : Institution
     end
   end
