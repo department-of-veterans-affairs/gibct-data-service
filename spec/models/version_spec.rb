@@ -5,9 +5,9 @@ RSpec.describe Version, type: :model do
   describe 'buildable?' do
     subject { described_class }
 
-    let(:preview_date) { Faker::Time.between(2.days.ago, Time.zone.today, :all) }
-    let(:after_preview_date) { Faker::Date.between(preview_date + 1, preview_date + 2.days.to_i) }
-    let(:before_preview_date) { Faker::Date.between(preview_date - 2.days.to_i, preview_date - 1) }
+    let(:preview_date) { Time.current.utc }
+    let(:after_preview_date) { Faker::Time.between(preview_date + 1.days, preview_date + 2.days).utc }
+    let(:before_preview_date) { Faker::Time.between(preview_date - 2.days, preview_date - 1.days).utc }
     let(:upload_dates_after) { [after_preview_date] * 21 }
     let(:upload_dates_before) { [before_preview_date] * 21 }
 
