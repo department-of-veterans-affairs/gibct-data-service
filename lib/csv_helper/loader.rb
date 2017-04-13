@@ -39,7 +39,7 @@ module CsvHelper
     end
 
     def load_csv_with_version(file, records, options)
-      version = Version.preview_version
+      version = Version.current_preview
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|

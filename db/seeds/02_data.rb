@@ -39,10 +39,10 @@ constants = {
   'VRE1DEPRATEOJT' => 640.15,
   'VRE2DEPRATEOJT' => 737.77,
   'VREINCRATEOJT' => 47.99,
-  'AVERETENTIONRATE' => 67.9,
-  'AVEGRADRATE' => 41.5,
-  'AVESALARY' => 33_500,
-  'AVEREPAYMENTRATE' => 45.9
+  'AVERETENTIONRATE' => 67.7,
+  'AVEGRADRATE' => 42.3,
+  'AVESALARY' => 33_400,
+  'AVEREPAYMENTRATE' => 67.9
 }.map { |k,v| {name: k, float_value: v} }
 CalculatorConstant.create(constants)
 
