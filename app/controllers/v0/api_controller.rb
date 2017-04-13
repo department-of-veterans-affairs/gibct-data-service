@@ -13,14 +13,13 @@ module V0
     # Newest production data version assumed when version param is undefined
     def resolve_version
       v = params[:version]
-      version = Version.find_by(uuid: v) || Version.production_version
+      version = Version.find_by(uuid: v) || Version.current_production
 
-      # version = v.present? ? Version.find_by(number: v) : Version.default_version
       raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless version.try(:number)
       @version = {
         number: version.number,
         created_at: version.created_at,
-        preview: !version.production?
+        preview: version.preview?
       }
     end
 

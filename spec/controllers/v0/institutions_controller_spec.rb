@@ -20,19 +20,19 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
-      expect(body['meta']['version']['number'].to_i).to eq(Version.production_version.number)
+      expect(body['meta']['version']['number'].to_i).to eq(Version.current_production.number)
     end
 
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
       v = create(:version, :preview)
-      create(:institution, :contains_harv, version: Version.preview_version.number)
+      create(:institution, :contains_harv, version: Version.current_preview.number)
 
       get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
-      expect(body['meta']['version']['number'].to_i).to eq(Version.preview_version.number)
+      expect(body['meta']['version']['number'].to_i).to eq(Version.current_preview.number)
     end
   end
 
