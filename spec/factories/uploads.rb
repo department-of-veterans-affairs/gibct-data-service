@@ -5,6 +5,7 @@ FactoryGirl.define do
       fixture_path 'spec/fixtures'
       csv_name 'weam.csv'
       no_upload false
+      skip_lines 0
     end
 
     user
@@ -28,7 +29,7 @@ FactoryGirl.define do
     end
 
     initialize_with do
-      new(csv_type: csv_type, upload_file: upload_file, comment: comment, user: user)
+      new(csv_type: csv_type, upload_file: upload_file, comment: comment, user: user, skip_lines: skip_lines)
     end
   end
 end
