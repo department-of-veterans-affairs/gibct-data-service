@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class DashboardsController < ApplicationController
-  include Flashable
-
   def index
     @uploads = Upload.last_uploads
     @production_versions = Version.production.newest.includes(:user).limit(1)
