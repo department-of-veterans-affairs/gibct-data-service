@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require './app/models/errors/csv_header_error'
+require './app/models/errors/warning'
 module CsvHelper
   module Loader
     CSV_FIRST_LINE = 2
@@ -56,7 +56,7 @@ module CsvHelper
 
     def row_to_record(row, i)
       record = klass.new(row)
-      record.errors.add(:base, "Line #{i}") unless record.valid?
+      record.errors.add(:row, "Line #{i}") unless record.valid?
 
       record
     end
