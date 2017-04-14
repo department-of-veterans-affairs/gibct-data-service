@@ -26,14 +26,6 @@ class Upload < ActiveRecord::Base
     missing_headers.full_messages + extra_headers.full_messages
   end
 
-  def self.last_uploads
-    max_query = Upload.select('csv_type, MAX(updated_at) as max_updated_at').where(ok: true).group(:csv_type).to_sql
-
-    joins("INNER JOIN (#{max_query}) max_uploads ON uploads.csv_type = max_uploads.csv_type")
-      .where('uploads.updated_at = max_uploads.max_updated_at')
-      .order(:csv_type)
-  end
-
   def csv_type_check?
     return true if InstitutionBuilder::TABLES.map(&:name).push('Institution').include?(csv_type)
 
@@ -57,6 +49,10 @@ class Upload < ActiveRecord::Base
     headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
   end
 
+  def self.last_uploads
+    Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
+  end
+
   private
 
   def initialize_warnings
@@ -76,9 +72,5 @@ class Upload < ActiveRecord::Base
     skip_lines.to_i.times { csv.readline }
 
     (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
-  end
-
-  def self.last_uploads
-    Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
   end
 end

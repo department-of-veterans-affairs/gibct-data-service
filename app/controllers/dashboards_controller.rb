@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class DashboardsController < ApplicationController
+  before_action :verify_buildable, only: :build
+
   def index
     @uploads = Upload.last_uploads
     @production_versions = Version.production.newest.includes(:user).limit(1)
@@ -54,6 +56,7 @@ class DashboardsController < ApplicationController
 
   def verify_buildable
     return true if Version.buildable?
+
     flash.alert = 'Cannot build a new version since no new uploads have been made.'
     redirect_to(dashboards_path) && return
   end

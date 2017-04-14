@@ -21,12 +21,12 @@ class UploadsController < ApplicationController
       failed = load_csv.failed_instances
 
       @upload.check_for_headers
-      headers = @upload.all_warnings
+      header_warnings = @upload.all_warnings
 
       flash.alert = {}
       flash.alert['The upload succeeded: '] = @upload.csv_type
       flash.alert['But following rows should be checked: '] = failed.map(&:display_errors_with_row) unless failed.empty?
-      flash.alert['The following headers should be checked: '] = headers unless headers.empty?
+      flash.alert['The following headers should be checked: '] = header_warnings unless header_warnings.empty?
 
       redirect_to @upload
     rescue StandardError => e
@@ -86,7 +86,7 @@ class UploadsController < ApplicationController
     data = klass.load(file, skip_lines: skip_lines)
 
     @upload.update(ok: data.present? && data.ids.present?)
-    raise(StandardError, "There was no saved #{klass} data!") unless @upload.ok?
+    raise(StandardError, "There was no saved #{klass} data") unless @upload.ok?
 
     data
   end
