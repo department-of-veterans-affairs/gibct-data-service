@@ -87,7 +87,7 @@ module V0
       add_active_search_facets(result)
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Style/GuardClause
+    # rubocop:disable Metrics/CyclomaticComplexity
     def add_active_search_facets(raw_facets)
       if @query[:state].present?
         key = @query[:state].downcase

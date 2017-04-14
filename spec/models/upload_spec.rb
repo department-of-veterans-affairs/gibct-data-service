@@ -45,6 +45,57 @@ RSpec.describe Upload, type: :model do
     end
   end
 
+  describe 'header checking' do
+    it 'has no missing or extra headers for a normal csv' do
+      subject.check_for_headers
+
+      expect(subject.missing_headers).to be_empty
+      expect(subject.extra_headers).to be_empty
+    end
+
+    it 'has missing headers when a csv column is missing' do
+      upload = build :upload, csv_name: 'weam_missing_column.csv'
+      upload.check_for_headers
+
+      expect(upload.missing_headers).not_to be_empty
+      expect(upload.extra_headers).to be_empty
+    end
+
+    it 'has extra headers when a csv column is added' do
+      upload = build :upload, csv_name: 'weam_extra_column.csv'
+      upload.check_for_headers
+
+      expect(upload.missing_headers).to be_empty
+      expect(upload.extra_headers).not_to be_empty
+    end
+
+    context 'with insufficient information' do
+      it 'has no missing or extra headers if upload_file not valid' do
+        subject.upload_file = nil
+        subject.check_for_headers
+
+        expect(subject.missing_headers).to be_empty
+        expect(subject.extra_headers).to be_empty
+      end
+
+      it 'has no missing or extra headers if csv_type not valid' do
+        subject.csv_type = nil
+        subject.check_for_headers
+
+        expect(subject.missing_headers).to be_empty
+        expect(subject.extra_headers).to be_empty
+      end
+
+      it 'has no missing or extra headers if skip_lines is not valid' do
+        subject.skip_lines = nil
+        subject.check_for_headers
+
+        expect(subject.missing_headers).to be_empty
+        expect(subject.extra_headers).to be_empty
+      end
+    end
+  end
+
   describe 'last_uploads' do
     before(:each) do
       # 3 Weam upload records

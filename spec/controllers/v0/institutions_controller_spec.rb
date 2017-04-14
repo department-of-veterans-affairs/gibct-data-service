@@ -139,7 +139,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['state']['wy']).not_to be_nil
       expect(facets['state']['wy']).to eq(0)
-
     end
 
     it 'includes country search term in facets' do

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 class DashboardsController < ApplicationController
-  include Flashable
   before_action :verify_buildable, only: :build
 
   def index
@@ -57,6 +56,7 @@ class DashboardsController < ApplicationController
 
   def verify_buildable
     return true if Version.buildable?
+
     flash.alert = 'Cannot build a new version since no new uploads have been made.'
     redirect_to(dashboards_path) && return
   end
