@@ -28,6 +28,12 @@ module GibctDataService
       end
     end
 
+    # Serve all defaults except X-XSS-Protection which is served by reverse proxy
+    config.action_dispatch.default_headers = {
+      'X-Frame-Options' => 'SAMEORIGIN',
+      'X-Content-Type-Options' => 'nosniff'
+    }
+
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
