@@ -91,7 +91,7 @@ RSpec.describe UploadsController, type: :controller do
         file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
         post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
 
-        expect(flash[:alert]['But following rows should be checked: ']).to be_present
+        expect(flash[:alert]['The following rows should be checked: ']).to be_present
       end
     end
 

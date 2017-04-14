@@ -19,13 +19,14 @@ class UploadsController < ApplicationController
 
     begin
       failed = load_csv.failed_instances
-
       @upload.check_for_headers
+
+      validation_warnings = failed.map(&:display_errors_with_row)
       header_warnings = @upload.all_warnings
 
-      flash.alert = {}
-      flash.alert['The upload succeeded: '] = @upload.csv_type
-      flash.alert['But following rows should be checked: '] = failed.map(&:display_errors_with_row) unless failed.empty?
+      flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
+
+      flash.alert['The following rows should be checked: '] = validation_warnings unless validation_warnings.empty?
       flash.alert['The following headers should be checked: '] = header_warnings unless header_warnings.empty?
 
       redirect_to @upload
