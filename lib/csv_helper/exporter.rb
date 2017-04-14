@@ -18,9 +18,19 @@ module CsvHelper
       CSV.generate do |csv|
         csv << csv_headers.values
 
-        set_class_for_export.find_each do |record|
-          csv << csv_headers.keys.map { |k| record[k] }
-        end
+        klass == Institution ? write_institution_row(csv, csv_headers) : write_row(csv, csv_headers)
+      end
+    end
+
+    def write_row(csv, csv_headers)
+      set_class_for_export.find_each do |record|
+        csv << csv_headers.keys.map { |k| record[k] }
+      end
+    end
+
+    def write_institution_row(csv, csv_headers)
+      set_class_for_export.find_each do |record|
+        csv << csv_headers.keys.map { |k| record[k] == false ? nil : record[k] }
       end
     end
 
