@@ -109,7 +109,7 @@ RSpec.describe DashboardsController, type: :controller do
         get :push
 
         expect(flash.alert).to eq('No preview version available')
-        expect(Version.production_version).to be_blank
+        expect(Version.current_production).to be_blank
       end
     end
 
@@ -125,7 +125,7 @@ RSpec.describe DashboardsController, type: :controller do
 
         it 'sets the new production version number to the preview number' do
           get :push
-          expect(Version.production_version.number).to eq(Version.preview_version.number)
+          expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
       end
 

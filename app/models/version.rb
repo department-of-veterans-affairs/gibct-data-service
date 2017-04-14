@@ -12,6 +12,47 @@ class Version < ActiveRecord::Base
   before_create :generate_uuid
   before_save :increment_version
 
+  # scopes should always return active record relation
+  scope :production, -> { where(production: true) }
+  scope :preview, -> { where(production: false) }
+  scope :newest, -> { order(created_at: :desc) }
+
+  # class methods
+  def self.current_production
+    Version.production.newest.first
+  end
+
+  def self.current_preview
+    Version.preview.newest.first
+  end
+
+  # public instance methods
+  def preview?
+    !production?
+  end
+
+  def publishable?
+    preview? && number > Version.production.maximum(:number)
+  end
+
+  def current_preview?
+    preview? && number == Version.preview.maximum(:number)
+  end
+  alias latest_preview? current_preview?
+
+  def current_production?
+    production? && number == Version.production.maximum(:number)
+  end
+  alias latest_production? current_production?
+
+  def gibct_link
+    version_info = production? ? '' : "?version=#{uuid}"
+    "#{ENV['GIBCT_URL']}#{version_info}"
+  end
+
+  # private instance methods
+  private
+
   def check_version
     if number.present? && Version.find_by(number: number).nil?
       errors.add(:number, "Version number #{number} doesn't exist")
@@ -25,45 +66,5 @@ class Version < ActiveRecord::Base
 
   def increment_version
     self.number = (Version.maximum(:number) || 0) + 1 if number.nil?
-  end
-
-  scope :production, -> { where(production: true) }
-  scope :preview, -> { where(production: false) }
-
-  scope :newest, -> { order(created_at: :desc).first }
-  scope :as_of, lambda { |time|
-    time = Time.zone.parse(time).to_datetime if time.is_a?(String)
-    where('created_at <= ?', time).newest
-  }
-
-  def preview?
-    number != Version.production_version.number
-  rescue
-    true
-  end
-
-  def gibct_link
-    version_info = production? ? '' : "?version=#{uuid}"
-    "#{ENV['GIBCT_URL']}#{version_info}"
-  end
-
-  def self.production_version
-    Version.production.newest
-  end
-
-  def self.preview_version
-    Version.preview.newest
-  end
-
-  def self.default_version
-    Version.production.newest
-  end
-
-  def self.production_version_by_time(time)
-    Version.production.as_of(time)
-  end
-
-  def self.preview_version_by_time(time)
-    Version.preview.as_of(time)
   end
 end

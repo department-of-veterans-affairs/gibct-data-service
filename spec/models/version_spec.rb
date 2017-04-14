@@ -62,28 +62,36 @@ RSpec.describe Version, type: :model do
       create :version, created_at: 0.days.ago
     end
 
-    it 'can find the latest production_version' do
-      expect(Version.production_version.number).to eq(3)
+    context 'latest production version' do
+      let(:subject) { Version.current_production }
+
+      it 'has correct number' do
+        expect(subject.number).to eq(3)
+      end
+
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_truthy
+        expect(subject.production?).to be_truthy
+        expect(subject.preview?).to be_falsey
+        expect(subject.latest_preview?).to be_falsey
+        expect(subject.publishable?).to be_falsey
+      end
     end
 
-    it 'can find the latest preview_version' do
-      expect(Version.preview_version.number).to eq(4)
-    end
+    context 'latest preview version' do
+      let(:subject) { Version.current_preview }
 
-    it 'can find the production_version on a given date and time as string' do
-      expect(Version.production_version_by_time(2.days.ago.to_s).number).to eq(1)
-    end
+      it 'has correct number' do
+        expect(subject.number).to eq(4)
+      end
 
-    it 'can find the production_version on a given date and time as Time' do
-      expect(Version.production_version_by_time(2.days.ago).number).to eq(1)
-    end
-
-    it 'can find the preview_version on a given date and time as string' do
-      expect(Version.preview_version_by_time(1.day.ago.to_s).number).to eq(2)
-    end
-
-    it 'can find the preview_version on a given date and time as Time' do
-      expect(Version.preview_version_by_time(1.day.ago).number).to eq(2)
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_falsey
+        expect(subject.production?).to be_falsey
+        expect(subject.preview?).to be_truthy
+        expect(subject.latest_preview?).to be_truthy
+        expect(subject.publishable?).to be_truthy
+      end
     end
   end
 end

@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
-  let(:institutions) { Institution.version(Version.preview_version.number) }
+  let(:institutions) { Institution.version(Version.current_preview.number) }
 
   before(:each) do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
@@ -22,11 +22,11 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       it 'returns the new preview version record if sucessful' do
         create :version
-        old_version = Version.preview_version
+        old_version = Version.current_preview
 
         version = InstitutionBuilder.run(user)[:version]
 
-        expect(version).to eq(Version.preview_version)
+        expect(version).to eq(Version.current_preview)
         expect(version).not_to eq(old_version)
         expect(version.production).to be_falsey
       end
@@ -73,11 +73,11 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'does not change the institutions or versions if not successful' do
         allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         create :version
-        version = Version.preview_version
+        version = Version.current_preview
 
         InstitutionBuilder.run(user)
         expect(Institution.count).to be_zero
-        expect(Version.preview_version).to eq(version)
+        expect(Version.current_preview).to eq(version)
       end
     end
 
