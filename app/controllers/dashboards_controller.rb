@@ -52,6 +52,12 @@ class DashboardsController < ApplicationController
 
   private
 
+  def verify_buildable
+    return true if Version.buildable?
+    flash.alert = 'Cannot build a new version since no new uploads have been made.'
+    redirect_to(dashboards_path) && return
+  end
+
   def csv_model(csv_type)
     return Institution if csv_type == 'Institution'
 

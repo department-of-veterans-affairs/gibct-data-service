@@ -77,4 +77,8 @@ class Upload < ActiveRecord::Base
 
     (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
   end
+
+  def self.last_uploads
+    Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
+  end
 end
