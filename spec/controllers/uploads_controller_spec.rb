@@ -43,16 +43,14 @@ RSpec.describe UploadsController, type: :controller do
 
     context 'specifying an invalid csv_type' do
       it 'redirects to the dashboard' do
-        expect(
-          get(:new, csv_type: 'FexumGibberit')
-        ).to redirect_to('/dashboards')
+        expect(get(:new, csv_type: 'FexumGibberit')).to redirect_to('/dashboards')
       end
 
       it 'formats an error message in the flash' do
         get :new, csv_type: 'FexumGibberit'
 
         expect(flash[:alert]).to be_present
-        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+        expect(flash[:alert]).to match('Csv type FexumGibberit is not a valid CSV data source')
       end
     end
 
@@ -67,7 +65,7 @@ RSpec.describe UploadsController, type: :controller do
         get :new
 
         expect(flash[:alert]).to be_present
-        expect(flash[:alert].first).to match(/is not a valid CSV data source/)
+        expect(flash[:alert]).to match('Csv type cannot be blank.')
       end
     end
   end
@@ -88,6 +86,13 @@ RSpec.describe UploadsController, type: :controller do
           post(:create, upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
+
+      it 'formats an notice message when some records do not validate' do
+        file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
+        post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+
+        expect(flash[:alert]['The following rows should be checked: ']).to be_present
+      end
     end
 
     context 'having invalid form input' do
@@ -106,23 +111,23 @@ RSpec.describe UploadsController, type: :controller do
           ).to render_template(:new)
         end
       end
+    end
 
-      context 'with a mal-formed csv file' do
-        it 'renders the new view' do
-          file = 'weam_missing_column.csv'
+    context 'with a mal-formed csv file' do
+      it 'renders the show view' do
+        file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
 
-          expect(
-            post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
-          ).to render_template(:new)
-        end
+        expect(
+          post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+        ).to redirect_to(action: :show, id: assigns(:upload).id)
+      end
 
-        it 'formats an error message in the flash' do
-          upload_file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
-          post(:create, upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
+      it 'formats an notice message in the flash' do
+        file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
+        post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
 
-          expect(flash[:alert]).to be_present
-          expect(flash[:alert]).to match(/has an issue with headers/)
-        end
+        message = flash[:alert]['The following headers should be checked: '].try(:first)
+        expect(message).to match(/Address 1 is a missing header/)
       end
     end
   end

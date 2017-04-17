@@ -20,19 +20,19 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
-      expect(body['meta']['version']['number'].to_i).to eq(Version.production_version.number)
+      expect(body['meta']['version']['number'].to_i).to eq(Version.current_production.number)
     end
 
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
       v = create(:version, :preview)
-      create(:institution, :contains_harv, version: Version.preview_version.number)
+      create(:institution, :contains_harv, version: Version.current_preview.number)
 
       get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
-      expect(body['meta']['version']['number'].to_i).to eq(Version.preview_version.number)
+      expect(body['meta']['version']['number'].to_i).to eq(Version.current_preview.number)
     end
   end
 
@@ -125,6 +125,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(facets['state']['il']).to eq(1)
       expect(facets['country'].count).to eq(1)
       expect(facets['country'][0]['name']).to eq('USA')
+    end
+
+    it 'includes type search term in facets' do
+      get :index, name: 'chicago', type: 'foreign'
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['type']['foreign']).not_to be_nil
+      expect(facets['type']['foreign']).to eq(0)
+    end
+
+    it 'includes state search term in facets' do
+      get :index, name: 'chicago', state: 'WY'
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['state']['wy']).not_to be_nil
+      expect(facets['state']['wy']).to eq(0)
+    end
+
+    it 'includes country search term in facets' do
+      get :index, name: 'chicago', country: 'france'
+      facets = JSON.parse(response.body)['meta']['facets']
+      match = facets['country'].select { |c| c['name'] == 'FRANCE' }.first
+      expect(match).not_to be nil
+      expect(match['count']).to eq(0)
     end
   end
 

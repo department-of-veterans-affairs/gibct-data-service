@@ -70,7 +70,7 @@ module V0
 
     def facets
       institution_types = search_results.filter_count(:institution_type_name)
-      {
+      result = {
         category: {
           school: institution_types.except(Institution::EMPLOYER).inject(0) { |count, (_t, n)| count + n },
           employer: institution_types[Institution::EMPLOYER].to_i
@@ -84,7 +84,27 @@ module V0
         principles_of_excellence: search_results.filter_count(:poe),
         eight_keys_to_veteran_success: search_results.filter_count(:eight_keys)
       }
+      add_active_search_facets(result)
     end
+
+    # rubocop:disable Metrics/CyclomaticComplexity
+    def add_active_search_facets(raw_facets)
+      if @query[:state].present?
+        key = @query[:state].downcase
+        raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
+      end
+      if @query[:type].present?
+        key = @query[:type].downcase
+        raw_facets[:type][key] = 0 unless raw_facets[:type].key? key
+      end
+      if @query[:country].present?
+        key = @query[:country].upcase
+        raw_facets[:country] << { name: key, count: 0 } unless
+          raw_facets[:country].any? { |c| c[:name] == key }
+      end
+      raw_facets
+    end
+    # rubocop:enable Metrics/CyclomaticComplexity, Style/GuardClause
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not

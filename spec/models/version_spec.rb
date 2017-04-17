@@ -2,6 +2,64 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
+  describe 'buildable?' do
+    subject { described_class }
+
+    let(:preview_date) { Time.current.utc }
+    let(:after_preview_date) { Faker::Time.between(preview_date + 1.day, preview_date + 2.days).utc }
+    let(:before_preview_date) { Faker::Time.between(preview_date - 2.days, preview_date - 1.day).utc }
+    let(:upload_dates_after) { [after_preview_date] * 21 }
+    let(:upload_dates_before) { [before_preview_date] * 21 }
+
+    it 'returns false if upload dates is less than institution table count' do
+      allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+        .and_return(upload_dates_after[0..19])
+      expect(subject.buildable_state).to eq(:not_enough_uploads)
+      expect(subject.buildable?).to be_falsey
+    end
+
+    it 'returns false if upload dates is more than institution table count' do
+      allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+        .and_return(upload_dates_after + [upload_dates_after.first])
+      expect(subject.buildable_state).to eq(:too_many_uploads)
+      expect(subject.buildable?).to be_falsey
+    end
+
+    context 'with no preview version' do
+      it 'returns true if upload dates are before' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_before)
+        expect(subject.buildable_state).to eq(:can_create_first_preview)
+        expect(subject.buildable?).to be_truthy
+      end
+
+      it 'returns true if upload dates are after' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_after)
+        expect(subject.buildable_state).to eq(:can_create_first_preview)
+        expect(subject.buildable?).to be_truthy
+      end
+    end
+
+    context 'with preview version' do
+      before(:each) { create :version, created_at: preview_date }
+
+      it 'returns false if upload dates are before' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_before)
+        expect(subject.buildable_state).to eq(:no_new_uploads)
+        expect(subject.buildable?).to be_falsey
+      end
+
+      it 'returns true if upload dates are after' do
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)
+          .and_return(upload_dates_after)
+        expect(subject.buildable_state).to eq(:can_create_new_preview)
+        expect(subject.buildable?).to be_truthy
+      end
+    end
+  end
+
   describe 'attributes' do
     subject { build :version, :production }
 
@@ -62,28 +120,36 @@ RSpec.describe Version, type: :model do
       create :version, created_at: 0.days.ago
     end
 
-    it 'can find the latest production_version' do
-      expect(Version.production_version.number).to eq(3)
+    context 'latest production version' do
+      let(:subject) { Version.current_production }
+
+      it 'has correct number' do
+        expect(subject.number).to eq(3)
+      end
+
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_truthy
+        expect(subject.production?).to be_truthy
+        expect(subject.preview?).to be_falsey
+        expect(subject.latest_preview?).to be_falsey
+        expect(subject.publishable?).to be_falsey
+      end
     end
 
-    it 'can find the latest preview_version' do
-      expect(Version.preview_version.number).to eq(4)
-    end
+    context 'latest preview version' do
+      let(:subject) { Version.current_preview }
 
-    it 'can find the production_version on a given date and time as string' do
-      expect(Version.production_version_by_time(2.days.ago.to_s).number).to eq(1)
-    end
+      it 'has correct number' do
+        expect(subject.number).to eq(4)
+      end
 
-    it 'can find the production_version on a given date and time as Time' do
-      expect(Version.production_version_by_time(2.days.ago).number).to eq(1)
-    end
-
-    it 'can find the preview_version on a given date and time as string' do
-      expect(Version.preview_version_by_time(1.day.ago.to_s).number).to eq(2)
-    end
-
-    it 'can find the preview_version on a given date and time as Time' do
-      expect(Version.preview_version_by_time(1.day.ago).number).to eq(2)
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_falsey
+        expect(subject.production?).to be_falsey
+        expect(subject.preview?).to be_truthy
+        expect(subject.latest_preview?).to be_truthy
+        expect(subject.publishable?).to be_truthy
+      end
     end
   end
 end

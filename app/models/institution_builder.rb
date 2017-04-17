@@ -76,7 +76,7 @@ module InstitutionBuilder
       success = false
     end
 
-    { version: Version.preview_version, error_msg: error_msg, notice: notice, success: success }
+    { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
   end
 
   def self.initialize_with_weams(version_number)

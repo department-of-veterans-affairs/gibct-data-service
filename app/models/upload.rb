@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Upload < ActiveRecord::Base
-  attr_accessor :skip_lines, :upload_file
+  attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions
 
@@ -8,30 +8,69 @@ class Upload < ActiveRecord::Base
   validates :user_id, presence: true
 
   validates :csv, presence: true
+
   validate :csv_type_check?
 
+  after_initialize :initialize_warnings, unless: :persisted?
   after_initialize :derive_dependent_columns, unless: :persisted?
-
-  def ok?
-    ok
-  end
-
-  def csv_type_check?
-    return true if InstitutionBuilder::TABLES.map(&:name).push('Institution').include?(csv_type)
-
-    errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
-    false
-  end
 
   def derive_dependent_columns
     self.csv = upload_file.try(:original_filename)
   end
 
-  def self.last_uploads
-    max_query = Upload.select('csv_type, MAX(updated_at) as max_updated_at').where(ok: true).group(:csv_type).to_sql
+  def ok?
+    ok
+  end
 
-    joins("INNER JOIN (#{max_query}) max_uploads ON uploads.csv_type = max_uploads.csv_type")
-      .where('uploads.updated_at = max_uploads.max_updated_at')
-      .order(:csv_type)
+  def all_warnings
+    missing_headers.full_messages + extra_headers.full_messages
+  end
+
+  def csv_type_check?
+    return true if InstitutionBuilder::TABLES.map(&:name).push('Institution').include?(csv_type)
+
+    if csv_type.present?
+      errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
+    else
+      errors.add(:csv_type, 'cannot be blank.')
+    end
+
+    false
+  end
+
+  def check_for_headers
+    return unless upload_file && csv_type && skip_lines
+
+    missing_headers.clear
+    extra_headers.clear
+
+    headers = diffed_headers
+    headers[:missing_headers].each { |header| missing_headers.add(header.to_sym, 'is a missing header') }
+    headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
+  end
+
+  def self.last_uploads
+    Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
+  end
+
+  private
+
+  def initialize_warnings
+    self.missing_headers = Warning.new(self)
+    self.extra_headers = Warning.new(self)
+  end
+
+  def diffed_headers
+    model_headers = csv_type.constantize::CSV_CONVERTER_INFO.keys
+    file_headers = csv_file_headers
+
+    { missing_headers: model_headers - file_headers, extra_headers: file_headers - model_headers }
+  end
+
+  def csv_file_headers
+    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1')
+    skip_lines.to_i.times { csv.readline }
+
+    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
   end
 end

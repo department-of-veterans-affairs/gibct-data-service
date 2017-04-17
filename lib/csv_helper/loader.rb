@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require './app/models/errors/csv_header_error'
+require './app/models/errors/warning'
 module CsvHelper
   module Loader
     CSV_FIRST_LINE = 2
@@ -10,32 +10,11 @@ module CsvHelper
     }.freeze
 
     def load(file, options = {})
-      # Tackle all upload killers we can predict before deleting database
-      diffed = diffed_headers(file, options[:skip_lines] || 0)
-      raise ::CsvHeaderError.new(klass, diffed[:missing], diffed[:extra]) if diffed[:errors]
-
       delete_all
       load_records(file, options)
     end
 
     private
-
-    def csv_file_headers(file, skip_lines)
-      csv = CSV.open(file, return_headers: true, encoding: 'ISO-8859-1')
-      skip_lines.times { csv.readline }
-
-      (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
-    end
-
-    def diffed_headers(file, skip_lines)
-      model_headers = klass::CSV_CONVERTER_INFO.keys
-      file_headers = csv_file_headers(file, skip_lines)
-
-      response = { missing: model_headers - file_headers, extra: file_headers - model_headers }
-      response[:errors] = response[:missing].present? || response[:extra].present?
-
-      response
-    end
 
     def load_records(file, options)
       records = { valid: [], invalid: [] }
@@ -60,7 +39,7 @@ module CsvHelper
     end
 
     def load_csv_with_version(file, records, options)
-      version = Version.preview_version
+      version = Version.current_preview
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
@@ -77,7 +56,7 @@ module CsvHelper
 
     def row_to_record(row, i)
       record = klass.new(row)
-      record.errors.add(:base, "Line #{i}") unless record.valid?
+      record.errors.add(:row, "Line #{i}") unless record.valid?
 
       record
     end
