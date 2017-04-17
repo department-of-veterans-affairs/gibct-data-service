@@ -68,6 +68,12 @@ module V0
                  .filter(:eight_keys, @query[:eight_keys_to_veteran_success]) # boolean
     end
 
+    # rubocop:disable Style/MutableConstant
+    DEFAULT_BOOLEAN_FACET = { true: nil, false: nil }
+    # rubocop:enable Style/MutableConstant
+
+    # TODO: If filter counts are desired in the future, change boolean facets
+    # to use search_results.filter_count(param) instead of default value
     def facets
       institution_types = search_results.filter_count(:institution_type_name)
       result = {
@@ -77,30 +83,13 @@ module V0
         },
         type: institution_types,
         state: search_results.filter_count(:state),
-        country: embed(search_results.filter_count(:country))
+        country: embed(search_results.filter_count(:country)),
+        student_vet_group: DEFAULT_BOOLEAN_FACET,
+        yellow_ribbon_scholarship: DEFAULT_BOOLEAN_FACET,
+        principles_of_excellence: DEFAULT_BOOLEAN_FACET,
+        eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET
       }
-      result.merge!(boolean_facets)
       add_active_search_facets(result)
-    end
-
-    DEFAULT_BOOLEAN_FACET = { true: nil, false: nil }.freeze
-
-    def boolean_facets
-      if ENV['ENABLE_FILTER_COUNTS'] == 'true'
-        {
-          student_vet_group: search_results.filter_count(:student_veteran),
-          yellow_ribbon_scholarship: search_results.filter_count(:yr),
-          principles_of_excellence: search_results.filter_count(:poe),
-          eight_keys_to_veteran_success: search_results.filter_count(:eight_keys)
-        }
-      else
-        {
-          student_vet_group: DEFAULT_BOOLEAN_FACET,
-          yellow_ribbon_scholarship: DEFAULT_BOOLEAN_FACET,
-          principles_of_excellence: DEFAULT_BOOLEAN_FACET,
-          eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET
-        }
-      end
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity

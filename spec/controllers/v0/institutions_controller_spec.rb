@@ -157,26 +157,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(facets['principles_of_excellence'].keys).to include('true', 'false')
       expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
     end
-
-    context 'with filter count feature enabled' do
-      before(:each) do
-        ENV['ENABLE_FILTER_COUNTS'] = 'true'
-        create(:institution, :in_chicago, yr: true, student_veteran: true)
-      end
-
-      after(:each) do
-        ENV['ENABLE_FILTER_COUNTS'] = 'false'
-      end
-
-      it 'includes boolean facet counts' do
-        get :index, name: 'chicago'
-        facets = JSON.parse(response.body)['meta']['facets']
-        expect(facets['yellow_ribbon_scholarship'].keys).to include('true')
-        expect(facets['yellow_ribbon_scholarship']['true']).to eq(1)
-        expect(facets['student_vet_group'].keys).to include('true')
-        expect(facets['student_vet_group']['true']).to eq(1)
-      end
-    end
   end
 
   context 'category and type search results' do
