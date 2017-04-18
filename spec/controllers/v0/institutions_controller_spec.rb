@@ -148,6 +148,15 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(match).not_to be nil
       expect(match['count']).to eq(0)
     end
+
+    it 'includes boolean facets' do
+      get :index
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['student_vet_group'].keys).to include('true', 'false')
+      expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
+      expect(facets['principles_of_excellence'].keys).to include('true', 'false')
+      expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
+    end
   end
 
   context 'category and type search results' do
