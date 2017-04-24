@@ -13,7 +13,7 @@ module CsvHelper
     keys = errors.keys - [:row]
 
     "Row #{row.blank? ? 'N/A' : row} : " + keys.map do |key|
-      errors[key].join(', ')
+      key.to_s + ' : ' + errors[key].join(', ')
     end.join(', ')
   end
 
