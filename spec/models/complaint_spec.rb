@@ -1,137 +1,127 @@
+# frozen_string_literal: true
 require 'rails_helper'
-require 'support/shared_examples_for_standardizable'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Complaint, type: :model do
-  it_behaves_like "a standardizable model", Complaint
+  it_behaves_like 'a loadable model', skip_lines: 7
+  it_behaves_like 'an exportable model', skip_lines: 7
 
-  describe "When creating" do
-    describe "with a factory" do
-      it "that factory is valid" do
-        expect(create(:complaint)).to be_valid
-      end
+  describe 'when validating' do
+    subject { Complaint.new(attributes_for(:complaint)) }
+
+    let(:complaint_no_fac_code) { build :complaint, facility_code: nil }
+    let(:complaint_no_status) { build :complaint, status: nil }
+    let(:complaint_bad_status) { build :complaint, status: 'blech' }
+    let(:complaint_bad_reason) { build :complaint, closed_reason: 'blech' }
+
+    it 'has a valid factory' do
+      expect(subject).to be_valid
     end
 
-    describe "status" do
-      it "is required" do
-        expect(build :complaint, status: nil).not_to be_valid
-      end
-
-      it "must be from a list of statuses" do
-        Complaint::STATUSES.each do |status|
-          expect(build :complaint, status: status).to be_valid
-        end
-
-        expect(build :complaint, status: "BLAH BLAH").not_to be_valid
-      end
+    it 'requires a valid facility_code' do
+      expect(complaint_no_fac_code).not_to be_valid
     end
 
-    describe "closed_reason" do
-      it "must be from a list of closed reasons" do
-        Complaint::CLOSED_REASONS.each do |reason|
-          expect(build :complaint, closed_reason: reason).to be_valid
-        end
+    it 'must have a valid, non-nil status' do
+      expect(complaint_no_status).not_to be_valid
+      expect(complaint_bad_status).not_to be_valid
+    end
 
-        expect(build :complaint, closed_reason: "BLAH BLAH").not_to be_valid
+    it 'must have a valid closed_reason' do
+      expect(complaint_bad_reason).not_to be_valid
+    end
+
+    it 'computes the ope6 from the ope' do
+      expect(subject.ope6).to eql(subject.ope[1, 5])
+    end
+
+    describe 'setting facility code complaints' do
+      let(:all) { 'financial quality refund recruit accreditation degree loans grade transfer job transcript other' }
+      let(:complaint_all) { build :complaint, issues: all }
+
+      it 'sets complaints to 1 only if the complaint keyword is embedded in the issue' do
+        Complaint::COMPLAINT_COLUMNS.keys.each do |facility_code_col|
+          expect(subject[facility_code_col]).to eq(0)
+          expect(complaint_all[facility_code_col]).to eq(1)
+        end
       end
     end
   end
 
-  describe "ok_to_sum?" do
-    it "is true only when status is closed and reason is not invalid" do
-      Complaint::STATUSES.each do |status|
-        Complaint::CLOSED_REASONS.each do |reason|
-          complaint = build :complaint, status: status, closed_reason: reason
+  describe 'ok_to_sum?' do
+    subject { Complaint.new(attributes_for(:complaint)) }
 
-          expect(complaint.ok_to_sum?).to eq(status == "closed" && reason != "invalid")
-        end
-      end
+    let(:invalid) { Complaint.new(attributes_for(:complaint, closed_reason: 'invalid')) }
+    let(:nil_reason) { Complaint.new(attributes_for(:complaint, closed_reason: nil)) }
+    let(:active) { Complaint.new(attributes_for(:complaint, status: 'active')) }
+
+    it 'is true for a closed complaint with any valid reason' do
+      expect(subject).to be_ok_to_sum
+    end
+
+    it 'is false for an invalid reason or any non-closed status' do
+      expect(invalid).not_to be_ok_to_sum
+      expect(nil_reason).not_to be_ok_to_sum
+      expect(active).not_to be_ok_to_sum
     end
   end
 
-  describe "facility_code_terms" do
-    Complaint::FAC_CODE_TERMS.each_pair do |term, phrase|
-      it "#{term} is 1 if issue contains '#{phrase}'" do
-        complaint = create :complaint, :ok_to_sum, issue: "BLAH #{phrase} BLAH"
-        expect(complaint[term]).to eq(1)
-      end
-
-      it "#{term} is 0 if issue does not contain '#{phrase}'" do
-        issue = term == :cfc ? nil : "BLAH BLAH"
-
-        complaint = create :complaint, :ok_to_sum, issue: issue
-        expect(complaint[term]).to eq(0)
-      end
-    end
-  end
-
-  describe "update_ope_from_crosswalk" do
+  describe '#update_ope_from_crosswalk' do
     before(:each) do
-      weam = create :weam
-      crosswalk = create :va_crosswalk, facility_code: weam.facility_code, ope: "11111111"
-      complaint = create :complaint, facility_code: weam.facility_code, ope: "00000000"
+      crosswalk = create :crosswalk
+      create :complaint, facility_code: crosswalk.facility_code, ope: '99999999'
+    end
 
+    it 'replaces the ope with that obtained from the Crosswalk table' do
       Complaint.update_ope_from_crosswalk
-    end
 
-    it "replaces the complaints ope with the crosswalk ope" do
-      expect(Complaint.first.ope).to eq(VaCrosswalk.first.ope)
-    end
+      crosswalk = Crosswalk.first
+      complaint = Complaint.first
 
-    it "replaces the complaints ope with the crosswalk ope" do
-      expect(Complaint.first.ope6).to eq(VaCrosswalk.first.ope6)
+      expect(complaint.ope).to eq(crosswalk.ope)
+      expect(complaint.ope6).to eq(crosswalk.ope6)
     end
   end
 
-  describe "update_sums_by_fac" do
-    before(:each) do
-      create_list :complaint, 10, :all_issues, facility_code: "1"
-      Complaint.update_sums_by_fac
-    end
+  describe 'rollup_sums' do
+    describe 'by facility_code' do
+      before(:each) do
+        institution = create :institution, :institution_builder
+        create_list :complaint, 2, :all_issues, :institution_builder
 
-    it "each facility code sum is n if there are n issues by that facility code" do
-      Complaint.all.each do |complaint|
-        Complaint::FAC_CODE_SUMS.keys.each do |fc_sum|
-          expect(complaint[fc_sum]).to eq(10)
-        end 
+        Complaint.rollup_sums(:facility_code, institution.version)
       end
-    end   
-  end
 
-  describe "update_sums_by_ope6" do
-    before(:each) do
-      weam0 = create :weam, facility_code: "00000000"
-      weam1 = create :weam, facility_code: "11111111"
+      it 'the facility code sum fields contain the sums grouped by facility_code' do
+        institution = Institution.first
 
-      crosswalk0 = create :va_crosswalk, facility_code: weam0.facility_code, ope: "22222222"
-      crosswalk1 = create :va_crosswalk, facility_code: weam1.facility_code, ope: "22222222"
-
-      # Initialize by weans and update by crosswalk.
-      DataCsv.initialize_with_weams
-      DataCsv.update_with_crosswalk
-
-      # Generate 5 complaints for facility code "00000000", these should be reflected
-      # in ope6 sums for facility code "11111111".
-      create_list :complaint, 5, :all_issues, facility_code: weam0.facility_code
-    end
-
-    it "is called by DataCsv.update_with_complaint" do
-      expect(Complaint).to receive(:update_sums_by_ope6)
-      DataCsv.update_with_complaint
-    end
-
-    it "calls update_ope_from_crosswalk" do
-      expect(Complaint).to receive(:update_ope_from_crosswalk)
-      Complaint.update_sums_by_ope6
-    end
-
-    it "each ope6 sums n if there are n issues by that facility code" do
-      DataCsv.update_with_complaint
-
-      DataCsv.all.each do |data_csv|
-        Complaint::OPE6_SUMS.keys.each do |ope6_sum|
-          expect(data_csv[ope6_sum]).to eq(5)
-        end 
+        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |fc_sum|
+          expect(institution[fc_sum]).to eq(2)
+        end
       end
-    end   
+    end
+
+    describe 'by ope6' do
+      let(:version_number) {}
+
+      before(:each) do
+        # Different facility codes, same ope
+        institution = create :institution, :institution_builder
+        create :institution, :institution_builder, facility_code: 'ZZZZZZZZ'
+
+        # Generate complaints for only one of the facility_codes
+        create_list :complaint, 5, :all_issues, :institution_builder
+        Complaint.rollup_sums(:ope6, institution.version)
+      end
+
+      it 'the institution receives the sums grouped by ope6' do
+        Institution.all.each do |institution|
+          Complaint::OPE6_ROLL_UP_SUMS.keys.each do |ope6_sum|
+            expect(institution[ope6_sum]).to eq(5)
+          end
+        end
+      end
+    end
   end
 end

@@ -1,36 +1,29 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :complaint do
-    sequence :facility_code do |n| n.to_s(32).rjust(8, "0") end
-    institution { Faker::University.name }
+    facility_code { generate :facility_code }
+    ope { generate :ope }
 
-    sequence :ope do |n| n.to_s end
-
-    status { Complaint::STATUSES.sample }
-    closed_reason { Complaint::CLOSED_REASONS.sample }
-
-    issue do [
-      "Financial", "Quality", "Refund", "Recruit", "Accreditation",
-      "Degree", "Loans", "Grade", "Transfer", "Job", "Transcript", "Other"
-      ].sample
-    end
-
-    trait :not_ok_to_sum do
-      status "pending"
-    end
-
-    trait :ok_to_sum do
-      status "closed"
-      closed_reason "resolved"
-    end
+    status 'closed'
+    closed_reason 'resolved'
+    issues nil
 
     trait :all_issues do
-      status "closed"
-      closed_reason "resolved"
+      issues %w(
+        FinanCial QUALITY RefuND REcruiT Accreditation deGree LOANS GraDe TranSFer jOb TranScript oTHER
+      ).join(' ')
+    end
 
-      issue [
-        "Financial", "Quality", "Refund", "Recruit", "Accreditation",
-        "Degree", "Loans", "Grade", "Transfer", "Job", "Transcript", "Other"
-      ].join(" ")
+    trait :institution_builder do
+      facility_code '1ZZZZZZZ'
+      ope '99999999'
+    end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, ope: ope, status: status,
+        closed_reason: closed_reason, issues: issues
+      )
     end
   end
 end

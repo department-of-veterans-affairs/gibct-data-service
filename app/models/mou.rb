@@ -1,49 +1,35 @@
-###############################################################################
-## Mou
-## The DOD's Memorandum of Understanding data. Any institution included in the
-## file whose Status is either probation or title IV non-compliance will 
-## will be indicated in this file.
-##
-## USE_COLUMNS hold those columns that get copied to the DataCsv table during
-## the build process.
-###############################################################################
+# frozen_string_literal: true
 class Mou < ActiveRecord::Base
-  include Standardizable
-  
-  validates :ope, presence: true
+  include CsvHelper
 
-  before_save :set_derived_fields
+  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
 
-  STATUSES = ["probation - dod", "title iv non-compliant"]
-  USE_COLUMNS = [:dodmou]
+  CSV_CONVERTER_INFO = {
+    'ope id' => { column: :ope, converter: OpeConverter },
+    'institution name' => { column: :institution, converter: InstitutionConverter },
+    'trade name' => { column: :trade_name, converter: BaseConverter },
+    'city' => { column: :city, converter: BaseConverter },
+    'state' => { column: :state, converter: BaseConverter },
+    'institution type' => { column: :institution_type, converter: BaseConverter },
+    'status' => { column: :status, converter: BaseConverter },
+    'approval date' => { column: :approval_date, converter: BaseConverter }
+  }.freeze
 
-  override_setters :ope, :ope6, :institution, :status, :dodmou, :dod_status
+  validates :ope, :ope6, presence: true
 
-  #############################################################################
-  ## to_dodmou
-  ## Converts the status column to boolean, based on a string match.
-  #############################################################################
-  def to_dodmou
-    !STATUSES.include?(status.try(:downcase))
-  end
+  after_initialize :derive_dependent_columns
 
-  #############################################################################
-  ## to_dod_status
-  ## Converts the status column to a boolean based on a string match.
-  #############################################################################
-  def to_dod_status
-    status.try(:downcase) == STATUSES[0]
-  end
-
-  #############################################################################
-  ## set_derived_fields=
-  ## Computes the values of derived fields just prior to saving. Note that 
-  ## any fields here cannot be part of validations.
-  #############################################################################
-  def set_derived_fields
+  def derive_dependent_columns
     self.dodmou = to_dodmou
     self.dod_status = to_dod_status
-    
-    true
+    self.ope6 = Ope6Converter.convert(ope)
+  end
+
+  def to_dodmou
+    (status =~ STATUSES).nil?
+  end
+
+  def to_dod_status
+    (status =~ /dod/i).present?
   end
 end

@@ -1,14 +1,8 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-2.3.0
-#ruby-gemset=ingest
-
-# For heroku staging
-ruby "2.3.0"
-gem 'rails_12factor', '~> 0.0.3', group: :production
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
+gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
@@ -23,9 +17,6 @@ gem 'uglifier', '>= 1.3.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
-
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
@@ -39,20 +30,39 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
 gem 'activerecord-session_store', '~> 1.0'
 
+# CORS
+gem 'rack-cors', :require => 'rack/cors'
+
+# Mass importing of CSV data
+gem 'activerecord-import'
+gem 'smarter_csv'
+
 # Pagination
-gem 'will_paginate', '~> 3.1'
+gem 'will_paginate'
+
+# JSON API
+gem 'active_model_serializers', '~> 0.10.4'
+gem 'virtus', '~> 1.0.5'
+
+# Provides country/state support
+# gem 'carmen'
 
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '3.2.0'
+gem "puma", "~> 3.6"
+gem 'figaro'
+
+# Sentry
+gem 'sentry-raven', '~> 2.3.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'pry-rails'
 
   # Linters
-  gem 'rubocop', '~> 0.36.0', require: false
+  gem 'rubocop', '~> 0.46.0'
   gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
 
@@ -62,6 +72,7 @@ group :development, :test do
 
   # Testing tools
   gem 'rspec-rails'
+  gem "json_matchers"
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false

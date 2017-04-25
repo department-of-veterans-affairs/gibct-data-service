@@ -3,65 +3,22 @@
 
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" 
-        data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" 
+      <button type="button" class="navbar-toggle collapsed"
+        data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
         aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">GIBCTDS</a>
+      <%= link_to 'GIBCTDS', root_url, { class: "navbar-brand" } %>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <%= draw_link(root_path, "Dashboard", request.fullpath).html_safe %>
-      </ul>
-
-      <ul class="nav navbar-nav">
-        <%= draw_controller("csv_files", :index, :new).html_safe %>
-      </ul>
-
-      <ul class="nav navbar-nav"%>
-        <% if  %w(weams).include?(controller_name) %>
-          <li class="dropdown active">
-        <% else %>
-          <li class="dropdown">
-        <% end %>
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-            role="button" aria-haspopup="true" aria-expanded="false">
-            Intermediate Csv Data <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="<%= accreditations_path %>">Accreditation</a></li>
-            <li><a href="<%= arf_gibills_path %>">ARF</a></li>
-            <li><a href="<%= complaints_path %>">Complaint</a></li>
-            <li><a href="<%= va_crosswalks_path %>">Crosswalk</a></li>
-            <li><a href="<%= eight_keys_path %>">Eight Key</a></li>
-            <li><a href="<%= ipeds_hds_path %>">Ipeds HD</a></li>
-            <li><a href="<%= ipeds_ics_path %>">Ipeds IC</a></li>
-            <li><a href="<%= ipeds_ic_ays_path %>">Ipeds IC AY</a></li>
-            <li><a href="<%= ipeds_ic_pies_path %>">Ipeds IC PY</a></li>
-            <li><a href="<%= hcms_path %>">Hcm</a></li>
-            <li><a href="<%= mous_path %>">Mou</a></li>
-            <li><a href="<%= outcomes_path %>">Outcome</a></li>
-            <li><a href="<%= p911_tfs_path %>">Post 911 Tuition and Fees</a></li>
-            <li><a href="<%= p911_yrs_path %>">Post 911 Yellow Ribbon</a></li>
-            <li><a href="<%= scorecards_path %>">Scorecard</a></li>
-            <li><a href="<%= sec702s_path %>">Section 702</a></li>
-            <li><a href="<%= sec702_schools_path %>">Section 702 School</a></li>
-            <li><a href="<%= settlements_path %>">Settlement</a></li>
-            <li><a href="<%= svas_path %>">Sva</a></li>
-            <li><a href="<%= vsocs_path %>">Veteran Success</a></li>
-            <li><a href="<%= weams_path %>">Weams</a></li>
-          </ul>        
-        </li>
-      </ul>
-
-      <ul class="nav navbar-nav">
-        <%= draw_controller("data_csvs", :index, :new).html_safe %>
+        <li class="<%= li_active_class(root_path) %>"><%= link_if_not_active 'Dashboard', root_path %></li>
+        <li class="<%= li_active_class(uploads_path) %>"><%= link_if_not_active 'Uploads', uploads_path %></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

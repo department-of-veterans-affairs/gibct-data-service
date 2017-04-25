@@ -1,9 +1,20 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :vsoc do
-    sequence :facility_code do |n| n.to_s(32).rjust(8, "0") end
-    institution { Faker::University.name }
+    facility_code { generate :facility_code }
 
-    vetsuccess_name { Faker::Name.name }
-    vetsuccess_email { Faker::Internet.email }     
+    vetsuccess_name { 'Fred Flintstone' }
+    vetsuccess_email { 'someone@someplace.com' }
+
+    trait :institution_builder do
+      facility_code '1ZZZZZZZ'
+    end
+
+    initialize_with do
+      new(
+        facility_code: facility_code, vetsuccess_email: vetsuccess_email,
+        vetsuccess_name: vetsuccess_name
+      )
+    end
   end
 end

@@ -1,30 +1,22 @@
+# frozen_string_literal: true
 require 'rails_helper'
-require 'support/shared_examples_for_standardizable'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Sec702, type: :model do
-  it_behaves_like "a standardizable model", Sec702
+  it_behaves_like 'a loadable model', skip_lines: 0
+  it_behaves_like 'an exportable model', skip_lines: 0
 
-  describe "When creating" do
-    context "with a factory" do
-      it "that factory is valid" do
-        expect(create(:sec702)).to be_valid
-      end
+  describe 'when validating' do
+    subject { build :sec702 }
+
+    it 'has a valid factory' do
+      expect(subject).to be_valid
     end
 
-    context "states" do
-      subject { create :sec702 }
-
-      it "is unique" do
-        expect(build :sec702, state: subject.state).not_to be_valid
-      end
-
-      it "is required" do
-        expect(build :sec702, state: nil).not_to be_valid
-      end
-
-      it "must be valid" do
-        expect(build :sec702, state: "ZZ").not_to be_valid
-      end
+    it 'requires a valid state' do
+      expect(build(:sec702, state: nil)).not_to be_valid
+      expect(build(:sec702, state: 'BLEECH')).not_to be_valid
     end
   end
 end

@@ -1,26 +1,21 @@
+# frozen_string_literal: true
 require 'rails_helper'
-require 'support/shared_examples_for_standardizable'
+require 'models/shared_examples/shared_examples_for_loadable'
+require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Vsoc, type: :model do
-  it_behaves_like "a standardizable model", Vsoc
+  it_behaves_like 'a loadable model', skip_lines: 0
+  it_behaves_like 'an exportable model', skip_lines: 0
 
-  describe "When creating" do
-    context "with a factory" do
-      it "that factory is valid" do
-        expect(create(:vsoc)).to be_valid
-      end
+  describe 'when validating' do
+    subject { build :vsoc }
+
+    it 'has a valid factory' do
+      expect(subject).to be_valid
     end
 
-    context "facility code" do
-      subject { create :vsoc }
-
-      it "is unique" do
-        expect(build :vsoc, facility_code: subject.facility_code).not_to be_valid
-      end
-
-      it "is required" do
-        expect(build :vsoc, facility_code: nil).not_to be_valid
-      end
+    it 'requires a valid facility_code' do
+      expect(build(:vsoc, facility_code: nil)).not_to be_valid
     end
   end
 end

@@ -1,7 +1,23 @@
-<% if notice.present? %>
-	<aside class="alert alert-info"><%= notice %></aside>
+<% if alert.present? %>
+	<aside class="alert alert-danger">
+		<% if alert.is_a? Hash %>
+			<% alert.each_pair do |label, alerts| %>
+				<%= pretty_error(alerts, label) %>
+			<% end %>
+		<% else %>
+			<%= pretty_error(alert, notice || '') %>
+		<% end %>
+	</aside>
 <% end %>
 
-<% if alert.present? %>
-	<aside class="alert alert-danger"><%= alert %></aside>
+<% if notice.present? %>
+	<aside class="alert alert-info">
+		<% if notice.is_a? Hash %>
+			<% notice.each_pair do |label, notices| %>
+				<%= pretty_error(notices, label) %>
+			<% end %>
+		<% else %>
+			<%= notice.html_safe %>
+		<% end %>
+	</aside>
 <% end %>

@@ -1,38 +1,74 @@
-<%= render partial: 'introduction', 
-    locals: { 
-      new_link: DataCsv.complete?, export_link: DataCsv.complete?, list_link: false,
-      push_staging_link: DataCsv.complete?, push_prod_link: DataCsv.complete?
-    } 
-%>
+<div class="row row-space-6">
+  <div class="col-xs-12">
+    <%= render partial: 'introduction' %>
+  </div>
+</div>
 
-<header>
-  <section>
-    <p>
-      Each CSV file type is shown below, along with the timestamped
-      name of the csv file in the following format:
-
-      <small>
-        <blockquote>yymmddHHMMSSLLLL_<i>csv-file-type</i>.csv</blockquote>
-      </small>
-
-      Where yy is the year, mm is the month, and so on.
-    </p>
-  </section>
-</header>
-
-<h2><small>Currently Loaded CSV Files</small></h2>
-
-<div class="row">
-  <div class="col-xs-8">
+<h3>Latest Production Version</h3>
+<div class="row row-space-6">
+  <div class="col-xs-12">
     <table class="table table-hover table-condensed table-bordered table-responsive">
       <thead>
-        <th>Name</th>
-        <th>Last Uploaded CSV File</th>
-        <th>Upload Date</th>
-        <th colspan="2">Actions</th>
+        <th width=7%>Version ID</td>
+        <th width=23%>Version UUID</th>
+        <th width=20%>Published By</th>
+        <th width=20%>Published Date</th>
+        <th width=30%>Actions</th>
       </thead>
       <tbody>
-        <%= render partial: 'csv_type', collection: @csv_types %>
+        <%= render partial: 'version', collection: @production_versions, as: :version %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>Latest Preview Version
+  <% if Version.buildable? %>
+    <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
+        data: { confirm: 'Are you sure you want to create a new preview version?' },
+        class: "btn btn-warning btn-xs",
+        role: "button" %>
+  <% else %>
+    <a disabled="disabled" class="btn btn-warning btn-xs", role="button">
+      Generate New Preview Version
+    </a>
+  <% end %>
+</h3>
+<div class="row row-space-6">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th width=7%>Version ID</td>
+        <th width=23%>Version UUID</th>
+        <th width=20%>Created By</th>
+        <th width=20%>Created Date</th>
+        <th width=30%>Actions</th>
+      </thead>
+      <tbody>
+        <%= render partial: 'version',
+          collection: @preview_versions, as: :version %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>Latest Uploads
+  <%= link_to 'View Upload History', uploads_path, class: "btn btn-info btn-xs", role: "button" %>
+</h3>
+<div class="row row-space-6">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>CSV Type</th>
+        <th>Status</th>
+        <th>File Name</th>
+        <th>Upload Date</th>
+        <th>Uploaded By</th>
+        <th>Comments</th>
+        <th></th>
+      </thead>
+      <tbody>
+        <%= render partial: 'latest_upload', collection: @uploads, as: :upload %>
       </tbody>
     </table>
   </div>

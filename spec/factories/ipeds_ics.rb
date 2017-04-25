@@ -1,12 +1,20 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :ipeds_ic do
-    sequence :cross do |n| DS::IpedsId.pad(n.to_s) end
+    cross { generate :cross }
+    vet2 1
+    vet3 1
+    vet4 1
+    vet5 1
+    distnced 1
+    calsys 1
 
-    vet3 { (-2 .. -1).to_a.sample }
-    vet4 { (-2 .. -1).to_a.sample }
-    vet5 { (-2 .. -1).to_a.sample }
-    vet2 { (-2 .. -1).to_a.sample }
-    calsys { [-2, (1 .. 7).to_a.sample].sample }
-    distnced { (-2 .. -1).to_a.sample }
+    trait :institution_builder do
+      cross '999999'
+    end
+
+    initialize_with do
+      new(cross: cross, vet2: vet2, vet3: vet3, vet4: vet4, vet5: vet5, distnced: distnced, calsys: calsys)
+    end
   end
 end
