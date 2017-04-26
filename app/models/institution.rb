@@ -160,11 +160,13 @@ class Institution < ActiveRecord::Base
 
   def website_link
     return nil if insturl.blank?
+    return insturl if insturl.start_with? 'http'
     "http://#{insturl}"
   end
 
   def vet_website_link
     return nil if vet_tuition_policy_url.blank?
+    return vet_tuition_policy_url if vet_tuition_policy_url.start_with? 'http'
     "http://#{vet_tuition_policy_url}"
   end
 

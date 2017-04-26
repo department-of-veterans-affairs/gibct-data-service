@@ -58,9 +58,18 @@ RSpec.describe Institution, type: :model do
 
   describe 'website_link' do
     let(:url) { 'http://myschool.com' }
+    let(:https_url) { 'https://myschool.com' }
 
     it 'returns a url' do
       expect(build(:institution, insturl: 'myschool.com').website_link).to eq(url)
+    end
+
+    it 'returns a well-formed http url' do
+      expect(build(:institution, insturl: 'http://myschool.com').website_link).to eq(url)
+    end
+
+    it 'returns a well-formed https url' do
+      expect(build(:institution, insturl: 'https://myschool.com').website_link).to eq(https_url)
     end
 
     it 'returns nil if insturl is blank' do
@@ -70,9 +79,18 @@ RSpec.describe Institution, type: :model do
 
   describe 'vet_website_link' do
     let(:url) { 'http://myschool.com' }
+    let(:https_url) { 'https://myschool.com' }
 
     it 'returns a url' do
       expect(build(:institution, vet_tuition_policy_url: 'myschool.com').vet_website_link).to eq(url)
+    end
+
+    it 'returns a well-formed http url' do
+      expect(build(:institution, vet_tuition_policy_url: 'http://myschool.com').vet_website_link).to eq(url)
+    end
+
+    it 'returns a well-formed https url' do
+      expect(build(:institution, vet_tuition_policy_url: 'https://myschool.com').vet_website_link).to eq(https_url)
     end
 
     it 'returns nil if vet_tuition_policy_url is blank' do
