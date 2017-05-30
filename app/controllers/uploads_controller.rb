@@ -15,6 +15,9 @@ class UploadsController < ApplicationController
   end
 
   def create
+    RawCsv.create(csv_type: upload_params[:csv_type], csv_file: upload_params[:upload_file])
+    upload_params[:upload_file]&.rewind
+
     @upload = Upload.create(merged_params)
 
     begin

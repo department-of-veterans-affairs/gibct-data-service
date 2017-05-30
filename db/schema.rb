@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410215512) do
+ActiveRecord::Schema.define(version: 20170526180712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -902,6 +902,15 @@ ActiveRecord::Schema.define(version: 20170410215512) do
   end
 
   add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
+
+  create_table "raw_csvs", force: :cascade do |t|
+    t.string   "csv_type"
+    t.binary   "storage"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "raw_csvs", ["csv_type"], name: "index_raw_csvs_on_csv_type", unique: true, using: :btree
 
   create_table "scorecards", force: :cascade do |t|
     t.string   "cross",                        null: false
