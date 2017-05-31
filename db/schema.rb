@@ -903,15 +903,6 @@ ActiveRecord::Schema.define(version: 20170526180712) do
 
   add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
 
-  create_table "raw_csvs", force: :cascade do |t|
-    t.string   "csv_type"
-    t.binary   "storage"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "raw_csvs", ["csv_type"], name: "index_raw_csvs_on_csv_type", unique: true, using: :btree
-
   create_table "scorecards", force: :cascade do |t|
     t.string   "cross",                        null: false
     t.string   "insturl"
@@ -1085,6 +1076,20 @@ ActiveRecord::Schema.define(version: 20170526180712) do
   end
 
   add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
+
+  create_table "storages", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.string   "csv",        null: false
+    t.string   "csv_type",   null: false
+    t.string   "comment"
+    t.binary   "data",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "storages", ["csv_type"], name: "index_storages_on_csv_type", unique: true, using: :btree
+  add_index "storages", ["updated_at"], name: "index_storages_on_updated_at", using: :btree
+  add_index "storages", ["user_id"], name: "index_storages_on_user_id", using: :btree
 
   create_table "svas", force: :cascade do |t|
     t.string   "cross"

@@ -15,6 +15,11 @@ def seed_table(klass, user, options = {})
   klass.load("#{csv_path}/#{csv_name}", options)
   upload.update(ok: true)
 
+  print "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
+  uf.rewind
+
+  Storage.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
+
   puts 'Done!'
 end
 

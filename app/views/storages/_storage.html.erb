@@ -1,0 +1,18 @@
+<tr>
+  <td><%= storage.csv_type %></td>
+  <td><%= storage.csv %></td>
+  <td><%= storage.created_at.to_formatted_s(:long_ordinal) %></td>
+  <td><%= storage.user.email %></td>
+  <td><%= storage&.comment || '-' %></td>
+  <td>
+
+    <% if storage.data.present? %>
+      <%= link_to 'Download', storage_path(storage.id),
+        class: "btn btn-success btn-xs", role: "button" %>
+    <% else %>
+      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" >
+        Download
+      </a>
+    <% end %>
+  </td>
+</tr>

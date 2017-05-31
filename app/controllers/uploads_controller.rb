@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class UploadsController < ApplicationController
-  VALID_CSVS = InstitutionBuilder::TABLES.map(&:name)
-
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
@@ -15,9 +13,6 @@ class UploadsController < ApplicationController
   end
 
   def create
-    RawCsv.create(csv_type: upload_params[:csv_type], csv_file: upload_params[:upload_file])
-    upload_params[:upload_file]&.rewind
-
     @upload = Upload.create(merged_params)
 
     begin

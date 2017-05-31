@@ -1,0 +1,27 @@
+<div class="row row-space-6">
+  <div class="col-xs-9">
+    <p class="lead">
+      This area is provided so that administrators can upload and download
+      csvs in their original form, and store temporary work being done to them.
+      The data in this resource is not validated, may differ from what is
+      currently in the data service, and is provided only as a common upload and
+      download area for administrators. Please do not rely on the data provided
+      by this resource.
+    </p>
+
+    <p class="lead" style="font-weight: bold; font-style: italic;">
+      This is not a version control system. Previous changes will be overwritten
+      with each new upload. If more than one person is editing the same csv
+      at the same time, there is a certainty of changes being lost.
+    </p>
+  </div>
+
+  <div class="col-xs-3">
+    <div class="row row-space-6">
+      <div class="col-xs-12">
+        <%= link_to 'View Dashboard', dashboards_path,
+            class: "btn btn-info btn-xs", style: 'width: 70%' %>
+      </div>
+    </div>
+  </div>
+</div>
