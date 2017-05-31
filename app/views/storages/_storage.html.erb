@@ -7,7 +7,7 @@
   <td>
 
     <% if storage.data.present? %>
-      <%= link_to 'Download', storage_path(storage.id),
+      <%= link_to 'Download', download_storage_path(storage.id),
         class: "btn btn-success btn-xs", role: "button" %>
     <% else %>
       <a disabled="disabled" class="btn btn-warning btn-xs", role="button" >
