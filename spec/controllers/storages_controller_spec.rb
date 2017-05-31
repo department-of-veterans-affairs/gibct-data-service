@@ -40,7 +40,7 @@ RSpec.describe StoragesController, type: :controller do
     end
 
     context 'with an invalid id' do
-      it 'generates an alert' do
+      it 'generates an alert message' do
         get :download, id: 1_000_000
         expect(flash[:alert]).to match 'Invalid Storage id: 1000000'
       end
