@@ -3,7 +3,7 @@
   <td><%= storage.csv %></td>
   <td><%= storage.created_at.to_formatted_s(:long_ordinal) %></td>
   <td><%= storage.user.email %></td>
-  <td><%= storage&.comment || '-' %></td>
+  <td><%= storage.comment || '-' %></td>
   <td>
 
     <% if storage.data.present? %>
@@ -14,5 +14,7 @@
         Download
       </a>
     <% end %>
+    <%= link_to 'Upload', edit_storage_path(storage.id),
+      class: "btn btn-success btn-xs", role: "button" %>
   </td>
 </tr>

@@ -2,6 +2,14 @@
 require 'rails_helper'
 
 RSpec.describe Storage, type: :model do
+  def generate_csv_upload(name)
+    ActionDispatch::Http::UploadedFile.new(
+      tempfile: File.new(Rails.root.join('spec/fixtures', name)),
+      filename: File.basename(name),
+      type: 'text/csv'
+    )
+  end
+
   subject { build :storage }
 
   describe 'when validating' do
@@ -31,6 +39,47 @@ RSpec.describe Storage, type: :model do
       it 'reads the uploaded file when not persisted' do
         expect(subject.data).to eq(File.open(subject.upload_file.path).read)
       end
+    end
+  end
+
+  describe 'when updating' do
+    before(:each) do
+      create :storage
+    end
+
+    let(:old_storage) { Storage.first }
+
+    let(:params) do
+      {
+        id: old_storage.id, upload_file: generate_csv_upload('weam_extra_column.csv'),
+        comment: 'replace', user: old_storage.user
+      }
+    end
+
+    let(:data) { File.read(params[:upload_file].path, encoding: 'ISO-8859-1') }
+
+    it 'replaces the existing data, name, and comment' do
+      Storage.find_and_update(params)
+
+      new_storage = Storage.first
+      expect(new_storage.data).not_to eq(old_storage.data)
+      expect(new_storage.csv).not_to eq(old_storage.csv)
+      expect(new_storage.comment).not_to eq(old_storage.comment)
+    end
+
+    it 'generates an error if the storage cannot be found' do
+      params[:id] = 1_000_000
+      expect { Storage.find_and_update(params) }.to raise_error(ArgumentError)
+    end
+
+    it 'requires a user' do
+      params[:user] = nil
+      expect(Storage.find_and_update(params).errors.full_messages).to eq(["User can't be blank"])
+    end
+
+    it 'requires an upload_file' do
+      params[:upload_file] = nil
+      expect(Storage.find_and_update(params).errors.full_messages).to eq(["Csv can't be blank"])
     end
   end
 end
