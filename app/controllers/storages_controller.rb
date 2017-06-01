@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class StoragesController < ApplicationController
   def index
-    @storages = Storage.all
+    @storages = Storage.all.order(:csv_type)
   end
 
   def show
@@ -22,9 +22,15 @@ class StoragesController < ApplicationController
     @storage = Storage.find_and_update(merged_params)
     raise StandardError, @storage.errors.full_messages unless @storage.valid?
     redirect_to storage_path(params[:id])
-  rescue StandardError => e
+  rescue ArgumentError, ActionController::UnknownFormat => e
     Rails.logger.error e.message
-    redirect_to edit_storage_path, alert: e.message
+    redirect_to storages_path, alert: e.message
+  rescue StandardError => e
+    message = e.message.gsub(/[\[\]"]/, '')
+
+    Rails.logger.error message
+    flash[:alert] = message
+    render :edit
   end
 
   def download
@@ -40,12 +46,8 @@ class StoragesController < ApplicationController
 
   private
 
-  def original_filename
-    @f ||= upload_params.try(:[], :upload_file)&.original_filename
-  end
-
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user, id: params[:id])
+    upload_params.merge(user: current_user, id: params[:id])
   end
 
   def upload_params

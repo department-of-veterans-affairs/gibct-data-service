@@ -47,24 +47,14 @@ RSpec.describe Storage, type: :model do
       create :storage
     end
 
-    let(:old_storage) { Storage.first }
-
-    let(:params) do
-      {
-        id: old_storage.id, upload_file: generate_csv_upload('weam_extra_column.csv'),
-        comment: 'replace', user: old_storage.user
-      }
-    end
-
-    let(:data) { File.read(params[:upload_file].path, encoding: 'ISO-8859-1') }
+    let(:old) { Storage.first }
+    let(:upload_file) { generate_csv_upload('weam_extra_column.csv') }
+    let(:new_data) { File.read(params[:upload_file].path, encoding: 'ISO-8859-1') }
+    let(:params) { { id: old.id, upload_file: upload_file, comment: old.comment, user: old.user } }
 
     it 'replaces the existing data, name, and comment' do
       Storage.find_and_update(params)
-
-      new_storage = Storage.first
-      expect(new_storage.data).not_to eq(old_storage.data)
-      expect(new_storage.csv).not_to eq(old_storage.csv)
-      expect(new_storage.comment).not_to eq(old_storage.comment)
+      expect(Storage.first.data).to eq(new_data)
     end
 
     it 'generates an error if the storage cannot be found' do
