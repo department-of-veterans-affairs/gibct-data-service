@@ -20,12 +20,12 @@ end
 
 puts 'Creating sample constants'
 constants = {
-  'TFCAP' => 21970.46,
-  'AVGBAH' => 1611,
+  'TFCAP' => 22805.34,
+  'AVGBAH' => 1681,
   'BSCAP' => 1000,
   'BSOJTMONTH' => 83,
-  'FLTTFCAP' => 12554.54,
-  'CORRESPONDTFCAP' => 10671.35,
+  'FLTTFCAP' => 13031.61,
+  'CORRESPONDTFCAP' => 11076.86,
   'MGIB3YRRATE' => 1857,
   'MGIB2YRRATE' => 1509,
   'SRRATE' => 369,
