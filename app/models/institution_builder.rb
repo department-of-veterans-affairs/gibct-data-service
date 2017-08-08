@@ -11,20 +11,6 @@ module InstitutionBuilder
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
-  def self.default_timestamps_to_now
-    query = 'ALTER TABLE institutions ALTER COLUMN updated_at SET DEFAULT now(); '
-    query += 'ALTER TABLE institutions ALTER COLUMN created_at SET DEFAULT now();'
-
-    ActiveRecord::Base.connection.execute(query)
-  end
-
-  def self.drop_default_timestamps
-    query = 'ALTER TABLE institutions ALTER COLUMN updated_at DROP DEFAULT; '
-    query += 'ALTER TABLE institutions ALTER COLUMN created_at DROP DEFAULT;'
-
-    ActiveRecord::Base.connection.execute(query)
-  end
-
   def self.run_insertions(version_number)
     initialize_with_weams(version_number)
     add_crosswalk(version_number)
@@ -54,10 +40,7 @@ module InstitutionBuilder
     begin
       Institution.transaction do
         version = Version.create!(production: false, user: user)
-
-        # default_timestamps_to_now
         run_insertions(version.number)
-        # drop_default_timestamps
       end
 
       notice = 'Institution build was successful'
@@ -81,10 +64,14 @@ module InstitutionBuilder
 
   def self.initialize_with_weams(version_number)
     columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
+    timestamp = Time.now.utc.to_s(:db)
 
-    str = "INSERT INTO institutions (#{columns.join(', ')}, version) "
-    str += Weam.select(columns).select("#{version_number.to_i} as version").where(approved: true).to_sql
-
+    str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
+    str += Weam.select(columns)
+               .select("#{version_number.to_i} as version")
+               .select("'#{timestamp}' as created_at")
+               .select("'#{timestamp}' as updated_at")
+               .where(approved: true).to_sql
     Institution.connection.insert(str)
   end
 
