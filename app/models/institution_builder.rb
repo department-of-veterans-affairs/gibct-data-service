@@ -65,12 +65,13 @@ module InstitutionBuilder
   def self.initialize_with_weams(version_number)
     columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
     timestamp = Time.now.utc.to_s(:db)
+    conn = ActiveRecord::Base.connection
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
     str += Weam.select(columns)
                .select("#{version_number.to_i} as version")
-               .select("'#{timestamp}' as created_at")
-               .select("'#{timestamp}' as updated_at")
+               .select("#{conn.quote(timestamp)} as created_at")
+               .select("#{conn.quote(timestamp)} as updated_at")
                .where(approved: true).to_sql
     Institution.connection.insert(str)
   end
