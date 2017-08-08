@@ -55,9 +55,9 @@ module InstitutionBuilder
       Institution.transaction do
         version = Version.create!(production: false, user: user)
 
-        default_timestamps_to_now
+        # default_timestamps_to_now
         run_insertions(version.number)
-        drop_default_timestamps
+        # drop_default_timestamps
       end
 
       notice = 'Institution build was successful'
