@@ -47,6 +47,7 @@ module V0
     end
 
     def log_error(exception)
+      Raven.capture_exception(exception) if ENV['SENTRY_DSN'].present?
       Rails.logger.error "#{exception.message}."
       Rails.logger.error exception.backtrace.join("\n") unless exception.backtrace.nil?
     end
