@@ -10,20 +10,14 @@ class CalculatorConstant < ActiveRecord::Base
   default_scope { order('name') }
 
   validates :name, uniqueness: true, presence: true
-  validate :value_not_nil
+  validates :float_value, presence: true
 
-  # Supports either numeric or string values
+  # Support for GIBCT using value
   def value
-    string_value || float_value
+    float_value
   end
 
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
-
-  private
-
-  def value_not_nil
-    errors.add(:base, 'you must specify a value') if value.blank?
-  end
 end

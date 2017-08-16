@@ -7,11 +7,5 @@ FactoryGirl.define do
     end
 
     float_value { |_n| Random.rand.round(2) }
-    string_value nil
-
-    trait :string do
-      string_value { |n| "String #{n}" }
-      float_value nil
-    end
   end
 end

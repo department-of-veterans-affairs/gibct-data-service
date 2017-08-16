@@ -6,8 +6,6 @@ RSpec.describe V0::CalculatorConstantsController, type: :controller do
     it 'returns calculator constants' do
       create(:calculator_constant)
       create(:calculator_constant)
-      create(:calculator_constant, :string)
-      create(:calculator_constant, :string)
       create(:version, :production)
       get :index
       expect(response.content_type).to eq('application/json')

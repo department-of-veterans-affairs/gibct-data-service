@@ -8,7 +8,7 @@ RSpec.describe CalculatorConstant, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'instance methods' do
-    it 'responds to value when float' do
+    it 'responds to value' do
       expect(build(:calculator_constant).value).to be_a(Float)
     end
   end
