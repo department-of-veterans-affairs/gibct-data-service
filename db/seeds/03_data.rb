@@ -29,7 +29,11 @@ Upload.delete_all
 puts 'Deleting old institutions'
 Institution.delete_all
 
+puts 'Deleting old constants'
+CalculatorConstant.delete_all
+
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
+seed_table(CalculatorConstant, user)
 seed_table(Weam, user)
 seed_table(Crosswalk, user)
 seed_table(EightKey, user, skip_lines: 1)

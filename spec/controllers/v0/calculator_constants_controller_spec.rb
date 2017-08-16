@@ -4,8 +4,8 @@ require 'rails_helper'
 RSpec.describe V0::CalculatorConstantsController, type: :controller do
   describe 'GET #index' do
     it 'returns calculator constants' do
-      create(:calculator_constant, :float)
-      create(:calculator_constant, :float)
+      create(:calculator_constant)
+      create(:calculator_constant)
       create(:calculator_constant, :string)
       create(:calculator_constant, :string)
       create(:version, :production)
