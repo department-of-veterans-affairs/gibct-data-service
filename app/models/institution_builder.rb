@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module InstitutionBuilder
   TABLES = [
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
@@ -42,6 +43,9 @@ module InstitutionBuilder
         version = Version.create!(production: false, user: user)
         run_insertions(version.number)
       end
+
+      # Build Sitemap and otify search engines
+      GibctSiteMapper.new(ping: true)
 
       notice = 'Institution build was successful'
       success = true

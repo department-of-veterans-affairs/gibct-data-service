@@ -100,3 +100,6 @@ end
 
 # Used to colorize output for rake tasks
 gem "rainbow"
+
+# Build sitemap
+gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
