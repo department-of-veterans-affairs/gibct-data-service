@@ -106,7 +106,9 @@ RSpec.describe DashboardsController, type: :controller do
 
     context 'with no existing preview records' do
       it 'returns an error message' do
-        get :push
+        SiteMapperHelper.silence do
+          get :push
+        end
 
         expect(flash.alert).to eq('No preview version available')
         expect(Version.current_production).to be_blank
@@ -120,11 +122,16 @@ RSpec.describe DashboardsController, type: :controller do
 
       context 'and is sucessful' do
         it 'adds a new version record' do
-          expect { get(:push) }.to change { Version.count }.by(1)
+          SiteMapperHelper.silence do
+            expect { get(:push) }.to change { Version.count }.by(1)
+          end
         end
 
         it 'sets the new production version number to the preview number' do
-          get :push
+          SiteMapperHelper.silence do
+            get :push
+          end
+
           expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
       end
