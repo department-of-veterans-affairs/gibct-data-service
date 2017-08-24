@@ -59,7 +59,7 @@ gem 'sentry-raven', '~> 2.3.0'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  gem 'pry-rails'
+  gem 'pry-nav'
 
   # Linters
   gem 'rubocop', '~> 0.46.0'

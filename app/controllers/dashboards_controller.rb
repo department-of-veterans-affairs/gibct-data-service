@@ -44,6 +44,9 @@ class DashboardsController < ApplicationController
 
       if pv.persisted?
         flash.notice = 'Production data updated'
+
+        # Build Sitemap and notify search engines
+        GibctSiteMapper.new(ping: true)
       else
         flash.alert = 'Production data not updated, remains at previous production version'
       end

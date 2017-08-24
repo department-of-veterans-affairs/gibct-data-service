@@ -44,9 +44,6 @@ module InstitutionBuilder
         run_insertions(version.number)
       end
 
-      # Build Sitemap and otify search engines
-      GibctSiteMapper.new(ping: true)
-
       notice = 'Institution build was successful'
       success = true
     rescue ActiveRecord::StatementInvalid => e

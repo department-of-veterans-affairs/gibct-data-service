@@ -196,8 +196,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-rails (0.3.4)
-      pry (>= 0.9.10)
+    pry-nav (0.2.4)
+      pry (>= 0.9.10, < 0.11.0)
     public_suffix (2.0.5)
     puma (3.6.2)
     rack (1.6.5)
@@ -361,7 +361,7 @@ DEPENDENCIES
   jshint
   json_matchers
   pg (~> 0.15)
-  pry-rails
+  pry-nav
   puma (~> 3.6)
   rack-cors
   rails (= 4.2.7.1)
