@@ -3,7 +3,7 @@ module InstitutionBuilder
   TABLES = [
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
-    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam
+    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant
   ].freeze
 
   def self.columns_for_update(klass)

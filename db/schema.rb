@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526180712) do
+ActiveRecord::Schema.define(version: 20170816193809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,9 +72,8 @@ ActiveRecord::Schema.define(version: 20170526180712) do
   create_table "calculator_constants", force: :cascade do |t|
     t.string   "name"
     t.float    "float_value"
-    t.string   "string_value"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "calculator_constants", ["name"], name: "index_calculator_constants_on_name", using: :btree
