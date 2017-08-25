@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
 
+  resources :storages, only: [:index, :edit, :update, :show] do
+    get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
+  end
+
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
 

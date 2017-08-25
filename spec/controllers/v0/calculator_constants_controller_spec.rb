@@ -4,10 +4,7 @@ require 'rails_helper'
 RSpec.describe V0::CalculatorConstantsController, type: :controller do
   describe 'GET #index' do
     it 'returns calculator constants' do
-      create(:calculator_constant, :float)
-      create(:calculator_constant, :float)
-      create(:calculator_constant, :string)
-      create(:calculator_constant, :string)
+      2.times { create(:calculator_constant) }
       create(:version, :production)
       get :index
       expect(response.content_type).to eq('application/json')

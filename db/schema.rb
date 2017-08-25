@@ -1076,6 +1076,20 @@ ActiveRecord::Schema.define(version: 20170816193809) do
 
   add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
 
+  create_table "storages", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.string   "csv",        null: false
+    t.string   "csv_type",   null: false
+    t.string   "comment"
+    t.binary   "data",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "storages", ["csv_type"], name: "index_storages_on_csv_type", unique: true, using: :btree
+  add_index "storages", ["updated_at"], name: "index_storages_on_updated_at", using: :btree
+  add_index "storages", ["user_id"], name: "index_storages_on_user_id", using: :btree
+
   create_table "svas", force: :cascade do |t|
     t.string   "cross"
     t.string   "student_veteran_link"

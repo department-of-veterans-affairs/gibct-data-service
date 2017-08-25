@@ -3,7 +3,7 @@ def seed_table(klass, user, options = {})
   csv_type = klass.name
   csv_path = 'sample_csvs'
 
-  print "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
+  puts "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
 
   uf = ActionDispatch::Http::UploadedFile.new(
     tempfile: File.new(Rails.root.join(csv_path, csv_name)),
@@ -14,6 +14,11 @@ def seed_table(klass, user, options = {})
   upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
   klass.load("#{csv_path}/#{csv_name}", options)
   upload.update(ok: true)
+
+  puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
+  uf.rewind
+
+  Storage.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
 
   puts 'Done!'
 end
@@ -29,7 +34,11 @@ Upload.delete_all
 puts 'Deleting old institutions'
 Institution.delete_all
 
+puts 'Deleting old constants'
+CalculatorConstant.delete_all
+
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
+seed_table(CalculatorConstant, user)
 seed_table(Weam, user)
 seed_table(Crosswalk, user)
 seed_table(EightKey, user, skip_lines: 1)
