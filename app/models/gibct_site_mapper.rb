@@ -2,12 +2,12 @@
 
 # Creates sitemips for gi-bill-comparison-tool
 class GibctSiteMapper
-  DEFAULT_HOST = 'https://www.vets.gov/gi-bill-comparison-tool'
+  PRODUCTION_HOST = 'www.vets.gov'
 
-  def initialize(ping: true, default_host: DEFAULT_HOST, sitemaps_path: nil, verbose: true)
+  def initialize(ping, verbose = true)
     return if version.blank?
 
-    configure_sitemap(default_host, sitemaps_path, verbose)
+    configure_sitemap(verbose)
     generate_sitemap(version)
 
     ping_search_engines if ping && version.present?
@@ -17,11 +17,14 @@ class GibctSiteMapper
     @version ||= Version.current_production&.number
   end
 
+  def sitemap_location
+    "https://#{PRODUCTION_HOST}/gids/sitemap.xml.gz"
+  end
+
   protected
 
-  def configure_sitemap(host, path, verbose)
-    SitemapGenerator::Sitemap.default_host = host || DEFAULT_HOST
-    SitemapGenerator::Sitemap.sitemaps_path = path if path
+  def configure_sitemap(verbose)
+    SitemapGenerator::Sitemap.default_host = "https://#{PRODUCTION_HOST}/gi-bill-comparison-tool"
     SitemapGenerator.verbose = verbose
   end
 
@@ -36,6 +39,6 @@ class GibctSiteMapper
   end
 
   def ping_search_engines
-    SitemapGenerator::Sitemap.ping_search_engines if version.present?
+    SitemapGenerator::Sitemap.ping_search_engines(sitemap_location) if version.present?
   end
 end
