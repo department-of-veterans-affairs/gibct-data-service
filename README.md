@@ -1,8 +1,24 @@
-# Gibct Data Service [![Build Status](https://dev.vets.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/) 
+# Gibct Data Service [![Build Status](https://dev.vets.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/)
 
-The GIBCT Data Service (**DS**) serves two purposes. First, it is a password-protected tool used by stakeholders to upload several sources of data, in the form of CSV files. Second, it provides the RESTful API used by the GI Bill Comparison Tool front-end to request this combined data.
+## Introduction
+The GIBCT Data Service (**GIDS**) compiles data from a variety of federal CSV-formatted sources into a set of
+institution profiles that provide school metrics of value to veterans. It also offers a query-based institution search
+mechanism, houses GI Bill education benefit parameters, and serves as a repository for the federal CSV source files.
+Secondarily, institution information may be exported as a CSV for regulatory reporting purposes.
 
-Once built, the data may be exported to a CSV for review or previewed in the production GIBCT front-end.
+GIDS data is accessible via an API intended for use by the GI Bill Comparison Tool client.
+
+### Data Modes and Versions
+GIDS profile data is logically partitioned in two modes: **preview** mode and **production** mode. In preview mode the
+data retrieved via the API has not yet been approved by the VA Education Stakeholders. In contrast
+
+### Primary Administrative Flow
+Institution profile data is synthesized from 21 separate CSVs maintained by various federal sources. Once the CSVs are
+uploaded
+
+
+
+
 
 ## Developer Setup
 Note that queries are PostgreSQL-specific.
