@@ -3,7 +3,7 @@ def env_vars = [
   'LINK_HOST=https://www.example.com',
   'GIBCT_URL=https://www.example.com',
   'SAML_IDP_METADATA_FILE=.'
-  'SAML_CALLBACK_URL=https://www.example.com',
+  'SAML_CALLBACK_URL=https://www.example.com/saml/auth/callback',
   'SAML_IDP_SSO_URL=https://www.example.com/idp/sso',
   'SAML_ISSUER=GIDS'
 ]
