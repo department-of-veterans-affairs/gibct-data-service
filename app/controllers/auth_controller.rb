@@ -13,6 +13,8 @@ class AuthController < ApplicationController
   def callback
     response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], 
                                                 settings: saml_settings)
+    puts response.documents
+    puts response.attributes
     if response.is_valid?
       session[:userid] = response.nameid
       session[:attributes] = response.attributes
