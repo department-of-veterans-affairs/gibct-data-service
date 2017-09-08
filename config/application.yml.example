@@ -3,3 +3,8 @@ ADMIN_PW: 'something...'
 SECRET_KEY_BASE: 'something ...'
 LINK_HOST: 'http://localhost:3000' # https://api.vets.gov
 GIBCT_URL: 'http://localhost:3002/gi-bill-comparison-tool'
+
+SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
+SAML_CALLBACK_URL: http://localhost:3000/auth/saml/callback
+SAML_IDP_SSO_URL: https://example.com/idp/sso
+SAML_ISSUER: GIDS
