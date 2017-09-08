@@ -13,12 +13,12 @@ class AuthController < ApplicationController
   def callback
     response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], 
                                                 settings: saml_settings)
-    puts response.documents
-    puts response.attributes
+    puts response.document
+    response.attributes.each { |x| puts "#{x}: #{response.attributes[x]}" }
     if response.is_valid?
       session[:userid] = response.nameid
       session[:attributes] = response.attributes
-      Rails.logger.info("Logged in user #{response.nameid} with attributes #{response.attributes.join(";")}")
+      Rails.logger.info("Logged in user #{response.nameid}")
       redirect_to root_url
     else
       Rails.logger.info("Failed log in with response #{response}")
