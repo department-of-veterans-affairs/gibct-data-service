@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   get 'status' => 'status#status'
 
   get 'auth/login', to: 'auth#new', as: 'saml_login'
-  post 'auth/saml/callback', to: 'auth#callback', as: 'saml_callback'
+  post 'saml/auth/callback', to: 'auth#callback', as: 'saml_callback'
   get 'saml/metadata', to: 'auth#metadata'
 
   root 'dashboards#index'
