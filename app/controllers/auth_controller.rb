@@ -3,6 +3,7 @@ require 'saml/settings'
 
 class AuthController < ApplicationController
   skip_before_action :authenticate_user!
+  skip_before_action :verify_authenticity_token
 
   def new
     request = OneLogin::RubySaml::Authrequest.new
@@ -16,10 +17,10 @@ class AuthController < ApplicationController
       session[:userid] = response.nameid
       session[:attributes] = response.attributes
       Rails.logger.info("Logged in user #{response.nameid} with attributes #{response.attributes.join(";")}")
-      redirect_to Settings.saml.relay 
+      redirect_to root_url
     else
       Rails.logger.info("Failed log in with response #{response}")
-      redirect_to Settings.saml.relay + "?auth=fail"
+      redirect_to root_url + "?auth=fail"
     end
   end
 
