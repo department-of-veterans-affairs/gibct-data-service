@@ -5,9 +5,8 @@ def env_vars = [
 ]
 
 pipeline {
-  agent {
-    label 'rails-testing'
-  }
+  agent any
+
   stages {
     stage('Checkout Code') {
       steps {
