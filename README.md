@@ -11,7 +11,8 @@ the `vets-api` and `vets-website` applications.
 
 ### Data Modes and Versions
 GIDS profile data is logically partitioned in two modes: **preview** mode and **production** mode. In preview mode the
-data retrieved via the API has not yet been approved by the VA Education Stakeholders. In contrast
+data retrieved via the API has not yet been approved by the VA Education Stakeholders. In contrast, production mode is
+the actual data pushed to **GIBCT** for public consumption.
 
 ### Primary User Flow
 Institution profile data is synthesized from 21 separate CSVs maintained by various federal sources. Once the CSVs are
