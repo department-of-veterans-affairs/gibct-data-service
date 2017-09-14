@@ -1,8 +1,24 @@
-# Gibct Data Service [![Build Status](https://dev.vets.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/) 
+# Gibct Data Service [![Build Status](https://dev.vets.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/)
 
-The GIBCT Data Service (**DS**) serves two purposes. First, it is a password-protected tool used by stakeholders to upload several sources of data, in the form of CSV files. Second, it provides the RESTful API used by the GI Bill Comparison Tool front-end to request this combined data.
+## Introduction
+The GIBCT Data Service (**GIDS**) compiles data from a variety of federal CSV-formatted sources into a set of
+institution profiles that provide school metrics of value to veterans. It also offers a query-based institution search
+mechanism, houses GI Bill education benefit parameters, and serves as a repository for the federal CSV source files.
+Secondarily, institution information may be exported as a CSV for regulatory reporting purposes.
 
-Once built, the data may be exported to a CSV for review or previewed in the production GIBCT front-end.
+GIDS data is accessible via an API intended for use by the GI Bill Comparison Tool client (**GIBCT**), which is part of
+the `vets-api` and `vets-website` applications.
+
+### Data Modes and Versions
+GIDS profile data is logically partitioned in two modes: **preview** mode and **production** mode. In preview mode the
+data retrieved via the API has not yet been approved by the VA Education Stakeholders. In contrast, production mode is
+the actual data pushed to **GIBCT** for public consumption.
+
+### Primary User Flow
+Institution profile data is synthesized from 21 separate CSVs maintained by various federal sources. Once the CSVs are
+uploaded, a `preview` version can be compiled. The data for the `preview` version can then be viewed by using the GIBCT
+in the link provided on the **GIDS** dashboard. Once the new preview version is "approved" it can then be pushed to
+`production`.
 
 ## Developer Setup
 Note that queries are PostgreSQL-specific.
@@ -18,24 +34,41 @@ Note that queries are PostgreSQL-specific.
 - `bundle exec rake security` - Run the suite of security scanners on the codebase.
 - `bundle exec rake ci` - Run all build steps performed in Travis CI.
 
-## Deployment Instructions
+## Pre-Setup Configuration
+The following environment variables need to be configured for **GIDS**:
 
+1. `GIBCT_URL`: this a link to the **GIBCT** that is used for looking at the data served by **GIDS**, and should
+   point to an instance of the **GIBCT** running locally. You are not required to have an instance of **GIBCT**
+	 to work on **GIDS** unless you wish to view the data in the client for which this service is intended. To learn
+	 more, please refer to the [vets-api repo](https://github.com/department-of-veterans-affairs/vets-api) and
+	 [vets-website repo](https://github.com/department-of-veterans-affairs/vets-website) where the **GIBCT** backend and
+	 client application, respectively, are located.
+2. `ADMIN_EMAIL`: This is the email you will use to sign onto **GIDS**.
+3. `ADMIN_PW`: This is the password for the email (above) you will use.
+4. `LINK_HOST`: This will be `http://localhost:3000`
+
+To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
+
+```
+ADMIN_EMAIL: 'something...'
+ADMIN_PW: 'something...'
+SECRET_KEY_BASE: 'something ...'
+LINK_HOST: 'http://localhost:3000'
+GIBCT_URL: 'http://localhost:3002/gi-bill-comparison-tool'
+```
+
+You can create additional users by adding them to the `/db/seeds/01_users.rb` file:
+
+```
+User.create(email: 'xxxxxx', password: 'xxxxxx')
+```
+
+## Deployment Instructions
 1. Run `bundle install` to set up the application.
 2. Create the DS database by running `bundle exec rake db:create`.
 3. Setup the DS database by running `bundle exec rake db:migrate`.
-4. Edit the seeds.rb file to create a user.
-5. Load test users: `bundle exec rake db:seed`
+5. Load test users and sample data: `bundle exec rake db:seed`
 5. Start the application: `bundle exec rails s`
-
-### The Seeds file
-
-The DS uses authentication, and you need to populate the application's users table with qualified logins.
-
-	# Destroy previous users ...
-	User.destroy_all
-
-	puts 'Add new users ... '
-	User.create(email: ENV['ADMIN_EMAIL'], password: ENV['ADMIN_PW'])
 
 ## How to Contribute
 
