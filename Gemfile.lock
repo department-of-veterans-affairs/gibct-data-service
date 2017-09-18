@@ -92,8 +92,12 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.0.4)
+    config (1.4.0)
+      activesupport (>= 3.0)
+      deep_merge (~> 1.1.1)
     database_cleaner (1.5.3)
     debug_inspector (0.0.2)
+    deep_merge (1.1.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     devise (3.5.10)
@@ -118,8 +122,6 @@ GEM
     faraday (0.12.0.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.17)
-    figaro (1.1.1)
-      thor (~> 0.14)
     formatador (0.2.5)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -202,6 +204,8 @@ GEM
     puma (3.6.2)
     rack (1.6.5)
     rack-cors (0.4.1)
+    rack-mini-profiler (0.10.5)
+      rack (>= 1.2.0)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.7.1)
@@ -348,11 +352,11 @@ DEPENDENCIES
   byebug
   cancancan (~> 1.13, >= 1.13.1)
   capybara
+  config
   database_cleaner (~> 1.5, >= 1.5.1)
   devise (~> 3.5, >= 3.5.6)
   factory_girl_rails (~> 4.6)
   faker (~> 1.6, >= 1.6.2)
-  figaro
   guard-rspec
   jquery-rails
   jquery-ui-rails
@@ -362,6 +366,7 @@ DEPENDENCIES
   pry-rails
   puma (~> 3.6)
   rack-cors
+  rack-mini-profiler
   rails (= 4.2.7.1)
   rainbow
   rspec-rails
@@ -383,4 +388,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.14.6
+   1.16.0.pre.2

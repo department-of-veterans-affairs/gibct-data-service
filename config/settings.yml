@@ -1,0 +1,41 @@
+secret_key_base: somesecretkey
+
+admin:
+  admin_email: some-email
+  admin_pw: some-pw
+
+links:
+  host: http://localhost:3000 # https://api.vets.gov
+  gibct: http://localhost:3002/gi-bill-comparison-tool
+
+redis:
+  host: localhost
+  port: 6379
+  expires_in: 4.weeks
+
+# CSV file parameters
+csv_file_parameters:
+  generic: &default
+    skip_lines: 0
+    col_sep: ','
+    row_sep: "\r\n"
+
+  EightKey:
+    skip_lines: 1
+    col_sep: ','
+    row_sep: "\r\n"
+
+  Mou:
+    skip_lines: 1
+    col_sep: ','
+    row_sep: "\r\n"
+
+  Hcm:
+    skip_lines: 2
+    col_sep: ','
+    row_sep: "\r\n"
+
+  Complaint:
+    skip_lines: 7
+    col_sep: ','
+    row_sep: "\r\n"

@@ -44,10 +44,11 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before(:each) do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+      defaults = Settings.csv_file_parameters
 
       InstitutionBuilder::TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+        skip_lines = (defaults[klass.name] || defaults.generic).skip_lines
+        load_table(klass, skip_lines: skip_lines)
       end
     end
 
@@ -71,10 +72,11 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before(:each) do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+      defaults = Settings.csv_file_parameters
 
       InstitutionBuilder::TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+        skip_lines = (defaults[klass.name] || defaults.generic).skip_lines
+        load_table(klass, skip_lines: skip_lines)
       end
 
       get :build

@@ -71,7 +71,7 @@ RSpec.describe Version, type: :model do
 
     it 'has gibct_link based on configuration' do
       subject.save
-      expect(subject.gibct_link).to eq(ENV['GIBCT_URL'])
+      expect(subject.gibct_link).to eq(Settings.links.gibct)
     end
   end
 

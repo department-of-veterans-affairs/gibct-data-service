@@ -24,7 +24,7 @@ module V0
     end
 
     def self_link
-      URI.join(Figaro.env.link_host, request.original_fullpath).to_s
+      URI.join(Settings.links.host, request.original_fullpath).to_s
     end
 
     rescue_from 'Exception' do |exception|

@@ -61,7 +61,7 @@ class Version < ActiveRecord::Base
 
   def gibct_link
     version_info = production? ? '' : "?version=#{uuid}"
-    "#{ENV['GIBCT_URL']}#{version_info}"
+    "#{Settings.links.gibct}#{version_info}"
   end
 
   # private instance methods

@@ -43,7 +43,7 @@ module GibctDataService
     # SmarterCsv converter support
     config.autoload_paths += %W(#{config.root}/app/models/converters)
 
-    # YAML Defaults for CSV
-    config.csv_defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+    # caching
+    # config.cache_store = :redis_store, Settings.redis.to_h
   end
 end

@@ -51,7 +51,7 @@ gem 'virtus', '~> 1.0.5'
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem "puma", "~> 3.6"
-gem 'figaro'
+gem 'config'
 
 # Sentry
 gem 'sentry-raven', '~> 2.3.0'
@@ -84,6 +84,7 @@ group :development, :test do
   gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
+  gem 'rack-mini-profiler'
 end
 
 group :development do

@@ -53,7 +53,7 @@ class UploadsController < ApplicationController
 
   def new_upload(csv_type)
     upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = defaults(csv_type)['skip_lines']
+    upload.skip_lines = defaults(csv_type).skip_lines
 
     upload
   end
@@ -68,7 +68,7 @@ class UploadsController < ApplicationController
   end
 
   def defaults(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
+    Settings.csv_file_parameters[csv_type] || Settings.csv_file_parameters.generic
   end
 
   def merged_params

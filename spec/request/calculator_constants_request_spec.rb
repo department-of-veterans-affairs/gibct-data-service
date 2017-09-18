@@ -12,6 +12,6 @@ RSpec.describe 'calculator_constants', type: :request do
   it 'uses LINK_HOST in self link' do
     get v0_calculator_constants_path
     links = JSON.parse(response.body)['links']
-    expect(links['self']).to start_with(ENV['LINK_HOST'])
+    expect(links['self']).to start_with(Settings.links.host)
   end
 end

@@ -14,7 +14,7 @@ RSpec.describe 'institutions', type: :request do
       create(:institution, :in_chicago)
       get '/v0/institutions/autocomplete?term=uni'
       links = JSON.parse(response.body)['links']
-      expect(links['self']).to start_with(ENV['LINK_HOST'])
+      expect(links['self']).to start_with(Settings.links.host)
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe 'institutions', type: :request do
     it 'uses LINK_HOST in self link' do
       get '/v0/institutions?name=ABC'
       links = JSON.parse(response.body)['links']
-      expect(links['self']).to start_with(ENV['LINK_HOST'])
+      expect(links['self']).to start_with(Settings.links.host)
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe 'institutions', type: :request do
       school = create(:institution, :contains_harv, version: Version.current_production.number)
       get "/v0/institutions/#{school.facility_code}"
       links = JSON.parse(response.body)['links']
-      expect(links['self']).to start_with(ENV['LINK_HOST'])
+      expect(links['self']).to start_with(Settings.links.host)
     end
   end
 end
