@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module InstitutionBuilder
   TABLES = [
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
