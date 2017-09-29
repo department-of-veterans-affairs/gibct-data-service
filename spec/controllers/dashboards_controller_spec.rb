@@ -102,10 +102,12 @@ RSpec.describe DashboardsController, type: :controller do
   end
 
   describe 'GET push' do
+    before(:each) { allow_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines) }
     login_user
 
     context 'with no existing preview records' do
       it 'returns an error message' do
+        expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
         get :push
 
         expect(flash.alert).to eq('No preview version available')
@@ -119,19 +121,36 @@ RSpec.describe DashboardsController, type: :controller do
       end
 
       context 'and is sucessful' do
+        before(:each) do
+        end
+
         it 'adds a new version record' do
-          expect { get(:push) }.to change { Version.count }.by(1)
+          SiteMapperHelper.silence do
+            expect { get(:push) }.to change { Version.count }.by(1)
+          end
         end
 
         it 'sets the new production version number to the preview number' do
-          get :push
+          SiteMapperHelper.silence do
+            get :push
+          end
+
           expect(Version.current_production.number).to eq(Version.current_preview.number)
+        end
+
+        it 'pings the search engines with a new sitemap' do
+          expect_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines)
+
+          SiteMapperHelper.silence do
+            get :push
+          end
         end
       end
 
       context 'and is not successful' do
         before(:each) do
           allow(Version).to receive(:create).and_return(Version.new)
+          expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
         end
 
         it 'does not add a new version' do

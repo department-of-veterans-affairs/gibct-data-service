@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410215512) do
+ActiveRecord::Schema.define(version: 20170816193809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,9 +72,8 @@ ActiveRecord::Schema.define(version: 20170410215512) do
   create_table "calculator_constants", force: :cascade do |t|
     t.string   "name"
     t.float    "float_value"
-    t.string   "string_value"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "calculator_constants", ["name"], name: "index_calculator_constants_on_name", using: :btree
@@ -1076,6 +1075,20 @@ ActiveRecord::Schema.define(version: 20170410215512) do
   end
 
   add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
+
+  create_table "storages", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.string   "csv",        null: false
+    t.string   "csv_type",   null: false
+    t.string   "comment"
+    t.binary   "data",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "storages", ["csv_type"], name: "index_storages_on_csv_type", unique: true, using: :btree
+  add_index "storages", ["updated_at"], name: "index_storages_on_updated_at", using: :btree
+  add_index "storages", ["user_id"], name: "index_storages_on_user_id", using: :btree
 
   create_table "svas", force: :cascade do |t|
     t.string   "cross"
