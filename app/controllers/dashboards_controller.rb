@@ -4,6 +4,7 @@ class DashboardsController < ApplicationController
 
   def index
     @uploads = Upload.last_uploads
+
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
   end
@@ -44,6 +45,10 @@ class DashboardsController < ApplicationController
 
       if pv.persisted?
         flash.notice = 'Production data updated'
+
+        # Build Sitemap and notify search engines in production only
+        ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
+        GibctSiteMapper.new(ping: ping)
       else
         flash.alert = 'Production data not updated, remains at previous production version'
       end
