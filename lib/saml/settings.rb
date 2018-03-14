@@ -7,6 +7,8 @@ module SAML
         result.assertion_consumer_service_url = ENV['SAML_CALLBACK_URL']
         result.idp_sso_target_url = ENV['SAML_IDP_SSO_URL']
         result.issuer = ENV['SAML_ISSUER']
+        result.private_key = File.read(File.expand_path(ENV['SAML_KEY_PATH']))
+        result.certificate = File.read(File.expand_path(ENV['SAML_CERT_PATH']))
         result
       end
     end
