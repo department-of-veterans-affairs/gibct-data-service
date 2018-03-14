@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   # Implement static "logged out" page with redirect to login path
 
   def session_expiry
-    #return unless session[:user_id]
+    return unless session[:user_id]
     session_model = ActiveRecord::SessionStore::Session.find_by(session_id: session.id)
     if session_model.updated_at + 10.minutes < Time.now
       puts "Expiring!"
