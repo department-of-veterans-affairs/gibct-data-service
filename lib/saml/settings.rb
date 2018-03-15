@@ -9,6 +9,8 @@ module SAML
         result.issuer = ENV['SAML_ISSUER']
         result.private_key = File.read(File.expand_path(ENV['SAML_KEY_PATH']))
         result.certificate = File.read(File.expand_path(ENV['SAML_CERT_PATH']))
+        result.security[:want_assertions_signed] = true
+        result.security[:want_assertions_encrypted] = true
         result
       end
     end
