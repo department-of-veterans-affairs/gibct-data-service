@@ -65,4 +65,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   link(:scorecard) { object.scorecard_link }
   link(:vet_website_link) { object.vet_website_link }
   link(:self) { v0_institution_url(object.facility_code) }
+
+  def ope
+    object.ope.tr('\"', '') if object.ope.present?
+  end
 end
