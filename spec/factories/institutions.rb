@@ -7,8 +7,10 @@ FactoryGirl.define do
     sequence(:institution) { |n| "institution #{n}" }
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
+    sequence(:vet_tuition_policy_url) { |n| "http://api.vets/#{n}" }
     institution_type_name 'PRIVATE'
     version 1
+    ope '99999999'
 
     trait :in_nyc do
       city 'NEW YORK'
