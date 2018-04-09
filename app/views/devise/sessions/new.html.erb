@@ -20,6 +20,7 @@
   <% end -%>
 
   <%= f.submit "Log in", class: "btn btn-primary btn-large" %>
+  <%= link_to "Login with PIV or ID.me (Single Sign-on)", saml_login_path, class: "btn btn-primary btn-large" %>
 <% end %>
 
 <%= render "devise/shared/links" %>

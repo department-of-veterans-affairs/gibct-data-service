@@ -11,28 +11,29 @@ class AuthController < ApplicationController
   end
 
   def callback
-    response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], 
+    response = OneLogin::RubySaml::Response.new(params[:SAMLResponse],
                                                 settings: saml_settings)
-    puts response.document
-    response.attributes.each { |x| puts "#{x}: #{response.attributes[x]}" }
     if response.is_valid?
-      session[:userid] = response.nameid
-      session[:attributes] = response.attributes
-      Rails.logger.info("Logged in user #{response.nameid}")
-      redirect_to root_url
+      user = User.from_saml_callback(response.attributes)
+      if user
+        sign_in_and_redirect user
+      else
+        flash.alert = 'User does not have a valid GIDS system account. ' \
+                      'Contact the system admin for further assistance.'
+        redirect_to root_url + '?auth=fail'
+      end
     else
-      Rails.logger.info("Failed log in with response #{response}")
-      redirect_to root_url + "?auth=fail"
+      flash.alert = "Invalid SAML response. Errors: #{response.errors.join("\n")}"
+      redirect_to root_url + '?auth=fail'
     end
   end
 
   def metadata
     meta = OneLogin::RubySaml::Metadata.new
-    render :xml => meta.generate(saml_settings), :content_type => "application/samlmetadata+xml"
+    render xml: meta.generate(saml_settings), content_type: 'application/samlmetadata+xml'
   end
-  
+
   def saml_settings
     @settings ||= SAML::Settings.settings
   end
-
 end

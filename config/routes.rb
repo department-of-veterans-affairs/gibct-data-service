@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   post 'saml/auth/callback', to: 'auth#callback', as: 'saml_callback'
   get 'saml/metadata', to: 'auth#metadata'
 
-  root 'dashboards#index'
+  root 'application#home'
 
   # For active? helper
   get '/dashboards' => 'dashboards#index'
