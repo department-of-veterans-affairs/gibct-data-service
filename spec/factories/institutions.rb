@@ -10,7 +10,6 @@ FactoryGirl.define do
     sequence(:vet_tuition_policy_url) { |n| "http://api.vets/#{n}" }
     institution_type_name 'PRIVATE'
     version 1
-    ope '99999999'
 
     trait :in_nyc do
       city 'NEW YORK'
