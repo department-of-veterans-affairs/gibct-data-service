@@ -18,6 +18,7 @@ pipeline {
 
     stage('Install bundle') {
       steps {
+        sh 'yum install postgresql postgresql-devel'
         sh 'bash --login -c "bundle install -j 4 --without development"'
       }
     }
