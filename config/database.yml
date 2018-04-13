@@ -15,6 +15,7 @@
 # gem 'pg'
 #
 default: &default
+  url: <%= ENV['DATABASE_URL'] %>
   adapter: postgresql
   encoding: unicode
   # For details on connection pooling, see rails configuration guide

@@ -1,0 +1,31 @@
+# Compose stack to run vets-api
+version: '2.1'
+services:
+  postgres:
+    image: "postgres:9.2"
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+    volumes:
+      - "./data:/var/lib/postgresql/data"
+  gibct:
+    build:
+      context: .
+    image: "gibct:${BUILD_TAG:-latest}"
+    volumes:
+      - ".:/src/gibct"
+    ports:
+      - 3000:3000
+    environment:
+      "DATABASE_URL": "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-vets_api_development}?pool=4"
+      POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
+      SECRET_KEY_BASE: 0ae77385a98d4d28886d792832fbbe036152efb4a112fae2d06261850a5b6728
+      LINK_HOST: https://www.example.com
+      GIBCT_URL: https://www.example.com
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    command: bash --login -c "bundle exec rails s"
