@@ -54,8 +54,6 @@ RSpec.describe Storage, type: :model do
 
     it 'replaces the existing data, name, and comment' do
       Storage.find_and_update(params)
-      puts Storage.first.csv
-      puts Storage.first.data
       expect(Storage.first.data).to eq(new_data)
     end
 
