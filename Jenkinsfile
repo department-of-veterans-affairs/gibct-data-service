@@ -21,5 +21,5 @@ pipeline {
         sh 'make ci'
       }
     }
-r }
+  }
 }
