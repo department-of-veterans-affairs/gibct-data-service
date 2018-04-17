@@ -16,26 +16,16 @@ pipeline {
       }
     }
 
-    stage('Install bundle') {
-      steps {
-        sh 'bash --login -c "bundle install -j 4 --without development"'
-      }
-    }
-
-    stage('Prepare database') {
-      steps {
-        withEnv(env_vars) {
-          sh 'bash --login -c "bundle exec rake db:drop db:create db:schema:load"'
-        }
-      }
-    }
-
     stage('Run tests') {
       steps {
-        withEnv(env_vars) {
-          sh 'bash --login -c "bundle exec rake ci"'
-        }
+        sh 'make ci'
       }
+    }
+  }
+
+  post {
+    always {
+      sh 'make clean'
     }
 
     stage('Deploy dev and staging') {
