@@ -21,12 +21,6 @@ pipeline {
         sh 'make ci'
       }
     }
-  }
-
-  post {
-    always {
-      sh 'make clean'
-    }
 
     stage('Deploy dev and staging') {
       when { branch 'master' }
@@ -43,16 +37,23 @@ pipeline {
           booleanParam(name: 'release', value: false),
         ], wait: true
 
-        build job: 'deploys/gi-bill-data-service-dev', parameters: [
-          booleanParam(name: 'notify_slack', value: true),
-          stringParam(name: 'ref', value: commit),
-        ], wait: false
+//        build job: 'deploys/gi-bill-data-service-dev', parameters: [
+//          booleanParam(name: 'notify_slack', value: true),
+//          stringParam(name: 'ref', value: commit),
+//        ], wait: false
 
         build job: 'deploys/gi-bill-data-service-staging', parameters: [
           booleanParam(name: 'notify_slack', value: true),
           stringParam(name: 'ref', value: commit),
         ], wait: false
       }
+    }
+  }
+
+
+  post {
+    always {
+      sh 'make clean'
     }
   }
 }
