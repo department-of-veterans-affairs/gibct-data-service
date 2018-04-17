@@ -51,5 +51,5 @@ rebuild:
 .PHONY: clean
 clean:
 	rm -r data || true
-	$(COMPOSE_TEST) run gibct rm -r coverage log tmp || true
+	$(COMPOSE_TEST) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_TEST) down
