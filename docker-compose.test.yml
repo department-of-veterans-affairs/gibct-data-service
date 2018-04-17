@@ -2,12 +2,13 @@
 version: '2.1'
 services:
   postgres:
-    image: "postgres:9.2"
+    image: "postgres:9.4"
     environment:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
     volumes:
       - "./data:/var/lib/postgresql/data"
+    command: "postgres -c 'bytea_output=escape'"
   gibct:
     build:
       context: .
@@ -17,7 +18,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      "DATABASE_URL": "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_development}?pool=4"
+      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_development}?pool=4"
       POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"

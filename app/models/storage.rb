@@ -26,10 +26,6 @@ class Storage < ActiveRecord::Base
     storage
   end
 
-  def data
-    self[:data].encode('ISO-8859-1')
-  end
-
   def replace_data
     derive_dependent_columns
   end
