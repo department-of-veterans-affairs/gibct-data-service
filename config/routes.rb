@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   match '/v0/*path', to: 'api#cors_preflight', via: [:options]
   get 'status' => 'status#status'
 
+  get 'auth/login', to: 'auth#new', as: 'saml_login'
+  post 'saml/auth/callback', to: 'auth#callback', as: 'saml_callback'
+  get 'saml/metadata', to: 'auth#metadata'
+
   root 'dashboards#index'
 
   # For active? helper
