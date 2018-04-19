@@ -103,6 +103,12 @@ To work on your code submission, follow [GitHub Flow](https://guides.github.com/
 
 If you're from the community, it may take one to two weeks to review your pull request. Teams work in one to two week sprints, so they need time to need add it to their time line.
 
+## Deployment
+
+Deployment is handled the same way as `vets-api`, commits to master are tested by Jenkins and a deploy is kicked off (to change the branches, edit the Jenkinsfile) to dev and staging. Production releases are manually gated. Navigate to http://jenkins.vetsgov-internal/job/releases/job/gi-bill-data-service/ and kick off a release job with the git sha for the release and it will automatically deploy to production.
+
+The `production` branch is kept around for references to older deployments, but is no longer in use by the deployment systems.
+
 ## Contact
 
 If you have a question or comment about this project, file a GitHub Issue with your question in the Title, any context in the Comment, and add the `question` Label. For general questions, tag or assign to the product owner Marc Harbatkin (GitHub Handle: mphprogrammer). For design questions, tag or assign to the design lead,  Marc Harbatkin (GitHub Handle: mphprogrammer). For technical questions, tag or assign to the engineering lead, Marc Harbatkin (GitHub Handle: mphprogrammer).
