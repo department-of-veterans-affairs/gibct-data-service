@@ -12,7 +12,7 @@ services:
   gibct:
     build:
       context: .
-    image: "gibct:${BUILD_TAG:-latest}"
+    image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
       - ".:/src/gibct"
     ports:
