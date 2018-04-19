@@ -37,7 +37,7 @@ class Institution < ActiveRecord::Base
     'bah' => { column: :bah, converter: NumberConverter },
     'cross' => { column: :cross, converter: CrossConverter },
     'ope' => { column: :ope, converter: OpeConverter },
-    'ope6' => { column: :ope6, converter: Ope6Converter},
+    'ope6' => { column: :ope6, converter: Ope6Converter },
     'school_system_name' => { column: :f1sysnam, converter: BaseConverter },
     'school_system_code' => { column: :f1syscod, converter: NumberConverter },
     'alias' => { column: :ialias, converter: BaseConverter },
