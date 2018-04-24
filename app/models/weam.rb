@@ -13,9 +13,8 @@ class Weam < ActiveRecord::Base
   ALC2 = 'educational institution is approved for chapter 31 only'
 
   COLS_USED_IN_INSTITUTION = [
-    :facility_code, :institution, :city, :state, :zip,
-    :country, :accredited, :bah, :poe, :yr,
-    :institution_type_name, :va_highest_degree_offered, :flight, :correspondence
+    :facility_code, :institution, :city, :state, :zip, :country, :accredited, :bah, :poe, :yr,
+    :institution_type_name, :va_highest_degree_offered, :flight, :correspondence, :approval_status
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -35,6 +34,7 @@ class Weam < ActiveRecord::Base
     'current academic year yellow ribbon' => { column: :yr, converter: BooleanConverter },
     'poo status' => { column: :poo_status, converter: BaseConverter },
     'applicable law code' => { column: :applicable_law_code, converter: BaseConverter },
+    'approval status' => { column: :approval_status, converter: BaseConverter },
     'institution of higher learning indicator' => {
       column: :institution_of_higher_learning_indicator, converter: BooleanConverter
     },
@@ -60,6 +60,7 @@ class Weam < ActiveRecord::Base
     self.correspondence = correspondence?
     self.approved = approved?
     self.ope6 = Ope6Converter.convert(ope)
+    self.approval_status = approval_status
   end
 
   # Is this instance an OJT institution?
@@ -138,5 +139,13 @@ class Weam < ActiveRecord::Base
     return false if applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
 
     flags_for_approved?
+  end
+
+  def approval_status
+    if poo_status =~ Regexp.new('aprvd', 'i') && flags_for_approved?
+      return 'Approved for chapter 31 only' if applicable_law_code =~ Regexp.new(ALC2, 'i')
+      return 'Approved' unless applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
+    end
+    'Not approved'
   end
 end

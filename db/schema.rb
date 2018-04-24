@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170816193809) do
+ActiveRecord::Schema.define(version: 20180423234636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -257,6 +257,10 @@ ActiveRecord::Schema.define(version: 20170816193809) do
     t.integer  "complaints_other_by_ope_id_do_not_sum"
     t.datetime "created_at",                                          null: false
     t.datetime "updated_at",                                          null: false
+    t.string   "f1sysnam"
+    t.integer  "f1syscod"
+    t.string   "ialias"
+    t.string   "approval_status"
   end
 
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
@@ -1193,6 +1197,7 @@ ActiveRecord::Schema.define(version: 20170816193809) do
     t.string   "ope6"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
+    t.string   "approval_status"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree

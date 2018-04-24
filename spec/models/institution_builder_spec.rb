@@ -89,7 +89,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         InstitutionBuilder.run(user)
       end
 
-      it 'adds approved schools only' do
+      it 'adds schools to institutions' do
         expect(institutions.count).to eq(1)
         expect(institution.facility_code).to eq(weam.facility_code)
       end

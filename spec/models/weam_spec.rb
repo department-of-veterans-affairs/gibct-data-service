@@ -233,4 +233,29 @@ RSpec.describe Weam, type: :model do
       expect(false_indicators.approved?).to be_falsy
     end
   end
+
+  describe 'approval_status' do
+    subject { build :weam, :approved_poo_and_law_code, :with_approved_indicators }
+
+    let(:withdrawn) { build :weam, :withdrawn_poo, :with_approved_indicators }
+    let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
+    let(:false_indicators) { build :weam, :with_flase_indicators }
+    let(:approved_ch31_law_code) { build :weam, :approved_poo_and_law_code_title_31 }
+
+    it 'is Not approved if the poo is withdrawn, or if law code is not approved' do
+      expect(withdrawn[:approval_status]).to eq('Not approved')
+    end
+
+    it 'is Not approved if the all the indicators are false' do
+      expect(false_indicators[:approval_status]).to eq('Not approved')
+    end
+
+    it 'is Approved for chapter 31 only if the poo is approved and law code is approved only for chapter 31' do
+      expect(approved_ch31_law_code[:approval_status]).to eq('Approved for chapter 31 only')
+    end
+
+    it 'is Approved if poo and law code are approved with at least one true indicator' do
+      expect(subject[:approval_status]).to eq('Approved')
+    end
+  end
 end
