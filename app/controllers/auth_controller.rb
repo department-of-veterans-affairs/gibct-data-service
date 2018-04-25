@@ -23,7 +23,8 @@ class AuthController < ApplicationController
         redirect_to root_url + '?auth=fail'
       end
     else
-      flash.alert = "Invalid SAML response. Errors: #{response.errors.join("\n")}"
+      Rails.logger.info("Invalid SAML responses. Errors: #{response.errors.join("\n")}")
+      flash.alert = 'Authentication failed. Please try again'
       redirect_to root_url + '?auth=fail'
     end
   end
