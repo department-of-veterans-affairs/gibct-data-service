@@ -5,9 +5,9 @@ class User < ActiveRecord::Base
   has_many :storages, inverse_of: :user
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :omniauthable and
+  # :confirmable, :lockable, :omniauthable and
   # :registerable
-  devise :database_authenticatable,
+  devise :database_authenticatable, :timeoutable,
          :recoverable, :rememberable, :trackable, :validatable
 
   def self.from_saml_callback(response_attrs)

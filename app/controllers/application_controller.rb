@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
 
   # Cause authentication before every action.
   before_action :authenticate_user!, except: :home
-  before_action :session_expiry
   before_action :set_cache_headers
 
   def home
@@ -24,18 +23,6 @@ class ApplicationController < ActionController::Base
   # do session.any? to avoid unloaded session (see devise code)
   # Implement logout in auth controller
   # Implement static "logged out" page with redirect to login path
-
-  def session_expiry
-    return unless session[:user_id]
-    session_model = ActiveRecord::SessionStore::Session.find_by(session_id: session.id)
-    if session_model.updated_at + 10.minutes < Time.current
-      Rails.logger.info('Expiring!')
-      session[:user_id] = nil
-      flash.alert = 'Your session expired. Please sign in again to continue.'
-      redirect_to root_path
-    end
-    session_model.touch
-  end
 
   # Overriding the devise sign_out path
   def after_sign_out_path_for(_resource_or_scope)
