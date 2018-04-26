@@ -12,7 +12,6 @@ class User < ActiveRecord::Base
 
   def self.from_saml_callback(response_attrs)
     email = response_attrs[:va_eauth_emailaddress]
-    Rails.logger.info("email: #{email}")
     return if email.blank?
     find_by(email: email)
   end
