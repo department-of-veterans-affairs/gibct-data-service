@@ -31,7 +31,7 @@ pipeline {
     }
 
     stage('Deploy dev and staging') {
-      when { branch 'master' }
+      when { branch 'pv-ssoe-integration' }
 
       steps {
         // hack to get the commit hash, some plugin is swallowing git variables and I can't figure out which one
@@ -45,10 +45,10 @@ pipeline {
           booleanParam(name: 'release', value: false),
         ], wait: true
 
-//        build job: 'deploys/gi-bill-data-service-dev', parameters: [
-//          booleanParam(name: 'notify_slack', value: true),
-//          stringParam(name: 'ref', value: commit),
-//        ], wait: false
+        build job: 'deploys/gi-bill-data-service-dev', parameters: [
+          booleanParam(name: 'notify_slack', value: true),
+          stringParam(name: 'ref', value: commit),
+        ], wait: false
 
         build job: 'deploys/gi-bill-data-service-staging', parameters: [
           booleanParam(name: 'notify_slack', value: true),
