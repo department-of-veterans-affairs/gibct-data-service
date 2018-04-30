@@ -68,7 +68,6 @@ module V0
                  .filter(:yr, @query[:yellow_ribbon_scholarship]) # boolean
                  .filter(:poe, @query[:principles_of_excellence]) # boolean
                  .filter(:eight_keys, @query[:eight_keys_to_veteran_success]) # boolean
-                 .filter(:approval_status, APRVD)
     end
 
     # rubocop:disable Style/MutableConstant
