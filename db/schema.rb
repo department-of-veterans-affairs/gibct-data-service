@@ -257,9 +257,6 @@ ActiveRecord::Schema.define(version: 20180423234636) do
     t.integer  "complaints_other_by_ope_id_do_not_sum"
     t.datetime "created_at",                                          null: false
     t.datetime "updated_at",                                          null: false
-    t.string   "f1sysnam"
-    t.integer  "f1syscod"
-    t.string   "ialias"
     t.string   "approval_status"
   end
 

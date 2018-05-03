@@ -15,7 +15,6 @@ FactoryGirl.define do
     poo_status nil
     applicable_law_code nil
     ojt_indicator false
-    approval_status nil
 
     # Facility_code second digit is 0
     trait :ojt do
@@ -70,38 +69,24 @@ FactoryGirl.define do
     trait :approved_poo_and_law_code do
       poo_status 'aprvd'
       applicable_law_code 'educational institution is approved for all chapters'
-      approval_status 'Approved'
     end
 
     # Fails approval because of poo_status
     trait :withdrawn_poo do
       poo_status 'withdrn'
       applicable_law_code 'educational institution is approved for all chapters'
-      approval_status 'Not approved'
     end
 
     # Fails approval because of applicable_law_code
     trait :approved_poo_and_non_approved_law_code do
       poo_status 'aprvd'
       applicable_law_code 'educational institution is not approved'
-      approval_status 'Not approved'
     end
 
     # Fails approval because of applicable_law_code
     trait :approved_poo_and_law_code_title_31 do
       poo_status 'aprvd'
       applicable_law_code 'educational institution is approved for chapter 31 only'
-      flight_indicator true
-      approval_status 'Approved for chapter 31 only'
-    end
-
-    trait :with_flase_indicators do
-      approval_status 'Not approved'
-      institution_of_higher_learning_indicator false
-      ojt_indicator false
-      correspondence_indicator false
-      flight_indicator false
-      non_college_degree_indicator false
     end
 
     # Passes approval because of all false indicators
@@ -129,8 +114,7 @@ FactoryGirl.define do
         flight_indicator: flight_indicator, ojt_indicator: ojt_indicator,
         institution_of_higher_learning_indicator: institution_of_higher_learning_indicator,
         non_college_degree_indicator: non_college_degree_indicator,
-        poo_status: poo_status, applicable_law_code: applicable_law_code,
-        approval_status: approval_status
+        poo_status: poo_status, applicable_law_code: applicable_law_code
       )
     end
   end

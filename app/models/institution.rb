@@ -82,7 +82,6 @@ class Institution < ActiveRecord::Base
     'accredited' => { column: :accredited, converter: BooleanConverter },
     'accreditation_type' => { column: :accreditation_type, converter: BaseConverter },
     'accreditation_status' => { column: :accreditation_status, converter: BaseConverter },
-    'approval_status' => { column: :approval_status, converter: BaseConverter },
     'caution_flag' => { column: :caution_flag, converter: BooleanConverter },
     'caution_flag_reason' => { column: :caution_flag_reason, converter: BaseConverter },
     'complaints_facility_code' => { column: :complaints_facility_code, converter: NumberConverter },

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 module V0
   class InstitutionsController < ApiController
-    APRVD = 'Approved'
-
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @data = []

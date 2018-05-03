@@ -8,7 +8,6 @@ FactoryGirl.define do
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name 'PRIVATE'
-    approval_status 'Approved'
     version 1
 
     trait :in_nyc do
