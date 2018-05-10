@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170816193809) do
+ActiveRecord::Schema.define(version: 20180510145019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -901,6 +901,19 @@ ActiveRecord::Schema.define(version: 20170816193809) do
   end
 
   add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
+
+  create_table "school_closures", force: :cascade do |t|
+    t.string   "facility_code",          null: false
+    t.string   "institution_name"
+    t.boolean  "school_closing"
+    t.string   "school_closing_date"
+    t.text     "school_closing_message"
+    t.text     "notes"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "school_closures", ["facility_code"], name: "index_school_closures_on_facility_code", unique: true, using: :btree
 
   create_table "scorecards", force: :cascade do |t|
     t.string   "cross",                        null: false
