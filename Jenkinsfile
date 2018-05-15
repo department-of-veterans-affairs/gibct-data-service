@@ -9,6 +9,10 @@ pipeline {
     label 'vetsgov-general-purpose'
   }
 
+  environment {
+    DOCKER_IMAGE = env.BUILD_TAG.replaceAll(/[%\/]/, '')
+  }
+
   stages {
     stage('Checkout Code') {
       steps {
