@@ -18,6 +18,7 @@ class AuthController < ApplicationController
       if user
         sign_in_and_redirect user
       else
+        Rails.logger.info("Email: #{response.attributes[:va_eauth_emailaddress].downcase} is not in GIDS")
         flash.alert = 'User does not have a valid GIDS system account. ' \
                       'Contact the system admin for further assistance.'
         redirect_to root_url + '?auth=fail'
