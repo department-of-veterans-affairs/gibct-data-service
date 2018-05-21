@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180418231526) do
+ActiveRecord::Schema.define(version: 20180521181959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20180418231526) do
     t.string   "notes"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.boolean  "stem_offered"
   end
 
   add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
@@ -270,6 +271,16 @@ ActiveRecord::Schema.define(version: 20180418231526) do
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
+
+  create_table "ipeds_ciplists", force: :cascade do |t|
+    t.string   "cross",      null: false
+    t.string   "cip_code"
+    t.integer  "ctotalt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "ipeds_ciplists", ["cross"], name: "index_ipeds_ciplists_on_cross", using: :btree
 
   create_table "ipeds_hds", force: :cascade do |t|
     t.string   "cross",                  null: false
@@ -1078,6 +1089,14 @@ ActiveRecord::Schema.define(version: 20180418231526) do
   end
 
   add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
+
+  create_table "stem_cipcodes", force: :cascade do |t|
+    t.integer  "two_digit_series"
+    t.string   "twentyten_cip_code"
+    t.string   "cip_code_title"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
 
   create_table "storages", force: :cascade do |t|
     t.integer  "user_id",    null: false
