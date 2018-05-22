@@ -3,10 +3,9 @@ class CreateZipcodeRates < ActiveRecord::Migration
     create_table :zipcode_rates do |t|
       t.string :zip_code
       t.string :mha_code
-      t.string :string
       t.string :mha_name
-      t.string :mha_rate
-      t.string :mha_rate_grandfathered
+      t.float :mha_rate
+      t.float :mha_rate_grandfathered
 
       t.timestamps null: false
     end

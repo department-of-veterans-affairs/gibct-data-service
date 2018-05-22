@@ -1205,10 +1205,9 @@ ActiveRecord::Schema.define(version: 20180522142853) do
   create_table "zipcode_rates", force: :cascade do |t|
     t.string   "zip_code"
     t.string   "mha_code"
-    t.string   "string"
     t.string   "mha_name"
-    t.string   "mha_rate"
-    t.string   "mha_rate_grandfathered"
+    t.float    "mha_rate"
+    t.float    "mha_rate_grandfathered"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
