@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.string   "f1sysnam"
     t.integer  "f1syscod"
     t.string   "ialias"
+    t.string   "approval_status"
   end
 
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
@@ -1196,6 +1197,7 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.string   "ope6"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
+    t.string   "approval_status"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
