@@ -454,7 +454,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        expect(institution.vet_tuition_policy_url).to eq(ipeds_hd.vet_tuition_policy_url)
+        IpedsHd::COLS_USED_IN_INSTITUTION.each do |column|
+          expect(ipeds_hd[column]).to eq(institution[column])
+        end
       end
     end
 
