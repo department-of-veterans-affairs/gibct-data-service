@@ -1204,6 +1204,48 @@ ActiveRecord::Schema.define(version: 20180522142853) do
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
+  create_table "yellow_ribbons", force: :cascade do |t|
+    t.string   "facility_code"
+    t.string   "school_name_in_yr_database"
+    t.string   "school_name_in_weams"
+    t.string   "campus"
+    t.string   "street_address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "public_private"
+    t.string   "degree_level"
+    t.string   "division_professional_school"
+    t.string   "contribution_amount"
+    t.string   "updated_for_2011_2012"
+    t.string   "missed_deadline"
+    t.string   "ineligible"
+    t.string   "date_agreement_received"
+    t.string   "dat_yr_signed_by_yr_official"
+    t.string   "amendment_date"
+    t.string   "flight_school"
+    t.string   "date_confirmation_sent"
+    t.string   "consolidated_agreement"
+    t.string   "new_school"
+    t.string   "open_ended_agreement"
+    t.string   "modified"
+    t.string   "withdrawn"
+    t.string   "sco_name"
+    t.string   "sco_telephone_number"
+    t.string   "sco_email_address"
+    t.string   "sfr_name"
+    t.string   "sfr_telephone_number"
+    t.string   "sfr_email_address"
+    t.string   "initials_yr_processor"
+    t.string   "year_of_yr_participation"
+    t.integer  "number_of_students"
+    t.text     "notes"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "yellow_ribbons", ["facility_code"], name: "index_yellow_ribbons_on_facility_code", unique: true, using: :btree
+
   create_table "zipcode_rates", force: :cascade do |t|
     t.string   "zip_code"
     t.string   "mha_code"
