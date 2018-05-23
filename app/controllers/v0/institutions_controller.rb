@@ -29,7 +29,6 @@ module V0
     # GET /v0/institutions/20005123
     def show
       resource = Institution.version(@version[:number]).find_by(facility_code: params[:id])
-
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
       @links = { self: self_link }
