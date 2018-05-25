@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180522142853) do
+ActiveRecord::Schema.define(version: 20180525141749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,7 +125,6 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.string   "notes"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.boolean  "stem_offered"
   end
 
   add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
@@ -261,6 +260,7 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.string   "f1sysnam"
     t.integer  "f1syscod"
     t.string   "ialias"
+    t.boolean  "stem_offered"
   end
 
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
