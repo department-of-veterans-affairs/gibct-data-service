@@ -152,6 +152,8 @@ class Institution < ActiveRecord::Base
   validates :version, :institution, :country, presence: true
   validates :institution_type_name, inclusion: { in: TYPES }
 
+  has_many :yellow_ribbon_programs
+
   self.per_page = 10
 
   def scorecard_link
