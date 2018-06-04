@@ -5,6 +5,7 @@ class CreateSchoolClosures < ActiveRecord::Migration
       t.string :institution_name
       t.boolean :school_closing
       t.string :school_closing_date
+      t.date :school_closing_on
       t.text :school_closing_message
       t.text :notes
 

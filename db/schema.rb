@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180522142853) do
+ActiveRecord::Schema.define(version: 20180604061800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(version: 20180522142853) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institutions", force: :cascade do |t|
-    t.integer  "version",                                             null: false
+    t.integer  "version",                                                             null: false
     t.string   "institution_type_name"
     t.string   "facility_code"
     t.string   "institution"
@@ -255,11 +255,14 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.integer  "complaints_jobs_by_ope_id_do_not_sum"
     t.integer  "complaints_transcript_by_ope_id_do_not_sum"
     t.integer  "complaints_other_by_ope_id_do_not_sum"
-    t.datetime "created_at",                                          null: false
-    t.datetime "updated_at",                                          null: false
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
     t.string   "f1sysnam"
     t.integer  "f1syscod"
     t.string   "ialias"
+    t.boolean  "school_closing",                                      default: false
+    t.date     "school_closing_on"
+    t.string   "school_closing_message"
   end
 
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
@@ -910,6 +913,7 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.string   "institution_name"
     t.boolean  "school_closing"
     t.string   "school_closing_date"
+    t.date     "school_closing_on"
     t.text     "school_closing_message"
     t.text     "notes"
     t.datetime "created_at",             null: false

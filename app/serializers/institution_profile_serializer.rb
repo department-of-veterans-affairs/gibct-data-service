@@ -61,6 +61,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :caution_flag
   attribute :caution_flag_reason
   attribute(:complaints) { object.complaints }
+  attribute :school_closing
+  attribute :school_closing_on
+  attribute :school_closing_message
   attribute :created_at
   attribute :updated_at
 

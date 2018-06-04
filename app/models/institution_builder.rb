@@ -4,7 +4,8 @@ module InstitutionBuilder
   TABLES = [
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
-    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant
+    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
+    SchoolClosure
   ].freeze
 
   def self.columns_for_update(klass)
@@ -33,6 +34,7 @@ module InstitutionBuilder
     add_hcm(version_number)
     add_complaint(version_number)
     add_outcome(version_number)
+    add_school_closure(version_number)
   end
 
   def self.run(user)
@@ -397,6 +399,17 @@ module InstitutionBuilder
       UPDATE institutions SET #{columns_for_update(Outcome)}
       FROM outcomes
       WHERE institutions.facility_code = outcomes.facility_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_school_closure(version_number)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(SchoolClosure)}
+      FROM school_closures
+      WHERE institutions.facility_code = school_closures.facility_code
         AND institutions.version = #{version_number};
     SQL
 
