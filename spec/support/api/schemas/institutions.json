@@ -64,7 +64,8 @@
               "student_veteran": { "type": ["null", "boolean"] },
               "yr": { "type": ["null", "boolean"] },
               "poe": { "type": ["null", "boolean"] },
-              "eight_keys": { "type": ["null", "boolean"] }
+              "eight_keys": { "type": ["null", "boolean"] },
+              "stem_offered": { "type": ["null", "boolean"] }
             },
             "required": [
               "name",
@@ -88,7 +89,8 @@
               "student_veteran",
               "yr",
               "poe",
-              "eight_keys"
+              "eight_keys",
+              "stem_offered"
             ]
           },
           "links": {

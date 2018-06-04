@@ -156,6 +156,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
       expect(facets['principles_of_excellence'].keys).to include('true', 'false')
       expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
+      expect(facets['stem_offered'].keys).to include('true', 'false')
     end
   end
 

@@ -770,5 +770,46 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'calculating stem_offered' do
+      let(:stem_cip_code) { StemCipCode.first }
+      let(:ipeds_cip_code) { IpedsCipCode.first }
+      let(:institution) { institutions.find_by(cross: ipeds_cip_code.cross) }
+
+      context 'with valid stem reference' do
+        it 'updates stem_offered' do
+          create :ipeds_cip_code, :institution_builder
+          create :stem_cip_code
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(true)
+        end
+      end
+
+      context 'without a cross record match to an ipeds cip code' do
+        let(:institution) { Institution.first }
+
+        it 'does not set stem_offered' do
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(false)
+        end
+      end
+
+      context 'when ctotalt on ipeds record indicates no stem programs available' do
+        it 'does not set stem_offered' do
+          create :ipeds_cip_code, :institution_builder, ctotalt: 0
+          create :stem_cip_code
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(false)
+        end
+      end
+
+      context 'when there is no matching stem cip code' do
+        it 'does not set stem_offered' do
+          create :ipeds_cip_code, :institution_builder, cipcode: 0.3
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(false)
+        end
+      end
+    end
   end
 end

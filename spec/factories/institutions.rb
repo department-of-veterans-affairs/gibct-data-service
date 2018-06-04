@@ -26,6 +26,7 @@ FactoryGirl.define do
       city 'CHICAGO'
       state 'IL'
       country 'USA'
+      stem_offered true
     end
 
     trait :uchicago do

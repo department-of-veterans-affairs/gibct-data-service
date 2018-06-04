@@ -48,7 +48,7 @@ module V0
           query[k].try(:upcase!)
         end
         %i(category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success).each do |k|
+           eight_keys_to_veteran_success stem_offered).each do |k|
           query[k].try(:downcase!)
         end
       end
@@ -66,6 +66,7 @@ module V0
                  .filter(:yr, @query[:yellow_ribbon_scholarship]) # boolean
                  .filter(:poe, @query[:principles_of_excellence]) # boolean
                  .filter(:eight_keys, @query[:eight_keys_to_veteran_success]) # boolean
+                 .filter(:stem_offered, @query[:stem_offered]) # boolean
     end
 
     # rubocop:disable Style/MutableConstant
@@ -87,7 +88,8 @@ module V0
         student_vet_group: DEFAULT_BOOLEAN_FACET,
         yellow_ribbon_scholarship: DEFAULT_BOOLEAN_FACET,
         principles_of_excellence: DEFAULT_BOOLEAN_FACET,
-        eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET
+        eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET,
+        stem_offered: DEFAULT_BOOLEAN_FACET
       }
       add_active_search_facets(result)
     end
