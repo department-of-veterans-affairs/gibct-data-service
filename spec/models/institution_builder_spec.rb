@@ -742,7 +742,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sums complaints by facility_code' do
         InstitutionBuilder.run(user)
 
-        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |column|
+        Complaint::FAC_CODE_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
         end
       end
@@ -750,7 +750,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sums complaints by ope6' do
         InstitutionBuilder.run(user)
 
-        Complaint::OPE6_ROLL_UP_SUMS.keys.each do |column|
+        Complaint::OPE6_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
         end
       end

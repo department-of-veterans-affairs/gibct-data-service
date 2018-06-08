@@ -42,7 +42,7 @@ RSpec.describe Complaint, type: :model do
       let(:complaint_all) { build :complaint, issues: all }
 
       it 'sets complaints to 1 only if the complaint keyword is embedded in the issue' do
-        Complaint::COMPLAINT_COLUMNS.keys.each do |facility_code_col|
+        Complaint::COMPLAINT_COLUMNS.each_key do |facility_code_col|
           expect(subject[facility_code_col]).to eq(0)
           expect(complaint_all[facility_code_col]).to eq(1)
         end
@@ -97,7 +97,7 @@ RSpec.describe Complaint, type: :model do
       it 'the facility code sum fields contain the sums grouped by facility_code' do
         institution = Institution.first
 
-        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |fc_sum|
+        Complaint::FAC_CODE_ROLL_UP_SUMS.each_key do |fc_sum|
           expect(institution[fc_sum]).to eq(2)
         end
       end
@@ -118,7 +118,7 @@ RSpec.describe Complaint, type: :model do
 
       it 'the institution receives the sums grouped by ope6' do
         Institution.all.each do |institution|
-          Complaint::OPE6_ROLL_UP_SUMS.keys.each do |ope6_sum|
+          Complaint::OPE6_ROLL_UP_SUMS.each_key do |ope6_sum|
             expect(institution[ope6_sum]).to eq(5)
           end
         end
