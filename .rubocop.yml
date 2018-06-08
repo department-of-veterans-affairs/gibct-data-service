@@ -57,3 +57,15 @@ Rails/Output:
 
 Style/Tab:
   Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - 'Guardfile'
+
+Rails/HasManyOrHasOneDependent:
+  Exclude:
+    - 'app/models/user.rb'
+
+Lint/BooleanSymbol:
+  Exclude:
+    - 'app/controllers/v0/institutions_controller.rb'
