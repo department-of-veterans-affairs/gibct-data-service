@@ -274,6 +274,7 @@ ActiveRecord::Schema.define(version: 20180603183002) do
   add_index "institutions", ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
+  add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
 
   create_table "ipeds_cip_codes", force: :cascade do |t|
