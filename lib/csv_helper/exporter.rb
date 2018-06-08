@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CsvHelper
   module Exporter
     def export

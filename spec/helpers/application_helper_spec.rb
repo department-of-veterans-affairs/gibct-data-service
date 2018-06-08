@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe ApplicationHelper, type: :helper do
   before(:each) do
     allow(helper.controller).to receive(:controller_name).and_return('dashboards')
@@ -36,7 +37,7 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe 'pretty_error' do
-    let(:errors) { %w(error1 error2) }
+    let(:errors) { %w[error1 error2] }
     let(:label) { 'some label' }
 
     let(:ul) { '<ul><li>error1</li><li>error2</li></ul>' }

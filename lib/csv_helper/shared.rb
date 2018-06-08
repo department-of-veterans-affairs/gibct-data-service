@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CsvHelper
   def self.included(base)
     base.extend Shared
@@ -12,7 +13,7 @@ module CsvHelper
     row = errors[:row].try(:first).to_s
     keys = errors.keys - [:row]
 
-    "Row #{row.blank? ? 'N/A' : row} : " + keys.map do |key|
+    "Row #{row.presence || 'N/A'} : " + keys.map do |key|
       key.to_s + ' : ' + errors[key].join(', ')
     end.join(', ')
   end

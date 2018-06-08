@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe V0::ApiController, type: :controller do
@@ -16,7 +17,7 @@ RSpec.describe V0::ApiController, type: :controller do
     end
   end
 
-  let(:keys_for_all_env) { %w(title detail code status) }
+  let(:keys_for_all_env) { %w[title detail code status] }
   let(:keys_for_with_meta) { keys_for_all_env + ['meta'] }
 
   context 'Parameter Missing' do

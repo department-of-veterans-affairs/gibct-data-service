@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-class Upload < ActiveRecord::Base
+
+class Upload < ApplicationRecord
   attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions

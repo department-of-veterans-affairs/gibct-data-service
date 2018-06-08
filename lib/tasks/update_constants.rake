@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :db do
   desc 'Updates calculator constants from db/seeds/02_constants.rb'
   task :update_constants, [:constants_file] => [:environment] do |_task, args|

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-class Crosswalk < ActiveRecord::Base
+
+class Crosswalk < ApplicationRecord
   include CsvHelper
 
-  COLS_USED_IN_INSTITUTION = [:ope, :cross, :ope6].freeze
+  COLS_USED_IN_INSTITUTION = %i[ope cross ope6].freeze
 
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },

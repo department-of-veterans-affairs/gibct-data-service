@@ -6,16 +6,16 @@
 # Row Separator: '\r\n' when uploaded from VA
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
-class Weam < ActiveRecord::Base
+class Weam < ApplicationRecord
   include CsvHelper
 
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
 
-  COLS_USED_IN_INSTITUTION = [
-    :facility_code, :institution, :city, :state, :zip,
-    :country, :accredited, :bah, :poe, :yr,
-    :institution_type_name, :va_highest_degree_offered, :flight, :correspondence
+  COLS_USED_IN_INSTITUTION = %i[
+    facility_code institution city state zip
+    country accredited bah poe yr
+    institution_type_name va_highest_degree_offered flight correspondence
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv

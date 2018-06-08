@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-class Mou < ActiveRecord::Base
+
+class Mou < ApplicationRecord
   include CsvHelper
 
   STATUSES = /\A(probation - dod|title iv non-compliant)\z/i

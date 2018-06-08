@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe GibctSiteMapper, type: :model do
@@ -11,7 +12,7 @@ RSpec.describe GibctSiteMapper, type: :model do
   before(:each) do
     File.delete(sitemaps_path) if File.exist?(sitemaps_path)
 
-    [:preview, :production].each { |p| create :version, p }
+    %i[preview production].each { |p| create :version, p }
     create :institution, version: preview_version.number, facility_code: preview_institution_fc
     create :institution, version: production_version.number, facility_code: production_institution_fc
 
