@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EightKey < ApplicationRecord
+class EightKey < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

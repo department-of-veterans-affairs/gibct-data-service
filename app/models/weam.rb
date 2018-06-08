@@ -6,7 +6,7 @@
 # Row Separator: '\r\n' when uploaded from VA
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
-class Weam < ApplicationRecord
+class Weam < ActiveRecord::Base
   include CsvHelper
 
   ALC1 = 'educational institution is not approved'

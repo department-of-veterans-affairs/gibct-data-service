@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CalculatorConstant < ApplicationRecord
+class CalculatorConstant < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

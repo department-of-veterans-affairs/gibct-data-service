@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Accreditation < ApplicationRecord
+class Accreditation < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

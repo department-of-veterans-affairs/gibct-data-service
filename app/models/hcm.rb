@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Hcm < ApplicationRecord
+class Hcm < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

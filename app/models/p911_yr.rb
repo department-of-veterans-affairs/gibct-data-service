@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class P911Yr < ApplicationRecord
+class P911Yr < ActiveRecord::Base
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[p911_yr_recipients p911_yellow_ribbon].freeze

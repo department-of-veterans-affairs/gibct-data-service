@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Settlement < ApplicationRecord
+class Settlement < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

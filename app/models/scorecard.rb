@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Scorecard < ApplicationRecord
+class Scorecard < ActiveRecord::Base
   include CsvHelper
 
   validates :cross, presence: true

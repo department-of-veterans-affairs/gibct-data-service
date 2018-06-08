@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArfGiBill < ApplicationRecord
+class ArfGiBill < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

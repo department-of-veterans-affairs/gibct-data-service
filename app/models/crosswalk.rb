@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Crosswalk < ApplicationRecord
+class Crosswalk < ActiveRecord::Base
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[ope cross ope6].freeze

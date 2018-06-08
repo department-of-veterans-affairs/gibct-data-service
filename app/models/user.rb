@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class User < ApplicationRecord
+class User < ActiveRecord::Base
   has_many :versions, inverse_of: :user
   has_many :uploads, inverse_of: :user
   has_many :storages, inverse_of: :user
