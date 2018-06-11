@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180522142853) do
+ActiveRecord::Schema.define(version: 20180603183002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(version: 20180522142853) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institutions", force: :cascade do |t|
-    t.integer  "version",                                             null: false
+    t.integer  "version",                                                             null: false
     t.string   "institution_type_name"
     t.string   "facility_code"
     t.string   "institution"
@@ -255,12 +255,16 @@ ActiveRecord::Schema.define(version: 20180522142853) do
     t.integer  "complaints_jobs_by_ope_id_do_not_sum"
     t.integer  "complaints_transcript_by_ope_id_do_not_sum"
     t.integer  "complaints_other_by_ope_id_do_not_sum"
-    t.datetime "created_at",                                          null: false
-    t.datetime "updated_at",                                          null: false
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
     t.string   "f1sysnam"
     t.integer  "f1syscod"
     t.string   "ialias"
     t.string   "approval_status"
+    t.boolean  "school_closing",                                      default: false
+    t.date     "school_closing_on"
+    t.string   "school_closing_message"
+    t.boolean  "stem_offered",                                        default: false
   end
 
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
@@ -270,7 +274,20 @@ ActiveRecord::Schema.define(version: 20180522142853) do
   add_index "institutions", ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
+  add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
+
+  create_table "ipeds_cip_codes", force: :cascade do |t|
+    t.string   "cross",      null: false
+    t.string   "cipcode"
+    t.integer  "ctotalt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "ipeds_cip_codes", ["cipcode"], name: "index_ipeds_cip_codes_on_cipcode", using: :btree
+  add_index "ipeds_cip_codes", ["cross"], name: "index_ipeds_cip_codes_on_cross", using: :btree
+  add_index "ipeds_cip_codes", ["ctotalt"], name: "index_ipeds_cip_codes_on_ctotalt", using: :btree
 
   create_table "ipeds_hds", force: :cascade do |t|
     t.string   "cross",                  null: false
@@ -1080,6 +1097,16 @@ ActiveRecord::Schema.define(version: 20180522142853) do
 
   add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
 
+  create_table "stem_cip_codes", force: :cascade do |t|
+    t.integer  "two_digit_series"
+    t.string   "twentyten_cip_code"
+    t.string   "cip_code_title"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "stem_cip_codes", ["twentyten_cip_code"], name: "index_stem_cip_codes_on_twentyten_cip_code", using: :btree
+
   create_table "storages", force: :cascade do |t|
     t.integer  "user_id",    null: false
     t.string   "csv",        null: false
@@ -1203,6 +1230,62 @@ ActiveRecord::Schema.define(version: 20180522142853) do
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
+
+  create_table "yellow_ribbon_program_sources", force: :cascade do |t|
+    t.string   "facility_code"
+    t.string   "school_name_in_yr_database"
+    t.string   "school_name_in_weams"
+    t.string   "campus"
+    t.string   "street_address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "public_private"
+    t.string   "degree_level"
+    t.string   "division_professional_school"
+    t.integer  "number_of_students"
+    t.decimal  "contribution_amount",           precision: 12, scale: 2
+    t.boolean  "updated_for_2011_2012"
+    t.boolean  "missed_deadline"
+    t.boolean  "ineligible"
+    t.date     "date_agreement_received"
+    t.date     "date_yr_signed_by_yr_official"
+    t.date     "amendment_date"
+    t.boolean  "flight_school"
+    t.date     "date_confirmation_sent"
+    t.boolean  "consolidated_agreement"
+    t.boolean  "new_school"
+    t.boolean  "open_ended_agreement"
+    t.boolean  "modified"
+    t.boolean  "withdrawn"
+    t.string   "sco_name"
+    t.string   "sco_telephone_number"
+    t.string   "sco_email_address"
+    t.string   "sfr_name"
+    t.string   "sfr_telephone_number"
+    t.string   "sfr_email_address"
+    t.string   "initials_yr_processor"
+    t.string   "year_of_yr_participation"
+    t.text     "notes"
+    t.datetime "created_at",                                             null: false
+    t.datetime "updated_at",                                             null: false
+  end
+
+  add_index "yellow_ribbon_program_sources", ["facility_code"], name: "index_yellow_ribbon_program_sources_on_facility_code", using: :btree
+
+  create_table "yellow_ribbon_programs", force: :cascade do |t|
+    t.integer  "version",                                               null: false
+    t.integer  "institution_id",                                        null: false
+    t.string   "degree_level"
+    t.string   "division_professional_school"
+    t.integer  "number_of_students"
+    t.decimal  "contribution_amount",          precision: 12, scale: 2
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
+  end
+
+  add_index "yellow_ribbon_programs", ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id", using: :btree
+  add_index "yellow_ribbon_programs", ["version"], name: "index_yellow_ribbon_programs_on_version", using: :btree
 
   create_table "zipcode_rates", force: :cascade do |t|
     t.string   "zip_code"
