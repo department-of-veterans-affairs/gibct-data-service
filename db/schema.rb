@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180525141749) do
-=======
 ActiveRecord::Schema.define(version: 20180603183002) do
->>>>>>> master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -264,13 +260,10 @@ ActiveRecord::Schema.define(version: 20180603183002) do
     t.string   "f1sysnam"
     t.integer  "f1syscod"
     t.string   "ialias"
-<<<<<<< HEAD
-=======
     t.string   "approval_status"
     t.boolean  "school_closing",                                      default: false
     t.date     "school_closing_on"
     t.string   "school_closing_message"
->>>>>>> master
     t.boolean  "stem_offered",                                        default: false
   end
 
