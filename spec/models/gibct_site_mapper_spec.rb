@@ -1,17 +1,18 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe GibctSiteMapper, type: :model do
   let(:preview_version) { Version.current_preview }
   let(:production_version) { Version.current_production }
-  let(:sitemaps_path) { File.join(Rails.root, 'public', 'sitemap.xml.gz') }
+  let(:sitemaps_path) { Rails.root.join('public', 'sitemap.xml.gz') }
   let(:preview_institution_fc) { '00000001' }
   let(:production_institution_fc) { '00000002' }
 
   before(:each) do
     File.delete(sitemaps_path) if File.exist?(sitemaps_path)
 
-    [:preview, :production].each { |p| create :version, p }
+    %i[preview production].each { |p| create :version, p }
     create :institution, version: preview_version.number, facility_code: preview_institution_fc
     create :institution, version: production_version.number, facility_code: production_institution_fc
 

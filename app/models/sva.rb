@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Sva < ActiveRecord::Base
   include CsvHelper
 

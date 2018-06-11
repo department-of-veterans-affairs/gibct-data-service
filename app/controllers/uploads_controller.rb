@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class UploadsController < ApplicationController
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)

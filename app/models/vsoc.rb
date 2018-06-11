@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class Vsoc < ActiveRecord::Base
   include CsvHelper
 
-  COLS_USED_IN_INSTITUTION = [:vetsuccess_name, :vetsuccess_email].freeze
+  COLS_USED_IN_INSTITUTION = %i[vetsuccess_name vetsuccess_email].freeze
 
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },

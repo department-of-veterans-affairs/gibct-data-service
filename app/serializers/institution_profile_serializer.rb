@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :institution, key: :name
   attribute :facility_code

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Storage, type: :model do
   def generate_csv_upload(name)
     ActionDispatch::Http::UploadedFile.new(
-      tempfile: File.new(Rails.root.join('spec/fixtures', name)),
+      tempfile: File.new(Rails.root.join('spec', 'fixtures', name)),
       filename: File.basename(name),
       type: 'text/csv'
     )
