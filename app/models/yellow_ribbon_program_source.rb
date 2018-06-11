@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class YellowRibbonProgramSource < ActiveRecord::Base
   include CsvHelper
 

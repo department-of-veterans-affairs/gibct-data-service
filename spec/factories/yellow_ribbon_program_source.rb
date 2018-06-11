@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :yellow_ribbon_program_source do
     facility_code { generate :facility_code }
