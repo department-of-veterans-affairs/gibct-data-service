@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Scorecard < ActiveRecord::Base
   include CsvHelper
 
@@ -15,11 +16,11 @@ class Scorecard < ActiveRecord::Base
   validates :c150_4_pooled_supp, numericality: true, allow_blank: true
   validates :graduation_rate_all_students, numericality: true, allow_blank: true
 
-  COLS_USED_IN_INSTITUTION = [
-    :insturl, :pred_degree_awarded, :locale, :undergrad_enrollment,
-    :retention_all_students_ba, :retention_all_students_otb,
-    :graduation_rate_all_students, :salary_all_students,
-    :repayment_rate_all_students, :avg_stu_loan_debt
+  COLS_USED_IN_INSTITUTION = %i[
+    insturl pred_degree_awarded locale undergrad_enrollment
+    retention_all_students_ba retention_all_students_otb
+    graduation_rate_all_students salary_all_students
+    repayment_rate_all_students avg_stu_loan_debt
   ].freeze
 
   CSV_CONVERTER_INFO = {

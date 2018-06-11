@@ -138,7 +138,7 @@ module InstitutionBuilder
         AND accreditations.accreditation_type =
     SQL
 
-    %w(hybrid national regional).each do |acc_type|
+    %w[hybrid national regional].each do |acc_type|
       Institution.connection.update(str + " '#{acc_type}';")
     end
 

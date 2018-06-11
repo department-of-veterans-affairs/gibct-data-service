@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe BooleanConverter do
   subject { described_class }
 
   it 'converts strings to booleans' do
-    %w(TruE T yes ye y 1 on).each do |value|
+    %w[TruE T yes ye y 1 on].each do |value|
       expect(subject.convert(value)).to be_truthy
     end
   end

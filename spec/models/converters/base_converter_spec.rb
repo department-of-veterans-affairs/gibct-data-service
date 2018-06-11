@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe BaseConverter do
@@ -6,7 +7,7 @@ RSpec.describe BaseConverter do
 
   context 'with strings containing a forbidden word or characters' do
     it 'converts a string composed of a single forbidden word to nil' do
-      %w(None NuLl PrIvAcYsUpPrEsSeD .).each do |word|
+      %w[None NuLl PrIvAcYsUpPrEsSeD .].each do |word|
         expect(subject.convert(word)).to be_nil
       end
     end
