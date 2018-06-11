@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Institution < ActiveRecord::Base
   include CsvHelper
 

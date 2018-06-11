@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Common
   module Exceptions
     # Base error class all others inherit from
@@ -23,7 +24,7 @@ module Common
 
       def i18n_field(attribute, options)
         I18n.t("#{i18n_key}.#{attribute}", options)
-      rescue
+      rescue StandardError
         nil
       end
 

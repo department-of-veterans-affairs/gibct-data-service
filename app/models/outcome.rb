@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 class Outcome < ActiveRecord::Base
   include CsvHelper
 
-  COLS_USED_IN_INSTITUTION = [
-    :retention_rate_veteran_ba, :retention_rate_veteran_otb,
-    :persistance_rate_veteran_ba, :persistance_rate_veteran_otb,
-    :graduation_rate_veteran, :transfer_out_rate_veteran
+  COLS_USED_IN_INSTITUTION = %i[
+    retention_rate_veteran_ba retention_rate_veteran_otb
+    persistance_rate_veteran_ba persistance_rate_veteran_otb
+    graduation_rate_veteran transfer_out_rate_veteran
   ].freeze
 
   CSV_CONVERTER_INFO = {

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module ApplicationHelper
   def active_link?(path, method = 'GET')
     begin
@@ -15,7 +16,7 @@ module ApplicationHelper
   end
 
   def link_if_not_active(body, path, method = 'GET')
-    active_link?(path, method) ? safe_join(["<a>#{body}</a>".html_safe]) : link_to(body, path)
+    active_link?(path, method) ? content_tag(:a, body) : link_to(body, path)
   end
 
   # Wraps an array of error messages in an html list with a label (optional) above it

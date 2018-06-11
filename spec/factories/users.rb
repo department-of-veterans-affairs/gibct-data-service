@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :user do
     email { "#{Faker::Name.last_name}.#{Faker::Name.first_name}@va.gov" }

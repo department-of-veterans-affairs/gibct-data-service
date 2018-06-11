@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class CalculatorConstant < ActiveRecord::Base
   include CsvHelper
 

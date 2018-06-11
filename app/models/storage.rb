@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Storage < ActiveRecord::Base
   attr_accessor :upload_file
 

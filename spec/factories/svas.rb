@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :sva do
     sequence :student_veteran_link do |n|

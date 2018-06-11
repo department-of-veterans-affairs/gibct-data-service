@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class CsvTypeError < StandardError
   attr_reader :csv_type
 

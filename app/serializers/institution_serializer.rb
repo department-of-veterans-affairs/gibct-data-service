@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 class InstitutionSerializer < ActiveModel::Serializer
-  SELECT_FIELDS = %i(
+  SELECT_FIELDS = %i[
     id institution facility_code institution_type_name city state zip country
     locale gibill caution_flag caution_flag_reason created_at updated_at
     bah tuition_in_state tuition_out_of_state books insturl cross
     student_veteran yr poe eight_keys
-  ).freeze
+  ].freeze
 
   attribute :institution, key: :name
   attribute :facility_code
