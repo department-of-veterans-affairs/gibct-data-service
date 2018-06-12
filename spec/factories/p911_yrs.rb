@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :p911_yr do
     facility_code { generate :facility_code }

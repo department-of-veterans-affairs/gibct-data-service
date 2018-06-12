@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'common/exceptions/serializable_error'
 require 'common/exceptions/base_error'
 require 'common/exceptions/internal/filter_not_allowed'

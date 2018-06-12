@@ -63,7 +63,7 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'rubocop', '~> 0.46.0'
+  gem 'rubocop', '~> 0.52.1', require: false
   gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
 

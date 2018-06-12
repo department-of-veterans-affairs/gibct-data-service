@@ -14,10 +14,11 @@
 # Whether or not a complaint is counted, it must have (1) a facility_code, (2) be closed, and (3) not be invalid.
 
 # frozen_string_literal: true
+
 class Complaint < ActiveRecord::Base
   include CsvHelper
 
-  STATUSES = %w(active closed pending reserved).freeze
+  STATUSES = %w[active closed pending reserved].freeze
   CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
 
   # COMPLAINT_COLUMNS contain substrings in each complaint that identify the type of complaint. There may

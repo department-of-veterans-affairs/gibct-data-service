@@ -1,6 +1,9 @@
 # frozen_string_literal: true
+
 class IpedsHd < ActiveRecord::Base
   include CsvHelper
+
+  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod ialias].freeze
 
   CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },

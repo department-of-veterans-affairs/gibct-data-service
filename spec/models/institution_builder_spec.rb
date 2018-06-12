@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
@@ -454,7 +455,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'copies columns used by institutions' do
-        expect(institution.vet_tuition_policy_url).to eq(ipeds_hd.vet_tuition_policy_url)
+        IpedsHd::COLS_USED_IN_INSTITUTION.each do |column|
+          expect(ipeds_hd[column]).to eq(institution[column])
+        end
       end
     end
 
@@ -739,7 +742,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sums complaints by facility_code' do
         InstitutionBuilder.run(user)
 
-        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |column|
+        Complaint::FAC_CODE_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
         end
       end
@@ -747,7 +750,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sums complaints by ope6' do
         InstitutionBuilder.run(user)
 
-        Complaint::OPE6_ROLL_UP_SUMS.keys.each do |column|
+        Complaint::OPE6_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
         end
       end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :institution, key: :name
   attribute :facility_code
@@ -13,6 +14,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :correspondence
   attribute :ope
   attribute :ope6
+  attribute :f1sysnam, key: :school_system_name
+  attribute :f1syscod, key: :school_system_code
+  attribute :ialias, key: :alias
   attribute :highest_degree
   attribute :locale_type
   attribute :gibill, key: :student_count

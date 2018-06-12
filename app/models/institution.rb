@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Institution < ActiveRecord::Base
   include CsvHelper
 
@@ -37,6 +38,10 @@ class Institution < ActiveRecord::Base
     'bah' => { column: :bah, converter: NumberConverter },
     'cross' => { column: :cross, converter: CrossConverter },
     'ope' => { column: :ope, converter: OpeConverter },
+    'ope6' => { column: :ope6, converter: Ope6Converter },
+    'school_system_name' => { column: :f1sysnam, converter: BaseConverter },
+    'school_system_code' => { column: :f1syscod, converter: NumberConverter },
+    'alias' => { column: :ialias, converter: BaseConverter },
     'insturl' => { column: :insturl, converter: BaseConverter },
     'vet_tuition_policy_url' => { column: :vet_tuition_policy_url, converter: BaseConverter },
     'pred_degree_awarded' => { column: :pred_degree_awarded, converter: NumberConverter },

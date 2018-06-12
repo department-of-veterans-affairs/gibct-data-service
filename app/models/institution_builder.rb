@@ -138,7 +138,7 @@ module InstitutionBuilder
         AND accreditations.accreditation_type =
     SQL
 
-    %w(hybrid national regional).each do |acc_type|
+    %w[hybrid national regional].each do |acc_type|
       Institution.connection.update(str + " '#{acc_type}';")
     end
 
@@ -285,7 +285,7 @@ module InstitutionBuilder
 
   def self.add_ipeds_hd(version_number)
     str = <<-SQL
-      UPDATE institutions SET vet_tuition_policy_url = ipeds_hds.vet_tuition_policy_url
+      UPDATE institutions SET #{columns_for_update(IpedsHd)}
       FROM ipeds_hds
       WHERE institutions.cross = ipeds_hds.cross
         AND institutions.version = #{version_number};

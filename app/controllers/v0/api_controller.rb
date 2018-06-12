@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V0
   class ApiController < ApplicationController
     skip_before_action :authenticate_user!
@@ -40,9 +41,7 @@ module V0
           Common::Exceptions::InternalServerError.new(exception)
         end
 
-      if va_exception.is_a?(Common::Exceptions::Unauthorized)
-        headers['WWW-Authenticate'] = 'Token realm="Application"'
-      end
+      headers['WWW-Authenticate'] = 'Token realm="Application"' if va_exception.is_a?(Common::Exceptions::Unauthorized)
       render json: { errors: va_exception.errors }, status: va_exception.status_code
     end
 
