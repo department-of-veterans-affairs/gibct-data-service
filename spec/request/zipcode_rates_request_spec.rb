@@ -4,10 +4,7 @@ require 'rails_helper'
 require 'support/controller_macros'
 require 'support/devise'
 
-RSpec.describe 'institutions', type: :request do
-  let(:valid_zip_code) { '12345' }
-  let(:invalid_zip_code) { '99999' }
-
+RSpec.describe 'zipcode_rates', type: :request do
   context '#show for valid zip_code' do
     it 'returns the zipcodes for ' do
       create(:zipcode_rate, zip_code: '12345')
