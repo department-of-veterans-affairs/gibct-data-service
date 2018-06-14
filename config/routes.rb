@@ -26,5 +26,7 @@ Rails.application.routes.draw do
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection
     end
+
+    resources :zipcode_rates, only: :show
   end
 end
