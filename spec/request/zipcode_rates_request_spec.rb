@@ -14,13 +14,11 @@ RSpec.describe 'institutions', type: :request do
       get '/v0/zipcode_rates/12345'
       expect(response).to have_http_status(:success)
       expect(JSON.parse(response.body)['data']['attributes']).to eq(
-        {
-          "zip_code"=>"12345",
-          "mha_code"=>"123",
-          "mha_name"=>"Washington, DC",
-          "mha_rate"=>1111.0,
-          "mha_rate_grandfathered"=>1000.0
-        }
+        'zip_code' => '12345',
+        'mha_code' => '123',
+        'mha_name' => 'Washington, DC',
+        'mha_rate' => 1111.0,
+        'mha_rate_grandfathered' => 1000.0
       )
     end
   end
@@ -30,12 +28,10 @@ RSpec.describe 'institutions', type: :request do
       get '/v0/zipcode_rates/12345'
       expect(response).to have_http_status(:not_found)
       expect(JSON.parse(response.body)['errors'].first).to eq(
-        {
-          "title"=>"Record not found",
-          "detail"=>"The record identified by 12345 could not be found",
-          "code"=>"404",
-          "status"=>"404"
-        }
+        'title' => 'Record not found',
+        'detail' => 'The record identified by 12345 could not be found',
+        'code' => '404',
+        'status' => '404'
       )
     end
   end
