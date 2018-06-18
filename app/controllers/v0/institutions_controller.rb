@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V0
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
@@ -44,11 +45,11 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
-        %i(state country type).each do |k|
+        %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
-        %i(category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success).each do |k|
+        %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
+           eight_keys_to_veteran_success].each do |k|
           query[k].try(:downcase!)
         end
       end

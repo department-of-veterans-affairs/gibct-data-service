@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class BaseConverter
   def self.convert(value)
     return value if value.nil? || !value.is_a?(String)

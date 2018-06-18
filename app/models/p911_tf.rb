@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class P911Tf < ActiveRecord::Base
   include CsvHelper
 
-  COLS_USED_IN_INSTITUTION = [:p911_recipients, :p911_tuition_fees].freeze
+  COLS_USED_IN_INSTITUTION = %i[p911_recipients p911_tuition_fees].freeze
 
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },

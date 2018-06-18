@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
@@ -40,7 +41,7 @@ RSpec.describe Accreditation, type: :model do
     end
 
     it 'assigns the accreditation_type based on agency name' do
-      described_class::ACCREDITATIONS.keys.each do |type|
+      described_class::ACCREDITATIONS.each_key do |type|
         described_class::ACCREDITATIONS[type]
           .map { |regexp| "THE #{regexp.to_s.scan(/:(.*)\)/).flatten.first.upcase} ONE" }
           .each do |name|
