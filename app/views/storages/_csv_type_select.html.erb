@@ -1,6 +1,6 @@
 <div class="form-group">
   <%= f.label(:csv_file_type) %>
-  <%= f.select(:csv_type, options_for_select(InstitutionBuilder::TABLES.map(&:name)),
+  <%= f.select(:csv_type, options_for_select(Upload::TABLES.map(&:name)),
     { include_blank: "Select Csv File Type" },
     { class: "form-control", required: true }) %>
 </div>

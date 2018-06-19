@@ -3,6 +3,8 @@
 class Upload < ActiveRecord::Base
   attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
 
+  TABLES = ([ZipcodeRate] + InstitutionBuilder::TABLES).freeze
+
   belongs_to :user, inverse_of: :versions
 
   validates_associated :user
@@ -28,7 +30,7 @@ class Upload < ActiveRecord::Base
   end
 
   def csv_type_check?
-    return true if InstitutionBuilder::TABLES.map(&:name).push('Institution').include?(csv_type)
+    return true if TABLES.map(&:name).push('Institution').include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")

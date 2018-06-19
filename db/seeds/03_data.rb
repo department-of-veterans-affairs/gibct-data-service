@@ -5,6 +5,8 @@ def seed_table(klass, user, options = {})
 
   puts "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
 
+  binding.pry if csv_name == 'zipcode_rate.csv'
+
   uf = ActionDispatch::Http::UploadedFile.new(
     tempfile: File.new(Rails.root.join(csv_path, csv_name)),
     filename: csv_name,
@@ -60,6 +62,7 @@ seed_table(IpedsIcPy, user)
 seed_table(IpedsHd, user)
 seed_table(Complaint, user, skip_lines: 7)
 seed_table(Outcome, user)
+seed_table(ZipcodeRate, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)

@@ -47,7 +47,7 @@ RSpec.describe DashboardsController, type: :controller do
     before(:each) do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      InstitutionBuilder::TABLES.each do |klass|
+      Upload::TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe DashboardsController, type: :controller do
     before(:each) do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      InstitutionBuilder::TABLES.each do |klass|
+      Upload::TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
 
