@@ -5,13 +5,13 @@ require 'fileutils'
 # rubocop:disable Metrics/BlockLength
 namespace :db do
   desc 'Dumps the database to backups'
-  task dump: :environment do
+  task :dump, [:file_name] => :environment do |_task, args|
     dump_fmt = 'c' # or 'p', 't', 'd'
     dump_sfx = suffix_for_format dump_fmt
     backup_dir = backup_directory true
     cmd = nil
     with_config do |_app, host, db, _user|
-      file_name = Time.current.strftime('%Y%m%d%H%M%S') + '_' + db + '.' + dump_sfx
+      file_name = (args[:file_name] || "#{Time.current.strftime('%Y%m%d%H%M%S')}_#{db}") + ".#{dump_sfx}"
       cmd = "pg_dump -F #{dump_fmt} -v -h #{host} -d #{db} -f #{backup_dir}/#{file_name}"
     end
     puts cmd
