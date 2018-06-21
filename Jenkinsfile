@@ -31,7 +31,7 @@ pipeline {
     }
 
     stage('Deploy dev and staging') {
-      when { branch 'pv-ssoe-integration' }
+      when { branch 'master' }
 
       steps {
         // hack to get the commit hash, some plugin is swallowing git variables and I can't figure out which one
