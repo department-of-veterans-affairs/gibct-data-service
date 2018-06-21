@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
@@ -193,7 +194,7 @@ RSpec.describe Weam, type: :model do
 
   describe 'derive_type' do
     it 'knows its type' do
-      [:flight, :foreign, :correspondence, :ojt, :public, :for_profit, :private].each do |type|
+      %i[flight foreign correspondence ojt public for_profit private].each do |type|
         weam = build :weam, type
         expect(weam.institution_type_name).to eq(type.to_s.tr('_', ' ').upcase)
       end

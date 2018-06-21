@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class StoragesController < ApplicationController
   def index
     @storages = Storage.all.order(:csv_type)

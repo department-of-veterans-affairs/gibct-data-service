@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Institution < ActiveRecord::Base
   include CsvHelper
 
@@ -151,6 +152,8 @@ class Institution < ActiveRecord::Base
   validates :facility_code, uniqueness: true, presence: true
   validates :version, :institution, :country, presence: true
   validates :institution_type_name, inclusion: { in: TYPES }
+
+  has_many :yellow_ribbon_programs, dependent: :destroy
 
   self.per_page = 10
 

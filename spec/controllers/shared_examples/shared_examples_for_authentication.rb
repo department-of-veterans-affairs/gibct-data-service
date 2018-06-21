@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.shared_examples 'an authenticating controller' do |action, destination|
   describe 'when being visited' do
     context 'and not authenticated' do

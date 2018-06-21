@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
@@ -741,7 +742,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sums complaints by facility_code' do
         InstitutionBuilder.run(user)
 
-        Complaint::FAC_CODE_ROLL_UP_SUMS.keys.each do |column|
+        Complaint::FAC_CODE_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
         end
       end
@@ -749,7 +750,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sums complaints by ope6' do
         InstitutionBuilder.run(user)
 
-        Complaint::OPE6_ROLL_UP_SUMS.keys.each do |column|
+        Complaint::OPE6_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
         end
       end
@@ -809,6 +810,29 @@ RSpec.describe InstitutionBuilder, type: :model do
           InstitutionBuilder.run(user)
           expect(institution.stem_offered).to be(false)
         end
+      end
+    end
+
+    describe 'when adding Yellow Ribbon Program data' do
+      let(:institution) { institutions.find_by(facility_code: yellow_ribbon_program_source.facility_code) }
+      let(:yellow_ribbon_program_source) { YellowRibbonProgramSource.first }
+
+      before(:each) do
+        create :yellow_ribbon_program_source, :institution_builder
+        InstitutionBuilder.run(user)
+      end
+
+      it 'generates a yellow ribbon program' do
+        expect(institution.yellow_ribbon_programs.length).to eq(1)
+      end
+
+      it 'properly copies yellow ribbon program source data' do
+        yrp = institution.yellow_ribbon_programs.first
+
+        expect(yrp.degree_level).to eq(yellow_ribbon_program_source.degree_level)
+        expect(yrp.division_professional_school).to eq(yellow_ribbon_program_source.division_professional_school)
+        expect(yrp.number_of_students).to eq(yellow_ribbon_program_source.number_of_students)
+        expect(yrp.contribution_amount).to eq(yellow_ribbon_program_source.contribution_amount)
       end
     end
   end

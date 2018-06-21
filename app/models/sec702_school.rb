@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Sec702School < ActiveRecord::Base
   include CsvHelper
 

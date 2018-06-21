@@ -162,6 +162,24 @@
                 "other_by_ope_id_do_not_sum"
               ]
             },
+            "yellow_ribbon_programs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "division_professional_school": { "type": ["null", "string"] },
+                  "number_of_students": { "type": ["null", "integer"] },
+                  "degree_level": { "type": ["null", "string"] },
+                  "contribution_amount": { "type": ["null", "number"] },
+                  "required": [
+                    "division_professional_school",
+                    "number_of_students",
+                    "degree_level",
+                    "contribution_amount"
+                  ]
+                }
+              }
+            },
             "created_at": { "type": "string" },
             "updated_at": { "type": "string" }
           },
