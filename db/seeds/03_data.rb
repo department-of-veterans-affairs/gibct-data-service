@@ -60,6 +60,8 @@ seed_table(IpedsIcPy, user)
 seed_table(IpedsHd, user)
 seed_table(Complaint, user, skip_lines: 7)
 seed_table(Outcome, user)
+seed_table(IpedsCipCode, user)
+seed_table(StemCipCode, user)
 seed_table(YellowRibbonProgramSource, user)
 
 puts 'Building Institutions'

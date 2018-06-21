@@ -63,3 +63,7 @@ pickle-email-*.html
 
 # Ignore application configuration
 /config/application.yml
+
+# Ignore vim swp files
+*.swp
+*.swo

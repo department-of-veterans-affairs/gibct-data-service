@@ -26,6 +26,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :student_veteran_link
   attribute :poe
   attribute :eight_keys
+  attribute :stem_offered
   attribute :dodmou
   attribute :sec_702
   attribute :vetsuccess_name, key: :vet_success_name

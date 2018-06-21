@@ -122,3 +122,13 @@ YellowRibbonProgramSource:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+IpedsCipCode:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+StemCipCode:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"

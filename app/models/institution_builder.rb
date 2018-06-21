@@ -5,7 +5,7 @@ module InstitutionBuilder
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
-    YellowRibbonProgramSource
+    IpedsCipCode, StemCipCode, YellowRibbonProgramSource
   ].freeze
 
   def self.columns_for_update(klass)
@@ -34,6 +34,7 @@ module InstitutionBuilder
     add_hcm(version_number)
     add_complaint(version_number)
     add_outcome(version_number)
+    add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
   end
 
@@ -399,6 +400,20 @@ module InstitutionBuilder
       UPDATE institutions SET #{columns_for_update(Outcome)}
       FROM outcomes
       WHERE institutions.facility_code = outcomes.facility_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_stem_offered(version_number)
+    str = <<-SQL
+      UPDATE institutions SET stem_offered=true
+      FROM ipeds_cip_codes, stem_cip_codes
+      WHERE institutions.cross = ipeds_cip_codes.cross
+        AND institutions.cross IS NOT NULL
+        AND ipeds_cip_codes.ctotalt > 0
+        AND ipeds_cip_codes.cipcode = stem_cip_codes.twentyten_cip_code
         AND institutions.version = #{version_number};
     SQL
 
