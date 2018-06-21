@@ -771,5 +771,28 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding Yellow Ribbon Program data' do
+      let(:institution) { institutions.find_by(facility_code: yellow_ribbon_program_source.facility_code) }
+      let(:yellow_ribbon_program_source) { YellowRibbonProgramSource.first }
+
+      before(:each) do
+        create :yellow_ribbon_program_source, :institution_builder
+        InstitutionBuilder.run(user)
+      end
+
+      it 'generates a yellow ribbon program' do
+        expect(institution.yellow_ribbon_programs.length).to eq(1)
+      end
+
+      it 'properly copies yellow ribbon program source data' do
+        yrp = institution.yellow_ribbon_programs.first
+
+        expect(yrp.degree_level).to eq(yellow_ribbon_program_source.degree_level)
+        expect(yrp.division_professional_school).to eq(yellow_ribbon_program_source.division_professional_school)
+        expect(yrp.number_of_students).to eq(yellow_ribbon_program_source.number_of_students)
+        expect(yrp.contribution_amount).to eq(yellow_ribbon_program_source.contribution_amount)
+      end
+    end
   end
 end

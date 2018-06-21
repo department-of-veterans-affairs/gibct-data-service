@@ -62,6 +62,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :caution_flag
   attribute :caution_flag_reason
   attribute(:complaints) { object.complaints }
+  attribute :yellow_ribbon_programs
   attribute :created_at
   attribute :updated_at
 
@@ -69,4 +70,10 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   link(:scorecard) { object.scorecard_link }
   link(:vet_website_link) { object.vet_website_link }
   link(:self) { v0_institution_url(object.facility_code) }
+
+  def yellow_ribbon_programs
+    object.yellow_ribbon_programs.map do |yrp|
+      YellowRibbonProgramSerializer.new(yrp)
+    end
+  end
 end
