@@ -27,6 +27,10 @@ services:
       GIBCT_URL: https://www.example.com
       ADMIN_EMAIL: 'something@example.gov'
       ADMIN_PW: 'something...'
+      SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
+      SAML_CALLBACK_URL: https://www.example.com/saml/auth/callback
+      SAML_IDP_SSO_URL: https://www.example.com/idp/sso
+      SAML_ISSUER: GIDS
     depends_on:
       - postgres
     links:

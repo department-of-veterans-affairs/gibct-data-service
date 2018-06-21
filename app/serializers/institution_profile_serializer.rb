@@ -26,6 +26,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :student_veteran_link
   attribute :poe
   attribute :eight_keys
+  attribute :stem_offered
   attribute :dodmou
   attribute :sec_702
   attribute :vetsuccess_name, key: :vet_success_name
@@ -65,6 +66,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :school_closing
   attribute :school_closing_on
   attribute :school_closing_message
+  attribute :yellow_ribbon_programs
   attribute :created_at
   attribute :updated_at
 
@@ -72,4 +74,10 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   link(:scorecard) { object.scorecard_link }
   link(:vet_website_link) { object.vet_website_link }
   link(:self) { v0_institution_url(object.facility_code) }
+
+  def yellow_ribbon_programs
+    object.yellow_ribbon_programs.map do |yrp|
+      YellowRibbonProgramSerializer.new(yrp)
+    end
+  end
 end

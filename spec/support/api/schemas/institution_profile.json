@@ -65,6 +65,7 @@
             "student_veteran_link": { "type": ["null", "string"] },
             "poe": { "type": ["null", "boolean"] },
             "eight_keys": { "type": ["null", "boolean"] },
+            "stem_offered": { "type": ["null", "boolean"] },
             "dodmou": { "type": ["null", "boolean"] },
             "sec_702": { "type": ["null", "boolean"] },
             "vet_success_name": { "type": ["null", "string"] },
@@ -164,6 +165,24 @@
                 "other_by_ope_id_do_not_sum"
               ]
             },
+            "yellow_ribbon_programs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "division_professional_school": { "type": ["null", "string"] },
+                  "number_of_students": { "type": ["null", "integer"] },
+                  "degree_level": { "type": ["null", "string"] },
+                  "contribution_amount": { "type": ["null", "number"] },
+                  "required": [
+                    "division_professional_school",
+                    "number_of_students",
+                    "degree_level",
+                    "contribution_amount"
+                  ]
+                }
+              }
+            },
             "created_at": { "type": "string" },
             "updated_at": { "type": "string" }
           },
@@ -188,6 +207,7 @@
             "student_veteran_link",
             "poe",
             "eight_keys",
+            "stem_offered",
             "dodmou",
             "sec_702",
             "vet_success_name",

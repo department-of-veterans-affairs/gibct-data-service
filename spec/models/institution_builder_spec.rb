@@ -772,6 +772,70 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'calculating stem_offered' do
+      let(:stem_cip_code) { StemCipCode.first }
+      let(:ipeds_cip_code) { IpedsCipCode.first }
+      let(:institution) { institutions.find_by(cross: ipeds_cip_code.cross) }
+
+      context 'with valid stem reference' do
+        it 'updates stem_offered' do
+          create :ipeds_cip_code, :institution_builder
+          create :stem_cip_code
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(true)
+        end
+      end
+
+      context 'without a cross record match to an ipeds cip code' do
+        let(:institution) { Institution.first }
+
+        it 'does not set stem_offered' do
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(false)
+        end
+      end
+
+      context 'when ctotalt on ipeds record indicates no stem programs available' do
+        it 'does not set stem_offered' do
+          create :ipeds_cip_code, :institution_builder, ctotalt: 0
+          create :stem_cip_code
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(false)
+        end
+      end
+
+      context 'when there is no matching stem cip code' do
+        it 'does not set stem_offered' do
+          create :ipeds_cip_code, :institution_builder, cipcode: 0.3
+          InstitutionBuilder.run(user)
+          expect(institution.stem_offered).to be(false)
+        end
+      end
+    end
+
+    describe 'when adding Yellow Ribbon Program data' do
+      let(:institution) { institutions.find_by(facility_code: yellow_ribbon_program_source.facility_code) }
+      let(:yellow_ribbon_program_source) { YellowRibbonProgramSource.first }
+
+      before(:each) do
+        create :yellow_ribbon_program_source, :institution_builder
+        InstitutionBuilder.run(user)
+      end
+
+      it 'generates a yellow ribbon program' do
+        expect(institution.yellow_ribbon_programs.length).to eq(1)
+      end
+
+      it 'properly copies yellow ribbon program source data' do
+        yrp = institution.yellow_ribbon_programs.first
+
+        expect(yrp.degree_level).to eq(yellow_ribbon_program_source.degree_level)
+        expect(yrp.division_professional_school).to eq(yellow_ribbon_program_source.division_professional_school)
+        expect(yrp.number_of_students).to eq(yellow_ribbon_program_source.number_of_students)
+        expect(yrp.contribution_amount).to eq(yellow_ribbon_program_source.contribution_amount)
+      end
+    end
+    
     describe 'when adding School Closure data' do
       let(:institution) { institutions.find_by(facility_code: school_closure.facility_code) }
       let(:school_closure) { SchoolClosure.first }
