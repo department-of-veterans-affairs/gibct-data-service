@@ -1,29 +1,4 @@
-def seed_table(klass, user, options = {})
-  csv_name = "#{klass.name.underscore}.csv"
-  csv_type = klass.name
-  csv_path = 'sample_csvs'
-
-  puts "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
-
-  binding.pry if csv_name == 'zipcode_rate.csv'
-
-  uf = ActionDispatch::Http::UploadedFile.new(
-    tempfile: File.new(Rails.root.join(csv_path, csv_name)),
-    filename: csv_name,
-    type: 'text/csv'
-  )
-
-  upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-  klass.load("#{csv_path}/#{csv_name}", options)
-  upload.update(ok: true)
-
-  puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
-  uf.rewind
-
-  Storage.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-
-  puts 'Done!'
-end
+require 'seed_utils'
 
 user = User.first
 
@@ -40,29 +15,28 @@ puts 'Deleting old constants'
 CalculatorConstant.delete_all
 
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
-seed_table(CalculatorConstant, user)
-seed_table(Weam, user)
-seed_table(Crosswalk, user)
-seed_table(EightKey, user, skip_lines: 1)
-seed_table(Accreditation, user)
-seed_table(ArfGiBill, user)
-seed_table(Scorecard, user)
-seed_table(P911Tf, user)
-seed_table(P911Yr, user)
-seed_table(Vsoc, user)
-seed_table(Sva, user)
-seed_table(Sec702, user)
-seed_table(Sec702School, user)
-seed_table(Mou, user, skip_lines: 1)
-seed_table(Hcm, user, skip_lines: 2)
-seed_table(Settlement, user)
-seed_table(IpedsIc, user)
-seed_table(IpedsIcAy, user)
-seed_table(IpedsIcPy, user)
-seed_table(IpedsHd, user)
-seed_table(Complaint, user, skip_lines: 7)
-seed_table(Outcome, user)
-seed_table(ZipcodeRate, user)
+SeedUtils.seed_table(CalculatorConstant, user)
+SeedUtils.seed_table(Weam, user)
+SeedUtils.seed_table(Crosswalk, user)
+SeedUtils.seed_table(EightKey, user, skip_lines: 1)
+SeedUtils.seed_table(Accreditation, user)
+SeedUtils.seed_table(ArfGiBill, user)
+SeedUtils.seed_table(Scorecard, user)
+SeedUtils.seed_table(P911Tf, user)
+SeedUtils.seed_table(P911Yr, user)
+SeedUtils.seed_table(Vsoc, user)
+SeedUtils.seed_table(Sva, user)
+SeedUtils.seed_table(Sec702, user)
+SeedUtils.seed_table(Sec702School, user)
+SeedUtils.seed_table(Mou, user, skip_lines: 1)
+SeedUtils.seed_table(Hcm, user, skip_lines: 2)
+SeedUtils.seed_table(Settlement, user)
+SeedUtils.seed_table(IpedsIc, user)
+SeedUtils.seed_table(IpedsIcAy, user)
+SeedUtils.seed_table(IpedsIcPy, user)
+SeedUtils.seed_table(IpedsHd, user)
+SeedUtils.seed_table(Complaint, user, skip_lines: 7)
+SeedUtils.seed_table(Outcome, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)
