@@ -47,6 +47,13 @@ The following environment variables need to be configured for **GIDS**:
 3. `ADMIN_PW`: This is the password for the email (above) you will use.
 4. `LINK_HOST`: This will be `http://localhost:3000`
 
+The following are required, but related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
+
+5. `SAML_IDP_METADATA_FILE`: contains certificates and endpoint information provided by the SSOe team.
+6. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
+7. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
+8. `SAML_ISSUER`: shared between the GIDS and SSOe team.
+
 To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
 
 ```
@@ -55,6 +62,11 @@ ADMIN_PW: 'something...'
 SECRET_KEY_BASE: 'something ...'
 LINK_HOST: 'http://localhost:3000'
 GIBCT_URL: 'http://localhost:3002/gi-bill-comparison-tool'
+
+SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
+SAML_CALLBACK_URL: http://localhost:3000/saml/auth/callback
+SAML_IDP_SSO_URL: https://example.com/idp/sso
+SAML_ISSUER: GIDS
 ```
 
 You can create additional users by adding them to the `/db/seeds/01_users.rb` file:
