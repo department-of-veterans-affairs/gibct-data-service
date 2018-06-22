@@ -1,7 +1,7 @@
 {
   "name": "gibct-data-service",
   "description": "Data service to build GIBCT database from diverse sources.",
-  "scripts": { "postdeploy":"bundle exec rake db:migrate db:seed" },
+  "scripts": { "postdeploy":"bundle exec rake db:migrate db:restore['jenkins_db_backup']" },
   "env": {
   	"SECRET_KEY_BASE": {
       "description": "A secret key for verifying the integrity of signed cookies.",
