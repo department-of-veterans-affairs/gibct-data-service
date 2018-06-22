@@ -10,8 +10,8 @@ RSpec.describe Version, type: :model do
     let(:after_preview_date) { Faker::Time.between(preview_date + 1.day, preview_date + 2.days).utc }
     let(:before_preview_date) { Faker::Time.between(preview_date - 2.days, preview_date - 1.day).utc }
     # TODO: this is brittle, Version.buildable_state should do a proper check:
-    let(:upload_dates_after) { [after_preview_date] * 25 }
-    let(:upload_dates_before) { [before_preview_date] * 25 }
+    let(:upload_dates_after) { [after_preview_date] * 26 }
+    let(:upload_dates_before) { [before_preview_date] * 26 }
 
     it 'returns false if upload dates is less than institution table count' do
       allow(Upload).to receive_message_chain(:last_uploads, :to_a, :map)

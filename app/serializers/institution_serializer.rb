@@ -34,6 +34,8 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :eight_keys
   attribute :stem_offered
 
+  attribute :school_closing
+
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:self) { v0_institution_url(object.facility_code) }

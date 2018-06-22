@@ -101,6 +101,9 @@
             "accreditation_status": { "type": ["null", "string"] },
             "caution_flag": { "type": ["null", "boolean"] },
             "caution_flag_reason": { "type": ["null", "string"] },
+            "school_closing": { "type": ["null", "boolean"] },
+            "school_closing_on": { "type": ["null", "string"] },
+            "school_closing_message": { "type": ["null", "string"] },
             "complaints": {
               "type": "object",
               "properties": {
@@ -242,6 +245,9 @@
             "caution_flag",
             "caution_flag_reason",
             "complaints",
+            "school_closing",
+            "school_closing_on",
+            "school_closing_message",
             "created_at",
             "updated_at"
           ]

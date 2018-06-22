@@ -5,7 +5,7 @@ module InstitutionBuilder
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
-    IpedsCipCode, StemCipCode, YellowRibbonProgramSource
+    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure
   ].freeze
 
   def self.columns_for_update(klass)
@@ -36,6 +36,7 @@ module InstitutionBuilder
     add_outcome(version_number)
     add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
+    add_school_closure(version_number)
   end
 
   def self.run(user)
@@ -435,5 +436,16 @@ module InstitutionBuilder
 
     sql = Institution.send(:sanitize_sql, [str, version_number])
     Institution.connection.execute(sql)
+  end
+
+  def self.add_school_closure(version_number)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(SchoolClosure)}
+      FROM school_closures
+      WHERE institutions.facility_code = school_closures.facility_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
   end
 end

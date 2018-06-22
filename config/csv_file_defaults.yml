@@ -132,3 +132,8 @@ StemCipCode:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"
+
+SchoolClosure:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"

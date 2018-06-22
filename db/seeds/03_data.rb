@@ -63,6 +63,7 @@ seed_table(Outcome, user)
 seed_table(IpedsCipCode, user)
 seed_table(StemCipCode, user)
 seed_table(YellowRibbonProgramSource, user)
+seed_table(SchoolClosure, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)

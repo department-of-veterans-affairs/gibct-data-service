@@ -835,5 +835,21 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(yrp.contribution_amount).to eq(yellow_ribbon_program_source.contribution_amount)
       end
     end
+    
+    describe 'when adding School Closure data' do
+      let(:institution) { institutions.find_by(facility_code: school_closure.facility_code) }
+      let(:school_closure) { SchoolClosure.first }
+
+      before(:each) do
+        create :school_closure, :institution_builder
+        InstitutionBuilder.run(user)
+      end
+
+      it 'copies columns used by institutions' do
+        SchoolClosure::COLS_USED_IN_INSTITUTION.each do |column|
+          expect(school_closure[column]).to eq(institution[column])
+        end
+      end
+    end
   end
 end

@@ -65,6 +65,7 @@
               "yr": { "type": ["null", "boolean"] },
               "poe": { "type": ["null", "boolean"] },
               "eight_keys": { "type": ["null", "boolean"] },
+              "school_closing": { "type": ["null", "boolean"] },
               "stem_offered": { "type": ["null", "boolean"] }
             },
             "required": [
@@ -90,6 +91,7 @@
               "yr",
               "poe",
               "eight_keys",
+              "school_closing",
               "stem_offered"
             ]
           },
