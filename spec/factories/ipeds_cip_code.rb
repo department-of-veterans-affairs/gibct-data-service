@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :ipeds_cip_code do
     cross { generate :cross }

@@ -835,7 +835,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(yrp.contribution_amount).to eq(yellow_ribbon_program_source.contribution_amount)
       end
     end
-    
+
     describe 'when adding School Closure data' do
       let(:institution) { institutions.find_by(facility_code: school_closure.facility_code) }
       let(:school_closure) { SchoolClosure.first }
