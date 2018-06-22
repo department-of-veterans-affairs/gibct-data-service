@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class SchoolClosure < ActiveRecord::Base
   include CsvHelper
 
-  COLS_USED_IN_INSTITUTION = [:school_closing, :school_closing_on, :school_closing_message].freeze
+  COLS_USED_IN_INSTITUTION = %i[school_closing school_closing_on school_closing_message].freeze
 
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
@@ -19,9 +20,7 @@ class SchoolClosure < ActiveRecord::Base
   after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
-    if school_closing_date
-      self.school_closing_on = Date.strptime(school_closing_date, '%m/%d/%y')
-    end
+    self.school_closing_on = Date.strptime(school_closing_date, '%m/%d/%y') if school_closing_date
   rescue ArgumentError
     nil
   end
