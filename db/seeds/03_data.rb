@@ -37,6 +37,10 @@ SeedUtils.seed_table_with_upload(IpedsIcPy, user)
 SeedUtils.seed_table_with_upload(IpedsHd, user)
 SeedUtils.seed_table_with_upload(Complaint, user, skip_lines: 7)
 SeedUtils.seed_table_with_upload(Outcome, user)
+SeedUtils.seed_table_with_upload(IpedsCipCode, user)
+SeedUtils.seed_table_with_upload(StemCipCode, user)
+SeedUtils.seed_table_with_upload(YellowRibbonProgramSource, user)
+SeedUtils.seed_table_with_upload(SchoolClosure, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)

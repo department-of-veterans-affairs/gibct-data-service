@@ -26,6 +26,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bcrypt', '~> 3.1.7'
 gem 'devise', '~> 3.5', '>= 3.5.6'
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
+gem 'ruby-saml'
 
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
 gem 'activerecord-session_store', '~> 1.0'

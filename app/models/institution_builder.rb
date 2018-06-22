@@ -4,7 +4,8 @@ module InstitutionBuilder
   TABLES = [
     Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
-    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant
+    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
+    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure
   ].freeze
 
   def self.columns_for_update(klass)
@@ -33,6 +34,9 @@ module InstitutionBuilder
     add_hcm(version_number)
     add_complaint(version_number)
     add_outcome(version_number)
+    add_stem_offered(version_number)
+    add_yellow_ribbon_programs(version_number)
+    add_school_closure(version_number)
   end
 
   def self.run(user)
@@ -397,6 +401,48 @@ module InstitutionBuilder
       UPDATE institutions SET #{columns_for_update(Outcome)}
       FROM outcomes
       WHERE institutions.facility_code = outcomes.facility_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_stem_offered(version_number)
+    str = <<-SQL
+      UPDATE institutions SET stem_offered=true
+      FROM ipeds_cip_codes, stem_cip_codes
+      WHERE institutions.cross = ipeds_cip_codes.cross
+        AND institutions.cross IS NOT NULL
+        AND ipeds_cip_codes.ctotalt > 0
+        AND ipeds_cip_codes.cipcode = stem_cip_codes.twentyten_cip_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_yellow_ribbon_programs(version_number)
+    str = <<-SQL
+      INSERT INTO yellow_ribbon_programs
+        (version, institution_id, degree_level, division_professional_school,
+          number_of_students, contribution_amount, created_at, updated_at)
+        (SELECT
+          i.version, i.id, yrs.degree_level, yrs.division_professional_school,
+            yrs.number_of_students, yrs.contribution_amount, NOW(), NOW()
+          FROM institutions as i, yellow_ribbon_program_sources as yrs
+          WHERE i.facility_code = yrs.facility_code
+          AND i.version = ?);
+    SQL
+
+    sql = Institution.send(:sanitize_sql, [str, version_number])
+    Institution.connection.execute(sql)
+  end
+
+  def self.add_school_closure(version_number)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(SchoolClosure)}
+      FROM school_closures
+      WHERE institutions.facility_code = school_closures.facility_code
         AND institutions.version = #{version_number};
     SQL
 
