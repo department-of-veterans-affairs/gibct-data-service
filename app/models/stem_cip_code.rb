@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class StemCipCode < ActiveRecord::Base
   include CsvHelper
 

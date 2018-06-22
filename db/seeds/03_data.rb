@@ -1,27 +1,4 @@
-def seed_table(klass, user, options = {})
-  csv_name = "#{klass.name.underscore}.csv"
-  csv_type = klass.name
-  csv_path = 'sample_csvs'
-
-  puts "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
-
-  uf = ActionDispatch::Http::UploadedFile.new(
-    tempfile: File.new(Rails.root.join(csv_path, csv_name)),
-    filename: csv_name,
-    type: 'text/csv'
-  )
-
-  upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-  klass.load("#{csv_path}/#{csv_name}", options)
-  upload.update(ok: true)
-
-  puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
-  uf.rewind
-
-  Storage.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-
-  puts 'Done!'
-end
+require 'seed_utils'
 
 user = User.first
 
@@ -38,32 +15,32 @@ puts 'Deleting old constants'
 CalculatorConstant.delete_all
 
 puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
-seed_table(CalculatorConstant, user)
-seed_table(Weam, user)
-seed_table(Crosswalk, user)
-seed_table(EightKey, user, skip_lines: 1)
-seed_table(Accreditation, user)
-seed_table(ArfGiBill, user)
-seed_table(Scorecard, user)
-seed_table(P911Tf, user)
-seed_table(P911Yr, user)
-seed_table(Vsoc, user)
-seed_table(Sva, user)
-seed_table(Sec702, user)
-seed_table(Sec702School, user)
-seed_table(Mou, user, skip_lines: 1)
-seed_table(Hcm, user, skip_lines: 2)
-seed_table(Settlement, user)
-seed_table(IpedsIc, user)
-seed_table(IpedsIcAy, user)
-seed_table(IpedsIcPy, user)
-seed_table(IpedsHd, user)
-seed_table(Complaint, user, skip_lines: 7)
-seed_table(Outcome, user)
-seed_table(IpedsCipCode, user)
-seed_table(StemCipCode, user)
-seed_table(YellowRibbonProgramSource, user)
-seed_table(SchoolClosure, user)
+SeedUtils.seed_table_with_upload(CalculatorConstant, user)
+SeedUtils.seed_table_with_upload(Weam, user)
+SeedUtils.seed_table_with_upload(Crosswalk, user)
+SeedUtils.seed_table_with_upload(EightKey, user, skip_lines: 1)
+SeedUtils.seed_table_with_upload(Accreditation, user)
+SeedUtils.seed_table_with_upload(ArfGiBill, user)
+SeedUtils.seed_table_with_upload(Scorecard, user)
+SeedUtils.seed_table_with_upload(P911Tf, user)
+SeedUtils.seed_table_with_upload(P911Yr, user)
+SeedUtils.seed_table_with_upload(Vsoc, user)
+SeedUtils.seed_table_with_upload(Sva, user)
+SeedUtils.seed_table_with_upload(Sec702, user)
+SeedUtils.seed_table_with_upload(Sec702School, user)
+SeedUtils.seed_table_with_upload(Mou, user, skip_lines: 1)
+SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 2)
+SeedUtils.seed_table_with_upload(Settlement, user)
+SeedUtils.seed_table_with_upload(IpedsIc, user)
+SeedUtils.seed_table_with_upload(IpedsIcAy, user)
+SeedUtils.seed_table_with_upload(IpedsIcPy, user)
+SeedUtils.seed_table_with_upload(IpedsHd, user)
+SeedUtils.seed_table_with_upload(Complaint, user, skip_lines: 7)
+SeedUtils.seed_table_with_upload(Outcome, user)
+SeedUtils.seed_table_with_upload(IpedsCipCode, user)
+SeedUtils.seed_table_with_upload(StemCipCode, user)
+SeedUtils.seed_table_with_upload(YellowRibbonProgramSource, user)
+SeedUtils.seed_table_with_upload(SchoolClosure, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)

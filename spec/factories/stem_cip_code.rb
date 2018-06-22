@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :stem_cip_code do
     two_digit_series 1
