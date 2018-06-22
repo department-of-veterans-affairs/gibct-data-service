@@ -6,7 +6,7 @@ require 'support/devise'
 
 RSpec.describe 'zipcode_rates', type: :request do
   context '#show for valid zip_code' do
-    it 'returns the zipcodes for ' do
+    it 'returns the rates for the given zip_code' do
       create(:zipcode_rate, zip_code: '12345')
       get '/v0/zipcode_rates/12345'
       expect(response).to have_http_status(:success)
@@ -21,7 +21,7 @@ RSpec.describe 'zipcode_rates', type: :request do
   end
 
   context '#show for invalid zip_code' do
-    it 'returns the zipcodes for ' do
+    it 'returns an error' do
       get '/v0/zipcode_rates/12345'
       expect(response).to have_http_status(:not_found)
       expect(JSON.parse(response.body)['errors'].first).to eq(

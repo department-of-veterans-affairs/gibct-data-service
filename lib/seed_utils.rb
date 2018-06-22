@@ -1,7 +1,7 @@
 module SeedUtils
   extend self
 
-  def seed_table(klass, user, options = {})
+  def seed_table_with_upload(klass, user, options = {})
     csv_name = "#{klass.name.underscore}.csv"
     csv_type = klass.name
     csv_path = 'sample_csvs'
@@ -15,7 +15,7 @@ module SeedUtils
     )
 
     upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-    klass.load("#{csv_path}/#{csv_name}", options)
+    seed_table(klass, "#{csv_path}/#{csv_name}", options)
     upload.update(ok: true)
 
     puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
@@ -24,5 +24,9 @@ module SeedUtils
     Storage.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
 
     puts 'Done!'
+  end
+
+  def seed_table(klass, path, options = {})
+    klass.load(path, options)
   end
 end
