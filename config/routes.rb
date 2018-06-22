@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   match '/v0/*path', to: 'api#cors_preflight', via: [:options]
   get 'status' => 'status#status'
 
-  root 'dashboards#index'
+  get 'auth/login', to: 'auth#new', as: 'saml_login'
+  post 'saml/auth/callback', to: 'auth#callback', as: 'saml_callback'
+  get 'saml/metadata', to: 'auth#metadata'
+
+  root 'application#home'
 
   # For active? helper
   get '/dashboards' => 'dashboards#index'
