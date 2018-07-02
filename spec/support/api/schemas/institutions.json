@@ -66,7 +66,9 @@
               "poe": { "type": ["null", "boolean"] },
               "eight_keys": { "type": ["null", "boolean"] },
               "school_closing": { "type": ["null", "boolean"] },
-              "stem_offered": { "type": ["null", "boolean"] }
+              "stem_offered": { "type": ["null", "boolean"] },
+              "independent_study": { "type": ["null", "boolean"] },
+              "priority_enrollment": { "type": ["null", "boolean"] }
             },
             "required": [
               "name",
@@ -92,7 +94,9 @@
               "poe",
               "eight_keys",
               "school_closing",
-              "stem_offered"
+              "stem_offered",
+              "independent_study",
+              "priority_enrollment"
             ]
           },
           "links": {

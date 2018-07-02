@@ -5,7 +5,7 @@ class InstitutionSerializer < ActiveModel::Serializer
     id institution facility_code institution_type_name city state zip country
     locale gibill caution_flag caution_flag_reason created_at updated_at
     bah tuition_in_state tuition_out_of_state books insturl cross
-    student_veteran yr poe eight_keys stem_offered
+    student_veteran yr poe eight_keys stem_offered independent_study priority_enrollment
   ].freeze
 
   attribute :institution, key: :name
@@ -33,6 +33,8 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :poe
   attribute :eight_keys
   attribute :stem_offered
+  attribute :independent_study
+  attribute :priority_enrollment
 
   attribute :school_closing
 

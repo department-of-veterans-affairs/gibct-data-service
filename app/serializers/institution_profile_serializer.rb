@@ -67,6 +67,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :school_closing_on
   attribute :school_closing_message
   attribute :yellow_ribbon_programs
+  attribute :independent_study
+  attribute :priority_enrollment
   attribute :created_at
   attribute :updated_at
 
