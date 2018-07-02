@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module V0
+  # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
@@ -127,4 +128,5 @@ module V0
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
