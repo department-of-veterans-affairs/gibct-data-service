@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module V0
+  # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
@@ -49,7 +50,7 @@ module V0
           query[k].try(:upcase!)
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success stem_offered].each do |k|
+           eight_keys_to_veteran_success stem_offered independent_study priority_enrollment].each do |k|
           query[k].try(:downcase!)
         end
       end
@@ -68,6 +69,8 @@ module V0
                  .filter(:poe, @query[:principles_of_excellence]) # boolean
                  .filter(:eight_keys, @query[:eight_keys_to_veteran_success]) # boolean
                  .filter(:stem_offered, @query[:stem_offered]) # boolean
+                 .filter(:independent_study, @query[:independent_study]) # boolean
+                 .filter(:priority_enrollment, @query[:priority_enrollment]) # boolean
     end
 
     # rubocop:disable Style/MutableConstant
@@ -90,7 +93,9 @@ module V0
         yellow_ribbon_scholarship: DEFAULT_BOOLEAN_FACET,
         principles_of_excellence: DEFAULT_BOOLEAN_FACET,
         eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET,
-        stem_offered: DEFAULT_BOOLEAN_FACET
+        stem_offered: DEFAULT_BOOLEAN_FACET,
+        independent_study: DEFAULT_BOOLEAN_FACET,
+        priority_enrollment: DEFAULT_BOOLEAN_FACET
       }
       add_active_search_facets(result)
     end
@@ -123,4 +128,5 @@ module V0
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

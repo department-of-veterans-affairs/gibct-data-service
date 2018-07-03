@@ -37,6 +37,22 @@ FactoryGirl.define do
       country 'USA'
     end
 
+    trait :independent_study do
+      institution 'UNIVERSITY OF INDEPENDENT STUDY'
+      city 'ALBUQUERQUE'
+      state 'NM'
+      country 'USA'
+      independent_study true
+    end
+
+    trait :priority_enrollment do
+      institution 'UNIVERSITY OF PRIORITY ENROLLMENT'
+      city 'ALBUQUERQUE'
+      state 'NM'
+      country 'USA'
+      priority_enrollment true
+    end
+
     trait :start_like_harv do
       sequence(:institution) { |n| ["HARV#{n}", "HARV #{n}"].sample }
       city 'BOSTON'
