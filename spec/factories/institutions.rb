@@ -50,7 +50,7 @@ FactoryGirl.define do
       city 'ALBUQUERQUE'
       state 'NM'
       country 'USA'
-      independent_study true
+      priority_enrollment true
     end
 
     trait :start_like_harv do
