@@ -201,8 +201,8 @@ class Institution < ActiveRecord::Base
     institution_type_name != 'OJT'
   end
 
-  # Given a search term representing a partial school name, returns all
-  # schools starting with the search term.
+  # Given a search term representing a partial school name or address, returns all
+  # schools that match the search term.
   #
   def self.autocomplete(search_term, limit: 6, include_address: false)
     where_statement = 'lower(institution) LIKE (:institution_search)'
