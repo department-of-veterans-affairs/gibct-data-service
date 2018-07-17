@@ -153,6 +153,31 @@ RSpec.describe Institution, type: :model do
     end
   end
 
+  describe '#autocomplete' do
+    def sorted_ids(institutions)
+      institutions.map(&:id).sort
+    end
+
+    let!(:institution_ids) do
+      institutions = []
+      3.times do |i|
+        institutions << create(:institution, "address_#{i + 1}" => "address#{i}")
+      end
+
+      sorted_ids(institutions)
+    end
+
+    context 'with include_address' do
+      it 'should search the institution and address fields' do
+        institutions = described_class.autocomplete('address', include_address: true)
+        expect(sorted_ids(institutions)).to eq(institution_ids)
+
+        institutions = described_class.autocomplete('institution', include_address: true)
+        expect(sorted_ids(institutions)).to eq(institution_ids)
+      end
+    end
+  end
+
   describe 'class methods and scopes' do
     context 'version' do
       it 'should retrieve institutions by a specific version number' do

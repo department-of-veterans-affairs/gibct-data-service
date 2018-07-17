@@ -204,10 +204,19 @@ class Institution < ActiveRecord::Base
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
-  def self.autocomplete(search_term, limit = 6)
-    Institution.select('id, facility_code as value, institution as label')
-               .where('lower(institution) LIKE (?)', "#{search_term}%")
-               .limit(limit)
+  def self.autocomplete(search_term, limit: 6, include_address: false)
+    where_statement = 'lower(institution) LIKE (:institution_search)'
+
+    if include_address
+      3.times do |i|
+        column = "address_#{i + 1}"
+        where_statement += " OR lower(#{column}) LIKE (:address_search)"
+      end
+    end
+
+    select('id, facility_code as value, institution as label')
+      .where(where_statement, institution_search: "#{search_term}%", address_search: "%#{search_term}%")
+      .limit(limit)
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
