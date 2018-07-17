@@ -8,7 +8,10 @@ module V0
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
-        @data = Institution.version(@version[:number]).autocomplete(@search_term)
+        @data = Institution.version(@version[:number]).autocomplete(
+          @search_term,
+          include_address: params[:include_address]
+        )
       end
       @meta = {
         version: @version,

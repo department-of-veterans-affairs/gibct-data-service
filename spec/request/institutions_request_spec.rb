@@ -11,6 +11,11 @@ RSpec.describe 'institutions', type: :request do
   end
 
   context '#autocomplete' do
+    it 'will include address if the param is set' do
+      expect(Institution).to receive(:autocomplete).with('foo', include_address: 'true')
+      get '/v0/institutions/autocomplete', term: 'foo', include_address: true
+    end
+
     it 'uses LINK_HOST in self link' do
       create(:institution, :in_chicago)
       get '/v0/institutions/autocomplete?term=uni'
