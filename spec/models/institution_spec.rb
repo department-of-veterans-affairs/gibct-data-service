@@ -167,6 +167,15 @@ RSpec.describe Institution, type: :model do
       sorted_ids(institutions)
     end
 
+    context 'without include_address' do
+      it 'should search the institution field' do
+        expect(described_class.autocomplete('address').size).to eq(0)
+
+        institutions = described_class.autocomplete('institution')
+        expect(sorted_ids(institutions)).to eq(institution_ids)
+      end
+    end
+
     context 'with include_address' do
       it 'should search the institution and address fields' do
         institutions = described_class.autocomplete('address', include_address: true)
