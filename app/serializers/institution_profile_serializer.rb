@@ -71,6 +71,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
   attribute :created_at
   attribute :updated_at
+  attribute :address_1
+  attribute :address_2
+  attribute :address_3
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
