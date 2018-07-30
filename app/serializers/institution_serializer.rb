@@ -35,6 +35,8 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :stem_offered
   attribute :independent_study
   attribute :priority_enrollment
+  attribute :online_only
+  attribute :distance_learning
 
   attribute :school_closing
 
