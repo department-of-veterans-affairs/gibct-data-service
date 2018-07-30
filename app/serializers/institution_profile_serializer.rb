@@ -69,6 +69,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :yellow_ribbon_programs
   attribute :independent_study
   attribute :priority_enrollment
+  attribute :online_only
+  attribute :distance_learning
   attribute :created_at
   attribute :updated_at
 

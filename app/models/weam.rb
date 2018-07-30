@@ -16,7 +16,7 @@ class Weam < ActiveRecord::Base
     facility_code institution city state zip
     country accredited bah poe yr
     institution_type_name va_highest_degree_offered flight correspondence
-    independent_study priority_enrollment
+    independent_study priority_enrollment online_only distance_learning
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
