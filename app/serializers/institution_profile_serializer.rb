@@ -19,6 +19,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :ialias, key: :alias
   attribute :highest_degree
   attribute :locale_type
+  attribute :address_1
+  attribute :address_2
+  attribute :address_3
   attribute :gibill, key: :student_count
   attribute :undergrad_enrollment
   attribute :yr
