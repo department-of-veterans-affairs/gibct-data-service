@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180614014201) do
+ActiveRecord::Schema.define(version: 20180731201600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -269,8 +269,14 @@ ActiveRecord::Schema.define(version: 20180614014201) do
     t.boolean  "online_only"
     t.boolean  "independent_study"
     t.boolean  "distance_learning"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "address_3"
   end
 
+  add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
+  add_index "institutions", ["address_2"], name: "index_institutions_on_address_2", using: :btree
+  add_index "institutions", ["address_3"], name: "index_institutions_on_address_3", using: :btree
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
   add_index "institutions", ["cross"], name: "index_institutions_on_cross", using: :btree
   add_index "institutions", ["facility_code"], name: "index_institutions_on_facility_code", using: :btree
