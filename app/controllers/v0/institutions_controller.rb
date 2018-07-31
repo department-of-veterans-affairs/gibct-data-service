@@ -58,19 +58,25 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      Institution.version(@version[:number])
-                 .search(@query[:name])
-                 .filter(:institution_type_name, @query[:type])
-                 .filter(:category, @query[:category])
-                 .filter(:country, @query[:country])
-                 .filter(:state, @query[:state])
-                 .filter(:student_veteran, @query[:student_veteran_group]) # boolean
-                 .filter(:yr, @query[:yellow_ribbon_scholarship]) # boolean
-                 .filter(:poe, @query[:principles_of_excellence]) # boolean
-                 .filter(:eight_keys, @query[:eight_keys_to_veteran_success]) # boolean
-                 .filter(:stem_offered, @query[:stem_offered]) # boolean
-                 .filter(:independent_study, @query[:independent_study]) # boolean
-                 .filter(:priority_enrollment, @query[:priority_enrollment]) # boolean
+      relation = Institution.version(@version[:number]).search(@query[:name])
+      filters = [
+        [:institution_type_name, :type],
+        [:category],
+        [:country],
+        [:state],
+        [:student_veteran, :student_veteran_group], # boolean
+        [:yr, :yellow_ribbon_scholarship], # boolean
+        [:poe, :principles_of_excellence], # boolean
+        [:eight_keys, :eight_keys_to_veteran_success], # boolean
+        [:stem_offered], # boolean
+        [:independent_study], # boolean
+        [:priority_enrollment] # boolean
+      ].each do |filter_args|
+        filter_args << filter_args[0] if filter_args.size == 1
+        relation = relation.filter(filter_args[0], @query[filter_args[1]])
+      end
+
+      relation
     end
 
     # rubocop:disable Style/MutableConstant
