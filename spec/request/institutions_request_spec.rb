@@ -25,6 +25,12 @@ RSpec.describe 'institutions', type: :request do
       links = JSON.parse(response.body)['links']
       expect(links['self']).to start_with(ENV['LINK_HOST'])
     end
+
+    it 'allow searching by address fields' do
+      create(:institution, address_1: 'address_1')
+      get(v0_institutions_path(name: 'abc'))
+      binding.pry; fail
+    end
   end
 
   context '#show' do
