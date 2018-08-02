@@ -59,15 +59,15 @@ module V0
     def search_results
       @query ||= normalized_query_params
       relation = Institution.version(@version[:number]).search(@query[:name], @query[:include_address])
-      filters = [
-        [:institution_type_name, :type],
+      [
+        %i[institution_type_name type],
         [:category],
         [:country],
         [:state],
-        [:student_veteran, :student_veteran_group], # boolean
-        [:yr, :yellow_ribbon_scholarship], # boolean
-        [:poe, :principles_of_excellence], # boolean
-        [:eight_keys, :eight_keys_to_veteran_success], # boolean
+        %i[student_veteran student_veteran_group], # boolean
+        %i[yr yellow_ribbon_scholarship], # boolean
+        %i[poe principles_of_excellence], # boolean
+        %i[eight_keys eight_keys_to_veteran_success], # boolean
         [:stem_offered], # boolean
         [:independent_study], # boolean
         [:priority_enrollment] # boolean

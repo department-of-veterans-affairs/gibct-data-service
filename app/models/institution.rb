@@ -229,7 +229,7 @@ class Institution < ActiveRecord::Base
     where(
       clause.join(' OR '),
       facility_code: search_term.upcase,
-      search_term: "%#{search_term}%",
+      search_term: "%#{search_term}%"
     )
   }
 
