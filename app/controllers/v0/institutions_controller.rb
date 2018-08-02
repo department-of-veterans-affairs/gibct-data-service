@@ -51,7 +51,6 @@ module V0
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           address_1 address_2 address_3
          ].each do |k|
           query[k].try(:downcase!)
         end
