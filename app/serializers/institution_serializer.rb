@@ -22,6 +22,9 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :caution_flag_reason
   attribute :created_at
   attribute :updated_at
+  attribute :address_1
+  attribute :address_2
+  attribute :address_3
 
   attribute :bah
   attribute :tuition_in_state
