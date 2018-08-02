@@ -192,6 +192,12 @@ RSpec.describe Institution, type: :model do
         expect(described_class.search(nil)).to be_empty
       end
 
+      it 'should include the address fields if include_address is set' do
+        institution = create(:institution, address_1: 'address_1')
+        expect(described_class.search('address_1', true).take).to eq(institution)
+        expect(described_class.search('address_1').count).to eq(0)
+      end
+
       it 'should search when attribute is provided' do
         expect(described_class.search('chicago').to_sql)
           .to include(

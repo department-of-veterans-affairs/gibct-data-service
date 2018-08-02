@@ -60,7 +60,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = Institution.version(@version[:number]).search(@query[:name])
+      relation = Institution.version(@version[:number]).search(@query[:name], @query[:include_address])
       filters = [
         [:institution_type_name, :type],
         [:category],
