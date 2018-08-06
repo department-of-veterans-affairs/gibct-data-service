@@ -212,19 +212,25 @@ class Institution < ActiveRecord::Base
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term|
+  scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?
     clause = [
-      'facility_code = (?)',
-      'lower(institution) LIKE (?)',
-      'lower(city) LIKE (?)'
-    ].join(' OR ')
-    terms = [
-      search_term.upcase,
-      "%#{search_term}%",
-      "%#{search_term}%"
+      'facility_code = (:facility_code)',
+      'lower(institution) LIKE (:search_term)',
+      'lower(city) LIKE (:search_term)'
     ]
-    where([clause] + terms)
+
+    if include_address
+      3.times do |i|
+        clause << "lower(address_#{i + 1}) LIKE (:search_term)"
+      end
+    end
+
+    where(
+      clause.join(' OR '),
+      facility_code: search_term.upcase,
+      search_term: "%#{search_term}%"
+    )
   }
 
   scope :filter, lambda { |field, value|

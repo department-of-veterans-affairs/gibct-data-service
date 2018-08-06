@@ -43,6 +43,9 @@
                 "FOR PROFIT", "PUBLIC"
               ]
             },
+            "address_1": { "type": ["null", "string"] },
+            "address_2": { "type": ["null", "string"] },
+            "address_3": { "type": ["null", "string"] },
             "city": { "type": ["null", "string"] },
             "state": { "type": ["null", "string"] },
             "zip": { "type": ["null", "string"] },
