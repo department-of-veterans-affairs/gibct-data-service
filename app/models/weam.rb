@@ -45,7 +45,9 @@ class Weam < ActiveRecord::Base
     'flight indicator' => { column: :flight_indicator, converter: BooleanConverter },
     'non-college degree indicator' => { column: :non_college_degree_indicator, converter: BooleanConverter },
     'ipeds' => { column: :cross, converter: CrossConverter },
-    'ope' => { column: :ope, converter: OpeConverter }
+    'ope' => { column: :ope, converter: OpeConverter },
+    'independent study' => { column: :independent_study, converter: BooleanConverter },
+    'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter }
   }.freeze
 
   validates :facility_code, :institution, :institution_type_name, presence: true

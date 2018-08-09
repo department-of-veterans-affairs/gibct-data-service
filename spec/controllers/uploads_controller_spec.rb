@@ -123,12 +123,12 @@ RSpec.describe UploadsController, type: :controller do
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
 
-      it 'formats an notice message in the flash' do
+      it 'formats a notice message in the flash' do
         file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
         post(:create, upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' })
 
         message = flash[:alert]['The following headers should be checked: '].try(:first)
-        expect(message).to match(/Address 1 is a missing header/)
+        expect(message).to match(/Independent study is a missing header/)
       end
     end
   end
