@@ -43,7 +43,7 @@ module CsvHelper
     end
 
     def format(key, value)
-      return "=\"#{value}\"" if key == :ope && value.present?
+      return "\"#{value}\"" if key == :ope && value.present?
       value
     end
   end
