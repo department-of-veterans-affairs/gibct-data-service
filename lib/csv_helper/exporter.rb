@@ -25,13 +25,13 @@ module CsvHelper
 
     def write_row(csv, csv_headers)
       set_class_for_export.find_each do |record|
-        csv << csv_headers.keys.map { |k| record[k] }
+        csv << csv_headers.keys.map { |k| format(k, record[k]) }
       end
     end
 
     def write_institution_row(csv, csv_headers)
       set_class_for_export.find_each do |record|
-        csv << csv_headers.keys.map { |k| record[k] == false ? nil : record[k] }
+        csv << csv_headers.keys.map { |k| record[k] == false ? nil : format(k, record[k]) }
       end
     end
 
@@ -40,6 +40,11 @@ module CsvHelper
 
       version = Version.current_preview
       version.present? ? Institution.version(version.number) : Institution
+    end
+
+    def format(key, value)
+      return "\"#{value}\"" if key == :ope && value.present?
+      value
     end
   end
 end

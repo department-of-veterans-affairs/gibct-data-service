@@ -28,6 +28,7 @@ RSpec.shared_examples 'an exportable model' do |options|
 
         csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at')
         test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at')
+        test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
 
         expect(csv_test_attributes).to eq(test_attributes)
       end
