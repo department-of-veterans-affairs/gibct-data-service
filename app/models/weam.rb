@@ -22,6 +22,7 @@ class Weam < ActiveRecord::Base
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning
   ].freeze
+  # TODO indexes for new fields?
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
   CSV_CONVERTER_INFO = {
