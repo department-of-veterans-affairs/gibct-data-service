@@ -47,6 +47,16 @@ class Weam < ActiveRecord::Base
     'ipeds' => { column: :cross, converter: CrossConverter },
     'ope' => { column: :ope, converter: OpeConverter },
     'independent study' => { column: :independent_study, converter: BooleanConverter },
+    'physical address 1' => { column: :physical_address_1, converter: BaseConverter },
+    'physical address 2' => { column: :physical_address_2, converter: BaseConverter },
+    'physical address 3' => { column: :physical_address_3, converter: BaseConverter },
+    'physical institution city' => { column: :physical_city, converter: UpcaseConverter },
+    'physical institution state' => { column: :physical_state, converter: StateConverter },
+    'physical institution zip code' => { column: :physical_zip, converter: ZipConverter },
+    'physical institution country' => { column: :physical_zip, converter: UpcaseConverter },
+    'current academic year dod bah rate' => { column: :dod_bah, converter: NumberConverter },
+    'online only' => { column: :online_only, converter: BooleanConverter },
+    'distance learning' => { column: :distance_learning, converter: BooleanConverter },
     'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter }
   }.freeze
 
