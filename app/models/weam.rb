@@ -18,6 +18,9 @@ class Weam < ActiveRecord::Base
     country accredited bah poe yr
     institution_type_name va_highest_degree_offered flight correspondence
     independent_study priority_enrollment
+    physical_address_1 physical_address_2 physical_address_3
+    physical_city physical_state physical_zip physical_country
+    dod_bah online_only distance_learning
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -53,7 +56,7 @@ class Weam < ActiveRecord::Base
     'physical institution city' => { column: :physical_city, converter: UpcaseConverter },
     'physical institution state' => { column: :physical_state, converter: StateConverter },
     'physical institution zip code' => { column: :physical_zip, converter: ZipConverter },
-    'physical institution country' => { column: :physical_zip, converter: UpcaseConverter },
+    'physical institution country' => { column: :physical_country, converter: UpcaseConverter },
     'current academic year dod bah rate' => { column: :dod_bah, converter: NumberConverter },
     'online only' => { column: :online_only, converter: BooleanConverter },
     'distance learning' => { column: :distance_learning, converter: BooleanConverter },
