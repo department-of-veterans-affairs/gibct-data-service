@@ -50,7 +50,8 @@ module V0
           query[k].try(:upcase!)
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success stem_offered independent_study priority_enrollment].each do |k|
+           eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
+           online_only distance_learning].each do |k|
           query[k].try(:downcase!)
         end
       end
@@ -103,6 +104,8 @@ module V0
         eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET,
         stem_offered: DEFAULT_BOOLEAN_FACET,
         independent_study: DEFAULT_BOOLEAN_FACET,
+        online_only: DEFAULT_BOOLEAN_FACET,
+        distance_learning: DEFAULT_BOOLEAN_FACET,
         priority_enrollment: DEFAULT_BOOLEAN_FACET
       }
       add_active_search_facets(result)
