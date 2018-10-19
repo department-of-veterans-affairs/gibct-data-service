@@ -60,8 +60,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     before(:each) do
       create(:version, :production)
       2.times { create(:institution, :in_nyc) }
-      create(:institution, :in_chicago)
-      create(:institution, :in_new_rochelle)
+      create(:institution, :in_chicago, online_only: true)
+      create(:institution, :in_new_rochelle, distance_learning: true)
     end
 
     it 'search returns results' do
@@ -111,6 +111,16 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
+    end
+
+    it 'filters by online_only schools' do
+      get :index, online_only: true, version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
+
+    it 'filters by distance_learning schools' do
+      get :index, distance_learning: true, version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'filter by lowercase state returns results' do

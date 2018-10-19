@@ -70,6 +70,8 @@ module V0
         %i[eight_keys eight_keys_to_veteran_success], # boolean
         [:stem_offered], # boolean
         [:independent_study], # boolean
+        [:online_only],
+        [:distance_learning],
         [:priority_enrollment] # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
