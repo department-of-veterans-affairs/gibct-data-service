@@ -170,6 +170,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(facets['stem_offered'].keys).to include('true', 'false')
       expect(facets['independent_study'].keys).to include('true', 'false')
       expect(facets['priority_enrollment'].keys).to include('true', 'false')
+      expect(facets['online_only'].keys).to include('true', 'false')
+      expect(facets['distance_learning'].keys).to include('true', 'false')
     end
   end
 
