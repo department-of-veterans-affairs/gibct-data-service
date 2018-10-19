@@ -6,6 +6,7 @@
 # Row Separator: '\r\n' when uploaded from VA
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
+# rubocop:disable Metrics/ClassLength
 class Weam < ActiveRecord::Base
   include CsvHelper
 
@@ -22,7 +23,7 @@ class Weam < ActiveRecord::Base
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning
   ].freeze
-  # TODO indexes for new fields?
+  # TODO: indexes for new fields?
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
   CSV_CONVERTER_INFO = {
@@ -158,3 +159,4 @@ class Weam < ActiveRecord::Base
     flags_for_approved?
   end
 end
+# rubocop:enable Metrics/ClassLength
