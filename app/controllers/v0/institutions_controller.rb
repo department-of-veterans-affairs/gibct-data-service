@@ -57,6 +57,7 @@ module V0
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
       relation = Institution.version(@version[:number]).search(@query[:name], @query[:include_address])
@@ -81,6 +82,7 @@ module V0
 
       relation
     end
+    # rubocop:enable Metrics/MethodLength
 
     # rubocop:disable Style/MutableConstant
     DEFAULT_BOOLEAN_FACET = { true: nil, false: nil }
