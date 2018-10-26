@@ -6,6 +6,7 @@
 # Row Separator: '\r\n' when uploaded from VA
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
+# rubocop:disable Metrics/ClassLength
 class Weam < ActiveRecord::Base
   include CsvHelper
 
@@ -18,6 +19,9 @@ class Weam < ActiveRecord::Base
     country accredited bah poe yr
     institution_type_name va_highest_degree_offered flight correspondence
     independent_study priority_enrollment
+    physical_address_1 physical_address_2 physical_address_3
+    physical_city physical_state physical_zip physical_country
+    dod_bah online_only distance_learning
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -47,6 +51,16 @@ class Weam < ActiveRecord::Base
     'ipeds' => { column: :cross, converter: CrossConverter },
     'ope' => { column: :ope, converter: OpeConverter },
     'independent study' => { column: :independent_study, converter: BooleanConverter },
+    'physical address 1' => { column: :physical_address_1, converter: BaseConverter },
+    'physical address 2' => { column: :physical_address_2, converter: BaseConverter },
+    'physical address 3' => { column: :physical_address_3, converter: BaseConverter },
+    'physical institution city' => { column: :physical_city, converter: UpcaseConverter },
+    'physical institution state' => { column: :physical_state, converter: StateConverter },
+    'physical institution zip code' => { column: :physical_zip, converter: ZipConverter },
+    'physical institution country' => { column: :physical_country, converter: UpcaseConverter },
+    'current academic year dod bah rate' => { column: :dod_bah, converter: NumberConverter },
+    'online only' => { column: :online_only, converter: BooleanConverter },
+    'distance learning' => { column: :distance_learning, converter: BooleanConverter },
     'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter }
   }.freeze
 
@@ -144,3 +158,4 @@ class Weam < ActiveRecord::Base
     flags_for_approved?
   end
 end
+# rubocop:enable Metrics/ClassLength

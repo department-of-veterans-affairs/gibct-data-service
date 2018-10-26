@@ -25,6 +25,13 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :address_1
   attribute :address_2
   attribute :address_3
+  attribute :physical_city
+  attribute :physical_state
+  attribute :physical_country
+  attribute :online_only
+  attribute :distance_learning
+  attribute :dod_bah
+  attribute :physical_zip
 
   attribute :bah
   attribute :tuition_in_state

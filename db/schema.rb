@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180731201600) do
+ActiveRecord::Schema.define(version: 20181025184547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -272,6 +272,14 @@ ActiveRecord::Schema.define(version: 20180731201600) do
     t.string   "address_1"
     t.string   "address_2"
     t.string   "address_3"
+    t.string   "physical_address_1"
+    t.string   "physical_address_2"
+    t.string   "physical_address_3"
+    t.string   "physical_city"
+    t.string   "physical_state"
+    t.string   "physical_zip"
+    t.string   "physical_country"
+    t.integer  "dod_bah"
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -279,9 +287,11 @@ ActiveRecord::Schema.define(version: 20180731201600) do
   add_index "institutions", ["address_3"], name: "index_institutions_on_address_3", using: :btree
   add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
   add_index "institutions", ["cross"], name: "index_institutions_on_cross", using: :btree
+  add_index "institutions", ["distance_learning"], name: "index_institutions_on_distance_learning", using: :btree
   add_index "institutions", ["facility_code"], name: "index_institutions_on_facility_code", using: :btree
   add_index "institutions", ["institution"], name: "index_institutions_on_institution", using: :btree
   add_index "institutions", ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
+  add_index "institutions", ["online_only"], name: "index_institutions_on_online_only", using: :btree
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
@@ -1253,6 +1263,14 @@ ActiveRecord::Schema.define(version: 20180731201600) do
     t.boolean  "online_only"
     t.boolean  "independent_study"
     t.boolean  "distance_learning"
+    t.string   "physical_address_1"
+    t.string   "physical_address_2"
+    t.string   "physical_address_3"
+    t.string   "physical_city"
+    t.string   "physical_state"
+    t.string   "physical_zip"
+    t.string   "physical_country"
+    t.integer  "dod_bah"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
