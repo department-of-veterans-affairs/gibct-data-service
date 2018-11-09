@@ -36,7 +36,7 @@ class Weam < ActiveRecord::Base
     'institution zip code' => { column: :zip, converter: ZipConverter },
     'institution country' => { column: :country, converter: UpcaseConverter },
     'accredited' => { column: :accredited, converter: BooleanConverter },
-    'current academic year bah rate' => { column: :bah, converter: NumberConverter },
+    'current academic year va bah rate' => { column: :bah, converter: NumberConverter },
     'principles of excellence' => { column: :poe, converter: BooleanConverter },
     'current academic year yellow ribbon' => { column: :yr, converter: BooleanConverter },
     'poo status' => { column: :poo_status, converter: BaseConverter },
