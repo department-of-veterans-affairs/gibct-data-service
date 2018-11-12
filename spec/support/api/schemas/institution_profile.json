@@ -47,6 +47,15 @@
             "address_2": { "type": ["null", "string"] },
             "address_3": { "type": ["null", "string"] },
             "city": { "type": ["null", "string"] },
+
+            "physical_city": { "type": ["null", "string"] },
+            "physical_state": { "type": ["null", "string"] },
+            "physical_country": { "type": ["null", "string"] },
+            "physical_zip": { "type": ["null", "string"] },
+            "online_only": { "type": ["null", "boolean"] },
+            "distance_learning": { "type": ["null", "boolean"] },
+            "dod_bah": { "type": ["null", "number"] },
+
             "state": { "type": ["null", "string"] },
             "zip": { "type": ["null", "string"] },
             "country": { "type": ["null", "string"] },
