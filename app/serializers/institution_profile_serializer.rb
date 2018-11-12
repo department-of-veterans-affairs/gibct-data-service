@@ -75,6 +75,14 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :created_at
   attribute :updated_at
 
+  attribute :physical_city
+  attribute :physical_state
+  attribute :physical_country
+  attribute :online_only
+  attribute :distance_learning
+  attribute :dod_bah
+  attribute :physical_zip
+
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:vet_website_link) { object.vet_website_link }
