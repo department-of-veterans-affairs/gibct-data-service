@@ -1,4 +1,4 @@
-# Gibct Data Service [![Build Status](https://dev.vets.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/)
+# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/)
 
 ## Introduction
 The GIBCT Data Service (**GIDS**) compiles data from a variety of federal CSV-formatted sources into a set of
