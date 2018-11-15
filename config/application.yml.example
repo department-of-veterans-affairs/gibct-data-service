@@ -1,7 +1,7 @@
 ADMIN_EMAIL: 'something...'
 ADMIN_PW: 'something...'
 SECRET_KEY_BASE: 'something ...'
-LINK_HOST: 'http://localhost:3000' # https://api.vets.gov
+LINK_HOST: 'http://localhost:3000' # https://api.va.gov
 GIBCT_URL: 'http://localhost:3002/gi-bill-comparison-tool'
 
 SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml

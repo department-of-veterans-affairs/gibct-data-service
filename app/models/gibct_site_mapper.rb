@@ -2,7 +2,7 @@
 
 # Creates sitemips for gi-bill-comparison-tool
 class GibctSiteMapper
-  PRODUCTION_HOST = 'www.vets.gov'
+  PRODUCTION_HOST = 'www.va.gov'
 
   def initialize(ping, verbose = true)
     return if version.blank?

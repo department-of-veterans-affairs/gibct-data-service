@@ -4,4 +4,4 @@
 # User-agent: *
 # Disallow: /
 
-Sitemap: https://www.vets.gov/gids/sitemap.xml.gz
+Sitemap: https://www.va.gov/gids/sitemap.xml.gz

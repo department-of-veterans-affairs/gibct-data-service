@@ -25,10 +25,10 @@ RSpec.describe GibctSiteMapper, type: :model do
       [true, false].each do |ping|
         SiteMapperHelper.silence do
           mapper = GibctSiteMapper.new(ping)
-          expect(mapper.sitemap_location).to eq('https://www.vets.gov/gids/sitemap.xml.gz')
+          expect(mapper.sitemap_location).to eq('https://www.va.gov/gids/sitemap.xml.gz')
         end
 
-        expect(SitemapGenerator::Sitemap.default_host).to eq('https://www.vets.gov/gi-bill-comparison-tool')
+        expect(SitemapGenerator::Sitemap.default_host).to eq('https://www.va.gov/gi-bill-comparison-tool')
 
         sitemap = Zlib::GzipReader.open(sitemaps_path) do |gz|
           sitemap = gz.read
