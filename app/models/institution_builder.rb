@@ -2,7 +2,8 @@
 
 module InstitutionBuilder
   TABLES = [
-    Accreditation, ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
+    AccreditationAction, AccreditationInstituteCampus, AccreditationRecord,
+    ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
     IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure
@@ -127,79 +128,128 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  JOIN_CLAUSES = ['institutions.ope6 = substring(accreditation_institute_campuses.ope from 2 for 5)',
+                  'institutions.ope = accreditation_institute_campuses.ope'].freeze
+
   def self.add_accreditation(version_number)
     # Set the accreditation_type according to the hierarchy hybrid < national < regional
     # We include only those accreditation that are institutional and currently active.
     str = <<-SQL
       UPDATE institutions SET
-        accreditation_type = accreditations.accreditation_type
-      FROM accreditations
-      WHERE institutions.cross = accreditations.cross
-        AND accreditations.cross IS NOT NULL
-        AND accreditations.periods LIKE '%current%'
-        AND accreditations.csv_accreditation_type = 'institutional'
+        accreditation_type = accreditation_records.accreditation_type
+      FROM accreditation_institute_campuses, accreditation_records
+      WHERE {{JOIN_CLAUSE}}
+        AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
+        AND institutions.ope IS NOT NULL
+        AND accreditation_records.accreditation_end_date IS NULL
+        AND accreditation_records.program_id = 1
         AND institutions.version = #{version_number}
-        AND accreditations.accreditation_type =
+        AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
-
-    %w[hybrid national regional].each do |acc_type|
-      Institution.connection.update(str + " '#{acc_type}';")
+    JOIN_CLAUSES.each do |join_clause|
+      %w[hybrid national regional].each do |acc_type|
+        Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
+      end
     end
 
-    # Set the accreditation_status according to the hierarchy probation < show cause aligned by
-    # accreditation_type
+    # Do I only care about institutions that had their accreditation_type populated?  Or institutions with a null value too?
+    # A: for now, we'll update everyone regardless of presence of accreditation_type
+    # What is action_records.ending_action_id? A: unclear
+
+    # If there are multiple corresponding actions, which one do I use?  Does it have to be latest action_date?  
+    # i.e. if a institution gets put on Probation, but then gets taken off of probation, should I update their status? (I'm guessing no)
+    # Is 'Probation' only 'Probation or Equivalent or a More Severe Status: Probation'?  Or any that includes the word 'Probation' in the description?
+    # A: If there a newer entry that says probation removed, don't set it.  Just update status to be the text from `actions`
+
+
+    # str = <<-SQL
+    #   UPDATE institutions SET
+    #     accreditation_status = accreditations.accreditation_status
+    #   FROM accreditations
+    #   WHERE institutions.ope = accreditations.ope
+    #     AND institutions.accreditation_type = accreditations.accreditation_type
+    #     AND institutions.ope IS NOT NULL
+    #     AND accreditations.periods LIKE '%current%' -- action
+    #     AND accreditations.csv_accreditation_type = 'institutional' -- either ? - need clarification
+    #     AND institutions.version = #{version_number}
+    #     AND accreditations.accreditation_status =
+    # SQL
+
     str = <<-SQL
-      UPDATE institutions SET
-        accreditation_status = accreditations.accreditation_status
-      FROM accreditations
-      WHERE institutions.cross = accreditations.cross
-        AND institutions.accreditation_type = accreditations.accreditation_type
-        AND accreditations.cross IS NOT NULL
-        AND accreditations.periods LIKE '%current%'
-        AND accreditations.csv_accreditation_type = 'institutional'
+      UPDATE institutions
+      SET accreditation_status = accreditation_actions.action_description,
+          caution_flag = TRUE,
+          caution_flag_reason = concat(accreditation_actions.action_description, ' (', accreditation_actions.justification_description, ')')
+      FROM accreditation_institute_campuses, accreditation_actions, accreditation_records
+      WHERE {{JOIN_CLAUSE}}
+        AND accreditation_actions.id = (
+          SELECT id from accreditation_actions
+          WHERE UPPER(action_description) like '%PROBATION%'
+          AND program_id = 1
+          AND dapip_id = accreditation_institute_campuses.dapip_id
+          ORDER BY action_date DESC
+          LIMIT 1
+        )
+        AND accreditation_records.id = (
+          SELECT id from accreditation_records
+          WHERE accreditation_end_date IS NULL
+          AND program_id = 1
+          AND dapip_id = accreditation_institute_campuses.dapip_id
+          LIMIT 1
+        )
+        -- AND institutions.accreditation_type = accreditation_records.accreditation_type
+        AND institutions.ope IS NOT NULL
         AND institutions.version = #{version_number}
-        AND accreditations.accreditation_status =
+        AND accreditation_actions.action_description != 'Accreditation Reaffirmed: Probation Removed'
+        AND accreditation_actions.end_date IS NULL;
     SQL
 
-    ['Probation', 'Show Cause'].each do |acc_status|
-      Institution.connection.update(str + " '#{acc_status}';")
+    JOIN_CLAUSES.each do |join_clause|
+      Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
 
     # Sets the caution flag for all accreditations that have a non-null status. Note,
     # that institutional type accreditations are always, null, probation, or show cause.
-    str = <<-SQL
-      UPDATE institutions SET caution_flag = TRUE
-      FROM accreditations
-      WHERE institutions.cross = accreditations.cross
-        AND accreditations.cross IS NOT NULL
-        AND accreditations.periods LIKE '%current%'
-        AND accreditations.accreditation_status IS NOT NULL
-        AND accreditations.csv_accreditation_type = 'institutional'
-        AND institutions.version = #{version_number};
-    SQL
+    # str = <<-SQL
+    #   UPDATE institutions SET caution_flag = TRUE
+    #   FROM accreditations
+    #   WHERE institutions.ope = accreditations.ope
+    #     AND institutions.cross IS NOT NULL
+    #     AND institutions.ope IS NOT NULL
+    #     AND accreditations.periods LIKE '%current%'
+    #     AND accreditations.accreditation_status IS NOT NULL
+    #     AND accreditations.csv_accreditation_type = 'institutional'
+    #     AND institutions.version = #{version_number};
+    # SQL
 
-    Institution.connection.update(str)
+    # str = <<-SQL
+    #   UPDATE institutions SET 
+    # SQL
+    # ??? TODO: Can't we just set this when setting `accreditation_status`?
+    # Institution.connection.update(str)
 
+
+    # ??? TODO: Can't we just set this when setting `accreditation_status`?
     # Sets the caution flag reason for all accreditations that have a non-null status.
     # The innermost subquery retrieves a distinct set of statuses (it is plausible that
     # identical statuses may apply to the same school but from different agencies).
-    str = <<-SQL
-      UPDATE institutions SET
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reasons)
-      FROM (
-        SELECT "cross",
-          array_to_string(array_agg(distinct('Accreditation ('||accreditation_status||')')), ', ') AS reasons
-        FROM accreditations
-        WHERE "cross" IS NOT NULL
-          AND accreditation_status IS NOT NULL
-          AND periods LIKE '%current%'
-          AND csv_accreditation_type = 'institutional'
-          GROUP BY "cross" ) reasons_list
-      WHERE institutions.cross = reasons_list.cross
-        AND institutions.version = #{version_number};
-    SQL
+    # str = <<-SQL
+    #   UPDATE institutions SET
+    #     caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reasons)
+    #   FROM (
+    #     SELECT "cross",
+    #       array_to_string(array_agg(distinct('Accreditation ('||accreditation_status||')')), ', ') AS reasons
+    #     FROM accreditations
+    #     WHERE "cross" IS NOT NULL
+    #       AND accreditation_status IS NOT NULL
+    #       AND periods LIKE '%current%'
+    #       AND csv_accreditation_type = 'institutional'
+    #       GROUP BY "cross" ) reasons_list
+    #   WHERE institutions.cross = reasons_list.cross
+    #     AND institutions.version = #{version_number};
+    # SQL
 
-    Institution.connection.update(str)
+    # Institution.connection.update(str)
   end
 
   def self.add_arf_gi_bill(version_number)
