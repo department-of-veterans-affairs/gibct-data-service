@@ -9,6 +9,11 @@ module InstitutionBuilder
     IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure
   ].freeze
 
+  ACCREDITATION_JOIN_CLAUSES = [
+    'institutions.ope6 = accreditation_institute_campuses.ope6',
+    'institutions.ope = accreditation_institute_campuses.ope'
+  ].freeze
+
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
@@ -128,9 +133,6 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  JOIN_CLAUSES = ['institutions.ope6 = accreditation_institute_campuses.ope6',
-                  'institutions.ope = accreditation_institute_campuses.ope'].freeze
-
   def self.add_accreditation(version_number)
     # Set the `accreditation_type`, `accreditation_status`, `caution_flag` and `caution_reason` by joining on
     # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
@@ -149,7 +151,7 @@ module InstitutionBuilder
         AND institutions.version = #{version_number}
         AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
-    JOIN_CLAUSES.each do |join_clause|
+    ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
       %w[hybrid national regional].each do |acc_type|
         Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
       end
@@ -184,7 +186,7 @@ module InstitutionBuilder
         AND institutions.version = #{version_number};
     SQL
 
-    JOIN_CLAUSES.each do |join_clause|
+    ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
   end
