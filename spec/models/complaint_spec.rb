@@ -71,7 +71,7 @@ RSpec.describe Complaint, type: :model do
   describe '#update_ope_from_crosswalk' do
     before(:each) do
       crosswalk = create :crosswalk
-      create :complaint, facility_code: crosswalk.facility_code, ope: '99999999'
+      create :complaint, facility_code: crosswalk.facility_code, ope: '00279100'
     end
 
     it 'replaces the ope with that obtained from the Crosswalk table' do

@@ -1,5 +1,12 @@
+# frozen_string_literal: true
+
 class AccreditationInstituteCampus < ActiveRecord::Base
   self.table_name = 'accreditation_institute_campuses'
+
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :accreditation_records, primary_key: :dapip_id, foreign_key: 'dapip_id'
+  has_many :accreditation_actions, primary_key: :dapip_id, foreign_key: 'dapip_id'
+  # rubocop:enable Rails/HasManyOrHasOneDependent
 
   include CsvHelper
 
@@ -18,4 +25,14 @@ class AccreditationInstituteCampus < ActiveRecord::Base
     'fax' => { column: :fax, converter: BaseConverter },
     'updatedate' => { column: :update_date, converter: DateConverter }
   }.freeze
+
+  validates :dapip_id, presence: true
+
+  after_initialize :set_ope6
+
+  private
+
+  def set_ope6
+    self.ope6 = Ope6Converter.convert(ope)
+  end
 end

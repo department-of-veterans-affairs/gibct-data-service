@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190109213733) do
+ActiveRecord::Schema.define(version: 20190124205908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20190109213733) do
   create_table "accreditation_institute_campuses", force: :cascade do |t|
     t.integer  "dapip_id"
     t.string   "ope"
+    t.string   "ope6"
     t.string   "location_name"
     t.string   "parent_name"
     t.integer  "parent_dapip_id"
@@ -54,6 +55,7 @@ ActiveRecord::Schema.define(version: 20190109213733) do
 
   add_index "accreditation_institute_campuses", ["dapip_id"], name: "index_accreditation_institute_campuses_on_dapip_id", using: :btree
   add_index "accreditation_institute_campuses", ["ope"], name: "index_accreditation_institute_campuses_on_ope", using: :btree
+  add_index "accreditation_institute_campuses", ["ope6"], name: "index_accreditation_institute_campuses_on_ope6", using: :btree
 
   create_table "accreditation_records", force: :cascade do |t|
     t.integer  "dapip_id"
@@ -937,6 +939,11 @@ ActiveRecord::Schema.define(version: 20190109213733) do
 
   add_index "ipeds_ics", ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
 
+  create_table "missing_accreditations", id: false, force: :cascade do |t|
+    t.string "ope"
+    t.text   "split_part"
+  end
+
   create_table "mous", force: :cascade do |t|
     t.string   "ope",              null: false
     t.string   "ope6",             null: false
@@ -1003,6 +1010,13 @@ ActiveRecord::Schema.define(version: 20190109213733) do
   end
 
   add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
+
+  create_table "prev_results", id: false, force: :cascade do |t|
+    t.integer "id"
+    t.string  "ope"
+    t.string  "ope6"
+    t.string  "accreditation_type"
+  end
 
   create_table "school_closures", force: :cascade do |t|
     t.string   "facility_code",          null: false

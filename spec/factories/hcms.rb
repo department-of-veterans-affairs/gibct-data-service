@@ -7,7 +7,7 @@ FactoryGirl.define do
     hcm_reason 'audit late/missing'
 
     trait :institution_builder do
-      ope '99999999'
+      ope '00279100'
     end
 
     initialize_with do

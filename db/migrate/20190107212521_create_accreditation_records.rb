@@ -18,5 +18,7 @@ class CreateAccreditationRecords < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_index :accreditation_records, :dapip_id
   end
 end

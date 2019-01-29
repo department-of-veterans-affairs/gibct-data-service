@@ -3,6 +3,7 @@ class CreateAccreditationInstituteCampus < ActiveRecord::Migration
     create_table :accreditation_institute_campuses do |t|
       t.integer :dapip_id
       t.string :ope
+      t.string :ope6
       t.string :location_name
       t.string :parent_name
       t.integer :parent_dapip_id
@@ -17,5 +18,9 @@ class CreateAccreditationInstituteCampus < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_index :accreditation_institute_campuses, :dapip_id
+    add_index :accreditation_institute_campuses, :ope
+    add_index :accreditation_institute_campuses, :ope6
   end
 end

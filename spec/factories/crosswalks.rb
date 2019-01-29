@@ -12,7 +12,7 @@ FactoryGirl.define do
 
     trait :institution_builder do
       facility_code '1ZZZZZZZ'
-      ope '99999999'
+      ope '00279100'
       cross '999999'
     end
 

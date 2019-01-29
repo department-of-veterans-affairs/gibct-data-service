@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class AccreditationRecord < ActiveRecord::Base
   include CsvHelper
+
+  belongs_to :accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id
 
   CSV_CONVERTER_INFO = {
     'dapipid' => { column: :dapip_id, converter: NumberConverter },
@@ -22,7 +26,8 @@ class AccreditationRecord < ActiveRecord::Base
   # if the accrediting agency is the "New England Medical Association", then
   # the accreditation is 'Regional'.
   ACCREDITATIONS = {
-    'regional' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i, /HIGHER LEARNING COMMISSION/i, /WASC/i],
+    'regional' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i,
+                   /higher learning commission/i, /wasc/i],
     'national' => [/career schools/i, /continuing education/i, /independent colleges/i,
                    /biblical/i, /occupational/i, /distance/i, /new york/i, /transnational/i],
     'hybrid' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
@@ -31,9 +36,17 @@ class AccreditationRecord < ActiveRecord::Base
                  /theatre/i, /chiropractic/i]
   }.freeze
 
-  after_initialize :derive_dependent_columns
+  validates :dapip_id, presence: true
+  validates :agency_id, presence: true
+  validates :agency_name, presence: true
+  validates :program_id, presence: true
+  validates :program_name, presence: true
 
-  def derive_dependent_columns
+  after_initialize :set_accreditation_type
+
+  private
+
+  def set_accreditation_type
     self.accreditation_type = to_accreditation_type
   end
 
@@ -46,5 +59,4 @@ class AccreditationRecord < ActiveRecord::Base
 
     nil
   end
-
 end

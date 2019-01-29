@@ -14,7 +14,7 @@ FactoryGirl.define do
     end
 
     trait :institution_builder do
-      ope '99999999'
+      ope '00279100'
     end
 
     initialize_with do

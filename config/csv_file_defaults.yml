@@ -18,7 +18,17 @@ EightKey:
   col_sep: ','
   row_sep: "\r\n"
 
-Accreditation:
+AccreditationInstituteCampus:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+AccreditationRecord:
+  skip_lines: 0
+  col_sep: ','
+  row_sep: "\r\n"
+
+AccreditationAction:
   skip_lines: 0
   col_sep: ','
   row_sep: "\r\n"

@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class AccreditationAction < ActiveRecord::Base
   include CsvHelper
+
+  belongs_to :accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id
 
   CSV_CONVERTER_INFO = {
     'dapipid' => { column: :dapip_id, converter: NumberConverter },
@@ -15,29 +19,35 @@ class AccreditationAction < ActiveRecord::Base
     'enddate' => { column: :end_date, converter: DateConverter }
   }.freeze
 
-  ACCREDITATIONS = {
-    'regional' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i],
-    'national' => [/career schools/i, /continuing education/i, /independent colleges/i,
-                   /biblical/i, /occupational/i, /distance/i, /new york/i, /transnational/i],
-    'hybrid' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
-                 /funeral/i, /osteopathic/i, /pediatric/i, /theological/i, /massage/i, /radiologic/i,
-                 /midwifery/i, /montessori/i, /career arts/i, /design/i, /dance/i, /music/i,
-                 /theatre/i, /chiropractic/i]
-  }.freeze
+  PROBATIONARY_STATUSES = [
+    "'Loss of Accreditation or Preaccreditation: Denial'",
+    "'Loss of Accreditation or Preaccreditation: Lapse'",
+    "'Loss of Accreditation or Preaccreditation: Other'",
+    "'Loss of Accreditation or Preaccreditation: Voluntary Withdrawal'",
+    "'Probation or Equivalent or More Severe Status: Monitoring'",
+    "'Probation or Equivalent or a More Severe Status: Other'",
+    "'Probation or Equivalent or a More Severe Status: Probation'",
+    "'Probation or Equivalent or a More Severe Status: Show Cause'",
+    "'Probation or Equivalent or a More Severe Status: Warning'",
+    "'Warning or Equivalent-Factors Affecting Academic Quality'"
+  ].freeze
 
-  # after_initialize :derive_dependent_columns
+  RESTORATIVE_STATUSES = [
+    "'Accreditation Reaffirmed:  Warning Removed'",
+    "'Accreditation Reaffirmed: Probation Removed'",
+    "'Accreditation Reinstated: Termination Overturned on Appeal'",
+    "'Heightened Monitoring or Focused Review'",
+    "'Removal of Monitoring Status'",
+    "'Removal of Show Cause Status'",
+    "'Renewal of Accreditation'",
+    "'Stay Denial Pending Appeal'"
+  ].freeze
 
-  # def derive_dependent_columns
-  #   self.accreditation_type = to_accreditation_type
-  # end
-
-  # def to_accreditation_type
-  #   return if agency_name.blank?
-
-  #   ACCREDITATIONS.each_pair do |type, regexp_array|
-  #     return type if regexp_array.find { |regexp| agency_name.match(regexp) }
-  #   end
-
-  #   nil
-  # end
+  validates :dapip_id, presence: true
+  validates :agency_id, presence: true
+  validates :agency_name, presence: true
+  validates :program_id, presence: true
+  validates :program_name, presence: true
+  validates :action_description, presence: true
+  validates :justification_description, presence: true
 end
