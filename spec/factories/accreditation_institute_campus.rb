@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryGirl.define do
-  factory :accreditation_institute_campus, class: 'AccreditationInstituteCampus' do
+  factory :accreditation_institute_campus do
     dapip_id 131_584
     ope '00279100'
     ope6 '02791'
