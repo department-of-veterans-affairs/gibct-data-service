@@ -166,19 +166,19 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Accreditation data' do
-      let(:institution) { institutions.find_by(cross: accreditation.cross) }
-      let(:accreditation) { Accreditation.first }
+      let(:institution) { institutions.find_by(ope: accreditation_institute.ope) }
+      let!(:accreditation_institute) { create :accreditation_institute_campus }
 
       describe 'with regards to the time frame' do
         it 'only adds current accreditations' do
-          create :accreditation, :institution_builder, periods: '12/12/2012 - current'
+          create :accreditation_record
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).not_to be_nil
         end
 
         it 'does not add non-current accreditations' do
-          create :accreditation, :institution_builder, periods: 'Expired accreditation'
+          create :accreditation_record_expired
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).to be_nil
@@ -186,15 +186,15 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'with regards to the accrediting authority' do
-        it 'adds non-institutional accreditations' do
-          create :accreditation, :institution_builder, csv_accreditation_type: 'institutional'
+        it 'adds institutional accreditations' do
+          create :accreditation_record
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).not_to be_nil
         end
 
         it 'does not add non-institutional accreditations' do
-          create :accreditation, :institution_builder, csv_accreditation_type: 'specialized'
+          create :accreditation_record, program_id: 2
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).to be_nil
@@ -202,10 +202,10 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the accreditation_type' do
-        Accreditation::ACCREDITATIONS.each_pair do |type, agency_regex_array|
+        AccreditationRecord::ACCREDITATIONS.each_pair do |type, agency_regex_array|
           agency_regex_array.map(&:source).each do |agency_name|
             it "is set to #{type} when the agency name contains '#{agency_name}'" do
-              create :accreditation, :institution_builder, agency_name: 'Agency ' + agency_name
+              create :accreditation_record, agency_name: 'Agency ' + agency_name
               InstitutionBuilder.run(user)
 
               expect(institution.accreditation_type).to eq(type)
@@ -214,17 +214,17 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers national over hybrid' do
-          create :accreditation, :institution_builder, agency_name: 'Biblical School'
-          create :accreditation, :institution_builder, agency_name: 'Design School'
+          create :accreditation_record, agency_name: 'Biblical School'
+          create :accreditation_record, agency_name: 'Design School'
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).to eq('national')
         end
 
         it 'prefers regional over hybrid and national' do
-          create :accreditation, :institution_builder, agency_name: 'Biblical School'
-          create :accreditation, :institution_builder, agency_name: 'Middle School'
-          create :accreditation, :institution_builder, agency_name: 'Design School'
+          create :accreditation_record, agency_name: 'Biblical School'
+          create :accreditation_record, agency_name: 'Middle School'
+          create :accreditation_record, agency_name: 'Design School'
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_type).to eq('regional')
@@ -232,49 +232,60 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the accreditation status' do
-        it "is set only for 'Probation' and 'Show Cause'" do
-          create :accreditation, :institution_builder, accreditation_status: 'Expired'
+        it 'is set only for the `AccreditationAction::PROBATIONARY_STATUSES`' do
+          create :accreditation_action
           InstitutionBuilder.run(user)
 
           expect(institution.accreditation_status).to be_nil
         end
 
-        ['Probation', 'Show Cause'].each do |status|
+        AccreditationAction::PROBATIONARY_STATUSES.each do |status|
           it "is set for #{status}" do
-            create :accreditation, :institution_builder, accreditation_status: status
+            create :accreditation_action, action_description: status[1..-2]
             InstitutionBuilder.run(user)
 
-            expect(institution.accreditation_status).to eq(status)
+            expect(institution.accreditation_status).to eq(status[1..-2])
           end
         end
 
-        it "prefers 'Show Cause' over 'Probation' for the same accreditation type" do
-          create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
-          InstitutionBuilder.run(user)
-
-          expect(institution.accreditation_status).to eq('Show Cause')
+        context "the institution has a more recent 'restorative' action" do
+          AccreditationAction::RESTORATIVE_STATUSES.each do |status|
+            it 'does not set the `accreditation_status`' do
+              create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
+                                            action_date: '2019-01-06'
+              create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
+              InstitutionBuilder.run(user)
+              expect(institution.accreditation_status).to be_nil
+            end
+          end
         end
 
-        it 'only uses the accreditation_status for the accreditation_type' do
-          create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
-          create :accreditation, :institution_builder, accreditation_status: 'Probation', agency_name: 'Biblical'
+        it 'does not matter if an `accreditation_type` is set' do
+          create :accreditation_action_probationary
           InstitutionBuilder.run(user)
+          expect(institution.accreditation_status).to be_truthy
+          expect(institution.accreditation_type).to be_nil
+        end
 
-          expect(institution.accreditation_status).to eq('Probation')
+        it 'does not matter if accreditation is current' do
+          create :accreditation_record, accreditation_end_date: '2011-01-01'
+          create :accreditation_action_probationary
+          InstitutionBuilder.run(user)
+          expect(institution.accreditation_status).to be_truthy
+          expect(institution.accreditation_type).to be_nil
         end
       end
 
       describe 'the caution_flag' do
         it 'is set to true for any non-nil status' do
-          create :accreditation, :institution_builder, accreditation_status: 'Expired'
+          create :accreditation_action_probationary
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag).to be_truthy
         end
 
         it 'is set falsey for any nil status' do
-          create :accreditation, :institution_builder, accreditation_status: nil
+          create :accreditation_action
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag).to be_falsey
@@ -282,24 +293,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the caution_flag_reason' do
-        it 'concatenates multiple accreditation cautions' do
-          create :accreditation, :institution_builder, accreditation_status: 'Show Cause'
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
-          create :accreditation, :institution_builder, accreditation_status: 'Expired'
+        it 'concatenates `action_description` and `justification_description`' do
+          aap = create :accreditation_action_probationary
+
           InstitutionBuilder.run(user)
 
           expect(
             institution.caution_flag_reason
-          ).to match(/Show Cause/i).and match(/Probation/i).and match(/Expired/i)
-        end
-
-        it 'concatenates new reasons to the existing caution_flag_reason' do
-          result = InstitutionBuilder.run(user)
-          create :accreditation, :institution_builder, accreditation_status: 'Expired'
-          Institution.find_by(cross: accreditation.cross).update(caution_flag_reason: 'blah-blah')
-          InstitutionBuilder.add_accreditation(result[:version].number)
-
-          expect(institution.caution_flag_reason).to eq('blah-blah, Accreditation (Expired)')
+          ).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
         end
       end
     end
@@ -394,21 +395,23 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'contentates the existing reasons' do
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :mou, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institution.caution_flag_reason).to match(/Accreditation/).and match(/DoD Probation/)
+          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)
         end
 
         it 'is unaltered when dod_status is not true' do
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :mou, :institution_builder, :by_title_iv
 
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag_reason).not_to match(/DoD/)
-          expect(institution.caution_flag_reason).to match(/Accreditation/)
+          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
         end
       end
     end
@@ -621,19 +624,21 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'concatenates the sec_702 reason when sec_702 is false' do
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :sec702, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institutions.first.caution_flag_reason).to match(/Accreditation/).and match(/Tuition/)
+          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/).and match(/Tuition/)
         end
 
         it 'is left unaltered when sec_702 is true' do
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :sec702_school, :institution_builder, sec_702: true
           InstitutionBuilder.run(user)
 
-          expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
           expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
         end
       end
@@ -670,11 +675,12 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is concatenated with the settlement_description' do
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :settlement, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
             .and match(settlement.settlement_description)
         end
       end
@@ -711,11 +717,12 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is concatenated with the hcm_reason' do
-          create :accreditation, :institution_builder, accreditation_status: 'Probation'
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :hcm, :institution_builder
           InstitutionBuilder.run(user)
 
-          expect(institutions.first.caution_flag_reason).to match(/Accreditation/)
+          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
             .and match(Regexp.new(hcm.hcm_reason))
         end
       end

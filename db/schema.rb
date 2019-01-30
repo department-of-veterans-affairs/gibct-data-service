@@ -11,49 +11,72 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181025184547) do
+ActiveRecord::Schema.define(version: 20190129174257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "accreditations", force: :cascade do |t|
-    t.string   "cross"
-    t.string   "accreditation_status"
-    t.string   "csv_accreditation_type"
-    t.string   "accreditation_type"
-    t.string   "periods"
-    t.string   "institution_ipeds_unitid"
-    t.string   "campus_ipeds_unitid"
+  create_table "accreditation_actions", force: :cascade do |t|
+    t.integer  "dapip_id"
+    t.integer  "agency_id"
     t.string   "agency_name"
-    t.string   "ope6"
-    t.string   "ope"
-    t.string   "institution"
-    t.integer  "institution_id"
-    t.string   "institution_name"
-    t.string   "institution_address"
-    t.string   "institution_city"
-    t.string   "institution_state"
-    t.string   "institution_zip"
-    t.string   "institution_phone"
-    t.string   "institution_web_address"
-    t.integer  "campus_id"
-    t.string   "campus_name"
-    t.string   "campus_address"
-    t.string   "campus_city"
-    t.string   "campus_state"
-    t.string   "campus_zip"
-    t.string   "agency_status"
+    t.integer  "program_id"
     t.string   "program_name"
-    t.string   "accreditation_csv_status"
-    t.string   "accreditation_date_type"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.integer  "sequential_id"
+    t.string   "action_description"
+    t.date     "action_date"
+    t.string   "justification_description"
+    t.string   "justification_other"
+    t.date     "end_date"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
-  add_index "accreditations", ["cross"], name: "index_accreditations_on_cross", using: :btree
-  add_index "accreditations", ["institution"], name: "index_accreditations_on_institution", using: :btree
-  add_index "accreditations", ["ope"], name: "index_accreditations_on_ope", using: :btree
-  add_index "accreditations", ["ope6"], name: "index_accreditations_on_ope6", using: :btree
+  add_index "accreditation_actions", ["dapip_id"], name: "index_accreditation_actions_on_dapip_id", using: :btree
+
+  create_table "accreditation_institute_campuses", force: :cascade do |t|
+    t.integer  "dapip_id"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "location_name"
+    t.string   "parent_name"
+    t.integer  "parent_dapip_id"
+    t.string   "location_type"
+    t.string   "address"
+    t.string   "general_phone"
+    t.string   "admin_name"
+    t.string   "admin_phone"
+    t.string   "admin_email"
+    t.string   "fax"
+    t.date     "update_date"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "accreditation_institute_campuses", ["dapip_id"], name: "index_accreditation_institute_campuses_on_dapip_id", using: :btree
+  add_index "accreditation_institute_campuses", ["ope"], name: "index_accreditation_institute_campuses_on_ope", using: :btree
+  add_index "accreditation_institute_campuses", ["ope6"], name: "index_accreditation_institute_campuses_on_ope6", using: :btree
+
+  create_table "accreditation_records", force: :cascade do |t|
+    t.integer  "dapip_id"
+    t.integer  "agency_id"
+    t.string   "agency_name"
+    t.integer  "program_id"
+    t.string   "program_name"
+    t.integer  "sequential_id"
+    t.string   "initial_date_flag"
+    t.date     "accreditation_date"
+    t.string   "accreditation_status"
+    t.date     "review_date"
+    t.string   "department_description"
+    t.date     "accreditation_end_date"
+    t.integer  "ending_action_id"
+    t.string   "accreditation_type"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "accreditation_records", ["dapip_id"], name: "index_accreditation_records_on_dapip_id", using: :btree
 
   create_table "arf_gi_bills", force: :cascade do |t|
     t.string   "facility_code",             null: false
@@ -292,6 +315,7 @@ ActiveRecord::Schema.define(version: 20181025184547) do
   add_index "institutions", ["institution"], name: "index_institutions_on_institution", using: :btree
   add_index "institutions", ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
   add_index "institutions", ["online_only"], name: "index_institutions_on_online_only", using: :btree
+  add_index "institutions", ["ope"], name: "index_institutions_on_ope", using: :btree
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
@@ -876,6 +900,11 @@ ActiveRecord::Schema.define(version: 20181025184547) do
 
   add_index "ipeds_ics", ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
 
+  create_table "missing_accreditations", id: false, force: :cascade do |t|
+    t.string "ope"
+    t.text   "split_part"
+  end
+
   create_table "mous", force: :cascade do |t|
     t.string   "ope",              null: false
     t.string   "ope6",             null: false
@@ -942,6 +971,13 @@ ActiveRecord::Schema.define(version: 20181025184547) do
   end
 
   add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
+
+  create_table "prev_results", id: false, force: :cascade do |t|
+    t.integer "id"
+    t.string  "ope"
+    t.string  "ope6"
+    t.string  "accreditation_type"
+  end
 
   create_table "school_closures", force: :cascade do |t|
     t.string   "facility_code",          null: false
