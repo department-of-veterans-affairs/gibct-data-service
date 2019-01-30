@@ -3,12 +3,12 @@
 class AccreditationInstituteCampus < ActiveRecord::Base
   self.table_name = 'accreditation_institute_campuses'
 
+  include CsvHelper
+
   # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :accreditation_records, primary_key: :dapip_id, foreign_key: 'dapip_id'
   has_many :accreditation_actions, primary_key: :dapip_id, foreign_key: 'dapip_id'
   # rubocop:enable Rails/HasManyOrHasOneDependent
-
-  include CsvHelper
 
   CSV_CONVERTER_INFO = {
     'dapipid' => { column: :dapip_id, converter: NumberConverter },
