@@ -900,11 +900,6 @@ ActiveRecord::Schema.define(version: 20190129174257) do
 
   add_index "ipeds_ics", ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
 
-  create_table "missing_accreditations", id: false, force: :cascade do |t|
-    t.string "ope"
-    t.text   "split_part"
-  end
-
   create_table "mous", force: :cascade do |t|
     t.string   "ope",              null: false
     t.string   "ope6",             null: false
@@ -971,13 +966,6 @@ ActiveRecord::Schema.define(version: 20190129174257) do
   end
 
   add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
-
-  create_table "prev_results", id: false, force: :cascade do |t|
-    t.integer "id"
-    t.string  "ope"
-    t.string  "ope6"
-    t.string  "accreditation_type"
-  end
 
   create_table "school_closures", force: :cascade do |t|
     t.string   "facility_code",          null: false
