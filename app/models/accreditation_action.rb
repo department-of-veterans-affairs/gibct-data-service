@@ -23,7 +23,6 @@ class AccreditationAction < ActiveRecord::Base
     "'Loss of Accreditation or Preaccreditation: Denial'",
     "'Loss of Accreditation or Preaccreditation: Lapse'",
     "'Loss of Accreditation or Preaccreditation: Other'",
-    "'Loss of Accreditation or Preaccreditation: Voluntary Withdrawal'",
     "'Probation or Equivalent or More Severe Status: Monitoring'",
     "'Probation or Equivalent or a More Severe Status: Other'",
     "'Probation or Equivalent or a More Severe Status: Probation'",
