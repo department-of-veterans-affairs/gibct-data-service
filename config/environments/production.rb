@@ -82,4 +82,12 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.action_mailer.delivery_method = :govdelivery_tms
+  config.action_mailer.govdelivery_tms_settings = {
+    # auth_token: Settings.reports.token,
+    # api_root: "https://#{Settings.reports.server}"
+    auth_token: ENV['GOVDELIVERY_TOKEN'],
+    api_root: "https://#{ENV['GOVDELIVERY_URL']}"
+  }
 end
