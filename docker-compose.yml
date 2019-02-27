@@ -27,6 +27,8 @@ services:
       GIBCT_URL: https://www.example.com
       ADMIN_EMAIL: 'something@example.gov'
       ADMIN_PW: 'something...'
+      GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
+      GOVDELIVERY_TOKEN: 'abc123'
     depends_on:
       - postgres
     links:
