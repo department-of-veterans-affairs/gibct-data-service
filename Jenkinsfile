@@ -5,9 +5,7 @@ def env_vars = [
   'SAML_IDP_METADATA_FILE=.',
   'SAML_CALLBACK_URL=https://www.example.com/saml/auth/callback',
   'SAML_IDP_SSO_URL=https://www.example.com/idp/sso',
-  'SAML_ISSUER=GIDS',
-  'GOVDELIVERY_URL=stage-tms.govdelivery.com',
-  'GOVDELIVERY_TOKEN=abc123'
+  'SAML_ISSUER=GIDS'
 ]
 
 pipeline {
