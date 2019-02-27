@@ -6,6 +6,8 @@ def env_vars = [
   'SAML_CALLBACK_URL=https://www.example.com/saml/auth/callback',
   'SAML_IDP_SSO_URL=https://www.example.com/idp/sso',
   'SAML_ISSUER=GIDS'
+  'GOVDELIVERY_URL=stat',
+  'GOVDELIVERY_TOKEN=stage-tms.govdelivery.com'
 ]
 
 pipeline {
