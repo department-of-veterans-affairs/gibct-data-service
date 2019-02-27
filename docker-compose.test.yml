@@ -32,7 +32,7 @@ services:
       SAML_IDP_SSO_URL: https://www.example.com/idp/sso
       SAML_ISSUER: GIDS
       GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
-      GOVDELIVERY_TOKEN: 'abc123
+      GOVDELIVERY_TOKEN: 'abc123'
     depends_on:
       - postgres
     links:
