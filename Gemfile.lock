@@ -117,12 +117,19 @@ GEM
       i18n (~> 0.5)
     faraday (0.12.0.1)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.13.1)
+      faraday (>= 0.7.4, < 1.0)
     ffi (1.9.25)
     figaro (1.1.1)
       thor (~> 0.14)
     formatador (0.2.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    govdelivery-tms (2.8.4)
+      activesupport
+      faraday
+      faraday_middleware
+      mime-types
     guard (2.14.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -362,6 +369,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.6)
   faker (~> 1.6, >= 1.6.2)
   figaro
+  govdelivery-tms (= 2.8.4)
   guard-rspec
   jquery-rails
   jquery-ui-rails

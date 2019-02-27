@@ -57,6 +57,8 @@ gem 'figaro'
 # Sentry
 gem 'sentry-raven', '~> 2.3.0'
 
+gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
