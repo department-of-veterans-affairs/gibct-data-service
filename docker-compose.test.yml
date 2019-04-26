@@ -33,6 +33,7 @@ services:
       SAML_ISSUER: GIDS
       GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
       GOVDELIVERY_TOKEN: 'abc123'
+      GOVDELIVERY_STAGING_SERVICE: true
     depends_on:
       - postgres
     links:
