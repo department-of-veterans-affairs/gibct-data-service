@@ -29,7 +29,7 @@ services:
       ADMIN_PW: 'something...'
       GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
       GOVDELIVERY_TOKEN: 'abc123'
-      GOVDELIVERY_STAGING_SERVICE: 'true'
+      GOVDELIVERY_STAGING_SERVICE: 'True'
     depends_on:
       - postgres
     links:
