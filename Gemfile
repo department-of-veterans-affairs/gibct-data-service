@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11'
+gem 'rails', '~> 4.2.11'
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
 # Use postgresql as the database for Active Record
@@ -24,7 +24,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use devise for authentication
 # Use cancancan for authorization
 gem 'bcrypt', '~> 3.1.7'
-gem 'devise', '~> 3.5', '>= 3.5.6'
+gem 'devise'
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'ruby-saml'
 

@@ -34,7 +34,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
 
         click_button 'Log in'
 
-        expect(page).to have_content('Invalid email or password')
+        expect(page).to have_content('Invalid Email or password')
       end
     end
 
