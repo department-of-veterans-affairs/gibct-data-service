@@ -45,7 +45,7 @@ pipeline {
           booleanParam(name: 'release', value: false),
         ], wait: true
 
-        build job: 'deploys/gi-bill-data-service-dev', parameters: [
+        build job: 'deploys/gi-bill-data-service-vagov-dev', parameters: [
           booleanParam(name: 'notify_slack', value: true),
           stringParam(name: 'ref', value: commit),
         ], wait: false
