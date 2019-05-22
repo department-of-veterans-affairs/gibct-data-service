@@ -146,6 +146,15 @@ class Institution < ActiveRecord::Base
     },
     'complaints_other_by_ope_id_do_not_sum' => {
       column: :complaints_other_by_ope_id_do_not_sum, converter: NumberConverter
+    },
+    'school_closing' => {
+      column: :school_closing, converter: BooleanConverter
+    },
+    'school_closing_on' => {
+      column: :school_closing_on, converter: DateConverter
+    },
+    'school_closing_message' => {
+      column: :school_closing_message, converter: BaseConverter
     }
   }.freeze
 
