@@ -155,6 +155,9 @@ class Institution < ActiveRecord::Base
     },
     'school_closing_message' => {
       column: :school_closing_message, converter: BaseConverter
+    },
+    'approved' => {
+      column: :approved, converter: BooleanConverter
     }
   }.freeze
 
