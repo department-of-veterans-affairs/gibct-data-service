@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-
-  def isProduction
-    !ENV['GOVDELIVERY_STAGING_SERVICE']
-  end
-
   def active_link?(path, method = 'GET')
     begin
       h = Rails.application.routes.recognize_path(path, method: method)

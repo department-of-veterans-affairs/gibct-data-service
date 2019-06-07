@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
-require '../helpers/application_helper.rb'
-
 class UploadsController < ApplicationController
   def index
-    puts ApplicationHelper.isProduction()
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
 
