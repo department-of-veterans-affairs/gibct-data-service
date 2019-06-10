@@ -452,16 +452,16 @@ module InstitutionBuilder
         created_at,
         updated_at
       )
-      SELECT 
-        zip, 
-        bah, 
+      SELECT
+        zip,
+        bah,
         dod_bah,
         #{version_number} as version,
         #{conn.quote(timestamp)} as created_at,
         #{conn.quote(timestamp)} as updated_at
       FROM weams
       WHERE country = 'USA'
-        AND bah IS NOT null 
+        AND bah IS NOT null
         AND dod_bah IS NOT null
       GROUP BY zip, bah, dod_bah
       ORDER BY zip
