@@ -11,7 +11,7 @@ RSpec.describe Institution, type: :model do
     it_behaves_like 'a loadable model', skip_lines: 0
     it_behaves_like 'an exportable model', skip_lines: 0
   end
- 
+
   describe 'when validating' do
     subject { create :institution }
 
