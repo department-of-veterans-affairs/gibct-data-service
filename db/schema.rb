@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190129174257) do
+ActiveRecord::Schema.define(version: 20190610114000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1363,6 +1363,8 @@ ActiveRecord::Schema.define(version: 20190129174257) do
     t.string   "mha_name"
     t.float    "mha_rate"
     t.float    "mha_rate_grandfathered"
+    t.float    "dod_mha_rate"
+    t.integer  "version"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
