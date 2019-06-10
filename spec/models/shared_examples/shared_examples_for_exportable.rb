@@ -18,7 +18,6 @@ RSpec.shared_examples 'an exportable model' do |options|
       header_row = rows.shift.split(',').map(&:downcase)
 
       rows = CSV.parse(rows.join("\n"))
-
       described_class.find_each.with_index do |record, i|
         attributes = {}
 
@@ -30,8 +29,6 @@ RSpec.shared_examples 'an exportable model' do |options|
         test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at')
         test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
 
-        puts csv_test_attributes
-        puts test_attributes
         expect(csv_test_attributes).to eq(test_attributes)
       end
     end
