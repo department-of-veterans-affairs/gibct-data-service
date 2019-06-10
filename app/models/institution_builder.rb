@@ -79,19 +79,12 @@ module InstitutionBuilder
     conn = ActiveRecord::Base.connection
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
-    if ENV['GOVDELIVERY_STAGING_SERVICE'] 
-      str += Weam.select(columns)
-                 .select("#{version_number.to_i} as version")
-                 .select("#{conn.quote(timestamp)} as created_at")
-                 .select("#{conn.quote(timestamp)} as updated_at")
-                 .to_sql
-    else 
-      str += Weam.select(columns)
-                 .select("#{version_number.to_i} as version")
-                 .select("#{conn.quote(timestamp)} as created_at")
-                 .select("#{conn.quote(timestamp)} as updated_at")
-                 .where(approved: true).to_sql
-    end
+    str += Weam.select(columns)
+                .select("#{version_number.to_i} as version")
+                .select("#{conn.quote(timestamp)} as created_at")
+                .select("#{conn.quote(timestamp)} as updated_at")
+                .to_sql
+ 
     Institution.connection.insert(str)
   end
 
