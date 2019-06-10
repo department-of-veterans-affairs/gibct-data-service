@@ -43,6 +43,7 @@ module InstitutionBuilder
     add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
     add_school_closure(version_number)
+    build_zip_code_rates_from_weams(version_number)
   end
 
   def self.run(user)
@@ -436,5 +437,36 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
+  end
+
+  def self.build_zip_code_rates_from_weams(version_number)
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ActiveRecord::Base.connection
+
+    str = <<-SQL
+      INSERT INTO zipcode_rates (
+        zip_code,
+        mha_rate,
+        dod_mha_rate,
+        version,
+        created_at,
+        updated_at
+      )
+      SELECT 
+        zip, 
+        bah, 
+        dod_bah,
+        #{version_number} as version,
+        #{conn.quote(timestamp)} as created_at,
+        #{conn.quote(timestamp)} as updated_at
+      FROM weams
+      WHERE country = 'USA'
+        AND bah IS NOT null 
+        AND dod_bah IS NOT null
+      GROUP BY zip, bah, dod_bah
+      ORDER BY zip
+    SQL
+
+    ZipcodeRate.connection.insert(str)
   end
 end
