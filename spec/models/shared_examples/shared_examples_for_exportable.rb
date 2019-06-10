@@ -18,7 +18,6 @@ RSpec.shared_examples 'an exportable model' do |options|
       header_row = rows.shift.split(',').map(&:downcase)
 
       rows = CSV.parse(rows.join("\n"))
-
       described_class.find_each.with_index do |record, i|
         attributes = {}
 
