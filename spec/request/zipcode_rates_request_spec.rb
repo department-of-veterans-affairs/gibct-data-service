@@ -5,7 +5,6 @@ require 'support/controller_macros'
 require 'support/devise'
 
 RSpec.describe 'zipcode_rates', type: :request do
-
   before(:each) do
     create(:version, :production)
   end
