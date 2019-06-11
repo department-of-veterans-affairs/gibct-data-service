@@ -456,9 +456,9 @@ module InstitutionBuilder
         zip,
         bah,
         dod_bah,
-        #{version_number} as version,
-        #{conn.quote(timestamp)} as created_at,
-        #{conn.quote(timestamp)} as updated_at
+        #{version_number},
+        #{conn.quote(timestamp)},
+        #{conn.quote(timestamp)}
       FROM weams
       WHERE country = 'USA'
         AND bah IS NOT null
