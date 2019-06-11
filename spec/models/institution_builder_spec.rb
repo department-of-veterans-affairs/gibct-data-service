@@ -858,7 +858,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
-    
+
     describe 'when initializing with Weam data' do
       let(:weam) { Weam.first }
       let(:institution) { institutions.first }

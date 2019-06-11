@@ -467,7 +467,7 @@ module InstitutionBuilder
       ORDER BY zip
     SQL
 
-    sql = ZipcodeRate.send(:sanitize_sql, [str])
-    ZipcodeRate.connection.insert(sql)
+    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
+    ZipcodeRate.connection.execute(sql)
   end
 end
