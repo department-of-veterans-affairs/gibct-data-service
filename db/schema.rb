@@ -1369,4 +1369,7 @@ ActiveRecord::Schema.define(version: 20190610114000) do
     t.datetime "updated_at",             null: false
   end
 
+  add_index "zipcode_rates", ["zip_code"], name: "index_zipcode_rates_on_zip_code", using: :btree
+  add_index "zipcode_rates", ["version"], name: "index_zipcode_rates_on_version", using: :btree
+
 end
