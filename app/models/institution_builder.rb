@@ -456,7 +456,7 @@ module InstitutionBuilder
         zip,
         bah,
         dod_bah,
-        #{version_number},
+        ?,
         #{conn.quote(timestamp)},
         #{conn.quote(timestamp)}
       FROM weams
@@ -467,6 +467,7 @@ module InstitutionBuilder
       ORDER BY zip
     SQL
 
-    ZipcodeRate.connection.insert(str)
+    sql = ZipcodeRate.send(:sanitize_sql, [str])
+    ZipcodeRate.connection.insert(sql)
   end
 end

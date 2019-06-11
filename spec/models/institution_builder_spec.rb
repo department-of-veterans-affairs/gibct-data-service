@@ -858,5 +858,18 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+    
+    describe 'when initializing with Weam data' do
+      let(:weam) { Weam.first }
+      let(:institution) { institutions.first }
+
+      before(:each) do
+        InstitutionBuilder.run(user)
+      end
+
+      it 'adds approved schools only' do
+        expect(zipcode_rate.count).to be > 0
+      end
+    end
   end
 end
