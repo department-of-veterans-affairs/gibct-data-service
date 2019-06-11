@@ -8,7 +8,7 @@ module V0
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
-        @data = Institution.version(@version[:number]).autocomplete(@search_term)
+        @data = Institution.version(@version[:number]).autocomplete(@search_term).where(approved: true)
       end
       @meta = {
         version: @version,
@@ -30,7 +30,7 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = Institution.version(@version[:number]).find_by(facility_code: params[:id])
+      resource = Institution.version(@version[:number]).find_by(facility_code: params[:id]).where(approved: true)
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -60,7 +60,7 @@ module V0
     # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
-      relation = Institution.version(@version[:number]).search(@query[:name], @query[:include_address])
+      relation = Institution.version(@version[:number]).where(approved: true).search(@query[:name], @query[:include_address])
       [
         %i[institution_type_name type],
         [:category],
