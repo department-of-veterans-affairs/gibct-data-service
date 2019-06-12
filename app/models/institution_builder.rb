@@ -14,6 +14,16 @@ module InstitutionBuilder
     'institutions.ope = accreditation_institute_campuses.ope'
   ].freeze
 
+  def self.add_vet_tech_provider(version_number)
+    str = <<-SQL
+    UPDATE institutions SET vet_tec_provider = TRUE
+      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
+        AND institutions.version = #{version_number};
+    SQL
+    Institution.connection.update(str)
+ 
+  end 
+
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
@@ -43,6 +53,7 @@ module InstitutionBuilder
     add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
     add_school_closure(version_number)
+    add_vet_tech_provider(version_number)
   end
 
   def self.run(user)
