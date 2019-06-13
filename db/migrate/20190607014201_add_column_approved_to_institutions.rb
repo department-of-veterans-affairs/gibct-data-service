@@ -1,6 +1,10 @@
 class AddColumnApprovedToInstitutions < ActiveRecord::Migration
   def change
-    # Note this is going to result in null values, three-state-boolean problem
-    add_column :institutions, :approved, :boolean
+    add_column :institutions, :approved, :boolean, null: false, default: false
+    reversible do |dir|
+      dir.up do
+        Institution.update_all(approved: true)
+      end
+    end
   end
 end
