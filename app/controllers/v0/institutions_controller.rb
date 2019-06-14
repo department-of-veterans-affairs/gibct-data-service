@@ -5,15 +5,15 @@ module V0
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
 
-    def approvedInstitutions
-      return Institution.version(@version[:number]).where(approved: true) 
+    def approved_institutions
+      Institution.version(@version[:number]).where(approved: true)
     end
 
     def autocomplete
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
-        @data = approvedInstitutions.autocomplete(@search_term)
+        @data = approved_institutions.autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -35,7 +35,7 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = approvedInstitutions.find_by(facility_code: params[:id])
+      resource = approved_institutions.find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -65,7 +65,7 @@ module V0
     # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
-      relation = approvedInstitutions.search(@query[:name], @query[:include_address])
+      relation = approved_institutions.search(@query[:name], @query[:include_address])
       [
         %i[institution_type_name type],
         [:category],
