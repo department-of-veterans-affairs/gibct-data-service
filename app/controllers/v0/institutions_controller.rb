@@ -51,7 +51,7 @@ module V0
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning].each do |k|
+           online_only distance_learning vet_tec_provider].each do |k|
           query[k].try(:downcase!)
         end
       end
@@ -74,7 +74,8 @@ module V0
         [:independent_study], # boolean
         [:online_only],
         [:distance_learning],
-        [:priority_enrollment] # boolean
+        [:priority_enrollment], # boolean
+        [:vet_tec_provider], # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])

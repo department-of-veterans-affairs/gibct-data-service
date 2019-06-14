@@ -26,8 +26,7 @@ module InstitutionBuilder
         AND institutions.version = #{version_number};
     SQL
     Institution.connection.update(str)
- 
-  end 
+  end
 
   def self.run_insertions(version_number)
     initialize_with_weams(version_number)
