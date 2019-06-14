@@ -80,10 +80,11 @@ module InstitutionBuilder
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
     str += Weam.select(columns)
-               .select("#{version_number.to_i} as version")
-               .select("#{conn.quote(timestamp)} as created_at")
-               .select("#{conn.quote(timestamp)} as updated_at")
-               .where(approved: true).to_sql
+                .select("#{version_number.to_i} as version")
+                .select("#{conn.quote(timestamp)} as created_at")
+                .select("#{conn.quote(timestamp)} as updated_at")
+                .to_sql
+ 
     Institution.connection.insert(str)
   end
 
