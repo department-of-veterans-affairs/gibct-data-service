@@ -4,6 +4,7 @@ module V0
   # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
+  
     def approved_institutions
       Institution.version(@version[:number]).where(approved: true)
     end
