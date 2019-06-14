@@ -10,7 +10,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
       get :index
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'accepts invalid version parameter and returns production data' do
@@ -19,7 +19,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
       get :index, version: 'invalid_data'
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
       body = JSON.parse response.body
       expect(body['meta']['version']['number'].to_i).to eq(Version.current_production.number)
     end
@@ -31,7 +31,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
       get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
       body = JSON.parse response.body
       expect(body['meta']['version']['number'].to_i).to eq(Version.current_preview.number)
     end
@@ -68,49 +68,49 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get :index, version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(4)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'search returns results matching name' do
       get :index, name: 'chicago', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'search returns case-insensitive results' do
       get :index, name: 'CHICAGO', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'search with space returns results' do
       get :index, name: 'New Roch', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filter by uppercase country returns results' do
       get :index, name: 'chicago', country: 'USA', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filter by lowercase country returns results' do
       get :index, name: 'chicago', country: 'usa', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filter by uppercase state returns results' do
       get :index, name: 'new', state: 'NY', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filters by online_only schools' do
@@ -127,7 +127,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get :index, name: 'new', state: 'ny', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'has facet metadata' do
@@ -186,28 +186,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get :index, category: 'employer', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filters by school category' do
       get :index, category: 'school', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filters by employer type' do
       get :index, type: 'ojt', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
 
     it 'filters by school type' do
       get :index, type: 'private', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect(response).to match_response_schema('approved_institutions')
     end
   end
 
