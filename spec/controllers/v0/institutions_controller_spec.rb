@@ -59,8 +59,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'search results' do
     before(:each) do
       create(:version, :production)
-      2.times { create(:institution, :in_nyc,approved: true) }
-      create(:institution, :in_chicago, online_only: true,approved: true)
+      2.times { create(:institution, :in_nyc, approved: true) }
+      create(:institution, :in_chicago, online_only: true, approved: true)
       create(:institution, :in_new_rochelle, distance_learning: true, approved: true)
     end
 
