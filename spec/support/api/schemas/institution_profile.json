@@ -118,6 +118,7 @@
             "school_closing": { "type": ["null", "boolean"] },
             "school_closing_on": { "type": ["null", "string"] },
             "school_closing_message": { "type": ["null", "string"] },
+            "vet_tec_provider": {"type":  ["null", "boolean"]},
             "complaints": {
               "type": "object",
               "properties": {
@@ -147,7 +148,7 @@
                 "credit_transfer_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
                 "jobs_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
                 "transcript_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "other_by_ope_id_do_not_sum": { "type": ["null", "integer"] }
+                "other_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
               },
               "required": [
                 "facility_code",
