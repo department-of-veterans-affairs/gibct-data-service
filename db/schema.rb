@@ -1364,13 +1364,13 @@ ActiveRecord::Schema.define(version: 20190610114000) do
     t.string   "mha_name"
     t.float    "mha_rate"
     t.float    "mha_rate_grandfathered"
-    t.float    "dod_mha_rate"
-    t.integer  "version"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.float    "dod_mha_rate"
+    t.integer  "version"
   end
 
-  add_index "zipcode_rates", ["zip_code"], name: "index_zipcode_rates_on_zip_code", using: :btree
   add_index "zipcode_rates", ["version"], name: "index_zipcode_rates_on_version", using: :btree
+  add_index "zipcode_rates", ["zip_code"], name: "index_zipcode_rates_on_zip_code", using: :btree
 
 end
