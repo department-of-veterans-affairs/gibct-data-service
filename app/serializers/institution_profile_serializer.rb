@@ -85,7 +85,6 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :distance_learning
   attribute :dod_bah
   attribute :physical_zip
-  attribute :closure109
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

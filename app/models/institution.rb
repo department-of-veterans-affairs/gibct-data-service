@@ -156,9 +156,10 @@ class Institution < ActiveRecord::Base
     'school_closing_message' => {
       column: :school_closing_message, converter: BaseConverter
     },
+    'closure109' => { column: :closure109, converter: BooleanConverter },
     'approved' => {
       column: :approved, converter: BooleanConverter
-    }
+    },
   }.freeze
 
   validates :facility_code, uniqueness: true, presence: true
