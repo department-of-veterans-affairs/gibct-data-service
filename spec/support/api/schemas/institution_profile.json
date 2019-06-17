@@ -48,6 +48,9 @@
             "address_3": { "type": ["null", "string"] },
             "city": { "type": ["null", "string"] },
 
+            "physical_address_1": { "type": ["null", "string"] },
+            "physical_address_2": { "type": ["null", "string"] },
+            "physical_address_3": { "type": ["null", "string"] },
             "physical_city": { "type": ["null", "string"] },
             "physical_state": { "type": ["null", "string"] },
             "physical_country": { "type": ["null", "string"] },
