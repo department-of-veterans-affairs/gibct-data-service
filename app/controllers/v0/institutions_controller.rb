@@ -5,6 +5,8 @@ module V0
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
 
+    private
+    
     def approved_institutions
       Institution.version(@version[:number]).where(approved: true)
     end
