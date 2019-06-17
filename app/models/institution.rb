@@ -159,7 +159,7 @@ class Institution < ActiveRecord::Base
     'closure109' => { column: :closure109, converter: BooleanConverter },
     'approved' => {
       column: :approved, converter: BooleanConverter
-    },
+    }
   }.freeze
 
   validates :facility_code, uniqueness: true, presence: true
@@ -218,6 +218,9 @@ class Institution < ActiveRecord::Base
   def closure109
     !school_closing_on.nil?
   end
+
+  # Empty setter for testing CSV conversion
+  def closure109=(val); end
 
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
