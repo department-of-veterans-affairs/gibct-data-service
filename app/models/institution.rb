@@ -213,6 +213,11 @@ class Institution < ActiveRecord::Base
     institution_type_name != 'OJT'
   end
 
+  # Calculate boolean based on whether or not the school is in the school_closures table
+  def closure109
+    !school_closing_on.nil?
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
