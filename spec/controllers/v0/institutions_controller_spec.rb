@@ -66,7 +66,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'search returns results' do
       get :index, version: 'production'
-      expect(JSON.parse(response.body)['data'].count).to eq(5)
+      expect(JSON.parse(response.body)['data'].count).to eq(4)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
