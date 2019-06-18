@@ -59,6 +59,10 @@ FactoryGirl.define do
       facility_code { generate(:facility_code_private) }
     end
 
+    trait :vet_tec do
+      facility_code '1VZZZZZZ'
+    end
+
     trait :higher_learning do
       institution_of_higher_learning_indicator true
     end

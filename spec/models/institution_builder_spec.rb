@@ -793,6 +793,10 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
+      describe 'determining if vet_tec_provider' do
+
+      end
+
       context 'without a cross record match to an ipeds cip code' do
         let(:institution) { Institution.first }
 
@@ -856,6 +860,19 @@ RSpec.describe InstitutionBuilder, type: :model do
         SchoolClosure::COLS_USED_IN_INSTITUTION.each do |column|
           expect(school_closure[column]).to eq(institution[column])
         end
+      end
+    end
+
+    describe 'when adding Vet Tec Provider data' do
+      before(:each) do
+        create(:weam, :vet_tec)
+        InstitutionBuilder.run(user)
+      end
+
+      let(:institution) { institutions.find_by(facility_code: '1VZZZZZZ') }
+
+      it 'sets vet_tec_provider to true' do
+        expect(institution.vet_tec_provider).to eq(true)
       end
     end
   end
