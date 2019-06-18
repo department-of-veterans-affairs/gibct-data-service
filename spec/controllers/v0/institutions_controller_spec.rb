@@ -62,7 +62,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       2.times { create(:institution, :in_nyc) }
       create(:institution, :in_chicago, online_only: true)
       create(:institution, :in_new_rochelle, distance_learning: true)
-      create(:institution, :vet_tec_provider, vet_tec_provider: true)
     end
 
     it 'search returns results' do
@@ -125,6 +124,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filters by vet_tec_provider schools' do
+      create(:institution, :vet_tec_provider, vet_tec_provider: true)
       get :index, vet_tec_provider: true, version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
