@@ -141,12 +141,13 @@ module V0
         array << { name: k, count: v }
       end
     end
-    #private method added to account for added approved column
+    # private method added to account for added approved column
+
     private
+
     def approved_institutions
       Institution.version(@version[:number]).where(approved: true)
     end
-
   end
   # rubocop:enable Metrics/ClassLength
 end
