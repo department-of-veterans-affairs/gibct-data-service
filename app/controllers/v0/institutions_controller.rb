@@ -5,12 +5,6 @@ module V0
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
 
-    private
-    
-    def approved_institutions
-      Institution.version(@version[:number]).where(approved: true)
-    end
-
     def autocomplete
       @data = []
       if params[:term]
@@ -147,6 +141,12 @@ module V0
         array << { name: k, count: v }
       end
     end
+    #private method added to account for added approved column
+    private
+    def approved_institutions
+      Institution.version(@version[:number]).where(approved: true)
+    end
+
   end
   # rubocop:enable Metrics/ClassLength
 end
