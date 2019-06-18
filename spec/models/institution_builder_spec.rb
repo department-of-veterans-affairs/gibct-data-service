@@ -793,10 +793,6 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      describe 'determining if vet_tec_provider' do
-
-      end
-
       context 'without a cross record match to an ipeds cip code' do
         let(:institution) { Institution.first }
 
