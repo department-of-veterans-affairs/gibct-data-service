@@ -156,7 +156,7 @@ class Institution < ActiveRecord::Base
     'school_closing_message' => {
       column: :school_closing_message, converter: BaseConverter
     },
-    'closure109' => { column: :closure109, converter: BooleanConverter },
+    'closure109' => { column: :closure109, converter: BooleanConverter, field_only: true },
     'approved' => {
       column: :approved, converter: BooleanConverter
     }
@@ -216,7 +216,7 @@ class Institution < ActiveRecord::Base
 
   # Calculate boolean based on whether or not the school is in the school_closures table
   def closure109
-    !school_closing_on.nil?
+    school_closing_on.present? || school_closing.present? || school_closing_message.present?
   end
 
   # Empty setter for testing CSV conversion
