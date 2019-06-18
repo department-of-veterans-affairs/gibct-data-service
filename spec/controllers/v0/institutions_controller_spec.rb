@@ -31,7 +31,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
       v = create(:version, :preview)
       create(:institution, :contains_harv, approved: true, version: Version.current_preview.number)
-
+      # adding a non approved institutions row
+      create(:institution, :contains_harv, approved: false)
       get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -44,6 +45,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'returns collection of matches' do
       create(:version, :production)
       7.times { create(:institution, :contains_harv, approved: true) }
+      # adding a non approved institutions row
       create(:institution, :contains_harv, approved: false)
       get :autocomplete, term: 'harv', version: 'production'
       expect(response.content_type).to eq('application/json')
