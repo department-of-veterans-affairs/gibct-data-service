@@ -68,7 +68,8 @@
               "school_closing": { "type": ["null", "boolean"] },
               "stem_offered": { "type": ["null", "boolean"] },
               "independent_study": { "type": ["null", "boolean"] },
-              "priority_enrollment": { "type": ["null", "boolean"] }
+              "priority_enrollment": { "type": ["null", "boolean"] },
+              "vet_tec_provider": { "type": "boolean" }
             },
             "required": [
               "name",
@@ -96,7 +97,8 @@
               "school_closing",
               "stem_offered",
               "independent_study",
-              "priority_enrollment"
+              "priority_enrollment",
+              "vet_tec_provider"
             ]
           },
           "links": {

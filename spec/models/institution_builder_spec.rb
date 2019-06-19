@@ -858,5 +858,18 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding Vet Tec Provider data' do
+      before(:each) do
+        create(:weam, :vet_tec)
+        InstitutionBuilder.run(user)
+      end
+
+      let(:institution) { institutions.find_by(facility_code: '1VZZZZZZ') }
+
+      it 'sets vet_tec_provider to true' do
+        expect(institution.vet_tec_provider).to eq(true)
+      end
+    end
   end
 end

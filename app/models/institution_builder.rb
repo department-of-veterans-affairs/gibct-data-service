@@ -19,6 +19,15 @@ module InstitutionBuilder
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
+  def self.add_vet_tec_provider(version_number)
+    str = <<-SQL
+    UPDATE institutions SET vet_tec_provider = TRUE
+      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
+        AND institutions.version = #{version_number};
+    SQL
+    Institution.connection.update(str)
+  end
+
   def self.run_insertions(version_number)
     initialize_with_weams(version_number)
     add_crosswalk(version_number)
@@ -43,6 +52,7 @@ module InstitutionBuilder
     add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
     add_school_closure(version_number)
+    add_vet_tec_provider(version_number)
   end
 
   def self.run(user)
