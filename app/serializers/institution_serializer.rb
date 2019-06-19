@@ -47,6 +47,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
 
   attribute :school_closing
+  attribute :vet_tec_provider
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
