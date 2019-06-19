@@ -89,6 +89,7 @@ FactoryGirl.define do
       state 'SC'
       country 'USA'
       vet_tec_provider true
+      approved true
     end
   end
 end
