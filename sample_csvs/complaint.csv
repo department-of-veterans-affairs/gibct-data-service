@@ -1,3 +1,10 @@
+System Name,Postsecondary Education Complaint System,,,,,,,,
+Report Title,Complaint Cases Summary,,,,,,,,
+Report Date,03/02/2017,,,,,,,,
+,,,,,,,,,
+Date Range (min),01/01/2014,,,,,,,,
+Date Range (max),03/01/2017,,,,,,,,
+ ,,,,,,,,,
 case id,level,status,case owner,school,opeid,facility code,school city,school state,submitted,closed,closed reason,issues,education benefits
 VA1074,,closed,,ROSE STATE COLLEGE,"""00918500""",14927436,MIDWEST CITY,OK,,,resolved,Financial Issues (e.g. Tuition/Fee charges),Post-9/11 GI Bill (Ch. 33)
 VA1075,,closed,,UNIVERSITY OF PHOENIX LITTLE ROCK,"""12098848""",21005604,LITTLE ROCK,AR,,,invalid,Financial Issues (e.g. Tuition/Fee charges),Post-9/11 GI Bill (Ch. 33)
