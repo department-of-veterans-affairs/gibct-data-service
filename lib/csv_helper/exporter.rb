@@ -57,7 +57,7 @@ module CsvHelper
     end
 
     def false_to_nil(value)
-      value == false ? nill : value
+      value == false ? nil : value
     end
   end
 end
