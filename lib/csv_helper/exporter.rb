@@ -45,6 +45,7 @@ module CsvHelper
     end
 
     def format_value(record, field)
+      value = field['non_hash'] ? record.send(field['column']) : record[field['column']]
       return "\"#{value}\"" if field['column'] == :ope && record[field['column']].present?
       value
     end
