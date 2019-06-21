@@ -156,7 +156,7 @@ class Institution < ActiveRecord::Base
     'school_closing_message' => {
       column: :school_closing_message, converter: BaseConverter
     },
-    'closure109' => { column: :closure109, converter: BooleanConverter, field_only: true },
+    'closure109' => { column: :closure109, converter: BooleanConverter, non_hash: true },
     'approved' => {
       column: :approved, converter: BooleanConverter
     }
