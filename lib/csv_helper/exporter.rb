@@ -51,7 +51,7 @@ module CsvHelper
     end
 
     def format_institution_value(record, field)
-      value = set_false_to_nil(field['non_hash'] ? record.send(field['column']) : record[field['column']])
+      value = false_to_nil(field['non_hash'] ? record.send(field['column']) : record[field['column']])
       return "\"#{value}\"" if field['column'] == :ope && value.present?
       value
     end
