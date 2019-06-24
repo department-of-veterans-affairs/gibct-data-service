@@ -1,4 +1,5 @@
-facility code,name of institution,state,country,number of trainees,profit status,type of payment,tuition and fees cost,number of payments
+Facility code,Name of institution,State,Country, Number of trainees ,Profit status,Type of payment,Total cost, Number of payments 
+XXXXXXXX,Unknown,UNKNOWN,,400,Unknown,Yellow Ribbon,"$375,585.15 ",435
 31P01832,FORDHAM UNIVERSITY COLLEGE OF LIBERAL STUDIES WESTCHESTER,New York,USA,10,Private non-profit,Yellow Ribbon,43034.64,13
 149C4438,BUCKS COUNTY COMMUNITY COLLEGE,Pennsylvania,USA,2,Public,Yellow Ribbon,5060,3
 218A0032,BRYANT & STRATTON COLLEGE-AMHERST,New York,USA,6,Private profit,Yellow Ribbon,9810.67,11
