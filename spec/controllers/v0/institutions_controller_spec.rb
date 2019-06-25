@@ -7,9 +7,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'uses a production version as a default' do
       create(:version, :production)
       create(:institution, :contains_harv, approved: true)
-      # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false)
-
       get :index
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -18,8 +15,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'accepts invalid version parameter and returns production data' do
       create(:version, :production)
       create(:institution, :contains_harv, approved: true)
-      # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false)
       get :index, version: 'invalid_data'
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -31,8 +26,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
       v = create(:version, :preview)
       create(:institution, :contains_harv, approved: true, version: Version.current_preview.number)
-      # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false)
       get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -42,12 +35,11 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'autocomplete results' do
-    it 'returns collection of matches' do
+    it 'does not return results for non-approved institutions' do
       create(:version, :production)
-      7.times { create(:institution, :contains_harv, approved: true) }
-      # adding a non approved institutions row
       create(:institution, :contains_harv, approved: false)
       get :autocomplete, term: 'harv', version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
@@ -55,8 +47,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'returns empty collection on missing term parameter' do
       create(:version, :production)
       7.times { create(:institution, :contains_harv, approved: true) }
-      # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false)
       get :autocomplete, term: nil, version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
