@@ -61,7 +61,9 @@ class Weam < ActiveRecord::Base
     'current academic year dod bah rate' => { column: :dod_bah, converter: NumberConverter },
     'online only' => { column: :online_only, converter: BooleanConverter },
     'distance learning' => { column: :distance_learning, converter: BooleanConverter },
-    'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter }
+    'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter },
+    'campus type' => { column: :campus_type, converter: BaseConverter },
+    'parent facility code id' => { column: :parent_facility_code_id, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, :institution, :institution_type_name, presence: true
