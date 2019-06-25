@@ -39,6 +39,22 @@ module V0
              meta: { version: @version }, links: @links
     end
 
+    # GET /v0/institituons/20005123/children
+    def children
+      children = Institution.version(@version[:number]).where(parent_facility_code_id: params[:id])
+
+      @meta = {
+        version: @version,
+        count: children.count,
+        facets: facets
+      }
+      @links = { self: self_link }
+      render json: children.order(:institution).page(params[:page]),
+             each_serializer: InstitutionSerializer,
+             meta: { version: @version },
+             links: @links
+    end
+
     private
 
     def normalized_query_params
