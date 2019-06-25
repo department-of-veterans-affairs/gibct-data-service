@@ -323,7 +323,7 @@ ActiveRecord::Schema.define(version: 20190625012000) do
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
 
-  create_table "institutions_archive", id: false, force: :cascade do |t|
+  create_table "institutions_archives", id: false, force: :cascade do |t|
     t.integer  "id"
     t.integer  "version"
     t.string   "institution_type_name"
