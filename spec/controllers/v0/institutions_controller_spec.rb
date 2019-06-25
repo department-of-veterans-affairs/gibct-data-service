@@ -237,8 +237,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns profile details' do
       school = create(:institution, :in_chicago, approved: true)
-      # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false)
       get :show, id: school.facility_code, version: school.version
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
