@@ -45,8 +45,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns empty collection on missing term parameter' do
       create(:version, :production)
-      7.times { create(:institution, :contains_harv, approved: true) }
-      # adding a non approved institutions row
       create(:institution, :contains_harv, approved: false)
       get :autocomplete, term: nil, version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(0)
