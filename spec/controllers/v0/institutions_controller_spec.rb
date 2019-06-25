@@ -6,8 +6,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'version determination' do
     it 'uses a production version as a default' do
       create(:version, :production)
-      create(:institution, :contains_harv)
-
+      create(:institution, :contains_harv, approved: true)
       get :index
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -15,8 +14,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'accepts invalid version parameter and returns production data' do
       create(:version, :production)
-      create(:institution, :contains_harv)
-
+      create(:institution, :contains_harv, approved: true)
       get :index, version: 'invalid_data'
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -27,8 +25,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
       v = create(:version, :preview)
-      create(:institution, :contains_harv, version: Version.current_preview.number)
-
+      create(:institution, :contains_harv, approved: true, version: Version.current_preview.number)
       get :index, version: v.uuid
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -40,7 +37,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'autocomplete results' do
     it 'returns collection of matches' do
       create(:version, :production)
-      7.times { create(:institution, :contains_harv) }
+      7.times { create(:institution, :contains_harv, approved: true) }
       get :autocomplete, term: 'harv', version: 'production'
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -48,8 +45,17 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns empty collection on missing term parameter' do
       create(:version, :production)
-      7.times { create(:institution, :contains_harv) }
+      create(:institution, :contains_harv, approved: false)
       get :autocomplete, term: nil, version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'does not return results for non-approved institutions' do
+      create(:version, :production)
+      create(:institution, :contains_harv, approved: false)
+      get :autocomplete, term: 'harv', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -59,9 +65,11 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'search results' do
     before(:each) do
       create(:version, :production)
-      2.times { create(:institution, :in_nyc) }
-      create(:institution, :in_chicago, online_only: true)
-      create(:institution, :in_new_rochelle, distance_learning: true)
+      2.times { create(:institution, :in_nyc, approved: true) }
+      create(:institution, :in_chicago, online_only: true, approved: true)
+      create(:institution, :in_new_rochelle, distance_learning: true, approved: true)
+      # adding a non approved institutions row
+      create(:institution, :contains_harv, approved: false)
     end
 
     it 'search returns results' do
@@ -185,8 +193,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'category and type search results' do
     before(:each) do
       create(:version, :production)
-      create(:institution, :in_nyc)
-      create(:institution, :ca_employer)
+      create(:institution, :in_nyc, approved: true)
+      create(:institution, :ca_employer, approved: true)
     end
 
     it 'filters by employer category' do
@@ -224,8 +232,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'returns profile details' do
-      school = create(:institution, :in_chicago)
-
+      school = create(:institution, :in_chicago, approved: true)
       get :show, id: school.facility_code, version: school.version
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
