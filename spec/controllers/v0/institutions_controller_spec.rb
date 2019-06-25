@@ -187,8 +187,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
       create(:institution, :in_nyc, approved: true)
       create(:institution, :ca_employer, approved: true)
-      # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false)
     end
 
     it 'filters by employer category' do
