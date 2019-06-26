@@ -36,6 +36,6 @@ class AuthController < ApplicationController
   end
 
   def saml_settings
-    @settings ||= SAML::Settings.settings
+    @saml_settings ||= SAML::Settings.settings
   end
 end

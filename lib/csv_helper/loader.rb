@@ -55,9 +55,9 @@ module CsvHelper
       record.errors.any? ? records[:invalid] << record : records[:valid] << record
     end
 
-    def row_to_record(row, i)
+    def row_to_record(row, index)
       record = klass.new(row)
-      record.errors.add(:row, "Line #{i}") unless record.valid?
+      record.errors.add(:row, "Line #{index}") unless record.valid?
 
       record
     end

@@ -14,5 +14,4 @@ class InstitutionsArchive < Institution::ActiveRecord::Base
       Institution.connection.execute(str)
     end
   end
-
 end
