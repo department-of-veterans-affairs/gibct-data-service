@@ -1,60 +1,60 @@
-State,State Full Name,Sec702
-AK,Alaska,Yes
-AL,Alabama,Yes
-AR,Arkansas,Yes
-AS,American Samoa,Yes
-AZ,Arizona,Yes
-CA,California,Yes
-CO,Colorado,Yes
-CT,Connecticut,Yes
-DC,District of Columbia,Yes
-DE,Delaware,Yes
-FL,Florida,Yes
-FM,Federated States of Miconeisa,Yes
-GA,Georgia,Yes
-GU,Guam,Yes
-HI,Hawaii,Yes
-IA,Iowa,Yes
-ID,Idaho,Yes
-IL,Illinois,Yes
-IN,Indiana,Yes
-KS,Kansas,Yes
-KY,Kentucky,Yes
-LA,Louisiana,Yes
-MA,Massachusetts,Yes
-MD,Maryland,Yes
-ME,Maine,Yes
-MH,Marshall Islands,Yes
-MI,Michigan,Yes
-MN,Minnesota,Yes
-MO,Missouri,Yes
-MP,Northern Mariana Islands,Yes
-MS,Mississippi,Yes
-MT,Montana,Yes
-NC,North Carolina,Yes
-ND,North Dakota,Yes
-NE,Nebraska,Yes
-NH,New Hampshire,Yes
-NJ,New Jersey,Yes
-NM,New Mexico,Yes
-NV,Nevada,Yes
-NY,New York,Yes
-OH,Ohio,Yes
-OK,Oklahoma,Yes
-OR,Oregon,Yes
-PA,Pennsylvania,Yes
-PR,Puerto Rico,Yes
-PW,Palau,Yes
-RI,Rhode Island,Yes
-SC,South Carolina,Yes
-SD,South Dakota,Yes
-TN,Tennessee,Yes
-TX,Texas,Yes
-UT,Utah,Yes
-VA,Virginia,Yes
-VI,Virgin Islands,Yes
-VT,Vermont,Yes
-WA,Washington,Yes
-WI,Wisconsin,Yes
-WV,West Virginia,Yes
-WY,Wyoming,Yes
+state,state full name,sec702
+AK,Alaska,true
+AL,Alabama,true
+AR,Arkansas,true
+AS,American Samoa,true
+AZ,Arizona,true
+CA,California,true
+CO,Colorado,true
+CT,Connecticut,true
+DC,District of Columbia,true
+DE,Delaware,true
+FL,Florida,true
+FM,Federated States of Miconeisa,true
+GA,Georgia,true
+GU,Guam,true
+HI,Hawaii,true
+IA,Iowa,true
+ID,Idaho,true
+IL,Illinois,true
+IN,Indiana,true
+KS,Kansas,true
+KY,Kentucky,true
+LA,Louisiana,true
+MA,Massachusetts,true
+MD,Maryland,true
+ME,Maine,true
+MH,Marshall Islands,true
+MI,Michigan,true
+MN,Minnesota,true
+MO,Missouri,true
+MP,Northern Mariana Islands,true
+MS,Mississippi,true
+MT,Montana,true
+NC,North Carolina,true
+ND,North Dakota,true
+NE,Nebraska,true
+NH,New Hampshire,true
+NJ,New Jersey,true
+NM,New Mexico,true
+NV,Nevada,true
+NY,New York,true
+OH,Ohio,true
+OK,Oklahoma,true
+OR,Oregon,true
+PA,Pennsylvania,true
+PR,Puerto Rico,true
+PW,Palau,true
+RI,Rhode Island,true
+SC,South Carolina,true
+SD,South Dakota,true
+TN,Tennessee,true
+TX,Texas,true
+UT,Utah,true
+VA,Virginia,true
+VI,Virgin Islands,true
+VT,Vermont,true
+WA,Washington,true
+WI,Wisconsin,true
+WV,West Virginia,true
+WY,Wyoming,true
