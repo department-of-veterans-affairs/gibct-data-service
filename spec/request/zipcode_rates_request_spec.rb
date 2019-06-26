@@ -18,7 +18,7 @@ RSpec.describe 'zipcode_rates', type: :request do
         'zip_code' => '20001',
         'mha_code' => '123',
         'mha_name' => 'Washington, DC',
-        'mha_rate' => 1111.0,
+        'mha_rate' => 1100.0,
         'mha_rate_grandfathered' => 1000.0
       )
     end
