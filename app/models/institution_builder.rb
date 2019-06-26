@@ -457,8 +457,8 @@ module InstitutionBuilder
     str = <<-SQL
       INSERT INTO zipcode_rates (
         zip_code,
+        mha_rate_grandfathered,
         mha_rate,
-        dod_mha_rate,
         version,
         created_at,
         updated_at

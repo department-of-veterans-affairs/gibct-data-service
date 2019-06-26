@@ -5,6 +5,5 @@ class ZipcodeRateSerializer < ActiveModel::Serializer
   attribute :mha_code
   attribute :mha_name
   attribute :mha_rate
-  attribute :dod_mha_rate
   attribute :mha_rate_grandfathered
 end

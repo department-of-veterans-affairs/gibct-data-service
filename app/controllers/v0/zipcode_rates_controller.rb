@@ -5,7 +5,7 @@ module V0
     # GET /v0/zipcode_rates/20001
     def show
       resource = ZipcodeRate.version(@version[:number])
-                            .order(:dod_mha_rate)
+                            .order(:mha_rate)
                             .find_by(zip_code: params[:id])
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 

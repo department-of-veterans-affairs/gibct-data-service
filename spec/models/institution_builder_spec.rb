@@ -885,7 +885,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(zipcode_rate).not_to eq(nil)
         expect(zipcode_rate.zip_code).to eq(institution.zip)
         expect(zipcode_rate.mha_rate).to eq(1100)
-        expect(zipcode_rate.dod_mha_rate).to eq(1000)
+        expect(zipcode_rate.mha_rate_grandfathered).to eq(1000)
         expect(zipcode_rate.version).to eq(Version.current_preview.number)
       end
     end
