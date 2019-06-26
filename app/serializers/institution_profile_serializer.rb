@@ -75,6 +75,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :created_at
   attribute :updated_at
 
+  attribute :physical_address_1
+  attribute :physical_address_2
+  attribute :physical_address_3
   attribute :physical_city
   attribute :physical_state
   attribute :physical_country
@@ -82,6 +85,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :distance_learning
   attribute :dod_bah
   attribute :physical_zip
+  attribute :parent_facility_code_id
+  attribute :campus_type
 
   attribute :vet_tec_provider
 

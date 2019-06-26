@@ -70,7 +70,8 @@
               "independent_study": { "type": ["null", "boolean"] },
               "priority_enrollment": { "type": ["null", "boolean"] },
               "vet_tec_provider": { "type": "boolean" },
-              "parent_facility_code_id": { "type": ["null", "string"] }
+              "parent_facility_code_id": { "type": ["null", "string"] },
+              "campus_type": { "type": ["null", "string"] }
             },
             "required": [
               "name",
@@ -100,7 +101,8 @@
               "independent_study",
               "priority_enrollment",
               "vet_tec_provider",
-              "parent_facility_code_id"
+              "parent_facility_code_id",
+              "campus_type"
             ]
           },
           "links": {

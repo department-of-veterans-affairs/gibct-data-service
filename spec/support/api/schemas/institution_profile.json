@@ -48,6 +48,9 @@
             "address_3": { "type": ["null", "string"] },
             "city": { "type": ["null", "string"] },
 
+            "physical_address_1": { "type": ["null", "string"] },
+            "physical_address_2": { "type": ["null", "string"] },
+            "physical_address_3": { "type": ["null", "string"] },
             "physical_city": { "type": ["null", "string"] },
             "physical_state": { "type": ["null", "string"] },
             "physical_country": { "type": ["null", "string"] },
@@ -119,6 +122,8 @@
             "school_closing_on": { "type": ["null", "string"] },
             "school_closing_message": { "type": ["null", "string"] },
             "vet_tec_provider": { "type": "boolean"},
+            "parent_facility_code_id": { "type": ["null", "string"] },
+            "campus_type": { "type": ["null", "string"] },
             "complaints": {
               "type": "object",
               "properties": {
@@ -267,7 +272,9 @@
             "school_closing_message",
             "created_at",
             "updated_at",
-            "vet_tec_provider"
+            "vet_tec_provider",
+            "parent_facility_code_id",
+            "campus_type"
           ]
         },
         "links": {
