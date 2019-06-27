@@ -2,29 +2,28 @@
 
 require_dependency 'institution'
 
-class InstitutionsArchive < Institution::ActiveRecord::Base
+class InstitutionsArchive < Institution
   # class methods
   def self.archive(version)
     version_number = version.number
 
+    conn = ActiveRecord::Base.connection
+
     ActiveRecord::Base.transaction do
-      conn = ActiveRecord::Base.connection
 
       str = <<-SQL
         INSERT INTO institutions_archives
           SELECT * 
             FROM institutions 
-            WHERE version < ?;
+            WHERE version < ? ;
       SQL
 
-      sql = ActiveRecord::Base.sanitize_sql(str, version_number)
-      conn.insert(sql)
+      sql = InstitutionsArchive.send(:sanitize_sql, [str, version_number])
+      conn.execute(sql)
 
-      str = <<-SQL
-        DELETE FROM institutions WHERE version < ?;
-      SQL
+      str = 'DELETE FROM institutions WHERE version < ? ;'
 
-      sql = ActiveRecord::Base.sanitize_sql(str, version_number)
+      sql = Institution.send(:sanitize_sql, [str, version_number])
       conn.execute(sql)
     end
 
@@ -37,6 +36,8 @@ class InstitutionsArchive < Institution::ActiveRecord::Base
       notice = 'There was an error of unexpected origin'
       error_msg = e.message
       Rails.logger.error "#{notice}: #{error_msg}"
+
+    conn.close
 
   end
 end
