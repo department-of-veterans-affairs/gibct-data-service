@@ -8,79 +8,106 @@ RSpec.describe InstitutionsArchive, type: :model do
 
   before(:each) do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
-
-    # version 1
-    create_production_version
-    create :institution, version: current_production_number
-
-    # version 2
-    create_production_version
-    create :institution, version: current_production_number
   end
 
-  describe 'archive' do
-    it 'archives old version without preview versions greater than current production' do
-      initial_institution_count = 2
-      institution_count = 1
-      institutions_archive_count = 1
+  describe 'archive institutions' do
+    before(:each) do
+      # version 1
+      create_production_version
+      create :institution, version: current_production_number
 
-      archive_test(initial_institution_count,
-                   institution_count,
-                   institutions_archive_count)
+      # version 2
+      create_production_version
+      create :institution, version: current_production_number
     end
 
-    it 'archives old version with preview versions greater than current production' do
-      # preview version 3
-      create :version, :preview
-      create :institution, version: current_preview_number
+    context 'when successful' do
+      it 'archives old version without preview versions greater than current production' do
+        initial_institution_count = 2
+        institution_count = 1
+        institutions_archive_count = 1
 
-      initial_institution_count = 3
-      institution_count = 2
-      institutions_archive_count = 1
+        archive_test(initial_institution_count,
+                     institution_count,
+                     institutions_archive_count)
+      end
 
-      archive_test(initial_institution_count,
-                   institution_count,
-                   institutions_archive_count)
+      it 'archives old version with preview versions greater than current production' do
+        # preview version 3
+        create :version, :preview
+        create :institution, version: current_preview_number
+
+        initial_institution_count = 3
+        institution_count = 2
+        institutions_archive_count = 1
+
+        archive_test(initial_institution_count,
+                     institution_count,
+                     institutions_archive_count)
+      end
+
+      it 'archives multiple old versions without preview versions greater than current production' do
+        # version 3
+        create_production_version
+        create :institution, version: current_production_number
+
+        # version 4
+        create_production_version
+        create :institution, version: current_production_number
+
+        initial_institution_count = 4
+        institution_count = 1
+        institutions_archive_count = 3
+
+        archive_test(initial_institution_count,
+                     institution_count,
+                     institutions_archive_count)
+      end
+
+      it 'archives multiple old versions with preview versions greater than current production' do
+        # version 3
+        create_production_version
+        create :institution, version: current_production_number
+
+        # version 4
+        create_production_version
+        create :institution, version: current_production_number
+
+        # preview version 5
+        create :version, :preview
+        create :institution, version: current_preview_number
+
+        initial_institution_count = 5
+        institution_count = 2
+        institutions_archive_count = 3
+
+        archive_test(initial_institution_count,
+                     institution_count,
+                     institutions_archive_count)
+      end
     end
 
-    it 'archives multiple old versions without preview versions greater than current production' do
-      # version 3
-      create_production_version
-      create :institution, version: current_production_number
+    context 'when not successful' do
+      it 'returns an error message' do
+        error_message = 'BOOM!'
+        allow(InstitutionsArchive).to receive(:create_archives).and_raise(StandardError, error_message)
+        expect(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
+        InstitutionsArchive.archive(Version.current_production)
+      end
 
-      # version 4
-      create_production_version
-      create :institution, version: current_production_number
+      it 'logs errors at the database level' do
+        error_message = 'BOOM!'
+        pg_result = double('PG::Result Double', error_message: error_message)
+        pg_error = double('PG::Error Double', result: pg_result)
 
-      initial_institution_count = 4
-      institution_count = 1
-      institutions_archive_count = 3
+        statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
+        statement_invalid.set_backtrace(%(backtrace))
 
-      archive_test(initial_institution_count,
-                   institution_count,
-                   institutions_archive_count)
-    end
-
-    it 'archives multiple old versions with preview versions greater than current production' do
-      # version 3
-      create_production_version
-      create :institution, version: current_production_number
-
-      # version 4
-      create_production_version
-      create :institution, version: current_production_number
-
-      # preview version 5
-      create :version, :preview
-      create :institution, version: current_preview_number
-
-      initial_institution_count = 5
-      institution_count = 2
-      institutions_archive_count = 3
-
-      archive_test(initial_institution_count,
-                   institution_count,
-                   institutions_archive_count)
+        allow(InstitutionsArchive).to receive(:create_archives).and_raise(statement_invalid)
+        expect(Rails.logger).to receive(:error)
+          .with("There was an error occurring at the database level: #{error_message}")
+        InstitutionsArchive.archive(Version.current_production)
+      end
     end
   end
 
