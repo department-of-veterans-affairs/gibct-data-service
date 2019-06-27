@@ -5,21 +5,27 @@ require_dependency 'institution'
 class InstitutionsArchive < Institution::ActiveRecord::Base
   # class methods
   def self.archive(version)
-    number = version.number
+    version_number = version.number
 
     ActiveRecord::Base.transaction do
+      conn = ActiveRecord::Base.connection
+
       str = <<-SQL
         INSERT INTO institutions_archives
           SELECT * 
             FROM institutions 
-            WHERE version < #{number};
+            WHERE version < ?;
       SQL
-      InstitutionsArchive.connection.insert(str)
+
+      sql = ActiveRecord::Base.sanitize_sql(str, version_number)
+      conn.insert(sql)
 
       str = <<-SQL
-        DELETE FROM institutions WHERE version < #{number};
+        DELETE FROM institutions WHERE version < ?;
       SQL
-      Institution.connection.execute(str)
+
+      sql = ActiveRecord::Base.sanitize_sql(str, version_number)
+      conn.execute(sql)
     end
 
     rescue ActiveRecord::StatementInvalid => e
