@@ -14,7 +14,7 @@ class InstitutionsArchive < Institution::ActiveRecord::Base
             FROM institutions 
             WHERE version < #{number};
       SQL
-      Institution.connection.insert(str)
+      InstitutionsArchive.connection.insert(str)
 
       str = <<-SQL
         DELETE FROM institutions WHERE version < #{number};
@@ -31,6 +31,6 @@ class InstitutionsArchive < Institution::ActiveRecord::Base
       notice = 'There was an error of unexpected origin'
       error_msg = e.message
       Rails.logger.error "#{notice}: #{error_msg}"
-      
+
   end
 end
