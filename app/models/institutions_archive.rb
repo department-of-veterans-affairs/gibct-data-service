@@ -3,6 +3,8 @@
 require_dependency 'institution'
 
 class InstitutionsArchive < Institution
+  self.table_name = "institutions_archives"
+
   # class methods
   def self.archive(version)
     version_number = version.number
