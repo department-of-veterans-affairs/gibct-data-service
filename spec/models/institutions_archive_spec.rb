@@ -8,69 +8,43 @@ RSpec.describe InstitutionsArchive, type: :model do
 
   before(:each) do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
+
+    # version 1
+    create_production_version
+    create :institution, version: current_production_number
+
+    # version 2
+    create_production_version
+    create :institution, version: current_production_number
   end
 
   describe 'archive' do
     it 'archives old version without preview versions greater than current production' do
+      initial_institution_count = 2
+      institution_count = 1
+      institutions_archive_count = 1
 
-      # version 1
-      create_production_version    
-      create :institution, version: current_production_number
-
-      # version 2
-      create_production_version
-      create :institution, version: current_production_number
-
-      expect(Institution.count).to eq(2)
-      expect(InstitutionsArchive.count).to eq(0)
-
-      InstitutionsArchive.archive(Version.current_production)
-      
-      expect(Institution.count).to eq(1)
-      expect(Institution.where("version >= ?", current_production_number).size).to eq(1)
-
-      expect(InstitutionsArchive.count).to eq(1)
-      expect(InstitutionsArchive.where("version < ?", current_production_number).size).to eq(1)
+      archive_test(initial_institution_count,
+                   institution_count,
+                   institutions_archive_count)
     end
 
     it 'archives old version with preview versions greater than current production' do
-
-      # version 1
-      create_production_version    
-      create :institution, version: current_production_number
-
-      # version 2
-      create_production_version
-      create :institution, version: current_production_number
-
       # preview version 3
       create :version, :preview
       create :institution, version: current_preview_number
 
-      expect(Institution.count).to eq(3)
-      expect(InstitutionsArchive.count).to eq(0)
+      initial_institution_count = 3
+      institution_count = 2
+      institutions_archive_count = 1
 
-      InstitutionsArchive.archive(Version.current_production)
-      
-      expect(Institution.count).to eq(2)
-      expect(Institution.where("version >= ?", current_production_number).size).to eq(2)
-
-      expect(InstitutionsArchive.count).to eq(1)
-      expect(InstitutionsArchive.where("version < ?", current_production_number).size).to eq(1)
+      archive_test(initial_institution_count,
+                   institution_count,
+                   institutions_archive_count)
     end
 
-
     it 'archives multiple old versions without preview versions greater than current production' do
-
-      # version 1
-      create_production_version    
-      create :institution, version: current_production_number
-
-      # version 2
-      create_production_version
-      create :institution, version: current_production_number
-     
-      # version 3 
+      # version 3
       create_production_version
       create :institution, version: current_production_number
 
@@ -78,29 +52,17 @@ RSpec.describe InstitutionsArchive, type: :model do
       create_production_version
       create :institution, version: current_production_number
 
-      expect(Institution.count).to eq(4)
-      expect(InstitutionsArchive.count).to eq(0)
+      initial_institution_count = 4
+      institution_count = 1
+      institutions_archive_count = 3
 
-      InstitutionsArchive.archive(Version.current_production)
-      
-      expect(Institution.count).to eq(1)
-      expect(Institution.where("version >= ?", current_production_number).size).to eq(1)
-
-      expect(InstitutionsArchive.count).to eq(3)
-      expect(InstitutionsArchive.where("version < ?", current_production_number).size).to eq(3)
+      archive_test(initial_institution_count,
+                   institution_count,
+                   institutions_archive_count)
     end
 
     it 'archives multiple old versions with preview versions greater than current production' do
-
-      # version 1
-      create_production_version    
-      create :institution, version: current_production_number
-
-      # version 2
-      create_production_version
-      create :institution, version: current_production_number
-     
-      # version 3 
+      # version 3
       create_production_version
       create :institution, version: current_production_number
 
@@ -112,21 +74,34 @@ RSpec.describe InstitutionsArchive, type: :model do
       create :version, :preview
       create :institution, version: current_preview_number
 
-      expect(Institution.count).to eq(5)
-      expect(InstitutionsArchive.count).to eq(0)
+      initial_institution_count = 5
+      institution_count = 2
+      institutions_archive_count = 3
 
-      InstitutionsArchive.archive(Version.current_production)
-      
-      expect(Institution.count).to eq(2)
-      expect(Institution.where("version >= ?", current_production_number).size).to eq(2)
-
-      expect(InstitutionsArchive.count).to eq(3)
-      expect(InstitutionsArchive.where("version < ?", current_production_number).size).to eq(3)
+      archive_test(initial_institution_count,
+                   institution_count,
+                   institutions_archive_count)
     end
   end
 
   # private methods
   private
+
+  def archive_test(initial_institution_count,
+                   institution_count,
+                   institutions_archive_count)
+    expect(Institution.count).to eq(initial_institution_count)
+    expect(InstitutionsArchive.count).to eq(0)
+
+    InstitutionsArchive.archive(Version.current_production)
+
+    expect(Institution.count).to eq(institution_count)
+    expect(Institution.where('version >= ?', current_production_number).size).to eq(institution_count)
+
+    expect(InstitutionsArchive.count).to eq(institutions_archive_count)
+    expect(InstitutionsArchive.where('version < ?', current_production_number).size).to eq(institutions_archive_count)
+  end
+
   def create_production_version
     create :version, :preview
     create :version, :production, number: current_preview_number
@@ -139,5 +114,4 @@ RSpec.describe InstitutionsArchive, type: :model do
   def current_production_number
     Version.current_production.number
   end
-  
 end
