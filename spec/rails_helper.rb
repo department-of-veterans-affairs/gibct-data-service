@@ -54,7 +54,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   # Allow skip_before_action in rspec controller tests
-  config.include Devise::TestHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   config.include Warden::Test::Helpers, type: :request
 
