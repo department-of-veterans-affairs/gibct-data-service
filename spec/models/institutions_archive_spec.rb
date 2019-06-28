@@ -22,7 +22,7 @@ RSpec.describe InstitutionsArchive, type: :model do
     end
 
     context 'when successful' do
-      it 'archives old version without preview versions greater than current production', :js => true do
+      it 'archives old version without preview versions greater than current production', js: true do
         initial_institution_count = 2
         institution_count = 1
         institutions_archive_count = 1
@@ -32,7 +32,7 @@ RSpec.describe InstitutionsArchive, type: :model do
                      institutions_archive_count)
       end
 
-      it 'archives old version with preview versions greater than current production', :js => true do
+      it 'archives old version with preview versions greater than current production', js: true do
         # preview version 3
         create :version, :preview
         create :institution, version: current_preview_number
@@ -46,7 +46,7 @@ RSpec.describe InstitutionsArchive, type: :model do
                      institutions_archive_count)
       end
 
-      it 'archives multiple old versions without preview versions greater than current production', :js => true do
+      it 'archives multiple old versions without preview versions greater than current production', js: true do
         # version 3
         create_production_version
         create :institution, version: current_production_number
@@ -64,7 +64,7 @@ RSpec.describe InstitutionsArchive, type: :model do
                      institutions_archive_count)
       end
 
-      it 'archives multiple old versions with preview versions greater than current production', :js => true do
+      it 'archives multiple old versions with preview versions greater than current production', js: true do
         # version 3
         create_production_version
         create :institution, version: current_production_number
