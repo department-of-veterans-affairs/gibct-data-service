@@ -54,7 +54,7 @@ module V0
       @links = { self: self_link }
       render json: children,
              each_serializer: InstitutionSerializer,
-             meta: { version: @meta },
+             meta: @meta,
              links: @links
     end
 
