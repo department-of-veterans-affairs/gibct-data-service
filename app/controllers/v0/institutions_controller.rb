@@ -46,8 +46,7 @@ module V0
 
       @meta = {
         version: @version,
-        count: children.count,
-        facets: facets
+        count: children.count
       }
       @links = { self: self_link }
       render json: children.order(:institution).page(params[:page]),
