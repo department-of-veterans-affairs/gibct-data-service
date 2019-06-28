@@ -52,7 +52,7 @@ module V0
       @links = { self: self_link }
       render json: children.order(:institution).page(params[:page]),
              each_serializer: InstitutionSerializer,
-             meta: { version: @version },
+             meta: { version: @meta },
              links: @links
     end
 

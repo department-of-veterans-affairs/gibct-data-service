@@ -27,10 +27,9 @@ Rails.application.routes.draw do
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
 
-    get '/institutions/:id/children/' => 'institutions#children'
-
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection
+      get :children, on: :member
     end
 
     resources :zipcode_rates, only: :show

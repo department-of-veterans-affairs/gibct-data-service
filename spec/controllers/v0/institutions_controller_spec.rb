@@ -264,7 +264,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institutions')
     end
 
-    it 'returns common exception response if child institutions not found' do
+    it 'returns empty record set' do
       get :children, id: '10000'
 
       expect(response.content_type).to eq('application/json')
