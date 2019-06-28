@@ -42,14 +42,17 @@ module V0
 
     # GET /v0/institituons/20005123/children
     def children
-      children = Institution.version(@version[:number]).where(parent_facility_code_id: params[:id])
+      children = Institution.version(@version[:number])
+                            .where(parent_facility_code_id: params[:id])
+                            .order(:institution)
+                            .page(params[:page])
 
       @meta = {
         version: @version,
         count: children.count
       }
       @links = { self: self_link }
-      render json: children.order(:institution).page(params[:page]),
+      render json: children,
              each_serializer: InstitutionSerializer,
              meta: { version: @meta },
              links: @links
