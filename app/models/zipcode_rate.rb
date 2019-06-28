@@ -12,6 +12,4 @@ class ZipcodeRate < ActiveRecord::Base
   }.freeze
 
   validates :version, presence: true
-
-  scope :version, ->(n) { where(version: n) }
 end

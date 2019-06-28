@@ -1370,7 +1370,6 @@ ActiveRecord::Schema.define(version: 20190626110700) do
     t.integer  "version"
   end
 
-  add_index "zipcode_rates", ["version"], name: "index_zipcode_rates_on_version", using: :btree
-  add_index "zipcode_rates", ["zip_code"], name: "index_zipcode_rates_on_zip_code", using: :btree
+  add_index "zipcode_rates", ["zip_code", "version"], name: "index_zipcode_rates_on_zip_code_and_version", using: :btree
 
 end
