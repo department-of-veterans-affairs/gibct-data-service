@@ -37,14 +37,14 @@ class InstitutionsArchive < Institution
           WHERE version < ? ;
     SQL
 
-    sql = InstitutionsArchive.send(:sanitize_sql, [str, version_number])
+    sql = InstitutionsArchive.send(:sanitize_sql_for_conditions, [str, version_number])
     conn.execute(sql)
   end
 
   def self.cleanup_institutions(version_number, conn)
     str = 'DELETE FROM institutions WHERE version < ? ;'
 
-    sql = Institution.send(:sanitize_sql, [str, version_number])
+    sql = Institution.send(:sanitize_sql_for_conditions, [str, version_number])
     conn.execute(sql)
   end
 end
