@@ -47,4 +47,5 @@ class InstitutionsArchive < Institution
     sql = Institution.send(:sanitize_sql, [str, version_number])
     conn.execute(sql)
   end
+
 end

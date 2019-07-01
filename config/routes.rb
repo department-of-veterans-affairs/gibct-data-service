@@ -24,6 +24,9 @@ Rails.application.routes.draw do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
   end
 
+  get '/archives' => 'archives#index'
+  get '/archives/export/:csv_type/:version' => 'archives#export', as: :archives_export, defaults: { format: 'csv' }
+
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
 

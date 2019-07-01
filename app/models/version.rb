@@ -41,6 +41,12 @@ class Version < ActiveRecord::Base
     :no_new_uploads
   end
 
+  def self.archived
+    Version.select('distinct on (number) *')
+      .where("number < ?", Version.current_production.number)
+      .order(number: :desc)
+  end
+
   # public instance methods
   def preview?
     !production?
