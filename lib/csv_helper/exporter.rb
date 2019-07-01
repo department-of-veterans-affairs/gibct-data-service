@@ -3,37 +3,35 @@
 module CsvHelper
   module Exporter
     def export
-      csv_column_info = []
+      csv_headers = {}
 
       klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
-        csv_column_info.push(
-          'column' => info[:column],
-          'non_hash' => info[:non_hash] == true,
-          'header' => csv_column.split(/\s/).map(&:downcase).join(' ')
-        )
+        key = info[:column]
+        csv_headers[key] = csv_column.split(/\s/).map(&:downcase).join(' ')
       end
 
-      generate(csv_column_info)
+      generate(csv_headers)
     end
 
     private
 
-    def generate(csv_column_info)
+    def generate(csv_headers)
       CSV.generate do |csv|
-        csv << csv_column_info.map { |field| field['header'] }
-        klass == Institution ? write_institution_row(csv, csv_column_info) : write_row(csv, csv_column_info)
+        csv << csv_headers.values
+
+        klass == Institution ? write_institution_row(csv, csv_headers) : write_row(csv, csv_headers)
       end
     end
 
-    def write_row(csv, csv_column_info)
+    def write_row(csv, csv_headers)
       set_class_for_export.find_each do |record|
-        csv << csv_column_info.map { |field| format_value(record, field) }
+        csv << csv_headers.keys.map { |k| format(k, record.public_send(k)) }
       end
     end
 
-    def write_institution_row(csv, csv_column_info)
+    def write_institution_row(csv, csv_headers)
       set_class_for_export.find_each do |record|
-        csv << csv_column_info.map { |field| format_institution_value(record, field) }
+        csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
       end
     end
 
@@ -44,15 +42,8 @@ module CsvHelper
       version.present? ? Institution.version(version.number) : Institution
     end
 
-    def format_value(record, field)
-      value = field['non_hash'] ? record.send(field['column']) : record[field['column']]
-      return "\"#{value}\"" if field['column'] == :ope && record[field['column']].present?
-      value
-    end
-
-    def format_institution_value(record, field)
-      value = field['non_hash'].present? ? record.send(field['column']) : record[field['column']]
-      return "\"#{value}\"" if field['column'] == :ope && value.present?
+    def format(key, value)
+      return "\"#{value}\"" if key == :ope && value.present?
       value
     end
   end
