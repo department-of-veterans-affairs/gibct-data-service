@@ -103,6 +103,13 @@ FactoryGirl.define do
       non_college_degree_indicator true
     end
 
+    # Facility_code second digit is 0
+    trait :zipcode_rate do
+      bah 1100
+      dod_bah 1000
+      zip '12345'
+    end
+
     trait :institution_builder do
       facility_code '1ZZZZZZZ'
       poo_status 'aprvd'

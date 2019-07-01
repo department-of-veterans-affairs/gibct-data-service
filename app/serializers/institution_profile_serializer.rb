@@ -75,6 +75,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :created_at
   attribute :updated_at
 
+  attribute :physical_address_1
+  attribute :physical_address_2
+  attribute :physical_address_3
   attribute :physical_city
   attribute :physical_state
   attribute :physical_country
