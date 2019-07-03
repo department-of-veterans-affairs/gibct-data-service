@@ -40,20 +40,20 @@ module CsvHelper
 
     def write_row(csv, csv_column_info)
       set_class_for_export.find_each do |record|
-        csv << csv_column_info.map { |field| format_value(record, field) }
+        csv << csv_headers.keys.map { |k| format(k, record.public_send(k)) }
       end
     end
 
     def write_institution_row(csv, csv_column_info)
       set_class_for_export.find_each do |record|
-        csv << csv_column_info.map { |field| format_institution_value(record, field) }
+        csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
       end
     end
 
     def write_archived_row(csv, csv_column_info, version)
       set_class_for_export.where("version = ?", version).find_in_batches do |group|
         group.each { |record| 
-          csv << csv_column_info.map { |field| format_institution_value(record, field) }
+          csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
         }
       end
     end
