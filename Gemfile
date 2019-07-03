@@ -6,6 +6,7 @@ gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
+gem 'strong_migrations'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
