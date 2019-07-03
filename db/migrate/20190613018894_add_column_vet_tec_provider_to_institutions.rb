@@ -1,5 +1,5 @@
 class AddColumnVetTecProviderToInstitutions < ActiveRecord::Migration
   def change
-    add_column :institutions, :vet_tec_provider, :boolean, default: false, null: false
+    add_column :institutions, :vet_tec_provider, :boolean, null: false
   end
 end

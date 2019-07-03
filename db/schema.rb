@@ -303,8 +303,8 @@ ActiveRecord::Schema.define(version: 20190626110700) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.boolean  "approved",                                            default: false, null: false
-    t.boolean  "vet_tec_provider",                                    default: false, null: false
+    t.boolean  "approved",                                                            null: false
+    t.boolean  "vet_tec_provider",                                                    null: false
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
