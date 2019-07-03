@@ -121,7 +121,7 @@
             "school_closing": { "type": ["null", "boolean"] },
             "school_closing_on": { "type": ["null", "string"] },
             "school_closing_message": { "type": ["null", "string"] },
-            "vet_tec_provider": { "type": "boolean"},
+            "vet_tec_provider": { "type": ["null", "boolean"] },
             "complaints": {
               "type": "object",
               "properties": {
