@@ -303,8 +303,6 @@ ActiveRecord::Schema.define(version: 20190626110700) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.string   "campus_type"
-    t.string   "parent_facility_code_id"
     t.boolean  "approved",                                            default: false
     t.boolean  "vet_tec_provider",                                    default: false
   end
@@ -323,7 +321,6 @@ ActiveRecord::Schema.define(version: 20190626110700) do
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
-  add_index "institutions", ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
 
   create_table "ipeds_cip_codes", force: :cascade do |t|
@@ -1300,8 +1297,6 @@ ActiveRecord::Schema.define(version: 20190626110700) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.string   "campus_type"
-    t.string   "parent_facility_code_id"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
