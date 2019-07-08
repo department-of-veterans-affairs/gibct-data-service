@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190626110700) do
+ActiveRecord::Schema.define(version: 20190708211726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -322,6 +322,7 @@ ActiveRecord::Schema.define(version: 20190626110700) do
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
+  add_index "institutions", ["version"], name: "version_institutions_lower_institutions_idx", using: :btree
 
   create_table "ipeds_cip_codes", force: :cascade do |t|
     t.string   "cross",      null: false
