@@ -303,8 +303,8 @@ ActiveRecord::Schema.define(version: 20190708012000) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.boolean  "approved",                                            default: false
-    t.boolean  "vet_tec_provider",                                    default: false
+    t.boolean  "approved"
+    t.boolean  "vet_tec_provider"
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -323,9 +323,8 @@ ActiveRecord::Schema.define(version: 20190708012000) do
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
 
-  create_table "institutions_archives", id: false, force: :cascade do |t|
-    t.integer  "id"
-    t.integer  "version"
+  create_table "institutions_archives", force: :cascade do |t|
+    t.integer  "version",                                                             null: false
     t.string   "institution_type_name"
     t.string   "facility_code"
     t.string   "institution"
@@ -413,16 +412,16 @@ ActiveRecord::Schema.define(version: 20190708012000) do
     t.integer  "complaints_jobs_by_ope_id_do_not_sum"
     t.integer  "complaints_transcript_by_ope_id_do_not_sum"
     t.integer  "complaints_other_by_ope_id_do_not_sum"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
     t.string   "f1sysnam"
     t.integer  "f1syscod"
     t.string   "ialias"
     t.string   "approval_status"
-    t.boolean  "school_closing"
+    t.boolean  "school_closing",                                      default: false
     t.date     "school_closing_on"
     t.string   "school_closing_message"
-    t.boolean  "stem_offered"
+    t.boolean  "stem_offered",                                        default: false
     t.boolean  "priority_enrollment"
     t.boolean  "online_only"
     t.boolean  "independent_study"
@@ -441,6 +440,22 @@ ActiveRecord::Schema.define(version: 20190708012000) do
     t.boolean  "approved"
     t.boolean  "vet_tec_provider"
   end
+
+  add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
+  add_index "institutions_archives", ["address_2"], name: "institutions_archives_address_2_idx", using: :btree
+  add_index "institutions_archives", ["address_3"], name: "institutions_archives_address_3_idx", using: :btree
+  add_index "institutions_archives", ["city"], name: "institutions_archives_city_idx", using: :btree
+  add_index "institutions_archives", ["cross"], name: "institutions_archives_cross_idx", using: :btree
+  add_index "institutions_archives", ["distance_learning"], name: "institutions_archives_distance_learning_idx", using: :btree
+  add_index "institutions_archives", ["facility_code"], name: "institutions_archives_facility_code_idx", using: :btree
+  add_index "institutions_archives", ["institution"], name: "institutions_archives_institution_idx", using: :btree
+  add_index "institutions_archives", ["institution_type_name"], name: "institutions_archives_institution_type_name_idx", using: :btree
+  add_index "institutions_archives", ["online_only"], name: "institutions_archives_online_only_idx", using: :btree
+  add_index "institutions_archives", ["ope"], name: "institutions_archives_ope_idx", using: :btree
+  add_index "institutions_archives", ["ope6"], name: "institutions_archives_ope6_idx", using: :btree
+  add_index "institutions_archives", ["state"], name: "institutions_archives_state_idx", using: :btree
+  add_index "institutions_archives", ["stem_offered"], name: "institutions_archives_stem_offered_idx", using: :btree
+  add_index "institutions_archives", ["version"], name: "institutions_archives_version_idx", using: :btree
 
   create_table "ipeds_cip_codes", force: :cascade do |t|
     t.string   "cross",      null: false
