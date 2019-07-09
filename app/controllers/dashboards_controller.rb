@@ -36,6 +36,14 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path, alert: e.message
   end
 
+  def export_version
+    respond_to do |format|
+      format.csv do
+        send_data Institution.export_version(params[:number]), type: 'text/csv', filename: 'Institution.csv'
+      end
+    end
+  end
+
   def push
     version = Version.current_preview
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190626110700) do
+ActiveRecord::Schema.define(version: 20190708190152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1230,12 +1230,13 @@ ActiveRecord::Schema.define(version: 20190626110700) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.integer  "user_id",                    null: false
-    t.integer  "number",                     null: false
-    t.boolean  "production", default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.binary   "uuid",                       null: false
+    t.integer  "user_id",                      null: false
+    t.integer  "number",                       null: false
+    t.boolean  "production",   default: false, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.binary   "uuid",                         null: false
+    t.datetime "completed_at"
   end
 
   add_index "versions", ["number"], name: "index_versions_on_number", using: :btree

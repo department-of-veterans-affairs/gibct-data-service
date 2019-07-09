@@ -22,35 +22,37 @@
   </div>
 </div>
 
-<h3>Latest Preview Version
-  <% if Version.buildable? %>
-    <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
-        data: { confirm: 'Are you sure you want to create a new preview version?' },
-        class: "btn btn-warning btn-xs",
-        role: "button" %>
-  <% else %>
-    <a disabled="disabled" class="btn btn-warning btn-xs", role="button">
-      Generate New Preview Version
-    </a>
+  <h3>Latest Preview Version
+    <% if Version.buildable? %>
+      <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
+          data: { confirm: 'Are you sure you want to create a new preview version?' },
+          class: "btn btn-warning btn-xs",
+          role: "button" %>
+    <% else %>
+      <a disabled="disabled" class="btn btn-warning btn-xs", role="button">
+        Generate New Preview Version
+      </a>
+    <% end %>
+  </h3>
+  <% if Version.previews_exist %>
+    <div class="row row-space-6">
+      <div class="col-xs-12">
+        <table class="table table-hover table-condensed table-bordered table-responsive">
+          <thead>
+            <th width=7%>Version ID</td>
+            <th width=23%>Version UUID</th>
+            <th width=20%>Created By</th>
+            <th width=20%>Created Date</th>
+            <th width=30%>Actions</th>
+          </thead>
+          <tbody>
+            <%= render partial: 'version',
+              collection: @preview_versions, as: :version %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   <% end %>
-</h3>
-<div class="row row-space-6">
-  <div class="col-xs-12">
-    <table class="table table-hover table-condensed table-bordered table-responsive">
-      <thead>
-        <th width=7%>Version ID</td>
-        <th width=23%>Version UUID</th>
-        <th width=20%>Created By</th>
-        <th width=20%>Created Date</th>
-        <th width=30%>Actions</th>
-      </thead>
-      <tbody>
-        <%= render partial: 'version',
-          collection: @preview_versions, as: :version %>
-      </tbody>
-    </table>
-  </div>
-</div>
 
 <h3>Latest Uploads
   <%= link_to 'View Upload History', uploads_path, class: "btn btn-info btn-xs", role: "button" %>
