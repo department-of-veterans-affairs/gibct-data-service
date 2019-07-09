@@ -5,7 +5,7 @@ module ApplicationHelper
   def self.batch_size
     Integer(ENV['ACTIVE_RECORD_BATCH_SIZE'])
   rescue ArgumentError
-    nil
+    1000
   end
 
   # instance methods
