@@ -3,6 +3,7 @@ class AddIndexIndexInstitutionsIndexInstitution < ActiveRecord::Migration
 
   def up
     safety_assured do
+      # This index will not be properly represented in schema.rb but it will be present on db's that run this migration.
       execute 'CREATE INDEX CONCURRENTLY version_institutions_lower_institutions_idx ON institutions("version", lower(institution));'
     end
   end
