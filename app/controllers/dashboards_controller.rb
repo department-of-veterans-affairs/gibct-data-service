@@ -50,8 +50,8 @@ class DashboardsController < ApplicationController
         # Build Sitemap and notify search engines in production only
         ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
         GibctSiteMapper.new(ping: ping)
-        
-        if ENV['ARCHIVE_INSTITUTIONS'] == 'True' 
+
+        if ENV['ARCHIVE_INSTITUTIONS'] == 'True'
           # Archive old institution rows
           InstitutionsArchive.archive(production_version)
         end

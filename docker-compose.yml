@@ -31,6 +31,7 @@ services:
       GOVDELIVERY_TOKEN: 'abc123'
       GOVDELIVERY_STAGING_SERVICE: 'True'
       ARCHIVE_INSTITUTIONS: 'False'
+      ACTIVE_RECORD_BATCH_SIZE: 1000
     depends_on:
       - postgres
     links:

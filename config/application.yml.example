@@ -9,3 +9,4 @@ SAML_CALLBACK_URL: http://localhost:3000/saml/auth/callback
 SAML_IDP_SSO_URL: https://example.com/idp/sso
 SAML_ISSUER: GIDS
 ARCHIVE_INSTITUTIONS: 'True'
+ACTIVE_RECORD_BATCH_SIZE: 1000

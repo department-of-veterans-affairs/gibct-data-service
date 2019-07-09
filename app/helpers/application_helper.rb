@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  # class methods
+  def self.batch_size
+    Integer(ENV['ACTIVE_RECORD_BATCH_SIZE'])
+  rescue ArgumentError
+    nil
+  end
+
+  # instance methods
   def active_link?(path, method = 'GET')
     begin
       h = Rails.application.routes.recognize_path(path, method: method)
@@ -38,4 +46,6 @@ module ApplicationHelper
       end
     end
   end
+
+ 
 end
