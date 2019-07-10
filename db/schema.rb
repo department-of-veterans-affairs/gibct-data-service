@@ -1254,8 +1254,8 @@ ActiveRecord::Schema.define(version: 20190708019179) do
   add_index "vsocs", ["facility_code"], name: "index_vsocs_on_facility_code", unique: true, using: :btree
 
   create_table "weams", force: :cascade do |t|
-    t.string   "facility_code",                            null: false
-    t.string   "institution",                              null: false
+    t.string   "facility_code",                                            null: false
+    t.string   "institution",                                              null: false
     t.string   "city"
     t.string   "state"
     t.string   "zip"
@@ -1264,7 +1264,7 @@ ActiveRecord::Schema.define(version: 20190708019179) do
     t.boolean  "poe"
     t.boolean  "yr"
     t.string   "va_highest_degree_offered"
-    t.string   "institution_type_name",                    null: false
+    t.string   "institution_type_name",                                    null: false
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
@@ -1282,8 +1282,8 @@ ActiveRecord::Schema.define(version: 20190708019179) do
     t.string   "cross"
     t.string   "ope"
     t.string   "ope6"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
     t.string   "approval_status"
     t.boolean  "priority_enrollment"
     t.boolean  "online_only"
@@ -1297,7 +1297,7 @@ ActiveRecord::Schema.define(version: 20190708019179) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.boolean  "preferred_provider"
+    t.boolean  "preferred_provider",                       default: false
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
