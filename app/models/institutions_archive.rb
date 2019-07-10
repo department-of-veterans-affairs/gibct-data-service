@@ -37,7 +37,7 @@ class InstitutionsArchive < Institution
           WHERE version < ? ;
     SQL
 
-    sql = self.sanitize_sql_for_conditions([str, version_number])
+    sql = sanitize_sql_for_conditions([str, version_number])
     conn.execute(sql)
   end
 
