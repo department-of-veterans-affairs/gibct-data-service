@@ -52,7 +52,7 @@ class StoragesController < ApplicationController
   end
 
   def upload_params
-    @u ||= params.require(:storage).permit(:upload_file, :comment)
+    @upload_params ||= params.require(:storage).permit(:upload_file, :comment)
   end
 
   def find_storage
