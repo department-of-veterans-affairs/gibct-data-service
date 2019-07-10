@@ -193,15 +193,15 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     orm_adapter (0.5.0)
-    parallel (1.12.1)
-    parser (2.5.1.0)
+    parallel (1.17.0)
+    parser (2.6.3.0)
       ast (~> 2.4.0)
     pg (0.19.0)
     poltergeist (1.12.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
-    powerpack (0.1.1)
+    powerpack (0.1.2)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -269,14 +269,14 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubocop (0.52.1)
+    rubocop (0.53.0)
       parallel (~> 1.10)
-      parser (>= 2.4.0.2, < 3.0)
+      parser (>= 2.5)
       powerpack (~> 0.1)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    ruby-progressbar (1.9.0)
+    ruby-progressbar (1.10.1)
     ruby-saml (1.7.2)
       nokogiri (>= 1.5.10)
     ruby_dep (1.5.0)
@@ -331,7 +331,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.0.4)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (1.4.0)
+    unicode-display_width (1.6.0)
     vcr (3.0.3)
     virtus (1.0.5)
       axiom-types (~> 0.1)
@@ -384,7 +384,7 @@ DEPENDENCIES
   rails (~> 4.2.11)
   rainbow
   rspec-rails
-  rubocop (~> 0.52.1)
+  rubocop (~> 0.53.0)
   ruby-saml
   rubyzip (~> 1.2, >= 1.2.1)
   sass-rails (~> 5.0)
@@ -405,4 +405,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.16.3
+   1.17.3

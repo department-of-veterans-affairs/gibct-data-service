@@ -132,7 +132,7 @@ module V0
       end
       raw_facets
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Style/GuardClause
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not
