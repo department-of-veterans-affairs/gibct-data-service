@@ -6,15 +6,14 @@ class InstitutionsArchive < Institution
   self.table_name = 'institutions_archives'
 
   # class methods
-  def self.archive(version)
-    version_number = version.number
-
-    conn = ActiveRecord::Base.connection
+  def self.archive_previous_versions
+    production_version = Version.current_production.number
+    previous_version = Version.previous_production.number
 
     begin
       ActiveRecord::Base.transaction do
-        create_archives(version_number, conn)
-        cleanup_institutions(version_number, conn)
+        create_archives(production_version)
+        Institution.where('version >= ? and version < ?', previous_version, production_version).delete_all
       end
     rescue ActiveRecord::StatementInvalid => e
       notice = 'There was an error occurring at the database level'
@@ -25,11 +24,9 @@ class InstitutionsArchive < Institution
       error_msg = e.message
       Rails.logger.error "#{notice}: #{error_msg}"
     end
-
-    conn.close
   end
 
-  def self.create_archives(version_number, conn)
+  def self.create_archives(production_version)
     str = <<-SQL
       INSERT INTO institutions_archives
         SELECT *
@@ -37,14 +34,7 @@ class InstitutionsArchive < Institution
           WHERE version < ? ;
     SQL
 
-    sql = sanitize_sql_for_conditions([str, version_number])
-    conn.execute(sql)
-  end
-
-  def self.cleanup_institutions(version_number, conn)
-    str = 'DELETE FROM institutions WHERE version < ? ;'
-
-    sql = Institution.send(:sanitize_sql_for_conditions, [str, version_number])
-    conn.execute(sql)
+    sql = sanitize_sql_for_conditions([str, production_version])
+    ActiveRecord::Base.connection.execute(sql)
   end
 end
