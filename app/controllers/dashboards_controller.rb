@@ -53,7 +53,7 @@ class DashboardsController < ApplicationController
 
         if Settings.institutions.archive
           # Archive old institution rows
-          InstitutionsArchive.archive_previous_versions
+          InstitutionsArchive.archive_previous_versions(current_user)
         end
       else
         flash.alert = 'Production data not updated, remains at previous production version'
