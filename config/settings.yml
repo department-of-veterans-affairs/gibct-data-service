@@ -2,4 +2,4 @@ active_record:
   batch_size: 2000
 
 institutions:
-  archive: true
+  archive: false
