@@ -114,7 +114,7 @@ module InstitutionBuilder
 
   def self.add_sec109_closed_school(version_number)
     str = <<-SQL
-      UPDATE institutions SET closure109 = sec109_closed_schools.closure109
+      UPDATE institutions SET #{columns_for_update(Sec109ClosedSchool)}
       FROM  sec109_closed_schools
       WHERE institutions.facility_code = sec109_closed_schools.facility_code
         AND institutions.version = #{version_number};

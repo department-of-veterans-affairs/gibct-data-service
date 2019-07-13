@@ -213,15 +213,7 @@ class Institution < ActiveRecord::Base
   def school?
     institution_type_name != 'OJT'
   end
-
-  # Calculate boolean based on whether or not the school is in the school_closures table
-  def closure109
-    school_closing_on.present? || school_closing.present? || school_closing_message.present?
-  end
-
-  # Empty setter for testing CSV conversion
-  def closure109=(val); end
-
+  
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #

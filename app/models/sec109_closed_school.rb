@@ -2,9 +2,9 @@
 
 class Sec109ClosedSchool < ActiveRecord::Base
     include CsvHelper
-  
+
     COLS_USED_IN_INSTITUTION = %i[closure109].freeze
-  
+
     CSV_CONVERTER_INFO = {
       'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
       'school_name' => { column: :school_name, converter: InstitutionConverter },
