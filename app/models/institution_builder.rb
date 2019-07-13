@@ -6,7 +6,7 @@ module InstitutionBuilder
     ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
-    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure, 
+    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
     Sec109ClosedSchool
   ].freeze
 

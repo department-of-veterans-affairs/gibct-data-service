@@ -213,7 +213,7 @@ class Institution < ActiveRecord::Base
   def school?
     institution_type_name != 'OJT'
   end
-  
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #

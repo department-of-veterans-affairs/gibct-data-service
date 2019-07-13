@@ -71,8 +71,7 @@
               "stem_offered": { "type": ["null", "boolean"] },
               "independent_study": { "type": ["null", "boolean"] },
               "priority_enrollment": { "type": ["null", "boolean"] },
-              "vet_tec_provider": { "type": "boolean" },
-              "closure109": { "type": "boolean" }
+              "vet_tec_provider": { "type": "boolean" }
             },
             "required": [
               "name",
@@ -101,8 +100,7 @@
               "stem_offered",
               "independent_study",
               "priority_enrollment",
-              "vet_tec_provider",
-              "closure109"
+              "vet_tec_provider"
             ]
           },
           "links": {

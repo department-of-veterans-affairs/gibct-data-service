@@ -1,10 +1,11 @@
- # frozen_string_literal: true
+# frozen_string_literal: true
+# frozen_string_literal: true
 
 FactoryGirl.define do
   factory :sec109_closed_school do
     facility_code { generate :facility_code }
 
-    school_name{ 'College of Charleston' }
+    school_name { 'College of Charleston' }
     closure109 false
 
     trait :institution_builder do
