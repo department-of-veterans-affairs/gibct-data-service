@@ -7,7 +7,7 @@ class InstitutionsArchive < Institution
 
   # class methods
   # rubocop:disable Metrics/MethodLength
-  def self.archive_previous_versions(_user)
+  def self.archive_previous_versions(user)
     production_version = Version.current_production.number
     previous_version = Version.previous_production.number
 
@@ -20,7 +20,7 @@ class InstitutionsArchive < Institution
       notice = 'There was an error occurring at the database level'
       error_msg = exception.original_exception.result.error_message
       Raven.tags_context(
-        user: current_user,
+        user: user,
         date_time: Time.current,
         production_version: production_version,
         previous_version: previous_version
@@ -31,7 +31,7 @@ class InstitutionsArchive < Institution
       notice = 'There was an error of unexpected origin'
       error_msg = exception.message
       Raven.tags_context(
-        user: current_user,
+        user: user,
         date_time: Time.current,
         production_version: production_version,
         previous_version: previous_version

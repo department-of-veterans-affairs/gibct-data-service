@@ -22,31 +22,7 @@ RSpec.describe InstitutionsArchive, type: :model do
     end
 
     context 'when successful' do
-      it 'archives old version without preview versions greater than current production', js: true do
-        initial_institution_count = 2
-        institution_count = 1
-        institutions_archive_count = 1
-
-        archive_test(initial_institution_count,
-                     institution_count,
-                     institutions_archive_count)
-      end
-
-      it 'archives old version with preview versions greater than current production', js: true do
-        # preview version 3
-        create :version, :preview
-        create :institution, version: current_preview_number
-
-        initial_institution_count = 3
-        institution_count = 2
-        institutions_archive_count = 1
-
-        archive_test(initial_institution_count,
-                     institution_count,
-                     institutions_archive_count)
-      end
-
-      it 'archives multiple old versions without preview versions greater than current production', js: true do
+      it 'archives previous production version', js: true do
         # version 3
         create_production_version
         create :institution, version: current_production_number
@@ -56,15 +32,17 @@ RSpec.describe InstitutionsArchive, type: :model do
         create :institution, version: current_production_number
 
         initial_institution_count = 4
-        institution_count = 1
-        institutions_archive_count = 3
+        institution_count_total = 3
+        institution_count_greater_equal_production = 1
+        institutions_archive_count = 1
 
         archive_test(initial_institution_count,
-                     institution_count,
+                     institution_count_total,
+                     institution_count_greater_equal_production,
                      institutions_archive_count)
       end
 
-      it 'archives multiple old versions with preview versions greater than current production', js: true do
+      it 'archives previous production version and does not archive preview versions greater than current production', js: true do
         # version 3
         create_production_version
         create :institution, version: current_production_number
@@ -78,11 +56,37 @@ RSpec.describe InstitutionsArchive, type: :model do
         create :institution, version: current_preview_number
 
         initial_institution_count = 5
-        institution_count = 2
+        institution_count_total = 4
+        institution_count_greater_equal_production = 2
+        institutions_archive_count = 1
+
+        archive_test(initial_institution_count,
+                     institution_count_total,
+                     institution_count_greater_equal_production,
+                     institutions_archive_count)
+      end
+
+      it 'archives previous production version and preview versions less than current production', js: true do
+        # preview version 3
+        create :version, :preview
+        create :institution, version: current_preview_number
+
+        # preview version 4
+        create :version, :preview
+        create :institution, version: current_preview_number
+
+        # version 5
+        create_production_version
+        create :institution, version: current_production_number
+
+        initial_institution_count = 5
+        institution_count_total = 2
+        institution_count_greater_equal_production = 1
         institutions_archive_count = 3
 
         archive_test(initial_institution_count,
-                     institution_count,
+                     institution_count_total,
+                     institution_count_greater_equal_production,
                      institutions_archive_count)
       end
     end
@@ -92,7 +96,7 @@ RSpec.describe InstitutionsArchive, type: :model do
         error_message = 'BOOM!'
         allow(InstitutionsArchive).to receive(:create_archives).and_raise(StandardError, error_message)
         expect(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
-        InstitutionsArchive.archive(Version.current_production)
+        InstitutionsArchive.archive_previous_versions(:user)
       end
 
       it 'logs errors at the database level' do
@@ -106,7 +110,7 @@ RSpec.describe InstitutionsArchive, type: :model do
         allow(InstitutionsArchive).to receive(:create_archives).and_raise(statement_invalid)
         expect(Rails.logger).to receive(:error)
           .with("There was an error occurring at the database level: #{error_message}")
-        InstitutionsArchive.archive(Version.current_production)
+        InstitutionsArchive.archive_previous_versions(:user)
       end
     end
   end
@@ -115,15 +119,17 @@ RSpec.describe InstitutionsArchive, type: :model do
   private
 
   def archive_test(initial_institution_count,
-                   institution_count,
+                   institution_count_total,
+                   institution_count_greater_equal_production,
                    institutions_archive_count)
     expect(Institution.count).to eq(initial_institution_count)
     expect(InstitutionsArchive.count).to eq(0)
 
-    InstitutionsArchive.archive(Version.current_production)
+    InstitutionsArchive.archive_previous_versions(:user)
 
-    expect(Institution.count).to eq(institution_count)
-    expect(Institution.where('version >= ?', current_production_number).size).to eq(institution_count)
+    expect(Institution.count).to eq(institution_count_total)
+    expect(Institution.where('version >= ?', current_production_number).size)
+      .to eq(institution_count_greater_equal_production)
 
     expect(InstitutionsArchive.count).to eq(institutions_archive_count)
     expect(InstitutionsArchive.where('version < ?', current_production_number).size).to eq(institutions_archive_count)
