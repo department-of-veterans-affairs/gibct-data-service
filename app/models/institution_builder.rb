@@ -65,8 +65,6 @@ module InstitutionBuilder
         run_insertions(version.number)
       end
 
-      # version.completed_at = Time.now.utc.to_s(:db)
-      # version.save
       version.update(completed_at: Time.now.utc.to_s(:db))
 
       notice = 'Institution build was successful'
@@ -84,6 +82,8 @@ module InstitutionBuilder
 
       success = false
     end
+
+    version.delete unless success
 
     { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
   end
