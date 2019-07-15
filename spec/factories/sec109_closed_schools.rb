@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-# frozen_string_literal: true
-
 FactoryGirl.define do
   factory :sec109_closed_school do
     facility_code { generate :facility_code }
