@@ -15,3 +15,9 @@
 //= require jquery_ujs
 //= require bootstrap.min
 //= require_tree .
+
+$(function() {
+  $('#version_build').on('confirm:complete', (e) => {
+    $('#preview_versions').html('<div class="generating">Generating new preview version<i class="fa fa-gear fa-spin" style="font-size:24px"></i></div>');
+  });
+});

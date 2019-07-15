@@ -27,15 +27,17 @@
       <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
           data: { confirm: 'Are you sure you want to create a new preview version?' },
           class: "btn btn-warning btn-xs",
-          role: "button" %>
+          role: "button",
+          id: "version_build"
+          %>
     <% else %>
       <a disabled="disabled" class="btn btn-warning btn-xs", role="button">
         Generate New Preview Version
       </a>
     <% end %>
   </h3>
-  <% if Version.previews_exist %>
-    <div class="row row-space-6">
+  <div class="row row-space-6" id="preview_versions">
+    <% if Version.previews_exist %>
       <div class="col-xs-12">
         <table class="table table-hover table-condensed table-bordered table-responsive">
           <thead>
@@ -51,8 +53,8 @@
           </tbody>
         </table>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 
 <h3>Latest Uploads
   <%= link_to 'View Upload History', uploads_path, class: "btn btn-info btn-xs", role: "button" %>

@@ -16,6 +16,8 @@
  *= require bootstrap.min
  */
 
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
 @font-face {
   font-family: 'Glyphicons Halflings';
   src: url('/assets/glyphicons-halflings-regular.eot');
@@ -23,6 +25,7 @@
   url('/assets/glyphicons-halflings-regular.woff') format('woff'),
   url('/assets/glyphicons-halflings-regular.ttf') format('truetype'),
   url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+  
 }
 
 .row-space-6 {
@@ -142,4 +145,8 @@
 
 .apple_pagination a:hover, .apple_pagination a:focus {
     text-decoration: underline;
+}
+
+.generating {
+  
 }
