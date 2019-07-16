@@ -20,7 +20,7 @@ $(function() {
   $('#version_build').on('confirm:complete', (e) => {
     $('#preview_versions tbody').html(
       '<tr>' +
-        '<td colspan="5" class="generating">' +
+        '<td colspan="5">' +
           '<i class="fa fa-gear fa-spin" style="font-size:24px"></i>  Generating new preview version ' +
         '</td>' +
       '</tr>');

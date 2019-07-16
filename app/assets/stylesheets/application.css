@@ -25,7 +25,6 @@
   url('/assets/glyphicons-halflings-regular.woff') format('woff'),
   url('/assets/glyphicons-halflings-regular.ttf') format('truetype'),
   url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
-  
 }
 
 .row-space-6 {
@@ -145,8 +144,4 @@
 
 .apple_pagination a:hover, .apple_pagination a:focus {
     text-decoration: underline;
-}
-
-.generating {
-  
 }

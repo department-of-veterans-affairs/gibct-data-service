@@ -146,8 +146,6 @@ RSpec.describe Version, type: :model do
       end
 
       it 'has correct attributes' do
-        puts subject.publishable?
-
         expect(subject.latest_production?).to be_falsey
         expect(subject.production?).to be_falsey
         expect(subject.preview?).to be_truthy
