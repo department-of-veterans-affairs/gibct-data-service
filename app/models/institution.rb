@@ -33,6 +33,7 @@ class Institution < ActiveRecord::Base
     'zip' => { column: :zip, converter: ZipConverter },
     'country' => { column: :country, converter: UpcaseConverter },
     'type' => { column: :institution_type_name, converter: UpcaseConverter },
+    'approved' => { column: :approved, converter: BooleanConverter },
     'correspondence' => { column: :correspondence, converter: BooleanConverter },
     'flight' => { column: :flight, converter: BooleanConverter },
     'bah' => { column: :bah, converter: NumberConverter },
@@ -89,6 +90,10 @@ class Institution < ActiveRecord::Base
     'accreditation_status' => { column: :accreditation_status, converter: BaseConverter },
     'caution_flag' => { column: :caution_flag, converter: BooleanConverter },
     'caution_flag_reason' => { column: :caution_flag_reason, converter: BaseConverter },
+    'school_closing' => { column: :school_closing, converter: BooleanConverter },
+    'school_closing_on' => { column: :school_closing_on, converter: DateConverter },
+    'school_closing_message' => { column: :school_closing_message, converter: BaseConverter },
+    'closure109' => { column: :closure109, converter: BooleanConverter },
     'complaints_facility_code' => { column: :complaints_facility_code, converter: NumberConverter },
     'complaints_financial_by_fac_code' => { column: :complaints_financial_by_fac_code, converter: NumberConverter },
     'complaints_quality_by_fac_code' => { column: :complaints_quality_by_fac_code, converter: NumberConverter },
@@ -147,19 +152,7 @@ class Institution < ActiveRecord::Base
     'complaints_other_by_ope_id_do_not_sum' => {
       column: :complaints_other_by_ope_id_do_not_sum, converter: NumberConverter
     },
-    'school_closing' => {
-      column: :school_closing, converter: BooleanConverter
-    },
-    'school_closing_on' => {
-      column: :school_closing_on, converter: DateConverter
-    },
-    'school_closing_message' => {
-      column: :school_closing_message, converter: BaseConverter
-    },
-    'closure109' => { column: :closure109, converter: BooleanConverter },
-    'approved' => {
-      column: :approved, converter: BooleanConverter
-    }
+   
   }.freeze
 
   validates :facility_code, uniqueness: true, presence: true
