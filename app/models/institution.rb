@@ -151,8 +151,7 @@ class Institution < ActiveRecord::Base
     },
     'complaints_other_by_ope_id_do_not_sum' => {
       column: :complaints_other_by_ope_id_do_not_sum, converter: NumberConverter
-    },
-   
+    }
   }.freeze
 
   validates :facility_code, uniqueness: true, presence: true
