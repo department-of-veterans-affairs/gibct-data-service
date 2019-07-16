@@ -63,7 +63,9 @@ class Weam < ActiveRecord::Base
     'distance learning' => { column: :distance_learning, converter: BooleanConverter },
     'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter },
     'stem indicator' => { column: :stem_indicator, converter: BooleanConverter },
-    'preferred provider' => { column: :preferred_provider, converter: BooleanConverter }
+    'preferred provider' => { column: :preferred_provider, converter: BooleanConverter },
+    'campus type' => { column: :campus_type, converter: BaseConverter },
+    'parent facility code id' => { column: :parent_facility_code_id, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, :institution, :institution_type_name, presence: true

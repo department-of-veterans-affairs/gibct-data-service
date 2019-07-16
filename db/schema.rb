@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190712019179) do
+ActiveRecord::Schema.define(version: 20190716154601) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1307,6 +1307,8 @@ ActiveRecord::Schema.define(version: 20190712019179) do
     t.integer  "dod_bah"
     t.boolean  "stem_indicator"
     t.boolean  "preferred_provider",                       default: false
+    t.string   "campus_type"
+    t.string   "parent_facility_code_id"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
