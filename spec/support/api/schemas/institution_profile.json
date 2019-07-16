@@ -122,6 +122,7 @@
             "school_closing_on": { "type": ["null", "string"] },
             "school_closing_message": { "type": ["null", "string"] },
             "vet_tec_provider": { "type": "boolean"},
+            "preferred_provider": { "type": "boolean"},
             "complaints": {
               "type": "object",
               "properties": {
@@ -270,7 +271,8 @@
             "school_closing_message",
             "created_at",
             "updated_at",
-            "vet_tec_provider"
+            "vet_tec_provider",
+            "preferred_provider"
           ]
         },
         "links": {

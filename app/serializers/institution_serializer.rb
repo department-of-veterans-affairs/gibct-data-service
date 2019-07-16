@@ -49,6 +49,8 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :school_closing
   attribute :vet_tec_provider
 
+  attribute :preferred_provider
+
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:self) { v0_institution_url(object.facility_code) }
