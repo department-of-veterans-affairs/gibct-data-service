@@ -44,7 +44,7 @@ class DashboardsController < ApplicationController
                   filename: "version_#{params[:number]}.csv"
       end
     end
-  rescue ArgumentError, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
     Rails.logger.error e.message
     redirect_to dashboards_path, alert: e.message
   end
