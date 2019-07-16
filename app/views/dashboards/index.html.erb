@@ -37,7 +37,6 @@
     <% end %>
   </h3>
   <div class="row row-space-6" id="preview_versions">
-    <% if Version.previews_exist %>
       <div class="col-xs-12">
         <table class="table table-hover table-condensed table-bordered table-responsive">
           <thead>
@@ -48,12 +47,10 @@
             <th width=30%>Actions</th>
           </thead>
           <tbody>
-            <%= render partial: 'version',
-              collection: @preview_versions, as: :version %>
+            <%= render partial: 'version', collection: @preview_versions, as: :version if Version.previews_exist %>
           </tbody>
         </table>
       </div>
-    <% end %>
   </div>
 
 <h3>Latest Uploads

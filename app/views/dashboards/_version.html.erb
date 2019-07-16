@@ -3,11 +3,10 @@
   <td><%= version.uuid %></td>
   <td><%= version.user.email %></td>
   <td><%= version.created_at.to_formatted_s(:long_ordinal) %></td>
-  <td>
+  <td class="<%= 'generating' if version.generating? %>">
     <% if version.generating? %>
-      <div class="generating">
-        Generating<i class="fa fa-gear fa-spin" style="font-size:24px"></i>
-      </div>
+        <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
+        Reload page to refresh preview version status
     <% else %>
       <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank",
           class: "btn btn-success btn-xs", role: "button" %>
