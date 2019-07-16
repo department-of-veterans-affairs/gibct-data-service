@@ -91,5 +91,11 @@ FactoryGirl.define do
       vet_tec_provider true
       approved true
     end
+
+    trait :closure109 do
+      facility_code '1ZZZZZZZ'
+      institution 'COLLEGE OF VET TEC PROVIDER'
+      closure109 false
+    end
   end
 end
