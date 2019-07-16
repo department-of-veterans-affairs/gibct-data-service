@@ -42,7 +42,7 @@ RSpec.describe InstitutionsArchive, type: :model do
                      institutions_archive_count)
       end
 
-      it 'archives previous production version and does not archive preview versions greater than current production', js: true do
+      it 'does not archive preview versions greater than current production', js: true do
         # version 3
         create_production_version
         create :institution, version: current_production_number
