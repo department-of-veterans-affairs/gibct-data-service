@@ -102,6 +102,40 @@ RSpec.describe DashboardsController, type: :controller do
     end
   end
 
+  describe 'GET export version' do
+    login_user
+
+    before(:each) do
+      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+
+      InstitutionBuilder::TABLES.each do |klass|
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+      end
+
+      get :build
+    end
+
+    it 'causes a CSV to be exported' do
+      expect(Weam).to receive(:export_version)
+      get :export_version, format: :csv, number: 1
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get :export_version, format: :csv, number: 1
+      expect(response.headers['Content-Disposition']).to include('filename="Sva.csv"')
+    end
+
+    it 'includes filename parameter in content-disposition header for institution' do
+      get :export, csv_type: 'Institution', format: :csv, number: 1
+      expect(response.headers['Content-Disposition']).to include('filename="version_1.csv"')
+    end
+
+    it 'redirects to index on error' do
+      # expect(get(:export, csv_type: 'BlahBlah', format: :csv)).to redirect_to(action: :index)
+      expect(get(:export, format: :xml, number: 1)).to redirect_to(action: :index)
+    end
+  end
+
   describe 'GET push' do
     before(:each) { allow_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines) }
     login_user

@@ -39,9 +39,14 @@ class DashboardsController < ApplicationController
   def export_version
     respond_to do |format|
       format.csv do
-        send_data Institution.export_version(params[:number]), type: 'text/csv', filename: 'Institution.csv'
+        send_data Institution.export_version(params[:number]),
+                  type: 'text/csv',
+                  filename: "version_#{params[:number]}.csv"
       end
     end
+  rescue ArgumentError, ActionController::UnknownFormat => e
+    Rails.logger.error e.message
+    redirect_to dashboards_path, alert: e.message
   end
 
   def push
