@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20190622019025) do
+=======
+ActiveRecord::Schema.define(version: 20190626110700) do
+>>>>>>> 6971ee9d80ce41cc071953d186cca8bf56161e3d
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -303,8 +307,8 @@ ActiveRecord::Schema.define(version: 20190622019025) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.boolean  "approved",                                            default: false, null: false
-    t.boolean  "vet_tec_provider",                                    default: false, null: false
+    t.boolean  "approved",                                            default: false
+    t.boolean  "vet_tec_provider",                                    default: false
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -1368,6 +1372,9 @@ ActiveRecord::Schema.define(version: 20190622019025) do
     t.float    "mha_rate_grandfathered"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "version"
   end
+
+  add_index "zipcode_rates", ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code", using: :btree
 
 end
