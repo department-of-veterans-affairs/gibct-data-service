@@ -62,7 +62,7 @@ class Weam < ActiveRecord::Base
     'online only' => { column: :online_only, converter: BooleanConverter },
     'distance learning' => { column: :distance_learning, converter: BooleanConverter },
     'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter },
-    'stem indicator' => { column: :stem_indicator, converter: BooleanConverter }
+    'stem indicator' => { column: :stem_indicator, converter: BooleanConverter },
     'preferred provider' => { column: :preferred_provider, converter: BooleanConverter }
   }.freeze
 
