@@ -1,12 +1,7 @@
 class AddPreferredProviderColumnToWeams < ActiveRecord::Migration
     def up
-      safety_assured do
-        change_table(:weams, bulk: true) do |t|
-          t.column :preferred_provider, :boolean 
-    
-          t.change_default :preferred_provider, false
-        end
-      end
+      add_column :weams, :preferred_provider, :boolean
+      change_column_default :weams, :preferred_provider, false
     end
   
     def down
