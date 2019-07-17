@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190712019179) do
+ActiveRecord::Schema.define(version: 20190717019179) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -305,7 +305,7 @@ ActiveRecord::Schema.define(version: 20190712019179) do
     t.integer  "dod_bah"
     t.boolean  "approved",                                            default: false
     t.boolean  "vet_tec_provider",                                    default: false
-    t.boolean  "preferred_provider",                                  default: false
+    t.boolean  "closure109"
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -1115,6 +1115,12 @@ ActiveRecord::Schema.define(version: 20190712019179) do
   add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
   add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
 
+  create_table "sec109_closed_schools", force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "school_name"
+    t.boolean "closure109"
+  end
+
   create_table "sec702_schools", force: :cascade do |t|
     t.string   "facility_code", null: false
     t.boolean  "sec_702"
@@ -1298,6 +1304,7 @@ ActiveRecord::Schema.define(version: 20190712019179) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
+    t.boolean  "stem_indicator"
     t.boolean  "preferred_provider",                       default: false
   end
 
