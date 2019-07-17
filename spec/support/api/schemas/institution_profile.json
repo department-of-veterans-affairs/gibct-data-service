@@ -20,9 +20,7 @@
           }
         }
       },
-      "required": [
-        "version"
-      ]
+      "required": ["version"]
     },
     "data": {
       "type": "object",
@@ -38,9 +36,13 @@
             "type": {
               "type": "string",
               "enum": [
-                "OJT", "PRIVATE", "FOREIGN",
-                "CORRESPONDENCE", "FLIGHT",
-                "FOR PROFIT", "PUBLIC"
+                "OJT",
+                "PRIVATE",
+                "FOREIGN",
+                "CORRESPONDENCE",
+                "FLIGHT",
+                "FOR PROFIT",
+                "PUBLIC"
               ]
             },
             "address_1": { "type": ["null", "string"] },
@@ -111,7 +113,7 @@
             "online_all": { "type": ["null", "string"] },
             "p911_tuition_fees": { "type": ["null", "number"] },
             "p911_recipients": { "type": ["null", "integer"] },
-            "p911_yellow_ribbon": { "type": ["null", "number"]  },
+            "p911_yellow_ribbon": { "type": ["null", "number"] },
             "p911_yr_recipients": { "type": ["null", "integer"] },
             "accredited": { "type": ["null", "boolean"] },
             "accreditation_type": { "type": ["null", "string"] },
@@ -121,7 +123,7 @@
             "school_closing": { "type": ["null", "boolean"] },
             "school_closing_on": { "type": ["null", "string"] },
             "school_closing_message": { "type": ["null", "string"] },
-            "vet_tec_provider": { "type": "boolean"},
+            "vet_tec_provider": { "type": "boolean" },
             "complaints": {
               "type": "object",
               "properties": {
@@ -131,7 +133,9 @@
                 "refund_by_fac_code": { "type": ["null", "integer"] },
                 "marketing_by_fac_code": { "type": ["null", "integer"] },
                 "accreditation_by_fac_code": { "type": ["null", "integer"] },
-                "degree_requirements_by_fac_code": { "type": ["null", "integer"] },
+                "degree_requirements_by_fac_code": {
+                  "type": ["null", "integer"]
+                },
                 "student_loans_by_fac_code": { "type": ["null", "integer"] },
                 "grades_by_fac_code": { "type": ["null", "integer"] },
                 "credit_transfer_by_fac_code": { "type": ["null", "integer"] },
@@ -140,17 +144,31 @@
                 "transcript_by_fac_code": { "type": ["null", "integer"] },
                 "other_by_fac_code": { "type": ["null", "integer"] },
                 "main_campus_roll_up": { "type": ["null", "integer"] },
-                "financial_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
+                "financial_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
                 "quality_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
                 "refund_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "marketing_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "accreditation_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "degree_requirements_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "student_loans_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
+                "marketing_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
+                "accreditation_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
+                "degree_requirements_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
+                "student_loans_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
                 "grades_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "credit_transfer_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
+                "credit_transfer_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
                 "jobs_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
-                "transcript_by_ope_id_do_not_sum": { "type": ["null", "integer"] },
+                "transcript_by_ope_id_do_not_sum": {
+                  "type": ["null", "integer"]
+                },
                 "other_by_ope_id_do_not_sum": { "type": ["null", "integer"] }
               },
               "required": [
@@ -188,7 +206,9 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "division_professional_school": { "type": ["null", "string"] },
+                  "division_professional_school": {
+                    "type": ["null", "string"]
+                  },
                   "number_of_students": { "type": ["null", "integer"] },
                   "degree_level": { "type": ["null", "string"] },
                   "contribution_amount": { "type": ["null", "number"] },
@@ -281,21 +301,11 @@
             "vet_website_link": { "type": ["null", "string"] },
             "self": { "type": "string" }
           },
-          "required": [
-            "self"
-          ]
+          "required": ["self"]
         }
       },
-      "required": [
-        "id",
-        "type",
-        "attributes",
-        "links"
-      ]
+      "required": ["id", "type", "attributes", "links"]
     }
   },
-  "required": [
-    "meta",
-    "data"
-  ]
+  "required": ["meta", "data"]
 }
