@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190708190152) do
+ActiveRecord::Schema.define(version: 20190718112200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -305,6 +305,8 @@ ActiveRecord::Schema.define(version: 20190708190152) do
     t.integer  "dod_bah"
     t.boolean  "approved",                                            default: false
     t.boolean  "vet_tec_provider",                                    default: false
+    t.boolean  "closure109"
+    t.boolean  "preferred_provider",                                  default: false
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
   end
@@ -1117,6 +1119,12 @@ ActiveRecord::Schema.define(version: 20190708190152) do
   add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
   add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
 
+  create_table "sec109_closed_schools", force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "school_name"
+    t.boolean "closure109"
+  end
+
   create_table "sec702_schools", force: :cascade do |t|
     t.string   "facility_code", null: false
     t.boolean  "sec_702"
@@ -1233,13 +1241,12 @@ ActiveRecord::Schema.define(version: 20190708190152) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.integer  "user_id",                      null: false
-    t.integer  "number",                       null: false
-    t.boolean  "production",   default: false, null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.binary   "uuid",                         null: false
-    t.datetime "completed_at"
+    t.integer  "user_id",                    null: false
+    t.integer  "number",                     null: false
+    t.boolean  "production", default: false, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.binary   "uuid",                       null: false
   end
 
   add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
@@ -1258,8 +1265,8 @@ ActiveRecord::Schema.define(version: 20190708190152) do
   add_index "vsocs", ["facility_code"], name: "index_vsocs_on_facility_code", unique: true, using: :btree
 
   create_table "weams", force: :cascade do |t|
-    t.string   "facility_code",                            null: false
-    t.string   "institution",                              null: false
+    t.string   "facility_code",                                            null: false
+    t.string   "institution",                                              null: false
     t.string   "city"
     t.string   "state"
     t.string   "zip"
@@ -1268,7 +1275,7 @@ ActiveRecord::Schema.define(version: 20190708190152) do
     t.boolean  "poe"
     t.boolean  "yr"
     t.string   "va_highest_degree_offered"
-    t.string   "institution_type_name",                    null: false
+    t.string   "institution_type_name",                                    null: false
     t.boolean  "flight"
     t.boolean  "correspondence"
     t.boolean  "accredited"
@@ -1286,8 +1293,8 @@ ActiveRecord::Schema.define(version: 20190708190152) do
     t.string   "cross"
     t.string   "ope"
     t.string   "ope6"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
     t.string   "approval_status"
     t.boolean  "priority_enrollment"
     t.boolean  "online_only"
@@ -1301,6 +1308,8 @@ ActiveRecord::Schema.define(version: 20190708190152) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
+    t.boolean  "preferred_provider",                       default: false
+    t.boolean  "stem_indicator",                           default: false
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
   end

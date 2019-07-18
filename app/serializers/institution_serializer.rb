@@ -47,9 +47,12 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
 
   attribute :school_closing
+  attribute :closure109
   attribute :vet_tec_provider
   attribute :parent_facility_code_id
   attribute :campus_type
+
+  attribute :preferred_provider
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

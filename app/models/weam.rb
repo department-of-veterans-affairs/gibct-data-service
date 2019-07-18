@@ -14,37 +14,15 @@ class Weam < ActiveRecord::Base
   ALC2 = 'educational institution is approved for chapter 31 only'
 
   COLS_USED_IN_INSTITUTION = %i[
-    facility_code
-    institution
-    city
-    state
-    zip
-    address_1
-    address_2
-    address_3
-    country
-    accredited
-    bah
-    poe
-    yr
-    institution_type_name
-    va_highest_degree_offered
-    flight
-    correspondence
-    independent_study
-    priority_enrollment
-    physical_address_1
-    physical_address_2
-    physical_address_3
-    physical_city
-    physical_state
-    physical_zip
-    physical_country
-    dod_bah online_only
-    distance_learning
-    approved
-    campus_type
-    parent_facility_code_id
+    facility_code institution city state zip
+    address_1 address_2 address_3
+    country accredited bah poe yr
+    institution_type_name va_highest_degree_offered flight correspondence
+    independent_study priority_enrollment
+    physical_address_1 physical_address_2 physical_address_3
+    physical_city physical_state physical_zip physical_country
+    dod_bah online_only distance_learning approved preferred_provider
+    campus_type parent_facility_code_id
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -85,6 +63,8 @@ class Weam < ActiveRecord::Base
     'online only' => { column: :online_only, converter: BooleanConverter },
     'distance learning' => { column: :distance_learning, converter: BooleanConverter },
     'priority enrollment' => { column: :priority_enrollment, converter: BooleanConverter },
+    'preferred provider' => { column: :preferred_provider, converter: BooleanConverter },
+    'stem indicator' => { column: :stem_indicator, converter: BooleanConverter },
     'campus type' => { column: :campus_type, converter: BaseConverter },
     'parent facility code id' => { column: :parent_facility_code_id, converter: BaseConverter }
   }.freeze
