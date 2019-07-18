@@ -155,8 +155,8 @@ RSpec.describe Institution, type: :model do
 
   describe 'closure109' do
     it 'returns true if an institution has a school closure' do
-      expect(build(:institution).closure109).to eq(false)
-      expect(build(:institution, school_closing_on: '2000-01-01').closure109).to eq(true)
+      expect(build(:institution, closure109: false).closure109).to eq(false)
+      expect(build(:institution, closure109: true).closure109).to eq(true)
     end
   end
 
