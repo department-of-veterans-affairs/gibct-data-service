@@ -191,10 +191,7 @@
                 ]
               },
               "vet_tec_provider": {
-                "type": [
-                  "null",
-                  "boolean"
-                ]
+                "type": "boolean"
               }
             },
             "required": [

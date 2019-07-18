@@ -19,7 +19,7 @@
 
 # Ignore sitemaps
 /public/sitemap.xml.gz
-
+/public/sitemap*.xml.gz
 # Comment out these rules if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
 config/secrets.yml
