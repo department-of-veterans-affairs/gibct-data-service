@@ -28,11 +28,11 @@ class GibctSiteMapper
     SitemapGenerator.verbose = verbose
   end
 
-  def generate_sitemap(v)
+  def generate_sitemap(version)
     SitemapGenerator::Sitemap.create do
       add '/search', priority: 0.9, changefreq: 'monthly'
 
-      Institution.version(v).find_each do |institution|
+      Institution.version(version).find_each do |institution|
         add "/profile/#{institution.facility_code}", priority: 0.8, changefreq: 'weekly'
       end
     end

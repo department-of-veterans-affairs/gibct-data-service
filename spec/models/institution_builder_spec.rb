@@ -858,5 +858,36 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding Vet Tec Provider data' do
+      before(:each) do
+        create(:weam, :vet_tec)
+        InstitutionBuilder.run(user)
+      end
+
+      let(:institution) { institutions.find_by(facility_code: '1VZZZZZZ') }
+
+      it 'sets vet_tec_provider to true' do
+        expect(institution.vet_tec_provider).to eq(true)
+      end
+    end
+
+    describe 'when generating zipcode rates' do
+      let(:institution) { institutions.find_by(zip: zipcode_rate.zip_code) }
+      let(:zipcode_rate) { ZipcodeRate.first }
+
+      before(:each) do
+        create :weam, :zipcode_rate
+        InstitutionBuilder.run(user)
+      end
+
+      it 'properly generates zipcode rates from weams data' do
+        expect(zipcode_rate).not_to eq(nil)
+        expect(zipcode_rate.zip_code).to eq(institution.zip)
+        expect(zipcode_rate.mha_rate).to eq(1000)
+        expect(zipcode_rate.mha_rate_grandfathered).to eq(1100)
+        expect(zipcode_rate.version).to eq(Version.current_preview.number)
+      end
+    end
   end
 end

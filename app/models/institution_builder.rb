@@ -6,7 +6,8 @@ module InstitutionBuilder
     ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
-    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure
+    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
+    Sec109ClosedSchool
   ].freeze
 
   ACCREDITATION_JOIN_CLAUSES = [
@@ -17,6 +18,15 @@ module InstitutionBuilder
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
+  end
+
+  def self.add_vet_tec_provider(version_number)
+    str = <<-SQL
+    UPDATE institutions SET vet_tec_provider = TRUE
+      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
+        AND institutions.version = #{version_number};
+    SQL
+    Institution.connection.update(str)
   end
 
   def self.run_insertions(version_number)
@@ -43,6 +53,9 @@ module InstitutionBuilder
     add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
     add_school_closure(version_number)
+    add_vet_tec_provider(version_number)
+    add_sec109_closed_school(version_number)
+    build_zip_code_rates_from_weams(version_number)
   end
 
   def self.run(user)
@@ -83,7 +96,8 @@ module InstitutionBuilder
                .select("#{version_number.to_i} as version")
                .select("#{conn.quote(timestamp)} as created_at")
                .select("#{conn.quote(timestamp)} as updated_at")
-               .where(approved: true).to_sql
+               .to_sql
+
     Institution.connection.insert(str)
   end
 
@@ -92,6 +106,17 @@ module InstitutionBuilder
       UPDATE institutions SET #{columns_for_update(Crosswalk)}
       FROM crosswalks
       WHERE institutions.facility_code = crosswalks.facility_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_sec109_closed_school(version_number)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(Sec109ClosedSchool)}
+      FROM  sec109_closed_schools
+      WHERE institutions.facility_code = sec109_closed_schools.facility_code
         AND institutions.version = #{version_number};
     SQL
 
@@ -436,5 +461,37 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
+  end
+
+  def self.build_zip_code_rates_from_weams(version_number)
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ActiveRecord::Base.connection
+
+    str = <<-SQL
+      INSERT INTO zipcode_rates (
+        zip_code,
+        mha_rate_grandfathered,
+        mha_rate,
+        version,
+        created_at,
+        updated_at
+      )
+      SELECT
+        zip,
+        bah,
+        dod_bah,
+        ?,
+        #{conn.quote(timestamp)},
+        #{conn.quote(timestamp)}
+      FROM weams
+      WHERE country = 'USA'
+        AND bah IS NOT null
+        AND dod_bah IS NOT null
+      GROUP BY zip, bah, dod_bah
+      ORDER BY zip
+    SQL
+
+    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
+    ZipcodeRate.connection.execute(sql)
   end
 end

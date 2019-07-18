@@ -65,7 +65,7 @@ class UploadsController < ApplicationController
   end
 
   def original_filename
-    @f ||= upload_params[:upload_file].try(:original_filename)
+    @original_filename ||= upload_params[:upload_file].try(:original_filename)
   end
 
   def defaults(csv_type)
@@ -77,7 +77,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    @u ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
   end
 
   def call_load

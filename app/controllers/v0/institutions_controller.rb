@@ -4,11 +4,12 @@ module V0
   # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
     # GET /v0/institutions/autocomplete?term=harv
+
     def autocomplete
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
-        @data = Institution.version(@version[:number]).autocomplete(@search_term)
+        @data = approved_institutions.autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -30,7 +31,7 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = Institution.version(@version[:number]).find_by(facility_code: params[:id])
+      resource = approved_institutions.find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -51,7 +52,7 @@ module V0
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning].each do |k|
+           online_only distance_learning vet_tec_provider].each do |k|
           query[k].try(:downcase!)
         end
       end
@@ -60,7 +61,7 @@ module V0
     # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
-      relation = Institution.version(@version[:number]).search(@query[:name], @query[:include_address])
+      relation = approved_institutions.search(@query[:name], @query[:include_address])
       [
         %i[institution_type_name type],
         [:category],
@@ -74,7 +75,8 @@ module V0
         [:independent_study], # boolean
         [:online_only],
         [:distance_learning],
-        [:priority_enrollment] # boolean
+        [:priority_enrollment], # boolean
+        [:vet_tec_provider], # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
@@ -130,7 +132,7 @@ module V0
       end
       raw_facets
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Style/GuardClause
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not
@@ -139,6 +141,10 @@ module V0
       group_counts.each_with_object([]) do |(k, v), array|
         array << { name: k, count: v }
       end
+    end
+
+    def approved_institutions
+      Institution.version(@version[:number]).where(approved: true)
     end
   end
   # rubocop:enable Metrics/ClassLength

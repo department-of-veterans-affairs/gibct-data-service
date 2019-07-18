@@ -20,9 +20,7 @@
           }
         }
       },
-      "required": [
-        "version"
-      ]
+      "required": ["version"]
     },
     "data": {
       "type": "array",
@@ -41,9 +39,13 @@
               "type": {
                 "type": "string",
                 "enum": [
-                  "OJT", "PRIVATE", "FOREIGN",
-                  "CORRESPONDENCE", "FLIGHT",
-                  "FOR PROFIT", "PUBLIC"
+                  "OJT",
+                  "PRIVATE",
+                  "FOREIGN",
+                  "CORRESPONDENCE",
+                  "FLIGHT",
+                  "FOR PROFIT",
+                  "PUBLIC"
                 ]
               },
               "city": { "type": ["null", "string"] },
@@ -68,7 +70,8 @@
               "school_closing": { "type": ["null", "boolean"] },
               "stem_offered": { "type": ["null", "boolean"] },
               "independent_study": { "type": ["null", "boolean"] },
-              "priority_enrollment": { "type": ["null", "boolean"] }
+              "priority_enrollment": { "type": ["null", "boolean"] },
+              "vet_tec_provider": { "type": "boolean" }
             },
             "required": [
               "name",
@@ -96,7 +99,8 @@
               "school_closing",
               "stem_offered",
               "independent_study",
-              "priority_enrollment"
+              "priority_enrollment",
+              "vet_tec_provider"
             ]
           },
           "links": {
@@ -106,17 +110,10 @@
               "scorecard": { "type": ["null", "string"] },
               "self": { "type": "string" }
             },
-            "required": [
-              "self"
-            ]
+            "required": ["self"]
           }
         },
-        "required": [
-          "id",
-          "type",
-          "attributes",
-          "links"
-        ]
+        "required": ["id", "type", "attributes", "links"]
       }
     },
     "links": {
@@ -128,18 +125,8 @@
         "next": { "type": ["null", "string"] },
         "last": { "type": "string" }
       },
-      "required": [
-        "self",
-        "first",
-        "prev",
-        "next",
-        "last"
-      ]
+      "required": ["self", "first", "prev", "next", "last"]
     }
   },
-  "required": [
-    "meta",
-    "data",
-    "links"
-  ]
+  "required": ["meta", "data", "links"]
 }

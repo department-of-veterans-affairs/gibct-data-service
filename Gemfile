@@ -6,6 +6,7 @@ gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
+gem 'strong_migrations'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -65,7 +66,7 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'rubocop', '~> 0.52.1', require: false
+  gem 'rubocop', '~> 0.53.0', require: false
   gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
 

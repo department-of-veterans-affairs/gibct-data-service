@@ -153,6 +153,13 @@ RSpec.describe Institution, type: :model do
     end
   end
 
+  describe 'closure109' do
+    it 'returns true if an institution has a school closure' do
+      expect(build(:institution, closure109: false).closure109).to eq(false)
+      expect(build(:institution, closure109: true).closure109).to eq(true)
+    end
+  end
+
   describe 'class methods and scopes' do
     context 'version' do
       it 'should retrieve institutions by a specific version number' do
