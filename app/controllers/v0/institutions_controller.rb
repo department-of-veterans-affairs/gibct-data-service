@@ -27,7 +27,7 @@ module V0
         facets: facets
       }
 
-      if params[:vet_tec_provider]
+      if params[:vet_tec_provider] == "true"
         render json: search_results.order('preferred_provider DESC NULLS LAST, institution')
                                    .page(params[:page]), meta: @meta
       else
