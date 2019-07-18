@@ -87,6 +87,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :physical_zip
 
   attribute :vet_tec_provider
+  attribute :preferred_provider
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

@@ -6,7 +6,8 @@ module InstitutionBuilder
     ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
-    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure
+    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
+    Sec109ClosedSchool
   ].freeze
 
   ACCREDITATION_JOIN_CLAUSES = [
@@ -53,6 +54,7 @@ module InstitutionBuilder
     add_yellow_ribbon_programs(version_number)
     add_school_closure(version_number)
     add_vet_tec_provider(version_number)
+    add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
   end
 
@@ -108,6 +110,17 @@ module InstitutionBuilder
       UPDATE institutions SET #{columns_for_update(Crosswalk)}
       FROM crosswalks
       WHERE institutions.facility_code = crosswalks.facility_code
+        AND institutions.version = #{version_number};
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.add_sec109_closed_school(version_number)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(Sec109ClosedSchool)}
+      FROM  sec109_closed_schools
+      WHERE institutions.facility_code = sec109_closed_schools.facility_code
         AND institutions.version = #{version_number};
     SQL
 
