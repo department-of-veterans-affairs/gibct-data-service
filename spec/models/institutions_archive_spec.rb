@@ -96,7 +96,7 @@ RSpec.describe InstitutionsArchive, type: :model do
         error_message = 'BOOM!'
         allow(InstitutionsArchive).to receive(:create_archives).and_raise(StandardError, error_message)
         expect(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
-        InstitutionsArchive.archive_previous_versions(:user)
+        InstitutionsArchive.archive_previous_versions
       end
 
       it 'logs errors at the database level' do
@@ -110,7 +110,7 @@ RSpec.describe InstitutionsArchive, type: :model do
         allow(InstitutionsArchive).to receive(:create_archives).and_raise(statement_invalid)
         expect(Rails.logger).to receive(:error)
           .with("There was an error occurring at the database level: #{error_message}")
-        InstitutionsArchive.archive_previous_versions(:user)
+        InstitutionsArchive.archive_previous_versions
       end
     end
   end
@@ -125,7 +125,7 @@ RSpec.describe InstitutionsArchive, type: :model do
     expect(Institution.count).to eq(initial_institution_count)
     expect(InstitutionsArchive.count).to eq(0)
 
-    InstitutionsArchive.archive_previous_versions(:user)
+    InstitutionsArchive.archive_previous_versions
 
     expect(Institution.count).to eq(institution_count_total)
     expect(Institution.where('version >= ?', current_production_number).size)

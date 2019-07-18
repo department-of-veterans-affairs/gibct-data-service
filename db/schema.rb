@@ -439,8 +439,10 @@ ActiveRecord::Schema.define(version: 20190720012000) do
     t.string   "physical_zip"
     t.string   "physical_country"
     t.integer  "dod_bah"
-    t.boolean  "approved"
-    t.boolean  "vet_tec_provider"
+    t.boolean  "approved",                                            default: false
+    t.boolean  "vet_tec_provider",                                    default: false
+    t.boolean  "closure109"
+    t.boolean  "preferred_provider",                                  default: false
   end
 
   add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
@@ -1441,6 +1443,8 @@ ActiveRecord::Schema.define(version: 20190720012000) do
     t.integer  "dod_bah"
     t.boolean  "preferred_provider",                       default: false
     t.boolean  "stem_indicator",                           default: false
+    t.string   "campus_type"
+    t.string   "parent_facility_code_id"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
