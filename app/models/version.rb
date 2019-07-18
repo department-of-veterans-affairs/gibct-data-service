@@ -51,7 +51,7 @@ class Version < ActiveRecord::Base
   end
 
   def generating?
-    preview? && number > Version.production.maximum(:number) && completed_at.nil?
+    preview? && completed_at.nil?
   end
 
   def publishable?
