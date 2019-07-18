@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190717019179) do
+ActiveRecord::Schema.define(version: 20190718019025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1306,6 +1306,7 @@ ActiveRecord::Schema.define(version: 20190717019179) do
     t.string   "physical_country"
     t.integer  "dod_bah"
     t.boolean  "preferred_provider",                       default: false
+    t.boolean  "stem_indicator",                           default: false
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
