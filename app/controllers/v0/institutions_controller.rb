@@ -26,7 +26,13 @@ module V0
         count: search_results.count,
         facets: facets
       }
-      render json: search_results.order(:institution).page(params[:page]), meta: @meta
+
+      if params[:vet_tec_provider]
+        render json: search_results.order('preferred_provider DESC NULLS LAST, institution')
+                                   .page(params[:page]), meta: @meta
+      else
+        render json: search_results.order(:institution).page(params[:page]), meta: @meta
+      end
     end
 
     # GET /v0/institutions/20005123
