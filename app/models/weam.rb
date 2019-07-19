@@ -156,6 +156,9 @@ class Weam < ActiveRecord::Base
   # an approved applicable law code that is not restrictive of GI Bill
   # benefits, and be a higher learning institution, OJT, flight,
   # correspondence or an institution that is a degree-granting concern.
+  #
+  # If school is a vet tec provider, applicable law code is VET TEC ONLY,
+  # and be a non college degree indicator
   def approved?
     return false if poo_status.blank? || applicable_law_code.blank?
 
