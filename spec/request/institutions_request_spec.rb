@@ -59,8 +59,6 @@ RSpec.describe 'institutions', type: :request do
       data_institution_a = JSON.parse(response.body)['data'][2]
       data_institution_b = JSON.parse(response.body)['data'][3]
 
-      puts data_institution_a
-
       expect(data_institution_c['attributes']['name']).to eq(institution_c.institution)
       expect(data_institution_d['attributes']['name']).to eq(institution_d.institution)
       expect(data_institution_a['attributes']['name']).to eq(institution_a.institution)
