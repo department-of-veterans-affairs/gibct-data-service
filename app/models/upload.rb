@@ -54,6 +54,11 @@ class Upload < ActiveRecord::Base
     Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
   end
 
+  def self.last_uploads_rows
+    @uploads = Upload.last_uploads
+    
+  end
+
   private
 
   def initialize_warnings
