@@ -164,13 +164,13 @@ class Weam < ActiveRecord::Base
 
     return false unless poo_status =~ Regexp.new('aprvd', 'i')
 
-    if applicable_law_code =~ Regexp.new("#{ALCVT}", 'i')
-      vet_tec_flags_for_approved?
-    else 
-      return false if applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
+    # VET TEC ONLY
+    return vet_tec_flags_for_approved? if applicable_law_code =~ Regexp.new("#{ALCVT}", 'i')
+    
+    # Other
+    return false if applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
+    flags_for_approved?
 
-      flags_for_approved?
-    end
   end
 end
 # rubocop:enable Metrics/ClassLength
