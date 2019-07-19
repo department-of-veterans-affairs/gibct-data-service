@@ -21,7 +21,16 @@ $(function() {
     $('#preview_versions tbody').html(
       '<tr>' +
         '<td colspan="5">' +
-          '<i class="fa fa-gear fa-spin" style="font-size:24px"></i>  Generating new preview version ' +
+          '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ' +
+        '</td>' +
+      '</tr>');
+  });
+
+  $('#version_publish').on('confirm:complete', (e) => {
+    $('#preview_versions tbody td:nth-child(5)').html(
+      '<tr>' +
+        '<td colspan="5">' +
+          '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Publishing ' +
         '</td>' +
       '</tr>');
   });
