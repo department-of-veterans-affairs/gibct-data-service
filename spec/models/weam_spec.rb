@@ -219,6 +219,7 @@ RSpec.describe Weam, type: :model do
     let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
     let(:title_31_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
     let(:false_indicators) { build :weam }
+    let(:vet_tec_provider) { build :weam, :as_vet_tec_provider }
 
     it 'is true if poo and law code are approved with at least one true indicator' do
       expect(subject.approved?).to be_truthy
@@ -232,6 +233,10 @@ RSpec.describe Weam, type: :model do
 
     it 'is false if there are no truthful indicators' do
       expect(false_indicators.approved?).to be_falsy
+    end
+
+    it 'is true if poo and law code are vet tec only with non college degree indicator' do
+      expect(vet_tec_provider.approved?).to be_truthy
     end
   end
 end
