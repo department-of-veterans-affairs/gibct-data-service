@@ -57,24 +57,23 @@ class Upload < ActiveRecord::Base
   def self.last_uploads_rows
     uploads = Upload.last_uploads
 
-    uploadsHash = {}
+    uploads_hash = {}
     uploads.each do |r|
       uploadsHash[r.csv_type] = r
     end
 
     # uploads to hash to use in if statement
-    InstitutionBuilder::TABLES.each{ |klass|
-      if !uploadsHash.has_key?(klass.name)
-        uploadTest = Upload.new
-        uploadTest.csv_type = klass.name
-        uploadTest.ok = false
-        uploadTest.comment = 'No initial file uploaded!!!'
-    
-        uploads.push(uploadTest)
-      end
-    }
+    InstitutionBuilder::TABLES.each do |klass|
+      next if uploads_hash.key?(klass.name)
+      missing_upload = Upload.new
+      missing_upload.csv_type = klass.name
+      missing_upload.ok = false
+      missing_upload.comment = 'No initial file uploaded!!!'
 
-    return uploads.sort_by { |upload| upload.csv_type.downcase }
+      uploads.push(missing_upload)
+    end
+
+    uploads.sort_by { |upload| upload.csv_type.downcase }
   end
 
   private
