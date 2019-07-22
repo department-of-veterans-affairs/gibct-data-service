@@ -59,7 +59,7 @@ class Upload < ActiveRecord::Base
 
     uploads_hash = {}
     uploads.each do |r|
-      uploadsHash[r.csv_type] = r
+      uploads_hash[r.csv_type] = r
     end
 
     # uploads to hash to use in if statement
