@@ -56,15 +56,11 @@ class Upload < ActiveRecord::Base
 
   def self.last_uploads_rows
     uploads = Upload.last_uploads
-
-    uploads_hash = {}
-    uploads.each do |r|
-      uploads_hash[r.csv_type] = r
-    end
+    upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
     InstitutionBuilder::TABLES.each do |klass|
-      next if uploads_hash.key?(klass.name)
+      next if upload_csv_types.include?(klass.name)
       missing_upload = Upload.new
       missing_upload.csv_type = klass.name
       missing_upload.ok = false
