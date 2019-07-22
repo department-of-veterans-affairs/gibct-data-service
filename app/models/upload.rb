@@ -68,7 +68,7 @@ class Upload < ActiveRecord::Base
         uploadTest = Upload.new
         uploadTest.csv_type = klass.name
         uploadTest.ok = false
-        uploadTest.comment = 'No initial file uploaded'
+        uploadTest.comment = 'No initial file uploaded!!!'
     
         uploads.push(uploadTest)
       end
