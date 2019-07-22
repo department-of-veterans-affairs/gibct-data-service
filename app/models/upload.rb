@@ -75,8 +75,6 @@ class Upload < ActiveRecord::Base
     }
 
     return uploads.sort_by { |upload| upload.csv_type.downcase }
-
-    # InstitutionBuilder::TABLES.
   end
 
   private
