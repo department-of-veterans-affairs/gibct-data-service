@@ -67,7 +67,7 @@ module InstitutionBuilder
         run_insertions(version.number)
       end
 
-      version.update(completed_at: Time.now.utc.to_s(:db))
+      version.touch(:completed_at)
 
       notice = 'Institution build was successful'
       success = true

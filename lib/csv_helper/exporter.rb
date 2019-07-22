@@ -6,7 +6,7 @@ module CsvHelper
       generate(csv_headers)
     end
 
-    def export_version(number)
+    def export_institutions_by_version(number)
       generate_version(csv_headers, number)
     end
 

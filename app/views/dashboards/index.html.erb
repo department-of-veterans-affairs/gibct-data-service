@@ -47,7 +47,7 @@
             <th width=30%>Actions</th>
           </thead>
           <tbody>
-            <%= render partial: 'version', collection: @preview_versions, as: :version if Version.previews_exist %>
+            <%= render partial: 'version', collection: @preview_versions, as: :version if Version.previews_exist? %>
           </tbody>
         </table>
       </div>

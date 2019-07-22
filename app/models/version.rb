@@ -27,7 +27,7 @@ class Version < ActiveRecord::Base
     Version.preview.newest.first
   end
 
-  def self.previews_exist
+  def self.previews_exist?
     Version.newest.first.preview?
   end
 

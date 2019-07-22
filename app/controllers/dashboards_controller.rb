@@ -39,9 +39,9 @@ class DashboardsController < ApplicationController
   def export_version
     respond_to do |format|
       format.csv do
-        send_data Institution.export_version(params[:number]),
+        send_data Institution.export_institutions_by_version(params[:number]),
                   type: 'text/csv',
-                  filename: "version_#{params[:number]}.csv"
+                  filename: "institutions_version_#{params[:number]}.csv"
       end
     end
   rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e

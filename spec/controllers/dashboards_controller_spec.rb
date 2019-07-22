@@ -116,13 +116,13 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      expect(Institution).to receive(:export_version)
+      expect(Institution).to receive(:export_institutions_by_version)
       get :export_version, format: :csv, number: 1
     end
 
     it 'includes filename parameter in content-disposition header' do
       get :export_version, format: :csv, number: 1
-      expect(response.headers['Content-Disposition']).to include('filename="version_1.csv"')
+      expect(response.headers['Content-Disposition']).to include('filename="institutions_version_1.csv"')
     end
 
     it 'redirects to index on error' do
