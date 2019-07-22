@@ -62,7 +62,7 @@ class Upload < ActiveRecord::Base
       uploads_hash[r.csv_type] = r
     end
 
-    # uploads to hash to use in if statement
+    # add csv types that are missing from database to allow for uploads
     InstitutionBuilder::TABLES.each do |klass|
       next if uploads_hash.key?(klass.name)
       missing_upload = Upload.new
