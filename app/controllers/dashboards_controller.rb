@@ -81,8 +81,6 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    return Institution if csv_type == 'Institution'
-
     model = InstitutionBuilder::TABLES.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
