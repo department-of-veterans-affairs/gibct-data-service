@@ -54,6 +54,24 @@ class Upload < ActiveRecord::Base
     Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
   end
 
+  def self.last_uploads_rows
+    uploads = Upload.last_uploads
+    upload_csv_types = uploads.map(&:csv_type)
+
+    # add csv types that are missing from database to allow for uploads
+    InstitutionBuilder::TABLES.each do |klass|
+      next if upload_csv_types.include?(klass.name)
+      missing_upload = Upload.new
+      missing_upload.csv_type = klass.name
+      missing_upload.ok = false
+      missing_upload.comment = 'No initial file uploaded!!!'
+
+      uploads.push(missing_upload)
+    end
+
+    uploads.sort_by { |upload| upload.csv_type.downcase }
+  end
+
   private
 
   def initialize_warnings

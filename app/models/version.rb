@@ -45,6 +45,10 @@ class Version < ActiveRecord::Base
     :no_new_uploads
   end
 
+  def self.buildable_state_msg
+    Version.buildable_state.to_s.split('_').map(&:capitalize).join(' ')
+  end
+
   # public instance methods
   def preview?
     !production?
