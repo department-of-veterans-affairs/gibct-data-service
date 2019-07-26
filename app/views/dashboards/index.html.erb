@@ -31,7 +31,7 @@
           id: "version_build"
           %>
     <% else %>
-      <a disabled="disabled" class="btn btn-warning btn-xs", role="button">
+      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" title="<%= Version.buildable_state_msg %>">
         Generate New Preview Version
       </a>
     <% end %>
