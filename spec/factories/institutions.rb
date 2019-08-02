@@ -92,6 +92,16 @@ FactoryGirl.define do
       approved true
     end
 
+    trait :vet_tec_preferred_provider do
+      institution 'COLLEGE OF VET TEC PROVIDER'
+      city 'CHARLESTON'
+      state 'SC'
+      country 'USA'
+      vet_tec_provider true
+      approved true
+      preferred_provider true
+    end
+
     trait :closure109 do
       facility_code '1ZZZZZZZ'
       institution 'COLLEGE OF VET TEC PROVIDER'

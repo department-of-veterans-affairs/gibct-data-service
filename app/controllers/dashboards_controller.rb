@@ -4,7 +4,7 @@ class DashboardsController < ApplicationController
   before_action :verify_buildable, only: :build
 
   def index
-    @uploads = Upload.last_uploads
+    @uploads = Upload.last_uploads_rows
 
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)

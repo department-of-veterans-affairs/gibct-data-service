@@ -1,9 +1,9 @@
-<tr>
+<tr class="<%= 'danger' if !upload.ok? %>">
   <td><%= upload.csv_type %></td>
   <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
-  <td><%= upload.csv %></td>
-  <td><%= upload.created_at.to_formatted_s(:long_ordinal) %></td>
-  <td><%= upload.user.email %></td>
+  <td><%= upload.csv.blank? ? '-' : upload.csv %></td>
+  <td><%= upload.created_at.blank? ? '-' : upload.created_at.to_formatted_s(:long_ordinal) %></td>
+  <td><%= upload.user.blank? ? '-' : upload.user.email %></td>
   <td><%= upload.comment.blank? ? '-' : upload.comment %></td>
   <td>
     <%= link_to 'Upload', new_upload_path(upload.csv_type),

@@ -26,7 +26,13 @@ module V0
         count: search_results.count,
         facets: facets
       }
-      render json: search_results.order(:institution).page(params[:page]), meta: @meta
+
+      if params[:vet_tec_provider] == 'true'
+        render json: search_results.order('preferred_provider DESC NULLS LAST, institution')
+                                   .page(params[:page]), meta: @meta
+      else
+        render json: search_results.order(:institution).page(params[:page]), meta: @meta
+      end
     end
 
     # GET /v0/institutions/20005123
@@ -95,6 +101,7 @@ module V0
         [:distance_learning],
         [:priority_enrollment], # boolean
         [:vet_tec_provider], # boolean
+        [:preferred_provider], # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
