@@ -14,9 +14,8 @@
  *= require_tree .
  *= require_self
  *= require bootstrap.min
+ *= require font-awesome
  */
-
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 @font-face {
   font-family: 'Glyphicons Halflings';
