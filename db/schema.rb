@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190718019025) do
+ActiveRecord::Schema.define(version: 20190802172014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(version: 20190718019025) do
     t.boolean  "vet_tec_provider",                                    default: false
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
+    t.boolean  "stem_indicator",                                      default: false
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -324,6 +325,142 @@ ActiveRecord::Schema.define(version: 20190718019025) do
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
+
+  create_table "institutions_archives", force: :cascade do |t|
+    t.integer  "version",                                                             null: false
+    t.string   "institution_type_name"
+    t.string   "facility_code"
+    t.string   "institution"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "country"
+    t.boolean  "flight"
+    t.boolean  "correspondence"
+    t.float    "bah"
+    t.string   "cross"
+    t.string   "ope"
+    t.string   "ope6"
+    t.string   "insturl"
+    t.string   "vet_tuition_policy_url"
+    t.integer  "pred_degree_awarded"
+    t.integer  "locale"
+    t.integer  "gibill"
+    t.integer  "undergrad_enrollment"
+    t.boolean  "yr"
+    t.boolean  "student_veteran"
+    t.string   "student_veteran_link"
+    t.boolean  "poe"
+    t.boolean  "eight_keys"
+    t.boolean  "dodmou"
+    t.boolean  "sec_702"
+    t.string   "vetsuccess_name"
+    t.string   "vetsuccess_email"
+    t.boolean  "credit_for_mil_training"
+    t.boolean  "vet_poc"
+    t.boolean  "student_vet_grp_ipeds"
+    t.boolean  "soc_member"
+    t.string   "va_highest_degree_offered"
+    t.float    "retention_rate_veteran_ba"
+    t.float    "retention_all_students_ba"
+    t.float    "retention_rate_veteran_otb"
+    t.float    "retention_all_students_otb"
+    t.float    "persistance_rate_veteran_ba"
+    t.float    "persistance_rate_veteran_otb"
+    t.float    "graduation_rate_veteran"
+    t.float    "graduation_rate_all_students"
+    t.float    "transfer_out_rate_veteran"
+    t.float    "transfer_out_rate_all_students"
+    t.float    "salary_all_students"
+    t.float    "repayment_rate_all_students"
+    t.float    "avg_stu_loan_debt"
+    t.string   "calendar"
+    t.integer  "tuition_in_state"
+    t.integer  "tuition_out_of_state"
+    t.integer  "books"
+    t.boolean  "online_all"
+    t.float    "p911_tuition_fees"
+    t.integer  "p911_recipients"
+    t.float    "p911_yellow_ribbon"
+    t.integer  "p911_yr_recipients"
+    t.boolean  "accredited"
+    t.string   "accreditation_type"
+    t.string   "accreditation_status"
+    t.boolean  "caution_flag"
+    t.string   "caution_flag_reason"
+    t.integer  "complaints_facility_code"
+    t.integer  "complaints_financial_by_fac_code"
+    t.integer  "complaints_quality_by_fac_code"
+    t.integer  "complaints_refund_by_fac_code"
+    t.integer  "complaints_marketing_by_fac_code"
+    t.integer  "complaints_accreditation_by_fac_code"
+    t.integer  "complaints_degree_requirements_by_fac_code"
+    t.integer  "complaints_student_loans_by_fac_code"
+    t.integer  "complaints_grades_by_fac_code"
+    t.integer  "complaints_credit_transfer_by_fac_code"
+    t.integer  "complaints_credit_job_by_fac_code"
+    t.integer  "complaints_job_by_fac_code"
+    t.integer  "complaints_transcript_by_fac_code"
+    t.integer  "complaints_other_by_fac_code"
+    t.integer  "complaints_main_campus_roll_up"
+    t.integer  "complaints_financial_by_ope_id_do_not_sum"
+    t.integer  "complaints_quality_by_ope_id_do_not_sum"
+    t.integer  "complaints_refund_by_ope_id_do_not_sum"
+    t.integer  "complaints_marketing_by_ope_id_do_not_sum"
+    t.integer  "complaints_accreditation_by_ope_id_do_not_sum"
+    t.integer  "complaints_degree_requirements_by_ope_id_do_not_sum"
+    t.integer  "complaints_student_loans_by_ope_id_do_not_sum"
+    t.integer  "complaints_grades_by_ope_id_do_not_sum"
+    t.integer  "complaints_credit_transfer_by_ope_id_do_not_sum"
+    t.integer  "complaints_jobs_by_ope_id_do_not_sum"
+    t.integer  "complaints_transcript_by_ope_id_do_not_sum"
+    t.integer  "complaints_other_by_ope_id_do_not_sum"
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
+    t.string   "f1sysnam"
+    t.integer  "f1syscod"
+    t.string   "ialias"
+    t.string   "approval_status"
+    t.boolean  "school_closing",                                      default: false
+    t.date     "school_closing_on"
+    t.string   "school_closing_message"
+    t.boolean  "stem_offered",                                        default: false
+    t.boolean  "priority_enrollment"
+    t.boolean  "online_only"
+    t.boolean  "independent_study"
+    t.boolean  "distance_learning"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "address_3"
+    t.string   "physical_address_1"
+    t.string   "physical_address_2"
+    t.string   "physical_address_3"
+    t.string   "physical_city"
+    t.string   "physical_state"
+    t.string   "physical_zip"
+    t.string   "physical_country"
+    t.integer  "dod_bah"
+    t.boolean  "approved",                                            default: false
+    t.boolean  "vet_tec_provider",                                    default: false
+    t.boolean  "closure109"
+    t.boolean  "preferred_provider",                                  default: false
+  end
+
+  add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
+  add_index "institutions_archives", ["address_2"], name: "institutions_archives_address_2_idx", using: :btree
+  add_index "institutions_archives", ["address_3"], name: "institutions_archives_address_3_idx", using: :btree
+  add_index "institutions_archives", ["city"], name: "institutions_archives_city_idx", using: :btree
+  add_index "institutions_archives", ["cross"], name: "institutions_archives_cross_idx", using: :btree
+  add_index "institutions_archives", ["distance_learning"], name: "institutions_archives_distance_learning_idx", using: :btree
+  add_index "institutions_archives", ["facility_code"], name: "institutions_archives_facility_code_idx", using: :btree
+  add_index "institutions_archives", ["institution"], name: "institutions_archives_institution_idx", using: :btree
+  add_index "institutions_archives", ["institution_type_name"], name: "institutions_archives_institution_type_name_idx", using: :btree
+  add_index "institutions_archives", ["online_only"], name: "institutions_archives_online_only_idx", using: :btree
+  add_index "institutions_archives", ["ope"], name: "institutions_archives_ope_idx", using: :btree
+  add_index "institutions_archives", ["ope6"], name: "institutions_archives_ope6_idx", using: :btree
+  add_index "institutions_archives", ["state"], name: "institutions_archives_state_idx", using: :btree
+  add_index "institutions_archives", ["stem_offered"], name: "institutions_archives_stem_offered_idx", using: :btree
+  add_index "institutions_archives", ["version"], name: "institutions_archives_version_idx", using: :btree
 
   create_table "ipeds_cip_codes", force: :cascade do |t|
     t.string   "cross",      null: false
@@ -1307,6 +1444,8 @@ ActiveRecord::Schema.define(version: 20190718019025) do
     t.integer  "dod_bah"
     t.boolean  "preferred_provider",                       default: false
     t.boolean  "stem_indicator",                           default: false
+    t.string   "campus_type"
+    t.string   "parent_facility_code_id"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
