@@ -22,7 +22,7 @@ class Weam < ActiveRecord::Base
     independent_study priority_enrollment
     physical_address_1 physical_address_2 physical_address_3
     physical_city physical_state physical_zip physical_country
-    dod_bah online_only distance_learning approved preferred_provider
+    dod_bah online_only distance_learning approved preferred_provider stem_indicator
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
