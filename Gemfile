@@ -19,7 +19,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # Use font-awesome
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
 
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
@@ -55,7 +55,7 @@ gem 'virtus', '~> 1.0.5'
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem "puma", "~> 3.6"
+gem 'puma', '~> 3.6'
 gem 'figaro'
 
 # Sentry
@@ -79,7 +79,7 @@ group :development, :test do
 
   # Testing tools
   gem 'rspec-rails'
-  gem "json_matchers"
+  gem 'json_matchers'
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
@@ -106,7 +106,7 @@ group :development do
 end
 
 # Used to colorize output for rake tasks
-gem "rainbow"
+gem 'rainbow'
 
 # Build sitemap
 gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
