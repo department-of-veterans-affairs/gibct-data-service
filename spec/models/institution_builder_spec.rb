@@ -30,6 +30,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version).to eq(Version.current_preview)
         expect(version).not_to eq(old_version)
         expect(version.production).to be_falsey
+        expect(version.generating?).to be_falsey
       end
 
       it 'returns a nil error_msg if sucessful' do
