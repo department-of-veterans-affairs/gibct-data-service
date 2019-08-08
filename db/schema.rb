@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190718121700) do
+ActiveRecord::Schema.define(version: 20190802172014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(version: 20190718121700) do
     t.boolean  "vet_tec_provider",                                    default: false
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
+    t.boolean  "stem_indicator",                                      default: false
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
