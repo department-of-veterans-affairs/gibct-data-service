@@ -114,7 +114,7 @@ RSpec.describe Version, type: :model do
     end
   end
 
-  describe 'when determining production and preview versions' do
+  describe 'when determining production and generating preview versions' do
     before(:each) do
       create :version, :production, created_at: 3.days.ago
       create :version, created_at: 2.days.ago
@@ -151,6 +151,29 @@ RSpec.describe Version, type: :model do
         expect(subject.preview?).to be_truthy
         expect(subject.latest_preview?).to be_truthy
         expect(subject.publishable?).to be_falsey
+      end
+    end
+  end
+
+  describe 'when determining completed preview version' do
+    before(:each) do
+      create :version, :production, created_at: 1.day.ago
+      create :version, completed_at: 0.days.ago, created_at: 0.days.ago
+    end
+
+    context 'latest preview version' do
+      let(:subject) { Version.current_preview }
+
+      it 'has correct number' do
+        expect(subject.number).to eq(2)
+      end
+
+      it 'has correct attributes' do
+        expect(subject.latest_production?).to be_falsey
+        expect(subject.production?).to be_falsey
+        expect(subject.preview?).to be_truthy
+        expect(subject.latest_preview?).to be_truthy
+        expect(subject.publishable?).to be_truthy
       end
     end
   end
