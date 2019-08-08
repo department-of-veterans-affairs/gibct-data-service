@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190718112200) do
+ActiveRecord::Schema.define(version: 20190808112200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,8 +307,12 @@ ActiveRecord::Schema.define(version: 20190718112200) do
     t.boolean  "vet_tec_provider",                                    default: false
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
+<<<<<<< HEAD
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
+=======
+    t.boolean  "stem_indicator",                                      default: false
+>>>>>>> 803fd8515b7d8ad9ff02f1c160597629cd4cca59
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -1241,12 +1245,13 @@ ActiveRecord::Schema.define(version: 20190718112200) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.integer  "user_id",                    null: false
-    t.integer  "number",                     null: false
-    t.boolean  "production", default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.binary   "uuid",                       null: false
+    t.integer  "user_id",                      null: false
+    t.integer  "number",                       null: false
+    t.boolean  "production",   default: false, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.binary   "uuid",                         null: false
+    t.datetime "completed_at"
   end
 
   add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
