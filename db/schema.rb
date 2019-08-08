@@ -307,12 +307,9 @@ ActiveRecord::Schema.define(version: 20190808112200) do
     t.boolean  "vet_tec_provider",                                    default: false
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
-<<<<<<< HEAD
+    t.boolean  "stem_indicator",                                      default: false
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
-=======
-    t.boolean  "stem_indicator",                                      default: false
->>>>>>> 803fd8515b7d8ad9ff02f1c160597629cd4cca59
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
