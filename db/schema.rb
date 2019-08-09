@@ -445,9 +445,13 @@ ActiveRecord::Schema.define(version: 20190806012000) do
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     t.boolean  "stem_indicator",                                      default: false
 >>>>>>> 7ffe3238e6f2d4ba0a56a911950463edb0a57842
+=======
+    t.boolean  "stem_indicator",                                      default: false
+>>>>>>> e2d8c3f349e1a3e4c4ae0e8fc8adf0635c49cd25
   end
 
   add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
