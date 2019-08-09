@@ -17,7 +17,7 @@
 //= require_tree .
 
 $(function() {
-  $('#version_build').on('confirm:complete', (e) => {
+  $('#version_build').on('confirm:complete', function(e) {
     $('#preview_versions tbody').html(
       '<tr>' +
         '<td colspan="5">' +
@@ -26,7 +26,7 @@ $(function() {
       '</tr>');
   });
 
-  $('#version_publish').on('confirm:complete', (e) => {
+  $('#version_publish').on('confirm:complete', function(e) {
     $('#preview_versions tbody td:nth-child(5)').html(
       '<tr>' +
         '<td colspan="5">' +
