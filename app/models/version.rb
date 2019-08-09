@@ -23,6 +23,10 @@ class Version < ActiveRecord::Base
     Version.production.newest.first
   end
 
+  def self.previous_production
+    Version.production.newest.second
+  end
+
   def self.current_preview
     Version.preview.newest.first
   end

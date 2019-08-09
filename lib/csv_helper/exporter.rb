@@ -40,13 +40,13 @@ module CsvHelper
     end
 
     def write_row(csv, csv_headers)
-      klass.find_each do |record|
+      klass.find_each(batch_size: Settings.active_record.batch_size) do |record|
         csv << csv_headers.keys.map { |k| format(k, record.public_send(k)) }
       end
     end
 
     def write_institution_row(csv, csv_headers, number)
-      Institution.where(version: number).find_each do |record|
+      Institution.where(version: number).find_each(batch_size: Settings.active_record.batch_size) do |record|
         csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
       end
     end
