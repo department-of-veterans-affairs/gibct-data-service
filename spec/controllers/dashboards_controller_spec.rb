@@ -126,7 +126,10 @@ RSpec.describe DashboardsController, type: :controller do
   end
 
   describe 'GET push' do
-    before(:each) { allow_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines) }
+    before(:each) do
+      allow_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines)
+      allow(InstitutionsArchive).to receive(:archive_previous_versions).and_return(nil)
+    end
     login_user
 
     context 'with no existing preview records' do

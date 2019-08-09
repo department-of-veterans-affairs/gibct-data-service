@@ -110,3 +110,5 @@ gem 'rainbow'
 
 # Build sitemap
 gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
+
+gem 'config'

@@ -55,14 +55,19 @@ class DashboardsController < ApplicationController
     if version.blank?
       flash.alert = 'No preview version available'
     else
-      pv = Version.create(number: version.number, production: true, user: current_user)
+      production_version = Version.create(number: version.number, production: true, user: current_user)
 
-      if pv.persisted?
+      if production_version.persisted?
         flash.notice = 'Production data updated'
 
         # Build Sitemap and notify search engines in production only
         ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
         GibctSiteMapper.new(ping: ping)
+
+        if Settings.institutions.archive
+          # Archive old institution rows
+          InstitutionsArchive.archive_previous_versions
+        end
       else
         flash.alert = 'Production data not updated, remains at previous production version'
       end
