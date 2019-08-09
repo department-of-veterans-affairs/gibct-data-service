@@ -1,5 +1,5 @@
 active_record:
-  batch_size: 2000
+  batch_size: 5000
 
 institutions:
-  archive: false
+  archive: true
