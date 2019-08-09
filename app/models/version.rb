@@ -31,6 +31,10 @@ class Version < ActiveRecord::Base
     Version.preview.newest.first
   end
 
+  def self.previews_exist?
+    Version.newest.first.preview?
+  end
+
   def self.buildable?
     Version.buildable_state.to_s.match('can_create')
   end
@@ -54,8 +58,12 @@ class Version < ActiveRecord::Base
     !production?
   end
 
+  def generating?
+    preview? && completed_at.nil?
+  end
+
   def publishable?
-    preview? && number > Version.production.maximum(:number)
+    !generating? && number > Version.production.maximum(:number)
   end
 
   def current_preview?

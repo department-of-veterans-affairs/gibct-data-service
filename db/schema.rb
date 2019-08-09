@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190720012000) do
+ActiveRecord::Schema.define(version: 20190806012000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(version: 20190720012000) do
     t.boolean  "vet_tec_provider",                                    default: false
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
+    t.boolean  "stem_indicator",                                      default: false
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -443,6 +444,10 @@ ActiveRecord::Schema.define(version: 20190720012000) do
     t.boolean  "vet_tec_provider",                                    default: false
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
+<<<<<<< HEAD
+=======
+    t.boolean  "stem_indicator",                                      default: false
+>>>>>>> 7ffe3238e6f2d4ba0a56a911950463edb0a57842
   end
 
   add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
@@ -1374,12 +1379,13 @@ ActiveRecord::Schema.define(version: 20190720012000) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.integer  "user_id",                    null: false
-    t.integer  "number",                     null: false
-    t.boolean  "production", default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.binary   "uuid",                       null: false
+    t.integer  "user_id",                      null: false
+    t.integer  "number",                       null: false
+    t.boolean  "production",   default: false, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.binary   "uuid",                         null: false
+    t.datetime "completed_at"
   end
 
   add_index "versions", ["number"], name: "index_versions_on_number", using: :btree

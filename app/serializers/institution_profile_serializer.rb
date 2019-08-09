@@ -88,6 +88,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
 
   attribute :vet_tec_provider
   attribute :preferred_provider
+  attribute :stem_indicator
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
