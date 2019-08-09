@@ -4,5 +4,7 @@ class AddCampusTypeColumns < ActiveRecord::Migration
     add_column :weams, :parent_facility_code_id, :string
     add_column :institutions, :campus_type, :string
     add_column :institutions, :parent_facility_code_id, :string
+    add_column :institutions_archive, :campus_type, :string
+    add_column :institutions_archive, :parent_facility_code_id, :string
   end   
 end
