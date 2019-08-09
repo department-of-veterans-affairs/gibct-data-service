@@ -1,5 +1,0 @@
-active_record:
-  batch_size: 5000
-
-institutions:
-  archive: true
