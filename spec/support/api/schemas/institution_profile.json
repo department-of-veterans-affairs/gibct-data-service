@@ -520,6 +520,18 @@
             "stem_indicator": {
               "type": "boolean"
             },
+            "parent_facility_code_id": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "campus_type": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
             "complaints": {
               "type": "object",
               "properties": {
@@ -829,7 +841,9 @@
             "updated_at",
             "vet_tec_provider",
             "preferred_provider",
-            "stem_indicator"
+            "stem_indicator",
+            "parent_facility_code_id",
+            "campus_type"
           ]
         },
         "links": {

@@ -252,4 +252,30 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('errors')
     end
   end
+
+  context 'institution children' do
+    before(:each) do
+      create(:version, :production)
+    end
+
+    it 'returns institution children' do
+      school = create(:institution, :in_chicago)
+      child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code)
+
+      get :children, id: school.facility_code, version: school.version
+
+      expect(response.content_type).to eq('application/json')
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(child_school.facility_code)
+      expect(JSON.parse(response.body)['data'][0]['attributes']['parent_facility_code_id']).to eq(school.facility_code)
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'returns empty record set' do
+      get :children, id: '10000'
+
+      expect(response.content_type).to eq('application/json')
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+    end
+  end
 end
