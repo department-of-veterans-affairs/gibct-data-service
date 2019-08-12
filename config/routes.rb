@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection
+      get :children, on: :member
     end
 
     resources :zipcode_rates, only: :show

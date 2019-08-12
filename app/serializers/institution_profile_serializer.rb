@@ -85,6 +85,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :distance_learning
   attribute :dod_bah
   attribute :physical_zip
+  attribute :parent_facility_code_id
+  attribute :campus_type
 
   attribute :vet_tec_provider
   attribute :preferred_provider
