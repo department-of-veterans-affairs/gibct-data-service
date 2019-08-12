@@ -160,17 +160,6 @@ RSpec.describe Institution, type: :model do
     end
   end
 
-  # describe 'descendants' do
-  #   it 'returns all descendants' do
-  #     parent = create(:institution, facility_code: '100')
-  #     create(:institution, facility_code: '101', parent_facility_code_id: '100')
-  #     # expect(Institution.count).to eq(2)
-
-  #     # binding.pry
-  #     expect(parent.descendants.count).to eq(1)
-  #   end
-  # end
-
   describe 'class methods and scopes' do
     context 'version' do
       it 'should retrieve institutions by a specific version number' do
