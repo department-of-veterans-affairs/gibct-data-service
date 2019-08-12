@@ -91,6 +91,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :vet_tec_provider
   attribute :preferred_provider
   attribute :stem_indicator
+  attribute :tree
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
@@ -102,4 +103,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
       YellowRibbonProgramSerializer.new(yrp)
     end
   end
+
+  # def tree
+  #   InstitutionTreeSerializer.new(InstitutionTree.build(object.facility_code, object.version))
+  # end
 end
