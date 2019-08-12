@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190806012000) do
+ActiveRecord::Schema.define(version: 20190808112200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -308,6 +308,8 @@ ActiveRecord::Schema.define(version: 20190806012000) do
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
     t.boolean  "stem_indicator",                                      default: false
+    t.string   "campus_type"
+    t.string   "parent_facility_code_id"
   end
 
   add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
@@ -324,6 +326,7 @@ ActiveRecord::Schema.define(version: 20190806012000) do
   add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
   add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
   add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
+  add_index "institutions", ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id", using: :btree
   add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
 
   create_table "institutions_archives", force: :cascade do |t|
@@ -445,6 +448,8 @@ ActiveRecord::Schema.define(version: 20190806012000) do
     t.boolean  "closure109"
     t.boolean  "preferred_provider",                                  default: false
     t.boolean  "stem_indicator",                                      default: false
+    t.string   "campus_type"
+    t.string   "parent_facility_code_id"
   end
 
   add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
@@ -1446,6 +1451,8 @@ ActiveRecord::Schema.define(version: 20190806012000) do
     t.integer  "dod_bah"
     t.boolean  "preferred_provider",                       default: false
     t.boolean  "stem_indicator",                           default: false
+    t.string   "campus_type"
+    t.string   "parent_facility_code_id"
   end
 
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
