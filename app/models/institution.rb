@@ -190,7 +190,7 @@ class Institution < ActiveRecord::Base
     end
   end
 
-  def tree
+  def facility_map
     InstitutionTree.build(facility_code, version)
   end
 
