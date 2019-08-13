@@ -12,10 +12,16 @@ FactoryGirl.define do
     length '1000'
 
     initialize_with do
-      new(facility_code: facility_code, institution_name: institution_name,
-        program_type: program_type, description: description,
-        full_time_undergraduate: full_time_undergraduate, graduate: graduate,
-        full_time_modifier: full_time_modifier, length: length)
+      new(
+        facility_code: facility_code,
+        institution_name: institution_name,
+        program_type: program_type,
+        description: description,
+        full_time_undergraduate: full_time_undergraduate,
+        graduate: graduate,
+        full_time_modifier: full_time_modifier,
+        length: length
+      )
     end
   end
 end

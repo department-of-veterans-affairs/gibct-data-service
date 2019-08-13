@@ -15,4 +15,4 @@ class Programs < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
-  end
+end
