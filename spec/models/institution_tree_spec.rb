@@ -21,7 +21,7 @@ RSpec.describe InstitutionTree, type: :model do
 
     context 'when built' do
       it 'generates correctly for main facility' do
-        tree = InstitutionTree.build('100', version.number)
+        tree = InstitutionTree.build(Institution.find_by(facility_code: '100'))
         expect(tree['main']['branches'].count).to eq(3)
         expect(tree['main']['extensions'].count).to eq(1)
         expect(tree['main']['branches'][0]['extensions'].count).to eq(0)
@@ -30,7 +30,7 @@ RSpec.describe InstitutionTree, type: :model do
       end
 
       it 'generates correctly for branch facility' do
-        tree = InstitutionTree.build('101', version.number)
+        tree = InstitutionTree.build(Institution.find_by(facility_code: '101'))
         expect(tree['main']['branches'].count).to eq(3)
         expect(tree['main']['extensions'].count).to eq(1)
         expect(tree['main']['branches'][0]['extensions'].count).to eq(0)
@@ -39,7 +39,7 @@ RSpec.describe InstitutionTree, type: :model do
       end
 
       it 'generates correctly for extension facility' do
-        tree = InstitutionTree.build('107', version.number)
+        tree = InstitutionTree.build(Institution.find_by(facility_code: '107'))
         expect(tree['main']['branches'].count).to eq(3)
         expect(tree['main']['extensions'].count).to eq(1)
         expect(tree['main']['branches'][0]['extensions'].count).to eq(0)
@@ -48,7 +48,7 @@ RSpec.describe InstitutionTree, type: :model do
       end
 
       it 'generates correctly for facility without campus_type value' do
-        tree = InstitutionTree.build('109', version.number)
+        tree = InstitutionTree.build(Institution.find_by(facility_code: '109'))
         expect(tree['main']['branches'].count).to eq(0)
         expect(tree['main']['extensions'].count).to eq(0)
       end

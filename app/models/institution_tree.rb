@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module InstitutionTree
-  def self.build(facility_code, version)
-    main = main_campus(facility_code, version)
-    all = descendants(main.facility_code, version)
+  def self.build(institution)
+    main = main_campus(institution)
+    all = descendants(main)
 
     {
       'main' => {
@@ -29,18 +29,16 @@ module InstitutionTree
       branches.sort_by { |branch| branch['institution']['institution'] }
     end
 
-    def build_extensions(institutions, branch_facility_code)
+    def build_extensions(institutions, facility_code)
       extensions = []
       institutions.each do |institution|
-        next unless institution['parent_facility_code_id'] == branch_facility_code && institution['campus_type'] == 'E'
+        next unless institution['parent_facility_code_id'] == facility_code && institution['campus_type'] == 'E'
         extensions << institution
       end
       extensions.sort_by { |extension| extension['institution'] }
     end
 
-    def main_campus(facility_code, version)
-      institution = Institution.find_by(facility_code: facility_code, version: version)
-
+    def main_campus(institution)
       return institution if institution.campus_type == 'Y' || institution.campus_type.nil?
 
       str = <<-SQL
@@ -55,13 +53,14 @@ module InstitutionTree
             WHERE i.version = ?
         ) SELECT * FROM related_up where campus_type = 'Y'
       SQL
-      sql = Institution.send(:sanitize_sql, [str, facility_code, version, version])
+      sql = Institution.send(:sanitize_sql,
+                             [str, institution.facility_code, institution.version, institution.version])
       main_facility_code = Institution.connection.execute(sql).first['facility_code']
 
       Institution.find_by(facility_code: main_facility_code)
     end
 
-    def descendants(facility_code, version)
+    def descendants(ancestor)
       str = <<-SQL
         WITH RECURSIVE related_down AS(
           SELECT facility_code
@@ -75,10 +74,9 @@ module InstitutionTree
         ) SELECT facility_code FROM related_down WHERE facility_code != ?
       SQL
 
-      sql = Institution.send(:sanitize_sql, [str, facility_code, version, version, facility_code])
-      facility_codes = Institution.connection.execute(sql).map do |institution|
-        institution['facility_code']
-      end
+      sql = Institution.send(:sanitize_sql,
+                             [str, ancestor.facility_code, ancestor.version, ancestor.version, ancestor.facility_code])
+      facility_codes = Institution.connection.execute(sql).field_values('facility_code')
 
       Institution.where(facility_code: facility_codes)
     end

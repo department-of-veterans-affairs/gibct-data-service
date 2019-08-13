@@ -191,7 +191,7 @@ class Institution < ActiveRecord::Base
   end
 
   def facility_map
-    InstitutionTree.build(facility_code, version)
+    InstitutionTree.build(self)
   end
 
   # Returns a short locale description
