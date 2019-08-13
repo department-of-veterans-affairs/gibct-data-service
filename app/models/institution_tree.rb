@@ -26,7 +26,7 @@ module InstitutionTree
           'extensions' => build_extensions(institutions, institution['facility_code'])
         }
       end
-      branches
+      branches.sort_by { |branch| branch['institution']['institution'] }
     end
 
     def build_extensions(institutions, branch_facility_code)
@@ -35,7 +35,7 @@ module InstitutionTree
         next unless institution['parent_facility_code_id'] == branch_facility_code && institution['campus_type'] == 'E'
         extensions << institution
       end
-      extensions
+      extensions.sort_by{ |extension| extension['institution'] }
     end
 
     def main_campus(facility_code, version)
