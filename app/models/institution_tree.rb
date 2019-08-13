@@ -35,7 +35,7 @@ module InstitutionTree
         next unless institution['parent_facility_code_id'] == branch_facility_code && institution['campus_type'] == 'E'
         extensions << institution
       end
-      extensions.sort_by{ |extension| extension['institution'] }
+      extensions.sort_by { |extension| extension['institution'] }
     end
 
     def main_campus(facility_code, version)
