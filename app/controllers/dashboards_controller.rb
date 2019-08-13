@@ -36,20 +36,38 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path, alert: e.message
   end
 
+  def export_version
+    respond_to do |format|
+      format.csv do
+        send_data Institution.export_institutions_by_version(params[:number]),
+                  type: 'text/csv',
+                  filename: "institutions_version_#{params[:number]}.csv"
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    Rails.logger.error e.message
+    redirect_to dashboards_path, alert: e.message
+  end
+
   def push
     version = Version.current_preview
 
     if version.blank?
       flash.alert = 'No preview version available'
     else
-      pv = Version.create(number: version.number, production: true, user: current_user)
+      production_version = Version.create(number: version.number, production: true, user: current_user)
 
-      if pv.persisted?
+      if production_version.persisted?
         flash.notice = 'Production data updated'
 
         # Build Sitemap and notify search engines in production only
         ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
         GibctSiteMapper.new(ping: ping)
+
+        if Settings.institutions.archive
+          # Archive old institution rows
+          InstitutionsArchive.archive_previous_versions
+        end
       else
         flash.alert = 'Production data not updated, remains at previous production version'
       end
@@ -68,8 +86,6 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    return Institution if csv_type == 'Institution'
-
     model = InstitutionBuilder::TABLES.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 

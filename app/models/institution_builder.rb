@@ -60,12 +60,14 @@ module InstitutionBuilder
 
   def self.run(user)
     error_msg = nil
+    version = Version.create!(production: false, user: user)
 
     begin
       Institution.transaction do
-        version = Version.create!(production: false, user: user)
         run_insertions(version.number)
       end
+
+      version.update(completed_at: Time.now.utc.to_s(:db))
 
       notice = 'Institution build was successful'
       success = true
@@ -82,6 +84,8 @@ module InstitutionBuilder
 
       success = false
     end
+
+    version.delete unless success
 
     { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
   end

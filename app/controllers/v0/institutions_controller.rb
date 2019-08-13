@@ -46,6 +46,24 @@ module V0
              meta: { version: @version }, links: @links
     end
 
+    # GET /v0/institituons/20005123/children
+    def children
+      children = Institution.version(@version[:number])
+                            .where(parent_facility_code_id: params[:id])
+                            .order(:institution)
+                            .page(params[:page])
+
+      @meta = {
+        version: @version,
+        count: children.count
+      }
+      @links = { self: self_link }
+      render json: children,
+             each_serializer: InstitutionSerializer,
+             meta: @meta,
+             links: @links
+    end
+
     private
 
     def normalized_query_params
@@ -84,6 +102,7 @@ module V0
         [:priority_enrollment], # boolean
         [:vet_tec_provider], # boolean
         [:preferred_provider], # boolean
+        [:stem_indicator], # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])

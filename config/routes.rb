@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/dashboards' => 'dashboards#index'
   post '/dashboards/build' => 'dashboards#build', as: :dashboard_build
   get '/dashboards/export/:csv_type' => 'dashboards#export', as: :dashboard_export, defaults: { format: 'csv' }
+  get '/dashboards/export/institutions/:number' => 'dashboards#export_version', as: :dashboard_export_version, defaults: { format: 'csv' }
   post '/dashboards/push' => 'dashboards#push', as: :dashboard_push
 
   resources :uploads, except: [:new, :destroy, :edit, :update] do
@@ -29,6 +30,7 @@ Rails.application.routes.draw do
 
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection
+      get :children, on: :member
     end
 
     resources :zipcode_rates, only: :show
