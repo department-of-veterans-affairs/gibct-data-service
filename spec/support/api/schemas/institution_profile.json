@@ -766,6 +766,26 @@
                 }
               }
             },
+            "facility_map": {
+              "type": "object",
+              "properties": {
+                "main": {
+                  "type": "object"
+                },
+                "branches": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "extensions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            },
             "created_at": {
               "type": "string"
             },
