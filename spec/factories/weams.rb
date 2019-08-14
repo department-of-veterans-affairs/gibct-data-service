@@ -63,6 +63,10 @@ FactoryGirl.define do
       facility_code '1VZZZZZZ'
     end
 
+    trait :extension do
+      facility_code '10X00000'
+    end
+
     trait :higher_learning do
       institution_of_higher_learning_indicator true
     end

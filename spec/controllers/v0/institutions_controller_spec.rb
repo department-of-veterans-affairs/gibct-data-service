@@ -60,6 +60,15 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
+
+    it 'does not return results for extension institutions' do
+      create(:version, :production)
+      create(:institution, :contains_harv, approved: true, campus_type: 'E')
+      get :autocomplete, term: 'harv', version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
   end
 
   context 'search results' do
@@ -95,6 +104,15 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'search with space returns results' do
       get :index, name: 'New Roch', version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
+    it 'do not return results for extension institutions' do
+      create(:institution, :contains_harv, approved: true)
+      create(:institution, :contains_harv, approved: true, campus_type: 'E')
+      get :index, name: 'harv', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')

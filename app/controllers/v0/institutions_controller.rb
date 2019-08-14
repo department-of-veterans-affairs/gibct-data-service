@@ -106,6 +106,8 @@ module V0
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
+
+        # relation = relation.select { |institution| institution.campus_type != 'E' }
       end
 
       relation
@@ -170,7 +172,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.version(@version[:number]).where(approved: true)
+      Institution.version(@version[:number]).where(approved: true).where("campus_type != 'E' OR campus_type IS NULL")
     end
   end
   # rubocop:enable Metrics/ClassLength

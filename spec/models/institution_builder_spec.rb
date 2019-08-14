@@ -890,5 +890,18 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(zipcode_rate.version).to eq(Version.current_preview.number)
       end
     end
+
+    describe 'when setting extension campus_type' do
+      before(:each) do
+        create(:weam, :extension)
+        InstitutionBuilder.run(user)
+      end
+
+      let(:institution) { institutions.find_by(facility_code: '10X00000') }
+
+      it 'sets campus_type to "E"' do
+        expect(institution.campus_type).to eq('E')
+      end
+    end
   end
 end
