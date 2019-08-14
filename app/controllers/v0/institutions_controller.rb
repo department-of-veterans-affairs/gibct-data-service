@@ -106,9 +106,7 @@ module V0
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
-
-        # relation = relation.select { |institution| institution.campus_type != 'E' }
-      end
+    end
 
       relation
     end
