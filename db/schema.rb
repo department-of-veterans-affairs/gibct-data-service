@@ -1459,6 +1459,19 @@ ActiveRecord::Schema.define(version: 20190808112200) do
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
+  create_table "weams_certifying_officials", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "priority"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "title"
+    t.string "phone_area_code"
+    t.string "phone_number"
+    t.string "phone_extension"
+    t.string "email"
+  end
+
   create_table "yellow_ribbon_program_sources", force: :cascade do |t|
     t.string   "facility_code"
     t.string   "school_name_in_yr_database"

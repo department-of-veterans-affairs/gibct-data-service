@@ -152,3 +152,8 @@ Sec109ClosedSchool:
   skip_lines: 0
   col_sep: ","
   row_sep: "\r\n"
+
+WeamsCertifyingOfficials:
+  skip_lines: 0
+  col_sep: ","
+  row_sep: "\r\n"
