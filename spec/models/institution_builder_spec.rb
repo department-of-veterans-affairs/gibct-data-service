@@ -894,13 +894,18 @@ RSpec.describe InstitutionBuilder, type: :model do
     describe 'when setting extension campus_type' do
       before(:each) do
         create(:weam, :extension)
+        create(:weam, facility_code: '10X00001', campus_type: 'Y')
         InstitutionBuilder.run(user)
       end
 
-      let(:institution) { institutions.find_by(facility_code: '10X00000') }
-
       it 'sets campus_type to "E"' do
-        expect(institution.campus_type).to eq('E')
+        extension = institutions.find_by(facility_code: '10X00000')
+        expect(extension.campus_type).to eq('E')
+      end
+
+      it 'ignores for instituions with campus_type' do
+        extension = institutions.find_by(facility_code: '10X00001')
+        expect(extension.campus_type).to eq('Y')
       end
     end
   end
