@@ -18,10 +18,8 @@ module InstitutionTree
     private
 
     def build_branches(institutions)
-      branches = []
-      institutions.each do |institution|
-        next unless institution['campus_type'] == 'N'
-        branches << {
+      branches = institutions.select { |inst| inst['campus_type'] == 'N' }.map do |institution|
+        {
           'institution' => institution,
           'extensions' => build_extensions(institutions, institution['facility_code'])
         }
@@ -30,10 +28,8 @@ module InstitutionTree
     end
 
     def build_extensions(institutions, facility_code)
-      extensions = []
-      institutions.each do |institution|
-        next unless institution['parent_facility_code_id'] == facility_code && institution['campus_type'] == 'E'
-        extensions << institution
+      extensions = institutions.select do |inst|
+        inst['parent_facility_code_id'] == facility_code && inst['campus_type'] == 'E'
       end
       extensions.sort_by { |extension| extension['institution'] }
     end
