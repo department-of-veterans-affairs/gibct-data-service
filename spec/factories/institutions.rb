@@ -10,6 +10,7 @@ FactoryGirl.define do
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name 'PRIVATE'
     version 1
+    approved true
 
     trait :in_nyc do
       city 'NEW YORK'
@@ -89,7 +90,6 @@ FactoryGirl.define do
       state 'SC'
       country 'USA'
       vet_tec_provider true
-      approved true
     end
 
     trait :vet_tec_preferred_provider do
@@ -98,7 +98,6 @@ FactoryGirl.define do
       state 'SC'
       country 'USA'
       vet_tec_provider true
-      approved true
       preferred_provider true
     end
 
