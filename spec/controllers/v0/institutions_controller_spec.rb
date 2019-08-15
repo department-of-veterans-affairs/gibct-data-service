@@ -55,7 +55,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns empty collection on missing term parameter' do
       create(:version, :production)
-      create(:institution, :start_like_harv, approved: false)
+      create(:institution, :start_like_harv)
       get :autocomplete, term: nil
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
