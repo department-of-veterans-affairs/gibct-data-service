@@ -153,7 +153,7 @@ Sec109ClosedSchool:
   col_sep: ","
   row_sep: "\r\n"
 
-Programs:
+Program:
   skip_lines: 0
   col_sep: ","
   row_sep: "\r\n"

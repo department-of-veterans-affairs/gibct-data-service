@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Programs < ActiveRecord::Base
+class Program < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
