@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class WeamsCertifyingOfficials < ActiveRecord::Base
+class WeamsCertifyingOfficial < ActiveRecord::Base
   include CsvHelper
-
-  COLS_USED_IN_INSTITUTION = %i[closure109].freeze
 
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },

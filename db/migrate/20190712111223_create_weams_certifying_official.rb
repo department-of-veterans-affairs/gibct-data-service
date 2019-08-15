@@ -1,6 +1,6 @@
-class CreateWeamsCertifyingOfficials < ActiveRecord::Migration
+class CreateWeamsCertifyingOfficial < ActiveRecord::Migration
     def change
-      create_table :weams_certifying_officials do |t|
+      create_table :weams_certifying_official do |t|
         t.string :facility_code
         t.string :institution_name
         t.string :priority
