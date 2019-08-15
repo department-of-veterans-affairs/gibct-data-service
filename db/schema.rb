@@ -1459,7 +1459,7 @@ ActiveRecord::Schema.define(version: 20190808112200) do
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
-  create_table "weams_certifying_official", force: :cascade do |t|
+  create_table "weams_certifying_officials", force: :cascade do |t|
     t.string "facility_code"
     t.string "institution_name"
     t.string "priority"
