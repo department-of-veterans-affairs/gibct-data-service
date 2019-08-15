@@ -9,7 +9,7 @@ FactoryGirl.define do
     full_time_undergraduate '360'
     graduate '234'
     full_time_modifier 'S'
-    length '1000'
+    length '1001'
 
     initialize_with do
       new(
