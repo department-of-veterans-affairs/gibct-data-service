@@ -34,7 +34,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  fcontext 'autocomplete results' do
+  context 'autocomplete results' do
     it 'returns collection of matches' do
       create(:version, :production)
       2.times { create(:institution, :start_like_harv, approved: true) }
