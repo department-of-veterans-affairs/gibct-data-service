@@ -37,15 +37,25 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'autocomplete results' do
     it 'returns collection of matches' do
       create(:version, :production)
-      7.times { create(:institution, :contains_harv, approved: true) }
+      2.times { create(:institution, :start_like_harv, approved: true) }
       get :autocomplete, term: 'harv', version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(2)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'limits results to 6' do
+      create(:version, :production)
+      7.times { create(:institution, :start_like_harv, approved: true) }
+      get :autocomplete, term: 'harv', version: 'production'
+      expect(JSON.parse(response.body)['data'].count).to eq(6)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
     it 'returns empty collection on missing term parameter' do
       create(:version, :production)
-      create(:institution, :contains_harv, approved: false)
+      create(:institution, :start_like_harv, approved: false)
       get :autocomplete, term: nil, version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
@@ -54,7 +64,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'does not return results for non-approved institutions' do
       create(:version, :production)
-      create(:institution, :contains_harv, approved: false)
+      create(:institution, :start_like_harv, approved: false)
       get :autocomplete, term: 'harv', version: 'production'
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
