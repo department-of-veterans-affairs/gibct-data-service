@@ -73,8 +73,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'does not return results for extension institutions' do
       create(:version, :production)
-      create(:institution, :contains_harv, approved: true, campus_type: 'E')
-      get :autocomplete, term: 'harv', version: 'production'
+      create(:institution, :contains_harv, campus_type: 'E')
+      get :autocomplete, term: 'harv'
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -120,9 +120,9 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'do not return results for extension institutions' do
-      create(:institution, :contains_harv, approved: true)
-      create(:institution, :contains_harv, approved: true, campus_type: 'E')
-      get :index, name: 'harv', version: 'production'
+      create(:institution, :contains_harv)
+      create(:institution, :contains_harv, campus_type: 'E')
+      get :index, name: 'harv'
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
