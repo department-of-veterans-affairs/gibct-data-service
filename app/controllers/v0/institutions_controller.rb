@@ -170,7 +170,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.version(@version[:number]).where(approved: true)
+      Institution.version(@version[:number]).no_extentions.where(approved: true)
     end
   end
   # rubocop:enable Metrics/ClassLength
