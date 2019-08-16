@@ -190,6 +190,10 @@ class Institution < ActiveRecord::Base
     end
   end
 
+  def facility_map
+    InstitutionTree.build(self)
+  end
+
   # Returns a short locale description
   #
   def locale_type
@@ -210,9 +214,9 @@ class Institution < ActiveRecord::Base
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    Institution.select('id, facility_code as value, institution as label')
-               .where('lower(institution) LIKE (?)', "#{search_term}%")
-               .limit(limit)
+    select('id, facility_code as value, institution as label')
+      .where('lower(institution) LIKE (?)', "#{search_term}%")
+      .limit(limit)
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
