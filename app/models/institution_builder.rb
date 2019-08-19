@@ -7,7 +7,7 @@ module InstitutionBuilder
     IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
     IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
-    Sec109ClosedSchool, Program, WeamsCertifyingOfficial
+    Sec109ClosedSchool, Program, SchoolCertifyingOfficial
   ].freeze
 
   ACCREDITATION_JOIN_CLAUSES = [

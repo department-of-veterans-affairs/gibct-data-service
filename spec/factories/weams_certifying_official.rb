@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryGirl.define do
-  factory :weams_certifying_official do
+  factory :school_certifying_official do
     facility_code { generate :facility_code }
     institution_name { 'Clements Ferry University' }
     priority { 'PRIMARY' }

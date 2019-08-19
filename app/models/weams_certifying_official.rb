@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WeamsCertifyingOfficial < ActiveRecord::Base
+class SchoolCertifyingOfficial < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

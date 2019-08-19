@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190809104513) do
+ActiveRecord::Schema.define(version: 20190819111223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1125,6 +1125,19 @@ ActiveRecord::Schema.define(version: 20190809104513) do
     t.string "length",                  limit: 7
   end
 
+  create_table "school_certifying_officials", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "priority"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "title"
+    t.string "phone_area_code"
+    t.string "phone_number"
+    t.string "phone_extension"
+    t.string "email"
+  end
+
   create_table "school_closures", force: :cascade do |t|
     t.string   "facility_code",          null: false
     t.string   "institution_name"
@@ -1469,19 +1482,6 @@ ActiveRecord::Schema.define(version: 20190809104513) do
   add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
   add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
   add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
-
-  create_table "weams_certifying_officials", force: :cascade do |t|
-    t.string "facility_code"
-    t.string "institution_name"
-    t.string "priority"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "title"
-    t.string "phone_area_code"
-    t.string "phone_number"
-    t.string "phone_extension"
-    t.string "email"
-  end
 
   create_table "yellow_ribbon_program_sources", force: :cascade do |t|
     t.string   "facility_code"
