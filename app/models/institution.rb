@@ -269,4 +269,6 @@ class Institution < ActiveRecord::Base
   }
 
   scope :version, ->(n) { where(version: n) }
+
+  scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 end

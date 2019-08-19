@@ -8,7 +8,7 @@ module InstitutionBuilder
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
     IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
     Sec109ClosedSchool, Program, WeamsCertifyingOfficial
-  ].freeze
+].freeze
 
   ACCREDITATION_JOIN_CLAUSES = [
     'institutions.ope6 = accreditation_institute_campuses.ope6',
@@ -54,6 +54,7 @@ module InstitutionBuilder
     add_yellow_ribbon_programs(version_number)
     add_school_closure(version_number)
     add_vet_tec_provider(version_number)
+    add_extension_campus_type(version_number)
     add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
   end
@@ -497,5 +498,15 @@ module InstitutionBuilder
 
     sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
     ZipcodeRate.connection.execute(sql)
+  end
+
+  def self.add_extension_campus_type(version_number)
+    str = <<-SQL
+    UPDATE institutions SET campus_type = 'E'
+      WHERE substring(institutions.facility_code, 3 , 1) = 'X'
+        AND institutions.campus_type IS NULL
+        AND institutions.version = #{version_number};
+    SQL
+    Institution.connection.update(str)
   end
 end
