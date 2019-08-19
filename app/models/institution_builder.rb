@@ -8,7 +8,7 @@ module InstitutionBuilder
     Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
     IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
     Sec109ClosedSchool, Program, WeamsCertifyingOfficial
-].freeze
+  ].freeze
 
   ACCREDITATION_JOIN_CLAUSES = [
     'institutions.ope6 = accreditation_institute_campuses.ope6',

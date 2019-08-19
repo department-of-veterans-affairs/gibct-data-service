@@ -13,7 +13,7 @@ class WeamsCertifyingOfficial < ActiveRecord::Base
     'phone_area_code' => { column: :phone_area_code, converter: BaseConverter },
     'phone_number' => { column: :phone_number, converter: BaseConverter },
     'phone_extension' => { column: :phone_extension, converter: BaseConverter },
-    'email' => { column: :email, converter: BaseConverter },
+    'email' => { column: :email, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, presence: true
