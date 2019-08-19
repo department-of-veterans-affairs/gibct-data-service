@@ -114,7 +114,7 @@ FactoryGirl.define do
     end
 
     trait :invalid_vet_tec_law_code do
-      poo_status 'aprvdd'
+      poo_status 'aprvd'
       applicable_law_code 'asdfasdf'
       non_college_degree_indicator true
     end
