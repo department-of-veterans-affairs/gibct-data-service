@@ -10,10 +10,6 @@
 class Weam < ActiveRecord::Base
   include CsvHelper
 
-  ALC1 = 'educational institution is not approved'
-  ALC2 = 'educational institution is approved for chapter 31 only'
-  ALCVT = 'vet tec only'
-
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
     address_1 address_2 address_3
@@ -151,10 +147,6 @@ class Weam < ActiveRecord::Base
       flight_indicator || non_college_degree_indicator
   end
 
-  def vet_tec_flags_for_approved?
-    non_college_degree_indicator
-  end
-
   # To be approved, a school must be marked 'aprvd' in the poo-status, have
   # an approved applicable law code that is not restrictive of GI Bill
   # benefits, and be a higher learning institution, OJT, flight,
@@ -163,16 +155,38 @@ class Weam < ActiveRecord::Base
   # If school is a vet tec provider, applicable law code is VET TEC ONLY,
   # and be a non college degree indicator
   def approved?
-    return false if poo_status.blank? || applicable_law_code.blank?
+    return false if applicable_law_code.blank?
 
-    return false unless poo_status =~ Regexp.new('aprvd', 'i')
+    return false unless poo_status_valid?
 
-    # VET TEC ONLY
-    return vet_tec_flags_for_approved? if applicable_law_code =~ Regexp.new(ALCVT, 'i')
+    return vet_tec_approved? if vet_tec?
 
-    # Other
-    return false if applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
+    return false if invalid_law_code?
+
     flags_for_approved?
   end
+
+  private
+
+  ALC1 = 'educational institution is not approved'
+  ALC2 = 'educational institution is approved for chapter 31 only'
+  ALCVT = 'vet tec only'
+
+  def poo_status_valid?
+    poo_status =~ Regexp.new('aprvd', 'i')
+  end
+
+  def invalid_law_code?
+    applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
+  end
+
+  def vet_tec?
+    facility_code.try(:[], 1) == 'V' && non_college_degree_indicator
+  end
+
+  def vet_tec_approved?
+    applicable_law_code =~ Regexp.new(ALCVT, 'i')
+  end
 end
+
 # rubocop:enable Metrics/ClassLength

@@ -113,6 +113,12 @@ FactoryGirl.define do
       non_college_degree_indicator true
     end
 
+    trait :invalid_vet_tec_law_code do
+      poo_status 'aprvdd'
+      applicable_law_code 'asdfasdf'
+      non_college_degree_indicator true
+    end
+
     # Facility_code second digit is 0
     trait :zipcode_rate do
       bah 1100
