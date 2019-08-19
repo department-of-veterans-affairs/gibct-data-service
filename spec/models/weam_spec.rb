@@ -240,7 +240,7 @@ RSpec.describe Weam, type: :model do
       expect(vet_tec_provider.approved?).to be_truthy
     end
 
-    it 'is false if vet tec law code is incorrect' do
+    it 'is false if vet tec law code is incorrect for vet tec institution' do
       expect(vet_tec_invalid_law_code.approved?).to be_falsy
     end
   end
