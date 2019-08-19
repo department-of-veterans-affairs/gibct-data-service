@@ -12,7 +12,7 @@ class Weam < ActiveRecord::Base
 
   ALC1 = 'educational institution is not approved'
   ALC2 = 'educational institution is approved for chapter 31 only'
-  ALCVT = 'vet tec only'
+  ALCVT = 'Educational Institution is Approved For Vet Tec Only'
 
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
