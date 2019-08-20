@@ -33,7 +33,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(30)
+      expect(assigns(:uploads).length).to eq(31)
     end
 
     it 'returns http success' do

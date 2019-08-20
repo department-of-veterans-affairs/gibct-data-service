@@ -31,7 +31,8 @@ module CsvTypes
     { klass: YellowRibbonProgramSource, required?: true },
     { klass: SchoolClosure, required?: true },
     { klass: Sec109ClosedSchool, required?: true },
-    { klass: Program, required?: false }
+    { klass: Program, required?: false },
+    { klass: SchoolCertifyingOfficial, required?: false}
   ].freeze
 
   def self.required_table_names
