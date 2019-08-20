@@ -10,6 +10,13 @@
 class Weam < ActiveRecord::Base
   include CsvHelper
 
+  REQUIRED_VET_TEC_LAW_CODE = 'vet tec only'
+
+  LAW_CODES_BLOCKING_APPROVED_STATUS = %w[
+    educational institution is not approved
+    educational institution is approved for chapter 31 only
+  ].freeze
+
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
     address_1 address_2 address_3
@@ -168,16 +175,12 @@ class Weam < ActiveRecord::Base
 
   private
 
-  ALC1 = 'educational institution is not approved'
-  ALC2 = 'educational institution is approved for chapter 31 only'
-  ALCVT = 'vet tec only'
-
   def poo_status_valid?
     poo_status =~ Regexp.new('aprvd', 'i')
   end
 
   def invalid_law_code?
-    applicable_law_code =~ Regexp.new("#{ALC1}|#{ALC2}", 'i')
+    LAW_CODES_BLOCKING_APPROVED_STATUS.none? { |law_code| applicable_law_code.downcase.include? law_code }
   end
 
   def vet_tec?
@@ -185,7 +188,7 @@ class Weam < ActiveRecord::Base
   end
 
   def vet_tec_approved?
-    applicable_law_code.downcase.include? ALCVT
+    applicable_law_code.downcase.include? REQUIRED_VET_TEC_LAW_CODE
   end
 end
 
