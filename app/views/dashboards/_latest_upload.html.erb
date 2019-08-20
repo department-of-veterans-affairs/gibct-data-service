@@ -1,4 +1,4 @@
-<tr class="<%= 'danger' if !upload.ok? %>">
+<tr class="<%= upload.required %>" title="<%= upload.required_message %>">
   <td><%= upload.csv_type %></td>
   <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
   <td><%= upload.csv.blank? ? '-' : upload.csv %></td>

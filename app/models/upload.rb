@@ -23,6 +23,18 @@ class Upload < ActiveRecord::Base
     ok
   end
 
+  def required
+    return 'danger' if !ok && CsvTypes.required_table_names.include?(csv_type)
+    return 'warning' if !ok && !CsvTypes.required_table_names.include?(csv_type)
+    return ''
+  end
+
+  def required_message
+    return 'Missing required upload' if !ok && CsvTypes.required_table_names.include?(csv_type)
+    return 'Missing upload' if !ok && !CsvTypes.required_table_names.include?(csv_type)
+    return ''
+  end
+
   def all_warnings
     missing_headers.full_messages + extra_headers.full_messages
   end
