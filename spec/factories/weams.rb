@@ -108,12 +108,14 @@ FactoryGirl.define do
     end
 
     trait :as_vet_tec_provider do
+      facility_code '1VZZZZZZ'
       poo_status 'aprvd'
-      applicable_law_code 'vet tec only'
+      applicable_law_code 'VET TEC ONLY'
       non_college_degree_indicator true
     end
 
     trait :invalid_vet_tec_law_code do
+      facility_code '1VZZZZZZ'
       poo_status 'aprvd'
       applicable_law_code 'asdfasdf'
       non_college_degree_indicator true

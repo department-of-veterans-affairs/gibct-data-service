@@ -185,7 +185,7 @@ class Weam < ActiveRecord::Base
   end
 
   def vet_tec_approved?
-    applicable_law_code =~ Regexp.new(ALCVT, 'i')
+    applicable_law_code.downcase.include? ALCVT
   end
 end
 
