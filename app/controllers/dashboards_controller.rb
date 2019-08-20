@@ -86,7 +86,7 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    model = InstitutionBuilder::TABLES.select { |klass| klass.name == csv_type }.first
+    model = CsvTypes.all_tables.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?

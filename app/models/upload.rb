@@ -28,7 +28,7 @@ class Upload < ActiveRecord::Base
   end
 
   def csv_type_check?
-    return true if InstitutionBuilder::TABLES.map(&:name).push('Institution').include?(csv_type)
+    return true if CsvTypes.all_tables.map(&:name).push('Institution').include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -59,7 +59,7 @@ class Upload < ActiveRecord::Base
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    InstitutionBuilder::TABLES.each do |klass|
+    CsvTypes.all_tables.each do |klass|
       next if upload_csv_types.include?(klass.name)
       missing_upload = Upload.new
       missing_upload.csv_type = klass.name

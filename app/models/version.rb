@@ -40,10 +40,14 @@ class Version < ActiveRecord::Base
   end
 
   def self.buildable_state
-    upload_dates = Upload.last_uploads.to_a.map(&:updated_at)
+    upload_dates = Upload.last_uploads
+    .to_a
+    .select{ |upload| CsvTypes.required_table_names.include?(upload.csv_type)}
+    .map(&:updated_at)
+
     preview = Version.current_preview
-    return :not_enough_uploads if upload_dates.length < InstitutionBuilder::TABLES.length
-    return :too_many_uploads if upload_dates.length > InstitutionBuilder::TABLES.length
+    return :not_enough_uploads if upload_dates.length < CsvTypes.required_table_names.length
+    return :too_many_uploads if upload_dates.length > CsvTypes.required_table_names.length
     return :can_create_first_preview if preview.nil?
     return :can_create_new_preview if upload_dates.max > preview.created_at
     :no_new_uploads
