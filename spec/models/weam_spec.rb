@@ -216,8 +216,8 @@ RSpec.describe Weam, type: :model do
     subject { build :weam, :approved_poo_and_law_code, :with_approved_indicators }
 
     let(:withdrawn) { build :weam, :withdrawn_poo, :with_approved_indicators }
-    let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
-    let(:title_31_law_code) { build :weam, :approved_poo_and_non_approved_law_code }
+    let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code, ojt_indicator: true }
+    let(:title_31_law_code) { build :weam, :approved_poo_and_law_code_title_31, ojt_indicator: true }
     let(:false_indicators) { build :weam }
     let(:vet_tec_provider) { build :weam, :as_vet_tec_provider }
     let(:vet_tec_invalid_law_code) { build :weam, :invalid_vet_tec_law_code }

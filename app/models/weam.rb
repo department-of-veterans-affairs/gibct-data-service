@@ -12,9 +12,9 @@ class Weam < ActiveRecord::Base
 
   REQUIRED_VET_TEC_LAW_CODE = 'vet tec only'
 
-  LAW_CODES_BLOCKING_APPROVED_STATUS = %w[
-    educational institution is not approved
-    educational institution is approved for chapter 31 only
+  LAW_CODES_BLOCKING_APPROVED_STATUS = [
+    'educational institution is not approved',
+    'educational institution is approved for chapter 31 only'
   ].freeze
 
   COLS_USED_IN_INSTITUTION = %i[
@@ -180,7 +180,7 @@ class Weam < ActiveRecord::Base
   end
 
   def invalid_law_code?
-    LAW_CODES_BLOCKING_APPROVED_STATUS.none? { |law_code| applicable_law_code.downcase.include? law_code }
+    LAW_CODES_BLOCKING_APPROVED_STATUS.any? { |law_code| applicable_law_code.downcase.include? law_code }
   end
 
   def vet_tec?
