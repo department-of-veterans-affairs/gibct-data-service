@@ -908,5 +908,16 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(extension.campus_type).to eq('Y')
       end
     end
+
+    describe 'when setting approved' do
+      before(:each) do
+        create(:weam, :as_vet_tec_provider)
+        InstitutionBuilder.run(user)
+      end
+
+      it 'sets correctly for VET TEC institution' do
+        expect(institutions.find_by(facility_code: '1VZZZZZZ').approved).to be_truthy
+      end
+    end
   end
 end
