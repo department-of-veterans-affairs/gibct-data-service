@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe CsvTypes, type: :helper do
+RSpec.describe "CSV_TYPES" do
   REQUIRED_TABLES = [
     AccreditationAction.name,
     AccreditationInstituteCampus.name,
@@ -35,13 +35,13 @@ RSpec.describe CsvTypes, type: :helper do
 
   describe 'all_tables' do
     it 'lengths should be equal' do
-      expect(CsvTypes.all_tables.length).to eq(CsvTypes::TABLES.length)
+      expect(CSV_TYPES_ALL_TABLES.length).to eq(CSV_TYPES_TABLES.length)
     end
   end
 
   describe 'required_table_names' do
     it 'should contain tables' do
-      expect(CsvTypes.required_table_names).to eq(REQUIRED_TABLES)
+      expect(CSV_TYPES_REQUIRED_TABLE_NAMES).to eq(REQUIRED_TABLES)
     end
   end
 end

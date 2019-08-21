@@ -10,8 +10,9 @@ FactoryGirl.define do
     end
 
     user
+    ok true
 
-    csv_type { 'Weam' }
+    csv_type { Weam.name }
     sequence :comment do |n|
       "Upload test #{n}"
     end
@@ -31,6 +32,16 @@ FactoryGirl.define do
 
     initialize_with do
       new(csv_type: csv_type, upload_file: upload_file, comment: comment, user: user, skip_lines: skip_lines)
+    end
+
+    trait :missing_required do
+      csv_type Weam.name
+      ok false
+    end
+
+    trait :missing_upload do
+      csv_type Program.name
+      ok false
     end
   end
 end

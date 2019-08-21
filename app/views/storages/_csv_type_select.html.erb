@@ -1,6 +1,6 @@
 <div class="form-group">
   <%= f.label(:csv_file_type) %>
-  <%= f.select(:csv_type, options_for_select(CsvTypes.all_tables.map(&:name)),
+  <%= f.select(:csv_type, options_for_select(CSV_TYPES_ALL_TABLES.map(&:name)),
     { include_blank: "Select Csv File Type" },
     { class: "form-control", required: true }) %>
 </div>

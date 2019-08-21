@@ -10,11 +10,11 @@ RSpec.describe Version, type: :model do
     let(:after_preview_date) { Faker::Time.between(preview_date + 1.day, preview_date + 2.days).utc }
     let(:before_preview_date) { Faker::Time.between(preview_date - 2.days, preview_date - 1.day).utc }
     # TODO: this is brittle, Version.buildable_state should do a proper check:
-    let(:upload_dates_after) { [after_preview_date] * CsvTypes.required_table_names.length }
-    let(:upload_dates_before) { [before_preview_date] * CsvTypes.required_table_names.length }
+    let(:upload_dates_after) { [after_preview_date] * CSV_TYPES_REQUIRED_TABLE_NAMES.length }
+    let(:upload_dates_before) { [before_preview_date] * CSV_TYPES_REQUIRED_TABLE_NAMES.length }
 
     it 'returns false if upload dates is less than institution table count' do
-      allow(Upload).to receive_message_chain(:last_uploads, :to_a, :select,  :map)
+      allow(Upload).to receive_message_chain(:last_uploads, :to_a, :select, :map)
         .and_return(upload_dates_after[0..19])
       expect(subject.buildable_state).to eq(:not_enough_uploads)
       expect(subject.buildable?).to be_falsey
@@ -54,7 +54,7 @@ RSpec.describe Version, type: :model do
       end
 
       it 'returns true if upload dates are after' do
-        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :select,:map)
+        allow(Upload).to receive_message_chain(:last_uploads, :to_a, :select, :map)
           .and_return(upload_dates_after)
         expect(subject.buildable_state).to eq(:can_create_new_preview)
         expect(subject.buildable?).to be_truthy
