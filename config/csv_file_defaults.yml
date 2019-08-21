@@ -157,3 +157,8 @@ Program:
   skip_lines: 0
   col_sep: ","
   row_sep: "\r\n"
+
+SchoolCertifyingOfficial:
+  skip_lines: 0
+  col_sep: ","
+  row_sep: "\r\n"
