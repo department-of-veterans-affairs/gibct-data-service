@@ -110,7 +110,7 @@ FactoryGirl.define do
     trait :as_vet_tec_provider do
       facility_code '1VZZZZZZ'
       poo_status 'aprvd'
-      applicable_law_code 'Educational Institution is Approved For Vet Tec Only'
+      applicable_law_code 'educational institution is approved for vet tec only'
       non_college_degree_indicator true
     end
 

@@ -10,7 +10,7 @@
 class Weam < ActiveRecord::Base
   include CsvHelper
 
-  REQUIRED_VET_TEC_LAW_CODE = 'Educational Institution is Approved For Vet Tec Only'
+  REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'
 
   LAW_CODES_BLOCKING_APPROVED_STATUS = [
     'educational institution is not approved',
