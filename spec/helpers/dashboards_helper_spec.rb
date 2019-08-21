@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe DashboardsHelper, type: :helper do
-  let(:upload) { build :upload }
+  let(:upload) { build :upload, :valid_upload }
   let(:missing_required) { build :upload, :missing_required }
   let(:missing_upload) { build :upload, :missing_upload }
 
