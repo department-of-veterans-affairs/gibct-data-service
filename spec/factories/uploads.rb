@@ -35,7 +35,6 @@ FactoryGirl.define do
     end
 
     trait :missing_required do
-      csv_type Weam.name
       ok false
     end
 

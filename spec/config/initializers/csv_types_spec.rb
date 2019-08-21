@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "CSV_TYPES" do
+RSpec.describe 'CSV_TYPES' do
   REQUIRED_TABLES = [
     AccreditationAction.name,
     AccreditationInstituteCampus.name,
