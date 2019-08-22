@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 module InstitutionBuilder
-  TABLES = [
-    AccreditationAction, AccreditationInstituteCampus, AccreditationRecord,
-    ArfGiBill, Complaint, Crosswalk, EightKey, Hcm, IpedsHd,
-    IpedsIcAy, IpedsIcPy, IpedsIc, Mou, Outcome, P911Tf, P911Yr, Scorecard,
-    Sec702School, Sec702, Settlement, Sva, Vsoc, Weam, CalculatorConstant,
-    IpedsCipCode, StemCipCode, YellowRibbonProgramSource, SchoolClosure,
-    Sec109ClosedSchool, Program, SchoolCertifyingOfficial
-  ].freeze
-
   ACCREDITATION_JOIN_CLAUSES = [
     'institutions.ope6 = accreditation_institute_campuses.ope6',
     'institutions.ope = accreditation_institute_campuses.ope'
