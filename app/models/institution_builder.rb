@@ -473,28 +473,30 @@ module InstitutionBuilder
     conn = ActiveRecord::Base.connection
 
     str = <<-SQL
-      INSERT INTO zipcode_rates (
-        zip_code,
-        mha_rate_grandfathered,
-        mha_rate,
-        version,
-        created_at,
-        updated_at
-      )
-      SELECT
-        zip,
-        bah,
-        dod_bah,
-        ?,
-        #{conn.quote(timestamp)},
-        #{conn.quote(timestamp)}
-      FROM weams
-      WHERE country = 'USA'
-        AND bah IS NOT null
-        AND dod_bah IS NOT null
-      GROUP BY zip, bah, dod_bah
-      ORDER BY zip
-    SQL
+    INSERT INTO zipcode_rates (
+      zip_code,
+      mha_rate_grandfathered,
+      mha_rate,
+      mha_name,
+      version,
+      created_at,
+      updated_at
+    )
+    SELECT
+      zip,
+      bah,
+      dod_bah,
+      physical_city ||', '|| physical_state,
+      ?,
+      #{conn.quote(timestamp)},
+      #{conn.quote(timestamp)}
+    FROM weams
+    WHERE country = 'USA'
+      AND bah IS NOT null
+      AND dod_bah IS NOT null
+    GROUP BY zip, bah, dod_bah, physical_city, physical_state 
+    ORDER BY zip
+  SQL
 
     sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
     ZipcodeRate.connection.execute(sql)
