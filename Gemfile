@@ -87,7 +87,9 @@ group :development, :test do
   gem 'capybara'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
   gem 'simplecov'
-  gem 'factory_girl_rails', '~> 4.6'
+  gem 'factory_bot_rails'
+    # TODO: switch to a version number once that version is released
+  gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'
   gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
