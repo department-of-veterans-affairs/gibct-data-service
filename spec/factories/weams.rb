@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :weam do
     institution { 'SOME SCHOOL' }
     facility_code { generate :facility_code }

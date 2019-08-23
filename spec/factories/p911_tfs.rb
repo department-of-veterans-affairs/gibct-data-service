@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :p911_tf do
     facility_code { generate :facility_code }
     p911_tuition_fees { 1 }

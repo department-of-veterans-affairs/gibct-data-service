@@ -50,8 +50,8 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  # Allow short form of factory girl calls.
-  config.include FactoryGirl::Syntax::Methods
+  # Allow short form of factory bot calls.
+  config.include FactoryBot::Syntax::Methods
 
   # Allow skip_before_action in rspec controller tests
   config.include Devise::Test::ControllerHelpers, type: :controller
