@@ -24,9 +24,10 @@ in the link provided on the **GIDS** dashboard. Once the new preview version is 
 Note that queries are PostgreSQL-specific.
 
 1. Install the latest applicable version of **Postgres** on your dev box.
-2. Install Ruby 2.3. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.3](https://github.com/rbenv/rbenv#installing-ruby-versions)).
-3. Install Bundler to manager dependencies: `gem install bundler` and `bundle install`
+2. Install Ruby 2.4.5. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.4.5](https://github.com/rbenv/rbenv#installing-ruby-versions)).
+3. Install Bundler to manager dependencies: `gem install bundler -v 1.17.3` and `bundle install`
 4. `npm install -g phantomjs` is necessary for running certain tests.
+5. `brew cask install chromedriver` is necessary for running certain tests.
 
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
