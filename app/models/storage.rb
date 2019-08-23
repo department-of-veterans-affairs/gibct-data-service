@@ -8,7 +8,7 @@ class Storage < ActiveRecord::Base
   validates_associated :user
   validates :user_id, presence: true
 
-  validates :csv_type, uniqueness: true, inclusion: { in: InstitutionBuilder::TABLES.map(&:name) }
+  validates :csv_type, uniqueness: true, inclusion: { in: CSV_TYPES_ALL_TABLES.map(&:name) }
   validates :data, :csv, presence: true
   validates :upload_file, presence: true, unless: :persisted?
 
