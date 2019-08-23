@@ -57,7 +57,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         pg_result = double('PG::Result Double', error_message: 'BOOM!')
         pg_error = double('PG::Error Double', result: pg_result)
 
-        statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
+        statement_invalid = ActiveRecord::StatementInvalid.new('message' + pg_error)
         statement_invalid.set_backtrace(%(backtrace))
 
         allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(statement_invalid)
