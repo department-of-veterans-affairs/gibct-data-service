@@ -429,7 +429,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 5.2.3)
   rails-controller-testing
-  rspec-rails
+  rspec-rails (~> 3.5)
   rubocop (~> 0.53.0)
   ruby-saml
   rubyzip (~> 1.2, >= 1.2.1)

@@ -70,7 +70,7 @@ group :development, :test do
   gem 'bundler-audit'
 
   # Testing tools
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 3.5'
   gem 'json_matchers'
 
   # Added to remove irb: context errors on rails c (MPH)
