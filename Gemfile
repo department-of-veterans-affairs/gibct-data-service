@@ -83,7 +83,7 @@ group :development, :test do
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'simplecov'
   gem 'factory_girl_rails', '~> 4.6'
-  gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
+  gem 'database_cleaner', '1.5.3'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end

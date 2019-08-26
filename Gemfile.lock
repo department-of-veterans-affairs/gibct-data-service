@@ -97,7 +97,7 @@ GEM
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 0.12, >= 0.12.2, < 1.0.0)
     crass (1.0.4)
-    database_cleaner (1.7.0)
+    database_cleaner (1.5.3)
     debug_inspector (0.0.3)
     deep_merge (1.2.1)
     descendants_tracker (0.0.4)
@@ -391,7 +391,7 @@ DEPENDENCIES
   cancancan (~> 1.13, >= 1.13.1)
   capybara (= 2.11.0)
   config
-  database_cleaner (~> 1.5, >= 1.5.1)
+  database_cleaner (= 1.5.3)
   devise
   factory_girl_rails (~> 4.6)
   faker (~> 1.6, >= 1.6.2)
