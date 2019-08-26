@@ -317,12 +317,8 @@ GEM
     ruby_dep (1.5.0)
     rubyzip (1.2.2)
     sass (3.4.23)
-    sass-rails (5.0.6)
-      railties (>= 4.0.0, < 6)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
+    sassc (2.1.0)
+      ffi (~> 1.9)
     scss_lint (0.52.0)
       rake (>= 0.9, < 13)
       sass (~> 3.4.20)
@@ -361,7 +357,6 @@ GEM
       ref
     thor (0.20.3)
     thread_safe (0.3.6)
-    tilt (2.0.5)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uglifier (3.0.4)
@@ -419,12 +414,11 @@ DEPENDENCIES
   puma (~> 3.6)
   rack-cors
   rails (~> 4.2.11)
-  rainbow
   rspec-rails
   rubocop (~> 0.53.0)
   ruby-saml
   rubyzip (~> 1.2, >= 1.2.1)
-  sass-rails (~> 5.0)
+  sassc
   scss_lint
   sdoc (~> 0.4.0)
   sentry-raven (~> 2.3.0)
