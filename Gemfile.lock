@@ -337,7 +337,7 @@ GEM
     simplecov-html (0.10.2)
     sitemap_generator (5.3.1)
       builder (~> 3.0)
-    smarter_csv (1.2.6)
+    smarter_csv (1.1.4)
     spring (2.0.2)
       activesupport (>= 4.2)
     sprockets (3.7.2)
@@ -419,7 +419,7 @@ DEPENDENCIES
   sentry-raven (~> 2.3.0)
   simplecov
   sitemap_generator (~> 5.3, >= 5.3.1)
-  smarter_csv
+  smarter_csv (= 1.1.4)
   sniffybara!
   spring
   strong_migrations

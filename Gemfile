@@ -54,7 +54,7 @@ gem 'rack-cors', :require => 'rack/cors'
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
 
-gem 'smarter_csv'
+gem 'smarter_csv', '1.1.4'
 gem 'strong_migrations'
 gem 'will_paginate'
 
