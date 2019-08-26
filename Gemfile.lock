@@ -415,6 +415,7 @@ DEPENDENCIES
   puma (~> 3.6)
   rack-cors
   rails (~> 4.2.11)
+  rainbow
   rspec-rails
   rubocop (~> 0.53.0)
   ruby-saml

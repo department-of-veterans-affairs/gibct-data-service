@@ -52,6 +52,8 @@ gem 'jquery-ui-rails'
 # CORS
 gem 'rack-cors', :require => 'rack/cors'
 
+gem 'rainbow'
+
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
 
