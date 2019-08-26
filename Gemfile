@@ -33,7 +33,7 @@ gem 'sentry-raven', '~> 2.3.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
 gem 'smarter_csv', '1.1.4'
-gem 'strong_migrations', '~> 0.4.1'\
+gem 'strong_migrations', '~> 0.4.1'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
 
