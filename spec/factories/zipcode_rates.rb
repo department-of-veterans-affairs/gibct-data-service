@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :zipcode_rate do
     zip_code '20001'
     mha_code '123'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :calculator_constant do
     sequence(:name) do
       length = [3, 6, 13].sample

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :stem_cip_code do
     two_digit_series 1
     twentyten_cip_code 1.0901
