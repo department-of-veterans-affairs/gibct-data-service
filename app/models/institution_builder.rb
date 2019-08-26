@@ -477,7 +477,7 @@ module InstitutionBuilder
       zip,
       bah,
       dod_bah,
-      concat_ws(', ', physical_city, physical_state) as physical_location
+      physical_city ||', '|| physical_state,
       ?,
       #{conn.quote(timestamp)},
       #{conn.quote(timestamp)}
@@ -485,7 +485,7 @@ module InstitutionBuilder
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
-    GROUP BY zip, bah, dod_bah, physical_location
+    GROUP BY zip, bah, dod_bah, physical_city, physical_state
     ORDER BY zip
   SQL
 
