@@ -477,7 +477,7 @@ module InstitutionBuilder
       zip,
       bah,
       dod_bah,
-      physical_city ||', '|| physical_state,
+      concat_ws(', ', physical_city, physical_state) as physical_location
       ?,
       #{conn.quote(timestamp)},
       #{conn.quote(timestamp)}
