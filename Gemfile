@@ -82,8 +82,6 @@ group :development, :test do
   gem 'guard-rspec', require: false
 
   gem 'factory_bot_rails'
-  # TODO: switch to a version number once that version is released
-  gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'  
 
   gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
