@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :crosswalk do
     sequence :institution do |n|
       "institution #{n}"

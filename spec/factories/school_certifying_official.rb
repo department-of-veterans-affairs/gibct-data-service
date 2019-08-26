@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :school_certifying_official do
     facility_code { generate :facility_code }
     institution_name { 'Clements Ferry University' }
