@@ -33,7 +33,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(31)
+      expect(assigns(:uploads).length).to eq(CSV_TYPES_ALL_TABLES.length)
     end
 
     it 'returns http success' do
@@ -47,7 +47,7 @@ RSpec.describe DashboardsController, type: :controller do
     before(:each) do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      InstitutionBuilder::TABLES.each do |klass|
+      CSV_TYPES_ALL_TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe DashboardsController, type: :controller do
     before(:each) do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      InstitutionBuilder::TABLES.each do |klass|
+      CSV_TYPES_ALL_TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
 
@@ -103,7 +103,7 @@ RSpec.describe DashboardsController, type: :controller do
     before(:each) do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      InstitutionBuilder::TABLES.each do |klass|
+      CSV_TYPES_ALL_TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
 

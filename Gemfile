@@ -29,6 +29,8 @@ gem 'sentry-raven', '~> 2.3.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 # Build sitemap
 gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
+# Mass importing of CSV data
+gem 'smarter_csv', '1.1.4'
 gem 'strong_migrations', '~> 0.4.1'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -49,8 +51,7 @@ gem 'jquery-ui-rails'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'ruby-saml'
 gem 'sassc'
-# Mass importing of CSV data
-gem 'smarter_csv'
+
 # Pagination
 gem 'will_paginate'
 
@@ -66,8 +67,8 @@ group :development, :test do
   gem 'jshint', platforms: :ruby
 
   # Security scanners
-  gem 'brakeman'
-  gem 'bundler-audit'
+  gem 'brakeman', '3.4.1'
+  gem 'bundler-audit', '0.5.0'
 
   # Testing tools
   gem 'rspec-rails', '~> 3.5'
@@ -76,14 +77,16 @@ group :development, :test do
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
 
-  gem 'capybara'
   gem 'rails-controller-testing'
-  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
-  gem 'simplecov'
   gem 'factory_bot_rails'
     # TODO: switch to a version number once that version is released
   gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'
-  gem 'database_cleaner', '~> 1.5', '>= 1.5.1'
+
+  gem 'capybara', '2.11.0'
+  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
+  gem 'simplecov'
+
+  gem 'database_cleaner', '1.5.3'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
