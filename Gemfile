@@ -80,7 +80,7 @@ group :development, :test do
   gem 'guard-rspec', require: false
 
   gem 'capybara'
-  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
+  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'simplecov'
   gem 'factory_girl_rails', '~> 4.6'
   gem 'database_cleaner', '~> 1.5', '>= 1.5.1'

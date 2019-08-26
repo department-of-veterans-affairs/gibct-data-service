@@ -756,14 +756,14 @@
                       "null",
                       "number"
                     ]
-                  },
-                  "required": [
-                    "division_professional_school",
-                    "number_of_students",
-                    "degree_level",
-                    "contribution_amount"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "division_professional_school",
+                  "number_of_students",
+                  "degree_level",
+                  "contribution_amount"
+                ]
               }
             },
             "facility_map": {

@@ -1,8 +1,10 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: a0770b79961972b3a5ccfbac80031c8b30cf5e9f
+  revision: e355cfde5ae039601b3f273fe07c1b36a129c4c6
+  ref: e355cfde5ae039601b3f273fe07c1b36a129c4c6
   specs:
     sniffybara (0.0.1)
+      poltergeist
       rainbow
       selenium-webdriver
 
@@ -86,6 +88,7 @@ GEM
       activesupport
     childprocess (1.0.1)
       rake (< 13.0)
+    cliver (0.3.2)
     coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -226,6 +229,10 @@ GEM
     parser (2.6.3.0)
       ast (~> 2.4.0)
     pg (0.21.0)
+    poltergeist (1.18.1)
+      capybara (>= 2.1, < 4)
+      cliver (~> 0.3.1)
+      websocket-driver (>= 0.2.0)
     powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -365,6 +372,9 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    websocket-driver (0.7.1)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.4)
     will_paginate (3.1.8)
     xpath (3.2.0)
       nokogiri (~> 1.8)
