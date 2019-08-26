@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :sva do
     sequence :student_veteran_link do |n|
       "http://someplace_nice#{n}.com"

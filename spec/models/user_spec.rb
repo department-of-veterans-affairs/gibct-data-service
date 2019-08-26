@@ -37,7 +37,7 @@ RSpec.describe User, type: :model do
   end
 
   describe 'class methods' do
-    let(:vaild_attributes) { { va_eauth_emailaddress: FactoryGirl.create(:user).email } }
+    let(:vaild_attributes) { { va_eauth_emailaddress: FactoryBot.create(:user).email } }
     let(:empty_attributes) { {} }
 
     it 'should return a user based on the attributes in the saml response' do

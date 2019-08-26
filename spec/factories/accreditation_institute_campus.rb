@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :accreditation_institute_campus do
     dapip_id 131_584
     ope '00279100'

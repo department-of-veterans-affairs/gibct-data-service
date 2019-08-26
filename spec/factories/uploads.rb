@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :upload do
     transient do
       fixture_path 'spec/fixtures'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :p911_yr do
     facility_code { generate :facility_code }
     p911_yellow_ribbon { 1 }

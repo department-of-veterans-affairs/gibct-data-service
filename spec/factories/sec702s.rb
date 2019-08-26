@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :sec702 do
     sequence :state do |n|
       StateConverter::STATES.keys[(n - 1) % StateConverter::STATES.length]

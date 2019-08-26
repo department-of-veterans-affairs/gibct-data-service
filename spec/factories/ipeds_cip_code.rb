@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :ipeds_cip_code do
     cross { generate :cross }
     cipcode 1.0901 # Animal Sciences, General
