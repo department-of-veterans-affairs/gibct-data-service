@@ -79,7 +79,7 @@ group :development, :test do
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
 
-  gem 'capybara'
+  gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'simplecov'
   gem 'factory_girl_rails', '~> 4.6'
