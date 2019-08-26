@@ -15,22 +15,16 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       let(:bad_user) { build :user, :bad_email }
 
       # Failing on Devise views
-      Sniffybara::Driver.issue_id_exceptions <<
+      Sniffybara::Driver.accessibility_code_exceptions <<
         'WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141'
-      Sniffybara::Driver.issue_id_exceptions <<
+      Sniffybara::Driver.accessibility_code_exceptions <<
         'WCAG2AA.Principle1.Guideline1_3.1_3_1.H44.NonExistentFragment'
-      Sniffybara::Driver.issue_id_exceptions <<
+      Sniffybara::Driver.accessibility_code_exceptions <<
         'WCAG2AA.Principle1.Guideline1_3.1_3_1.F68.Hidden'
-      Sniffybara::Driver.issue_id_exceptions <<
+      Sniffybara::Driver.accessibility_code_exceptions <<
         'WCAG2AA.Principle1.Guideline1_3.1_3_1.H49.Small'
-      Sniffybara::Driver.issue_id_exceptions <<
+      Sniffybara::Driver.accessibility_code_exceptions <<
         'WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail'
-      Sniffybara::Driver.issue_id_exceptions <<
-        'WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage'
-      Sniffybara::Driver.issue_id_exceptions <<
-        'WCAG2AA.Principle1.Guideline1_4.1_4_3.G145.BgImage'
-      Sniffybara::Driver.issue_id_exceptions <<
-        'WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Abs'
 
       it 'outputs an error message if not successful' do
         visit user_session_path
