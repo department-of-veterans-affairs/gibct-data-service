@@ -1,4 +1,4 @@
-<tr class="<%= 'danger' if !upload.ok? %>">
+<tr class="<%= latest_upload_class(upload) %>" title="<%= latest_upload_title(upload) %>">
   <td><%= upload.csv_type %></td>
   <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
   <td><%= upload.csv.blank? ? '-' : upload.csv %></td>
