@@ -31,13 +31,11 @@ gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
-
 gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
 gem 'smarter_csv', '1.1.4'
 gem 'strong_migrations', '~> 0.4.1'\
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
-
 
 
 # Mass importing of CSV data
@@ -58,7 +56,6 @@ gem 'ruby-saml'
 
 # Pagination
 gem 'will_paginate'
-
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
