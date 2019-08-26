@@ -485,7 +485,7 @@ module InstitutionBuilder
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
-    GROUP BY zip, bah, dod_bah, physical_city, physical_state 
+    GROUP BY zip, bah, dod_bah, physical_location
     ORDER BY zip
   SQL
 
