@@ -27,6 +27,8 @@ gem 'pg', '~> 0.15'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
+# Use SCSS for stylesheets
+gem 'sass-rails', '~> 5.0'
 gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -50,6 +52,8 @@ gem 'font-awesome-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'rack-cors', :require => 'rack/cors'
+
+gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
@@ -86,7 +90,6 @@ group :development, :test do
   gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'simplecov'
-
   gem 'database_cleaner', '1.5.3'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'

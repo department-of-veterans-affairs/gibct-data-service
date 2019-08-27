@@ -50,7 +50,7 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  # Allow short form of factory bot calls.
+  # Allow short form of FactoryBot calls.
   config.include FactoryBot::Syntax::Methods
 
   # Allow skip_before_action in rspec controller tests
