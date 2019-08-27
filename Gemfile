@@ -27,8 +27,7 @@ gem 'pg', '~> 0.15'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+
 gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -54,13 +53,19 @@ gem 'jquery-ui-rails'
 # CORS
 gem 'rack-cors', :require => 'rack/cors'
 
-gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
 
 gem 'strong_migrations'
 gem 'will_paginate'
+
+group :production do
+  # Use SCSS for stylesheets
+  gem 'sass-rails', '~> 5.0'
+
+  gem 'rainbow'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
