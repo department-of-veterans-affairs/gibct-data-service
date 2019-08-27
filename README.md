@@ -82,6 +82,11 @@ User.create(email: 'xxxxxx', password: 'xxxxxx')
 5. Load test users and sample data: `bundle exec rake db:seed`
 5. Start the application: `bundle exec rails s`
 
+### Production Build
+The steps below will setup your local without dependencies that are not loaded in dev, staging, and production environments.
+1. `bundle install --without development test`
+2. `bundle clean --force`
+3. `bundle exec rails s -p 4000`
 ## How to Contribute
 
 There are many ways to contribute to this project:
