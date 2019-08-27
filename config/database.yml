@@ -81,7 +81,9 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
+#  database: gibct-data-service_production
+#  username: gibct-data-service
+#  password: <%= ENV['GIBCT-DATA-SERVICE_DATABASE_PASSWORD'] %>
   <<: *default
-  database: gibct-data-service_production
-  username: gibct-data-service
-  password: <%= ENV['GIBCT-DATA-SERVICE_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
+  database: gibct-data-service_development
