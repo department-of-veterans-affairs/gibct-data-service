@@ -112,7 +112,7 @@ GEM
       deep_merge (~> 1.2, >= 1.2.1)
       dry-schema (~> 1.0)
     crass (1.0.4)
-    database_cleaner (1.5.3)
+    database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     deep_merge (1.2.1)
     descendants_tracker (0.0.4)
@@ -420,7 +420,7 @@ DEPENDENCIES
   cancancan (~> 1.13, >= 1.13.1)
   capybara (= 2.11.0)
   config
-  database_cleaner (= 1.5.3)
+  database_cleaner
   devise
   factory_bot!
   factory_bot_rails
