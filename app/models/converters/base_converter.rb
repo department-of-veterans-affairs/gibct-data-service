@@ -5,6 +5,6 @@ class BaseConverter
     return value if value.nil? || !value.is_a?(String)
 
     value = value.tr('"', '').strip
-    value.match(/\A(none|null|privacysuppressed|\.)\z/i).nil? ? value : nil
+    value.match?(/\A(none|null|privacysuppressed|\.)\z/i).nil? ? value : nil
   end
 end

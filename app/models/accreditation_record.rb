@@ -54,7 +54,7 @@ class AccreditationRecord < ActiveRecord::Base
     return if agency_name.blank?
 
     ACCREDITATIONS.each_pair do |type, regexp_array|
-      return type if regexp_array.find { |regexp| agency_name.match(regexp) }
+      return type if regexp_array.find { |regexp| agency_name.match?(regexp) }
     end
 
     nil

@@ -36,7 +36,7 @@ class Version < ActiveRecord::Base
   end
 
   def self.buildable?
-    Version.buildable_state.to_s.match('can_create')
+    Version.buildable_state.to_s.match?('can_create')
   end
 
   def self.buildable_state
