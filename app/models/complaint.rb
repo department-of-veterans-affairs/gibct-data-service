@@ -97,7 +97,7 @@ class Complaint < ActiveRecord::Base
   end
 
   def set_facility_code_complaint
-    COMPLAINT_COLUMNS.each_pair { |complaint, issue_regex| self[complaint] = issues =~ issue_regex ? 1 : 0 }
+    COMPLAINT_COLUMNS.each_pair { |complaint, issue_regex| self[complaint] = issues.match?(issue_regex) ? 1 : 0 }
   end
 
   def self.rollup_sums(on_column, version_number)

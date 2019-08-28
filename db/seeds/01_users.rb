@@ -8,7 +8,7 @@ user = User.create(email: ENV['ADMIN_EMAIL'], password: ENV['ADMIN_PW'])
 unless user.valid?
   puts "Error creating #{user.email}: "
 
-  if user.errors.messages[:email].try(:first) =~ /invalid/i
+  if user.errors.messages[:email].try(:first).match?(/invalid/i)
     puts '   Only .gov emails are permitted!'
   end
 else

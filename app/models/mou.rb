@@ -27,10 +27,10 @@ class Mou < ActiveRecord::Base
   end
 
   def to_dodmou
-    (status =~ STATUSES).nil?
+    (status.match?(STATUSES)).nil?
   end
 
   def to_dod_status
-    (status =~ /dod/i).present?
+    (status.match?(/dod/i)).present?
   end
 end
