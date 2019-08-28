@@ -1,4 +1,4 @@
-FROM centos:6
+FROM ruby:2.4.5-slim-stretch
 
 # Match the jenkins uid/gid on the host (504)
 RUN groupadd -r gibct && \
@@ -8,8 +8,6 @@ RUN yum install -y git make gcc-c++ openssl-devel readline-devel zlib-devel sqli
 
 # Install Red Hat SCI library for ruby packages
 RUN yum install -y centos-release-scl-rh
-RUN yum install -y rh-ruby23 rh-ruby23-ruby-devel rh-ruby23-rubygems
-RUN echo "source /opt/rh/rh-ruby23/enable" > /etc/profile.d/rh-ruby23.sh
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
 # install phantomjs
