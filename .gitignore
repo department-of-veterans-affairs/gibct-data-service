@@ -72,3 +72,5 @@ pickle-email-*.html
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
+/.generators
+/.rakeTasks
