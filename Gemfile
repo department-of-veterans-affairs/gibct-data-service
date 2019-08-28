@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 3.6'
 
-gem 'rails', '~> 4.2.11'
+gem 'rails', '~> 5.2.3'
 
 
 # Gems with special version/repo needs
@@ -61,6 +61,7 @@ gem 'ruby-saml'
 
 gem 'strong_migrations'
 gem 'will_paginate'
+gem 'utf8-cleaner'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -84,11 +85,13 @@ group :development, :test do
   gem 'guard-rspec', require: false
 
   gem 'factory_bot_rails'
+  # TODO: switch to a version number once that version is released
+  gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'
 
   gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'simplecov'
-  gem 'database_cleaner', '1.5.3'
+  gem 'database_cleaner'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
