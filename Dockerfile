@@ -1,4 +1,4 @@
-FROM ruby:2.4.5-slim-stretch
+FROM ruby:2.4.5-alpine
 
 # Match the jenkins uid/gid on the host (504)
 RUN groupadd -r gibct && \
