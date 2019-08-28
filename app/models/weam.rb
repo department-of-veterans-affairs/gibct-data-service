@@ -112,7 +112,7 @@ class Weam < ActiveRecord::Base
 
   # Is this a foreign school?
   def foreign?
-    !correspondence? && !flight? && country.match?(Regexp.new('\A(us|usa)\z', 'i')).nil?
+    !correspondence? && !flight? && (country =~ Regexp.new('\A(us|usa)\z', 'i')).nil?
   end
 
   # Is this a public school?
@@ -176,7 +176,7 @@ class Weam < ActiveRecord::Base
   private
 
   def poo_status_valid?
-    poo_status.match?(Regexp.new('aprvd', 'i'))
+    poo_status =~ Regexp.new('aprvd', 'i')
   end
 
   def invalid_law_code?
