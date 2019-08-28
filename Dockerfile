@@ -19,6 +19,9 @@ RUN yum install -y fontconfig freetype freetype-devel fontconfig-devel libstdc++
   tar -xjvf ./phantomjs-2.1.1-linux-x86_64.tar.bz2 --strip-components 1 -C /opt/phantomjs/ && \
   ln -s /opt/phantomjs/bin/phantomjs /usr/bin/phantomjs
 
+RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /cc-test-reporter
+RUN chmod +x /cc-test-reporter
+
 # Configure gibct application
 RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
 VOLUME /src/gibct
