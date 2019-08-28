@@ -65,34 +65,25 @@ gem 'utf8-cleaner'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
-  gem 'pry-nav'
-
-  # Linters
-  gem 'rubocop', '~> 0.53.0', require: false
-  gem 'scss_lint', require: false
-  gem 'jshint', platforms: :ruby
-
-  # Security scanners
   gem 'brakeman', '3.4.1'
   gem 'bundler-audit', '0.5.0'
-
-  # Testing tools
-  gem 'rspec-rails'
-  gem 'json_matchers'
-
-  # Added to remove irb: context errors on rails c (MPH)
-  gem 'guard-rspec', require: false
-
-  gem 'factory_bot_rails'
+  gem 'byebug'
+  gem 'capybara', '2.11.0'
+  gem 'database_cleaner'
   # TODO: switch to a version number once that version is released
   gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'
-
-  gem 'capybara', '2.11.0'
-  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
-  gem 'simplecov'
-  gem 'database_cleaner'
+  gem 'factory_bot_rails'
   gem 'faker', '~> 1.6', '>= 1.6.2'
+  gem 'guard-rspec', require: false
+  gem 'jshint', platforms: :ruby
+  gem 'json_matchers'
+  gem 'pry-nav'
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
+  gem 'rubocop', '~> 0.53.0', require: false
+  gem 'scss_lint', require: false
+  gem 'simplecov'
+  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
 
