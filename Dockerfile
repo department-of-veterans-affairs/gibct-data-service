@@ -11,8 +11,16 @@ RUN groupadd -r gibct && \
     clamav \
     imagemagick \
     pdftk \
+    curl \
     poppler-utils && \
     freshclam
+
+# install phantomjs
+RUN apt-get install -y libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev libstdc++ && \
+  curl -LO https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  mkdir -p /opt/phantomjs && \
+  tar -xjvf ./phantomjs-2.1.1-linux-x86_64.tar.bz2 --strip-components 1 -C /opt/phantomjs/ && \
+  ln -s /opt/phantomjs/bin/phantomjs /usr/bin/phantomjs
 
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
