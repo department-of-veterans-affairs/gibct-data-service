@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe InstitutionTree, type: :model do
   let(:version) { create(:version, :production) }
 
-  describe 'intitution tree' do
+  describe 'institution tree' do
     before(:each) do
       create(:institution, facility_code: '100', campus_type: 'Y')
       create(:institution, facility_code: '101', parent_facility_code_id: '100', campus_type: 'N')
@@ -20,7 +20,7 @@ RSpec.describe InstitutionTree, type: :model do
     end
 
     context 'when built' do
-      it 'generates correctly for main facility' do
+      it 'generates correctly for main facility', js: true do
         tree = InstitutionTree.build(Institution.find_by(facility_code: '100'))
         expect(tree['main']['branches'].count).to eq(3)
         expect(tree['main']['extensions'].count).to eq(1)
@@ -29,7 +29,7 @@ RSpec.describe InstitutionTree, type: :model do
         expect(tree['main']['branches'][2]['extensions'].count).to eq(3)
       end
 
-      it 'generates correctly for branch facility' do
+      it 'generates correctly for branch facility', js: true do
         tree = InstitutionTree.build(Institution.find_by(facility_code: '101'))
         expect(tree['main']['branches'].count).to eq(3)
         expect(tree['main']['extensions'].count).to eq(1)
@@ -38,7 +38,7 @@ RSpec.describe InstitutionTree, type: :model do
         expect(tree['main']['branches'][2]['extensions'].count).to eq(3)
       end
 
-      it 'generates correctly for extension facility' do
+      it 'generates correctly for extension facility', js: true do
         tree = InstitutionTree.build(Institution.find_by(facility_code: '107'))
         expect(tree['main']['branches'].count).to eq(3)
         expect(tree['main']['extensions'].count).to eq(1)
@@ -47,7 +47,7 @@ RSpec.describe InstitutionTree, type: :model do
         expect(tree['main']['branches'][2]['extensions'].count).to eq(3)
       end
 
-      it 'generates correctly for facility without campus_type value' do
+      it 'generates correctly for facility without campus_type value', js: true do
         tree = InstitutionTree.build(Institution.find_by(facility_code: '109'))
         expect(tree['main']['branches'].count).to eq(0)
         expect(tree['main']['extensions'].count).to eq(0)
