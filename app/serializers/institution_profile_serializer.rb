@@ -92,6 +92,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :stem_indicator
   attribute :facility_map
+  attribute :programs
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

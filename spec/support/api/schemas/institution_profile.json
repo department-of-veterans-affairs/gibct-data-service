@@ -786,6 +786,12 @@
                 }
               }
             },
+            "programs": {
+              "type": ["null","array"],
+              "items": {
+                "type": "object"
+              }
+            },
             "created_at": {
               "type": "string"
             },

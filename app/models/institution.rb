@@ -210,6 +210,10 @@ class Institution < ActiveRecord::Base
     institution_type_name != 'OJT'
   end
 
+  def programs
+    Program.where('facility_code' => self.facility_code)
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
