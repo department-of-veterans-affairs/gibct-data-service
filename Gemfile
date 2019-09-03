@@ -52,7 +52,7 @@ gem 'jquery-ui-rails'
 
 # CORS
 gem 'rack-cors', :require => 'rack/cors'
-
+gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
@@ -61,10 +61,7 @@ gem 'strong_migrations'
 gem 'will_paginate'
 
 group :production do
-  # Use SCSS for stylesheets
   gem 'sass-rails', '~> 5.0'
-
-  gem 'rainbow'
 end
 
 group :development, :test do
