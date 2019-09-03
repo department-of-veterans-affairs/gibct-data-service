@@ -53,7 +53,7 @@ module InstitutionTree
                              [str, institution.facility_code, institution.version, institution.version])
       main_facility_code = Institution.connection.execute(sql).first['facility_code']
 
-      Institution.find_by(facility_code: main_facility_code)
+      Institution.find_by(facility_code: main_facility_code, version: institution.version)
     end
 
     def descendants(ancestor)
@@ -74,7 +74,7 @@ module InstitutionTree
                              [str, ancestor.facility_code, ancestor.version, ancestor.version, ancestor.facility_code])
       facility_codes = Institution.connection.execute(sql).field_values('facility_code')
 
-      Institution.where(facility_code: facility_codes)
+      Institution.where(facility_code: facility_codes, version: ancestor.version)
     end
   end
 end
