@@ -89,7 +89,6 @@ group :development, :test do
   gem 'guard-rspec', require: false
 
   gem 'factory_bot_rails'
-  # TODO: switch to a version number once that version is released
   gem 'factory_bot', '4.10.0'
 
   gem 'capybara', '2.11.0'
