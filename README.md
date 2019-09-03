@@ -86,7 +86,7 @@ User.create(email: 'xxxxxx', password: 'xxxxxx')
 The steps below will setup your local without dependencies that are not loaded in dev, staging, and production environments.
 1. `bundle install --without development test`
 2. `bundle clean --force`
-3. `bundle exec rails s -p 4000`
+3. `bundle exec rails s`
 
 To reset your local to have all dependencies:
 1. `bundle install --with development test`

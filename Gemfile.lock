@@ -8,14 +8,6 @@ GIT
       rainbow
       selenium-webdriver
 
-GIT
-  remote: https://github.com/thoughtbot/factory_bot
-  revision: 50eeb67241ea78a6b138eea694a2a25413052f49
-  ref: 50eeb67241ea78a6b138eea694a2a25413052f49
-  specs:
-    factory_bot (4.8.2)
-      activesupport (>= 3.0.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -66,8 +58,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.6.0)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     arel (6.0.4)
     ast (2.4.0)
     axiom-types (0.1.1)
@@ -93,7 +85,7 @@ GEM
       xpath (~> 2.0)
     case_transform (0.2)
       activesupport
-    childprocess (1.0.1)
+    childprocess (2.0.0)
       rake (< 13.0)
     cliver (0.3.2)
     coderay (1.1.2)
@@ -149,8 +141,10 @@ GEM
     equalizer (0.0.11)
     erubis (2.7.0)
     execjs (2.7.0)
-    factory_bot_rails (4.8.2)
-      factory_bot (~> 4.8.2)
+    factory_bot (4.10.0)
+      activesupport (>= 3.0.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     faker (1.9.6)
       i18n (>= 0.7)
@@ -171,7 +165,7 @@ GEM
       faraday
       faraday_middleware
       mime-types
-    guard (2.15.0)
+    guard (2.15.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
       lumberjack (>= 1.0.12, < 2.0)
@@ -231,7 +225,7 @@ GEM
       shellany (~> 0.0)
     orm_adapter (0.5.0)
     parallel (1.17.0)
-    parser (2.6.3.0)
+    parser (2.6.4.0)
       ast (~> 2.4.0)
     pg (0.21.0)
     poltergeist (1.18.1)
@@ -244,7 +238,7 @@ GEM
       method_source (~> 0.9.0)
     pry-nav (0.3.0)
       pry (>= 0.9.10, < 0.13.0)
-    public_suffix (3.1.1)
+    public_suffix (4.0.1)
     puma (3.12.1)
     rack (1.6.11)
     rack-cors (1.0.3)
@@ -334,8 +328,8 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.142.3)
-      childprocess (>= 0.5, < 2.0)
+    selenium-webdriver (3.142.4)
+      childprocess (>= 0.5, < 3.0)
       rubyzip (~> 1.2, >= 1.2.2)
     sentry-raven (2.3.1)
       faraday (>= 0.7.6, < 1.0)
@@ -406,7 +400,7 @@ DEPENDENCIES
   config
   database_cleaner (= 1.5.3)
   devise
-  factory_bot!
+  factory_bot (= 4.10.0)
   factory_bot_rails
   faker (~> 1.6, >= 1.6.2)
   figaro
