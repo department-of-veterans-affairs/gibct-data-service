@@ -400,8 +400,7 @@ DEPENDENCIES
   config
   database_cleaner (= 1.5.3)
   devise
-  factory_bot (= 4.10.0)
-  factory_bot_rails
+  factory_bot_rails (= 4.10.0)
   faker (~> 1.6, >= 1.6.2)
   figaro
   font-awesome-rails
