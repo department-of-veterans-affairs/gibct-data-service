@@ -211,7 +211,7 @@ class Institution < ActiveRecord::Base
   end
 
   def programs
-    Program.where('facility_code' => self.facility_code)
+    Program.where('facility_code' => facility_code)
   end
 
   # Given a search term representing a partial school name, returns all
