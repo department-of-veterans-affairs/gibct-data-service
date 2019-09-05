@@ -6,13 +6,9 @@ RUN groupadd -r gibct && \
     apt-get update -qq && \
     apt-get install -y build-essential \
     git \
-    libpq-dev \
-    libgmp-dev \
-    clamav \
-    imagemagick \
-    pdftk \
     curl \
-    poppler-utils && \
+    clamav \
+    libpq-dev && \
     freshclam
 
 # install phantomjs
