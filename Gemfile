@@ -27,8 +27,7 @@ gem 'pg', '~> 0.15'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+
 gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -53,7 +52,6 @@ gem 'jquery-ui-rails'
 
 # CORS
 gem 'rack-cors', :require => 'rack/cors'
-
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
@@ -61,6 +59,10 @@ gem 'ruby-saml'
 
 gem 'strong_migrations'
 gem 'will_paginate'
+
+group :production do
+  gem 'sass-rails', '~> 5.0'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -83,9 +85,7 @@ group :development, :test do
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
 
-  gem 'factory_bot_rails'
-  # TODO: switch to a version number once that version is released
-  gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'
+  gem 'factory_bot_rails', '4.10.0'
 
   gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
