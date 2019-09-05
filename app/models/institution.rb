@@ -194,6 +194,10 @@ class Institution < ActiveRecord::Base
     InstitutionTree.build(self)
   end
 
+  def school_certifying_officials
+    SchoolCertifyingOfficial.where('facility_code' => self.facility_code)
+  end
+
   # Returns a short locale description
   #
   def locale_type
