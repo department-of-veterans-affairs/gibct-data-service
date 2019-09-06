@@ -17,6 +17,7 @@ RSpec.describe InstitutionTree, type: :model do
       create(:institution, facility_code: '107', parent_facility_code_id: '103', campus_type: 'E')
       create(:institution, facility_code: '108', parent_facility_code_id: '100', campus_type: 'E')
       create(:institution, facility_code: '109')
+      create(:institution, facility_code: '110', parent_facility_code_id: '100', campus_type: 'E', version: 2)
     end
 
     context 'when built' do
