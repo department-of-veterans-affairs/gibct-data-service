@@ -159,6 +159,11 @@ class Institution < ActiveRecord::Base
   validates :institution_type_name, inclusion: { in: TYPES }
 
   has_many :yellow_ribbon_programs, dependent: :destroy
+  has_many :school_certifying_officials
+
+  def school_certifying_officials
+    SchoolCertifyingOfficial.where('facility_code' => facility_code)
+  end
 
   self.per_page = 10
 
@@ -192,10 +197,6 @@ class Institution < ActiveRecord::Base
 
   def facility_map
     InstitutionTree.build(self)
-  end
-
-  def school_certifying_officials
-    SchoolCertifyingOfficial.where('facility_code' => self.facility_code)
   end
 
   # Returns a short locale description
