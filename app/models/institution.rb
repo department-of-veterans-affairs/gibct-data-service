@@ -159,11 +159,7 @@ class Institution < ActiveRecord::Base
   validates :institution_type_name, inclusion: { in: TYPES }
 
   has_many :yellow_ribbon_programs, dependent: :destroy
-  has_many :school_certifying_officials, dependent: :destroy
-
-  def school_certifying_officials
-    SchoolCertifyingOfficial.where('facility_code' => facility_code)
-  end
+  has_many :school_certifying_officials, -> { order 'priority, last_name' }, primary_key: :facility_code, foreign_key: 'facility_code', dependent: :destroy
 
   self.per_page = 10
 
