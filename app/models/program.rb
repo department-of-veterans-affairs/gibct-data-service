@@ -16,5 +16,4 @@ class Program < ActiveRecord::Base
 
   validates :facility_code, presence: true
   belongs_to :insitutions
-  
 end
