@@ -37,7 +37,6 @@ gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
 
-
 # Mass importing of CSV data
 gem 'activerecord-import'
 
