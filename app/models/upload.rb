@@ -75,8 +75,8 @@ class Upload < ActiveRecord::Base
   private
 
   def initialize_warnings
-    self.missing_headers = Warning.new(self)
-    self.extra_headers = Warning.new(self)
+    self.missing_headers = ActiveModel::Errors.new(self)
+    self.extra_headers = ActiveModel::Errors.new(self)
   end
 
   def diffed_headers

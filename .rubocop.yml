@@ -2,7 +2,6 @@
 AllCops:
   # Prior to upgrading to Rails 5.0 we can change this, but right now it will break too many things
   TargetRailsVersion: 4.0
-  TargetRubyVersion: 2.3
   Include:
     - '**/config.ru'
     - '**/Rakefile'

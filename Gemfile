@@ -27,8 +27,7 @@ gem 'pg', '~> 0.15'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+
 gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -53,7 +52,6 @@ gem 'jquery-ui-rails'
 
 # CORS
 gem 'rack-cors', :require => 'rack/cors'
-
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
@@ -63,6 +61,10 @@ gem 'strong_migrations'
 gem 'will_paginate'
 gem 'utf8-cleaner'
 
+group :production do
+  gem 'sass-rails', '~> 5.0'
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'brakeman', '3.4.1'
@@ -70,9 +72,7 @@ group :development, :test do
   gem 'byebug'
   gem 'capybara', '2.11.0'
   gem 'database_cleaner'
-  # TODO: switch to a version number once that version is released
-  gem 'factory_bot', git: 'https://github.com/thoughtbot/factory_bot', ref: '50eeb67241ea78a6b138eea694a2a25413052f49'
-  gem 'factory_bot_rails'
+  gem 'factory_bot_rails', '4.10.0'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'guard-rspec', require: false
   gem 'jshint', platforms: :ruby
