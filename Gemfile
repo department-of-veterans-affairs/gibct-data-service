@@ -79,6 +79,7 @@ group :development, :test do
   gem 'bundler-audit', '0.5.0'
 
   # Testing tools
+  gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'json_matchers'
 

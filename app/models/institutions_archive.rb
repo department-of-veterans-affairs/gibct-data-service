@@ -17,7 +17,7 @@ class InstitutionsArchive < Institution
       end
     rescue ActiveRecord::StatementInvalid => exception
       notice = 'There was an error occurring at the database level'
-      error_msg = exception.original_exception.result.error_message
+      error_msg = exception.message
       process_exception(notice, error_msg, production_version, previous_version)
     rescue StandardError => exception
       notice = 'There was an error of unexpected origin'
