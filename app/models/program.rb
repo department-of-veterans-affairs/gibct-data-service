@@ -15,4 +15,6 @@ class Program < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
+  belongs_to :insitutions
+  
 end
