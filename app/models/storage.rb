@@ -37,7 +37,6 @@ class Storage < ActiveRecord::Base
     self.csv = upload_file.try(:original_filename)
     self.data = File.read(upload_file.path, encoding: 'ISO-8859-1')
   rescue StandardError => e
-    binding.pry()
     errors.add(:upload_file, "error reading the uploaded csv file: #{e.message}")
   end
 end

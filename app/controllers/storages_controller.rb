@@ -20,7 +20,6 @@ class StoragesController < ApplicationController
   end
 
   def update
-    binding.pry()
     @storage = Storage.find_and_update(merged_params)
     raise StandardError, @storage.errors.full_messages unless @storage.valid?
     redirect_to storage_path(params[:id])
