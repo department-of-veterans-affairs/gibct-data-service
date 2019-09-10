@@ -131,7 +131,6 @@ RSpec.describe StoragesController, type: :controller do
       context 'with a valid id' do
         it 'replaces the existing data' do
           put(:update, params:{id: params.delete(:id), storage: params})
-          binding.pry()
           expect(Storage.first.data).to eq(new_data)
         end
       end
