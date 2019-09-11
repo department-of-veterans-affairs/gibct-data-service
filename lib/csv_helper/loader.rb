@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require './app/models/errors/warning'
 module CsvHelper
   module Loader
     CSV_FIRST_LINE = 2
