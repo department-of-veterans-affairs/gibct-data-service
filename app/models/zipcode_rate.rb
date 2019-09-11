@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class ZipcodeRate < ActiveRecord::Base
+class ZipcodeRate < ApplicationRecord
 end

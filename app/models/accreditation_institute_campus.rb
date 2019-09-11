@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AccreditationInstituteCampus < ActiveRecord::Base
+class AccreditationInstituteCampus < ApplicationRecord
   self.table_name = 'accreditation_institute_campuses'
 
   include CsvHelper

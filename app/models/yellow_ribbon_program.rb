@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class YellowRibbonProgram < ActiveRecord::Base
+class YellowRibbonProgram < ApplicationRecord
 end
