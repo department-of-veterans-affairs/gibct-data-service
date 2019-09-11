@@ -83,17 +83,17 @@ RSpec.describe DashboardsController, type: :controller do
 
     it 'causes a CSV to be exported' do
       expect(Weam).to receive(:export)
-      get(:export, params:{csv_type: 'Weam', format: :csv})
+      get(:export, params: { csv_type: 'Weam', format: :csv })
     end
 
     it 'includes filename parameter in content-disposition header' do
-      get(:export, params:{csv_type: 'Sva', format: :csv})
+      get(:export, params: { csv_type: 'Sva', format: :csv })
       expect(response.headers['Content-Disposition']).to include('filename="Sva.csv"')
     end
 
     it 'redirects to index on error' do
-      expect(get(:export, params:{csv_type: 'BlahBlah', format: :csv})).to redirect_to(action: :index)
-      expect(get(:export, params:{csv_type: 'Weam', format: :xml})).to redirect_to(action: :index)
+      expect(get(:export, params: { csv_type: 'BlahBlah', format: :csv })).to redirect_to(action: :index)
+      expect(get(:export, params: { csv_type: 'Weam', format: :xml })).to redirect_to(action: :index)
     end
   end
 
@@ -112,16 +112,16 @@ RSpec.describe DashboardsController, type: :controller do
 
     it 'causes a CSV to be exported' do
       expect(Institution).to receive(:export_institutions_by_version)
-      get(:export_version, params:{format: :csv, number: 1})
+      get(:export_version, params: { format: :csv, number: 1 })
     end
 
     it 'includes filename parameter in content-disposition header' do
-      get(:export_version, params:{format: :csv, number: 1})
+      get(:export_version, params: { format: :csv, number: 1 })
       expect(response.headers['Content-Disposition']).to include('filename="institutions_version_1.csv"')
     end
 
     it 'redirects to index on error' do
-      expect(get(:export_version, params:{format: :xml, number: 1})).to redirect_to(action: :index)
+      expect(get(:export_version, params: { format: :xml, number: 1 })).to redirect_to(action: :index)
     end
   end
 

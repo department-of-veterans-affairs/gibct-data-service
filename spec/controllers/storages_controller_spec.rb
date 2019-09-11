@@ -9,10 +9,9 @@ RSpec.describe StoragesController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'storages'
 
   def generate_csv_upload(name)
-    ActionDispatch::Http::UploadedFile.new(
-      tempfile: File.new(Rails.root.join('spec', 'fixtures', name)),
-      filename: File.basename(name),
-      type: 'text/csv'
+    fixture_file_upload(
+      "#{::Rails.root}/spec/fixtures/#{name}",
+      'text/csv'
     )
   end
 
@@ -40,7 +39,7 @@ RSpec.describe StoragesController, type: :controller do
 
     context 'with a valid id' do
       before(:each) do
-        get(:download, params:{id: storage.id})
+        get(:download, params: { id: storage.id })
       end
 
       it 'gets the storage' do
@@ -50,7 +49,7 @@ RSpec.describe StoragesController, type: :controller do
 
     context 'with an invalid id' do
       it 'generates an alert message' do
-        get(:download, params:{id: 1_000_000})
+        get(:download, params: { id: 1_000_000 })
         expect(flash[:alert]).to match 'Invalid Storage id: 1000000'
       end
     end
@@ -63,7 +62,7 @@ RSpec.describe StoragesController, type: :controller do
 
     context 'with a valid id' do
       before(:each) do
-        get(:show, params:{id: storage.id})
+        get(:show, params: { id: storage.id })
       end
 
       it 'gets the storage' do
@@ -74,12 +73,12 @@ RSpec.describe StoragesController, type: :controller do
 
     context 'with an invalid id' do
       it 'generates an alert message' do
-        get(:show, params:{id: 1_000_000})
+        get(:show, params: { id: 1_000_000 })
         expect(flash[:alert]).to match 'Invalid Storage id: 1000000'
       end
 
       it 'redirects to the index action' do
-        expect(get(:show, params:{id: 1_000_000})).to redirect_to(action: :index)
+        expect(get(:show, params: { id: 1_000_000 })).to redirect_to(action: :index)
       end
     end
   end
@@ -90,7 +89,7 @@ RSpec.describe StoragesController, type: :controller do
     context 'specifying a valid' do
       before(:each) do
         create :storage
-        get(:edit, params:{id: storage.id})
+        get(:edit, params: { id: storage.id })
       end
 
       let(:storage) { Storage.first }
@@ -104,11 +103,11 @@ RSpec.describe StoragesController, type: :controller do
 
       context 'with an invalid id' do
         it 'redirects to the index action' do
-          expect(get(:edit, params:{id: 1_000_000})).to redirect_to(action: :index)
+          expect(get(:edit, params: { id: 1_000_000 })).to redirect_to(action: :index)
         end
 
         it 'generates an alert message' do
-          get(:edit, params:{id: 1_000_000})
+          get(:edit, params: { id: 1_000_000 })
           expect(flash[:alert]).to match 'Invalid Storage id: 1000000'
         end
       end
@@ -128,12 +127,12 @@ RSpec.describe StoragesController, type: :controller do
       let(:params) { { id: old.id, upload_file: upload_file } }
       let(:new_data) { File.read(params[:upload_file].path, encoding: 'ISO-8859-1') }
 
-      # context 'with a valid id' do
-      #   it 'replaces the existing data' do
-      #     put(:update, params:{id: params.delete(:id), storage: params})
-      #     expect(Storage.first.data).to eq(new_data)
-      #   end
-      # end
+      context 'with a valid id' do
+        it 'replaces the existing data' do
+          put(:update, params: { id: params.delete(:id), storage: params })
+          expect(Storage.first.data).to eq(new_data)
+        end
+      end
 
       context 'with an invalid id' do
         it 'redirects to the index action' do
@@ -141,7 +140,7 @@ RSpec.describe StoragesController, type: :controller do
         end
 
         it 'generates an alert message' do
-          put(:update, params:{id: 1_000_000, storage: params})
+          put(:update, params: { id: 1_000_000, storage: params })
           expect(flash[:alert]).to match 'Invalid Storage id: 1000000'
         end
       end

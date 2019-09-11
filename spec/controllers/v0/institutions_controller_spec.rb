@@ -15,7 +15,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'accepts invalid version parameter and returns production data' do
       create(:version, :production)
       create(:institution, :contains_harv)
-      get(:index, params: { version: 'invalid_data'})
+      get(:index, params: { version: 'invalid_data' })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
@@ -108,7 +108,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns case-insensitive results' do
-      get(:index, params: { name: 'CHICAGO'})
+      get(:index, params: { name: 'CHICAGO' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -125,7 +125,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :contains_harv)
       create(:institution, :contains_harv, campus_type: 'E')
       create(:institution, :contains_harv, campus_type: 'Y')
-      get(:index, params: { name: 'harv'})
+      get(:index, params: { name: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -199,7 +199,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'includes state search term in facets' do
-      get(:index, params: { name: 'chicago', state: 'WY'})
+      get(:index, params: { name: 'chicago', state: 'WY' })
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['state']['wy']).not_to be_nil
       expect(facets['state']['wy']).to eq(0)
