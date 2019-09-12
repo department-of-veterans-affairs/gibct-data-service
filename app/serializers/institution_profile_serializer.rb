@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class InstitutionProfileSerializer < ActiveModel::Serializer # rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/ClassLength
+class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :institution, key: :name
   attribute :facility_code
   attribute :institution_type_name, key: :type
@@ -108,3 +109,4 @@ class InstitutionProfileSerializer < ActiveModel::Serializer # rubocop:disable M
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
