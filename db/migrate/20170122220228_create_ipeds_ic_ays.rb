@@ -1,4 +1,4 @@
-class CreateIpedsIcAys < ActiveRecord::Migration
+class CreateIpedsIcAys < ActiveRecord::Migration[4.2]
   def change
     create_table :ipeds_ic_ays do |t|
       # Used in the building of DataCsv

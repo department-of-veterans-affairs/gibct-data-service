@@ -1,4 +1,4 @@
-class CreateWeams < ActiveRecord::Migration
+class CreateWeams < ActiveRecord::Migration[4.2]
   def change
     create_table :weams do |t|
       # Used in the building of DataCsv

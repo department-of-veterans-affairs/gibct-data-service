@@ -1,4 +1,4 @@
-class ChangeOutcomeDefaults < ActiveRecord::Migration
+class ChangeOutcomeDefaults < ActiveRecord::Migration[4.2]
   def change
     change_table :outcomes do |t|
       t.change :retention_rate_veteran_ba, :float, default: nil
