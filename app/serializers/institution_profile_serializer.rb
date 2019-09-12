@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InstitutionProfileSerializer < ActiveModel::Serializer
+class InstitutionProfileSerializer < ActiveModel::Serializer # rubocop:disable Metrics/ClassLength
   attribute :institution, key: :name
   attribute :facility_code
   attribute :institution_type_name, key: :type
@@ -74,7 +74,6 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
   attribute :created_at
   attribute :updated_at
-
   attribute :physical_address_1
   attribute :physical_address_2
   attribute :physical_address_3
@@ -87,7 +86,6 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :physical_zip
   attribute :parent_facility_code_id
   attribute :campus_type
-
   attribute :vet_tec_provider
   attribute :preferred_provider
   attribute :stem_indicator
@@ -98,7 +96,6 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   link(:scorecard) { object.scorecard_link }
   link(:vet_website_link) { object.vet_website_link }
   link(:self) { v0_institution_url(object.facility_code) }
-
   def yellow_ribbon_programs
     object.yellow_ribbon_programs.map do |yrp|
       YellowRibbonProgramSerializer.new(yrp)
@@ -110,5 +107,4 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
       SchoolCertifyingOfficialSerializer.new(sco)
     end
   end
-
 end
