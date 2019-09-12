@@ -13,7 +13,7 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
+	@$(BASH_TEST) "bin/rails db:setup db:migrate db:environment:set RAILS_ENV=development ci"
 
 .PHONY: console
 console:
