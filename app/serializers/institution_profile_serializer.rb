@@ -110,5 +110,4 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
       ProgramSerializer.new(program)
     end
   end
-
 end
