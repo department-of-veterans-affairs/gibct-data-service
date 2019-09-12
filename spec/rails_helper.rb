@@ -66,6 +66,7 @@ RSpec.configure do |config|
 
   # Run each test in a transaction
   config.before(:each) do
+    DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.strategy = :transaction
   end
 
