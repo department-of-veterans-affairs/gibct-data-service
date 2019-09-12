@@ -104,4 +104,11 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
       YellowRibbonProgramSerializer.new(yrp)
     end
   end
+
+  def school_certifying_officials
+    object.school_certifying_officials.map do |sco|
+      SchoolCertifyingOfficialSerializer.new(sco)
+    end
+  end
+
 end
