@@ -61,12 +61,12 @@ RSpec.configure do |config|
   # database_cleaner configuration
   # Clear the entire DB before tests begin
   config.before(:suite) do
+    DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.clean_with(:truncation)
   end
 
   # Run each test in a transaction
   config.before(:each) do
-    DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.strategy = :transaction
   end
 
