@@ -80,9 +80,9 @@ RSpec.shared_examples 'an archivable model' do |options|
     context 'when not successful' do
       it 'returns an error message' do
         error_message = 'BOOM!'
-        allow(archived_type).to receive(:create_archives).and_raise(StandardError, error_message)
+        allow(Archiver).to receive(:create_archives).and_raise(StandardError, error_message)
         expect(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
-        archived_type.archive_previous_versions
+        Archiver.archive_previous_versions
       end
 
       it 'logs errors at the database level' do
@@ -93,10 +93,10 @@ RSpec.shared_examples 'an archivable model' do |options|
         statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
         statement_invalid.set_backtrace(%(backtrace))
 
-        allow(archived_type).to receive(:create_archives).and_raise(statement_invalid)
+        allow(Archiver).to receive(:create_archives).and_raise(statement_invalid)
         expect(Rails.logger).to receive(:error)
           .with("There was an error occurring at the database level: #{error_message}")
-        archived_type.archive_previous_versions
+        Archiver.archive_previous_versions
       end
     end
   end
@@ -110,7 +110,7 @@ RSpec.shared_examples 'an archivable model' do |options|
     expect(original_type.count).to eq(initial_count)
     expect(archived_type.count).to eq(0)
 
-    archived_type.archive_previous_versions
+    Archiver.archive_previous_versions
 
     expect(original_type.count).to eq(count_total)
     expect(original_type.where('version >= ?', current_production_number).size)
