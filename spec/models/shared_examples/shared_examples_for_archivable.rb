@@ -11,7 +11,7 @@ RSpec.shared_examples 'an archivable model' do |options|
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
   end
 
-  describe 'archive archived model' do
+  describe 'archives archived model' do
     before(:each) do
       # version 1
       create_production_version
