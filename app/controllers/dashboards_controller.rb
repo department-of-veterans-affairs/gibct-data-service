@@ -65,8 +65,9 @@ class DashboardsController < ApplicationController
         GibctSiteMapper.new(ping: ping)
 
         if Settings.institutions.archive
-          # Archive old institution rows
+          # Archive previous versions of generated data
           InstitutionsArchive.archive_previous_versions
+          ZipcodeRateArchive.archive_previous_versions
         end
       else
         flash.alert = 'Production data not updated, remains at previous production version'
