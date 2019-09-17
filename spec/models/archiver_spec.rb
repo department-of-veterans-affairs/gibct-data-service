@@ -3,15 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Archiver, type: :model do
-  describe '#tables' do
+  describe '::ARCHIVE_TYPES' do
     before(:each) do
       create :weam, :institution_builder
       create :crosswalk, :institution_builder
     end
 
-    context 'archive tables' do
-      it 'source and archive tables match' do
-        Archiver::ARCHIVE_TYPES.each do |archivable|
+    context 'when mapped' do
+      Archiver::ARCHIVE_TYPES.each do |archivable|
+        it "#{archivable[:source].table_name} and #{archivable[:archive].table_name} map correctly" do
           archivable[:source].column_names.each do |column|
             expect(ActiveRecord::Base.connection.column_exists?(archivable[:archive].table_name, column)).to be_truthy
           end
