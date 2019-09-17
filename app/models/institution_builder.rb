@@ -505,37 +505,30 @@ module InstitutionBuilder
   end
 
   def self.build_institution_programs(version_number)
-    timestamp = Time.now.utc.to_s(:db)
-    conn = ActiveRecord::Base.connection
-
     str = <<-SQL
-    INSERT INTO institution_programs (
-      facility_code,
-      institution_name,
-      program_type,
-      description,
-      full_time_undergraduate,
-      graduate,
-      full_time_modifier,
-      length,
-      version,
-      created_at,
-      updated_at
-    )
-    SELECT
-      facility_code,
-      institution_name,
-      program_type,
-      description,
-      full_time_undergraduate,
-      graduate,
-      full_time_modifier,
-      length,
-      ?,
-      #{conn.quote(timestamp)},
-      #{conn.quote(timestamp)}
-    FROM programs
-  SQL
+      INSERT INTO institution_programs (
+        facility_code,
+        institution_name,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length,
+        version
+      )
+      SELECT
+        facility_code,
+        institution_name,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length,
+        ?
+      FROM programs
+    SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
     InstitutionProgram.connection.execute(sql)

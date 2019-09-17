@@ -891,7 +891,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when generating zipcode rates' do
+    describe 'when generating institution programs' do
       let(:institution) { institutions.find_by(zip: zipcode_rate.zip_code) }
       let(:institution_program) { InstitutionProgram.first }
 
@@ -900,7 +900,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         InstitutionBuilder.run(user)
       end
 
-      it 'properly generates zipcode rates from weams data' do
+      it 'properly generates institution programs from weams data' do
         expect(institution_program).not_to eq(nil)
       end
     end
