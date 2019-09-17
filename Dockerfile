@@ -18,6 +18,9 @@ RUN apt-get install -y libfreetype6 libfreetype6-dev libfontconfig1 libfontconfi
   tar -xjvf ./phantomjs-2.1.1-linux-x86_64.tar.bz2 --strip-components 1 -C /opt/phantomjs/ && \
   ln -s /opt/phantomjs/bin/phantomjs /usr/bin/phantomjs
 
+RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /cc-test-reporter
+RUN chmod +x /cc-test-reporter
+
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
 # Configure gibct application
