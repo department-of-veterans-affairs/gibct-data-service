@@ -189,7 +189,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
 
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
-  create_table "institution_programs", force: :cascade do |t|
+  create_table "institution_program_archives", force: :cascade do |t|
     t.string  "facility_code",           limit: 8,  null: false
     t.string  "institution_name",        limit: 80, null: false
     t.string  "program_type",                       null: false
@@ -201,7 +201,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.integer "version"
   end
 
-  create_table "institution_programs_archive", force: :cascade do |t|
+  create_table "institution_programs", force: :cascade do |t|
     t.string  "facility_code",           limit: 8,  null: false
     t.string  "institution_name",        limit: 80, null: false
     t.string  "program_type",                       null: false
