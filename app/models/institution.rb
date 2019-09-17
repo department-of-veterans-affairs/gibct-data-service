@@ -161,7 +161,6 @@ class Institution < ActiveRecord::Base
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :school_certifying_officials, -> { order 'priority, last_name' },
            primary_key: :facility_code, foreign_key: 'facility_code'
-  # has_many :programs, -> { order(description: :asc) }, primary_key: :facility_code, foreign_key: 'facility_code'
   has_many :institution_programs, -> { order(description: :asc) },
            primary_key: :facility_code,
            foreign_key: 'facility_code'
