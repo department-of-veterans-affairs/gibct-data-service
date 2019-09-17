@@ -3,6 +3,7 @@
 module Archiver
   ARCHIVE_TYPES = [
     { source: Institution, archive: InstitutionsArchive },
+    { source: InstitutionProgram, archive: InstitutionProgramArchive },
     { source: ZipcodeRate, archive: ZipcodeRateArchive }
   ].freeze
 

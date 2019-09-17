@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190916105800) do
+ActiveRecord::Schema.define(version: 20190916164300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -188,6 +188,30 @@ ActiveRecord::Schema.define(version: 20190916105800) do
   end
 
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
+
+  create_table "institution_programs", force: :cascade do |t|
+    t.string  "facility_code",           limit: 8,  null: false
+    t.string  "institution_name",        limit: 80, null: false
+    t.string  "program_type",                       null: false
+    t.string  "description",             limit: 40
+    t.string  "full_time_undergraduate", limit: 15
+    t.string  "graduate",                limit: 15
+    t.string  "full_time_modifier",      limit: 1
+    t.string  "length",                  limit: 7
+    t.integer "version"
+  end
+
+  create_table "institution_programs_archive", force: :cascade do |t|
+    t.string  "facility_code",           limit: 8,  null: false
+    t.string  "institution_name",        limit: 80, null: false
+    t.string  "program_type",                       null: false
+    t.string  "description",             limit: 40
+    t.string  "full_time_undergraduate", limit: 15
+    t.string  "graduate",                limit: 15
+    t.string  "full_time_modifier",      limit: 1
+    t.string  "length",                  limit: 7
+    t.integer "version"
+  end
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false

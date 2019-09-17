@@ -891,6 +891,20 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'when generating zipcode rates' do
+      let(:institution) { institutions.find_by(zip: zipcode_rate.zip_code) }
+      let(:institution_program) { InstitutionProgram.first }
+
+      before(:each) do
+        create :institution_program
+        InstitutionBuilder.run(user)
+      end
+
+      it 'properly generates zipcode rates from weams data' do
+        expect(institution_program).not_to eq(nil)
+      end
+    end
+
     describe 'when setting extension campus_type' do
       before(:each) do
         create(:weam, :extension)

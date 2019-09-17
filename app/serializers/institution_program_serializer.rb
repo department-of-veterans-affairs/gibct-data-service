@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProgramSerializer < ActiveModel::Serializer
+class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :program_type
   attribute :description
   attribute :full_time_undergraduate
