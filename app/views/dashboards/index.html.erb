@@ -23,18 +23,18 @@
 </div>
 
   <h3>Latest Preview Version
-    <% if Version.buildable? %>
-      <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
-          data: { confirm: 'Are you sure you want to create a new preview version?' },
-          class: "btn btn-warning btn-xs",
-          role: "button",
-          id: "version_build"
-          %>
-    <% else %>
-      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" title="<%= Version.buildable_state_msg %>">
-        Generate New Preview Version
-      </a>
-    <% end %>
+    <div id="preview_dialog" title="Generate New Preview Version">
+      <div id="preview_dialog_div">
+        <p><%= generate_preview_confirm %></p>
+        <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
+                    class: "btn btn-warning btn-xs",
+                    role: "button",
+                    id: "version_build"
+        %>
+      </div>
+    </div>
+
+    <button id="preview_opener" class="btn btn-warning btn-xs">Generate New Preview Version</button>
   </h3>
   <div class="row row-space-6" id="preview_versions">
       <div class="col-xs-12">

@@ -15,6 +15,7 @@
  *= require_self
  *= require bootstrap.min
  *= require font-awesome
+ *= require jquery-ui
  */
 
 @font-face {
@@ -143,4 +144,10 @@
 
 .apple_pagination a:hover, .apple_pagination a:focus {
     text-decoration: underline;
+}
+
+#preview_dialog{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
