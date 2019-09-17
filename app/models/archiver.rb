@@ -12,9 +12,9 @@ module Archiver
 
     begin
       ActiveRecord::Base.transaction do
-        ARCHIVE_TYPES.each do |to_archive|
-          create_archives(to_archive[:source], to_archive[:archive], previous_version, production_version)
-          to_archive[:source].where('version >= ? and version < ?', previous_version, production_version).delete_all
+        ARCHIVE_TYPES.each do |archivable|
+          create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
+          archivable[:source].where('version >= ? and version < ?', previous_version, production_version).delete_all
         end
       end
     rescue ActiveRecord::StatementInvalid => exception
