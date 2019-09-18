@@ -75,11 +75,13 @@ class Upload < ActiveRecord::Base
   def self.latest_uploads
     preview = Version.current_preview
     production = Version.current_production
-    created_at = preview.number == production.number ? production.created_at : preview.created_at
+    return if production.blank?
+
+    created_at = preview.present? && preview.number == production.number ? production.created_at : preview.created_at
 
     Upload.last_uploads
-        .to_a
-        .select{ |upload| upload.updated_at > created_at}
+          .to_a
+          .select { |upload| upload.updated_at > created_at }
   end
 
   private
