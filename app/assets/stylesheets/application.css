@@ -146,8 +146,23 @@
     text-decoration: underline;
 }
 
-#preview_dialog{
+#preview_dialog {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#generate_preview_div {
+    text-align: center;
+}
+
+#generate_preview_table {
+    display: inline-block;
+    overflow-y: scroll;
+    max-height: 500px;
+}
+
+#generate_preview_message {
+    font-size: x-large;
+    text-align: center;
 }

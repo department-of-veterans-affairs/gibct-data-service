@@ -25,12 +25,33 @@
   <h3>Latest Preview Version
     <div id="preview_dialog" title="Generate New Preview Version">
       <div id="preview_dialog_div">
-        <p><%= generate_preview_confirm %></p>
-        <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
-                    class: "btn btn-warning btn-xs",
-                    role: "button",
-                    id: "version_build"
-        %>
+        <p id="generate_preview_message"><b>Are you sure you want to create a new preview version?</b></p>
+        <% if @latest_uploads.length > 0 %>
+          <br>
+          <p>Below are the CSVs that have been uploaded since last preview generation</p>
+          <div id="generate_preview_table">
+            <table class="table table-hover table-condensed table-bordered table-responsive">
+              <thead>
+                <th>CSV Type</th>
+                <th>File Name</th>
+                <th>Upload Date</th>
+                <th>Uploaded By</th>
+                <th>Comments</th>
+              </thead>
+              <tbody>
+              <%= render partial: 'latest_upload_dialog', collection: @latest_uploads, as: :upload %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+
+        <div id="generate_preview_div">
+          <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
+                      class: "btn btn-warning",
+                      role: "button",
+                      id: "version_build"
+          %>
+        </div>
       </div>
     </div>
 
