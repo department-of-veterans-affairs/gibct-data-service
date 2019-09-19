@@ -13,8 +13,8 @@ class CreateEduPrograms < ActiveRecord::Migration
       t.string :vet_success_name, null: false
       t.string :vet_success_email, null: false
       t.string :vet_tec_program, null: false
-      t.string :tuition_amount, null: false
-      t.string :program_length, null: false
+      t.integer :tuition_amount, null: false
+      t.integer :program_length, null: false
     end
   end
 end
