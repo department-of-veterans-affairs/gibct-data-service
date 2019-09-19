@@ -509,13 +509,20 @@ module InstitutionBuilder
       INSERT INTO institution_programs (
         facility_code, institution_name, program_type, description,
         full_time_undergraduate, graduate, full_time_modifier, length,
-        version
+        version,
+        school_locale, provider_website, provider_email_address, phone_area_code,
+        phone_number, student_vet_group, student_vet_group_website, vet_success_name,
+        vet_success_email, vet_tec_program, tuition_amount, program_length
       )
       SELECT
-        facility_code, institution_name, program_type, description,
+        a.facility_code, a.institution_name, program_type, description,
         full_time_undergraduate, graduate, full_time_modifier, length,
-        ?
-      FROM programs
+        ?,
+        school_locale, provider_website, provider_email_address, phone_area_code,
+        phone_number, student_vet_group, student_vet_group_website, vet_success_name,
+        vet_success_email, vet_tec_program, tuition_amount, program_length
+      FROM programs a INNER JOIN edu_programs b
+        ON a.facility_code = b.facility_code AND a.description = b.vet_tec_program
     SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
