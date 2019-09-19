@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
-class Program < ActiveRecord::Base
+class EduProgram < ActiveRecord::Base
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },
-    'program type' => { column: :program_type, converter: BaseConverter },
-    'description' => { column: :description, converter: BaseConverter },
-    'full time undergraduate' => { column: :full_time_undergraduate, converter: BaseConverter },
-    'graduate' => { column: :graduate, converter: BaseConverter },
-    'full time modifier' => { column: :full_time_modifier, converter: BaseConverter },
-    'length' => { column: :length, converter: BaseConverter }
+    'school locale' => { column: :school_locale, converter: BaseConverter },
+    'provider website' => { column: :provider_website, converter: BaseConverter },
+    'provider email address' => { column: :provider_email_address, converter: BaseConverter },
+    'phone area code' => { column: :phone_area_code, converter: BaseConverter },
+    'phone number' => { column: :phone_number, converter: BaseConverter },
+    'student vet group' => { column: :student_vet_group, converter: BaseConverter },
+    'student vet group website' => { column: :student_vet_group_website, converter: BaseConverter },
+    'vet success name' => { column: :vet_success_name, converter: BaseConverter },
+    'vet success email' => { column: :vet_success_email, converter: BaseConverter },
+    'vet tec program' => { column: :vet_tec_program, converter: BaseConverter },
+    'tuition amount' => { column: :tuition_amount, converter: BaseConverter },
+    'program length' => { column: :program_length, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, presence: true
