@@ -189,7 +189,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
 
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
-  create_table "institution_program_archives", force: :cascade do |t|
+  create_table "institution_programs", force: :cascade do |t|
     t.string  "facility_code",           limit: 8,  null: false
     t.string  "institution_name",        limit: 80, null: false
     t.string  "program_type",                       null: false
@@ -201,7 +201,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.integer "version"
   end
 
-  create_table "institution_programs", force: :cascade do |t|
+  create_table "institution_programs_archives", force: :cascade do |t|
     t.string  "facility_code",           limit: 8,  null: false
     t.string  "institution_name",        limit: 80, null: false
     t.string  "program_type",                       null: false
@@ -1563,19 +1563,6 @@ ActiveRecord::Schema.define(version: 20190916164300) do
   add_index "yellow_ribbon_programs", ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id", using: :btree
   add_index "yellow_ribbon_programs", ["version"], name: "index_yellow_ribbon_programs_on_version", using: :btree
 
-  create_table "zipcode_rate_archives", force: :cascade do |t|
-    t.string   "zip_code"
-    t.string   "mha_code"
-    t.string   "mha_name"
-    t.float    "mha_rate"
-    t.float    "mha_rate_grandfathered"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "version"
-  end
-
-  add_index "zipcode_rate_archives", ["version", "zip_code"], name: "zipcode_rate_archives_version_zip_code_idx", using: :btree
-
   create_table "zipcode_rates", force: :cascade do |t|
     t.string   "zip_code"
     t.string   "mha_code"
@@ -1588,5 +1575,18 @@ ActiveRecord::Schema.define(version: 20190916164300) do
   end
 
   add_index "zipcode_rates", ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code", using: :btree
+
+  create_table "zipcode_rates_archives", force: :cascade do |t|
+    t.string   "zip_code"
+    t.string   "mha_code"
+    t.string   "mha_name"
+    t.float    "mha_rate"
+    t.float    "mha_rate_grandfathered"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "version"
+  end
+
+  add_index "zipcode_rates_archives", ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx", using: :btree
 
 end

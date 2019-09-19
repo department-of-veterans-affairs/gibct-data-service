@@ -3,8 +3,8 @@
 module Archiver
   ARCHIVE_TYPES = [
     { source: Institution, archive: InstitutionsArchive },
-    { source: InstitutionProgram, archive: InstitutionProgramArchive },
-    { source: ZipcodeRate, archive: ZipcodeRateArchive }
+    { source: InstitutionProgram, archive: InstitutionProgramsArchive },
+    { source: ZipcodeRate, archive: ZipcodeRatesArchive }
   ].freeze
 
   def self.archive_previous_versions
