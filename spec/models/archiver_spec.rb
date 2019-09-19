@@ -4,11 +4,6 @@ require 'rails_helper'
 
 RSpec.describe Archiver, type: :model do
   describe '::ARCHIVE_TYPES' do
-    before(:each) do
-      create :weam, :institution_builder
-      create :crosswalk, :institution_builder
-    end
-
     context 'when mapped' do
       Archiver::ARCHIVE_TYPES.each do |archivable|
         it "#{archivable[:source].table_name} and #{archivable[:archive].table_name} map correctly" do
