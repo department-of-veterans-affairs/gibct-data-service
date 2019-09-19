@@ -1,4 +1,4 @@
-class CreateInstitutionProgramArchives < ActiveRecord::Migration
+class CreateInstitutionProgramsArchives < ActiveRecord::Migration
   def up
     safety_assured do
       execute "create table institution_programs_archives (like institution_programs
