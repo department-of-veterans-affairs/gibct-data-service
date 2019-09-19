@@ -25,11 +25,12 @@
   <h3>Latest Preview Version
     <div id="preview_dialog" title="Generate New Preview Version">
       <div id="preview_dialog_div">
-        <p id="generate_preview_message"><b>Are you sure you want to create a new preview version?</b></p>
+        <p class="generate_preview_question">
+          <b>Are you sure you want to create a new preview version?</b>
+        </p>
         <% if @latest_uploads.length > 0 %>
-          <br>
           <p>Below are the CSVs that have been uploaded since last preview generation</p>
-          <div id="generate_preview_table">
+          <div class="generate_preview_table">
             <table class="table table-hover table-condensed table-bordered table-responsive">
               <thead>
                 <th>CSV Type</th>
@@ -44,11 +45,11 @@
             </table>
           </div>
         <% else %>
-          <br>
           <p>No new data files have been uploaded since the last preview generation</p>
+          <br>
         <% end %>
 
-        <div id="generate_preview_div">
+        <div class="generate_preview_button_div">
           <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
                       class: "btn btn-warning",
                       role: "button",

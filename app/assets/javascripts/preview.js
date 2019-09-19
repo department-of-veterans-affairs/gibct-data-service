@@ -13,9 +13,10 @@ $(function() {
         autoOpen: false,
         modal: true,
         width: "auto",
+        resizable: false,
         hide: {
-            effect: "explode",
-            duration: 500
+            effect: "fade",
+            duration: 1000
         }
     });
 

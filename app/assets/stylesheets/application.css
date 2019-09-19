@@ -152,17 +152,25 @@
     align-items: center;
 }
 
-#generate_preview_div {
+#preview_dialog_div {
+    min-width: 250px;
     text-align: center;
 }
 
-#generate_preview_table {
+.generate_preview_button_div {
+    text-align: center;
+}
+
+.generate_preview_table {
     display: inline-block;
     overflow-y: scroll;
     max-height: 500px;
 }
 
-#generate_preview_message {
-    font-size: x-large;
+.generate_preview_question {
     text-align: center;
+    font-size: large;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
+
