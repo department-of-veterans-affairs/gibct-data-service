@@ -55,7 +55,7 @@ class Upload < ApplicationRecord
   end
 
   def self.last_uploads_rows
-    uploads = Upload.last_uploads.to_a
+    uploads = Upload.last_uploads
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
