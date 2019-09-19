@@ -1,7 +1,7 @@
 class CreateInstitutionProgramArchives < ActiveRecord::Migration
   def up
     safety_assured do
-      execute "create table institution_program_archives (like institution_programs
+      execute "create table institution_programs_archives (like institution_programs
         including defaults
         including constraints
         including indexes
@@ -10,6 +10,6 @@ class CreateInstitutionProgramArchives < ActiveRecord::Migration
   end
 
    def down
-    drop_table :institution_program_archives
+    drop_table :institution_programs_archives
   end
 end
