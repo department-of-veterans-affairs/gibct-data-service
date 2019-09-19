@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190916164300) do
+ActiveRecord::Schema.define(version: 20190919105100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,23 @@ ActiveRecord::Schema.define(version: 20190916164300) do
   add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
   add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
   add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
+
+  create_table "edu_programs", force: :cascade do |t|
+    t.string "facility_code",             null: false
+    t.string "institution_name",          null: false
+    t.string "school_locale",             null: false
+    t.string "provider_website",          null: false
+    t.string "provider_email_address",    null: false
+    t.string "phone_area_code",           null: false
+    t.string "phone_number",              null: false
+    t.string "student_vet_group",         null: false
+    t.string "student_vet_group_website", null: false
+    t.string "vet_success_name",          null: false
+    t.string "vet_success_email",         null: false
+    t.string "vet_tec_program",           null: false
+    t.string "tuition_amount",            null: false
+    t.string "program_length",            null: false
+  end
 
   create_table "eight_keys", force: :cascade do |t|
     t.string   "cross"
