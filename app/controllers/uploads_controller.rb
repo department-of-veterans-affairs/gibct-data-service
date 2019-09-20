@@ -32,7 +32,7 @@ class UploadsController < ApplicationController
     rescue StandardError => e
       @upload = new_upload(merged_params[:csv_type])
 
-      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace}")
+      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
     end
   end
@@ -41,14 +41,14 @@ class UploadsController < ApplicationController
     @upload = Upload.find_by(id: params[:id])
     return if @upload.present?
 
-    alert_and_log("Upload with id: '#{params[:id]}' not found")
+    alert_and_log("Upload with id: '#{params[:id]}' not found", nil)
     redirect_to uploads_path
   end
 
   private
 
-  def alert_and_log(message)
-    Rails.logger.error message
+  def alert_and_log(message, e)
+    Rails.logger.error message + "#{e&.backtrace}"
     flash.alert = message
   end
 
