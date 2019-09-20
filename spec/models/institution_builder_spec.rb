@@ -892,16 +892,22 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when generating institution programs' do
-      let(:institution) { institutions.find_by(zip: zipcode_rate.zip_code) }
+      before(:each) do
+        create :program, facility_code: '0001'
+        create :edu_program, facility_code: '0001'
+      end
       let(:institution_program) { InstitutionProgram.first }
 
-      before(:each) do
-        create :institution_program
+      it 'properly generates institution programs from programs and edu_programs' do
         InstitutionBuilder.run(user)
+        expect(institution_program).not_to eq(nil)
       end
 
-      it 'properly generates institution programs from weams data' do
-        expect(institution_program).not_to eq(nil)
+      it 'does not generate instition programs without matching programs and edu_programs' do
+        create :program, facility_code: '0002'
+        create :edu_program, facility_code: '0003'
+        InstitutionBuilder.run(user)
+        expect(InstitutionProgram.count).to eq(1)
       end
     end
 
