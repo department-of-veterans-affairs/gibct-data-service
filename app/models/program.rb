@@ -15,8 +15,5 @@ class Program < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
-  validates :description, uniqueness: {
-    scope: :facility_code,
-    message: 'The Facility Code & Description (Program Name) combination is not unique'
-  }
+  validates_with ProgramValidator
 end

@@ -21,17 +21,14 @@ module CsvHelper
 
       records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
       results = klass.import records[:valid], validate: false, ignore: true
-      rerun_validations(records)
+      run_validations(records, options)
       results.failed_instances = records[:invalid]
       results
     end
 
     def load_csv(file, records, options)
-      # Since row indexes start at 0 and spreadsheets on line 1,
-      # add 1 for the difference in indexes and 1 for the header row itself.
-      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
-      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
-        record = row_to_record(row, i + row_offset)
+      SmarterCSV.process(file, merge_options(options)).each do |row|
+        record = klass.new(row)
         save_record_to_records(records, record)
       end
 
@@ -40,10 +37,9 @@ module CsvHelper
 
     def load_csv_with_version(file, records, options)
       version = Version.current_preview
-      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
-      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
-        record = row_to_record(row.merge(version: version.number), i + row_offset)
+      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, _i|
+        record = klass.new(row.merge(version: version.number))
         save_record_to_records(records, record)
       end
 
@@ -53,13 +49,6 @@ module CsvHelper
     def save_record_to_records(records, record)
       record.errors.any? ? records[:invalid] << record : records[:valid] << record
       records[:all] << record
-    end
-
-    def row_to_record(row, index)
-      record = klass.new(row)
-      record.errors.add(:row, "Line #{index}") unless record.valid?
-
-      record
     end
 
     def merge_options(options)
@@ -75,9 +64,14 @@ module CsvHelper
              .reverse_merge(SMARTER_CSV_OPTIONS)
     end
 
-    def rerun_validations(records)
+    # Running this after rows are inserted to validate against data in the table
+    def run_validations(records, options)
+      # Since row indexes start at 0 and spreadsheets on line 1,
+      # add 1 for the difference in indexes and 1 for the header row itself.
+      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
+
       records[:all].each_with_index do |record, index|
-        record.errors.add(:row, "Line #{index}") unless record.valid?
+        record.errors.add(:row, "Line #{index + row_offset}") unless record.valid?
         records[:invalid] << record if record.errors.any?
       end
     end

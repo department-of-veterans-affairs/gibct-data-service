@@ -21,8 +21,5 @@ class EduProgram < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
-  validates :vet_tec_program, uniqueness: {
-      scope: :facility_code,
-      message: 'The Facility Code & VET TEC Program (Program Name) combination is not unique'
-  }
+  validates_with EduProgramValidator
 end
