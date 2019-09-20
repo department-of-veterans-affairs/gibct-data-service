@@ -10,6 +10,8 @@ class CreateInstitutionPrograms < ActiveRecord::Migration
       t.string :full_time_modifier, :limit => 1
       t.string :length, :limit => 7
       t.integer :version
+
+      t.index [:facility_code, :description], unique: true
     end
   end
 end
