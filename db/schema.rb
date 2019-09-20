@@ -201,7 +201,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.integer "version"
   end
 
-  add_index "institution_programs", ["facility_code", "description"], name: "u_constraint", unique: true, using: :btree
+  add_index "institution_programs", ["facility_code", "description"], name: "index_institution_programs_on_facility_code_and_description", unique: true, using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
     t.string  "facility_code",           limit: 8,  null: false
@@ -215,7 +215,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.integer "version"
   end
 
-  add_index "institution_programs_archives", ["facility_code", "description"], name: "institution_programs_archives_facility_code_description_key", unique: true, using: :btree
+  add_index "institution_programs_archives", ["facility_code", "description"], name: "institution_programs_archives_facility_code_description_idx", unique: true, using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false
