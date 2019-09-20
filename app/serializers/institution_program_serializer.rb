@@ -6,5 +6,5 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :full_time_undergraduate
   attribute :graduate
   attribute :full_time_modifier
-  attribute :length
+  attribute :length_in_hours
 end
