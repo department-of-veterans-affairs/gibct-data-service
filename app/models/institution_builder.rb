@@ -508,17 +508,15 @@ module InstitutionBuilder
     str = <<-SQL
       INSERT INTO institution_programs (
         facility_code,
-        institution_name,
         program_type,
         description,
         full_time_undergraduate,
         graduate,
-        full_time_modifier, length,
+        full_time_modifier, length_in_hours,
         version
       )
       SELECT
         facility_code,
-        institution_name,
         program_type,
         description,
         full_time_undergraduate,

@@ -170,7 +170,7 @@ ActiveRecord::Schema.define(version: 20190919125400) do
     t.string  "vet_success_email",         null: false
     t.string  "vet_tec_program",           null: false
     t.integer "tuition_amount",            null: false
-    t.integer "program_length",            null: false
+    t.integer "length_in_weeks",           null: false
   end
 
   add_index "edu_programs", ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program", using: :btree
@@ -209,14 +209,13 @@ ActiveRecord::Schema.define(version: 20190919125400) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institution_programs", force: :cascade do |t|
-    t.string  "facility_code",             limit: 8,  null: false
-    t.string  "institution_name",          limit: 80, null: false
-    t.string  "program_type",                         null: false
-    t.string  "description",               limit: 40
-    t.string  "full_time_undergraduate",   limit: 15
-    t.string  "graduate",                  limit: 15
-    t.string  "full_time_modifier",        limit: 1
-    t.string  "length",                    limit: 7
+    t.string  "facility_code",             null: false
+    t.string  "program_type"
+    t.string  "description",               null: false
+    t.string  "full_time_undergraduate"
+    t.string  "graduate"
+    t.string  "full_time_modifier"
+    t.string  "length_in_hours"
     t.integer "version"
     t.string  "school_locale"
     t.string  "provider_website"
@@ -229,18 +228,19 @@ ActiveRecord::Schema.define(version: 20190919125400) do
     t.string  "vet_success_email"
     t.string  "vet_tec_program"
     t.integer "tuition_amount"
-    t.integer "program_length"
+    t.integer "length_in_weeks"
   end
 
+  add_index "institution_programs", ["facility_code", "description"], name: "index_institution_programs_on_facility_code_and_description", unique: true, using: :btree
+
   create_table "institution_programs_archives", force: :cascade do |t|
-    t.string  "facility_code",             limit: 8,  null: false
-    t.string  "institution_name",          limit: 80, null: false
-    t.string  "program_type",                         null: false
-    t.string  "description",               limit: 40
-    t.string  "full_time_undergraduate",   limit: 15
-    t.string  "graduate",                  limit: 15
-    t.string  "full_time_modifier",        limit: 1
-    t.string  "length",                    limit: 7
+    t.string  "facility_code",             null: false
+    t.string  "program_type"
+    t.string  "description",               null: false
+    t.string  "full_time_undergraduate"
+    t.string  "graduate"
+    t.string  "full_time_modifier"
+    t.string  "length_in_hours"
     t.integer "version"
     t.string  "school_locale"
     t.string  "provider_website"
@@ -253,8 +253,10 @@ ActiveRecord::Schema.define(version: 20190919125400) do
     t.string  "vet_success_email"
     t.string  "vet_tec_program"
     t.integer "tuition_amount"
-    t.integer "program_length"
+    t.integer "length_in_weeks"
   end
+
+  add_index "institution_programs_archives", ["facility_code", "description"], name: "institution_programs_archives_facility_code_description_idx", unique: true, using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false

@@ -11,6 +11,6 @@ class AddEduProgramsColumnsToInstitutionPrograms < ActiveRecord::Migration
     add_column :institution_programs, :vet_success_email, :string
     add_column :institution_programs, :vet_tec_program, :string
     add_column :institution_programs, :tuition_amount, :integer
-    add_column :institution_programs, :program_length, :integer
+    add_column :institution_programs, :length_in_weeks, :integer
   end   
 end
