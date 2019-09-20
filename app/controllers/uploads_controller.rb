@@ -9,7 +9,7 @@ class UploadsController < ApplicationController
     @upload = new_upload(params[:csv_type])
     return if @upload.csv_type_check?
 
-    alert_and_log(@upload.errors.full_messages.join(', '))
+    alert_and_log(@upload.errors.full_messages.join(', '), nil)
     redirect_to dashboards_path
   end
 
@@ -47,8 +47,8 @@ class UploadsController < ApplicationController
 
   private
 
-  def alert_and_log(message, e)
-    Rails.logger.error message + "#{e&.backtrace}"
+  def alert_and_log(message, error)
+    Rails.logger.error message + (error&.backtrace).to_s
     flash.alert = message
   end
 

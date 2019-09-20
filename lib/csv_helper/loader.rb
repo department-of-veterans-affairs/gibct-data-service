@@ -17,12 +17,12 @@ module CsvHelper
     private
 
     def load_records(file, options)
-      records = { valid: [], invalid: [] }
+      records = { valid: [], invalid: [], all: [] }
 
       records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
       results = klass.import records[:valid], validate: false, ignore: true
+      rerun_validations(records)
       results.failed_instances = records[:invalid]
-
       results
     end
 
@@ -52,6 +52,7 @@ module CsvHelper
 
     def save_record_to_records(records, record)
       record.errors.any? ? records[:invalid] << record : records[:valid] << record
+      records[:all] << record
     end
 
     def row_to_record(row, index)
@@ -72,6 +73,13 @@ module CsvHelper
 
       options.reverse_merge(key_mapping: key_mapping, value_converters: value_converters)
              .reverse_merge(SMARTER_CSV_OPTIONS)
+    end
+
+    def rerun_validations(records)
+      records[:all].each_with_index do |record, index|
+        record.errors.add(:row, "Line #{index}") unless record.valid?
+        records[:invalid] << record if record.errors.any?
+      end
     end
   end
 end

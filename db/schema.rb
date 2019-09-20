@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190916164300) do
+ActiveRecord::Schema.define(version: 20190919174523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,12 @@ ActiveRecord::Schema.define(version: 20190916164300) do
   end
 
   add_index "accreditation_records", ["dapip_id"], name: "index_accreditation_records_on_dapip_id", using: :btree
+
+  create_table "ar_internal_metadata", primary_key: "key", force: :cascade do |t|
+    t.string   "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "arf_gi_bills", force: :cascade do |t|
     t.string   "facility_code",             null: false
@@ -1148,6 +1154,8 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.string "full_time_modifier",      limit: 1
     t.string "length",                  limit: 7
   end
+
+  add_index "programs", ["facility_code", "description"], name: "index_programs_on_facility_code_and_description", using: :btree
 
   create_table "school_certifying_officials", force: :cascade do |t|
     t.string "facility_code"
