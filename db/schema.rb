@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190919125400) do
+ActiveRecord::Schema.define(version: 20190919174523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1191,6 +1191,8 @@ ActiveRecord::Schema.define(version: 20190919125400) do
     t.string "full_time_modifier",      limit: 1
     t.string "length",                  limit: 7
   end
+
+  add_index "programs", ["facility_code", "description"], name: "index_programs_on_facility_code_and_description", using: :btree
 
   create_table "school_certifying_officials", force: :cascade do |t|
     t.string "facility_code"
