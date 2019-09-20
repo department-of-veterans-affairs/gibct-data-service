@@ -190,28 +190,26 @@ ActiveRecord::Schema.define(version: 20190916164300) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institution_programs", force: :cascade do |t|
-    t.string  "facility_code",           limit: 8,  null: false
-    t.string  "institution_name",        limit: 80, null: false
-    t.string  "program_type",                       null: false
-    t.string  "description",             limit: 40
-    t.string  "full_time_undergraduate", limit: 15
-    t.string  "graduate",                limit: 15
-    t.string  "full_time_modifier",      limit: 1
-    t.string  "length",                  limit: 7
+    t.string  "facility_code",           null: false
+    t.string  "program_type"
+    t.string  "description",             null: false
+    t.string  "full_time_undergraduate"
+    t.string  "graduate"
+    t.string  "full_time_modifier"
+    t.string  "length_in_hours"
     t.integer "version"
   end
 
   add_index "institution_programs", ["facility_code", "description"], name: "index_institution_programs_on_facility_code_and_description", unique: true, using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
-    t.string  "facility_code",           limit: 8,  null: false
-    t.string  "institution_name",        limit: 80, null: false
-    t.string  "program_type",                       null: false
-    t.string  "description",             limit: 40
-    t.string  "full_time_undergraduate", limit: 15
-    t.string  "graduate",                limit: 15
-    t.string  "full_time_modifier",      limit: 1
-    t.string  "length",                  limit: 7
+    t.string  "facility_code",           null: false
+    t.string  "program_type"
+    t.string  "description",             null: false
+    t.string  "full_time_undergraduate"
+    t.string  "graduate"
+    t.string  "full_time_modifier"
+    t.string  "length_in_hours"
     t.integer "version"
   end
 
