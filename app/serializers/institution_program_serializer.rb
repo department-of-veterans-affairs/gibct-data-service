@@ -6,7 +6,7 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :full_time_undergraduate
   attribute :graduate
   attribute :full_time_modifier
-  attribute :length
+  attribute :length_in_hours
   attribute :school_locale
   attribute :provider_website
   attribute :provider_email_address
@@ -15,6 +15,7 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :student_vet_group
   attribute :student_vet_group_website
   attribute :vet_success_name
+  attribute :vet_success_email
   attribute :tuition_amount
-  attribute :program_length
+  attribute :length_in_weeks
 end

@@ -24,8 +24,8 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
   it 'should include full_time_modifier' do
     expect(attributes['full_time_modifier']).to eq(institution_program.full_time_modifier)
   end
-  it 'should include length' do
-    expect(attributes['length']).to eq(institution_program.length)
+  it 'should include length_in_hours' do
+    expect(attributes['length_in_hours']).to eq(institution_program.length_in_hours)
   end
   it 'should include school_locale' do
     expect(attributes['school_locale']).to eq(institution_program.school_locale)
@@ -57,7 +57,7 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
   it 'should include tuition_amount' do
     expect(attributes['tuition_amount']).to eq(institution_program.tuition_amount)
   end
-  it 'should include program_length' do
-    expect(attributes['program_length']).to eq(institution_program.program_length)
+  it 'should include length_in_weeks' do
+    expect(attributes['length_in_weeks']).to eq(institution_program.length_in_weeks)
   end
 end

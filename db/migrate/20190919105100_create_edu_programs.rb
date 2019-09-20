@@ -14,7 +14,7 @@ class CreateEduPrograms < ActiveRecord::Migration
       t.string :vet_success_email, null: false
       t.string :vet_tec_program, null: false
       t.integer :tuition_amount, null: false
-      t.integer :program_length, null: false
+      t.integer :length_in_weeks, null: false
     end
 
     add_index :edu_programs, [:facility_code, :vet_tec_program] , using: :btree
