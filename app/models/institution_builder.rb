@@ -505,22 +505,50 @@ module InstitutionBuilder
   end
 
   def self.build_institution_programs(version_number)
-    str = <<-SQL
+    str = <<~SQL
       INSERT INTO institution_programs (
-        facility_code, program_type, description,
-        full_time_undergraduate, graduate, full_time_modifier, length_in_hours,
+        facility_code,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length_in_hours,
         version,
-        school_locale, provider_website, provider_email_address, phone_area_code,
-        phone_number, student_vet_group, student_vet_group_website, vet_success_name,
-        vet_success_email, vet_tec_program, tuition_amount, length_in_weeks
+        school_locale,
+        provider_website,
+        provider_email_address,
+        phone_area_code,
+        phone_number,
+        student_vet_group,
+        student_vet_group_website,
+        vet_success_name,
+        vet_success_email,
+        vet_tec_program,
+        tuition_amount,
+        length_in_weeks
       )
       SELECT
-        a.facility_code, program_type, description,
-        full_time_undergraduate, graduate, full_time_modifier, length,
+        a.facility_code,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length,
         ?,
-        school_locale, provider_website, provider_email_address, phone_area_code,
-        phone_number, student_vet_group, student_vet_group_website, vet_success_name,
-        vet_success_email, vet_tec_program, tuition_amount, length_in_weeks
+        school_locale,
+        provider_website,
+        provider_email_address,
+        phone_area_code,
+        phone_number,
+        student_vet_group,
+        student_vet_group_website,
+        vet_success_name,
+        vet_success_email,
+        vet_tec_program,
+        tuition_amount,
+        length_in_weeks
       FROM programs a INNER JOIN edu_programs b
         ON a.facility_code = b.facility_code AND a.description = b.vet_tec_program
     SQL
