@@ -21,7 +21,7 @@ module CsvHelper
 
       records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
       results = klass.import records, ignore: true
-      validation_errors(records, results.failed_instances, options)
+      load_csv_validation(records, results.failed_instances, options)
       results
     end
 
@@ -55,15 +55,15 @@ module CsvHelper
              .reverse_merge(SMARTER_CSV_OPTIONS)
     end
 
-    # validations are run before insert to prevent bad data from going into table, then
-    # run again to get error messages to display to user
-    def validation_errors(records, failed_instances, options)
+    # default validations are run during import to prevent bad data from going into table,
+    # this runs validations with a context of :load_csv
+    def load_csv_validation(records, failed_instances, options)
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       records.each_with_index do |record, index|
-        record.errors.add(:row, "Line #{index + row_offset}") unless record.valid?
+        record.errors.add(:row, "Line #{index + row_offset}") unless record.valid?(:load_csv)
         failed_instances << record if record.errors.any?
       end
     end

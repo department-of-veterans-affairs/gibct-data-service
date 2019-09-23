@@ -9,7 +9,7 @@ class EduProgramValidator < ActiveModel::Validator
 #{record.facility_code}, #{record.vet_tec_program}"
     end
 
-    return unless Weam.where(['facility_code = ?', record.facility_code]).none?
+    return if Weam.where(['facility_code = ?', record.facility_code]).any?
     record.errors[:base] <<
       "The Facility Code #{record.facility_code} is not contained within the most recently uploaded weams.csv"
   end

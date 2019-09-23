@@ -21,5 +21,5 @@ class EduProgram < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
-  validates_with EduProgramValidator
+  validates_with EduProgramValidator, on: :load_csv
 end
