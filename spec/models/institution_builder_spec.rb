@@ -892,13 +892,11 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when generating institution programs' do
-      let(:institution) { institutions.find_by(zip: zipcode_rate.zip_code) }
       let(:institution_program) { InstitutionProgram.first }
 
       it 'properly generates institution programs from weams data' do
         create :program
-        InstitutionBuilder.run(user)
-        expect(institution_program).not_to eq(nil)
+        expect { InstitutionBuilder.run(user) }.to change{InstitutionProgram.count}.from(0).to(1)
       end
     end
 
