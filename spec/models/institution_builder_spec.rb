@@ -896,7 +896,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       it 'properly generates institution programs from weams data' do
         create :program
-        expect { InstitutionBuilder.run(user) }.to change{InstitutionProgram.count}.from(0).to(1)
+        expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
       end
     end
 
