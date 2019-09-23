@@ -163,7 +163,7 @@ class Institution < ActiveRecord::Base
            primary_key: :facility_code, foreign_key: 'facility_code'
   has_many :institution_programs, -> { order(description: :asc) },
            primary_key: :facility_code,
-           foreign_key: 'facility_code'
+           foreign_key: :facility_code
 
   self.per_page = 10
 

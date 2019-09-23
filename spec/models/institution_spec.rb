@@ -160,6 +160,17 @@ RSpec.describe Institution, type: :model do
     end
   end
 
+  describe 'institution programs' do
+    let(:institution) { build :institution }
+    it 'correctly returns institution programs' do
+      
+      build(:institution, version: 1)
+      build(:institution_program, facility_code: institution.facility_code)
+      expect(Institution.count).to eq(1)
+
+    end
+  end
+
   describe 'class methods and scopes' do
     context 'version' do
       it 'should retrieve institutions by a specific version number' do
