@@ -256,7 +256,7 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer "length_in_weeks"
   end
 
-  add_index "institution_programs_archives", ["facility_code", "description"], name: "institution_programs_archives_facility_code_description_idx", unique: true, using: :btree
+  add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false
