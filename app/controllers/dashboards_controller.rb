@@ -6,7 +6,7 @@ class DashboardsController < ApplicationController
 
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
-    @latest_uploads = Upload.since_last_version_creation
+    @latest_uploads = Upload.since_last_preview_version
   end
 
   def build

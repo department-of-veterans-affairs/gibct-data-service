@@ -72,14 +72,11 @@ class Upload < ActiveRecord::Base
     uploads.sort_by { |upload| upload.csv_type.downcase }
   end
 
-  def self.since_last_version_creation
+  def self.since_last_preview_version
     preview = Version.current_preview
-    production = Version.current_production
-    return [] if production.blank?
+    return Upload.last_uploads if preview.blank?
 
-    created_at = preview.present? && preview.number > production.number ? preview.created_at : production.created_at
-
-    Upload.last_uploads.where('updated_at > ?', created_at)
+    Upload.last_uploads.where('updated_at > ?', preview.created_at)
   end
 
   private

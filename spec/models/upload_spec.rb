@@ -131,39 +131,19 @@ RSpec.describe Upload, type: :model do
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
     end
 
-    it 'returns empty array if production is blank' do
-      expect(Upload.since_last_version_creation).to eq([])
+    it 'returns all uploads if preview is blank' do
+      expect(Upload.since_last_preview_version.any?).to eq(true)
     end
 
-    it 'returns uploads after production if preview is not present' do
-      create :version, :production
-      Upload.where(csv_type: 'Weam')[1].update(ok: true)
-      create :version, :production
-      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
-
-      expect(Upload.since_last_version_creation.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.since_last_version_creation.map(&:csv_type)).not_to include('Weam')
-    end
-
-    it 'returns uploads after production if preview is same number' do
+    it 'returns uploads after preview' do
       create :version, :preview
       Upload.where(csv_type: 'Weam')[1].update(ok: true)
       create :version, :production, number: Version.current_preview.number
-      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
-
-      expect(Upload.since_last_version_creation.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.since_last_version_creation.map(&:csv_type)).not_to include('Weam')
-    end
-
-    it 'returns uploads after preview if preview number is greater than production' do
-      create :version, :preview
-      create :version, :production, number: Version.current_preview.number
-      Upload.where(csv_type: 'Weam')[1].update(ok: true)
       create :version, :preview
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
-      expect(Upload.since_last_version_creation.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.since_last_version_creation.map(&:csv_type)).not_to include('Weam')
+      expect(Upload.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
+      expect(Upload.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
     end
   end
 end
