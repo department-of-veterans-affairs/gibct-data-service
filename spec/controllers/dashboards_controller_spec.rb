@@ -22,8 +22,6 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before(:each) do
-      allow(Upload).to receive(:latest_uploads).and_return([])
-
       # 3 Weam upload records
       create_list :upload, 3
       Upload.all[1].update(ok: true)
