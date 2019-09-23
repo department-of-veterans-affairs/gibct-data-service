@@ -63,9 +63,9 @@ class DashboardsController < ApplicationController
         ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
         GibctSiteMapper.new(ping: ping)
 
-        if Settings.institutions.archive
-          # Archive old institution rows
-          InstitutionsArchive.archive_previous_versions
+        if Settings.archiver.archive
+          # Archive previous versions of generated data
+          Archiver.archive_previous_versions
         end
       else
         flash.alert = 'Production data not updated, remains at previous production version'
