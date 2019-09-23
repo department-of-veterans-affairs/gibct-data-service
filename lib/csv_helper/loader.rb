@@ -34,9 +34,9 @@ module CsvHelper
     end
 
     def load_csv_with_version(file, records, options)
-      version = Version.current_preview.number
+      version = Version.current_preview
       SmarterCSV.process(file, merge_options(options)).each do |row|
-        records << klass.new(row.merge(version: version))
+        records << klass.new(row.merge(version: version.number))
       end
 
       records
