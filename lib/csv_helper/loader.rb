@@ -63,8 +63,10 @@ module CsvHelper
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       records.each_with_index do |record, index|
-        record.errors.add(:row, "Line #{index + row_offset}") unless record.valid?(:load_csv)
-        failed_instances << record if record.errors.any?
+        unless record.valid?(:load_csv)
+          record.errors.add(:row, "Line #{index + row_offset}")
+          failed_instances << record
+        end
       end
     end
   end
