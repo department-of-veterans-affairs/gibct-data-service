@@ -23,4 +23,11 @@ RSpec.describe Program, type: :model do
       expect(build(:program, program_type: 'NCD')).to be_valid
     end
   end
+
+  describe 'when validating for load_csv context' do
+    subject { build :program }
+
+    it 'has no errors' do
+    end
+  end
 end

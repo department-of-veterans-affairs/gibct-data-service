@@ -132,7 +132,7 @@ RSpec.describe Upload, type: :model do
     end
 
     it 'returns empty array if production is blank' do
-      expect(Upload.latest_uploads).to eq([])
+      expect(Upload.since_last_version_creation).to eq([])
     end
 
     it 'returns uploads after production if preview is not present' do
@@ -141,8 +141,8 @@ RSpec.describe Upload, type: :model do
       create :version, :production
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
-      expect(Upload.latest_uploads.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.latest_uploads.map(&:csv_type)).not_to include('Weam')
+      expect(Upload.since_last_version_creation.map(&:csv_type)).to include('Crosswalk')
+      expect(Upload.since_last_version_creation.map(&:csv_type)).not_to include('Weam')
     end
 
     it 'returns uploads after production if preview is same number' do
@@ -151,8 +151,8 @@ RSpec.describe Upload, type: :model do
       create :version, :production, number: Version.current_preview.number
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
-      expect(Upload.latest_uploads.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.latest_uploads.map(&:csv_type)).not_to include('Weam')
+      expect(Upload.since_last_version_creation.map(&:csv_type)).to include('Crosswalk')
+      expect(Upload.since_last_version_creation.map(&:csv_type)).not_to include('Weam')
     end
 
     it 'returns uploads after preview if preview number is greater than production' do
@@ -162,8 +162,8 @@ RSpec.describe Upload, type: :model do
       create :version, :preview
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
-      expect(Upload.latest_uploads.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.latest_uploads.map(&:csv_type)).not_to include('Weam')
+      expect(Upload.since_last_version_creation.map(&:csv_type)).to include('Crosswalk')
+      expect(Upload.since_last_version_creation.map(&:csv_type)).not_to include('Weam')
     end
   end
 end
