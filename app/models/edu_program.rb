@@ -17,7 +17,7 @@ class EduProgram < ActiveRecord::Base
     'vet success email' => { column: :vet_success_email, converter: BaseConverter },
     'vet tec program' => { column: :vet_tec_program, converter: BaseConverter },
     'tuition amount' => { column: :tuition_amount, converter: NumberConverter },
-    'program length' => { column: :program_length, converter: NumberConverter }
+    'program length' => { column: :length_in_weeks, converter: NumberConverter }
   }.freeze
 
   validates :facility_code, presence: true

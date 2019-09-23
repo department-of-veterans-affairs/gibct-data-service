@@ -162,3 +162,8 @@ SchoolCertifyingOfficial:
   skip_lines: 0
   col_sep: ","
   row_sep: "\r\n"
+
+EduProgram:
+  skip_lines: 0
+  col_sep: ","
+  row_sep: "\r\n"

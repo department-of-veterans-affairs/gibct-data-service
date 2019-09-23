@@ -15,6 +15,6 @@ FactoryBot.define do
     vet_success_email 'test@test.com'
     vet_tec_program 'COMPUTER SCIENCE'
     tuition_amount '360'
-    program_length '1001'
+    length_in_weeks '1001'
   end
 end
