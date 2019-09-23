@@ -512,7 +512,8 @@ module InstitutionBuilder
         description,
         full_time_undergraduate,
         graduate,
-        full_time_modifier, length_in_hours,
+        full_time_modifier,
+        length_in_hours,
         version
       )
       SELECT
@@ -521,7 +522,8 @@ module InstitutionBuilder
         description,
         full_time_undergraduate,
         graduate,
-        full_time_modifier, length,
+        full_time_modifier,
+        length,
         ?
       FROM programs
     SQL

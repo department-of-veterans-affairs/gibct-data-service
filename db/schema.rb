@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190919125400) do
+ActiveRecord::Schema.define(version: 20190923145100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -231,7 +231,7 @@ ActiveRecord::Schema.define(version: 20190919125400) do
     t.integer "length_in_weeks"
   end
 
-  add_index "institution_programs", ["facility_code", "description"], name: "index_institution_programs_on_facility_code_and_description", unique: true, using: :btree
+  add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
     t.string  "facility_code",             null: false
