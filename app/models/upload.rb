@@ -72,6 +72,13 @@ class Upload < ApplicationRecord
     uploads.sort_by { |upload| upload.csv_type.downcase }
   end
 
+  def self.since_last_preview_version
+    preview = Version.current_preview
+    return Upload.last_uploads if preview.blank?
+
+    Upload.last_uploads.where('updated_at > ?', preview.created_at)
+  end
+
   private
 
   def initialize_warnings

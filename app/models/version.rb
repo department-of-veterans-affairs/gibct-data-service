@@ -35,28 +35,6 @@ class Version < ApplicationRecord
     Version.newest.first.preview?
   end
 
-  def self.buildable?
-    Version.buildable_state.to_s.match('can_create')
-  end
-
-  def self.buildable_state
-    upload_dates = Upload.last_uploads
-                         .to_a
-                         .select { |upload| CSV_TYPES_REQUIRED_TABLE_NAMES.include?(upload.csv_type) }
-                         .map(&:updated_at)
-
-    preview = Version.current_preview
-    return :not_enough_uploads if upload_dates.length < CSV_TYPES_REQUIRED_TABLE_NAMES.length
-    return :too_many_uploads if upload_dates.length > CSV_TYPES_REQUIRED_TABLE_NAMES.length
-    return :can_create_first_preview if preview.nil?
-    return :can_create_new_preview if upload_dates.max > preview.created_at
-    :no_new_uploads
-  end
-
-  def self.buildable_state_msg
-    Version.buildable_state.to_s.split('_').map(&:capitalize).join(' ')
-  end
-
   # public instance methods
   def preview?
     !production?

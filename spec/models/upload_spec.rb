@@ -120,4 +120,30 @@ RSpec.describe Upload, type: :model do
       expect(uploads.where(csv_type: 'Crosswalk').first).to eq(max_crosswalk)
     end
   end
+
+  describe 'latest_uploads' do
+    before(:each) do
+      # 3 Weam upload records
+      create_list :upload, 3
+      Upload.all[1].update(ok: true)
+
+      create_list :upload, 3, csv_name: 'crosswalk.csv', csv_type: 'Crosswalk'
+      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
+    end
+
+    it 'returns all uploads if preview is blank' do
+      expect(Upload.since_last_preview_version.any?).to eq(true)
+    end
+
+    it 'returns uploads after preview' do
+      create :version, :preview
+      Upload.where(csv_type: 'Weam')[1].update(ok: true)
+      create :version, :production, number: Version.current_preview.number
+      create :version, :preview
+      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
+
+      expect(Upload.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
+      expect(Upload.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
+    end
+  end
 end
