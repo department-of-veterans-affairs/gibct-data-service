@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 class DashboardsController < ApplicationController
-  before_action :verify_buildable, only: :build
-
   def index
     @uploads = Upload.last_uploads_rows
 
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
+    @latest_uploads = Upload.since_last_preview_version
   end
 
   def build
@@ -77,13 +76,6 @@ class DashboardsController < ApplicationController
   end
 
   private
-
-  def verify_buildable
-    return true if Version.buildable?
-
-    flash.alert = 'Cannot build a new version since no new uploads have been made.'
-    redirect_to(dashboards_path) && return
-  end
 
   def csv_model(csv_type)
     model = CSV_TYPES_ALL_TABLES.select { |klass| klass.name == csv_type }.first
