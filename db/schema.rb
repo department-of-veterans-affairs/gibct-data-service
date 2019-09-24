@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190919174523) do
+ActiveRecord::Schema.define(version: 20190923162902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -164,11 +164,11 @@ ActiveRecord::Schema.define(version: 20190919174523) do
     t.string  "provider_email_address",    null: false
     t.string  "phone_area_code",           null: false
     t.string  "phone_number",              null: false
-    t.string  "student_vet_group",         null: false
+    t.string  "student_vet_group"
     t.string  "student_vet_group_website", null: false
     t.string  "vet_success_name",          null: false
     t.string  "vet_success_email",         null: false
-    t.string  "vet_tec_program",           null: false
+    t.string  "vet_tec_program"
     t.integer "tuition_amount",            null: false
     t.integer "length_in_weeks",           null: false
   end
@@ -231,7 +231,7 @@ ActiveRecord::Schema.define(version: 20190919174523) do
     t.integer "length_in_weeks"
   end
 
-  add_index "institution_programs", ["facility_code", "description"], name: "index_institution_programs_on_facility_code_and_description", unique: true, using: :btree
+  add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
     t.string  "facility_code",             null: false
@@ -256,7 +256,7 @@ ActiveRecord::Schema.define(version: 20190919174523) do
     t.integer "length_in_weeks"
   end
 
-  add_index "institution_programs_archives", ["facility_code", "description"], name: "institution_programs_archives_facility_code_description_idx", unique: true, using: :btree
+  add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false

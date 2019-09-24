@@ -899,15 +899,13 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution_program) { InstitutionProgram.first }
 
       it 'properly generates institution programs from programs and edu_programs' do
-        InstitutionBuilder.run(user)
-        expect(institution_program).not_to eq(nil)
+        expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
       end
 
       it 'does not generate instition programs without matching programs and edu_programs' do
         create :program, facility_code: '0002'
         create :edu_program, facility_code: '0003'
-        InstitutionBuilder.run(user)
-        expect(InstitutionProgram.count).to eq(1)
+        expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
       end
     end
 
