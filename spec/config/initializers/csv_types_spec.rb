@@ -25,7 +25,6 @@ RSpec.describe 'CSV_TYPES' do
     Sva.name,
     Vsoc.name,
     Weam.name,
-    CalculatorConstant.name,
     IpedsCipCode.name,
     StemCipCode.name,
     YellowRibbonProgramSource.name,
