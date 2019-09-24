@@ -10,14 +10,7 @@ RSpec.describe 'Dashboard', type: :request do
     login_as(user, scope: :user)
   end
 
-  it 'responds to POST #build with errors if no uploads' do
-    post dashboard_build_path
-    expect(response).to redirect_to('/dashboards')
-    expect(flash[:alert]).to match 'Cannot build a new version since no new uploads have been made.'
-  end
-
   it 'responds to POST #build with success' do
-    allow(Version).to receive(:buildable?).and_return(true)
     post dashboard_build_path
     expect(response).to redirect_to('/dashboards')
     expect(flash[:notice]).to match 'Preview Data (1) built successfully'
