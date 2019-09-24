@@ -22,7 +22,7 @@ CSV_TYPES_TABLES = [
   { klass: Sva, required?: true },
   { klass: Vsoc, required?: true },
   { klass: Weam, required?: true },
-  { klass: CalculatorConstant, required?: true },
+  { klass: CalculatorConstant, required?: false },
   { klass: IpedsCipCode, required?: true },
   { klass: StemCipCode, required?: true },
   { klass: YellowRibbonProgramSource, required?: true },

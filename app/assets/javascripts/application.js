@@ -11,27 +11,7 @@
 // about supported directives.
 //
 //= require jquery
+//= require bootstrap.min
 //= require jquery-ui
 //= require jquery_ujs
-//= require bootstrap.min
 //= require_tree .
-
-$(function() {
-  $('#version_build').on('confirm:complete', function(e) {
-    $('#preview_versions tbody').html(
-      '<tr>' +
-        '<td colspan="5">' +
-          '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ' +
-        '</td>' +
-      '</tr>');
-  });
-
-  $('#version_publish').on('confirm:complete', function(e) {
-    $('#preview_versions tbody td:nth-child(5)').html(
-      '<tr>' +
-        '<td colspan="5">' +
-          '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Publishing ' +
-        '</td>' +
-      '</tr>');
-  });
-});
