@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190916164300) do
+ActiveRecord::Schema.define(version: 20190923145101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -200,7 +200,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.integer "version"
   end
 
-  add_index "institution_programs", ["facility_code", "description"], name: "index_institution_programs_on_facility_code_and_description", unique: true, using: :btree
+  add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
     t.string  "facility_code",           null: false
@@ -213,7 +213,7 @@ ActiveRecord::Schema.define(version: 20190916164300) do
     t.integer "version"
   end
 
-  add_index "institution_programs_archives", ["facility_code", "description"], name: "institution_programs_archives_facility_code_description_idx", unique: true, using: :btree
+  add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false
