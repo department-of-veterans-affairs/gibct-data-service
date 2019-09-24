@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190819111223) do
+ActiveRecord::Schema.define(version: 20190923162902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,24 @@ ActiveRecord::Schema.define(version: 20190819111223) do
     t.index ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
   end
 
+  create_table "edu_programs", force: :cascade do |t|
+    t.string  "facility_code",             null: false
+    t.string  "institution_name",          null: false
+    t.string  "school_locale",             null: false
+    t.string  "provider_website",          null: false
+    t.string  "provider_email_address",    null: false
+    t.string  "phone_area_code",           null: false
+    t.string  "phone_number",              null: false
+    t.string  "student_vet_group"
+    t.string  "student_vet_group_website", null: false
+    t.string  "vet_success_name",          null: false
+    t.string  "vet_success_email",         null: false
+    t.string  "vet_tec_program"
+    t.integer "tuition_amount",            null: false
+    t.integer "length_in_weeks",           null: false
+    t.index ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program", using: :btree
+  end
+
   create_table "eight_keys", force: :cascade do |t|
     t.string   "cross"
     t.string   "institution"
@@ -177,6 +195,54 @@ ActiveRecord::Schema.define(version: 20190819111223) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.index ["ope"], name: "index_hcms_on_ope", using: :btree
+  end
+
+  create_table "institution_programs", force: :cascade do |t|
+    t.string  "facility_code",             null: false
+    t.string  "program_type"
+    t.string  "description",               null: false
+    t.string  "full_time_undergraduate"
+    t.string  "graduate"
+    t.string  "full_time_modifier"
+    t.string  "length_in_hours"
+    t.integer "version"
+    t.string  "school_locale"
+    t.string  "provider_website"
+    t.string  "provider_email_address"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "student_vet_group"
+    t.string  "student_vet_group_website"
+    t.string  "vet_success_name"
+    t.string  "vet_success_email"
+    t.string  "vet_tec_program"
+    t.integer "tuition_amount"
+    t.integer "length_in_weeks"
+    t.index ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
+  end
+
+  create_table "institution_programs_archives", id: :integer, default: -> { "nextval('institution_programs_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string  "facility_code",             null: false
+    t.string  "program_type"
+    t.string  "description",               null: false
+    t.string  "full_time_undergraduate"
+    t.string  "graduate"
+    t.string  "full_time_modifier"
+    t.string  "length_in_hours"
+    t.integer "version"
+    t.string  "school_locale"
+    t.string  "provider_website"
+    t.string  "provider_email_address"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "student_vet_group"
+    t.string  "student_vet_group_website"
+    t.string  "vet_success_name"
+    t.string  "vet_success_email"
+    t.string  "vet_tec_program"
+    t.integer "tuition_amount"
+    t.integer "length_in_weeks"
+    t.index ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
   end
 
   create_table "institutions", force: :cascade do |t|
@@ -1106,6 +1172,7 @@ ActiveRecord::Schema.define(version: 20190819111223) do
     t.string "graduate",                limit: 15
     t.string "full_time_modifier",      limit: 1
     t.string "length",                  limit: 7
+    t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description", using: :btree
   end
 
   create_table "school_certifying_officials", force: :cascade do |t|
@@ -1516,6 +1583,18 @@ ActiveRecord::Schema.define(version: 20190819111223) do
     t.datetime "updated_at",             null: false
     t.integer  "version"
     t.index ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code", using: :btree
+  end
+
+  create_table "zipcode_rates_archives", id: :integer, default: -> { "nextval('zipcode_rates_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string   "zip_code"
+    t.string   "mha_code"
+    t.string   "mha_name"
+    t.float    "mha_rate"
+    t.float    "mha_rate_grandfathered"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "version"
+    t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx", using: :btree
   end
 
 end
