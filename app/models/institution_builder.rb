@@ -550,7 +550,8 @@ module InstitutionBuilder
         tuition_amount,
         length_in_weeks
       FROM programs a INNER JOIN edu_programs b
-        ON a.facility_code = b.facility_code AND a.description = b.vet_tec_program
+        ON a.facility_code = b.facility_code AND description = vet_tec_program
+      WHERE vet_tec_program IS NOT NULL
     SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
