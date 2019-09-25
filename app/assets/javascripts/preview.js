@@ -9,14 +9,14 @@ $(function() {
                 '</tr>');
         }
     });
-    var generate_preview_version = false;
+    var generating_preview_version = false;
     $( "#preview_dialog" ).dialog({
         autoOpen: false,
         modal: true,
         width: "auto",
         resizable: false,
         close: function( event, ui ) {
-            if (generate_preview_version) {
+            if (generating_preview_version) {
                 $('#preview_opener').prop('disabled', true);
                 $('#preview_versions tbody').html(
                     '<tr>' +
@@ -32,7 +32,7 @@ $(function() {
         $( "#preview_dialog" ).dialog( "open" );
     });
     $( "#version_build" ).on( "click", function() {
-        generate_preview_version = true;
+        generating_preview_version = true;
         $('#preview_dialog').dialog( "close" );
     });
 });
