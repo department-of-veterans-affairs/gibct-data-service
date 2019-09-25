@@ -13,11 +13,15 @@ $(function() {
         autoOpen: false,
         modal: true,
         width: "auto",
-        closeOnEscape: false,
         resizable: false,
-        hide: {
-            effect: "fade",
-            duration: 1000
+        close: function( event, ui ) {
+            $('#preview_opener').prop('disabled', true);
+            $('#preview_versions tbody').html(
+                '<tr>' +
+                '<td style="text-align: center; " colspan="5">' +
+                '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ' +
+                '</td>' +
+                '</tr>');
         }
     });
 
@@ -25,7 +29,6 @@ $(function() {
         $( "#preview_dialog" ).dialog( "open" );
     });
     $( "#version_build" ).on( "click", function() {
-        $('#preview_dialog_div').html('<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ');
-        $('.ui-dialog-titlebar-close').prop('disabled', true);
+        $('#preview_dialog').dialog( "close" );
     });
 });
