@@ -13,6 +13,7 @@ $(function() {
         autoOpen: false,
         modal: true,
         width: "auto",
+        closeOnEscape: false,
         resizable: false,
         hide: {
             effect: "fade",
