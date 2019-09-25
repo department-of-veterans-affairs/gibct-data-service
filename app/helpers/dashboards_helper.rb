@@ -14,6 +14,6 @@ module DashboardsHelper
   end
 
   def can_generate_preview(preview_versions)
-    'disabled' unless preview_versions.none? || !preview_versions[0].generating?
+    'disabled' if preview_versions[0]&.generating?
   end
 end
