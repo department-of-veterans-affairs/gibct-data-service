@@ -111,8 +111,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   end
 
   def programs
-    object.programs.map do |program|
-      ProgramSerializer.new(program)
+    object.institution_programs.map do |program|
+      InstitutionProgramSerializer.new(program)
     end
   end
 end

@@ -48,6 +48,7 @@ module InstitutionBuilder
     add_extension_campus_type(version_number)
     add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
+    build_institution_programs(version_number)
   end
 
   def self.run(user)
@@ -501,5 +502,33 @@ module InstitutionBuilder
         AND institutions.version = #{version_number};
     SQL
     Institution.connection.update(str)
+  end
+
+  def self.build_institution_programs(version_number)
+    str = <<-SQL
+      INSERT INTO institution_programs (
+        facility_code,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length_in_hours,
+        version
+      )
+      SELECT
+        facility_code,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length,
+        ?
+      FROM programs
+    SQL
+
+    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
+    InstitutionProgram.connection.execute(sql)
   end
 end

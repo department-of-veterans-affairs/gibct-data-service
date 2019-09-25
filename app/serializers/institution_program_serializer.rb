@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class ProgramSerializer < ActiveModel::Serializer
+class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :program_type
   attribute :description
   attribute :full_time_undergraduate
   attribute :graduate
   attribute :full_time_modifier
-  attribute :length
+  attribute :length_in_hours
 end

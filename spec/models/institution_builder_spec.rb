@@ -891,6 +891,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'when generating institution programs' do
+      it 'properly generates institution programs from weams data' do
+        create :program
+        expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
+        expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
+      end
+    end
+
     describe 'when setting extension campus_type' do
       before(:each) do
         create(:weam, :extension)
