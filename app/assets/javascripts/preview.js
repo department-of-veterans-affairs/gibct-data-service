@@ -9,19 +9,22 @@ $(function() {
                 '</tr>');
         }
     });
+    var generate_preview_version = false;
     $( "#preview_dialog" ).dialog({
         autoOpen: false,
         modal: true,
         width: "auto",
         resizable: false,
         close: function( event, ui ) {
-            $('#preview_opener').prop('disabled', true);
-            $('#preview_versions tbody').html(
-                '<tr>' +
-                '<td style="text-align: center; " colspan="5">' +
-                '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ' +
-                '</td>' +
-                '</tr>');
+            if (generate_preview_version) {
+                $('#preview_opener').prop('disabled', true);
+                $('#preview_versions tbody').html(
+                    '<tr>' +
+                    '<td style="text-align: center; " colspan="5">' +
+                    '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ' +
+                    '</td>' +
+                    '</tr>');
+            }
         }
     });
 
@@ -29,6 +32,7 @@ $(function() {
         $( "#preview_dialog" ).dialog( "open" );
     });
     $( "#version_build" ).on( "click", function() {
+        generate_preview_version = true;
         $('#preview_dialog').dialog( "close" );
     });
 });
