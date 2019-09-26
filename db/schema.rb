@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190923162902) do
+ActiveRecord::Schema.define(version: 20190926141900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -229,9 +229,21 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string  "vet_tec_program"
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
+    t.string  "institution_name"
+    t.string  "institution_city"
+    t.string  "institution_state"
+    t.string  "institution_country"
+    t.string  "preferred_provider"
+    t.integer "dod_bah"
   end
 
   add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
+  add_index "institution_programs", ["version", "description"], name: "index_institution_programs_on_version_and_description", using: :btree
+  add_index "institution_programs", ["version", "institution_city"], name: "index_ip_version_institution_city", using: :btree
+  add_index "institution_programs", ["version", "institution_country"], name: "index_ip_version_institution_country", using: :btree
+  add_index "institution_programs", ["version", "institution_name"], name: "index_ip_version_institution_name", using: :btree
+  add_index "institution_programs", ["version", "institution_state"], name: "index_ip_version_institution_state", using: :btree
+  add_index "institution_programs", ["version", "preferred_provider"], name: "index_ip_version_institution_programs", using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
     t.string  "facility_code",             null: false
@@ -254,9 +266,21 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string  "vet_tec_program"
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
+    t.string  "institution_name"
+    t.string  "institution_city"
+    t.string  "institution_state"
+    t.string  "institution_country"
+    t.string  "preferred_provider"
+    t.integer "dod_bah"
   end
 
   add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
+  add_index "institution_programs_archives", ["version", "description"], name: "index_institution_programs_archives_on_version_and_description", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_city"], name: "index_version_institution_city", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_country"], name: "index_version_institution_country", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_name"], name: "index_version_institution_name", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_state"], name: "index_version_institution_state", using: :btree
+  add_index "institution_programs_archives", ["version", "preferred_provider"], name: "index_version_institution_programs", using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false
