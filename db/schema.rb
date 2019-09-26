@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190923145101) do
+ActiveRecord::Schema.define(version: 20190923162902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,6 +156,25 @@ ActiveRecord::Schema.define(version: 20190923145101) do
   add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
   add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
 
+  create_table "edu_programs", force: :cascade do |t|
+    t.string  "facility_code",             null: false
+    t.string  "institution_name",          null: false
+    t.string  "school_locale",             null: false
+    t.string  "provider_website",          null: false
+    t.string  "provider_email_address",    null: false
+    t.string  "phone_area_code",           null: false
+    t.string  "phone_number",              null: false
+    t.string  "student_vet_group"
+    t.string  "student_vet_group_website", null: false
+    t.string  "vet_success_name",          null: false
+    t.string  "vet_success_email",         null: false
+    t.string  "vet_tec_program"
+    t.integer "tuition_amount",            null: false
+    t.integer "length_in_weeks",           null: false
+  end
+
+  add_index "edu_programs", ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program", using: :btree
+
   create_table "eight_keys", force: :cascade do |t|
     t.string   "cross"
     t.string   "institution"
@@ -190,27 +209,51 @@ ActiveRecord::Schema.define(version: 20190923145101) do
   add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institution_programs", force: :cascade do |t|
-    t.string  "facility_code",           null: false
+    t.string  "facility_code",             null: false
     t.string  "program_type"
-    t.string  "description",             null: false
+    t.string  "description",               null: false
     t.string  "full_time_undergraduate"
     t.string  "graduate"
     t.string  "full_time_modifier"
     t.string  "length_in_hours"
     t.integer "version"
+    t.string  "school_locale"
+    t.string  "provider_website"
+    t.string  "provider_email_address"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "student_vet_group"
+    t.string  "student_vet_group_website"
+    t.string  "vet_success_name"
+    t.string  "vet_success_email"
+    t.string  "vet_tec_program"
+    t.integer "tuition_amount"
+    t.integer "length_in_weeks"
   end
 
   add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
 
   create_table "institution_programs_archives", force: :cascade do |t|
-    t.string  "facility_code",           null: false
+    t.string  "facility_code",             null: false
     t.string  "program_type"
-    t.string  "description",             null: false
+    t.string  "description",               null: false
     t.string  "full_time_undergraduate"
     t.string  "graduate"
     t.string  "full_time_modifier"
     t.string  "length_in_hours"
     t.integer "version"
+    t.string  "school_locale"
+    t.string  "provider_website"
+    t.string  "provider_email_address"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "student_vet_group"
+    t.string  "student_vet_group_website"
+    t.string  "vet_success_name"
+    t.string  "vet_success_email"
+    t.string  "vet_tec_program"
+    t.integer "tuition_amount"
+    t.integer "length_in_weeks"
   end
 
   add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
