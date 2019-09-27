@@ -20,9 +20,7 @@ describe EduProgramValidator do
       error_messages = edu_program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      error_message = "The Facility Code & VET TEC Program (Program Name) combination is not unique:
-#{edu_program.facility_code}, #{edu_program.vet_tec_program}"
-      expect(error_messages[:base]).to include(error_message)
+      expect(error_messages[:base]).to include(EduProgramValidator.non_unique_error_msg(edu_program))
     end
 
     it 'has invalid facility code error message' do
@@ -33,10 +31,7 @@ describe EduProgramValidator do
       error_messages = edu_program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      error_message =
-        "The Facility Code #{edu_program.facility_code} is not contained within the most recently uploaded weams.csv"
-
-      expect(error_messages[:base]).to include(error_message)
+      expect(error_messages[:base]).to include(EduProgramValidator.missing_facility_code_error_msg(edu_program))
     end
   end
 end

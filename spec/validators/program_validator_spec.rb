@@ -20,9 +20,7 @@ describe ProgramValidator do
       error_messages = program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      error_message = "The Facility Code & Description (Program Name) combination is not unique:
-#{program.facility_code}, #{program.description}"
-      expect(error_messages[:base]).to include(error_message)
+      expect(error_messages[:base]).to include(ProgramValidator.non_unique_error_msg(program))
     end
 
     it 'has invalid facility code error message' do
@@ -33,10 +31,7 @@ describe ProgramValidator do
       error_messages = program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      error_message =
-        "The Facility Code #{program.facility_code} is not contained within the most recently uploaded weams.csv"
-
-      expect(error_messages[:base]).to include(error_message)
+      expect(error_messages[:base]).to include(ProgramValidator.missing_facility_code_error_msg(program))
     end
   end
 end
