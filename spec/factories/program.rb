@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :program do
     facility_code { generate :facility_code }
-    institution_name { 'NORTHEASTERN ILLINOIS UNIVERSITY' }
+    institution_name 'NORTHEASTERN ILLINOIS UNIVERSITY'
     program_type 'NCD'
     description 'COMPUTER SCIENCE'
     full_time_undergraduate '360'

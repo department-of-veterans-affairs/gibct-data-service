@@ -892,10 +892,17 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when generating institution programs' do
-      it 'properly generates institution programs from weams data' do
-        create :program
+      it 'properly generates institution programs from programs and edu_programs' do
+        create :program, facility_code: '0001'
+        create :edu_program, facility_code: '0001'
         expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
         expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
+      end
+
+      it 'does not generate instition programs without matching programs and edu_programs' do
+        create :program, facility_code: '0001'
+        create :edu_program, facility_code: '0002'
+        expect(InstitutionProgram.count).to eq(0)
       end
     end
 
