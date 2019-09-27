@@ -233,7 +233,7 @@ ActiveRecord::Schema.define(version: 20190926141900) do
     t.string  "institution_city"
     t.string  "institution_state"
     t.string  "institution_country"
-    t.string  "preferred_provider"
+    t.boolean "preferred_provider"
     t.integer "dod_bah"
   end
 
@@ -270,17 +270,17 @@ ActiveRecord::Schema.define(version: 20190926141900) do
     t.string  "institution_city"
     t.string  "institution_state"
     t.string  "institution_country"
-    t.string  "preferred_provider"
+    t.boolean "preferred_provider"
     t.integer "dod_bah"
   end
 
   add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
   add_index "institution_programs_archives", ["version", "description"], name: "index_institution_programs_archives_on_version_and_description", using: :btree
-  add_index "institution_programs_archives", ["version", "institution_city"], name: "index_version_institution_city", using: :btree
-  add_index "institution_programs_archives", ["version", "institution_country"], name: "index_version_institution_country", using: :btree
-  add_index "institution_programs_archives", ["version", "institution_name"], name: "index_version_institution_name", using: :btree
-  add_index "institution_programs_archives", ["version", "institution_state"], name: "index_version_institution_state", using: :btree
-  add_index "institution_programs_archives", ["version", "preferred_provider"], name: "index_version_institution_programs", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_city"], name: "index_ipa_version_institution_city", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_country"], name: "index_ipa_version_institution_country", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_name"], name: "index_ipa_version_institution_name", using: :btree
+  add_index "institution_programs_archives", ["version", "institution_state"], name: "index_ipa_version_institution_state", using: :btree
+  add_index "institution_programs_archives", ["version", "preferred_provider"], name: "index_ipa_version_institution_programs", using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false
