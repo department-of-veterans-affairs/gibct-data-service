@@ -33,8 +33,8 @@ describe ProgramValidator do
       error_messages = program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      error_message = "The Facility Code #{program.facility_code} is not
-contained within the most recently uploaded weams.csv"
+      error_message =
+        "The Facility Code #{program.facility_code} is not contained within the most recently uploaded weams.csv"
 
       expect(error_messages[:base]).to include(error_message)
     end
