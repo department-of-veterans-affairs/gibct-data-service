@@ -526,7 +526,13 @@ module InstitutionBuilder
         vet_success_email,
         vet_tec_program,
         tuition_amount,
-        length_in_weeks
+        length_in_weeks,
+        institution_name,
+        institution_city,
+        institution_state,
+        institution_country,
+        preferred_provider,
+        dod_bah
       )
       SELECT
         a.facility_code,
@@ -548,16 +554,23 @@ module InstitutionBuilder
         vet_success_email,
         vet_tec_program,
         tuition_amount,
-        length_in_weeks
+        length_in_weeks,
+        institution,
+        physical_city,
+        physical_state,
+        physical_country,
+        preferred_provider,
+        dod_bah
       FROM programs a
         INNER JOIN edu_programs b ON a.facility_code = b.facility_code
           AND LOWER(description) = LOWER(vet_tec_program)
           AND vet_tec_program IS NOT NULL
-        INNER JOIN instititions c ON a.facility_code = c.facility_code
+        INNER JOIN institutions c ON a.facility_code = c.facility_code
+          AND c.version = ?
 
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
+    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
     InstitutionProgram.connection.execute(sql)
   end
 end
