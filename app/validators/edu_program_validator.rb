@@ -11,13 +11,11 @@ class EduProgramValidator < ActiveModel::Validator
   end
 
   def validate(record)
-    if EduProgram.where(['vet_tec_program = ? AND facility_code = ? AND id != ?',
-                         record.vet_tec_program, record.facility_code, record.id]).any?
-      record.errors[:base] << EduProgramValidator.non_unique_error_msg(record)
+    duplicates_exist = EduProgram.where(['vet_tec_program = ? AND facility_code = ? AND id != ?',
+                                         record.vet_tec_program, record.facility_code, record.id]).any?
+    record.errors[:base] << EduProgramValidator.non_unique_error_msg(record) if duplicates_exist
 
-    end
-
-    return if Weam.where(['facility_code = ?', record.facility_code]).any?
-    record.errors[:base] << EduProgramValidator.missing_facility_code_error_msg(record)
+    facility_not_in_weam = Weam.where(['facility_code = ?', record.facility_code]).empty?
+    record.errors[:base] << EduProgramValidator.missing_facility_code_error_msg(record) if facility_not_in_weam
   end
 end

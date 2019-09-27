@@ -11,12 +11,11 @@ class ProgramValidator < ActiveModel::Validator
   end
 
   def validate(record)
-    if Program.where(['description = ? AND facility_code = ? AND id != ?',
-                      record.description, record.facility_code, record.id]).any?
-      record.errors[:base] << ProgramValidator.non_unique_error_msg(record)
-    end
+    duplicates_exist = Program.where(['description = ? AND facility_code = ? AND id != ?',
+                                      record.description, record.facility_code, record.id]).any?
+    record.errors[:base] << ProgramValidator.non_unique_error_msg(record) if duplicates_exist
 
-    return if Weam.where(['facility_code = ?', record.facility_code]).any?
-    record.errors[:base] << ProgramValidator.missing_facility_code_error_msg(record)
+    facility_not_in_weam = Weam.where(['facility_code = ?', record.facility_code]).empty?
+    record.errors[:base] << ProgramValidator.missing_facility_code_error_msg(record) if facility_not_in_weam
   end
 end
