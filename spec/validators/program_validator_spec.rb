@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 describe ProgramValidator do
@@ -10,10 +12,10 @@ describe ProgramValidator do
 
     it 'has invalid facility code & description error message' do
       program = create :program
-      program_2 = create :program, facility_code: program.facility_code
+      program_b = create :program, facility_code: program.facility_code
 
       expect(program.valid?(:load_csv)).to eq(false)
-      expect(program_2.valid?(:load_csv)).to eq(false)
+      expect(program_b.valid?(:load_csv)).to eq(false)
 
       error_messages = program.errors.messages
       expect(error_messages.any?).to eq(true)
@@ -24,14 +26,15 @@ describe ProgramValidator do
     end
 
     it 'has invalid facility code error message' do
-      program = create :program, facility_code: 00
+      program = create :program, facility_code: 0o0
 
       expect(program.valid?(:load_csv)).to eq(false)
 
       error_messages = program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      error_message = "The Facility Code #{program.facility_code} is not contained within the most recently uploaded weams.csv"
+      error_message = "The Facility Code #{program.facility_code} is not
+contained within the most recently uploaded weams.csv"
 
       expect(error_messages[:base]).to include(error_message)
     end
