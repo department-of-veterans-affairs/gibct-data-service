@@ -12,4 +12,8 @@ module DashboardsHelper
     return 'Missing required upload' if CSV_TYPES_REQUIRED_TABLE_NAMES.include?(upload.csv_type)
     'Missing upload'
   end
+
+  def can_generate_preview(preview_versions)
+    'disabled' if preview_versions[0]&.generating?
+  end
 end
