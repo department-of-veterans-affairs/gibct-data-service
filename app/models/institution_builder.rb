@@ -505,7 +505,7 @@ module InstitutionBuilder
   end
 
   def self.build_institution_programs(version_number)
-    str = <<~SQL
+    str = <<-SQL
       INSERT INTO institution_programs (
         facility_code,
         program_type,
