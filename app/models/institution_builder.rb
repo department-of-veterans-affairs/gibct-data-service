@@ -567,7 +567,7 @@ module InstitutionBuilder
           AND vet_tec_program IS NOT NULL
         INNER JOIN institutions c ON a.facility_code = c.facility_code
           AND c.version = ?
-
+          AND c.approved = true
     SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])

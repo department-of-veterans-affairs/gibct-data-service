@@ -893,7 +893,6 @@ RSpec.describe InstitutionBuilder, type: :model do
 
     describe 'when generating institution programs' do
       it 'properly generates institution programs from programs and edu_programs' do
-        # create :institution, facility_code: '0001'
         create :program, facility_code: '1ZZZZZZZ'
         create :edu_program, facility_code: '1ZZZZZZZ'
 
