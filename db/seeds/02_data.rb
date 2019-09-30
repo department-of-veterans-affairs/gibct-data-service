@@ -46,6 +46,7 @@ SeedUtils.seed_table_with_upload(StemCipCode, user)
 SeedUtils.seed_table_with_upload(YellowRibbonProgramSource, user)
 SeedUtils.seed_table_with_upload(SchoolClosure, user)
 SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
+SeedUtils.seed_table_with_upload(EduProgram, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)

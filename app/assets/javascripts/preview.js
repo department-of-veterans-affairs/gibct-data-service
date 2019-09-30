@@ -9,14 +9,22 @@ $(function() {
                 '</tr>');
         }
     });
+    var generating_preview_version = false;
     $( "#preview_dialog" ).dialog({
         autoOpen: false,
         modal: true,
         width: "auto",
         resizable: false,
-        hide: {
-            effect: "fade",
-            duration: 1000
+        close: function( event, ui ) {
+            if (generating_preview_version) {
+                $('#preview_opener').prop('disabled', true);
+                $('#preview_versions tbody').html(
+                    '<tr>' +
+                    '<td style="text-align: center; " colspan="5">' +
+                    '<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ' +
+                    '</td>' +
+                    '</tr>');
+            }
         }
     });
 
@@ -24,7 +32,7 @@ $(function() {
         $( "#preview_dialog" ).dialog( "open" );
     });
     $( "#version_build" ).on( "click", function() {
-        $('#preview_dialog_div').html('<i class="fa fa-gear fa-spin" style="font-size:24px"></i> Generating new preview version ');
-        $('.ui-dialog-titlebar-close').prop('disabled', true);
+        generating_preview_version = true;
+        $('#preview_dialog').dialog( "close" );
     });
 });

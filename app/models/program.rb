@@ -4,8 +4,8 @@ class Program < ApplicationRecord
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
-    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution_name' => { column: :institution_name, converter: InstitutionConverter },
+    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'institution name' => { column: :institution_name, converter: InstitutionConverter },
     'program type' => { column: :program_type, converter: BaseConverter },
     'description' => { column: :description, converter: BaseConverter },
     'full time undergraduate' => { column: :full_time_undergraduate, converter: BaseConverter },

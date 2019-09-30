@@ -161,7 +161,6 @@ class Institution < ApplicationRecord
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :school_certifying_officials, -> { order 'priority, last_name' },
            primary_key: :facility_code, foreign_key: 'facility_code'
-  has_many :programs, -> { order(description: :asc) }, primary_key: :facility_code, foreign_key: 'facility_code'
 
   self.per_page = 10
 
@@ -211,6 +210,10 @@ class Institution < ApplicationRecord
 
   def school?
     institution_type_name != 'OJT'
+  end
+
+  def institution_programs
+    InstitutionProgram.where('facility_code = ? AND version = ?', facility_code, version).order(:description)
   end
 
   # Given a search term representing a partial school name, returns all
