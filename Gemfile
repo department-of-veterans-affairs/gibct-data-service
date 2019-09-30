@@ -26,7 +26,7 @@ gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'pg', '~> 0.15'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rubyzip', '~> 1.2', '>= 1.2.1'
+gem 'rubyzip', '>= 1.3.0'
 
 gem 'sentry-raven', '~> 2.3.0'
 
