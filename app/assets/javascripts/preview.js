@@ -9,7 +9,7 @@ $(function() {
                 '</tr>');
         }
     });
-    var generating_preview_version = false;
+    let generating_preview_version = false;
     $( "#preview_dialog" ).dialog({
         autoOpen: false,
         modal: true,
