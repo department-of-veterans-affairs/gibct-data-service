@@ -3,13 +3,13 @@
 module V0
   # rubocop:disable Metrics/ClassLength
   class InstitutionProgramsController < ApiController
-    # GET /v0/institutions/autocomplete?term=harv
+    # GET /v0/institution_programs/autocomplete?term=harv
 
     def autocomplete
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
-        @data = approved_institutions.autocomplete(@search_term)
+        @data = InstitutionProgram.version(@version[:number]).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -19,7 +19,7 @@ module V0
       render json: { data: @data, meta: @meta, links: @links }, adapter: :json
     end
 
-    # GET /v0/institutions?name=duluth&x=y
+    # GET /v0/institution_programs?name=duluth&x=y
     def index
       @meta = {
         version: @version,
@@ -33,35 +33,6 @@ module V0
       else
         render json: search_results.order(:institution).page(params[:page]), meta: @meta
       end
-    end
-
-    # GET /v0/institutions/20005123
-    def show
-      resource = approved_institutions.find_by(facility_code: params[:id])
-
-      raise Common::Exceptions::RecordNotFound, params[:id] unless resource
-
-      @links = { self: self_link }
-      render json: resource, serializer: InstitutionProfileSerializer,
-             meta: { version: @version }, links: @links
-    end
-
-    # GET /v0/institituons/20005123/children
-    def children
-      children = Institution.version(@version[:number])
-                            .where(parent_facility_code_id: params[:id])
-                            .order(:institution)
-                            .page(params[:page])
-
-      @meta = {
-        version: @version,
-        count: children.count
-      }
-      @links = { self: self_link }
-      render json: children,
-             each_serializer: InstitutionSerializer,
-             meta: @meta,
-             links: @links
     end
 
     private

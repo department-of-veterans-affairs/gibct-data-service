@@ -33,6 +33,10 @@ Rails.application.routes.draw do
       get :children, on: :member
     end
 
+    resources :institution_programs, only: [:index] do
+      get :autocomplete, on: :collection
+    end
+
     resources :zipcode_rates, only: :show
   end
 end
