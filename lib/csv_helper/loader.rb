@@ -57,6 +57,8 @@ module CsvHelper
 
     # default validations are run during import to prevent bad data from going into table,
     # this runs validations with a context of :load_csv
+    # validations with this context are ran now due either the validation needing data in the table being loaded into
+    # or the validation causes issues on save
     def load_csv_validation(records, failed_instances, options)
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
