@@ -31,7 +31,7 @@ describe ProgramValidator do
       error_messages = program.errors.messages
       expect(error_messages.any?).to eq(true)
 
-      expect(error_messages[:base]).to include(ProgramValidator.missing_facility_code_error_msg(program))
+      expect(error_messages[:base]).to include(ValidatorUtil.missing_facility_code_error_msg(program))
     end
   end
 end

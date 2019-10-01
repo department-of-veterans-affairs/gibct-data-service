@@ -9,7 +9,7 @@ class UploadsController < ApplicationController
     @upload = new_upload(params[:csv_type])
     return if @upload.csv_type_check?
 
-    alert_and_log(@upload.errors.full_messages.join(', '), nil)
+    alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
   end
 
@@ -20,7 +20,7 @@ class UploadsController < ApplicationController
       failed = load_csv.failed_instances
       @upload.check_for_headers
 
-      validation_warnings = failed.map(&:display_errors_with_row)
+      validation_warnings = failed.map(&:display_errors_with_row).uniq.sort
       header_warnings = @upload.all_warnings
 
       flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
@@ -41,13 +41,13 @@ class UploadsController < ApplicationController
     @upload = Upload.find_by(id: params[:id])
     return if @upload.present?
 
-    alert_and_log("Upload with id: '#{params[:id]}' not found", nil)
+    alert_and_log("Upload with id: '#{params[:id]}' not found")
     redirect_to uploads_path
   end
 
   private
 
-  def alert_and_log(message, error)
+  def alert_and_log(message, error = nil)
     Rails.logger.error message + (error&.backtrace).to_s
     flash.alert = message
   end
