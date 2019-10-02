@@ -15,5 +15,5 @@ class Program < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
-  validates_with ProgramValidator, on: :load_csv
+  validates_with ProgramValidator, on: :after_import
 end

@@ -14,11 +14,8 @@ module CsvHelper
     keys = errors.keys - [:row]
 
     "Row #{row.presence || 'N/A'} : " + keys.map do |key|
-      if key.to_s == 'base'
-        errors[key].join(', ')
-      else
-        key.to_s + ' : ' + errors[key].join(', ')
-      end
+      message = key.to_s == 'base' ? '' : "#{key} : "
+      message + errors[key].join(', ')
     end.join(', ')
   end
 
