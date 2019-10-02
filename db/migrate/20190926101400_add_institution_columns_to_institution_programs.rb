@@ -8,7 +8,7 @@ class AddInstitutionColumnsToInstitutionPrograms < ActiveRecord::Migration
     add_column :institution_programs, :institution_country, :string
     add_column :institution_programs, :preferred_provider, :boolean
     add_column :institution_programs, :dod_bah, :int
-    add_column :institution_programs, :bah, :float
+    add_column :institution_programs, :va_bah, :float
 
     add_index :institution_programs,
               [:version, :description],

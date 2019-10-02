@@ -8,7 +8,7 @@ class AddInstitutionColumnsToInstitutionProgramsArchives < ActiveRecord::Migrati
     add_column :institution_programs_archives, :institution_country, :string
     add_column :institution_programs_archives, :preferred_provider, :boolean
     add_column :institution_programs_archives, :dod_bah, :int
-    add_column :institution_programs_archives, :bah, :float
+    add_column :institution_programs_archives, :va_bah, :float
 
     add_index :institution_programs_archives,
               [:version, :description],
