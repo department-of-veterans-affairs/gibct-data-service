@@ -1172,9 +1172,8 @@ ActiveRecord::Schema.define(version: 20190927174523) do
     t.string "graduate",                limit: 15
     t.string "full_time_modifier",      limit: 1
     t.string "length",                  limit: 7
+    t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description", using: :btree
   end
-
-  add_index "programs", ["facility_code", "description"], name: "index_programs_on_facility_code_and_description", using: :btree
 
   create_table "school_certifying_officials", force: :cascade do |t|
     t.string "facility_code"
