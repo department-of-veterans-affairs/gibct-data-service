@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolCertifyingOfficial < ActiveRecord::Base
+class SchoolCertifyingOfficial < ApplicationRecord
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

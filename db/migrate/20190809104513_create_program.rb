@@ -1,4 +1,4 @@
-class CreateProgram < ActiveRecord::Migration
+class CreateProgram < ActiveRecord::Migration[4.2]
     def change
       create_table :programs do |t|
         t.string :facility_code, null: false, :limit => 8

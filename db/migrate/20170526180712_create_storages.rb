@@ -1,4 +1,4 @@
-class CreateStorages < ActiveRecord::Migration
+class CreateStorages < ActiveRecord::Migration[4.2]
   def change
     create_table :storages do |t|
       t.belongs_to :user, null: false

@@ -4,7 +4,7 @@
 #
 # The default is "development".
 #
-environment 'production'
+environment ENV.fetch("RAILS_ENV") { "production" }
 
 # Configure "min" to be the minimum number of threads to use to answer
 # requests and "max" the maximum.

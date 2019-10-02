@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Storage < ActiveRecord::Base
+class Storage < ApplicationRecord
   attr_accessor :upload_file
 
   belongs_to :user, inverse_of: :storages

@@ -26,7 +26,9 @@ pipeline {
 
     stage('Run tests') {
       steps {
-        sh 'make ci'
+        withEnv(['RAILS_ENV=test', 'CI=true']) {
+            sh 'make ci'
+        }
       }
     }
 

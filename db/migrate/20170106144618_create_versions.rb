@@ -1,4 +1,4 @@
-class CreateVersions < ActiveRecord::Migration
+class CreateVersions < ActiveRecord::Migration[4.2]
   def change
     create_table :versions do |t|
       t.belongs_to :user, null: false

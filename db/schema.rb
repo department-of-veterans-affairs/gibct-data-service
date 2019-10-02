@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -30,9 +29,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.date     "end_date"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.index ["dapip_id"], name: "index_accreditation_actions_on_dapip_id", using: :btree
   end
-
-  add_index "accreditation_actions", ["dapip_id"], name: "index_accreditation_actions_on_dapip_id", using: :btree
 
   create_table "accreditation_institute_campuses", force: :cascade do |t|
     t.integer  "dapip_id"
@@ -51,11 +49,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.date     "update_date"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["dapip_id"], name: "index_accreditation_institute_campuses_on_dapip_id", using: :btree
+    t.index ["ope"], name: "index_accreditation_institute_campuses_on_ope", using: :btree
+    t.index ["ope6"], name: "index_accreditation_institute_campuses_on_ope6", using: :btree
   end
-
-  add_index "accreditation_institute_campuses", ["dapip_id"], name: "index_accreditation_institute_campuses_on_dapip_id", using: :btree
-  add_index "accreditation_institute_campuses", ["ope"], name: "index_accreditation_institute_campuses_on_ope", using: :btree
-  add_index "accreditation_institute_campuses", ["ope6"], name: "index_accreditation_institute_campuses_on_ope6", using: :btree
 
   create_table "accreditation_records", force: :cascade do |t|
     t.integer  "dapip_id"
@@ -74,9 +71,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "accreditation_type"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.index ["dapip_id"], name: "index_accreditation_records_on_dapip_id", using: :btree
   end
-
-  add_index "accreditation_records", ["dapip_id"], name: "index_accreditation_records_on_dapip_id", using: :btree
 
   create_table "arf_gi_bills", force: :cascade do |t|
     t.string   "facility_code",             null: false
@@ -88,18 +84,16 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer  "count_of_reg_students"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.index ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "arf_gi_bills", ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true, using: :btree
 
   create_table "calculator_constants", force: :cascade do |t|
     t.string   "name"
     t.float    "float_value"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["name"], name: "index_calculator_constants_on_name", using: :btree
   end
-
-  add_index "calculator_constants", ["name"], name: "index_calculator_constants_on_name", using: :btree
 
   create_table "complaints", force: :cascade do |t|
     t.string   "status"
@@ -132,10 +126,9 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "education_benefits"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.index ["facility_code"], name: "index_complaints_on_facility_code", using: :btree
+    t.index ["ope6"], name: "index_complaints_on_ope6", using: :btree
   end
-
-  add_index "complaints", ["facility_code"], name: "index_complaints_on_facility_code", using: :btree
-  add_index "complaints", ["ope6"], name: "index_complaints_on_ope6", using: :btree
 
   create_table "crosswalks", force: :cascade do |t|
     t.string   "facility_code", null: false
@@ -148,13 +141,12 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "notes"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.index ["cross"], name: "index_crosswalks_on_cross", using: :btree
+    t.index ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
+    t.index ["institution"], name: "index_crosswalks_on_institution", using: :btree
+    t.index ["ope"], name: "index_crosswalks_on_ope", using: :btree
+    t.index ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
   end
-
-  add_index "crosswalks", ["cross"], name: "index_crosswalks_on_cross", using: :btree
-  add_index "crosswalks", ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true, using: :btree
-  add_index "crosswalks", ["institution"], name: "index_crosswalks_on_institution", using: :btree
-  add_index "crosswalks", ["ope"], name: "index_crosswalks_on_ope", using: :btree
-  add_index "crosswalks", ["ope6"], name: "index_crosswalks_on_ope6", using: :btree
 
   create_table "edu_programs", force: :cascade do |t|
     t.string  "facility_code",             null: false
@@ -171,9 +163,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string  "vet_tec_program"
     t.integer "tuition_amount",            null: false
     t.integer "length_in_weeks",           null: false
+    t.index ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program", using: :btree
   end
-
-  add_index "edu_programs", ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program", using: :btree
 
   create_table "eight_keys", force: :cascade do |t|
     t.string   "cross"
@@ -185,12 +176,11 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "notes"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["cross"], name: "index_eight_keys_on_cross", using: :btree
+    t.index ["institution"], name: "index_eight_keys_on_institution", using: :btree
+    t.index ["ope"], name: "index_eight_keys_on_ope", using: :btree
+    t.index ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
   end
-
-  add_index "eight_keys", ["cross"], name: "index_eight_keys_on_cross", using: :btree
-  add_index "eight_keys", ["institution"], name: "index_eight_keys_on_institution", using: :btree
-  add_index "eight_keys", ["ope"], name: "index_eight_keys_on_ope", using: :btree
-  add_index "eight_keys", ["ope6"], name: "index_eight_keys_on_ope6", using: :btree
 
   create_table "hcms", force: :cascade do |t|
     t.string   "ope",              null: false
@@ -204,9 +194,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "hcm_reason"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.index ["ope"], name: "index_hcms_on_ope", using: :btree
   end
-
-  add_index "hcms", ["ope"], name: "index_hcms_on_ope", using: :btree
 
   create_table "institution_programs", force: :cascade do |t|
     t.string  "facility_code",             null: false
@@ -229,11 +218,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string  "vet_tec_program"
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
+    t.index ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
   end
 
-  add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
-
-  create_table "institution_programs_archives", force: :cascade do |t|
+  create_table "institution_programs_archives", id: :integer, default: -> { "nextval('institution_programs_id_seq'::regclass)" }, force: :cascade do |t|
     t.string  "facility_code",             null: false
     t.string  "program_type"
     t.string  "description",               null: false
@@ -254,9 +242,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string  "vet_tec_program"
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
+    t.index ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
   end
-
-  add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
 
   create_table "institutions", force: :cascade do |t|
     t.integer  "version",                                                             null: false
@@ -379,26 +366,26 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.boolean  "stem_indicator",                                      default: false
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
+    t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix", using: :btree
+    t.index ["address_1"], name: "index_institutions_on_address_1", using: :btree
+    t.index ["address_2"], name: "index_institutions_on_address_2", using: :btree
+    t.index ["address_3"], name: "index_institutions_on_address_3", using: :btree
+    t.index ["city"], name: "index_institutions_on_city", using: :btree
+    t.index ["cross"], name: "index_institutions_on_cross", using: :btree
+    t.index ["distance_learning"], name: "index_institutions_on_distance_learning", using: :btree
+    t.index ["facility_code"], name: "index_institutions_on_facility_code", using: :btree
+    t.index ["institution"], name: "index_institutions_on_institution", using: :btree
+    t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
+    t.index ["online_only"], name: "index_institutions_on_online_only", using: :btree
+    t.index ["ope"], name: "index_institutions_on_ope", using: :btree
+    t.index ["ope6"], name: "index_institutions_on_ope6", using: :btree
+    t.index ["state"], name: "index_institutions_on_state", using: :btree
+    t.index ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
+    t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id", using: :btree
+    t.index ["version"], name: "index_institutions_on_version", using: :btree
   end
 
-  add_index "institutions", ["address_1"], name: "index_institutions_on_address_1", using: :btree
-  add_index "institutions", ["address_2"], name: "index_institutions_on_address_2", using: :btree
-  add_index "institutions", ["address_3"], name: "index_institutions_on_address_3", using: :btree
-  add_index "institutions", ["city"], name: "index_institutions_on_city", using: :btree
-  add_index "institutions", ["cross"], name: "index_institutions_on_cross", using: :btree
-  add_index "institutions", ["distance_learning"], name: "index_institutions_on_distance_learning", using: :btree
-  add_index "institutions", ["facility_code"], name: "index_institutions_on_facility_code", using: :btree
-  add_index "institutions", ["institution"], name: "index_institutions_on_institution", using: :btree
-  add_index "institutions", ["institution_type_name"], name: "index_institutions_on_institution_type_name", using: :btree
-  add_index "institutions", ["online_only"], name: "index_institutions_on_online_only", using: :btree
-  add_index "institutions", ["ope"], name: "index_institutions_on_ope", using: :btree
-  add_index "institutions", ["ope6"], name: "index_institutions_on_ope6", using: :btree
-  add_index "institutions", ["state"], name: "index_institutions_on_state", using: :btree
-  add_index "institutions", ["stem_offered"], name: "index_institutions_on_stem_offered", using: :btree
-  add_index "institutions", ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id", using: :btree
-  add_index "institutions", ["version"], name: "index_institutions_on_version", using: :btree
-
-  create_table "institutions_archives", force: :cascade do |t|
+  create_table "institutions_archives", id: :integer, default: -> { "nextval('institutions_id_seq'::regclass)" }, force: :cascade do |t|
     t.integer  "version",                                                             null: false
     t.string   "institution_type_name"
     t.string   "facility_code"
@@ -519,23 +506,23 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.boolean  "stem_indicator",                                      default: false
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
+    t.index "lower((institution)::text) text_pattern_ops", name: "institutions_archives_lower_idx", using: :btree
+    t.index ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
+    t.index ["address_2"], name: "institutions_archives_address_2_idx", using: :btree
+    t.index ["address_3"], name: "institutions_archives_address_3_idx", using: :btree
+    t.index ["city"], name: "institutions_archives_city_idx", using: :btree
+    t.index ["cross"], name: "institutions_archives_cross_idx", using: :btree
+    t.index ["distance_learning"], name: "institutions_archives_distance_learning_idx", using: :btree
+    t.index ["facility_code"], name: "institutions_archives_facility_code_idx", using: :btree
+    t.index ["institution"], name: "institutions_archives_institution_idx", using: :btree
+    t.index ["institution_type_name"], name: "institutions_archives_institution_type_name_idx", using: :btree
+    t.index ["online_only"], name: "institutions_archives_online_only_idx", using: :btree
+    t.index ["ope"], name: "institutions_archives_ope_idx", using: :btree
+    t.index ["ope6"], name: "institutions_archives_ope6_idx", using: :btree
+    t.index ["state"], name: "institutions_archives_state_idx", using: :btree
+    t.index ["stem_offered"], name: "institutions_archives_stem_offered_idx", using: :btree
+    t.index ["version"], name: "institutions_archives_version_idx", using: :btree
   end
-
-  add_index "institutions_archives", ["address_1"], name: "institutions_archives_address_1_idx", using: :btree
-  add_index "institutions_archives", ["address_2"], name: "institutions_archives_address_2_idx", using: :btree
-  add_index "institutions_archives", ["address_3"], name: "institutions_archives_address_3_idx", using: :btree
-  add_index "institutions_archives", ["city"], name: "institutions_archives_city_idx", using: :btree
-  add_index "institutions_archives", ["cross"], name: "institutions_archives_cross_idx", using: :btree
-  add_index "institutions_archives", ["distance_learning"], name: "institutions_archives_distance_learning_idx", using: :btree
-  add_index "institutions_archives", ["facility_code"], name: "institutions_archives_facility_code_idx", using: :btree
-  add_index "institutions_archives", ["institution"], name: "institutions_archives_institution_idx", using: :btree
-  add_index "institutions_archives", ["institution_type_name"], name: "institutions_archives_institution_type_name_idx", using: :btree
-  add_index "institutions_archives", ["online_only"], name: "institutions_archives_online_only_idx", using: :btree
-  add_index "institutions_archives", ["ope"], name: "institutions_archives_ope_idx", using: :btree
-  add_index "institutions_archives", ["ope6"], name: "institutions_archives_ope6_idx", using: :btree
-  add_index "institutions_archives", ["state"], name: "institutions_archives_state_idx", using: :btree
-  add_index "institutions_archives", ["stem_offered"], name: "institutions_archives_stem_offered_idx", using: :btree
-  add_index "institutions_archives", ["version"], name: "institutions_archives_version_idx", using: :btree
 
   create_table "ipeds_cip_codes", force: :cascade do |t|
     t.string   "cross",      null: false
@@ -543,11 +530,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer  "ctotalt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cipcode"], name: "index_ipeds_cip_codes_on_cipcode", using: :btree
+    t.index ["cross"], name: "index_ipeds_cip_codes_on_cross", using: :btree
+    t.index ["ctotalt"], name: "index_ipeds_cip_codes_on_ctotalt", using: :btree
   end
-
-  add_index "ipeds_cip_codes", ["cipcode"], name: "index_ipeds_cip_codes_on_cipcode", using: :btree
-  add_index "ipeds_cip_codes", ["cross"], name: "index_ipeds_cip_codes_on_cross", using: :btree
-  add_index "ipeds_cip_codes", ["ctotalt"], name: "index_ipeds_cip_codes_on_ctotalt", using: :btree
 
   create_table "ipeds_hds", force: :cascade do |t|
     t.string   "cross",                  null: false
@@ -621,9 +607,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer  "dfrcuscg"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.index ["cross"], name: "index_ipeds_hds_on_cross", using: :btree
   end
-
-  add_index "ipeds_hds", ["cross"], name: "index_ipeds_hds_on_cross", using: :btree
 
   create_table "ipeds_ic_ays", force: :cascade do |t|
     t.string   "cross",                null: false
@@ -1112,9 +1097,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer  "vet9"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.index ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
   end
-
-  add_index "ipeds_ics", ["cross"], name: "index_ipeds_ics_on_cross", using: :btree
 
   create_table "mous", force: :cascade do |t|
     t.string   "ope",              null: false
@@ -1130,10 +1114,9 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "approval_date"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.index ["ope"], name: "index_mous_on_ope", using: :btree
+    t.index ["ope6"], name: "index_mous_on_ope6", using: :btree
   end
-
-  add_index "mous", ["ope"], name: "index_mous_on_ope", using: :btree
-  add_index "mous", ["ope6"], name: "index_mous_on_ope6", using: :btree
 
   create_table "outcomes", force: :cascade do |t|
     t.string   "facility_code",                null: false
@@ -1147,9 +1130,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "school_level_va"
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.index ["facility_code"], name: "index_outcomes_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "outcomes", ["facility_code"], name: "index_outcomes_on_facility_code", unique: true, using: :btree
 
   create_table "p911_tfs", force: :cascade do |t|
     t.string   "facility_code",      null: false
@@ -1163,9 +1145,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer  "number_of_payments"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.index ["facility_code"], name: "index_p911_tfs_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "p911_tfs", ["facility_code"], name: "index_p911_tfs_on_facility_code", unique: true, using: :btree
 
   create_table "p911_yrs", force: :cascade do |t|
     t.string   "facility_code",      null: false
@@ -1179,9 +1160,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.integer  "number_of_payments"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.index ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "p911_yrs", ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true, using: :btree
 
   create_table "programs", force: :cascade do |t|
     t.string "facility_code",           limit: 8,  null: false
@@ -1217,9 +1197,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.text     "notes"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.index ["facility_code"], name: "index_school_closures_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "school_closures", ["facility_code"], name: "index_school_closures_on_facility_code", unique: true, using: :btree
 
   create_table "scorecards", force: :cascade do |t|
     t.string   "cross",                        null: false
@@ -1347,10 +1326,9 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.float    "grad_debt_mdn10yr_supp"
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.index ["cross"], name: "index_scorecards_on_cross", using: :btree
+    t.index ["ope"], name: "index_scorecards_on_ope", using: :btree
   end
-
-  add_index "scorecards", ["cross"], name: "index_scorecards_on_cross", using: :btree
-  add_index "scorecards", ["ope"], name: "index_scorecards_on_ope", using: :btree
 
   create_table "sec109_closed_schools", force: :cascade do |t|
     t.string  "facility_code"
@@ -1363,9 +1341,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.boolean  "sec_702"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.index ["facility_code"], name: "index_sec702_schools_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "sec702_schools", ["facility_code"], name: "index_sec702_schools_on_facility_code", unique: true, using: :btree
 
   create_table "sec702s", force: :cascade do |t|
     t.string   "state",           null: false
@@ -1373,19 +1350,17 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "state_full_name"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["state"], name: "index_sec702s_on_state", unique: true, using: :btree
   end
-
-  add_index "sec702s", ["state"], name: "index_sec702s_on_state", unique: true, using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+    t.index ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
   end
-
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
-  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "settlements", force: :cascade do |t|
     t.string   "cross",                  null: false
@@ -1397,9 +1372,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "settlement_link"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.index ["cross"], name: "index_settlements_on_cross", using: :btree
   end
-
-  add_index "settlements", ["cross"], name: "index_settlements_on_cross", using: :btree
 
   create_table "stem_cip_codes", force: :cascade do |t|
     t.integer  "two_digit_series"
@@ -1407,9 +1381,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "cip_code_title"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.index ["twentyten_cip_code"], name: "index_stem_cip_codes_on_twentyten_cip_code", using: :btree
   end
-
-  add_index "stem_cip_codes", ["twentyten_cip_code"], name: "index_stem_cip_codes_on_twentyten_cip_code", using: :btree
 
   create_table "storages", force: :cascade do |t|
     t.integer  "user_id",    null: false
@@ -1419,11 +1392,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.binary   "data",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["csv_type"], name: "index_storages_on_csv_type", unique: true, using: :btree
+    t.index ["updated_at"], name: "index_storages_on_updated_at", using: :btree
+    t.index ["user_id"], name: "index_storages_on_user_id", using: :btree
   end
-
-  add_index "storages", ["csv_type"], name: "index_storages_on_csv_type", unique: true, using: :btree
-  add_index "storages", ["updated_at"], name: "index_storages_on_updated_at", using: :btree
-  add_index "storages", ["user_id"], name: "index_storages_on_user_id", using: :btree
 
   create_table "svas", force: :cascade do |t|
     t.string   "cross"
@@ -1437,9 +1409,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "sva_yes"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.index ["cross"], name: "index_svas_on_cross", using: :btree
   end
-
-  add_index "svas", ["cross"], name: "index_svas_on_cross", using: :btree
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id",                    null: false
@@ -1449,11 +1420,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.boolean  "ok",         default: false, null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.index ["csv_type"], name: "index_uploads_on_csv_type", using: :btree
+    t.index ["updated_at"], name: "index_uploads_on_updated_at", using: :btree
+    t.index ["user_id"], name: "index_uploads_on_user_id", using: :btree
   end
-
-  add_index "uploads", ["csv_type"], name: "index_uploads_on_csv_type", using: :btree
-  add_index "uploads", ["updated_at"], name: "index_uploads_on_updated_at", using: :btree
-  add_index "uploads", ["user_id"], name: "index_uploads_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -1468,10 +1438,9 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.inet     "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "versions", force: :cascade do |t|
     t.integer  "user_id",                      null: false
@@ -1481,11 +1450,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.datetime "updated_at",                   null: false
     t.binary   "uuid",                         null: false
     t.datetime "completed_at"
+    t.index ["number"], name: "index_versions_on_number", using: :btree
+    t.index ["user_id"], name: "index_versions_on_user_id", using: :btree
+    t.index ["uuid"], name: "index_versions_on_uuid", unique: true, using: :btree
   end
-
-  add_index "versions", ["number"], name: "index_versions_on_number", using: :btree
-  add_index "versions", ["user_id"], name: "index_versions_on_user_id", using: :btree
-  add_index "versions", ["uuid"], name: "index_versions_on_uuid", unique: true, using: :btree
 
   create_table "vsocs", force: :cascade do |t|
     t.string   "facility_code",    null: false
@@ -1494,9 +1462,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.string   "institution"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.index ["facility_code"], name: "index_vsocs_on_facility_code", unique: true, using: :btree
   end
-
-  add_index "vsocs", ["facility_code"], name: "index_vsocs_on_facility_code", unique: true, using: :btree
 
   create_table "weams", force: :cascade do |t|
     t.string   "facility_code",                                            null: false
@@ -1546,11 +1513,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.boolean  "stem_indicator",                           default: false
     t.string   "campus_type"
     t.string   "parent_facility_code_id"
+    t.index ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
+    t.index ["institution"], name: "index_weams_on_institution", using: :btree
+    t.index ["state"], name: "index_weams_on_state", using: :btree
   end
-
-  add_index "weams", ["facility_code"], name: "index_weams_on_facility_code", unique: true, using: :btree
-  add_index "weams", ["institution"], name: "index_weams_on_institution", using: :btree
-  add_index "weams", ["state"], name: "index_weams_on_state", using: :btree
 
   create_table "yellow_ribbon_program_sources", force: :cascade do |t|
     t.string   "facility_code"
@@ -1590,9 +1556,8 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.text     "notes"
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
+    t.index ["facility_code"], name: "index_yellow_ribbon_program_sources_on_facility_code", using: :btree
   end
-
-  add_index "yellow_ribbon_program_sources", ["facility_code"], name: "index_yellow_ribbon_program_sources_on_facility_code", using: :btree
 
   create_table "yellow_ribbon_programs", force: :cascade do |t|
     t.integer  "version",                                               null: false
@@ -1603,10 +1568,9 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.decimal  "contribution_amount",          precision: 12, scale: 2
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false
+    t.index ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id", using: :btree
+    t.index ["version"], name: "index_yellow_ribbon_programs_on_version", using: :btree
   end
-
-  add_index "yellow_ribbon_programs", ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id", using: :btree
-  add_index "yellow_ribbon_programs", ["version"], name: "index_yellow_ribbon_programs_on_version", using: :btree
 
   create_table "zipcode_rates", force: :cascade do |t|
     t.string   "zip_code"
@@ -1617,11 +1581,10 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "version"
+    t.index ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code", using: :btree
   end
 
-  add_index "zipcode_rates", ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code", using: :btree
-
-  create_table "zipcode_rates_archives", force: :cascade do |t|
+  create_table "zipcode_rates_archives", id: :integer, default: -> { "nextval('zipcode_rates_id_seq'::regclass)" }, force: :cascade do |t|
     t.string   "zip_code"
     t.string   "mha_code"
     t.string   "mha_name"
@@ -1630,8 +1593,7 @@ ActiveRecord::Schema.define(version: 20190923162902) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "version"
+    t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx", using: :btree
   end
-
-  add_index "zipcode_rates_archives", ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx", using: :btree
 
 end

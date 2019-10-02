@@ -1,4 +1,4 @@
-class AddPopulateAndIndexUuidOnVersions < ActiveRecord::Migration
+class AddPopulateAndIndexUuidOnVersions < ActiveRecord::Migration[4.2]
   def up
     add_column :versions, :uuid, :binary, limit: 16
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Sva < ActiveRecord::Base
+class Sva < ApplicationRecord
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

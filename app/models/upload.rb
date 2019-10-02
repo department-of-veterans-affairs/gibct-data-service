@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Upload < ActiveRecord::Base
+class Upload < ApplicationRecord
   attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions
@@ -55,7 +55,7 @@ class Upload < ActiveRecord::Base
   end
 
   def self.last_uploads_rows
-    uploads = Upload.last_uploads
+    uploads = Upload.last_uploads.to_a
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads

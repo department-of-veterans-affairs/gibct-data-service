@@ -1,4 +1,4 @@
-class AddApprovalStatusToInstitutions < ActiveRecord::Migration
+class AddApprovalStatusToInstitutions < ActiveRecord::Migration[4.2]
   def change
     add_column :institutions, :approval_status, :string
   end

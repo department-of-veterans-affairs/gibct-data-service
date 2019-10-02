@@ -2,7 +2,7 @@
 
 require 'securerandom'
 
-class Version < ActiveRecord::Base
+class Version < ApplicationRecord
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 

@@ -1,4 +1,4 @@
-class CreateStemCipcodes < ActiveRecord::Migration
+class CreateStemCipcodes < ActiveRecord::Migration[4.2]
   def change
     create_table :stem_cip_codes do |t|
       t.integer :two_digit_series

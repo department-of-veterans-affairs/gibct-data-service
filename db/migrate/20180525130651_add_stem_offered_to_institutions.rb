@@ -1,4 +1,4 @@
-class AddStemOfferedToInstitutions < ActiveRecord::Migration
+class AddStemOfferedToInstitutions < ActiveRecord::Migration[4.2]
   def change
     add_column :institutions, :stem_offered, :boolean
   end
