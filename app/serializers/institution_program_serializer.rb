@@ -18,4 +18,10 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :vet_success_email
   attribute :tuition_amount
   attribute :length_in_weeks
+  attribute :facility_code
+  attribute :institution_name
+  attribute :institution_city
+  attribute :institution_state
+  attribute :institution_country
+  attribute :preferred_provider
 end

@@ -532,7 +532,8 @@ module InstitutionBuilder
         institution_state,
         institution_country,
         preferred_provider,
-        dod_bah
+        dod_bah,
+        va_bah
       )
       SELECT
         a.facility_code,
@@ -560,7 +561,8 @@ module InstitutionBuilder
         physical_state,
         physical_country,
         preferred_provider,
-        dod_bah
+        dod_bah,
+        bah
       FROM programs a
         INNER JOIN edu_programs b ON a.facility_code = b.facility_code
           AND LOWER(description) = LOWER(vet_tec_program)
