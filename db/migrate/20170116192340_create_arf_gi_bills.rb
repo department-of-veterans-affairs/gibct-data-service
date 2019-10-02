@@ -1,4 +1,4 @@
-class CreateArfGiBills < ActiveRecord::Migration
+class CreateArfGiBills < ActiveRecord::Migration[4.2]
   def change
     create_table :arf_gi_bills do |t|
       # Used in the building of DataCsv

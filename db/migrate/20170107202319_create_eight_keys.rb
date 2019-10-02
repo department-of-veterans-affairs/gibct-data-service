@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class CreateEightKeys < ActiveRecord::Migration
+class CreateEightKeys < ActiveRecord::Migration[4.2]
   def change
     create_table :eight_keys do |t|
       # Used in the building of DataCsv

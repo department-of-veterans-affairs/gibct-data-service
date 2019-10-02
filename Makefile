@@ -13,7 +13,7 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "bundle exec rake db:setup db:migrate ci"
+	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
 
 .PHONY: console
 console:
@@ -21,7 +21,7 @@ console:
 
 .PHONY: db
 db:
-	@$(BASH_DEV) "bundle exec rake db:setup db:migrate"
+	@$(BASH_DEV) "bin/rails db:setup db:migrate"
 
 .PHONY: guard
 guard: db
@@ -29,15 +29,15 @@ guard: db
 
 .PHONY: lint
 lint: db
-	@$(BASH_DEV) "bundle exec rake lint"
+	@$(BASH_DEV) "bin/rails lint"
 
 .PHONY: security
 security: db
-	@$(BASH_DEV) "bundle exec rake security"
+	@$(BASH_DEV) "bin/rails security"
 
 .PHONY: spec
 spec: db
-	@$(BASH_TEST) "bundle exec rake spec"
+	@$(BASH_TEST) "bin/rails spec"
 
 .PHONY: up
 up: db

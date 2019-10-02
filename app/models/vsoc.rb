@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Vsoc < ActiveRecord::Base
+class Vsoc < ApplicationRecord
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[vetsuccess_name vetsuccess_email].freeze

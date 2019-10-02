@@ -1,4 +1,4 @@
-class CreateVsocs < ActiveRecord::Migration
+class CreateVsocs < ActiveRecord::Migration[4.2]
   def change
     create_table :vsocs do |t|
       # Used in the building of DataCsv
