@@ -24,4 +24,6 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :institution_state
   attribute :institution_country
   attribute :preferred_provider
+  attribute :va_bah
+  attribute :dod_bah
 end
