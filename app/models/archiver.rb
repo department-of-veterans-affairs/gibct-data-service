@@ -20,12 +20,10 @@ module Archiver
       end
     rescue ActiveRecord::StatementInvalid => exception
       notice = 'There was an error occurring at the database level'
-      error_msg = exception.original_exception.result.error_message
-      process_exception(notice, error_msg, production_version, previous_version)
+      process_exception(notice, exception, production_version, previous_version)
     rescue StandardError => exception
       notice = 'There was an error of unexpected origin'
-      error_msg = exception.message
-      process_exception(notice, error_msg, production_version, previous_version)
+      process_exception(notice, exception, production_version, previous_version)
     end
   end
 
@@ -41,12 +39,12 @@ module Archiver
     ActiveRecord::Base.connection.execute(sql)
   end
 
-  def self.process_exception(notice, error_msg, production_version, previous_version)
+  def self.process_exception(notice, exception, production_version, previous_version)
     Raven.extra_context(
       production_version: production_version,
       previous_version: previous_version
     )
     Raven.capture_exception(exception) if ENV['SENTRY_DSN'].present?
-    Rails.logger.error "#{notice}: #{error_msg}"
+    Rails.logger.error "#{notice}: #{exception.message}"
   end
 end

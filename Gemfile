@@ -24,7 +24,7 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
-gem 'sentry-raven', '2.9.0' # don't change gem version unless sentry server is also upgraded
+gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
