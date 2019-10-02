@@ -235,6 +235,7 @@ ActiveRecord::Schema.define(version: 20190926141900) do
     t.string  "institution_country"
     t.boolean "preferred_provider"
     t.integer "dod_bah"
+    t.float   "bah"
   end
 
   add_index "institution_programs", ["facility_code", "description", "version"], name: "index_institution_programs", unique: true, using: :btree
@@ -272,6 +273,7 @@ ActiveRecord::Schema.define(version: 20190926141900) do
     t.string  "institution_country"
     t.boolean "preferred_provider"
     t.integer "dod_bah"
+    t.float   "bah"
   end
 
   add_index "institution_programs_archives", ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true, using: :btree
