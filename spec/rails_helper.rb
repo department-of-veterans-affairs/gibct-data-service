@@ -61,6 +61,12 @@ RSpec.configure do |config|
   # database_cleaner configuration
   # Clear the entire DB before tests begin
   config.before(:suite) do
+    # rubocop:disable Style/StringLiterals
+    puts "***********************************************"
+    puts ENV['CI']
+    puts ENV['CI'].present?
+    puts "***********************************************"
+    # rubocop:enable Style/StringLiterals
     DatabaseCleaner.allow_remote_database_url = ENV['CI'].present?
     DatabaseCleaner.clean_with(:truncation)
   end
