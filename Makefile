@@ -13,7 +13,7 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "bin/rails db:create db:migrate db:seed ci"
+	@$(BASH_TEST) "bin/rails db:drop db:create db:migrate db:seed ci"
 
 .PHONY: console
 console:
