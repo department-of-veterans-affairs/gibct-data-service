@@ -4,7 +4,8 @@ module Archiver
   ARCHIVE_TYPES = [
     { source: Institution, archive: InstitutionsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
-    { source: ZipcodeRate, archive: ZipcodeRatesArchive }
+    { source: ZipcodeRate, archive: ZipcodeRatesArchive },
+    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialArchive }
   ].freeze
 
   def self.archive_previous_versions
