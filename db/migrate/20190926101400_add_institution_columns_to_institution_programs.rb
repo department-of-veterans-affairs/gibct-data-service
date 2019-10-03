@@ -3,9 +3,9 @@ class AddInstitutionColumnsToInstitutionPrograms < ActiveRecord::Migration[4.2]
 
   def change
     add_column :institution_programs, :institution_name, :string
-    add_column :institution_programs, :institution_city, :string
-    add_column :institution_programs, :institution_state, :string
-    add_column :institution_programs, :institution_country, :string
+    add_column :institution_programs, :city, :string
+    add_column :institution_programs, :state, :string
+    add_column :institution_programs, :country, :string
     add_column :institution_programs, :preferred_provider, :boolean
     add_column :institution_programs, :dod_bah, :int
     add_column :institution_programs, :va_bah, :float
@@ -20,20 +20,17 @@ class AddInstitutionColumnsToInstitutionPrograms < ActiveRecord::Migration[4.2]
               algorithm: :concurrently,
               name: :index_ip_version_institution_name
     add_index :institution_programs,
-              [:version, :institution_city],
+              [:version, :city],
               using: :btree,
-              algorithm: :concurrently,
-              name: :index_ip_version_institution_city
+              algorithm: :concurrently
     add_index :institution_programs,
-              [:version, :institution_state],
+              [:version, :state],
               using: :btree,
-              algorithm: :concurrently,
-              name: :index_ip_version_institution_state
+              algorithm: :concurrently
     add_index :institution_programs,
-              [:version, :institution_country],
+              [:version, :country],
               using: :btree,
-              algorithm: :concurrently,
-              name: :index_ip_version_institution_country
+              algorithm: :concurrently
     add_index :institution_programs,
               [:version, :preferred_provider],
               using: :btree,
