@@ -3,9 +3,9 @@ class AddInstitutionColumnsToInstitutionProgramsArchives < ActiveRecord::Migrati
 
   def change
     add_column :institution_programs_archives, :institution_name, :string
-    add_column :institution_programs_archives, :institution_city, :string
-    add_column :institution_programs_archives, :institution_state, :string
-    add_column :institution_programs_archives, :institution_country, :string
+    add_column :institution_programs_archives, :city, :string
+    add_column :institution_programs_archives, :state, :string
+    add_column :institution_programs_archives, :country, :string
     add_column :institution_programs_archives, :preferred_provider, :boolean
     add_column :institution_programs_archives, :dod_bah, :int
     add_column :institution_programs_archives, :va_bah, :float
@@ -20,20 +20,17 @@ class AddInstitutionColumnsToInstitutionProgramsArchives < ActiveRecord::Migrati
               algorithm: :concurrently,
               name: :index_ipa_version_institution_name
     add_index :institution_programs_archives,
-              [:version, :institution_city],
+              [:version, :city],
               using: :btree,
-              algorithm: :concurrently,
-              name: :index_ipa_version_institution_city
+              algorithm: :concurrently
     add_index :institution_programs_archives,
-              [:version, :institution_state],
+              [:version, :state],
               using: :btree,
-              algorithm: :concurrently,
-              name: :index_ipa_version_institution_state
+              algorithm: :concurrently
     add_index :institution_programs_archives,
-              [:version, :institution_country],
+              [:version, :country],
               using: :btree,
-              algorithm: :concurrently,
-              name: :index_ipa_version_institution_country
+              algorithm: :concurrently
     add_index :institution_programs_archives,
               [:version, :preferred_provider],
               using: :btree,
