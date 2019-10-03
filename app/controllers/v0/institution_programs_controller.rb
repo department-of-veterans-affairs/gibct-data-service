@@ -40,6 +40,7 @@ module V0
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
+
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
            online_only distance_learning vet_tec_provider].each do |k|
