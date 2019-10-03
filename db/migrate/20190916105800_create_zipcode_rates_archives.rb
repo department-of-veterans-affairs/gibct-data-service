@@ -1,4 +1,4 @@
-class CreateZipcodeRatesArchives < ActiveRecord::Migration
+class CreateZipcodeRatesArchives < ActiveRecord::Migration[4.2]
   def up
     safety_assured do
       execute "create table zipcode_rates_archives (like zipcode_rates

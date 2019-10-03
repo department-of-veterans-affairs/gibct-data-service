@@ -1,4 +1,4 @@
-class CreateOutcomes < ActiveRecord::Migration
+class CreateOutcomes < ActiveRecord::Migration[4.2]
   def change
     create_table :outcomes do |t|
       # Used in the building of DataCsv

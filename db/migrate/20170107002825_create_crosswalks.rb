@@ -1,4 +1,4 @@
-class CreateCrosswalks < ActiveRecord::Migration
+class CreateCrosswalks < ActiveRecord::Migration[4.2]
   def change
     create_table :crosswalks do |t|
       # Used in the building of DataCsv

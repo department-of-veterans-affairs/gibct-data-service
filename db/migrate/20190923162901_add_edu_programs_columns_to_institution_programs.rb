@@ -1,4 +1,4 @@
-class AddEduProgramsColumnsToInstitutionPrograms < ActiveRecord::Migration
+class AddEduProgramsColumnsToInstitutionPrograms < ActiveRecord::Migration[4.2]
   def change
     add_column :institution_programs, :school_locale, :string
     add_column :institution_programs, :provider_website, :string

@@ -1,4 +1,4 @@
-class CreateP911Yrs < ActiveRecord::Migration
+class CreateP911Yrs < ActiveRecord::Migration[4.2]
   def change
     create_table :p911_yrs do |t|
       # Used in the building of DataCsv

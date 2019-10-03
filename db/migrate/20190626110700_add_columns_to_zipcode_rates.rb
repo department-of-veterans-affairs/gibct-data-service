@@ -1,4 +1,4 @@
-class AddColumnsToZipcodeRates < ActiveRecord::Migration
+class AddColumnsToZipcodeRates < ActiveRecord::Migration[4.2]
   def change
     add_column :zipcode_rates, :version, :integer
 

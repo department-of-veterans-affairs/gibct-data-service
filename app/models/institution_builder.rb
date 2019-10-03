@@ -66,7 +66,7 @@ module InstitutionBuilder
       success = true
     rescue ActiveRecord::StatementInvalid => e
       notice = 'There was an error occurring at the database level'
-      error_msg = e.original_exception.result.error_message
+      error_msg = e.message
       Rails.logger.error "#{notice}: #{error_msg}"
 
       success = false
@@ -505,7 +505,7 @@ module InstitutionBuilder
   end
 
   def self.build_institution_programs(version_number)
-    str = <<~SQL
+    str = <<-SQL
       INSERT INTO institution_programs (
         facility_code,
         program_type,

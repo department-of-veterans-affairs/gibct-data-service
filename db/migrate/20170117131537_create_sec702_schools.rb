@@ -1,4 +1,4 @@
-class CreateSec702Schools < ActiveRecord::Migration
+class CreateSec702Schools < ActiveRecord::Migration[4.2]
   def change
     create_table :sec702_schools do |t|
       # Used in the building of DataCsv

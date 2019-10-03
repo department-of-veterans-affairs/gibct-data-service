@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Institution < ActiveRecord::Base
+class Institution < ApplicationRecord
   include CsvHelper
 
   EMPLOYER = 'OJT'

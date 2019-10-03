@@ -87,10 +87,8 @@ RSpec.shared_examples 'an archivable model' do |options|
 
       it 'logs errors at the database level' do
         error_message = 'BOOM!'
-        pg_result = double('PG::Result Double', error_message: error_message)
-        pg_error = double('PG::Error Double', result: pg_result)
 
-        statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
+        statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
         statement_invalid.set_backtrace(%(backtrace))
 
         allow(Archiver).to receive(:create_archives).and_raise(statement_invalid)

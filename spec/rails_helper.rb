@@ -61,6 +61,7 @@ RSpec.configure do |config|
   # database_cleaner configuration
   # Clear the entire DB before tests begin
   config.before(:suite) do
+    DatabaseCleaner.allow_remote_database_url = ENV['CI'].present?
     DatabaseCleaner.clean_with(:truncation)
   end
 
