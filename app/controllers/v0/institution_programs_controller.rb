@@ -53,8 +53,10 @@ module V0
       @query ||= normalized_query_params
       relation = InstitutionProgram.search(@query[:name], @query[:include_address])
       [
-        [:institution_country],
-        [:institution_state]
+        %i[program_type type],
+        %i[country],
+        %i[state],
+        [:preferred_provider]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
@@ -63,26 +65,24 @@ module V0
       relation
     end
 
-    # TODO: If filter counts are desired in the future, change boolean facets
-    # to use search_results.filter_count(param) instead of default value
     def facets
       result = {
         program_type: search_results.filter_count(:program_type),
-        state: search_results.filter_count(:institution_state),
-        country: embed(search_results.filter_count(:institution_country))
+        state: search_results.filter_count(:state),
+        country: embed(search_results.filter_count(:country))
       }
       add_active_search_facets(result)
     end
 
     def add_active_search_facets(raw_facets)
-      if @query[:institution_state].present?
-        key = @query[:institution_state].downcase
-        raw_facets[:institution_state][key] = 0 unless raw_facets[:institution_state].key? key
+      if @query[:state].present?
+        key = @query[:state].downcase
+        raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
       end
-      if @query[:institution_country].present?
-        key = @query[:institution_country].upcase
-        raw_facets[:institution_country] << { name: key, count: 0 } unless
-          raw_facets[:institution_country].any? { |c| c[:name] == key }
+      if @query[:country].present?
+        key = @query[:country].upcase
+        raw_facets[:country] << { name: key, count: 0 } unless
+          raw_facets[:country].any? { |c| c[:name] == key }
       end
       raw_facets
     end

@@ -1,11 +1,21 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ActiveRecord::Base
+  belongs_to :institution, primary_key: :facility_code, foreign_key: 'facility_code'
+
+  PROGRAM_TYPES = %w[
+    IHL
+    NCD
+    OJT
+    FLGT
+    CORR
+  ].freeze
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    select('facility_code as value, institution_name as label')
+    select('id, facility_code as value, institution_name as label')
       .where('lower(institution_name) LIKE (?)', "#{search_term}%")
       .limit(limit)
   end
