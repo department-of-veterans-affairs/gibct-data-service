@@ -64,9 +64,9 @@ module CsvHelper
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       records.each_with_index do |record, index|
-        unless record.valid?(:after_import) && !record.persisted?
+        unless record.valid?(:after_import)
           record.errors.add(:row, "Line #{index + row_offset}")
-          failed_instances << record
+          failed_instances << record if record.persisted?
         end
       end
     end
