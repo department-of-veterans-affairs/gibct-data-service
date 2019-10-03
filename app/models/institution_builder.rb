@@ -49,6 +49,7 @@ module InstitutionBuilder
     add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
     build_institution_programs(version_number)
+    build_versioned_school_certifying_official(version_number)
   end
 
   def self.run(user)
@@ -558,4 +559,35 @@ module InstitutionBuilder
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
     InstitutionProgram.connection.execute(sql)
   end
+
+  def self.build_versioned_school_certifying_official(version_number)
+    conn = ActiveRecord::Base.connection
+
+    str = <<-SQL
+    INSERT INTO versioned_school_certifying_officials(facility_code,
+      institution_name,
+      priority,
+      first_name, 
+      last_name, 
+      title, 
+      phone_number, 
+      phone_extension, 
+      email, 
+      version)
+	  Select facility_code,
+      institution_name,
+      priority,
+      first_name, 
+      last_name, 
+      title, 
+      phone_number, 
+      phone_extension, 
+      email, 
+      ? 
+    FROM school_certifying_officials
+  SQL
+
+  sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
+  SchoolCertifyingOfficial.connection.execute(sql)
+  end  
 end

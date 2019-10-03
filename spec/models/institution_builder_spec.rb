@@ -934,5 +934,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institutions.find_by(facility_code: '1VZZZZZZ').approved).to be_truthy
       end
     end
+
+    describe 'when generating versioned school certifying official table' do
+      it 'properly generates versioned school certifying official from school certifying official' do
+        create :school_certifying_official, facility_code: '2V000105'
+        expect { InstitutionBuilder.run(user) }.to change { VersionedSchoolCertifyingOfficial.count }.from(0).to(1)
+        expect( VersionedSchoolCertifyingOfficial.first.version).to eq(Version.current_preview.number)
+      end
+    end  
   end
 end
