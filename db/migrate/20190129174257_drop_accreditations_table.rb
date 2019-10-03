@@ -1,4 +1,4 @@
-class DropAccreditationsTable < ActiveRecord::Migration
+class DropAccreditationsTable < ActiveRecord::Migration[4.2]
   def change
     drop_table :accreditations do |t|
       t.string   "cross"

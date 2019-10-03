@@ -1,4 +1,4 @@
-class AddColumnApprovedAndVetTecToInstitutions < ActiveRecord::Migration
+class AddColumnApprovedAndVetTecToInstitutions < ActiveRecord::Migration[4.2]
   def up
     change_table(:institutions, bulk: true) do |t|
       t.column :approved, :boolean 

@@ -1,4 +1,4 @@
-class CreateHcms < ActiveRecord::Migration
+class CreateHcms < ActiveRecord::Migration[4.2]
   def change
     create_table :hcms do |t|
       # Used in the building of DataCsv

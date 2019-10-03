@@ -7,7 +7,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'uses a production version as a default' do
       create(:version, :production)
       create(:institution, :contains_harv)
-      get :index
+      get(:index)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
@@ -15,7 +15,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'accepts invalid version parameter and returns production data' do
       create(:version, :production)
       create(:institution, :contains_harv)
-      get :index, version: 'invalid_data'
+      get(:index, params: { version: 'invalid_data' })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
@@ -26,7 +26,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
       v = create(:version, :preview)
       create(:institution, :contains_harv, version: Version.current_preview.number)
-      get :index, version: v.uuid
+      get(:index, params: { version: v.uuid })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
@@ -38,7 +38,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'returns collection of matches' do
       create(:version, :production)
       2.times { create(:institution, :start_like_harv) }
-      get :autocomplete, term: 'harv'
+      get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -47,7 +47,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'limits results to 6' do
       create(:version, :production)
       7.times { create(:institution, :start_like_harv, approved: true) }
-      get :autocomplete, term: 'harv'
+      get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -56,7 +56,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'returns empty collection on missing term parameter' do
       create(:version, :production)
       create(:institution, :start_like_harv)
-      get :autocomplete, term: nil
+      get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -65,7 +65,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'does not return results for non-approved institutions' do
       create(:version, :production)
       create(:institution, :start_like_harv, approved: false)
-      get :autocomplete, term: 'harv'
+      get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -76,7 +76,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :start_like_harv, campus_type: 'E')
       create(:institution, :start_like_harv, campus_type: 'Y')
       create(:institution, :start_like_harv)
-      get :autocomplete, term: 'harv'
+      get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -94,28 +94,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns results' do
-      get :index
+      get(:index)
       expect(JSON.parse(response.body)['data'].count).to eq(4)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns results matching name' do
-      get :index, name: 'chicago'
+      get(:index, params: { name: 'chicago' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns case-insensitive results' do
-      get :index, name: 'CHICAGO'
+      get(:index, params: { name: 'CHICAGO' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search with space returns results' do
-      get :index, name: 'New Roch'
+      get(:index, params: { name: 'New Roch' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -125,66 +125,66 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :contains_harv)
       create(:institution, :contains_harv, campus_type: 'E')
       create(:institution, :contains_harv, campus_type: 'Y')
-      get :index, name: 'harv'
+      get(:index, params: { name: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by uppercase country returns results' do
-      get :index, name: 'chicago', country: 'USA'
+      get(:index, params: { name: 'chicago', country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by lowercase country returns results' do
-      get :index, name: 'chicago', country: 'usa'
+      get(:index, params: { name: 'chicago', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by uppercase state returns results' do
-      get :index, name: 'new', state: 'NY'
+      get(:index, params: { name: 'new', state: 'NY' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by online_only schools' do
-      get :index, online_only: true
+      get(:index, params: { online_only: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'filters by distance_learning schools' do
-      get :index, distance_learning: true
+      get(:index, params: { distance_learning: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'filters by vet_tec_provider schools' do
       create(:institution, :vet_tec_provider)
       create(:institution, :vet_tec_provider, vet_tec_provider: false)
-      get :index, vet_tec_provider: true
+      get(:index, params: { vet_tec_provider: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'filters by preferred_provider' do
       create(:institution, :vet_tec_provider)
       create(:institution, :vet_tec_preferred_provider)
-      get :index, vet_tec_provider: true, preferred_provider: true
+      get(:index, params: { vet_tec_provider: true, preferred_provider: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'filter by lowercase state returns results' do
-      get :index, name: 'new', state: 'ny'
+      get(:index, params: { name: 'new', state: 'ny' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'has facet metadata' do
-      get :index, name: 'chicago'
+      get(:index, params: { name: 'chicago' })
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['state']['il']).to eq(1)
       expect(facets['country'].count).to eq(1)
@@ -192,21 +192,21 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'includes type search term in facets' do
-      get :index, name: 'chicago', type: 'foreign'
+      get(:index, params: { name: 'chicago', type: 'foreign' })
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['type']['foreign']).not_to be_nil
       expect(facets['type']['foreign']).to eq(0)
     end
 
     it 'includes state search term in facets' do
-      get :index, name: 'chicago', state: 'WY'
+      get(:index, params: { name: 'chicago', state: 'WY' })
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['state']['wy']).not_to be_nil
       expect(facets['state']['wy']).to eq(0)
     end
 
     it 'includes country search term in facets' do
-      get :index, name: 'chicago', country: 'france'
+      get(:index, params: { name: 'chicago', country: 'france' })
       facets = JSON.parse(response.body)['meta']['facets']
       match = facets['country'].select { |c| c['name'] == 'FRANCE' }.first
       expect(match).not_to be nil
@@ -214,7 +214,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'includes boolean facets' do
-      get :index
+      get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['student_vet_group'].keys).to include('true', 'false')
       expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
@@ -236,28 +236,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filters by employer category' do
-      get :index, category: 'employer'
+      get(:index, params: { category: 'employer' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by school category' do
-      get :index, category: 'school'
+      get(:index, params: { category: 'school' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by employer type' do
-      get :index, type: 'ojt'
+      get(:index, params: { type: 'ojt' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by school type' do
-      get :index, type: 'private'
+      get(:index, params: { type: 'private' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -271,13 +271,13 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns profile details' do
       school = create(:institution, :in_chicago)
-      get :show, id: school.facility_code, version: school.version
+      get(:show, params: { id: school.facility_code, version: school.version })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end
 
     it 'returns common exception response if school not found' do
-      get :show, id: '10000'
+      get(:show, params: { id: '10000' })
       assert_response :missing
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('errors')
@@ -293,7 +293,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       school = create(:institution, :in_chicago)
       child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code)
 
-      get :children, id: school.facility_code, version: school.version
+      get(:children, params: { id: school.facility_code, version: school.version })
 
       expect(response.content_type).to eq('application/json')
       expect(JSON.parse(response.body)['data'].count).to eq(1)
@@ -303,7 +303,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'returns empty record set' do
-      get :children, id: '10000'
+      get(:children, params: { id: '10000' })
 
       expect(response.content_type).to eq('application/json')
       expect(JSON.parse(response.body)['data'].count).to eq(0)

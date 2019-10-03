@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StemCipCode < ActiveRecord::Base
+class StemCipCode < ApplicationRecord
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

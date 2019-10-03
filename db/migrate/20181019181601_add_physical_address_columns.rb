@@ -1,4 +1,4 @@
-class AddPhysicalAddressColumns < ActiveRecord::Migration
+class AddPhysicalAddressColumns < ActiveRecord::Migration[4.2]
   def change
     %w[
       physical_address_1

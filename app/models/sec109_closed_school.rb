@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Sec109ClosedSchool < ActiveRecord::Base
+class Sec109ClosedSchool < ApplicationRecord
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[closure109].freeze

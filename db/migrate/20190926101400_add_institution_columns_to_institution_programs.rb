@@ -1,4 +1,4 @@
-class AddInstitutionColumnsToInstitutionPrograms < ActiveRecord::Migration
+class AddInstitutionColumnsToInstitutionPrograms < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def change

@@ -15,7 +15,7 @@
 
 # frozen_string_literal: true
 
-class Complaint < ActiveRecord::Base
+class Complaint < ApplicationRecord
   include CsvHelper
 
   STATUSES = %w[active closed pending reserved].freeze

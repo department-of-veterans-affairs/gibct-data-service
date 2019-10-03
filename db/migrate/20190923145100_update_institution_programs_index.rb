@@ -1,4 +1,4 @@
-class UpdateInstitutionProgramsIndex < ActiveRecord::Migration
+class UpdateInstitutionProgramsIndex < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
   
   def change
