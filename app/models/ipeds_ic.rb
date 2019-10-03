@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IpedsIc < ActiveRecord::Base
+class IpedsIc < ApplicationRecord
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[

@@ -1,4 +1,4 @@
-class CreateSchoolClosures < ActiveRecord::Migration
+class CreateSchoolClosures < ActiveRecord::Migration[4.2]
   def change
     create_table :school_closures do |t|
       t.string :facility_code, null: false

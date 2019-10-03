@@ -1,4 +1,4 @@
-class CreateAccreditationInstituteCampus < ActiveRecord::Migration
+class CreateAccreditationInstituteCampus < ActiveRecord::Migration[4.2]
   def change
     create_table :accreditation_institute_campuses do |t|
       t.integer :dapip_id

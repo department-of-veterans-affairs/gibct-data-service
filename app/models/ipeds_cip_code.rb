@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IpedsCipCode < ActiveRecord::Base
+class IpedsCipCode < ApplicationRecord
   include CsvHelper
 
   CSV_CONVERTER_INFO = {

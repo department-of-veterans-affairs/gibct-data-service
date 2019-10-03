@@ -1,4 +1,4 @@
-class CreateScorecards < ActiveRecord::Migration
+class CreateScorecards < ActiveRecord::Migration[4.2]
   def change
     create_table :scorecards do |t|
       # Used in the building of DataCsv

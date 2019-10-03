@@ -1,4 +1,4 @@
-class AddCampusTypeColumns < ActiveRecord::Migration
+class AddCampusTypeColumns < ActiveRecord::Migration[4.2]
   def change
     add_column :weams, :campus_type, :string
     add_column :weams, :parent_facility_code_id, :string

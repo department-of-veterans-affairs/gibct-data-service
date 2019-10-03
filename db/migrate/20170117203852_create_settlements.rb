@@ -1,4 +1,4 @@
-class CreateSettlements < ActiveRecord::Migration
+class CreateSettlements < ActiveRecord::Migration[4.2]
   def change
     create_table :settlements do |t|
       # Used in the building of DataCsv

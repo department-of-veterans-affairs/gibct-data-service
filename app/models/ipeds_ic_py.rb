@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IpedsIcPy < ActiveRecord::Base
+class IpedsIcPy < ApplicationRecord
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[tuition_in_state tuition_out_of_state books].freeze
