@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191002105112) do
+ActiveRecord::Schema.define(version: 20191003183043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1440,6 +1440,20 @@ ActiveRecord::Schema.define(version: 20191002105112) do
     t.datetime "updated_at",                          null: false
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  end
+
+  create_table "versioned_school_certifying_official_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "institution_name"
+    t.string  "priority"
+    t.string  "first_name"
+    t.string  "last_name"
+    t.string  "title"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "phone_extension"
+    t.string  "email"
+    t.integer "version"
   end
 
   create_table "versioned_school_certifying_officials", force: :cascade do |t|

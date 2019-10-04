@@ -5,7 +5,7 @@ module Archiver
     { source: Institution, archive: InstitutionsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
-    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialArchive }
+    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive }
   ].freeze
 
   def self.archive_previous_versions
