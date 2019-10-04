@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:id) { |n| n }
     facility_code { generate :facility_code }
     cross { generate :cross }
-    sequence(:institution) { |n| "institution #{n}" }
+    sequence(:institution, 1000) { |n| "institution #{n}" }
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name 'PRIVATE'
