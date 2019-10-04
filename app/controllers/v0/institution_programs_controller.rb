@@ -67,17 +67,22 @@ module V0
 
     def facets
       result = {
-        program_type: search_results.filter_count(:program_type),
+        type: search_results.filter_count(:program_type),
         state: search_results.filter_count(:state),
         country: embed(search_results.filter_count(:country))
       }
       add_active_search_facets(result)
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def add_active_search_facets(raw_facets)
       if @query[:state].present?
         key = @query[:state].downcase
         raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
+      end
+      if @query[:type].present?
+        key = @query[:type].downcase
+        raw_facets[:type][key] = 0 unless raw_facets[:type].key? key
       end
       if @query[:country].present?
         key = @query[:country].upcase
@@ -86,6 +91,7 @@ module V0
       end
       raw_facets
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not

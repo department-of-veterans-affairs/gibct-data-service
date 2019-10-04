@@ -28,34 +28,34 @@ FactoryBot.define do
 
     trait :start_like_harv do
       sequence(:institution_name) { |n| ["HARV#{n}", "HARV #{n}"].sample }
-      institution_city 'BOSTON'
-      institution_state 'MA'
-      institution_country 'USA'
+      city 'BOSTON'
+      state 'MA'
+      country 'USA'
     end
 
     trait :contains_harv do
       sequence(:institution_name) { |n| ["HASHARV#{n}", "HAS HARV #{n}"].sample }
-      institution_city 'BOSTON'
-      institution_state 'MA'
-      institution_country 'USA'
+      city 'BOSTON'
+      state 'MA'
+      country 'USA'
     end
 
     trait :in_nyc do
-      institution_city 'NEW YORK'
-      institution_state 'NY'
-      institution_country 'USA'
+      city 'NEW YORK'
+      state 'NY'
+      country 'USA'
     end
 
     trait :in_new_rochelle do
-      institution_city 'NEW ROCHELLE'
-      institution_state 'NY'
-      institution_country 'USA'
+      city 'NEW ROCHELLE'
+      state 'NY'
+      country 'USA'
     end
 
     trait :in_chicago do
-      institution_city 'CHICAGO'
-      institution_state 'IL'
-      institution_country 'USA'
+      city 'CHICAGO'
+      state 'IL'
+      country 'USA'
     end
   end
 end

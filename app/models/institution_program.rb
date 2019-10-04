@@ -28,7 +28,7 @@ class InstitutionProgram < ActiveRecord::Base
       'facility_code = (:facility_code)',
       'lower(institution_name) LIKE (:search_term)',
       'lower(description) LIKE (:search_term)',
-      'lower(institution_city) LIKE (:search_term)'
+      'lower(city) LIKE (:search_term)'
     ]
 
     if include_address

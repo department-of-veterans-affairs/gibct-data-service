@@ -155,15 +155,12 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(facets['country'][0]['name']).to eq('USA')
     end
 
-    # it 'includes type search term in facets' do
-    #   get(:index, params: { name: 'chicago', type: 'foreign' })
-    #   facets = JSON.parse(response.body)['meta']['facets']
-
-    #   binding.pry
-
-    #   expect(facets['program_type']['foreign']).not_to be_nil
-    #   expect(facets['program_type']['foreign']).to eq(0)
-    # end
+    it 'includes type search term in facets' do
+      get(:index, params: { name: 'chicago', type: 'foreign' })
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['type']['foreign']).not_to be_nil
+      expect(facets['type']['foreign']).to eq(0)
+    end
 
     it 'includes state search term in facets' do
       get(:index, params: { name: 'chicago', state: 'WY' })
@@ -172,48 +169,12 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(facets['state']['wy']).to eq(0)
     end
 
-  #   it 'includes country search term in facets' do
-  #     get(:index, params: { name: 'chicago', country: 'france' })
-  #     facets = JSON.parse(response.body)['meta']['facets']
-  #     match = facets['country'].select { |c| c['name'] == 'FRANCE' }.first
-  #     expect(match).not_to be nil
-  #     expect(match['count']).to eq(0)
-  #   end
+    it 'includes country search term in facets' do
+      get(:index, params: { name: 'chicago', country: 'france' })
+      facets = JSON.parse(response.body)['meta']['facets']
+      match = facets['country'].select { |c| c['name'] == 'FRANCE' }.first
+      expect(match).not_to be nil
+      expect(match['count']).to eq(0)
+    end
   end
-
-  # context 'category and type search results' do
-  #   before(:each) do
-  #     create(:version, :production)
-  #     create(:institution, :in_nyc)
-  #     create(:institution, :ca_employer)
-  #   end
-
-  #   it 'filters by employer category' do
-  #     get(:index, params: { category: 'employer' })
-  #     expect(JSON.parse(response.body)['data'].count).to eq(1)
-  #     expect(response.content_type).to eq('application/json')
-  #     expect(response).to match_response_schema('institutions')
-  #   end
-
-  #   it 'filters by school category' do
-  #     get(:index, params: { category: 'school' })
-  #     expect(JSON.parse(response.body)['data'].count).to eq(1)
-  #     expect(response.content_type).to eq('application/json')
-  #     expect(response).to match_response_schema('institutions')
-  #   end
-
-  #   it 'filters by employer type' do
-  #     get(:index, params: { type: 'ojt' })
-  #     expect(JSON.parse(response.body)['data'].count).to eq(1)
-  #     expect(response.content_type).to eq('application/json')
-  #     expect(response).to match_response_schema('institutions')
-  #   end
-
-  #   it 'filters by school type' do
-  #     get(:index, params: { type: 'private' })
-  #     expect(JSON.parse(response.body)['data'].count).to eq(1)
-  #     expect(response.content_type).to eq('application/json')
-  #     expect(response).to match_response_schema('institutions')
-  #   end
-  # end
 end

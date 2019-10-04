@@ -6,9 +6,9 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
   attribute :length_in_hours
   attribute :facility_code
   attribute :institution_name
-  attribute :institution_city
-  attribute :institution_state
-  attribute :institution_country
+  attribute :city
+  attribute :state
+  attribute :country
   attribute :preferred_provider
   attribute :tuition_amount
   attribute :va_bah

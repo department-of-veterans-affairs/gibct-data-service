@@ -528,9 +528,9 @@ module InstitutionBuilder
         tuition_amount,
         length_in_weeks,
         institution_name,
-        institution_city,
-        institution_state,
-        institution_country,
+        city,
+        state,
+        country,
         preferred_provider,
         dod_bah,
         va_bah
