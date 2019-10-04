@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20191003183043) do
-=======
-ActiveRecord::Schema.define(version: 20190927174523) do
->>>>>>> 66246f479da7fc0a1a3ceb50da26f9948e0f935c
+ActiveRecord::Schema.define(version: 20191004151515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1447,7 +1443,7 @@ ActiveRecord::Schema.define(version: 20190927174523) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
-  create_table "versioned_school_certifying_official_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "versioned_school_certifying_officials", force: :cascade do |t|
     t.string  "facility_code"
     t.string  "institution_name"
     t.string  "priority"
@@ -1461,7 +1457,7 @@ ActiveRecord::Schema.define(version: 20190927174523) do
     t.integer "version"
   end
 
-  create_table "versioned_school_certifying_officials", force: :cascade do |t|
+  create_table "versioned_sco_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
     t.string  "facility_code"
     t.string  "institution_name"
     t.string  "priority"
