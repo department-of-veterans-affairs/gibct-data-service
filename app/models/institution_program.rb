@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ActiveRecord::Base
-  belongs_to :institution, primary_key: :facility_code, foreign_key: 'facility_code'
+  validates :version, :facility_code, :institution_name, :description, presence: true
 
   PROGRAM_TYPES = %w[
     IHL

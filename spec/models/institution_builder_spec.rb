@@ -902,6 +902,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'does not generate instition programs without matching programs and edu_programs' do
         create :program, facility_code: '1ZZZZZZZ'
         create :edu_program, facility_code: '0001'
+        InstitutionBuilder.run(user)
         expect(InstitutionProgram.count).to eq(0)
       end
     end
