@@ -561,8 +561,6 @@ module InstitutionBuilder
   end
 
   def self.build_versioned_school_certifying_official(version_number)
-    conn = ActiveRecord::Base.connection
-
     str = <<-SQL
     INSERT INTO versioned_school_certifying_officials(facility_code,
       institution_name,
