@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class VersionedSchoolCertifyingOfficial < ApplicationRecord
+class VersionedSchoolCertifyingOfficial < ApplicationRecord
 end

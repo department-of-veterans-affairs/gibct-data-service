@@ -1457,7 +1457,7 @@ ActiveRecord::Schema.define(version: 20191004151515) do
     t.integer "version"
   end
 
-  create_table "versioned_sco_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "versioned_school_certifying_officials_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
     t.string  "facility_code"
     t.string  "institution_name"
     t.string  "priority"

@@ -560,8 +560,6 @@ module InstitutionBuilder
     InstitutionProgram.connection.execute(sql)
   end
 
-
-  
   def self.build_versioned_school_certifying_official(version_number)
     conn = ActiveRecord::Base.connection
 
@@ -569,27 +567,27 @@ module InstitutionBuilder
     INSERT INTO versioned_school_certifying_officials(facility_code,
       institution_name,
       priority,
-      first_name, 
-      last_name, 
-      title, 
-      phone_number, 
-      phone_extension, 
-      email, 
+      first_name,
+      last_name,
+      title,
+      phone_number,
+      phone_extension,
+      email,
       version)
 	  Select facility_code,
       institution_name,
       priority,
-      first_name, 
-      last_name, 
-      title, 
-      phone_number, 
-      phone_extension, 
-      email, 
-      ? 
+      first_name,
+      last_name,
+      title,
+      phone_number,
+      phone_extension,
+      email,
+      ?
     FROM school_certifying_officials
   SQL
 
-  sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
-  SchoolCertifyingOfficial.connection.execute(sql)
-  end  
+    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
+    SchoolCertifyingOfficial.connection.execute(sql)
+  end
 end
