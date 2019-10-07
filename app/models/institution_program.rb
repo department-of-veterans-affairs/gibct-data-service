@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class InstitutionProgram < ActiveRecord::Base
+class InstitutionProgram < ApplicationRecord
 end
