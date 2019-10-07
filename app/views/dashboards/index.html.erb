@@ -23,18 +23,43 @@
 </div>
 
   <h3>Latest Preview Version
-    <% if Version.buildable? %>
-      <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
-          data: { confirm: 'Are you sure you want to create a new preview version?' },
-          class: "btn btn-warning btn-xs",
-          role: "button",
-          id: "version_build"
+    <div id="preview_dialog" title="Generate New Preview Version">
+      <div id="preview_dialog_div">
+        <p class="generate_preview_question">
+          <b>Are you sure you want to create a new preview version?</b>
+        </p>
+        <% if @latest_uploads.length > 0 %>
+          <p>Below are the CSVs that have been uploaded since last preview generation</p>
+          <div class="generate_preview_table">
+            <table class="table table-hover table-condensed table-bordered table-responsive">
+              <thead>
+                <th>CSV Type</th>
+                <th>File Name</th>
+                <th>Upload Date</th>
+                <th>Uploaded By</th>
+                <th>Comments</th>
+              </thead>
+              <tbody>
+              <%= render partial: 'latest_upload_dialog', collection: @latest_uploads, as: :upload %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p>No new data files have been uploaded since the last preview generation</p>
+          <br>
+        <% end %>
+
+        <div class="generate_preview_button_div">
+          <%= link_to 'Generate New Preview Version', dashboard_build_path, method: :post,
+                      class: "btn btn-warning",
+                      role: "button",
+                      id: "version_build"
           %>
-    <% else %>
-      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" title="<%= Version.buildable_state_msg %>">
-        Generate New Preview Version
-      </a>
-    <% end %>
+        </div>
+      </div>
+    </div>
+
+    <button id="preview_opener" class="btn btn-warning btn-xs" <%= can_generate_preview(@preview_versions) %>>Generate New Preview Version</button>
   </h3>
   <div class="row row-space-6" id="preview_versions">
       <div class="col-xs-12">

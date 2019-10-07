@@ -1,4 +1,4 @@
-class CreateMous < ActiveRecord::Migration
+class CreateMous < ActiveRecord::Migration[4.2]
   def change
     create_table :mous do |t|
       # Used in the building of DataCsv

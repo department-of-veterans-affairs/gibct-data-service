@@ -22,14 +22,15 @@ CSV_TYPES_TABLES = [
   { klass: Sva, required?: true },
   { klass: Vsoc, required?: true },
   { klass: Weam, required?: true },
-  { klass: CalculatorConstant, required?: true },
+  { klass: CalculatorConstant, required?: false },
   { klass: IpedsCipCode, required?: true },
   { klass: StemCipCode, required?: true },
   { klass: YellowRibbonProgramSource, required?: true },
   { klass: SchoolClosure, required?: true },
   { klass: Sec109ClosedSchool, required?: true },
   { klass: Program, required?: false },
-  { klass: SchoolCertifyingOfficial, required?: false}
+  { klass: SchoolCertifyingOfficial, required?: false},
+  { klass: EduProgram, required?: false }
 ].freeze
 
 CSV_TYPES_REQUIRED_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:required?] }.map { |table| table[:klass].name }

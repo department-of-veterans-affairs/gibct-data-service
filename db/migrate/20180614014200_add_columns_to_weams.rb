@@ -1,4 +1,4 @@
-class AddColumnsToWeams < ActiveRecord::Migration
+class AddColumnsToWeams < ActiveRecord::Migration[4.2]
   def change
     # Note this is going to result in null values, three-state-boolean problem
     add_column :weams, :priority_enrollment, :boolean

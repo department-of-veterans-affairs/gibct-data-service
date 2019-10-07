@@ -786,6 +786,18 @@
                 }
               }
             },
+            "school_certifying_officials": {
+              "type": ["null","array"],
+              "items": {
+                "type": "object"
+              }
+            },
+            "programs": {
+              "type": ["null","array"],
+              "items": {
+                "type": "object"
+              }
+            },
             "created_at": {
               "type": "string"
             },

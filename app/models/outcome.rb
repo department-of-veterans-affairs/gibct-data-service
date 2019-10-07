@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Outcome < ActiveRecord::Base
+class Outcome < ApplicationRecord
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[

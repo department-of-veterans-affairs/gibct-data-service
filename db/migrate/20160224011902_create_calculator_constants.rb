@@ -1,4 +1,4 @@
-class CreateCalculatorConstants < ActiveRecord::Migration
+class CreateCalculatorConstants < ActiveRecord::Migration[4.2]
   def change
     create_table :calculator_constants do |t|
       t.string :name

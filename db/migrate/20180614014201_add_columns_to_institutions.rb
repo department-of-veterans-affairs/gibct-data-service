@@ -1,4 +1,4 @@
-class AddColumnsToInstitutions < ActiveRecord::Migration
+class AddColumnsToInstitutions < ActiveRecord::Migration[4.2]
   def change
     # Note this is going to result in null values, three-state-boolean problem
     add_column :institutions, :priority_enrollment, :boolean

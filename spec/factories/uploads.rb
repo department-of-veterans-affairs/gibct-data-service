@@ -18,10 +18,9 @@ FactoryBot.define do
 
     upload_file do
       unless no_upload
-        uf = ActionDispatch::Http::UploadedFile.new(
-          tempfile: File.new(Rails.root.join(fixture_path, csv_name)),
-          filename: File.basename(csv_name),
-          type: 'text/csv'
+        uf = Rack::Test::UploadedFile.new(
+          "#{::Rails.root}/spec/fixtures/#{csv_name}",
+          'text/csv'
         )
 
         uf.rewind

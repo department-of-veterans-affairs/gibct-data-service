@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 3.6'
 
-gem 'rails', '~> 5.2.3'
+gem 'rails', '5.2.3'
 
 
 # Gems with special version/repo needs
@@ -24,10 +24,6 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rubyzip', '~> 1.2', '>= 1.2.1'
-
 gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -59,7 +55,6 @@ gem 'ruby-saml'
 
 gem 'strong_migrations'
 gem 'will_paginate'
-gem 'utf8-cleaner'
 
 group :production do
   gem 'sass-rails', '~> 5.0'
@@ -67,23 +62,33 @@ end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'brakeman', '3.4.1'
-  gem 'bundler-audit', '0.5.0'
   gem 'byebug'
-  gem 'capybara', '2.11.0'
-  gem 'database_cleaner'
-  gem 'factory_bot_rails', '4.10.0'
-  gem 'faker', '~> 1.6', '>= 1.6.2'
-  gem 'guard-rspec', require: false
-  gem 'jshint', platforms: :ruby
-  gem 'json_matchers'
   gem 'pry-nav'
-  gem 'rails-controller-testing'
-  gem 'rspec-rails'
+
+  # Linters
   gem 'rubocop', '~> 0.53.0', require: false
   gem 'scss_lint', require: false
-  gem 'simplecov'
+  gem 'jshint', platforms: :ruby
+
+  # Security scanners
+  gem 'brakeman', '3.4.1'
+  gem 'bundler-audit', '0.5.0'
+
+  # Testing tools
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
+  gem 'json_matchers'
+
+  # Added to remove irb: context errors on rails c (MPH)
+  gem 'guard-rspec', require: false
+
+  gem 'factory_bot_rails', '4.10.0'
+
+  gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
+  gem 'simplecov'
+  gem 'database_cleaner'
+  gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
 

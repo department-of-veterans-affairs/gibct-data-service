@@ -54,10 +54,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'logs errors at the database level' do
-        pg_result = double('PG::Result Double', error_message: 'BOOM!')
-        pg_error = double('PG::Error Double', result: pg_result)
+        error_message = 'BOOM!'
 
-        statement_invalid = ActiveRecord::StatementInvalid.new('message', pg_error)
+        statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
         statement_invalid.set_backtrace(%(backtrace))
 
         allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(statement_invalid)
@@ -888,6 +887,21 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(zipcode_rate.mha_rate).to eq(1000)
         expect(zipcode_rate.mha_rate_grandfathered).to eq(1100)
         expect(zipcode_rate.version).to eq(Version.current_preview.number)
+      end
+    end
+
+    describe 'when generating institution programs' do
+      it 'properly generates institution programs from programs and edu_programs' do
+        create :program, facility_code: '0001'
+        create :edu_program, facility_code: '0001'
+        expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
+        expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
+      end
+
+      it 'does not generate instition programs without matching programs and edu_programs' do
+        create :program, facility_code: '0001'
+        create :edu_program, facility_code: '0002'
+        expect(InstitutionProgram.count).to eq(0)
       end
     end
 

@@ -1,4 +1,4 @@
-class CreateYellowRibbonPrograms < ActiveRecord::Migration
+class CreateYellowRibbonPrograms < ActiveRecord::Migration[4.2]
   def change
     create_table :yellow_ribbon_programs do |t|
       t.integer :version, null: false, index: true

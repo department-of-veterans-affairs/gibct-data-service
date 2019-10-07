@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolClosure < ActiveRecord::Base
+class SchoolClosure < ApplicationRecord
   include CsvHelper
 
   COLS_USED_IN_INSTITUTION = %i[school_closing school_closing_on school_closing_message].freeze

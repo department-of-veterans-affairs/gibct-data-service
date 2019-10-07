@@ -48,6 +48,7 @@ module InstitutionBuilder
     add_extension_campus_type(version_number)
     add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
+    build_institution_programs(version_number)
   end
 
   def self.run(user)
@@ -65,7 +66,7 @@ module InstitutionBuilder
       success = true
     rescue ActiveRecord::StatementInvalid => e
       notice = 'There was an error occurring at the database level'
-      error_msg = e.original_exception.result.error_message
+      error_msg = e.message
       Rails.logger.error "#{notice}: #{error_msg}"
 
       success = false
@@ -501,5 +502,60 @@ module InstitutionBuilder
         AND institutions.version = #{version_number};
     SQL
     Institution.connection.update(str)
+  end
+
+  def self.build_institution_programs(version_number)
+    str = <<-SQL
+      INSERT INTO institution_programs (
+        facility_code,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length_in_hours,
+        version,
+        school_locale,
+        provider_website,
+        provider_email_address,
+        phone_area_code,
+        phone_number,
+        student_vet_group,
+        student_vet_group_website,
+        vet_success_name,
+        vet_success_email,
+        vet_tec_program,
+        tuition_amount,
+        length_in_weeks
+      )
+      SELECT
+        a.facility_code,
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        length,
+        ?,
+        school_locale,
+        provider_website,
+        provider_email_address,
+        phone_area_code,
+        phone_number,
+        student_vet_group,
+        student_vet_group_website,
+        vet_success_name,
+        vet_success_email,
+        vet_tec_program,
+        tuition_amount,
+        length_in_weeks
+      FROM programs a INNER JOIN edu_programs b
+        ON a.facility_code = b.facility_code
+          AND LOWER(description) = LOWER(vet_tec_program)
+          AND vet_tec_program IS NOT NULL
+    SQL
+
+    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
+    InstitutionProgram.connection.execute(sql)
   end
 end
