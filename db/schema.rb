@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190926141900) do
+ActiveRecord::Schema.define(version: 20191004151515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1198,6 +1198,7 @@ ActiveRecord::Schema.define(version: 20190926141900) do
     t.string "graduate",                limit: 15
     t.string "full_time_modifier",      limit: 1
     t.string "length",                  limit: 7
+    t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description", using: :btree
   end
 
   create_table "school_certifying_officials", force: :cascade do |t|
@@ -1466,6 +1467,34 @@ ActiveRecord::Schema.define(version: 20190926141900) do
     t.datetime "updated_at",                          null: false
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  end
+
+  create_table "versioned_school_certifying_officials", force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "institution_name"
+    t.string  "priority"
+    t.string  "first_name"
+    t.string  "last_name"
+    t.string  "title"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "phone_extension"
+    t.string  "email"
+    t.integer "version"
+  end
+
+  create_table "versioned_sco_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "institution_name"
+    t.string  "priority"
+    t.string  "first_name"
+    t.string  "last_name"
+    t.string  "title"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "phone_extension"
+    t.string  "email"
+    t.integer "version"
   end
 
   create_table "versions", force: :cascade do |t|
