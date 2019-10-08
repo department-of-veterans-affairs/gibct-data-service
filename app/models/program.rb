@@ -15,4 +15,5 @@ class Program < ApplicationRecord
   }.freeze
 
   validates :facility_code, presence: true
+  validates_with ProgramValidator, on: :after_import
 end

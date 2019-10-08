@@ -17,22 +17,17 @@ module CsvHelper
     private
 
     def load_records(file, options)
-      records = { valid: [], invalid: [] }
+      records = []
 
       records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
-      results = klass.import records[:valid], validate: false, ignore: true
-      results.failed_instances = records[:invalid]
-
+      results = klass.import records, ignore: true
+      after_import_validations(records, results.failed_instances, options)
       results
     end
 
     def load_csv(file, records, options)
-      # Since row indexes start at 0 and spreadsheets on line 1,
-      # add 1 for the difference in indexes and 1 for the header row itself.
-      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
-      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
-        record = row_to_record(row, i + row_offset)
-        save_record_to_records(records, record)
+      SmarterCSV.process(file, merge_options(options)).each do |row|
+        records << klass.new(row)
       end
 
       records
@@ -40,25 +35,11 @@ module CsvHelper
 
     def load_csv_with_version(file, records, options)
       version = Version.current_preview
-      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
-
-      SmarterCSV.process(file, merge_options(options)).each.with_index do |row, i|
-        record = row_to_record(row.merge(version: version.number), i + row_offset)
-        save_record_to_records(records, record)
+      SmarterCSV.process(file, merge_options(options)).each do |row|
+        records << klass.new(row.merge(version: version.number))
       end
 
       records
-    end
-
-    def save_record_to_records(records, record)
-      record.errors.any? ? records[:invalid] << record : records[:valid] << record
-    end
-
-    def row_to_record(row, index)
-      record = klass.new(row)
-      record.errors.add(:row, "Line #{index}") unless record.valid?
-
-      record
     end
 
     def merge_options(options)
@@ -72,6 +53,22 @@ module CsvHelper
 
       options.reverse_merge(key_mapping: key_mapping, value_converters: value_converters)
              .reverse_merge(SMARTER_CSV_OPTIONS)
+    end
+
+    # Default validations are run during import, which prevent bad data from being persisted to the database.
+    # This method manually runs validations that were declared with a specific validation context (:after_import).
+    # The result is warnings are generated for the end user while the data is allowed to persist to the database.
+    def after_import_validations(records, failed_instances, options)
+      # Since row indexes start at 0 and spreadsheets on line 1,
+      # add 1 for the difference in indexes and 1 for the header row itself.
+      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
+
+      records.each_with_index do |record, index|
+        unless record.valid?(:after_import)
+          record.errors.add(:row, "Line #{index + row_offset}")
+          failed_instances << record if record.persisted?
+        end
+      end
     end
   end
 end

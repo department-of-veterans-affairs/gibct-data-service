@@ -20,7 +20,7 @@ class UploadsController < ApplicationController
       failed = load_csv.failed_instances
       @upload.check_for_headers
 
-      validation_warnings = failed.map(&:display_errors_with_row)
+      validation_warnings = failed.map(&:display_errors_with_row).sort
       header_warnings = @upload.all_warnings
 
       flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
@@ -32,7 +32,7 @@ class UploadsController < ApplicationController
     rescue StandardError => e
       @upload = new_upload(merged_params[:csv_type])
 
-      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace}")
+      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
     end
   end
@@ -47,8 +47,8 @@ class UploadsController < ApplicationController
 
   private
 
-  def alert_and_log(message)
-    Rails.logger.error message
+  def alert_and_log(message, error = nil)
+    Rails.logger.error message + (error&.backtrace).to_s
     flash.alert = message
   end
 
