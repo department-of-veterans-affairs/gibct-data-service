@@ -562,28 +562,29 @@ module InstitutionBuilder
 
   def self.build_versioned_school_certifying_official(version_number)
     str = <<-SQL
-    INSERT INTO versioned_school_certifying_officials(facility_code,
-      institution_name,
-      priority,
-      first_name,
-      last_name,
-      title,
-      phone_number,
-      phone_extension,
-      email,
-      version)
-	  Select facility_code,
-      institution_name,
-      priority,
-      first_name,
-      last_name,
-      title,
-      phone_number,
-      phone_extension,
-      email,
-      ?
-    FROM school_certifying_officials
-  SQL
+      INSERT INTO versioned_school_certifying_officials(facility_code,
+        institution_name,
+        priority,
+        first_name,
+        last_name,
+        title,
+        phone_number,
+        phone_extension,
+        email,
+        version)
+      Select 
+        facility_code,
+        institution_name,
+        priority,
+        first_name,
+        last_name,
+        title,
+        phone_number,
+        phone_extension,
+        email,
+        ?
+      FROM school_certifying_officials
+    SQL
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
