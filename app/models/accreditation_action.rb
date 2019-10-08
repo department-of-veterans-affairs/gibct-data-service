@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AccreditationAction < ActiveRecord::Base
+class AccreditationAction < ApplicationRecord
   include CsvHelper
 
   belongs_to :accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id

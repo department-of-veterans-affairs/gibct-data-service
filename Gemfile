@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 3.6'
 
-gem 'rails', '~> 5.2.3'
+gem 'rails', '5.0.7.2'
 
 
 # Gems with special version/repo needs
@@ -24,17 +24,12 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rubyzip', '~> 1.2', '>= 1.2.1'
-
 gem 'sentry-raven', '~> 2.3.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
 gem 'smarter_csv', '1.1.4'
-gem 'strong_migrations', '~> 0.4.1'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
 
@@ -50,13 +45,15 @@ gem 'figaro'
 gem 'font-awesome-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+
+# CORS
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
 
-# Pagination
+gem 'strong_migrations'
 gem 'will_paginate'
 
 group :production do
@@ -78,13 +75,13 @@ group :development, :test do
   gem 'bundler-audit', '0.5.0'
 
   # Testing tools
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
   gem 'json_matchers'
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
 
-  gem 'rails-controller-testing'
   gem 'factory_bot_rails', '4.10.0'
 
   gem 'capybara', '2.11.0'

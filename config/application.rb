@@ -34,9 +34,6 @@ module GibctDataService
       'X-Content-Type-Options' => 'nosniff'
     }
 
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    # config.active_record.raise_in_transactional_callbacks = true
-
     # Bootstrap support.
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 

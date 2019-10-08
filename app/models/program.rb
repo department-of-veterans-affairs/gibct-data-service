@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Program < ActiveRecord::Base
+class Program < ApplicationRecord
   include CsvHelper
 
   CSV_CONVERTER_INFO = {
@@ -15,4 +15,5 @@ class Program < ActiveRecord::Base
   }.freeze
 
   validates :facility_code, presence: true
+  validates_with ProgramValidator, on: :after_import
 end

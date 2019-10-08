@@ -7,7 +7,7 @@
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
 # rubocop:disable Metrics/ClassLength
-class Weam < ActiveRecord::Base
+class Weam < ApplicationRecord
   include CsvHelper
 
   REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'

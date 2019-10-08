@@ -1,4 +1,4 @@
-class CreateSec702s < ActiveRecord::Migration
+class CreateSec702s < ActiveRecord::Migration[4.2]
   def change
     create_table :sec702s do |t|
      # Used in the building of DataCsv

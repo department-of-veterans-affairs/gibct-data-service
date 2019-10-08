@@ -1,4 +1,4 @@
-class CreateYellowRibbonProgramSources < ActiveRecord::Migration
+class CreateYellowRibbonProgramSources < ActiveRecord::Migration[4.2]
   def change
     create_table :yellow_ribbon_program_sources do |t|
       t.string :facility_code, index: true  # utilized

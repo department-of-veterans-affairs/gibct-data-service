@@ -46,11 +46,16 @@ SeedUtils.seed_table_with_upload(StemCipCode, user)
 SeedUtils.seed_table_with_upload(YellowRibbonProgramSource, user)
 SeedUtils.seed_table_with_upload(SchoolClosure, user)
 SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
+SeedUtils.seed_table_with_upload(EduProgram, user)
 
 puts 'Building Institutions'
 result = InstitutionBuilder.run(user)
 
-puts "Setting version: #{result[:version].number} as production"
-Version.create(user: user, number: result[:version].number, production: true)
+if result[:success]
+  puts "Setting version: #{result[:version].number} as production"
+  Version.create(user: user, number: result[:version].number, production: true)
+else
+  puts "Error occurred: #{result[:notice]}: #{result[:error_msg]}"
+end
 
 puts "Done ... Woo Hoo!"

@@ -1,4 +1,4 @@
-class CreateSvas < ActiveRecord::Migration
+class CreateSvas < ActiveRecord::Migration[4.2]
   def change
     create_table :svas do |t|
       # Used in the building of DataCsv
