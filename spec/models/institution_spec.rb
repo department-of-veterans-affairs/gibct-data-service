@@ -207,7 +207,7 @@ RSpec.describe Institution, type: :model do
 
       it 'should filter on field not existing' do
         expect(described_class.filter('institution', 'false').to_sql)
-          .to include("WHERE \"institutions\".\"institution\" != 't'")
+          .to include("WHERE (\"institutions\".\"institution\" != 't')")
       end
     end
 
