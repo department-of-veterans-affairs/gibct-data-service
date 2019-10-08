@@ -215,7 +215,8 @@ class Institution < ApplicationRecord
   end
 
   def versioned_school_certifying_officials
-    VersionedSchoolCertifyingOfficial.where('facility_code = ? AND version = ?', facility_code, version).order(:last_name)
+    VersionedSchoolCertifyingOfficial.where('facility_code = ? AND version = ?',
+                                            facility_code, version).order(:last_name)
   end
 
   # Given a search term representing a partial school name, returns all
