@@ -572,7 +572,7 @@ module InstitutionBuilder
         phone_extension,
         email,
         version)
-      Select 
+      Select
         facility_code,
         institution_name,
         priority,
