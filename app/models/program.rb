@@ -15,5 +15,9 @@ class Program < ApplicationRecord
   }.freeze
 
   validates :facility_code, presence: true
+<<<<<<< HEAD
   validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
+=======
+  validates_with ProgramValidator, on: :after_import
+>>>>>>> 66246f479da7fc0a1a3ceb50da26f9948e0f935c
 end
