@@ -136,7 +136,7 @@ RSpec.describe StoragesController, type: :controller do
 
       context 'with an invalid id' do
         it 'redirects to the index action' do
-          expect(put(:update, id: 1_000_000, storage: params)).to redirect_to(action: :index)
+          expect(put(:update, params: { id: 1_000_000, storage: params })).to redirect_to(action: :index)
         end
 
         it 'generates an alert message' do
@@ -148,7 +148,7 @@ RSpec.describe StoragesController, type: :controller do
       context 'with invalid parameters' do
         it 'renders to the edit template' do
           params[:upload_file] = nil
-          expect(put(:update, id: params.delete(:id), storage: params)).to render_template(:edit)
+          expect(put(:update, params: { id: params.delete(:id), storage: params })).to render_template(:edit)
         end
       end
     end
