@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InstitutionProgram < ActiveRecord::Base
+class InstitutionProgram < ApplicationRecord
   validates :version, :facility_code, :institution_name, :description, presence: true
 
   PROGRAM_TYPES = %w[
