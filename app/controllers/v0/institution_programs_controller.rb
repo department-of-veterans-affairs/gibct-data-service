@@ -74,24 +74,31 @@ module V0
       add_active_search_facets(result)
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     def add_active_search_facets(raw_facets)
-      if @query[:state].present?
-        key = @query[:state].downcase
-        raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
-      end
-      if @query[:type].present?
-        key = @query[:type].downcase
-        raw_facets[:type][key] = 0 unless raw_facets[:type].key? key
-      end
-      if @query[:country].present?
-        key = @query[:country].upcase
-        raw_facets[:country] << { name: key, count: 0 } unless
-          raw_facets[:country].any? { |c| c[:name] == key }
-      end
+      add_state_search_facet(raw_facets)
+      add_type_search_facet(raw_facets)
+      add_country_search_facet(raw_facets)
       raw_facets
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
+
+    def add_state_search_facet(raw_facets)
+      return if @query[:state].blank?
+      key = @query[:state].downcase
+      raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
+    end
+
+    def add_type_search_facet(raw_facets)
+      return if @query[:type].blank?
+      key = @query[:type].downcase
+      raw_facets[:type][key] = 0 unless raw_facets[:type].key? key
+    end
+
+    def add_country_search_facet(raw_facets)
+      return if @query[:country].blank?
+      key = @query[:country].upcase
+      raw_facets[:country] << { name: key, count: 0 } unless
+        raw_facets[:country].any? { |c| c[:name] == key }
+    end
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not
