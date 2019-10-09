@@ -562,7 +562,8 @@ module InstitutionBuilder
 
   def self.build_versioned_school_certifying_official(version_number)
     str = <<-SQL
-      INSERT INTO versioned_school_certifying_officials(facility_code,
+      INSERT INTO versioned_school_certifying_officials(
+        facility_code,
         institution_name,
         priority,
         first_name,
