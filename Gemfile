@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 3.6'
 
-gem 'rails', '5.0.7.2'
+gem 'rails', '5.1.7'
 
 
 # Gems with special version/repo needs

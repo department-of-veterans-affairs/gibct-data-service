@@ -87,7 +87,7 @@ module InstitutionBuilder
   def self.initialize_with_weams(version_number)
     columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
     timestamp = Time.now.utc.to_s(:db)
-    conn = ActiveRecord::Base.connection
+    conn = ApplicationRecord.connection
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
     str += Weam.select(columns)
@@ -463,7 +463,7 @@ module InstitutionBuilder
 
   def self.build_zip_code_rates_from_weams(version_number)
     timestamp = Time.now.utc.to_s(:db)
-    conn = ActiveRecord::Base.connection
+    conn = ApplicationRecord.connection
 
     str = <<-SQL
     INSERT INTO zipcode_rates (
