@@ -3,9 +3,6 @@
 class SchoolCertifyingOfficial < ApplicationRecord
   include CsvHelper
 
-  belongs_to(:institution, foreign_key: 'facility_code', primary_key: :facility_code,
-                           inverse_of: :school_certifying_officials)
-
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },
