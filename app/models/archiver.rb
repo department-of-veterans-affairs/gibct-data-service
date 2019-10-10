@@ -13,7 +13,7 @@ module Archiver
     previous_version = Version.previous_production.number
 
     begin
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
           archivable[:source].where('version >= ? and version < ?', previous_version, production_version).delete_all
@@ -37,7 +37,7 @@ module Archiver
     SQL
 
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
-    ActiveRecord::Base.connection.execute(sql)
+    ApplicationRecord.connection.execute(sql)
   end
 
   def self.process_exception(notice, exception, production_version, previous_version)
