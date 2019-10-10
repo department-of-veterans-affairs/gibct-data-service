@@ -92,7 +92,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :stem_indicator
   attribute :facility_map
   attribute :programs
-  attribute :school_certifying_officials
+  attribute :versioned_school_certifying_officials
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
@@ -104,9 +104,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
     end
   end
 
-  def school_certifying_officials
-    object.school_certifying_officials.map do |sco|
-      SchoolCertifyingOfficialSerializer.new(sco)
+  def versioned_school_certifying_officials
+    object.versioned_school_certifying_officials.map do |sco|
+      VersionedSchoolCertifyingOfficialSerializer.new(sco)
     end
   end
 
