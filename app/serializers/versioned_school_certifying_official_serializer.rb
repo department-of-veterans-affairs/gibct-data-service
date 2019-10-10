@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolCertifyingOfficialSerializer < ActiveModel::Serializer
+class VersionedSchoolCertifyingOfficialSerializer < ActiveModel::Serializer
   attribute :priority
   attribute :first_name
   attribute :last_name
