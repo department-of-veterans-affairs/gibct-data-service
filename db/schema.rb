@@ -1469,6 +1469,34 @@ ActiveRecord::Schema.define(version: 20191009142101) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  create_table "versioned_school_certifying_officials", force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "institution_name"
+    t.string  "priority"
+    t.string  "first_name"
+    t.string  "last_name"
+    t.string  "title"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "phone_extension"
+    t.string  "email"
+    t.integer "version"
+  end
+
+  create_table "versioned_school_certifying_officials_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string  "facility_code"
+    t.string  "institution_name"
+    t.string  "priority"
+    t.string  "first_name"
+    t.string  "last_name"
+    t.string  "title"
+    t.string  "phone_area_code"
+    t.string  "phone_number"
+    t.string  "phone_extension"
+    t.string  "email"
+    t.integer "version"
+  end
+
   create_table "versions", force: :cascade do |t|
     t.integer  "user_id",                      null: false
     t.integer  "number",                       null: false
