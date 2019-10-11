@@ -1,4 +1,4 @@
-class CreateVersionedSchoolCertifyingOfficials < ActiveRecord::Migration
+class CreateVersionedSchoolCertifyingOfficials < ActiveRecord::Migration[5.0]
     def change
       create_table :versioned_school_certifying_officials do |t|
         t.string :facility_code
