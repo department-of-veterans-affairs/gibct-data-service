@@ -1,4 +1,4 @@
-class CreateVersionedSchoolCertifyingOfficialsArchives < ActiveRecord::Migration[4.2]
+class CreateVersionedSchoolCertifyingOfficialsArchives < ActiveRecord::Migration[5.0]
     def up
       safety_assured do
         execute "create table versioned_school_certifying_officials_archives (like versioned_school_certifying_officials
