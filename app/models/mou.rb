@@ -3,7 +3,7 @@
 class Mou < ApplicationRecord
   include CsvHelper
 
-  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
+  STATUSES = [/\A(probation - dod|title iv non-compliant)\z/i].freeze
 
   CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },
@@ -27,10 +27,10 @@ class Mou < ApplicationRecord
   end
 
   def to_dodmou
-    (status =~ STATUSES).nil?
+    status.nil? || STATUSES.none? { |checked_status| status.match?(checked_status) }
   end
 
   def to_dod_status
-    (status =~ /dod/i).present?
+    !status.nil? && status.match?(/dod/i)
   end
 end
