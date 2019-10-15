@@ -6,8 +6,8 @@ FactoryBot.define do
     cross { generate :cross }
 
     trait :institution_builder do
-      ope '00279100'
-      cross '999999'
+      ope { '00279100' }
+      cross { '999999' }
     end
 
     initialize_with do

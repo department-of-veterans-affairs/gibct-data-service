@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :storage do
     transient do
-      fixture_path 'spec/fixtures'
-      csv_name 'weam.csv'
-      no_upload false
+      fixture_path { 'spec/fixtures' }
+      csv_name { 'weam.csv' }
+      no_upload { false }
     end
 
     user

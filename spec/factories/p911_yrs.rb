@@ -7,7 +7,7 @@ FactoryBot.define do
     p911_yr_recipients { 1 }
 
     trait :institution_builder do
-      facility_code '1ZZZZZZZ'
+      facility_code { '1ZZZZZZZ' }
     end
 
     initialize_with do
