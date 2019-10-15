@@ -66,7 +66,9 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'rubocop', '~> 0.53.0', require: false
+  gem 'rubocop', require: false
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
   gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
 
@@ -82,7 +84,7 @@ group :development, :test do
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
 
-  gem 'factory_bot_rails', '4.10.0'
+  gem 'factory_bot_rails', '> 5'
 
   gem 'capybara', '2.11.0'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
