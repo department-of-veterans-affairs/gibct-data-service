@@ -51,7 +51,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = InstitutionProgram.search(@query[:name], @query[:include_address])
+      relation = InstitutionProgram.version(@version[:number]).search(@query[:name], @query[:include_address])
       [
         %i[program_type type],
         %i[country],

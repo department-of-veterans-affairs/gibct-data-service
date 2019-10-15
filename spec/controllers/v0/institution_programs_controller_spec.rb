@@ -76,6 +76,14 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(response).to match_response_schema('institution_programs')
     end
 
+    it 'search returns results for correct version only' do
+      create(:institution_program, version: 2)
+      get(:index)
+      expect(JSON.parse(response.body)['data'].count).to eq(4)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
     it 'search returns results matching institution name' do
       get(:index, params: { name: 'chicago' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
