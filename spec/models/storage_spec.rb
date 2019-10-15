@@ -11,7 +11,12 @@ RSpec.describe Storage, type: :model do
     )
   end
 
-  subject { build :storage }
+  let(:user) { User.first }
+  subject { build :storage, user: user }
+
+  before do
+    create :user, email: 'fred@va.gov', password: 'fuggedabodit'
+  end
 
   describe 'when validating' do
     it 'has a valid factory' do

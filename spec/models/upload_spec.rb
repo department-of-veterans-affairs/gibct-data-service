@@ -3,7 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Upload, type: :model do
-  subject { build :upload }
+  let(:user) { User.first }
+  subject { build :upload, user: user }
+
+  before do
+    create :user, email: 'fred@va.gov', password: 'fuggedabodit'
+  end
 
   describe 'when validating' do
     it 'has a valid factory' do

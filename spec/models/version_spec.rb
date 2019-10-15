@@ -3,8 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
+
+  let(:user) { User.first }
+
+  before do
+    create :user, email: 'fred@va.gov', password: 'fuggedabodit'
+  end
+
   describe 'attributes' do
-    subject { build :version, :production }
+    subject { build :version, :production, user: user }
 
     it 'does not have a uuid until saved' do
       expect(subject.uuid).to be_nil
@@ -19,11 +26,11 @@ RSpec.describe Version, type: :model do
   end
 
   describe 'when validating' do
-    subject { build :version, :production }
+    subject { build :version, :production, user: user }
 
     let(:no_user) { build :version, user: nil }
-    let(:good_existing_version) { build :version, :production, number: 1 }
-    let(:bad_existing_version) { build :version, :production, number: 1000 }
+    let(:good_existing_version) { build :version, :production, number: 1, user: user }
+    let(:bad_existing_version) { build :version, :production, number: 1000, user: user }
 
     it 'has a valid factory' do
       expect(subject).to be_valid
