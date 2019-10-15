@@ -6,51 +6,51 @@ RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
   let(:institutions) { Institution.version(Version.current_preview.number) }
 
-  before(:each) do
+  before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
   end
 
   describe '#run' do
-    before(:each) do
+    before do
       create :weam, :institution_builder
       create :crosswalk, :institution_builder
     end
 
     context 'when successful' do
       it 'returns a success = true' do
-        expect(InstitutionBuilder.run(user)[:success]).to be_truthy
+        expect(described_class.run(user)[:success]).to be_truthy
       end
 
       it 'returns the new preview version record if sucessful' do
         create :version
         old_version = Version.current_preview
 
-        version = InstitutionBuilder.run(user)[:version]
+        version = described_class.run(user)[:version]
 
         expect(version).to eq(Version.current_preview)
         expect(version).not_to eq(old_version)
         expect(version.production).to be_falsey
-        expect(version.generating?).to be_falsey
+        expect(version).not_to be_generating
       end
 
       it 'returns a nil error_msg if sucessful' do
-        expect(InstitutionBuilder.run(user)[:error_msg]).to be_nil
+        expect(described_class.run(user)[:error_msg]).to be_nil
       end
 
       it 'returns a success notice when successful' do
-        expect(InstitutionBuilder.run(user)[:notice]).to eq('Institution build was successful')
+        expect(described_class.run(user)[:notice]).to eq('Institution build was successful')
       end
     end
 
     context 'when not successful' do
       it 'returns a success = false' do
-        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        expect(InstitutionBuilder.run(user)[:success]).to be_falsey
+        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        expect(described_class.run(user)[:success]).to be_falsey
       end
 
       it 'returns an error message' do
-        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        expect(InstitutionBuilder.run(user)[:error_msg]).to eq('BOOM!')
+        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        expect(described_class.run(user)[:error_msg]).to eq('BOOM!')
       end
 
       it 'logs errors at the database level' do
@@ -59,24 +59,24 @@ RSpec.describe InstitutionBuilder, type: :model do
         statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
         statement_invalid.set_backtrace(%(backtrace))
 
-        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(statement_invalid)
+        allow(described_class).to receive(:add_crosswalk).and_raise(statement_invalid)
         expect(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'logs errors at the Rails level' do
-        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
 
         expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'does not change the institutions or versions if not successful' do
-        allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         create :version
         version = Version.current_preview
 
-        InstitutionBuilder.run(user)
+        described_class.run(user)
         expect(Institution.count).to be_zero
         expect(Version.current_preview).to eq(version)
       end
@@ -86,8 +86,8 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:weam) { Weam.first }
       let(:institution) { institutions.first }
 
-      before(:each) do
-        InstitutionBuilder.run(user)
+      before do
+        described_class.run(user)
       end
 
       it 'adds approved schools only' do
@@ -106,8 +106,8 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: crosswalk.facility_code) }
       let(:crosswalk) { Crosswalk.first }
 
-      before(:each) do
-        InstitutionBuilder.run(user)
+      before do
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -121,9 +121,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(cross: sva.cross) }
       let(:sva) { Sva.first }
 
-      before(:each) do
+      before do
         create :sva, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -139,9 +139,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: vsoc.facility_code) }
       let(:vsoc) { Vsoc.first }
 
-      before(:each) do
+      before do
         create :vsoc, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -155,9 +155,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(cross: eight_key.cross) }
       let(:eight_key) { EightKey.first }
 
-      before(:each) do
+      before do
         create :eight_key, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'sets eight_keys to TRUE for every eight_key record' do
@@ -172,14 +172,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'with regards to the time frame' do
         it 'only adds current accreditations' do
           create :accreditation_record
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_type).not_to be_nil
         end
 
         it 'does not add non-current accreditations' do
           create :accreditation_record_expired
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_type).to be_nil
         end
@@ -188,14 +188,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'with regards to the accrediting authority' do
         it 'adds institutional accreditations' do
           create :accreditation_record
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_type).not_to be_nil
         end
 
         it 'does not add non-institutional accreditations' do
           create :accreditation_record, program_id: 2
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_type).to be_nil
         end
@@ -206,7 +206,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           agency_regex_array.map(&:source).each do |agency_name|
             it "is set to #{type} when the agency name contains '#{agency_name}'" do
               create :accreditation_record, agency_name: 'Agency ' + agency_name
-              InstitutionBuilder.run(user)
+              described_class.run(user)
 
               expect(institution.accreditation_type).to eq(type)
             end
@@ -216,7 +216,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'prefers national over hybrid' do
           create :accreditation_record, agency_name: 'Biblical School'
           create :accreditation_record, agency_name: 'Design School'
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_type).to eq('national')
         end
@@ -225,7 +225,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_record, agency_name: 'Biblical School'
           create :accreditation_record, agency_name: 'Middle School'
           create :accreditation_record, agency_name: 'Design School'
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_type).to eq('regional')
         end
@@ -234,7 +234,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the accreditation status' do
         it 'is set only for the `AccreditationAction::PROBATIONARY_STATUSES`' do
           create :accreditation_action
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.accreditation_status).to be_nil
         end
@@ -242,7 +242,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         AccreditationAction::PROBATIONARY_STATUSES.each do |status|
           it "is set for #{status}" do
             create :accreditation_action, action_description: status[1..-2]
-            InstitutionBuilder.run(user)
+            described_class.run(user)
 
             expect(institution.accreditation_status).to eq(status[1..-2])
           end
@@ -254,7 +254,7 @@ RSpec.describe InstitutionBuilder, type: :model do
               create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
                                             action_date: '2019-01-06'
               create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
-              InstitutionBuilder.run(user)
+              described_class.run(user)
               expect(institution.accreditation_status).to be_nil
             end
           end
@@ -262,7 +262,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         it 'does not matter if an `accreditation_type` is set' do
           create :accreditation_action_probationary
-          InstitutionBuilder.run(user)
+          described_class.run(user)
           expect(institution.accreditation_status).to be_truthy
           expect(institution.accreditation_type).to be_nil
         end
@@ -270,7 +270,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'does not matter if accreditation is current' do
           create :accreditation_record, accreditation_end_date: '2011-01-01'
           create :accreditation_action_probationary
-          InstitutionBuilder.run(user)
+          described_class.run(user)
           expect(institution.accreditation_status).to be_truthy
           expect(institution.accreditation_type).to be_nil
         end
@@ -279,14 +279,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag' do
         it 'is set to true for any non-nil status' do
           create :accreditation_action_probationary
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag).to be_truthy
         end
 
         it 'is set falsey for any nil status' do
           create :accreditation_action
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag).to be_falsey
         end
@@ -296,7 +296,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'concatenates `action_description` and `justification_description`' do
           aap = create :accreditation_action_probationary
 
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(
             institution.caution_flag_reason
@@ -309,9 +309,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: arf_gi_bill.facility_code) }
       let(:arf_gi_bill) { ArfGiBill.first }
 
-      before(:each) do
+      before do
         create :arf_gi_bill, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -323,9 +323,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: p911_tf.facility_code) }
       let(:p911_tf) { P911Tf.first }
 
-      before(:each) do
+      before do
         create :p911_tf, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -339,9 +339,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: p911_yr.facility_code) }
       let(:p911_yr) { P911Yr.first }
 
-      before(:each) do
+      before do
         create :p911_yr, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -359,13 +359,13 @@ RSpec.describe InstitutionBuilder, type: :model do
       ['PRoBATIon Dod', 'title IV NON-comPliant'].each do |status|
         it "sets dodmou TRUE for status '#{status}'" do
           create :mou, :institution_builder, status: status
-          InstitutionBuilder.run(user)
+          described_class.run(user)
         end
       end
 
       it 'copies columns used by institutions' do
         create :mou, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
 
         expect(mou.dodmou).to eq(institution.dodmou)
       end
@@ -373,14 +373,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag' do
         it 'is sets when dod_status is true' do
           create :mou, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag).to be_truthy
         end
 
         it 'is not set when dod_status is not true' do
           create :mou, :institution_builder, :by_title_iv
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag).to be_falsey
         end
@@ -389,7 +389,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag_reason' do
         it 'is set when dod_status is true' do
           create :mou, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).to eq(reason)
         end
@@ -398,7 +398,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_institute_campus
           create :accreditation_action_probationary
           create :mou, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)
         end
@@ -408,7 +408,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_action_probationary
           create :mou, :institution_builder, :by_title_iv
 
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).not_to match(/DoD/)
           expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
@@ -420,9 +420,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(cross: scorecard.cross) }
       let(:scorecard) { Scorecard.first }
 
-      before(:each) do
+      before do
         create :scorecard, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -436,9 +436,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(cross: ipeds_ic.cross) }
       let(:ipeds_ic) { IpedsIc.first }
 
-      before(:each) do
+      before do
         create :ipeds_ic, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -452,9 +452,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(cross: ipeds_hd.cross) }
       let(:ipeds_hd) { IpedsHd.first }
 
-      before(:each) do
+      before do
         create :ipeds_hd, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -468,9 +468,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(cross: ipeds_ic_ay.cross) }
       let(:ipeds_ic_ay) { IpedsIcAy.first }
 
-      before(:each) do
+      before do
         create :ipeds_ic_ay, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -490,7 +490,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       context 'and the institution fields are nil' do
         it 'copies columns used by institutions' do
           create :ipeds_ic_py, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           IpedsIcPy::COLS_USED_IN_INSTITUTION.each do |column|
             expect(ipeds_ic_py[column]).to eq(institution[column])
@@ -502,7 +502,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'the institution record matches the ipeds_ic_ay record' do
           create :ipeds_ic_ay, :institution_builder
           create :ipeds_ic_py, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           IpedsIcPy::COLS_USED_IN_INSTITUTION.each do |column|
             expect(ipeds_ic_py[column]).not_to eq(institution[column])
@@ -524,7 +524,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           Weam.delete_all
           create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.sec_702).to be_nil
         end
@@ -533,7 +533,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           Weam.delete_all
           create :weam, :institution_builder, :private
           create :sec702, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.sec_702).to be_nil
         end
@@ -543,7 +543,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         describe 'sec_702' do
           it 'is set from Section702' do
             create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
+            described_class.run(user)
 
             expect(institutions.first.sec_702).not_to be_nil
             expect(institutions.first.sec_702).to be_falsy
@@ -551,7 +551,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           it 'is set from Section702School' do
             create :sec702_school, :institution_builder
-            InstitutionBuilder.run(user)
+            described_class.run(user)
 
             expect(institutions.first.sec_702).not_to be_nil
             expect(institutions.first.sec_702).to be_falsey
@@ -561,7 +561,7 @@ RSpec.describe InstitutionBuilder, type: :model do
             create :weam, :institution_builder, :private
             create :sec702_school, :institution_builder, sec_702: true
             create :sec702, :institution_builder
-            InstitutionBuilder.run(user)
+            described_class.run(user)
 
             expect(institutions.first.sec_702).to be_truthy
           end
@@ -571,7 +571,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag' do
         it 'is set from Section702 when sec_702 is false' do
           create :sec702, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag).not_to be_nil
           expect(institutions.first.caution_flag).to be_truthy
@@ -579,7 +579,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         it 'is set from Section702School when sec_702 is false' do
           create :sec702_school, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag).not_to be_nil
           expect(institutions.first.caution_flag).to be_truthy
@@ -589,7 +589,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag).to be_falsey
         end
@@ -600,7 +600,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         it 'is set from Section702 when sec_702 is false' do
           create :sec702, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).not_to be_nil
           expect(institutions.first.caution_flag_reason).to eq(reason)
@@ -608,7 +608,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         it 'is set from Section702School when sec_702 is false' do
           create :sec702_school, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).not_to be_nil
           expect(institutions.first.caution_flag_reason).to eq(reason)
@@ -618,7 +618,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).to be_nil
         end
@@ -627,7 +627,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_institute_campus
           create :accreditation_action_probationary
           create :sec702, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/).and match(/Tuition/)
         end
@@ -636,7 +636,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_institute_campus
           create :accreditation_action_probationary
           create :sec702_school, :institution_builder, sec_702: true
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
           expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
@@ -651,7 +651,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag' do
         it 'is set for every settlement' do
           create :settlement, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag).to be_truthy
         end
@@ -660,7 +660,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag_reason' do
         it 'is set to the settlement_description' do
           create :settlement, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
         end
@@ -668,7 +668,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set with multiple descriptions' do
           create :settlement, :institution_builder
           create :settlement, :institution_builder, settlement_description: 'another description'
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).to match(settlement.settlement_description)
             .and match('another description')
@@ -678,7 +678,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_institute_campus
           create :accreditation_action_probationary
           create :settlement, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
             .and match(settlement.settlement_description)
@@ -693,7 +693,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag' do
         it 'is set for every heightened cash monitoring notice' do
           create :hcm, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag).to be_truthy
         end
@@ -702,7 +702,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag_reason' do
         it 'is set to the hcm_reason' do
           create :hcm, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
         end
@@ -710,7 +710,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set with multiple hcm_reason' do
           create :hcm, :institution_builder
           create :hcm, :institution_builder, hcm_reason: 'another reason'
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
             .and match(/another reason/)
@@ -720,7 +720,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_institute_campus
           create :accreditation_action_probationary
           create :hcm, :institution_builder
-          InstitutionBuilder.run(user)
+          described_class.run(user)
 
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
             .and match(Regexp.new(hcm.hcm_reason))
@@ -732,22 +732,22 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: complaint.facility_code) }
       let(:complaint) { Complaint.first }
 
-      before(:each) do
+      before do
         create_list :complaint, 2, :institution_builder, :all_issues
       end
 
       it 'calls update_ope_from_crosswalk' do
         expect(Complaint).to receive(:update_ope_from_crosswalk)
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'calls rollup_sums for facility_code and ope6' do
         expect(Complaint).to receive(:rollup_sums).twice
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'sums complaints by facility_code' do
-        InstitutionBuilder.run(user)
+        described_class.run(user)
 
         Complaint::FAC_CODE_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
@@ -755,7 +755,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'sums complaints by ope6' do
-        InstitutionBuilder.run(user)
+        described_class.run(user)
 
         Complaint::OPE6_ROLL_UP_SUMS.each_key do |column|
           expect(institution[column]).to eq(2)
@@ -767,9 +767,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: outcome.facility_code) }
       let(:outcome) { Outcome.first }
 
-      before(:each) do
+      before do
         create :outcome, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -788,7 +788,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'updates stem_offered' do
           create :ipeds_cip_code, :institution_builder
           create :stem_cip_code
-          InstitutionBuilder.run(user)
+          described_class.run(user)
           expect(institution.stem_offered).to be(true)
         end
       end
@@ -797,7 +797,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         let(:institution) { Institution.first }
 
         it 'does not set stem_offered' do
-          InstitutionBuilder.run(user)
+          described_class.run(user)
           expect(institution.stem_offered).to be(false)
         end
       end
@@ -806,7 +806,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'does not set stem_offered' do
           create :ipeds_cip_code, :institution_builder, ctotalt: 0
           create :stem_cip_code
-          InstitutionBuilder.run(user)
+          described_class.run(user)
           expect(institution.stem_offered).to be(false)
         end
       end
@@ -814,7 +814,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       context 'when there is no matching stem cip code' do
         it 'does not set stem_offered' do
           create :ipeds_cip_code, :institution_builder, cipcode: 0.3
-          InstitutionBuilder.run(user)
+          described_class.run(user)
           expect(institution.stem_offered).to be(false)
         end
       end
@@ -824,9 +824,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: yellow_ribbon_program_source.facility_code) }
       let(:yellow_ribbon_program_source) { YellowRibbonProgramSource.first }
 
-      before(:each) do
+      before do
         create :yellow_ribbon_program_source, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'generates a yellow ribbon program' do
@@ -847,9 +847,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(facility_code: school_closure.facility_code) }
       let(:school_closure) { SchoolClosure.first }
 
-      before(:each) do
+      before do
         create :school_closure, :institution_builder
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
@@ -860,9 +860,9 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Vet Tec Provider data' do
-      before(:each) do
+      before do
         create(:weam, :vet_tec)
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       let(:institution) { institutions.find_by(facility_code: '1VZZZZZZ') }
@@ -876,9 +876,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:institution) { institutions.find_by(zip: zipcode_rate.zip_code) }
       let(:zipcode_rate) { ZipcodeRate.first }
 
-      before(:each) do
+      before do
         create :weam, :zipcode_rate
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'properly generates zipcode rates from weams data' do
@@ -894,7 +894,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'properly generates institution programs from programs and edu_programs' do
         create :program, facility_code: '0001'
         create :edu_program, facility_code: '0001'
-        expect { InstitutionBuilder.run(user) }.to change { InstitutionProgram.count }.from(0).to(1)
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
         expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
       end
 
@@ -906,10 +906,10 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when setting extension campus_type' do
-      before(:each) do
+      before do
         create(:weam, :extension)
         create(:weam, facility_code: '10X00001', campus_type: 'Y')
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'sets campus_type to "E"' do
@@ -924,9 +924,9 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when setting approved' do
-      before(:each) do
+      before do
         create(:weam, :as_vet_tec_provider)
-        InstitutionBuilder.run(user)
+        described_class.run(user)
       end
 
       it 'sets correctly for VET TEC institution' do
@@ -937,7 +937,7 @@ RSpec.describe InstitutionBuilder, type: :model do
     describe 'when generating versioned school certifying official table' do
       it 'properly generates versioned school certifying official from school certifying official' do
         create :school_certifying_official, facility_code: '2V000105'
-        expect { InstitutionBuilder.run(user) }.to change { VersionedSchoolCertifyingOfficial.count }.from(0).to(1)
+        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
         expect(VersionedSchoolCertifyingOfficial.first.version).to eq(Version.current_preview.number)
       end
     end

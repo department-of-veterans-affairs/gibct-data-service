@@ -61,6 +61,7 @@ class Upload < ApplicationRecord
     # add csv types that are missing from database to allow for uploads
     CSV_TYPES_ALL_TABLES.each do |klass|
       next if upload_csv_types.include?(klass.name)
+
       missing_upload = Upload.new
       missing_upload.csv_type = klass.name
       missing_upload.ok = false

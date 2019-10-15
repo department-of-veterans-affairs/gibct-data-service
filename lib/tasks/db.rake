@@ -60,7 +60,7 @@ namespace :db do
     end
   end
 
-    private
+  private
 
   def suffix_for_format(suffix)
     case suffix

@@ -3,7 +3,7 @@
 class Mou < ApplicationRecord
   include CsvHelper
 
-  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
+  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i.freeze
 
   CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },

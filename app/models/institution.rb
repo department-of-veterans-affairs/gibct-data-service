@@ -164,6 +164,7 @@ class Institution < ApplicationRecord
 
   def scorecard_link
     return nil unless school? && cross.present?
+
     [
       "https://collegescorecard.ed.gov/school/?#{cross}",
       institution.downcase.parameterize
@@ -173,12 +174,14 @@ class Institution < ApplicationRecord
   def website_link
     return nil if insturl.blank?
     return insturl if insturl.start_with? 'http'
+
     "http://#{insturl}"
   end
 
   def vet_website_link
     return nil if vet_tuition_policy_url.blank?
     return vet_tuition_policy_url if vet_tuition_policy_url.start_with? 'http'
+
     "http://#{vet_tuition_policy_url}"
   end
 
@@ -232,6 +235,7 @@ class Institution < ApplicationRecord
   #
   scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?
+
     clause = [
       'facility_code = (:facility_code)',
       'lower(institution) LIKE (:search_term)',
@@ -254,6 +258,7 @@ class Institution < ApplicationRecord
   scope :filter, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
+
     if field == :category
       case value
       when 'school'

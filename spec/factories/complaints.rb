@@ -10,9 +10,11 @@ FactoryBot.define do
     issues { nil }
 
     trait :all_issues do
-      issues { %w[
-        FinanCial QUALITY RefuND REcruiT Accreditation deGree LOANS GraDe TranSFer jOb TranScript oTHER
-      ].join(' ') }
+      issues do
+        %w[
+          FinanCial QUALITY RefuND REcruiT Accreditation deGree LOANS GraDe TranSFer jOb TranScript oTHER
+        ].join(' ')
+      end
     end
 
     trait :institution_builder do

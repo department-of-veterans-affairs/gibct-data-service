@@ -84,7 +84,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'search results' do
-    before(:each) do
+    before do
       create(:version, :production)
       create_list(:institution, 2, :in_nyc)
       create(:institution, :in_chicago, online_only: true)
@@ -229,7 +229,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'category and type search results' do
-    before(:each) do
+    before do
       create(:version, :production)
       create(:institution, :in_nyc)
       create(:institution, :ca_employer)
@@ -265,7 +265,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'institution profile' do
-    before(:each) do
+    before do
       create(:version, :production)
     end
 
@@ -285,7 +285,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'institution children' do
-    before(:each) do
+    before do
       create(:version, :production)
     end
 

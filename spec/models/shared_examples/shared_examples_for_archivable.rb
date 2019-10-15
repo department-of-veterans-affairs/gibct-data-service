@@ -7,12 +7,12 @@ RSpec.shared_examples 'an archivable model' do |options|
   let(:archived_type) { described_class }
   let(:user) { User.first }
 
-  before(:each) do
+  before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
   end
 
   describe 'archives archived model' do
-    before(:each) do
+    before do
       # version 1
       create_production_version
       create factory, version: current_production_number
