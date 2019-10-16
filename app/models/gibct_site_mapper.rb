@@ -10,7 +10,7 @@ class GibctSiteMapper
     configure_sitemap(verbose)
     generate_sitemap(version)
 
-    ping_search_engines if ping && version.present?
+    ping_search_engines if ping
   end
 
   def version
@@ -39,6 +39,6 @@ class GibctSiteMapper
   end
 
   def ping_search_engines
-    SitemapGenerator::Sitemap.ping_search_engines(sitemap_location) if version.present?
+    SitemapGenerator::Sitemap.ping_search_engines(sitemap_location)
   end
 end
