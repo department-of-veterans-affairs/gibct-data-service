@@ -6,6 +6,7 @@ require:
 
 AllCops:
   Include:
+    - '**/Gemfile'
     - '**/config.ru'
     - '**/Rakefile'
     - '**/*.rake'
@@ -16,7 +17,6 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
     - 'bin/**/*'
-    - 'Gemfile'
     - 'log/**/*'
 
 Metrics/AbcSize:
@@ -73,3 +73,7 @@ Rails/HasManyOrHasOneDependent:
 Lint/BooleanSymbol:
   Exclude:
     - 'app/controllers/v0/institutions_controller.rb'
+
+RSpec/FilePath:
+  Exclude:
+    - 'spec/fixtures/**/*'
