@@ -3,6 +3,8 @@
 module V0
   # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
+    include Facets
+
     # GET /v0/institutions/autocomplete?term=harv
 
     def autocomplete
@@ -112,10 +114,6 @@ module V0
     end
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Style/MutableConstant
-    DEFAULT_BOOLEAN_FACET = { true: nil, false: nil }
-    # rubocop:enable Style/MutableConstant
-
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
     def facets
@@ -128,37 +126,44 @@ module V0
         type: institution_types,
         state: search_results.filter_count(:state),
         country: embed(search_results.filter_count(:country)),
-        student_vet_group: DEFAULT_BOOLEAN_FACET,
-        yellow_ribbon_scholarship: DEFAULT_BOOLEAN_FACET,
-        principles_of_excellence: DEFAULT_BOOLEAN_FACET,
-        eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET,
-        stem_offered: DEFAULT_BOOLEAN_FACET,
-        independent_study: DEFAULT_BOOLEAN_FACET,
-        online_only: DEFAULT_BOOLEAN_FACET,
-        distance_learning: DEFAULT_BOOLEAN_FACET,
-        priority_enrollment: DEFAULT_BOOLEAN_FACET
+        student_vet_group: default_boolean_facet,
+        yellow_ribbon_scholarship: default_boolean_facet,
+        principles_of_excellence: default_boolean_facet,
+        eight_keys_to_veteran_success: default_boolean_facet,
+        stem_offered: default_boolean_facet,
+        independent_study: default_boolean_facet,
+        online_only: default_boolean_facet,
+        distance_learning: default_boolean_facet,
+        priority_enrollment: default_boolean_facet
       }
       add_active_search_facets(result)
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
+    def default_boolean_facet
+      { true: nil, false: nil }
+    end
+
     def add_active_search_facets(raw_facets)
-      if @query[:state].present?
-        key = @query[:state].downcase
-        raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
-      end
-      if @query[:type].present?
-        key = @query[:type].downcase
-        raw_facets[:type][key] = 0 unless raw_facets[:type].key? key
-      end
-      if @query[:country].present?
-        key = @query[:country].upcase
-        raw_facets[:country] << { name: key, count: 0 } unless
-          raw_facets[:country].any? { |c| c[:name] == key }
-      end
+      binding.pry
+
+      add_a_named_search_facet(raw_facets, :state)
+      add_named_search_facet(raw_facets, :type)
+      add_country_search_facet(raw_facets)
       raw_facets
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
+
+    def add_named_search_facet(raw_facets, facet_name)
+      return if @query[facet_name].blank?
+      key = @query[facet_name].downcase
+      raw_facets[facet_name][key] = 0 unless raw_facets[facet_name].key? key
+    end
+
+    def add_country_search_facet(raw_facets)
+      return if @query[:country].blank?
+      key = @query[:country].upcase
+      raw_facets[:country] << { name: key, count: 0 } unless
+        raw_facets[:country].any? { |c| c[:name] == key }
+    end
 
     # Embed search result counts as a list of hashes with "name"/"count"
     # keys so that open-ended strings such as country names do not
