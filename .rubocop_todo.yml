@@ -10,9 +10,9 @@
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: empty_lines, no_empty_lines
-Layout/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'spec/models/version_spec.rb'
+#Layout/EmptyLinesAroundBlockBody:
+#  Exclude:
+#    - 'spec/models/version_spec.rb'
 
 # Offense count: 8
 RSpec/AnyInstance:
