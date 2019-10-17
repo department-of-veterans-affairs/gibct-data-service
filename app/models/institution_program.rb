@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ApplicationRecord
-  validates :version, :facility_code, :institution_name, :description, presence: true
+  validates :version, :institution, :facility_code, :description, presence: true
 
   PROGRAM_TYPES = %w[
     IHL
@@ -11,12 +11,36 @@ class InstitutionProgram < ApplicationRecord
     CORR
   ].freeze
 
+  belongs_to :institution
+  delegate :dod_bah, to: :institution
+  delegate :preferred_provider, to: :institution
+
+  def institution_name
+    institution.institution
+  end
+
+  def city
+    institution.physical_city
+  end
+
+  def state
+    institution.physical_state
+  end
+
+  def country
+    institution.physical_country
+  end
+
+  def va_bah
+    institution.bah
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    select('id, facility_code as value, institution_name as label')
-      .where('lower(institution_name) LIKE (?)', "#{search_term}%")
+    select('id, facility_code as value, description as label')
+      .where('lower(description) LIKE (?)', "#{search_term}%")
       .limit(limit)
   end
 
@@ -24,9 +48,10 @@ class InstitutionProgram < ApplicationRecord
   #
   scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?
+
     clause = [
       'facility_code = (:facility_code)',
-      'lower(institution_name) LIKE (:search_term)',
+      'lower(institution.institution) LIKE (:search_term)',
       'lower(description) LIKE (:search_term)',
       'lower(city) LIKE (:search_term)'
     ]

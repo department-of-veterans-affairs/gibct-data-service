@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 class InstitutionProgramSerializer < ActiveModel::Serializer
-  attribute :program_type
-  attribute :description
-  attribute :length_in_hours
-  attribute :length_in_weeks
-  attribute :facility_code
-  attribute :institution_name
-  attribute :city
-  attribute :state
-  attribute :country
-  attribute :preferred_provider
-  attribute :tuition_amount
-  attribute :va_bah
-  attribute :dod_bah
+  attributes :program_type,
+             :description,
+             :length_in_hours,
+             :length_in_weeks,
+             :facility_code,
+             :tuition_amount,
+             :institution_name,
+             :city,
+             :state,
+             :country,
+             :preferred_provider,
+             :va_bah,
+             :dod_bah
 end

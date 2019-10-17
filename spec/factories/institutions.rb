@@ -106,5 +106,11 @@ FactoryBot.define do
       institution 'COLLEGE OF VET TEC PROVIDER'
       closure109 false
     end
+
+    trait :physical_address do
+      physical_city 'CHICAGO'
+      physical_state 'IL'
+      physical_country 'USA'
+    end
   end
 end

@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe InstitutionProgramSerializer, type: :serializer do
-  let(:institution_program) { build :institution_program }
+  let(:institution) { create :institution, :physical_address }
+  let(:institution_program) { create :institution_program, institution_id: institution.id }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 

@@ -5,7 +5,6 @@ FactoryBot.define do
     version 1
     facility_code { generate :facility_code }
     program_type 'NCD'
-    institution_name 'TEST'
     description 'COMPUTER SCIENCE'
     full_time_undergraduate '360'
     graduate '234'
@@ -23,8 +22,6 @@ FactoryBot.define do
     vet_tec_program 'COMPUTER SCIENCE'
     tuition_amount '360'
     length_in_weeks '1001'
-    dod_bah '1000'
-    va_bah '1200'
 
     trait :start_like_harv do
       sequence(:institution_name) { |n| ["HARV#{n}", "HARV #{n}"].sample }

@@ -159,6 +159,7 @@ class Institution < ApplicationRecord
   validates :institution_type_name, inclusion: { in: TYPES }
 
   has_many :yellow_ribbon_programs, dependent: :destroy
+  has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
 
   self.per_page = 10
 
@@ -210,9 +211,9 @@ class Institution < ApplicationRecord
     institution_type_name != 'OJT'
   end
 
-  def institution_programs
-    InstitutionProgram.where('facility_code = ? AND version = ?', facility_code, version).order(:description)
-  end
+  # def institution_programs
+  #   InstitutionProgram.where('facility_code = ? AND version = ?', facility_code, version).order(:description)
+  # end
 
   def versioned_school_certifying_officials
     VersionedSchoolCertifyingOfficial.where('facility_code = ? AND version = ?',

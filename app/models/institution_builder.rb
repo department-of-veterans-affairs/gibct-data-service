@@ -528,13 +528,7 @@ module InstitutionBuilder
         vet_tec_program,
         tuition_amount,
         length_in_weeks,
-        institution_name,
-        city,
-        state,
-        country,
-        preferred_provider,
-        dod_bah,
-        va_bah
+        institution_id
       )
       SELECT
         a.facility_code,
@@ -557,13 +551,7 @@ module InstitutionBuilder
         vet_tec_program,
         tuition_amount,
         length_in_weeks,
-        institution,
-        physical_city,
-        physical_state,
-        physical_country,
-        preferred_provider,
-        dod_bah,
-        bah
+        c.id
       FROM programs a
         INNER JOIN edu_programs b ON a.facility_code = b.facility_code
           AND LOWER(description) = LOWER(vet_tec_program)
