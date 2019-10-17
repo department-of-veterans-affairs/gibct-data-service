@@ -8,7 +8,7 @@
         <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
         Reload page to refresh preview version status
     <% else %>
-      <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank",
+      <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank", rel: "noopener noreferrer",
           class: "btn btn-success btn-xs", role: "button" %>
       <%= link_to 'Download Export CSV', dashboard_export_version_path(version.number),
           class: "btn btn-warning btn-xs", role: "button" %>
