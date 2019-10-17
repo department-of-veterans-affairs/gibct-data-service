@@ -77,3 +77,7 @@ Lint/BooleanSymbol:
 RSpec/FilePath:
   Exclude:
     - 'spec/fixtures/**/*'
+
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/config/initializers/csv_types_spec.rb'
