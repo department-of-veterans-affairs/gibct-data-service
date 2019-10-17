@@ -12,6 +12,7 @@ RSpec.describe Storage, type: :model do
   end
 
   let(:user) { User.first }
+
   subject { build :storage, user: user }
 
   before do

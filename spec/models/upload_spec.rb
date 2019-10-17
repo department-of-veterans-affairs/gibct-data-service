@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Upload, type: :model do
   let(:user) { User.first }
+
   subject { build :upload, user: user }
 
   before do
