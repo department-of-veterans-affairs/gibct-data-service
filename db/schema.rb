@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191015133300) do
+ActiveRecord::Schema.define(version: 2019_10_15_133300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -218,20 +218,9 @@ ActiveRecord::Schema.define(version: 20191015133300) do
     t.string "vet_tec_program"
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
-    t.string "institution_name"
-    t.string "city"
-    t.string "state"
-    t.string "country"
-    t.boolean "preferred_provider"
-    t.integer "dod_bah"
-    t.float "va_bah"
+    t.integer "institution_id"
     t.index ["facility_code", "description", "version"], name: "index_institution_programs", unique: true
-    t.index ["version", "city"], name: "index_institution_programs_on_version_and_city"
-    t.index ["version", "country"], name: "index_institution_programs_on_version_and_country"
-    t.index ["version", "description"], name: "index_institution_programs_on_version_and_description"
-    t.index ["version", "institution_name"], name: "index_ip_version_institution_name"
-    t.index ["version", "preferred_provider"], name: "index_ip_version_institution_programs"
-    t.index ["version", "state"], name: "index_institution_programs_on_version_and_state"
+    t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
 
   create_table "institution_programs_archives", id: :integer, default: -> { "nextval('institution_programs_id_seq'::regclass)" }, force: :cascade do |t|
@@ -255,20 +244,9 @@ ActiveRecord::Schema.define(version: 20191015133300) do
     t.string "vet_tec_program"
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
-    t.string "institution_name"
-    t.string "city"
-    t.string "state"
-    t.string "country"
-    t.boolean "preferred_provider"
-    t.integer "dod_bah"
-    t.float "va_bah"
+    t.integer "institution_id"
     t.index ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true
-    t.index ["version", "city"], name: "index_institution_programs_archives_on_version_and_city"
-    t.index ["version", "country"], name: "index_institution_programs_archives_on_version_and_country"
-    t.index ["version", "description"], name: "index_institution_programs_archives_on_version_and_description"
-    t.index ["version", "institution_name"], name: "index_ipa_version_institution_name"
-    t.index ["version", "preferred_provider"], name: "index_ipa_version_institution_programs"
-    t.index ["version", "state"], name: "index_institution_programs_archives_on_version_and_state"
+    t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
 
   create_table "institutions", id: :serial, force: :cascade do |t|
