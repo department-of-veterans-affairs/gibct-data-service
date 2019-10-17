@@ -73,8 +73,8 @@ group :development, :test do
   gem 'scss_lint', require: false
 
   # Security scanners
-  gem 'brakeman', '3.4.1'
-  gem 'bundler-audit', '0.5.0'
+  gem 'brakeman'
+  gem 'bundler-audit'
 
   # Testing tools
   gem 'json_matchers'
