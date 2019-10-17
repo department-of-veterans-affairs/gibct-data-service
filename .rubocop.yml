@@ -66,4 +66,4 @@ Rails/HasManyOrHasOneDependent:
 
 Lint/BooleanSymbol:
   Exclude:
-    - 'app/controllers/v0/institutions_controller.rb'
+    - 'lib/facets/facets.rb'

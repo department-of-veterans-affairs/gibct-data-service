@@ -6,7 +6,6 @@ module V0
     include Facets
 
     # GET /v0/institutions/autocomplete?term=harv
-
     def autocomplete
       @data = []
       if params[:term]
@@ -126,36 +125,24 @@ module V0
         type: institution_types,
         state: search_results.filter_count(:state),
         country: embed(search_results.filter_count(:country)),
-        student_vet_group: default_boolean_facet,
-        yellow_ribbon_scholarship: default_boolean_facet,
-        principles_of_excellence: default_boolean_facet,
-        eight_keys_to_veteran_success: default_boolean_facet,
-        stem_offered: default_boolean_facet,
-        independent_study: default_boolean_facet,
-        online_only: default_boolean_facet,
-        distance_learning: default_boolean_facet,
-        priority_enrollment: default_boolean_facet
+        student_vet_group: boolean_facet,
+        yellow_ribbon_scholarship: boolean_facet,
+        principles_of_excellence: boolean_facet,
+        eight_keys_to_veteran_success: boolean_facet,
+        stem_offered: boolean_facet,
+        independent_study: boolean_facet,
+        online_only: boolean_facet,
+        distance_learning: boolean_facet,
+        priority_enrollment: boolean_facet
       }
       add_active_search_facets(result)
     end
 
-    def default_boolean_facet
-      { true: nil, false: nil }
-    end
-
     def add_active_search_facets(raw_facets)
-      binding.pry
-
-      add_a_named_search_facet(raw_facets, :state)
-      add_named_search_facet(raw_facets, :type)
+      named_search_facet(raw_facets, :state)
+      named_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
-    end
-
-    def add_named_search_facet(raw_facets, facet_name)
-      return if @query[facet_name].blank?
-      key = @query[facet_name].downcase
-      raw_facets[facet_name][key] = 0 unless raw_facets[facet_name].key? key
     end
 
     def add_country_search_facet(raw_facets)
