@@ -60,14 +60,14 @@ RSpec.describe InstitutionBuilder, type: :model do
         statement_invalid.set_backtrace(%(backtrace))
 
         allow(described_class).to receive(:add_crosswalk).and_raise(statement_invalid)
-        expect(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
+        expect(Rails.logger).to have_received(:error).with('There was an error occurring at the database level: BOOM!')
         described_class.run(user)
       end
 
       it 'logs errors at the Rails level' do
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
 
-        expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
+        expect(Rails.logger).to have_received(:error).with('There was an error of unexpected origin: BOOM!')
         described_class.run(user)
       end
 
@@ -737,12 +737,12 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'calls update_ope_from_crosswalk' do
-        expect(Complaint).to receive(:update_ope_from_crosswalk)
+        expect(Complaint).to have_received(:update_ope_from_crosswalk)
         described_class.run(user)
       end
 
       it 'calls rollup_sums for facility_code and ope6' do
-        expect(Complaint).to receive(:rollup_sums).twice
+        expect(Complaint).to have_received(:rollup_sums).twice
         described_class.run(user)
       end
 

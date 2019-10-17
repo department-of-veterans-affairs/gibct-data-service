@@ -82,7 +82,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      expect(Weam).to receive(:export)
+      expect(Weam).to have_received(:export)
       get(:export, params: { csv_type: 'Weam', format: :csv })
     end
 
@@ -111,7 +111,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      expect(Institution).to receive(:export_institutions_by_version)
+      expect(Institution).to have_received(:export_institutions_by_version)
       get(:export_version, params: { format: :csv, number: 1 })
     end
 
