@@ -42,11 +42,6 @@ RSpec/ExampleLength:
     - 'spec/validators/edu_program_validator_spec.rb'
     - 'spec/validators/program_validator_spec.rb'
 
-# Offense count: 1
-RSpec/ExpectInHook:
-  Exclude:
-    - 'spec/controllers/dashboards_controller_spec.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 RSpec/LeadingSubject:
