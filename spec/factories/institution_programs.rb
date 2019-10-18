@@ -24,35 +24,44 @@ FactoryBot.define do
     length_in_weeks '1001'
 
     trait :start_like_harv do
-      sequence(:institution_name) { |n| ["HARV#{n}", "HARV #{n}"].sample }
-      city 'BOSTON'
-      state 'MA'
-      country 'USA'
+      sequence(:description) { |n| ["HARV#{n}", "HARV #{n}"].sample }
     end
 
     trait :contains_harv do
-      sequence(:institution_name) { |n| ["HASHARV#{n}", "HAS HARV #{n}"].sample }
-      city 'BOSTON'
-      state 'MA'
-      country 'USA'
+      sequence(:description) { |n| ["HASHARV#{n}", "HAS HARV #{n}"].sample }
     end
 
     trait :in_nyc do
-      city 'NEW YORK'
-      state 'NY'
-      country 'USA'
+      before :create do |institution_program|
+        institution = create(:institution, physical_city: 'NEW YORK', physical_country: 'USA', physical_state: 'NY')
+        institution_program.institution = institution
+      end
     end
 
     trait :in_new_rochelle do
-      city 'NEW ROCHELLE'
-      state 'NY'
-      country 'USA'
+      before :create do |institution_program|
+        institution = create(:institution, physical_city: 'NEW ROCHELLE', physical_country: 'USA', physical_state: 'NY')
+        institution_program.institution = institution
+      end
     end
 
     trait :in_chicago do
-      city 'CHICAGO'
-      state 'IL'
-      country 'USA'
+      before :create do |institution_program|
+        institution = create(:institution, physical_city: 'CHICAGO', physical_country: 'USA', physical_state: 'IL')
+        institution_program.institution = institution
+      end
+    end
+
+    trait :preferred_provider do
+      before :create do |institution_program|
+        institution = create(:institution, preferred_provider: true)
+        institution_program.institution = institution
+      end
+    end
+
+    before :create do |institution_program|
+      institution = create :institution
+      institution_program.institution = institution
     end
   end
 end

@@ -46,21 +46,15 @@ class InstitutionProgram < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, include_address = false|
+  scope :search, lambda { |search_term, _include_address = false|
     return if search_term.blank?
 
     clause = [
-      'facility_code = (:facility_code)',
-      'lower(institution.institution) LIKE (:search_term)',
+      'institution_programs.facility_code = (:facility_code)',
+      'lower(institutions.institution) LIKE (:search_term)',
       'lower(description) LIKE (:search_term)',
-      'lower(city) LIKE (:search_term)'
+      'lower(institutions.physical_city) LIKE (:search_term)'
     ]
-
-    if include_address
-      3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE (:search_term)"
-      end
-    end
 
     where(
       sanitize_sql_for_conditions(
@@ -83,10 +77,6 @@ class InstitutionProgram < ApplicationRecord
     else
       where(field => value)
     end
-  }
-
-  scope :filter_count, lambda { |field|
-    group(field).where.not(field => nil).order(field).count
   }
 
   scope :version, ->(n) { where(version: n) }

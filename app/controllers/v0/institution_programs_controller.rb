@@ -2,8 +2,9 @@
 
 module V0
   class InstitutionProgramsController < ApiController
-    # GET /v0/institution_programs/autocomplete?term=harv
+    include Facets
 
+    # GET /v0/institution_programs/autocomplete?term=harv
     def autocomplete
       @data = []
       if params[:term]
@@ -25,38 +26,23 @@ module V0
         count: search_results.count,
         facets: facets
       }
-
-      render json: search_results.order('preferred_provider DESC NULLS LAST, institution_name')
-                                 .page(params[:page]), meta: @meta
+      render json: search_results.page(params[:page]), meta: @meta
     end
 
     private
 
-    def normalized_query_params
-      query = params.deep_dup
-      query.tap do
-        query[:name].try(:strip!)
-        query[:name].try(:downcase!)
-        %i[state country type].each do |k|
-          query[k].try(:upcase!)
-        end
-
-        %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
-           eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning vet_tec_provider].each do |k|
-          query[k].try(:downcase!)
-        end
-      end
-    end
-
     def search_results
       @query ||= normalized_query_params
-      relation = InstitutionProgram.version(@version[:number]).search(@query[:name], @query[:include_address])
+
+      relation = InstitutionProgram.version(@version[:number])
+                                   .joins(:institution)
+                                   .search(@query[:name], @query[:include_address])
+                                   .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
       [
         %i[program_type type],
-        %i[country],
-        %i[state],
-        [:preferred_provider]
+        %w[institutions.physical_country country],
+        %w[institutions.physical_state state],
+        %w[institutions.preferred_provider preferred_provider]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
@@ -67,46 +53,30 @@ module V0
 
     def facets
       result = {
-        type: search_results.filter_count(:program_type),
-        state: search_results.filter_count(:state),
-        country: embed(search_results.filter_count(:country))
+        type: count_field(search_results, :program_type),
+        state: count_field(search_results, :state),
+        country: embed(count_field(search_results, :country))
       }
       add_active_search_facets(result)
     end
 
+    def count_field(relation, field)
+      field_map = {}
+      relation.map do |program|
+        value = program.send(field)
+        if value.present?
+          field_map[value] = 0 if field_map[value].nil?
+          field_map[value] += 1
+        end
+      end
+      field_map
+    end
+
     def add_active_search_facets(raw_facets)
-      add_state_search_facet(raw_facets)
-      add_type_search_facet(raw_facets)
+      add_search_facet(raw_facets, :type)
+      add_search_facet(raw_facets, :state)
       add_country_search_facet(raw_facets)
       raw_facets
-    end
-
-    def add_state_search_facet(raw_facets)
-      return if @query[:state].blank?
-      key = @query[:state].downcase
-      raw_facets[:state][key] = 0 unless raw_facets[:state].key? key
-    end
-
-    def add_type_search_facet(raw_facets)
-      return if @query[:type].blank?
-      key = @query[:type].downcase
-      raw_facets[:type][key] = 0 unless raw_facets[:type].key? key
-    end
-
-    def add_country_search_facet(raw_facets)
-      return if @query[:country].blank?
-      key = @query[:country].upcase
-      raw_facets[:country] << { name: key, count: 0 } unless
-        raw_facets[:country].any? { |c| c[:name] == key }
-    end
-
-    # Embed search result counts as a list of hashes with "name"/"count"
-    # keys so that open-ended strings such as country names do not
-    # get interpreted/mutated as JSON keys.
-    def embed(group_counts)
-      group_counts.each_with_object([]) do |(k, v), array|
-        array << { name: k, count: v }
-      end
     end
   end
 end

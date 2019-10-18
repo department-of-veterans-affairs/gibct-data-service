@@ -39,7 +39,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       create(:version, :production)
       2.times { create(:institution_program, :start_like_harv) }
       get(:autocomplete, params: { term: 'harv' })
-      expect(InstitutionProgram.count).to eq(2)
+      expect(JSON.parse(response.body)['data'].count).to eq(2)
     end
 
     it 'limits results to 6' do
@@ -92,8 +92,8 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search returns results matching program name' do
-      create(:institution_program, description: 'IT')
-      get(:index, params: { name: 'IT' })
+      create(:institution_program, description: 'TEST')
+      get(:index, params: { name: 'TEST' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -143,7 +143,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'filters by preferred_provider' do
-      create(:institution_program, preferred_provider: true)
+      create(:institution_program, :preferred_provider)
       get(:index, params: { vet_tec_provider: true, preferred_provider: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
