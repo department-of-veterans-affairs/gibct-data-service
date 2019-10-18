@@ -245,9 +245,9 @@ class Institution < ApplicationRecord
     end
 
     where(
-      clause.join(' OR '),
-      facility_code: search_term.upcase,
-      search_term: "%#{search_term}%"
+      sanitize_sql_for_conditions([clause.join(' OR '),
+                                   facility_code: search_term.upcase,
+                                   search_term: "%#{search_term}%"])
     )
   }
 
