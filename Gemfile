@@ -71,8 +71,8 @@ group :development, :test do
   gem 'jshint', platforms: :ruby
 
   # Security scanners
-  gem 'brakeman', '3.4.1'
-  gem 'bundler-audit', '0.5.0'
+  gem 'brakeman'
+  gem 'bundler-audit'
 
   # Testing tools
   gem 'rails-controller-testing'
