@@ -211,10 +211,6 @@ class Institution < ApplicationRecord
     institution_type_name != 'OJT'
   end
 
-  # def institution_programs
-  #   InstitutionProgram.where('facility_code = ? AND version = ?', facility_code, version).order(:description)
-  # end
-
   def versioned_school_certifying_officials
     VersionedSchoolCertifyingOfficial.where('facility_code = ? AND version = ?',
                                             facility_code, version).order(:last_name)
