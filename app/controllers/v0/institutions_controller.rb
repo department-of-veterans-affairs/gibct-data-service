@@ -67,6 +67,22 @@ module V0
 
     private
 
+    def normalized_query_params
+      query = params.deep_dup
+      query.tap do
+        query[:name].try(:strip!)
+        query[:name].try(:downcase!)
+        %i[state country type].each do |k|
+          query[k].try(:upcase!)
+        end
+        %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
+           eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
+           online_only distance_learning vet_tec_provider].each do |k|
+          query[k].try(:downcase!)
+        end
+      end
+    end
+
     # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
@@ -97,10 +113,6 @@ module V0
     end
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Style/MutableConstant
-    DEFAULT_BOOLEAN_FACET = { true: nil, false: nil }
-    # rubocop:enable Style/MutableConstant
-
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
     def facets
@@ -113,15 +125,15 @@ module V0
         type: institution_types,
         state: search_results.filter_count(:state),
         country: embed(search_results.filter_count(:country)),
-        student_vet_group: DEFAULT_BOOLEAN_FACET,
-        yellow_ribbon_scholarship: DEFAULT_BOOLEAN_FACET,
-        principles_of_excellence: DEFAULT_BOOLEAN_FACET,
-        eight_keys_to_veteran_success: DEFAULT_BOOLEAN_FACET,
-        stem_offered: DEFAULT_BOOLEAN_FACET,
-        independent_study: DEFAULT_BOOLEAN_FACET,
-        online_only: DEFAULT_BOOLEAN_FACET,
-        distance_learning: DEFAULT_BOOLEAN_FACET,
-        priority_enrollment: DEFAULT_BOOLEAN_FACET
+        student_vet_group: boolean_facet,
+        yellow_ribbon_scholarship: boolean_facet,
+        principles_of_excellence: boolean_facet,
+        eight_keys_to_veteran_success: boolean_facet,
+        stem_offered: boolean_facet,
+        independent_study: boolean_facet,
+        online_only: boolean_facet,
+        distance_learning: boolean_facet,
+        priority_enrollment: boolean_facet
       }
       add_active_search_facets(result)
     end

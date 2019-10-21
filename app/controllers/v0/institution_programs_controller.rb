@@ -31,6 +31,17 @@ module V0
 
     private
 
+    def normalized_query_params
+      query = params.deep_dup
+      query.tap do
+        query[:name].try(:strip!)
+        query[:name].try(:downcase!)
+        %i[state country type].each do |k|
+          query[k].try(:upcase!)
+        end
+      end
+    end
+
     def search_results
       @query ||= normalized_query_params
 
