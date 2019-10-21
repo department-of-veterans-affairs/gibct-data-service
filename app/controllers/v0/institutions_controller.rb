@@ -112,7 +112,6 @@ module V0
 
       relation
     end
-
     # rubocop:enable Metrics/MethodLength
 
     # TODO: If filter counts are desired in the future, change boolean facets
