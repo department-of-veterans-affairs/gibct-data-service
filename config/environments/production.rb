@@ -42,6 +42,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+  # We terminate SSL before traffic gets to the gi data service elb and traffic from the elb to the service is over http. So forcing ssl will break our ELB health checks.
   # config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
