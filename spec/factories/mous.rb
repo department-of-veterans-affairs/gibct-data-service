@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :mou do
     ope { generate :ope }
-    status 'probation - dod'
+    status ''
 
     trait :by_dod do
       status 'probation - dod'

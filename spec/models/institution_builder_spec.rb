@@ -372,7 +372,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       describe 'the caution_flag' do
         it 'is sets when dod_status is true' do
-          create :mou, :institution_builder
+          create :mou, :institution_builder, :by_dod
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag).to be_truthy
@@ -388,7 +388,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       describe 'the caution_flag_reason' do
         it 'is set when dod_status is true' do
-          create :mou, :institution_builder
+          create :mou, :institution_builder, :by_dod
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag_reason).to eq(reason)
@@ -397,7 +397,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'contentates the existing reasons' do
           create :accreditation_institute_campus
           create :accreditation_action_probationary
-          create :mou, :institution_builder
+          create :mou, :institution_builder, :by_dod
           InstitutionBuilder.run(user)
 
           expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)

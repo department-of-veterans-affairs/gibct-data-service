@@ -27,10 +27,10 @@ class Mou < ApplicationRecord
   end
 
   def to_dodmou
-    (status =~ STATUSES).nil?
+    status.blank? || (status.present? && !status.match?(STATUSES))
   end
 
   def to_dod_status
-    (status =~ /dod/i).present?
+    status.present? && status.match?(/dod/i)
   end
 end
