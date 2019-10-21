@@ -63,7 +63,3 @@ Naming/FileName:
 Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/user.rb'
-
-Lint/BooleanSymbol:
-  Exclude:
-    - 'lib/facets/facets.rb'

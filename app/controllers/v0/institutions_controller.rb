@@ -75,6 +75,7 @@ module V0
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
+
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
            online_only distance_learning vet_tec_provider].each do |k|
@@ -111,6 +112,7 @@ module V0
 
       relation
     end
+
     # rubocop:enable Metrics/MethodLength
 
     # TODO: If filter counts are desired in the future, change boolean facets
@@ -139,26 +141,10 @@ module V0
     end
 
     def add_active_search_facets(raw_facets)
-      named_search_facet(raw_facets, :state)
-      named_search_facet(raw_facets, :type)
+      add_search_facet(raw_facets, :state)
+      add_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
-    end
-
-    def add_country_search_facet(raw_facets)
-      return if @query[:country].blank?
-      key = @query[:country].upcase
-      raw_facets[:country] << { name: key, count: 0 } unless
-        raw_facets[:country].any? { |c| c[:name] == key }
-    end
-
-    # Embed search result counts as a list of hashes with "name"/"count"
-    # keys so that open-ended strings such as country names do not
-    # get interpreted/mutated as JSON keys.
-    def embed(group_counts)
-      group_counts.each_with_object([]) do |(k, v), array|
-        array << { name: k, count: v }
-      end
     end
 
     def approved_institutions
