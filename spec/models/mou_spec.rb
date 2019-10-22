@@ -24,6 +24,11 @@ RSpec.describe Mou, type: :model do
       expect(subject.ope6).to eql(subject.ope[1, 5])
     end
 
+    it 'sets dodmou to true if status is not set' do
+      mou = create :mou
+      expect(mou.dodmou).to be_truthy
+    end
+
     it 'sets dodmou to false if status is set' do
       ['PRoBATIon - Dod', 'title IV NON-comPliant'].each do |status|
         mou = create :mou, status: status
@@ -32,7 +37,7 @@ RSpec.describe Mou, type: :model do
     end
 
     it "sets dod_status if status contains 'dod'" do
-      expect(create(:mou).dod_status).to be_truthy
+      expect(create(:mou, :by_dod).dod_status).to be_truthy
       expect(create(:mou, :by_title_iv).dod_status).to be_falsy
     end
   end
