@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :institution_program do
     version 1
-    sequence(:description) { |n| "TEST #{n}" }
+    sequence(:description) { |n| "PROGRAM #{n}" }
     program_type 'NCD'
     full_time_undergraduate '360'
     graduate '234'
