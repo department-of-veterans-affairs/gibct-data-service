@@ -11,7 +11,6 @@ class UpdateInstitutionProgramsArchivesIndexes < ActiveRecord::Migration[5.2]
 
     add_index :institution_programs_archives,
               [:description, :version],
-              unique: true,
               algorithm: :concurrently,
               name: 'index_institution_programs_archives'
   end
