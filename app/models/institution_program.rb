@@ -19,9 +19,7 @@ class InstitutionProgram < ApplicationRecord
     institution.institution
   end
 
-  def facility_code
-    institution.facility_code
-  end
+  delegate :facility_code, to: :institution
 
   def city
     institution.physical_city
