@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_125900) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
-    t.index ["description", "version"], name: "index_institution_programs", unique: true
+    t.index ["description", "version"], name: "index_institution_programs"
     t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
 
@@ -245,7 +245,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_125900) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
-    t.index ["description", "version"], name: "index_institution_programs_archives", unique: true
+    t.index ["description", "version"], name: "index_institution_programs_archives"
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
 
