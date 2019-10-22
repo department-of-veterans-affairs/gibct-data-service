@@ -3,8 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Upload, type: :model do
-  let(:user) { User.first }
   subject { build :upload, user: user }
+
+  let(:user) { User.first }
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
