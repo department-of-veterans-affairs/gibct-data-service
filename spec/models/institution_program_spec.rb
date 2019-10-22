@@ -21,10 +21,6 @@ RSpec.describe InstitutionProgram, type: :model do
       expect(build(:institution_program, institution_id: institution.id, version: nil)).not_to be_valid
     end
 
-    it 'requires a facility code' do
-      expect(build(:institution_program, institution_id: institution.id, facility_code: nil)).not_to be_valid
-    end
-
     it 'requires an institution' do
       expect(build(:institution_program)).not_to be_valid
     end

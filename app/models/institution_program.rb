@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ApplicationRecord
-  validates :version, :institution, :facility_code, :description, presence: true
+  validates :version, :institution, :description, presence: true
 
   PROGRAM_TYPES = %w[
     IHL
@@ -17,6 +17,10 @@ class InstitutionProgram < ApplicationRecord
 
   def institution_name
     institution.institution
+  end
+
+  def facility_code
+    institution.facility_code
   end
 
   def city

@@ -508,7 +508,6 @@ module InstitutionBuilder
   def self.build_institution_programs(version_number)
     str = <<-SQL
       INSERT INTO institution_programs (
-        facility_code,
         program_type,
         description,
         full_time_undergraduate,
@@ -531,7 +530,6 @@ module InstitutionBuilder
         institution_id
       )
       SELECT
-        a.facility_code,
         program_type,
         description,
         full_time_undergraduate,

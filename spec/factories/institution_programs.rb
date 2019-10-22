@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :institution_program do
     version 1
-    facility_code { generate :facility_code }
     program_type 'NCD'
     description 'COMPUTER SCIENCE'
     full_time_undergraduate '360'
