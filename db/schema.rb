@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_15_133300) do
+ActiveRecord::Schema.define(version: 2019_10_22_125900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -198,7 +198,7 @@ ActiveRecord::Schema.define(version: 2019_10_15_133300) do
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
+    t.string "facility_code"
     t.string "program_type"
     t.string "description", null: false
     t.string "full_time_undergraduate"
@@ -219,12 +219,12 @@ ActiveRecord::Schema.define(version: 2019_10_15_133300) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
-    t.index ["facility_code", "description", "version"], name: "index_institution_programs", unique: true
+    t.index ["description", "version"], name: "index_institution_programs", unique: true
     t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
 
   create_table "institution_programs_archives", id: :integer, default: -> { "nextval('institution_programs_id_seq'::regclass)" }, force: :cascade do |t|
-    t.string "facility_code", null: false
+    t.string "facility_code"
     t.string "program_type"
     t.string "description", null: false
     t.string "full_time_undergraduate"
@@ -245,7 +245,7 @@ ActiveRecord::Schema.define(version: 2019_10_15_133300) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
-    t.index ["facility_code", "description", "version"], name: "index_institution_programs_archives", unique: true
+    t.index ["description", "version"], name: "index_institution_programs_archives", unique: true
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
 
