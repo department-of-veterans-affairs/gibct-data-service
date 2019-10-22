@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 3.6'
 
-gem 'rails', '5.1.7'
+gem 'rails', '5.2.3'
 
 
 # Gems with special version/repo needs
@@ -71,8 +71,8 @@ group :development, :test do
   gem 'jshint', platforms: :ruby
 
   # Security scanners
-  gem 'brakeman', '3.4.1'
-  gem 'bundler-audit', '0.5.0'
+  gem 'brakeman'
+  gem 'bundler-audit'
 
   # Testing tools
   gem 'rails-controller-testing'

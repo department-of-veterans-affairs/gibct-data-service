@@ -112,7 +112,7 @@ class Weam < ApplicationRecord
 
   # Is this a foreign school?
   def foreign?
-    !correspondence? && !flight? && (country =~ Regexp.new('\A(us|usa)\z', 'i')).nil?
+    !correspondence? && !flight? && !country.nil? && !country.match?(/\A(us|usa)\z/i)
   end
 
   # Is this a public school?
@@ -176,7 +176,7 @@ class Weam < ApplicationRecord
   private
 
   def poo_status_valid?
-    poo_status =~ Regexp.new('aprvd', 'i')
+    !poo_status.nil? && poo_status.match?(/aprvd/i)
   end
 
   def invalid_law_code?
