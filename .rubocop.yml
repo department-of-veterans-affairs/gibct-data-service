@@ -1,24 +1,55 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
 
 AllCops:
   Include:
+    - '**/Gemfile'
     - '**/config.ru'
     - '**/Rakefile'
     - '**/*.rake'
+    - '**/*.rb'
   Exclude:
     - 'db/**/*'
-    - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'config/**/*'
     - 'bin/**/*'
-    - 'Gemfile'
     - 'log/**/*'
 
-Metrics/AbcSize:
-  Max: 40
+# This allows you to use have writers like self.method_name(name) vs self.method_name=(name)
+Style/TrivialAccessors:
+  AllowDSLWriters: true
 
-Metrics/BlockLength:
+# This is the rubocop default but putting it here explicitly
+# strong benefit for code readability and speed in reviewing PRs for code review
+# only use double quote when doing interpolation or complex escape sequences
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Rails:
+  Enabled: true
+
+Rails/Output:
   Exclude:
-    - 'spec/**/*'
+    - 'lib/**/*.rb'
+
+Rails/HttpPositionalArguments:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'app/models/institution_builder.rb'
 
 Metrics/ClassLength:
   Exclude:
@@ -28,42 +59,102 @@ Metrics/ClassLength:
     - 'app/models/ipeds_ic_py.rb'
     - 'app/models/institution.rb'
 
-Metrics/LineLength:
-  Max: 120
-
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - 'app/models/institution_builder.rb'
+Metrics/AbcSize:
+  Max: 40
 
 Metrics/ModuleLength:
   Exclude:
     - 'app/models/institution_builder.rb'
 
-Style/Documentation:
+# removing rule because get_session implies HTTP GET, and informs method
+Naming/AccessorMethodName:
   Enabled: false
 
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
-
-Rails:
-  Enabled: true
-
-Rails/HttpPositionalArguments:
-  Enabled: false
-
-Rails/Output:
+Metrics/BlockLength:
   Exclude:
-    - 'lib/**/*.rb'
+    - 'spec/**/*'
+    - 'rakelib/**/*.rake'
+    - 'config/**/*.rb'
+
+# Don't worry about ambiguous blocks in RSpec
+# Official recommendation from rubocop team is to disable this rule for specs.
+# See: https://github.com/rubocop-hq/rubocop/issues/4222
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
 
 Naming/FileName:
   Exclude:
     - 'Guardfile'
 
+Lint/BooleanSymbol:
+  Exclude:
+    - 'app/controllers/v0/institutions_controller.rb'
+
 Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/user.rb'
 
-Lint/BooleanSymbol:
+RSpec/FilePath:
   Exclude:
-    - 'app/controllers/v0/institutions_controller.rb'
+    - 'spec/fixtures/**/*'
+
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/config/initializers/csv_types_spec.rb'
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/AnyInstance:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/BeforeAfterAll:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/ContextWording:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/ExampleLength:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/ExpectInHook:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/InstanceVariable:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/MessageSpies:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/NamedSubject:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/NestedGroups:
+  Enabled: false
+
+# This seems to generate a lot of false positives
+RSpec/EmptyExampleGroup:
+  Enabled: false
+
+# This seems to generate a lot of false positives
+RSpec/LetSetup:
+  Enabled: false
