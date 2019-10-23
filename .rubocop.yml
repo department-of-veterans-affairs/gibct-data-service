@@ -120,10 +120,6 @@ RSpec/ExpectInHook:
   Enabled: false
 
 # Determined to be too benign and/or numerous to justify changing
-RSpec/InstanceVariable:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
 RSpec/LeakyConstantDeclaration:
   Enabled: false
 
