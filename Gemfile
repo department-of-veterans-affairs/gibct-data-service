@@ -84,7 +84,7 @@ group :development, :test do
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
 
-  gem 'factory_bot_rails', '4.10.0'
+  gem 'factory_bot_rails', '> 5'
 
   gem 'capybara', '2.11.0'
   gem 'database_cleaner'
