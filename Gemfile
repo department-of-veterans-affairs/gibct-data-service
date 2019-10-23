@@ -57,7 +57,7 @@ gem 'strong_migrations'
 gem 'will_paginate'
 
 group :production do
-  gem 'sass-rails', '~> 5.0'
+  gem 'sass-rails', '6.0'
 end
 
 group :development, :test do
