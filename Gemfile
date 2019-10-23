@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 # Anchored versions, do not change
@@ -8,7 +10,6 @@ source 'https://rubygems.org'
 gem 'puma', '~> 3.6'
 
 gem 'rails', '5.2.3'
-
 
 # Gems with special version/repo needs
 
@@ -24,7 +25,7 @@ gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
-gem 'sentry-raven', '~> 2.3.0'
+gem 'sentry-raven', '~> 2.9.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
@@ -32,7 +33,6 @@ gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
 gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
-
 
 # Mass importing of CSV data
 gem 'activerecord-import'
@@ -47,7 +47,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # CORS
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', require: 'rack/cors'
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
@@ -57,7 +57,7 @@ gem 'strong_migrations'
 gem 'will_paginate'
 
 group :production do
-  gem 'sass-rails', '~> 5.0'
+  gem 'sass-rails', '6.0'
 end
 
 group :development, :test do
@@ -66,18 +66,20 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'rubocop', '~> 0.53.0', require: false
-  gem 'scss_lint', require: false
   gem 'jshint', platforms: :ruby
+  gem 'rubocop', require: false
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
+  gem 'scss_lint', require: false
 
   # Security scanners
   gem 'brakeman'
   gem 'bundler-audit'
 
   # Testing tools
+  gem 'json_matchers'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
-  gem 'json_matchers'
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
@@ -85,10 +87,11 @@ group :development, :test do
   gem 'factory_bot_rails', '4.10.0'
 
   gem 'capybara', '2.11.0'
-  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
-  gem 'simplecov'
   gem 'database_cleaner'
   gem 'faker', '~> 1.6', '>= 1.6.2'
+  gem 'simplecov'
+  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git',
+                    ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
 
@@ -101,5 +104,5 @@ group :development do
 
   # Include the IANA Time Zone Database on Windows, where Windows doens't ship with a timezone database.
   # POSIX systems should have this already, so we're not going to bring it in on other platforms
- gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+  gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 end

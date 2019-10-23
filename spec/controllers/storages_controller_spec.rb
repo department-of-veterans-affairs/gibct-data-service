@@ -18,7 +18,7 @@ RSpec.describe StoragesController, type: :controller do
   describe 'GET index' do
     login_user
 
-    before(:each) do
+    before do
       create :storage
       get(:index)
     end
@@ -38,7 +38,7 @@ RSpec.describe StoragesController, type: :controller do
     let(:storage) { create :storage }
 
     context 'with a valid id' do
-      before(:each) do
+      before do
         get(:download, params: { id: storage.id })
       end
 
@@ -61,7 +61,7 @@ RSpec.describe StoragesController, type: :controller do
     let(:storage) { create :storage }
 
     context 'with a valid id' do
-      before(:each) do
+      before do
         get(:show, params: { id: storage.id })
       end
 
@@ -87,7 +87,7 @@ RSpec.describe StoragesController, type: :controller do
     login_user
 
     context 'specifying a valid' do
-      before(:each) do
+      before do
         create :storage
         get(:edit, params: { id: storage.id })
       end
@@ -118,7 +118,7 @@ RSpec.describe StoragesController, type: :controller do
     login_user
 
     context 'with a valid id' do
-      before(:each) do
+      before do
         create :storage
       end
 

@@ -3,13 +3,13 @@
 FactoryBot.define do
   factory :ipeds_hd do
     cross { generate :cross }
-    vet_tuition_policy_url 'http://example.com'
-    f1sysnam 'example school'
-    f1syscod 123
-    ialias 'exsc'
+    vet_tuition_policy_url { 'http://example.com' }
+    f1sysnam { 'example school' }
+    f1syscod { 123 }
+    ialias { 'exsc' }
 
     trait :institution_builder do
-      cross '999999'
+      cross { '999999' }
     end
 
     initialize_with do

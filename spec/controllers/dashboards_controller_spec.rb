@@ -21,7 +21,7 @@ RSpec.describe DashboardsController, type: :controller do
   describe 'GET #index' do
     login_user
 
-    before(:each) do
+    before do
       # 3 Weam upload records
       create_list :upload, 3
       Upload.all[1].update(ok: true)
@@ -44,7 +44,7 @@ RSpec.describe DashboardsController, type: :controller do
   describe 'GET #build' do
     login_user
 
-    before(:each) do
+    before do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
@@ -71,7 +71,7 @@ RSpec.describe DashboardsController, type: :controller do
   describe 'GET export' do
     login_user
 
-    before(:each) do
+    before do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
@@ -100,7 +100,7 @@ RSpec.describe DashboardsController, type: :controller do
   describe 'GET export_version' do
     login_user
 
-    before(:each) do
+    before do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
@@ -126,10 +126,11 @@ RSpec.describe DashboardsController, type: :controller do
   end
 
   describe 'GET push' do
-    before(:each) do
+    before do
       allow_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines)
       allow(Archiver).to receive(:archive_previous_versions).and_return(nil)
     end
+
     login_user
 
     context 'with no existing preview records' do
@@ -143,17 +144,17 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     describe 'with existing preview records' do
-      before(:each) do
+      before do
         create :version
       end
 
       context 'and is successful' do
-        before(:each) do
+        before do
         end
 
         it 'adds a new version record' do
           SiteMapperHelper.silence do
-            expect { post(:push) }.to change { Version.count }.by(1)
+            expect { post(:push) }.to change(Version, :count).by(1)
           end
         end
 
@@ -175,13 +176,13 @@ RSpec.describe DashboardsController, type: :controller do
       end
 
       context 'and is not successful' do
-        before(:each) do
+        before do
           allow(Version).to receive(:create).and_return(Version.new)
           expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
         end
 
         it 'does not add a new version' do
-          expect { post(:push) }.to change { Version.count }.by(0)
+          expect { post(:push) }.to change(Version, :count).by(0)
         end
 
         it 'returns an error message' do

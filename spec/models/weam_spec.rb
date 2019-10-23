@@ -207,8 +207,8 @@ RSpec.describe Weam, type: :model do
     let(:not_approved) { build :weam }
 
     it 'is true only if at least one indicator flag is set' do
-      expect(subject.flags_for_approved?).to be_truthy
-      expect(not_approved.flags_for_approved?).to be_falsy
+      expect(subject).to be_flags_for_approved
+      expect(not_approved).not_to be_flags_for_approved
     end
   end
 
@@ -223,25 +223,25 @@ RSpec.describe Weam, type: :model do
     let(:vet_tec_invalid_law_code) { build :weam, :invalid_vet_tec_law_code }
 
     it 'is true if poo and law code are approved with at least one true indicator' do
-      expect(subject.approved?).to be_truthy
+      expect(subject).to be_approved
     end
 
     it 'is false if the poo is withdrawn, or if law code is not approved or title 31' do
-      expect(withdrawn.approved?).to be_falsy
-      expect(non_approved_law_code.approved?).to be_falsy
-      expect(title_31_law_code.approved?).to be_falsy
+      expect(withdrawn).not_to be_approved
+      expect(non_approved_law_code).not_to be_approved
+      expect(title_31_law_code).not_to be_approved
     end
 
     it 'is false if there are no truthful indicators' do
-      expect(false_indicators.approved?).to be_falsy
+      expect(false_indicators).not_to be_approved
     end
 
     it 'is true if poo and law code are vet tec only with non college degree indicator' do
-      expect(vet_tec_provider.approved?).to be_truthy
+      expect(vet_tec_provider).to be_approved
     end
 
     it 'is false if vet tec law code is incorrect for vet tec institution' do
-      expect(vet_tec_invalid_law_code.approved?).to be_falsy
+      expect(vet_tec_invalid_law_code).not_to be_approved
     end
   end
 end

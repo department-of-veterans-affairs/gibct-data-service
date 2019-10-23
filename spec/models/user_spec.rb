@@ -40,9 +40,9 @@ RSpec.describe User, type: :model do
     let(:vaild_attributes) { { va_eauth_emailaddress: FactoryBot.create(:user).email } }
     let(:empty_attributes) { {} }
 
-    it 'should return a user based on the attributes in the saml response' do
-      expect(User.from_saml_callback(empty_attributes)).to be_nil
-      expect(User.from_saml_callback(vaild_attributes)).not_to be_nil
+    it 'returns a user based on the attributes in the saml response' do
+      expect(described_class.from_saml_callback(empty_attributes)).to be_nil
+      expect(described_class.from_saml_callback(vaild_attributes)).not_to be_nil
     end
   end
 end

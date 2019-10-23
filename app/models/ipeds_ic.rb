@@ -137,6 +137,7 @@ class IpedsIc < ApplicationRecord
 
   def self.to_calendar(value)
     return nil if value.nil? || value == -2
+
     @calendar ||= { 1 => 'semesters', 2 => 'quarters' }
     @calendar[value] || 'nontraditional'
   end
@@ -148,6 +149,7 @@ class IpedsIc < ApplicationRecord
 
   def self.coded_to_boolean(value)
     return nil if value.nil? || value.negative?
+
     BooleanConverter.convert(value)
   end
 end

@@ -4,7 +4,7 @@ RSpec.shared_examples 'a loadable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
 
-  before(:each) do
+  before do
     create :user
     create_list factory_name, 5
   end
@@ -17,7 +17,7 @@ RSpec.shared_examples 'a loadable model' do |options|
 
     context 'with an error-free csv file' do
       it 'deletes the old table content' do
-        expect { described_class.load(csv_file, options) }.to change { described_class.count }.from(5).to(2)
+        expect { described_class.load(csv_file, options) }.to change(described_class, :count).from(5).to(2)
       end
 
       it 'loads the table' do
