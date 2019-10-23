@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 require:
   - rubocop-rails
   - rubocop-rspec
@@ -16,10 +18,6 @@ AllCops:
     - 'config/**/*'
     - 'bin/**/*'
     - 'log/**/*'
-
-# This allows you to use have writers like self.method_name(name) vs self.method_name=(name)
-Style/TrivialAccessors:
-  AllowDSLWriters: true
 
 # This is the rubocop default but putting it here explicitly
 # strong benefit for code readability and speed in reviewing PRs for code review
@@ -43,9 +41,6 @@ Rails/Output:
   Exclude:
     - 'lib/**/*.rb'
 
-Rails/HttpPositionalArguments:
-  Enabled: false
-
 Metrics/MethodLength:
   Max: 20
   Exclude:
@@ -65,10 +60,6 @@ Metrics/AbcSize:
 Metrics/ModuleLength:
   Exclude:
     - 'app/models/institution_builder.rb'
-
-# removing rule because get_session implies HTTP GET, and informs method
-Naming/AccessorMethodName:
-  Enabled: false
 
 Metrics/BlockLength:
   Exclude:
@@ -102,59 +93,3 @@ RSpec/FilePath:
 RSpec/DescribeClass:
   Exclude:
     - 'spec/config/initializers/csv_types_spec.rb'
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/AnyInstance:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/BeforeAfterAll:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/ContextWording:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/ExampleLength:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/ExpectInHook:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/InstanceVariable:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/LeakyConstantDeclaration:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/MessageSpies:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/NamedSubject:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/VerifiedDoubles:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/MultipleExpectations:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
-RSpec/NestedGroups:
-  Enabled: false
-
-# This seems to generate a lot of false positives
-RSpec/EmptyExampleGroup:
-  Enabled: false
-
-# This seems to generate a lot of false positives
-RSpec/LetSetup:
-  Enabled: false
