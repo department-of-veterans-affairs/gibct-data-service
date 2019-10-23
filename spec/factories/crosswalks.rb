@@ -11,9 +11,9 @@ FactoryBot.define do
     cross { generate :cross }
 
     trait :institution_builder do
-      facility_code '1ZZZZZZZ'
-      ope '00279100'
-      cross '999999'
+      facility_code { '1ZZZZZZZ' }
+      ope { '00279100' }
+      cross { '999999' }
     end
 
     initialize_with do

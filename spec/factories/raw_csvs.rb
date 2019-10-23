@@ -3,10 +3,10 @@
 FactoryBot.define do
   factory :raw_csv do
     transient do
-      fixture_path 'spec/fixtures'
-      no_file false
-      csv_class_name 'Weam'
-      csv_file_name 'weam.csv'
+      fixture_path { 'spec/fixtures' }
+      no_file { false }
+      csv_class_name { 'Weam' }
+      csv_file_name { 'weam.csv' }
     end
 
     csv_type { csv_class_name }

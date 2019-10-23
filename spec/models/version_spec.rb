@@ -56,7 +56,7 @@ RSpec.describe Version, type: :model do
   end
 
   describe 'when determining production and generating preview versions' do
-    before(:each) do
+    before do
       create :version, :production, created_at: 3.days.ago
       create :version, created_at: 2.days.ago
       create :version, :production, created_at: 1.day.ago
@@ -64,57 +64,57 @@ RSpec.describe Version, type: :model do
     end
 
     context 'latest production version' do
-      let(:subject) { Version.current_production }
+      let(:subject) { described_class.current_production }
 
       it 'has correct number' do
         expect(subject.number).to eq(3)
       end
 
       it 'has correct attributes' do
-        expect(subject.latest_production?).to be_truthy
-        expect(subject.production?).to be_truthy
-        expect(subject.preview?).to be_falsey
-        expect(subject.latest_preview?).to be_falsey
-        expect(subject.publishable?).to be_falsey
+        expect(subject).to be_latest_production
+        expect(subject).to be_production
+        expect(subject).not_to be_preview
+        expect(subject).not_to be_latest_preview
+        expect(subject).not_to be_publishable
       end
     end
 
     context 'latest preview version' do
-      let(:subject) { Version.current_preview }
+      let(:subject) { described_class.current_preview }
 
       it 'has correct number' do
         expect(subject.number).to eq(4)
       end
 
       it 'has correct attributes' do
-        expect(subject.latest_production?).to be_falsey
-        expect(subject.production?).to be_falsey
-        expect(subject.preview?).to be_truthy
-        expect(subject.latest_preview?).to be_truthy
-        expect(subject.publishable?).to be_falsey
+        expect(subject).not_to be_latest_production
+        expect(subject).not_to be_production
+        expect(subject).to be_preview
+        expect(subject).to be_latest_preview
+        expect(subject).not_to be_publishable
       end
     end
   end
 
   describe 'when determining completed preview version' do
-    before(:each) do
+    before do
       create :version, :production, created_at: 1.day.ago
       create :version, completed_at: 0.days.ago, created_at: 0.days.ago
     end
 
     context 'latest preview version' do
-      let(:subject) { Version.current_preview }
+      let(:subject) { described_class.current_preview }
 
       it 'has correct number' do
         expect(subject.number).to eq(2)
       end
 
       it 'has correct attributes' do
-        expect(subject.latest_production?).to be_falsey
-        expect(subject.production?).to be_falsey
-        expect(subject.preview?).to be_truthy
-        expect(subject.latest_preview?).to be_truthy
-        expect(subject.publishable?).to be_truthy
+        expect(subject).not_to be_latest_production
+        expect(subject).not_to be_production
+        expect(subject).to be_preview
+        expect(subject).to be_latest_preview
+        expect(subject).to be_publishable
       end
     end
   end

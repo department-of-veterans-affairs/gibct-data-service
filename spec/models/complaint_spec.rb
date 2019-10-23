@@ -9,7 +9,7 @@ RSpec.describe Complaint, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 7
 
   describe 'when validating' do
-    subject { Complaint.new(attributes_for(:complaint)) }
+    subject { described_class.new(attributes_for(:complaint)) }
 
     let(:complaint_no_fac_code) { build :complaint, facility_code: nil }
     let(:complaint_no_status) { build :complaint, status: nil }
@@ -51,11 +51,11 @@ RSpec.describe Complaint, type: :model do
   end
 
   describe 'ok_to_sum?' do
-    subject { Complaint.new(attributes_for(:complaint)) }
+    subject { described_class.new(attributes_for(:complaint)) }
 
-    let(:invalid) { Complaint.new(attributes_for(:complaint, closed_reason: 'invalid')) }
-    let(:nil_reason) { Complaint.new(attributes_for(:complaint, closed_reason: nil)) }
-    let(:active) { Complaint.new(attributes_for(:complaint, status: 'active')) }
+    let(:invalid) { described_class.new(attributes_for(:complaint, closed_reason: 'invalid')) }
+    let(:nil_reason) { described_class.new(attributes_for(:complaint, closed_reason: nil)) }
+    let(:active) { described_class.new(attributes_for(:complaint, status: 'active')) }
 
     it 'is true for a closed complaint with any valid reason' do
       expect(subject).to be_ok_to_sum
@@ -69,16 +69,16 @@ RSpec.describe Complaint, type: :model do
   end
 
   describe '#update_ope_from_crosswalk' do
-    before(:each) do
+    before do
       crosswalk = create :crosswalk
       create :complaint, facility_code: crosswalk.facility_code, ope: '00279100'
     end
 
     it 'replaces the ope with that obtained from the Crosswalk table' do
-      Complaint.update_ope_from_crosswalk
+      described_class.update_ope_from_crosswalk
 
       crosswalk = Crosswalk.first
-      complaint = Complaint.first
+      complaint = described_class.first
 
       expect(complaint.ope).to eq(crosswalk.ope)
       expect(complaint.ope6).to eq(crosswalk.ope6)
@@ -87,11 +87,11 @@ RSpec.describe Complaint, type: :model do
 
   describe 'rollup_sums' do
     describe 'by facility_code' do
-      before(:each) do
+      before do
         institution = create :institution, :institution_builder
         create_list :complaint, 2, :all_issues, :institution_builder
 
-        Complaint.rollup_sums(:facility_code, institution.version)
+        described_class.rollup_sums(:facility_code, institution.version)
       end
 
       it 'the facility code sum fields contain the sums grouped by facility_code' do
@@ -106,14 +106,14 @@ RSpec.describe Complaint, type: :model do
     describe 'by ope6' do
       let(:version_number) {}
 
-      before(:each) do
+      before do
         # Different facility codes, same ope
         institution = create :institution, :institution_builder
         create :institution, :institution_builder, facility_code: 'ZZZZZZZZ'
 
         # Generate complaints for only one of the facility_codes
         create_list :complaint, 5, :all_issues, :institution_builder
-        Complaint.rollup_sums(:ope6, institution.version)
+        described_class.rollup_sums(:ope6, institution.version)
       end
 
       it 'the institution receives the sums grouped by ope6' do

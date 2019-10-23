@@ -6,7 +6,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       it 'redirects the user to login page' do
         get action
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_http_status(:found)
         expect(response).to redirect_to(new_user_session_url)
       end
     end
@@ -46,7 +46,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       end
 
       it 'has a current user' do
-        expect(subject.current_user).to_not be_nil
+        expect(subject.current_user).not_to be_nil
       end
     end
   end

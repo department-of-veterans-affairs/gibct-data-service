@@ -14,6 +14,7 @@ class User < ApplicationRecord
   def self.from_saml_callback(response_attrs)
     email = response_attrs[:va_eauth_emailaddress]
     return if email.blank?
+
     find_by(email: email.downcase)
   end
 end

@@ -129,6 +129,6 @@ class Complaint < ApplicationRecord
         SET ope = crosswalks.ope, ope6 = crosswalks.ope6
         FROM crosswalks
         WHERE complaints.facility_code = crosswalks.facility_code AND crosswalks.ope IS NOT NULL
-      SQL
+    SQL
   end
 end
