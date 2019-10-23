@@ -42,7 +42,12 @@ class InstitutionProgram < ApplicationRecord
   #
   def self.autocomplete(search_term, limit = 6)
     select('institution_programs.id, institutions.facility_code as value, description as label')
-      .where('lower(description) LIKE (?)', "#{search_term}%")
+      .where(
+        'lower(description) LIKE (?) OR lower(institutions.institution) LIKE (?)',
+        "#{search_term}%",
+        "#{search_term}%"
+      )
+      .group('institution_programs.id, institutions.facility_code, description')
       .limit(limit)
   end
 
