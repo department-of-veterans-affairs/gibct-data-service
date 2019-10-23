@@ -3,11 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
-  let(:user) { User.first }
-
-  before do
-    create :user, email: 'fred@va.gov', password: 'fuggedabodit'
-  end
+  let(:user) { create :user, email: 'fred@va.gov', password: 'fuggedabodit' }
 
   describe 'attributes' do
     subject { build :version, :production, user: user }
