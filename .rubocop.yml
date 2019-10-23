@@ -108,10 +108,6 @@ RSpec/AnyInstance:
   Enabled: false
 
 # Determined to be too benign and/or numerous to justify changing
-RSpec/BeforeAfterAll:
-  Enabled: false
-
-# Determined to be too benign and/or numerous to justify changing
 RSpec/ContextWording:
   Enabled: false
 
