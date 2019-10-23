@@ -5,19 +5,21 @@ FactoryBot.define do
     facility_code { generate :facility_code }
     ope { generate :ope }
 
-    status 'closed'
-    closed_reason 'resolved'
-    issues nil
+    status { 'closed' }
+    closed_reason { 'resolved' }
+    issues { nil }
 
     trait :all_issues do
-      issues %w[
-        FinanCial QUALITY RefuND REcruiT Accreditation deGree LOANS GraDe TranSFer jOb TranScript oTHER
-      ].join(' ')
+      issues do
+        %w[
+          FinanCial QUALITY RefuND REcruiT Accreditation deGree LOANS GraDe TranSFer jOb TranScript oTHER
+        ].join(' ')
+      end
     end
 
     trait :institution_builder do
-      facility_code '1ZZZZZZZ'
-      ope '00279100'
+      facility_code { '1ZZZZZZZ' }
+      ope { '00279100' }
     end
 
     initialize_with do

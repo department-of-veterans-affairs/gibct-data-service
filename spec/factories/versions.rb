@@ -5,11 +5,11 @@ FactoryBot.define do
     user
 
     trait :production do
-      production true
+      production { true }
     end
 
     trait :preview do
-      production false
+      production { false }
     end
   end
 end

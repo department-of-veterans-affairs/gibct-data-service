@@ -6,10 +6,10 @@ FactoryBot.define do
       StateConverter::STATES.keys[(n - 1) % StateConverter::STATES.length]
     end
 
-    sec_702 false
+    sec_702 { false }
 
     trait :institution_builder do
-      state 'NY'
+      state { 'NY' }
     end
 
     initialize_with do

@@ -66,7 +66,7 @@ RSpec.configure do |config|
   end
 
   # Run each test in a transaction
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.strategy = :transaction
   end
 
@@ -80,13 +80,13 @@ RSpec.configure do |config|
   end
 
   # Cause database_cleaner to start before each test. (MPH)
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.start
   end
 
   # Cause database_cleaner to clean database with selected strategy after
   # each test. (MPH)
-  config.after(:each) do
+  config.after do
     DatabaseCleaner.clean
   end
 

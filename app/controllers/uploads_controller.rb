@@ -61,6 +61,7 @@ class UploadsController < ApplicationController
 
   def load_csv
     return unless @upload.persisted?
+
     call_load
   end
 

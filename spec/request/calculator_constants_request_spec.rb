@@ -5,7 +5,7 @@ require 'support/controller_macros'
 require 'support/devise'
 
 RSpec.describe 'calculator_constants', type: :request do
-  before(:each) do
+  before do
     create(:version, :preview)
     create(:version, :production)
   end

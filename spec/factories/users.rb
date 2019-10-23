@@ -6,15 +6,15 @@ FactoryBot.define do
     password { Faker::Internet.password.to_s }
 
     trait :bad_email do
-      email 'abc@com'
+      email { 'abc@com' }
     end
 
     trait :bad_email_domain do
-      email 'abc@something.com'
+      email { 'abc@something.com' }
     end
 
     trait :no_email do
-      email ''
+      email { '' }
     end
 
     trait :short_password do
@@ -26,7 +26,7 @@ FactoryBot.define do
     end
 
     trait :no_password do
-      password ''
+      password { '' }
     end
   end
 end

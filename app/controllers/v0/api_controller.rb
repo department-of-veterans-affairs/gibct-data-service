@@ -17,6 +17,7 @@ module V0
       version = Version.find_by(uuid: v) || Version.current_production
 
       raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless version.try(:number)
+
       @version = {
         number: version.number,
         created_at: version.created_at,

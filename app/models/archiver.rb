@@ -19,12 +19,12 @@ module Archiver
           archivable[:source].where('version >= ? and version < ?', previous_version, production_version).delete_all
         end
       end
-    rescue ActiveRecord::StatementInvalid => exception
+    rescue ActiveRecord::StatementInvalid => e
       notice = 'There was an error occurring at the database level'
-      process_exception(notice, exception, production_version, previous_version)
-    rescue StandardError => exception
+      process_exception(notice, e, production_version, previous_version)
+    rescue StandardError => e
       notice = 'There was an error of unexpected origin'
-      process_exception(notice, exception, production_version, previous_version)
+      process_exception(notice, e, production_version, previous_version)
     end
   end
 
