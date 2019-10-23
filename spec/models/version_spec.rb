@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
-  let(:user) { create :user, email: 'fred@va.gov', password: 'fuggedabodit' }
+  let(:user) { create :user }
 
   describe 'attributes' do
     subject { build :version, :production, user: user }
