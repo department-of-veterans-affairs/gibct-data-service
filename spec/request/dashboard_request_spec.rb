@@ -5,7 +5,7 @@ require 'support/controller_macros'
 require 'support/devise'
 
 RSpec.describe 'Dashboard', type: :request do
-  before(:each) do
+  before do
     user = User.create!(email: 'testuser@va.gov', password: 'secretshh')
     login_as(user, scope: :user)
   end

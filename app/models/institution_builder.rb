@@ -489,7 +489,7 @@ module InstitutionBuilder
       AND dod_bah IS NOT null
     GROUP BY zip, bah, dod_bah, physical_location
     ORDER BY zip
-  SQL
+    SQL
 
     sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
     ZipcodeRate.connection.execute(sql)

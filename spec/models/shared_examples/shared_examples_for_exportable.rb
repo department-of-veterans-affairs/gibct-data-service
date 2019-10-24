@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'an exportable model' do |options|
+  subject { described_class.export }
+
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
   let(:csv_file) { "spec/fixtures/#{name}.csv" }
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
-  subject { described_class.export }
-
   describe 'when exporting' do
-    before(:each) do
+    before do
       described_class.load(csv_file, options)
     end
 

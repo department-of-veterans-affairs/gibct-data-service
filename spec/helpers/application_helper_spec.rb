@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe ApplicationHelper, type: :helper do
-  before(:each) do
+  before do
     allow(helper.controller).to receive(:controller_name).and_return('dashboards')
     allow(helper.controller).to receive(:action_name).and_return('index')
   end
 
   describe 'active_link?' do
     it 'tells if a link is active' do
-      expect(helper.active_link?('/dashboards')).to be_truthy
-      expect(helper.active_link?('/blah_blahs')).to be_falsy
+      expect(helper).to be_active_link('/dashboards')
+      expect(helper).not_to be_active_link('/blah_blahs')
     end
   end
 

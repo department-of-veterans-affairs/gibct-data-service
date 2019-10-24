@@ -11,7 +11,7 @@ RSpec.describe UploadsController, type: :controller do
   describe 'GET index' do
     login_user
 
-    before(:each) do
+    before do
       create :upload
       get :index
     end
@@ -29,7 +29,7 @@ RSpec.describe UploadsController, type: :controller do
     login_user
 
     context 'specifying a csv_type' do
-      before(:each) do
+      before do
         get :new, params: { csv_type: 'Complaint' }
       end
 
@@ -73,6 +73,7 @@ RSpec.describe UploadsController, type: :controller do
 
   describe 'POST create' do
     let(:upload_file) { build(:upload).upload_file }
+
     login_user
 
     context 'having valid form input' do

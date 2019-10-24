@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe V0::InstitutionProgramsController, type: :controller do
-  context 'version determination' do
+  context 'when determining version' do
     it 'uses a production version as a default' do
       create(:version, :production)
       create(:institution_program, :contains_harv)
@@ -34,17 +34,17 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
   end
 
-  context 'autocomplete results' do
+  context 'when autocomplete' do
     it 'returns collection of matches' do
       create(:version, :production)
-      2.times { create(:institution_program, :start_like_harv) }
+      create_list(:institution_program, 2, :start_like_harv)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
     end
 
     it 'limits results to 6' do
       create(:version, :production)
-      7.times { create(:institution_program, :start_like_harv) }
+      create_list(:institution_program, 7, :start_like_harv)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
       expect(response.content_type).to eq('application/json')
@@ -61,10 +61,10 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
   end
 
-  context 'search results' do
-    before(:each) do
+  context 'when searching' do
+    before do
       create(:version, :production)
-      2.times { create(:institution_program, :in_nyc) }
+      create_list(:institution_program, 2, :in_nyc)
       create(:institution_program, :in_chicago)
       create(:institution_program, :in_new_rochelle)
     end

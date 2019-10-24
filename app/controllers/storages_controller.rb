@@ -22,6 +22,7 @@ class StoragesController < ApplicationController
   def update
     @storage = Storage.find_and_update(merged_params)
     raise StandardError, @storage.errors.full_messages unless @storage.valid?
+
     redirect_to storage_path(params[:id])
   rescue ArgumentError, ActionController::UnknownFormat => e
     Rails.logger.error e.message
