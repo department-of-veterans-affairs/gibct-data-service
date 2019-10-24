@@ -38,7 +38,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       end
     end
 
-    context 'when when authenticated' do
+    context 'when authenticated' do
       login_user
 
       it "sends that user to the #{destination}/#{action}" do
