@@ -179,7 +179,7 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'class methods and scopes' do
-    context 'version' do
+    context 'with version' do
       it 'retrieves institutions by a specific version number' do
         i = create_list :institution, 2, version: 1
         j = create_list :institution, 2, version: 2
@@ -196,7 +196,7 @@ RSpec.describe Institution, type: :model do
       end
     end
 
-    context 'filter scope' do
+    context 'with filter scope' do
       it 'raises an error if no arguments are provided' do
         expect { described_class.filter }.to raise_error(ArgumentError)
       end
@@ -212,7 +212,7 @@ RSpec.describe Institution, type: :model do
       end
     end
 
-    context 'search scope' do
+    context 'with search scope' do
       it 'returns nil if no search term is provided' do
         expect(described_class.search(nil)).to be_empty
       end
