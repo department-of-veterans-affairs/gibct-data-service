@@ -11,7 +11,9 @@ RSpec.describe Storage, type: :model do
     )
   end
 
-  subject { build :storage }
+  subject { build :storage, user: user }
+
+  let(:user) { create :user }
 
   describe 'when validating' do
     it 'has a valid factory' do
