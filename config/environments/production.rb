@@ -89,4 +89,7 @@ Rails.application.configure do
     auth_token: ENV['GOVDELIVERY_TOKEN'],
     api_root: "https://#{ENV['GOVDELIVERY_URL']}"
   }
+
+  # React environment property
+  config.react.variant = :production
 end

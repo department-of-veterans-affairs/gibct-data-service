@@ -18,6 +18,7 @@ AllCops:
     - 'config/**/*'
     - 'bin/**/*'
     - 'log/**/*'
+    - 'javascript/**/*'
 
 # This is the rubocop default but putting it here explicitly
 # strong benefit for code readability and speed in reviewing PRs for code review
@@ -72,7 +73,8 @@ Metrics/BlockLength:
 # See: https://github.com/rubocop-hq/rubocop/issues/4222
 Lint/AmbiguousBlockAssociation:
   Exclude:
-    - "spec/**/*"
+    - 'spec/**/*'
+    - 'javascript/**/*'
 
 Naming/FileName:
   Exclude:
