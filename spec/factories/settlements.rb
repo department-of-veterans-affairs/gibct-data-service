@@ -7,7 +7,7 @@ FactoryBot.define do
     settlement_description { 'Settlement with U.S. Government' }
 
     trait :institution_builder do
-      cross '999999'
+      cross { '999999' }
     end
 
     initialize_with do

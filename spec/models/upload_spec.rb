@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Upload, type: :model do
-  subject { build :upload }
+  subject { build :upload, user: user }
+
+  let(:user) { create :user }
 
   describe 'when validating' do
     it 'has a valid factory' do
@@ -33,7 +35,7 @@ RSpec.describe Upload, type: :model do
 
       it 'does not initalize csv column if persisted' do
         subject.save
-        expect(Upload.first.csv).not_to be_blank
+        expect(described_class.first.csv).not_to be_blank
       end
     end
   end
@@ -98,23 +100,23 @@ RSpec.describe Upload, type: :model do
   end
 
   describe 'last_uploads' do
-    before(:each) do
+    before do
       # 3 Weam upload records
       create_list :upload, 3
-      Upload.all[1].update(ok: true)
+      described_class.all[1].update(ok: true)
 
       create_list :upload, 3, csv_name: 'crosswalk.csv', csv_type: 'Crosswalk'
-      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
+      described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
     end
 
     it 'gets the latest upload for each csv_type' do
-      expect(Upload.last_uploads.length).to eq(2)
+      expect(described_class.last_uploads.length).to eq(2)
     end
 
     it 'gets only the latest upload for each csv_type' do
-      max_weam = Upload.find_by(csv_type: 'Weam', ok: true)
-      max_crosswalk = Upload.find_by(csv_type: 'Crosswalk', ok: true)
-      uploads = Upload.last_uploads
+      max_weam = described_class.find_by(csv_type: 'Weam', ok: true)
+      max_crosswalk = described_class.find_by(csv_type: 'Crosswalk', ok: true)
+      uploads = described_class.last_uploads
 
       expect(uploads.where(csv_type: 'Weam').first).to eq(max_weam)
       expect(uploads.where(csv_type: 'Crosswalk').first).to eq(max_crosswalk)
@@ -122,28 +124,28 @@ RSpec.describe Upload, type: :model do
   end
 
   describe 'latest_uploads' do
-    before(:each) do
+    before do
       # 3 Weam upload records
       create_list :upload, 3
-      Upload.all[1].update(ok: true)
+      described_class.all[1].update(ok: true)
 
       create_list :upload, 3, csv_name: 'crosswalk.csv', csv_type: 'Crosswalk'
-      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
+      described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
     end
 
     it 'returns all uploads if preview is blank' do
-      expect(Upload.since_last_preview_version.any?).to eq(true)
+      expect(described_class.since_last_preview_version.any?).to eq(true)
     end
 
     it 'returns uploads after preview' do
       create :version, :preview
-      Upload.where(csv_type: 'Weam')[1].update(ok: true)
+      described_class.where(csv_type: 'Weam')[1].update(ok: true)
       create :version, :production, number: Version.current_preview.number
       create :version, :preview
-      Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
+      described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
-      expect(Upload.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
-      expect(Upload.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
+      expect(described_class.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
+      expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
     end
   end
 end

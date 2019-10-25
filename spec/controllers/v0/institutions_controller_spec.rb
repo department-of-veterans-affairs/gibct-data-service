@@ -37,7 +37,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'autocomplete results' do
     it 'returns collection of matches' do
       create(:version, :production)
-      2.times { create(:institution, :start_like_harv) }
+      create_list(:institution, 2, :start_like_harv)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
@@ -46,7 +46,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'limits results to 6' do
       create(:version, :production)
-      7.times { create(:institution, :start_like_harv, approved: true) }
+      create_list(:institution, 7, :start_like_harv, approved: true)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
       expect(response.content_type).to eq('application/json')
@@ -84,9 +84,9 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'search results' do
-    before(:each) do
+    before do
       create(:version, :production)
-      2.times { create(:institution, :in_nyc) }
+      create_list(:institution, 2, :in_nyc)
       create(:institution, :in_chicago, online_only: true)
       create(:institution, :in_new_rochelle, distance_learning: true)
       # adding a non approved institutions row
@@ -229,7 +229,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'category and type search results' do
-    before(:each) do
+    before do
       create(:version, :production)
       create(:institution, :in_nyc)
       create(:institution, :ca_employer)
@@ -265,7 +265,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'institution profile' do
-    before(:each) do
+    before do
       create(:version, :production)
     end
 
@@ -285,7 +285,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'institution children' do
-    before(:each) do
+    before do
       create(:version, :production)
     end
 

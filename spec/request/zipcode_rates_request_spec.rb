@@ -5,11 +5,11 @@ require 'support/controller_macros'
 require 'support/devise'
 
 RSpec.describe 'zipcode_rates', type: :request do
-  before(:each) do
+  before do
     create(:version, :production)
   end
 
-  context '#show for valid zip_code' do
+  describe '#show for valid zip_code' do
     it 'returns the rates for the given zip_code' do
       create(:zipcode_rate, version: Version.current_production.number)
       get '/v0/zipcode_rates/20001'
@@ -24,7 +24,7 @@ RSpec.describe 'zipcode_rates', type: :request do
     end
   end
 
-  context '#show for invalid zip_code' do
+  describe '#show for invalid zip_code' do
     it 'returns an error' do
       get '/v0/zipcode_rates/12345'
       expect(response).to have_http_status(:not_found)

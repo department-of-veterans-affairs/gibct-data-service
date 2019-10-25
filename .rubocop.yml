@@ -1,24 +1,50 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-rails
+  - rubocop-rspec
 
 AllCops:
   Include:
+    - '**/Gemfile'
     - '**/config.ru'
     - '**/Rakefile'
     - '**/*.rake'
+    - '**/*.rb'
   Exclude:
     - 'db/**/*'
-    - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'config/**/*'
     - 'bin/**/*'
-    - 'Gemfile'
     - 'log/**/*'
 
-Metrics/AbcSize:
-  Max: 40
+# This is the rubocop default but putting it here explicitly
+# strong benefit for code readability and speed in reviewing PRs for code review
+# only use double quote when doing interpolation or complex escape sequences
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
 
-Metrics/BlockLength:
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Rails:
+  Enabled: true
+
+Rails/Output:
   Exclude:
-    - 'spec/**/*'
+    - 'lib/**/*.rb'
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'app/models/institution_builder.rb'
 
 Metrics/ClassLength:
   Exclude:
@@ -28,38 +54,42 @@ Metrics/ClassLength:
     - 'app/models/ipeds_ic_py.rb'
     - 'app/models/institution.rb'
 
-Metrics/LineLength:
-  Max: 120
-
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - 'app/models/institution_builder.rb'
+Metrics/AbcSize:
+  Max: 40
 
 Metrics/ModuleLength:
   Exclude:
     - 'app/models/institution_builder.rb'
 
-Style/Documentation:
-  Enabled: false
-
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
-
-Rails:
-  Enabled: true
-
-Rails/HttpPositionalArguments:
-  Enabled: false
-
-Rails/Output:
+Metrics/BlockLength:
   Exclude:
-    - 'lib/**/*.rb'
+    - 'spec/**/*'
+    - 'rakelib/**/*.rake'
+    - 'config/**/*.rb'
+
+# Don't worry about ambiguous blocks in RSpec
+# Official recommendation from rubocop team is to disable this rule for specs.
+# See: https://github.com/rubocop-hq/rubocop/issues/4222
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
 
 Naming/FileName:
   Exclude:
     - 'Guardfile'
 
+Lint/BooleanSymbol:
+  Exclude:
+    - 'app/controllers/v0/institutions_controller.rb'
+
 Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/user.rb'
+
+RSpec/FilePath:
+  Exclude:
+    - 'spec/fixtures/**/*'
+
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/config/initializers/csv_types_spec.rb'

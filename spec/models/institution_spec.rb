@@ -6,7 +6,7 @@ require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Institution, type: :model do
   describe 'when importing or exporting' do
-    before(:each) { create :version, production: false }
+    before { create :version, production: false }
 
     it_behaves_like 'a loadable model', skip_lines: 0
     it_behaves_like 'an exportable model', skip_lines: 0
@@ -162,16 +162,18 @@ RSpec.describe Institution, type: :model do
 
   describe 'institution_programs' do
     let(:institution) { build :institution }
+
     it 'returns versioned institution programs' do
-      create(:institution_program, facility_code: institution.facility_code, version: institution.version)
-      create(:institution_program, facility_code: institution.facility_code, version: 2)
+      InstitutionProgram.create(institution: institution, description: 'BBB',
+                                version: institution.version, facility_code: institution.facility_code)
       expect(institution.institution_programs.count).to eq(1)
     end
 
     it 'returns institution programs ordered by description' do
-      create(:institution_program, facility_code: institution.facility_code, version: institution.version)
-      create(:institution_program, facility_code: institution.facility_code, version: institution.version,
-                                   description: 'AAA')
+      InstitutionProgram.create(institution: institution, description: 'BBB',
+                                version: institution.version, facility_code: institution.facility_code)
+      InstitutionProgram.create(institution: institution, description: 'AAA',
+                                version: institution.version, facility_code: institution.facility_code)
       expect(institution.institution_programs.count).to eq(2)
       expect(institution.institution_programs.first.description).to eq('AAA')
     end
@@ -179,50 +181,50 @@ RSpec.describe Institution, type: :model do
 
   describe 'class methods and scopes' do
     context 'version' do
-      it 'should retrieve institutions by a specific version number' do
+      it 'retrieves institutions by a specific version number' do
         i = create_list :institution, 2, version: 1
         j = create_list :institution, 2, version: 2
 
-        expect(Institution.version(i.first.version)).to match_array(i.to_a)
-        expect(Institution.version(j.first.version)).to match_array(j.to_a)
+        expect(described_class.version(i.first.version)).to match_array(i.to_a)
+        expect(described_class.version(j.first.version)).to match_array(j.to_a)
       end
 
       it 'returns blank if a nil or non-existent version number is supplied' do
         create :institution
 
-        expect(Institution.version(-1)).to eq([])
-        expect(Institution.version(nil)).to eq([])
+        expect(described_class.version(-1)).to eq([])
+        expect(described_class.version(nil)).to eq([])
       end
     end
 
     context 'filter scope' do
-      it 'should raise an error if no arguments are provided' do
+      it 'raises an error if no arguments are provided' do
         expect { described_class.filter }.to raise_error(ArgumentError)
       end
 
-      it 'should filter on field existing' do
+      it 'filters on field existing' do
         expect(described_class.filter('institution', 'true').to_sql)
           .to include("WHERE \"institutions\".\"institution\" = 't'")
       end
 
-      it 'should filter on field not existing' do
+      it 'filters on field not existing' do
         expect(described_class.filter('institution', 'false').to_sql)
           .to include("WHERE \"institutions\".\"institution\" != 't'")
       end
     end
 
     context 'search scope' do
-      it 'should return nil if no search term is provided' do
+      it 'returns nil if no search term is provided' do
         expect(described_class.search(nil)).to be_empty
       end
 
-      it 'should include the address fields if include_address is set' do
+      it 'includes the address fields if include_address is set' do
         institution = create(:institution, address_1: 'address_1')
         expect(described_class.search('address_1', true).take).to eq(institution)
         expect(described_class.search('address_1').count).to eq(0)
       end
 
-      it 'should search when attribute is provided' do
+      it 'searches when attribute is provided' do
         expect(described_class.search('chicago').to_sql)
           .to include(
             "WHERE (facility_code = ('CHICAGO')",

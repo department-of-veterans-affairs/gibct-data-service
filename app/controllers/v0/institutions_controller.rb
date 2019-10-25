@@ -104,7 +104,7 @@ module V0
         [:priority_enrollment], # boolean
         [:vet_tec_provider], # boolean
         [:preferred_provider], # boolean
-        [:stem_indicator], # boolean
+        [:stem_indicator] # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])

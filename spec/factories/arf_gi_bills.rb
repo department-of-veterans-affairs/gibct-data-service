@@ -10,7 +10,7 @@ FactoryBot.define do
     end
 
     trait :institution_builder do
-      facility_code '1ZZZZZZZ'
+      facility_code { '1ZZZZZZZ' }
     end
 
     initialize_with do

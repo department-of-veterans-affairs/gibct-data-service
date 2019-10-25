@@ -5,10 +5,10 @@ FactoryBot.define do
     facility_code { generate :facility_code }
 
     school_name { 'College of Charleston' }
-    closure109 false
+    closure109 { false }
 
     trait :institution_builder do
-      facility_code '1ZZZZZZZ'
+      facility_code { '1ZZZZZZZ' }
     end
 
     initialize_with do

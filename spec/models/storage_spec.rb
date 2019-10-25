@@ -11,7 +11,9 @@ RSpec.describe Storage, type: :model do
     )
   end
 
-  subject { build :storage }
+  subject { build :storage, user: user }
+
+  let(:user) { create :user }
 
   describe 'when validating' do
     it 'has a valid factory' do
@@ -44,33 +46,33 @@ RSpec.describe Storage, type: :model do
   end
 
   describe 'when updating' do
-    before(:each) do
+    before do
       create :storage
     end
 
-    let(:old) { Storage.first }
+    let(:old) { described_class.first }
     let(:upload_file) { generate_csv_upload('weam_extra_column.csv') }
     let(:new_data) { File.read(params[:upload_file].path, encoding: 'ISO-8859-1') }
     let(:params) { { id: old.id, upload_file: upload_file, comment: old.comment, user: old.user } }
 
     it 'replaces the existing data, name, and comment' do
-      Storage.find_and_update(params)
-      expect(Storage.first.data).to eq(new_data)
+      described_class.find_and_update(params)
+      expect(described_class.first.data).to eq(new_data)
     end
 
     it 'generates an error if the storage cannot be found' do
       params[:id] = 1_000_000
-      expect { Storage.find_and_update(params) }.to raise_error(ArgumentError)
+      expect { described_class.find_and_update(params) }.to raise_error(ArgumentError)
     end
 
     it 'requires a user' do
       params[:user] = nil
-      expect(Storage.find_and_update(params).errors.full_messages).to eq(["User can't be blank"])
+      expect(described_class.find_and_update(params).errors.full_messages).to eq(["User can't be blank"])
     end
 
     it 'requires an upload_file' do
       params[:upload_file] = nil
-      expect(Storage.find_and_update(params).errors.full_messages).to eq(["Csv can't be blank"])
+      expect(described_class.find_and_update(params).errors.full_messages).to eq(["Csv can't be blank"])
     end
   end
 end

@@ -39,7 +39,7 @@ RSpec.describe 'CSV_TYPES' do
   end
 
   describe 'required_table_names' do
-    it 'should contain tables' do
+    it 'contains tables' do
       expect(CSV_TYPES_REQUIRED_TABLE_NAMES).to eq(REQUIRED_TABLES)
     end
   end

@@ -3,10 +3,10 @@
 FactoryBot.define do
   factory :upload do
     transient do
-      fixture_path 'spec/fixtures'
-      csv_name 'weam.csv'
-      no_upload false
-      skip_lines 0
+      fixture_path { 'spec/fixtures' }
+      csv_name { 'weam.csv' }
+      no_upload { false }
+      skip_lines { 0 }
     end
 
     user
@@ -33,16 +33,16 @@ FactoryBot.define do
     end
 
     trait :valid_upload do
-      ok true
+      ok { true }
     end
 
     trait :missing_required do
-      ok false
+      ok { false }
     end
 
     trait :missing_upload do
-      csv_type Program.name
-      ok false
+      csv_type { Program.name }
+      ok { false }
     end
   end
 end
