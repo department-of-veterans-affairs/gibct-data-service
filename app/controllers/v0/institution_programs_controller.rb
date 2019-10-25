@@ -7,7 +7,7 @@ module V0
     # GET /v0/institution_programs/autocomplete?term=harv
     def autocomplete
       @data = []
-      if params[:term]
+      if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
         @data = InstitutionProgram.version(@version[:number]).autocomplete(@search_term)
       end
