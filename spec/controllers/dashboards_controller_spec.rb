@@ -180,7 +180,7 @@ RSpec.describe DashboardsController, type: :controller do
           allow(Version).to receive(:create).and_return(Version.new)
         end
 
-        it 'not to receive ping' do
+        it 'does not to receive ping' do
           expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
         end
 
