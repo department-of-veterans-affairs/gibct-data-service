@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionProgram, type: :model do
   describe 'when validating' do
-    subject { create :institution_program, institution_id: institution.id }
+    subject { create :institution_program, institution: institution }
 
     let(:institution) { create :institution, :physical_address }
 
@@ -13,15 +13,15 @@ RSpec.describe InstitutionProgram, type: :model do
     end
 
     it 'requires a version' do
-      expect(build(:institution_program, institution_id: institution.id, version: nil)).not_to be_valid
+      expect(build(:institution_program, institution: institution, version: nil)).not_to be_valid
     end
 
     it 'requires an institution' do
-      expect(build(:institution_program)).not_to be_valid
+      expect(build(:institution_program, institution: nil)).not_to be_valid
     end
 
     it 'requires a description' do
-      expect(build(:institution_program, institution_id: institution.id, description: nil)).not_to be_valid
+      expect(build(:institution_program, institution: institution, description: nil)).not_to be_valid
     end
   end
 
@@ -55,15 +55,15 @@ RSpec.describe InstitutionProgram, type: :model do
       let(:institution) { create :institution, :physical_address }
 
       it 'retrieves institutions by a specific version number' do
-        i = create_list :institution_program, 2, version: 1, institution_id: institution.id
-        j = create_list :institution_program, 2, version: 2, institution_id: institution.id
+        i = create_list :institution_program, 2, version: 1, institution: institution
+        j = create_list :institution_program, 2, version: 2, institution: institution
 
         expect(described_class.version(i.first.version)).to match_array(i.to_a)
         expect(described_class.version(j.first.version)).to match_array(j.to_a)
       end
 
       it 'returns blank if a nil or non-existent version number is supplied' do
-        create :institution_program, institution_id: institution.id
+        create :institution_program, institution: institution
 
         expect(described_class.version(-1)).to eq([])
         expect(described_class.version(nil)).to eq([])
