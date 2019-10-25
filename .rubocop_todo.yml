@@ -49,6 +49,11 @@ RSpec/ExampleLength:
     - "spec/validators/edu_program_validator_spec.rb"
     - "spec/validators/program_validator_spec.rb"
 
+# Offense count: 1
+RSpec/LeakyConstantDeclaration:
+  Exclude:
+    - "spec/config/initializers/csv_types_spec.rb"
+
 # Offense count: 8
 # Configuration parameters: .
 # SupportedStyles: have_received, receive
