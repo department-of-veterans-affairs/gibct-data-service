@@ -77,7 +77,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search returns results for correct version only' do
-      create(:institution_program, version: 2)
+      create(:institution_program, version: 2, institution: create(:institution, version: 2))
       get(:index)
       expect(JSON.parse(response.body)['data'].count).to eq(4)
       expect(response.content_type).to eq('application/json')

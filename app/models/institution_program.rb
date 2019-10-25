@@ -86,5 +86,5 @@ class InstitutionProgram < ApplicationRecord
     end
   }
 
-  scope :version, ->(n) { where(version: n) }
+  scope :version, ->(n) { joins(:institution).where(institutions: { version: n }) }
 end

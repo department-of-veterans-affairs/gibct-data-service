@@ -52,11 +52,12 @@ RSpec.describe InstitutionProgram, type: :model do
 
   describe 'class methods and scopes' do
     context 'version' do
-      let(:institution) { create :institution, :physical_address }
+      let(:institution_1) { create :institution, :physical_address }
+      let(:institution_2) { create :institution, :physical_address, version: 2 }
 
       it 'retrieves institutions by a specific version number' do
-        i = create_list :institution_program, 2, version: 1, institution: institution
-        j = create_list :institution_program, 2, version: 2, institution: institution
+        i = create_list :institution_program, 2, version: 1, institution: institution_1
+        j = create_list :institution_program, 2, version: 2, institution: institution_2
 
         expect(described_class.version(i.first.version)).to match_array(i.to_a)
         expect(described_class.version(j.first.version)).to match_array(j.to_a)
