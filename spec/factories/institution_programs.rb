@@ -21,6 +21,7 @@ FactoryBot.define do
     vet_tec_program { 'COMPUTER SCIENCE' }
     tuition_amount { '360' }
     length_in_weeks { '1001' }
+    institution
 
     trait :start_like_harv do
       sequence(:description) { |n| ["HARV#{n}", "HARV #{n}"].sample }
@@ -31,36 +32,19 @@ FactoryBot.define do
     end
 
     trait :in_nyc do
-      before :create do |institution_program|
-        institution = create(:institution, physical_city: 'NEW YORK', physical_country: 'USA', physical_state: 'NY')
-        institution_program.institution = institution
-      end
+      institution { create(:institution, physical_city: 'NEW YORK', physical_country: 'USA', physical_state: 'NY') }
     end
 
     trait :in_new_rochelle do
-      before :create do |institution_program|
-        institution = create(:institution, physical_city: 'NEW ROCHELLE', physical_country: 'USA', physical_state: 'NY')
-        institution_program.institution = institution
-      end
+      institution { create(:institution, physical_city: 'NEW ROCHELLE', physical_country: 'USA', physical_state: 'NY') }
     end
 
     trait :in_chicago do
-      before :create do |institution_program|
-        institution = create(:institution, physical_city: 'CHICAGO', physical_country: 'USA', physical_state: 'IL')
-        institution_program.institution = institution
-      end
+      institution { create(:institution, physical_city: 'CHICAGO', physical_country: 'USA', physical_state: 'IL') }
     end
 
     trait :preferred_provider do
-      before :create do |institution_program|
-        institution = create(:institution, preferred_provider: true)
-        institution_program.institution = institution
-      end
-    end
-
-    before :create do |institution_program|
-      institution = create :institution
-      institution_program.institution = institution
+      institution { create(:institution, preferred_provider: true) }
     end
   end
 end
