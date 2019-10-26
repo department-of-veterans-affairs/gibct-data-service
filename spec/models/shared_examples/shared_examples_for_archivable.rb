@@ -81,8 +81,9 @@ RSpec.shared_examples 'an archivable model' do |options|
       it 'returns an error message' do
         error_message = 'BOOM!'
         allow(Archiver).to receive(:create_archives).and_raise(StandardError, error_message)
-        expect(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
+        allow(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
         Archiver.archive_previous_versions
+        expect(Rails.logger).to have_received(:error).with("There was an error of unexpected origin: #{error_message}")
       end
 
       it 'logs errors at the database level' do
@@ -90,11 +91,12 @@ RSpec.shared_examples 'an archivable model' do |options|
 
         statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
         statement_invalid.set_backtrace(%(backtrace))
-
-        allow(Archiver).to receive(:create_archives).and_raise(statement_invalid)
-        expect(Rails.logger).to receive(:error)
+        allow(Rails.logger).to receive(:error)
           .with("There was an error occurring at the database level: #{error_message}")
+        allow(Archiver).to receive(:create_archives).and_raise(statement_invalid)
         Archiver.archive_previous_versions
+        expect(Rails.logger).to have_received(:error)
+          .with("There was an error occurring at the database level: #{error_message}")
       end
     end
   end
