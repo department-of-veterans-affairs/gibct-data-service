@@ -5,12 +5,12 @@ require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Complaint, type: :model do
+  subject(:complaint) { described_class.new(attributes_for(:complaint)) }
+
   it_behaves_like 'a loadable model', skip_lines: 7
   it_behaves_like 'an exportable model', skip_lines: 7
 
   describe 'when validating' do
-    subject(:complaint) { described_class.new(attributes_for(:complaint)) }
-
     let(:complaint_no_fac_code) { build :complaint, facility_code: nil }
     let(:complaint_no_status) { build :complaint, status: nil }
     let(:complaint_bad_status) { build :complaint, status: 'blech' }
@@ -51,8 +51,6 @@ RSpec.describe Complaint, type: :model do
   end
 
   describe 'ok_to_sum?' do
-    subject(:complaint) { described_class.new(attributes_for(:complaint)) }
-
     let(:invalid) { described_class.new(attributes_for(:complaint, closed_reason: 'invalid')) }
     let(:nil_reason) { described_class.new(attributes_for(:complaint, closed_reason: nil)) }
     let(:active) { described_class.new(attributes_for(:complaint, status: 'active')) }
