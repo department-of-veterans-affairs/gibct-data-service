@@ -86,8 +86,6 @@ GEM
       xpath (~> 2.0)
     case_transform (0.2)
       activesupport
-    childprocess (3.0.0)
-    cliver (0.3.2)
     coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -235,10 +233,6 @@ GEM
     parser (2.6.5.0)
       ast (~> 2.4.0)
     pg (0.21.0)
-    poltergeist (1.18.1)
-      capybara (>= 2.1, < 4)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -332,7 +326,6 @@ GEM
     ruby-progressbar (1.10.1)
     ruby-saml (1.11.0)
       nokogiri (>= 1.5.10)
-    rubyzip (2.0.0)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -354,9 +347,6 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.142.6)
-      childprocess (>= 0.5, < 4.0)
-      rubyzip (>= 1.2.2)
     sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
     shellany (0.0.1)
@@ -440,7 +430,6 @@ DEPENDENCIES
   jshint
   json_matchers
   pg (~> 0.15)
-  poltergeist
   pry-nav
   puma (~> 3.6)
   rack-cors
@@ -456,7 +445,6 @@ DEPENDENCIES
   sass-rails (= 6.0)
   scss_lint
   sdoc (~> 0.4.0)
-  selenium-webdriver
   sentry-raven (~> 2.9.0)
   simplecov
   sitemap_generator (~> 5.3, >= 5.3.1)

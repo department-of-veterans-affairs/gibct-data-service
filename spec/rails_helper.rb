@@ -9,7 +9,6 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'support/serializer_spec_helper'
 require 'support/site_mapper_helper'
-require 'sniffybara'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -33,7 +32,6 @@ require 'sniffybara'
 ActiveRecord::Migration.maintain_test_schema!
 
 require 'capybara/rspec'
-Capybara.default_driver = :sniffybara
 Capybara.javascript_driver = :webkit_debug
 
 RSpec.configure do |config|
