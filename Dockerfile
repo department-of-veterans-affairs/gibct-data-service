@@ -30,3 +30,4 @@ WORKDIR /src/gibct
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
+RUN ["/bin/bash", "--login", "-c", "yarn install --check-files"]
