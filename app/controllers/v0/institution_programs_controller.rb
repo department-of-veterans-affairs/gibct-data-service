@@ -71,13 +71,10 @@ module V0
     end
 
     def count_field(relation, field)
-      field_map = {}
+      field_map = Hash.new(0)
       relation.map do |program|
         value = program.send(field)
-        if value.present?
-          field_map[value] = 0 if field_map[value].nil?
-          field_map[value] += 1
-        end
+        field_map[value] += 1 if value.present?
       end
       field_map
     end

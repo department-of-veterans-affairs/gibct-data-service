@@ -14,12 +14,11 @@ class InstitutionProgram < ApplicationRecord
   belongs_to :institution
   delegate :dod_bah, to: :institution
   delegate :preferred_provider, to: :institution
+  delegate :facility_code, to: :institution
 
   def institution_name
     institution.institution
   end
-
-  delegate :facility_code, to: :institution
 
   def city
     institution.physical_city
