@@ -32,7 +32,7 @@ require 'support/site_mapper_helper'
 ActiveRecord::Migration.maintain_test_schema!
 
 require 'capybara/rspec'
-Capybara.default_driver = :sniffybara
+# Capybara.default_driver = :sniffybara
 Capybara.javascript_driver = :webkit_debug
 
 RSpec.configure do |config|
