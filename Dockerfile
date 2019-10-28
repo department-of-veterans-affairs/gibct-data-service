@@ -1,4 +1,4 @@
-FROM ruby:2.4.5-slim-stretch
+FROM ruby:2.4.5-slim-stretch as ruby
 
 # Match the jenkins uid/gid on the host (504)
 RUN groupadd -r gibct && \
@@ -30,4 +30,12 @@ WORKDIR /src/gibct
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
+
+FROM node:10 as react
+ENV YARN_VERSION 1.12.3
+ENV NODE_ENV production
+
+RUN npm install -g yarn@$YARN_VERSION \
+  && chmod +x /usr/local/lib/node_modules/yarn/bin/yarn.js
+
 RUN ["/bin/bash", "--login", "-c", "yarn install --check-files"]
