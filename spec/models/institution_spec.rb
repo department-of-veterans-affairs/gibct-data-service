@@ -13,16 +13,16 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'when validating' do
-    subject { create :institution }
+    subject(:institution) { create :institution }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(institution).to be_valid
     end
 
     it 'requires a valid and unique facility_code' do
       expect(build(:institution, facility_code: nil)).not_to be_valid
 
-      duplicate_facility = build :institution, facility_code: subject.facility_code
+      duplicate_facility = build :institution, facility_code: institution.facility_code
       expect(duplicate_facility).not_to be_valid
       expect(duplicate_facility.errors.messages).to eq(facility_code: ['has already been taken'])
     end

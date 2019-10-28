@@ -9,10 +9,10 @@ RSpec.describe IpedsCipCode, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :ipeds_cip_code }
+    subject(:ipeds_cip_code) { build :ipeds_cip_code }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(ipeds_cip_code).to be_valid
     end
 
     it 'requires a cross reference (unitid)' do

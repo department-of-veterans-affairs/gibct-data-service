@@ -9,7 +9,7 @@ RSpec.describe Complaint, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 7
 
   describe 'when validating' do
-    subject { described_class.new(attributes_for(:complaint)) }
+    subject(:complaint) { described_class.new(attributes_for(:complaint)) }
 
     let(:complaint_no_fac_code) { build :complaint, facility_code: nil }
     let(:complaint_no_status) { build :complaint, status: nil }
@@ -17,7 +17,7 @@ RSpec.describe Complaint, type: :model do
     let(:complaint_bad_reason) { build :complaint, closed_reason: 'blech' }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(complaint).to be_valid
     end
 
     it 'requires a valid facility_code' do
@@ -34,7 +34,7 @@ RSpec.describe Complaint, type: :model do
     end
 
     it 'computes the ope6 from the ope' do
-      expect(subject.ope6).to eql(subject.ope[1, 5])
+      expect(complaint.ope6).to eql(complaint.ope[1, 5])
     end
 
     describe 'setting facility code complaints' do
@@ -43,7 +43,7 @@ RSpec.describe Complaint, type: :model do
 
       it 'sets complaints to 1 only if the complaint keyword is embedded in the issue' do
         Complaint::COMPLAINT_COLUMNS.each_key do |facility_code_col|
-          expect(subject[facility_code_col]).to eq(0)
+          expect(complaint[facility_code_col]).to eq(0)
           expect(complaint_all[facility_code_col]).to eq(1)
         end
       end
@@ -51,14 +51,14 @@ RSpec.describe Complaint, type: :model do
   end
 
   describe 'ok_to_sum?' do
-    subject { described_class.new(attributes_for(:complaint)) }
+    subject(:complaint) { described_class.new(attributes_for(:complaint)) }
 
     let(:invalid) { described_class.new(attributes_for(:complaint, closed_reason: 'invalid')) }
     let(:nil_reason) { described_class.new(attributes_for(:complaint, closed_reason: nil)) }
     let(:active) { described_class.new(attributes_for(:complaint, status: 'active')) }
 
     it 'is true for a closed complaint with any valid reason' do
-      expect(subject).to be_ok_to_sum
+      expect(complaint).to be_ok_to_sum
     end
 
     it 'is false for an invalid reason or any non-closed status' do

@@ -9,14 +9,14 @@ RSpec.describe AccreditationRecord, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :accreditation_record }
+    subject(:accreditation_record) { build :accreditation_record }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(accreditation_record).to be_valid
     end
 
     it 'determines the `accreditation_type` from the agency_name' do
-      expect(subject.accreditation_type).to eq('regional')
+      expect(accreditation_record.accreditation_type).to eq('regional')
     end
   end
 end

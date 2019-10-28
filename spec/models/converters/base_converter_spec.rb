@@ -8,37 +8,37 @@ RSpec.describe BaseConverter do
   context 'with strings containing a forbidden word or characters' do
     it 'converts a string composed of a single forbidden word to nil' do
       %w[None NuLl PrIvAcYsUpPrEsSeD .].each do |word|
-        expect(subject.convert(word)).to be_nil
+        expect(described_class.convert(word)).to be_nil
       end
     end
 
     it 'does not convert a string containing additional words to nil' do
       str = 'null privacysuppressed none'
-      expect(subject.convert(str)).to eq(str)
+      expect(described_class.convert(str)).to eq(str)
     end
 
     it 'strips double quotation marks from strings' do
       str = %("this string has double quotes")
-      expect(subject.convert(str)).to eq('this string has double quotes')
+      expect(described_class.convert(str)).to eq('this string has double quotes')
     end
   end
 
   context 'strings without forbidden words and characters' do
     it 'strips leading and trailing blanks from strings' do
-      expect(subject.convert('     t    ')).to eq('t')
+      expect(described_class.convert('     t    ')).to eq('t')
     end
 
     it 'preserves string case' do
       str = 'a StrIng CONTAINING null And a PERIOD.'
-      expect(subject.convert(str)).to eq(str)
+      expect(described_class.convert(str)).to eq(str)
     end
 
     it 'converts nil to nil' do
-      expect(subject.convert(nil)).to be_nil
+      expect(described_class.convert(nil)).to be_nil
     end
 
     it 'converts strings with only blanks to an empty string' do
-      expect(subject.convert('      ')).to be_blank
+      expect(described_class.convert('      ')).to be_blank
     end
   end
 end
