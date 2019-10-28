@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
-  let(:user) { create :user }
   subject(:version) { build :version, :production, user: user }
 
-  describe 'attributes' do
+  let(:user) { create :user }
 
+  describe 'attributes' do
     it 'does not have a uuid until saved' do
       expect(version.uuid).to be_nil
       version.save
@@ -21,7 +21,6 @@ RSpec.describe Version, type: :model do
   end
 
   describe 'when validating' do
-
     let(:no_user) { build :version, user: nil }
     let(:good_existing_version) { build :version, :production, number: 1, user: user }
     let(:bad_existing_version) { build :version, :production, number: 1000, user: user }
