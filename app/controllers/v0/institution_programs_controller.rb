@@ -55,7 +55,6 @@ module V0
         %w[institutions.physical_state state],
         %w[institutions.preferred_provider preferred_provider]
       ].each do |filter_args|
-        filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
 
