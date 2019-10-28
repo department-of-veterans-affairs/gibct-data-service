@@ -93,8 +93,8 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'simplecov'
-  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git',
-                    ref: 'e355cfde5ae039601b3f273fe07c1b36a129c4c6'
+  gem 'poltergeist'
+  gem 'selenium-webdriver'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
 end
 
