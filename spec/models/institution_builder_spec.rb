@@ -586,12 +586,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          sec702_school_institution = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
 
-          expect(institutions.first.caution_flag).to be_falsey
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag).to be_falsey
         end
       end
 
@@ -615,12 +616,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          sec702_school_institution = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
 
-          expect(institutions.first.caution_flag_reason).to be_nil
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag_reason).to be_nil
         end
 
         it 'concatenates the sec_702 reason when sec_702 is false' do
