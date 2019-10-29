@@ -167,17 +167,19 @@ RSpec.describe Institution, type: :model do
   describe 'institution_programs' do
     let(:institution) { build :institution }
 
-    it 'returns versioned institution programs' do
-      InstitutionProgram.create(institution: institution, description: 'BBB',
+    def create_institution(institution, description)
+      InstitutionProgram.create(institution: institution, description: description,
                                 version: institution.version, facility_code: institution.facility_code)
+    end
+
+    it 'returns versioned institution programs' do
+      create_institution(institution, 'BBB')
       expect(institution.institution_programs.count).to eq(1)
     end
 
     it 'returns institution programs ordered by description' do
-      InstitutionProgram.create(institution: institution, description: 'BBB',
-                                version: institution.version, facility_code: institution.facility_code)
-      InstitutionProgram.create(institution: institution, description: 'AAA',
-                                version: institution.version, facility_code: institution.facility_code)
+      create_institution(institution, 'BBB')
+      create_institution(institution, 'AAA')
       expect(institution.institution_programs.count).to eq(2)
       expect(institution.institution_programs.first.description).to eq('AAA')
     end
