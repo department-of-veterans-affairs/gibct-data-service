@@ -20,7 +20,8 @@ RSpec.describe GibctSiteMapper, type: :model do
     allow_any_instance_of(described_class).to receive(:ping_search_engines)
   end
 
-  def expectations_when_initalizing
+  describe 'when initializing' do
+    it 'sets the default host and creates a sitemap with only production data' do
     [true, false].each do |ping|
       SiteMapperHelper.silence do
         mapper = described_class.new(ping)
@@ -36,11 +37,6 @@ RSpec.describe GibctSiteMapper, type: :model do
       end
     end
   end
-
-  describe 'when initializing' do
-    it 'sets the default host and creates a sitemap with only production data' do
-      expectations_when_initalizing
-    end
 
     context 'and ping is false' do
       it 'does not ping the search engines' do
