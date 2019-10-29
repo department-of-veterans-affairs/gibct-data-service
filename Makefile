@@ -13,7 +13,7 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "bin/rails db:setup db:migrate webpacker:compile ci"
+	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
 
 .PHONY: console
 console:
