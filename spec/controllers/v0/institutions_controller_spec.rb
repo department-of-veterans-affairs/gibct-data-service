@@ -91,19 +91,23 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
   context 'search results' do
     # need to separate methods in order to pass metrics::AbcSize cop
-    def check_boolean_facets_1(facets)
-      expect(facets['student_vet_group'].keys).to include('true', 'false')
-      expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
-      expect(facets['principles_of_excellence'].keys).to include('true', 'false')
-      expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
+    def create_facets_keys_array(facets)
+      [
+        facets['student_vet_group'].keys,
+        facets['yellow_ribbon_scholarship'].keys,
+        facets['principles_of_excellence'].keys,
+        facets['eight_keys_to_veteran_success'].keys,
+        facets['stem_offered'].keys,
+        facets['independent_study'].keys,
+        facets['priority_enrollment'].keys,
+        facets['online_only'].keys,
+        facets['distance_learning'].keys
+      ]
     end
 
-    def check_boolean_facets_2(facets)
-      expect(facets['stem_offered'].keys).to include('true', 'false')
-      expect(facets['independent_study'].keys).to include('true', 'false')
-      expect(facets['priority_enrollment'].keys).to include('true', 'false')
-      expect(facets['online_only'].keys).to include('true', 'false')
-      expect(facets['distance_learning'].keys).to include('true', 'false')
+    def check_boolean_facets(facets)
+      facet_keys = create_facets_keys_array(facets)
+      expect(facet_keys).to RSpec::Matchers::BuiltIn::All.new(include('true', 'false'))
     end
 
     before do
@@ -227,8 +231,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'includes boolean facets' do
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
-      check_boolean_facets_1(facets)
-      check_boolean_facets_2(facets)
+      check_boolean_facets(facets)
     end
   end
 
