@@ -50,6 +50,18 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     context 'when not successful' do
+      def statement_invalid
+        error_message = 'BOOM!'
+        statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
+        statement_invalid.set_backtrace(%(backtrace))
+        statement_invalid
+      end
+
+      def check_for_no_changes(version)
+        expect(Institution.count).to be_zero
+        expect(Version.current_preview).to eq(version)
+      end
+
       it 'returns a success = false' do
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         expect(described_class.run(user)[:success]).to be_falsey
@@ -58,13 +70,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'returns an error message' do
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         expect(described_class.run(user)[:error_msg]).to eq('BOOM!')
-      end
-
-      def statement_invalid
-        error_message = 'BOOM!'
-        statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
-        statement_invalid.set_backtrace(%(backtrace))
-        statement_invalid
       end
 
       it 'logs errors at the database level' do
@@ -82,9 +87,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'does not change the institutions or versions if not successful' do
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         create :version
+        version = Version.current_preview
         described_class.run(user)
-        expect(Institution.count).to be_zero
-        expect(Version.current_preview).to eq(Version.current_preview)
+        check_for_no_changes(version)
       end
     end
 

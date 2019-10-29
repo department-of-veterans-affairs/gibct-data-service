@@ -90,6 +90,21 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'search results' do
+    # need to separate methods in order to pass metrics::AbcSize cop
+    def check_boolean_facets_1(facets)
+      expect(facets['student_vet_group'].keys).to include('true', 'false')
+      expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
+      expect(facets['principles_of_excellence'].keys).to include('true', 'false')
+      expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
+    end
+    def check_boolean_facets_2(facets)
+      expect(facets['stem_offered'].keys).to include('true', 'false')
+      expect(facets['independent_study'].keys).to include('true', 'false')
+      expect(facets['priority_enrollment'].keys).to include('true', 'false')
+      expect(facets['online_only'].keys).to include('true', 'false')
+      expect(facets['distance_learning'].keys).to include('true', 'false')
+    end
+
     before do
       create(:version, :production)
       create_list(:institution, 2, :in_nyc)
@@ -208,58 +223,11 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(match['count']).to eq(0)
     end
 
-    it 'includes boolean facets student_vet_group' do
+    it 'includes boolean facets' do
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['student_vet_group'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet yellow_ribbon_scholarship' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet principles_of_excellence' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['principles_of_excellence'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet eight_keys_to_veteran_success' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet stem_offered' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['stem_offered'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet independent_study' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['independent_study'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet priority_enrollment' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['priority_enrollment'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet online_only' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['online_only'].keys).to include('true', 'false')
-    end
-
-    it 'includes boolean facet distance_learning' do
-      get(:index)
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['distance_learning'].keys).to include('true', 'false')
+      check_boolean_facets_1(facets)
+      check_boolean_facets_2(facets)
     end
   end
 
