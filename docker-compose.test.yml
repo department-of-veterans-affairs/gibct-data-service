@@ -36,6 +36,8 @@ services:
       GOVDELIVERY_STAGING_SERVICE: 'True'
       CI:
       RAILS_ENV: test
+      NODE_ENV: test
+      RACK_ENV: test
       CC_TEST_REPORTER_ID: 'b2bfddfeacb799e6c25db347d97406262860380eb1feb21884d5151f818165f5'
     depends_on:
       - postgres
