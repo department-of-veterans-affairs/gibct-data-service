@@ -508,7 +508,6 @@ module InstitutionBuilder
   def self.build_institution_programs(version_number)
     str = <<-SQL
       INSERT INTO institution_programs (
-        facility_code,
         program_type,
         description,
         full_time_undergraduate,
@@ -527,10 +526,10 @@ module InstitutionBuilder
         vet_success_email,
         vet_tec_program,
         tuition_amount,
-        length_in_weeks
+        length_in_weeks,
+        institution_id
       )
       SELECT
-        a.facility_code,
         program_type,
         description,
         full_time_undergraduate,
@@ -549,14 +548,18 @@ module InstitutionBuilder
         vet_success_email,
         vet_tec_program,
         tuition_amount,
-        length_in_weeks
-      FROM programs a INNER JOIN edu_programs b
-        ON a.facility_code = b.facility_code
+        length_in_weeks,
+        c.id
+      FROM programs a
+        INNER JOIN edu_programs b ON a.facility_code = b.facility_code
           AND LOWER(description) = LOWER(vet_tec_program)
           AND vet_tec_program IS NOT NULL
+        INNER JOIN institutions c ON a.facility_code = c.facility_code
+          AND c.version = ?
+          AND c.approved = true
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
+    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
     InstitutionProgram.connection.execute(sql)
   end
 
