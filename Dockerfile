@@ -21,13 +21,6 @@ RUN apt-get install -y libfreetype6 libfreetype6-dev libfontconfig1 libfontconfi
 RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /cc-test-reporter
 RUN chmod +x /cc-test-reporter
 
-ENV YARN_VERSION 1.12.3
-ENV NODE_ENV production
-
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
-   apt-get install -y nodejs && \
-   npm install -g yarn@$YARN_VERSION
-
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
 # Configure gibct application
@@ -37,4 +30,3 @@ WORKDIR /src/gibct
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-RUN ["/bin/bash", "--login", "-c", "yarn install"]
