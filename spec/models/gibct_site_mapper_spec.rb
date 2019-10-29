@@ -20,22 +20,26 @@ RSpec.describe GibctSiteMapper, type: :model do
     allow_any_instance_of(described_class).to receive(:ping_search_engines)
   end
 
+  def expectations_when_initalizing
+    [true, false].each do |ping|
+      SiteMapperHelper.silence do
+        mapper = described_class.new(ping)
+        expect(mapper.sitemap_location).to eq('https://www.va.gov/gids/sitemap.xml.gz')
+      end
+
+      expect(SitemapGenerator::Sitemap.default_host).to eq('https://www.va.gov/gi-bill-comparison-tool')
+
+      sitemap = Zlib::GzipReader.open(sitemaps_path) do |gz|
+        sitemap = gz.read
+        expect(sitemap).to match(Regexp.new("/profile/#{production_institution_fc}"))
+        expect(sitemap).not_to match(Regexp.new("/profile/#{preview_institution_fc}"))
+      end
+    end
+  end
+
   describe 'when initializing' do
     it 'sets the default host and creates a sitemap with only production data' do
-      [true, false].each do |ping|
-        SiteMapperHelper.silence do
-          mapper = described_class.new(ping)
-          expect(mapper.sitemap_location).to eq('https://www.va.gov/gids/sitemap.xml.gz')
-        end
-
-        expect(SitemapGenerator::Sitemap.default_host).to eq('https://www.va.gov/gi-bill-comparison-tool')
-
-        sitemap = Zlib::GzipReader.open(sitemaps_path) do |gz|
-          sitemap = gz.read
-          expect(sitemap).to match(Regexp.new("/profile/#{production_institution_fc}"))
-          expect(sitemap).not_to match(Regexp.new("/profile/#{preview_institution_fc}"))
-        end
-      end
+      expectations_when_initalizing
     end
 
     context 'and ping is false' do

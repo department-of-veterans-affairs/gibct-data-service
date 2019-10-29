@@ -15,65 +15,37 @@ RSpec.shared_examples 'an archivable model' do |options|
     before do
       # version 1
       create_production_version
-      create factory, version: current_production_number
-
       # version 2
       create_production_version
-      create factory, version: current_production_number
     end
 
     context 'when successful' do
       it 'archives previous production version', js: true do
         # version 3
         create_production_version
-        create factory, version: current_production_number
-
         # version 4
         create_production_version
-        create factory, version: current_production_number
-
-        archive_test(initial_count: 4,
-                     count_total: 3,
-                     count_greater_equal_production: 1,
-                     archive_count: 1)
+        archive_test(4, 3, 1, 1)
       end
 
       it 'does not archive preview versions greater than current production', js: true do
         # version 3
         create_production_version
-        create factory, version: current_production_number
-
         # version 4
         create_production_version
-        create factory, version: current_production_number
-
         # preview version 5
-        create :version, :preview
-        create factory, version: current_preview_number
-
-        archive_test(initial_count: 5,
-                     count_total: 4,
-                     count_greater_equal_production: 2,
-                     archive_count: 1)
+        create_preview_version
+        archive_test(5, 4, 2, 1)
       end
 
       it 'archives previous production version and preview versions less than current production', js: true do
         # preview version 3
-        create :version, :preview
-        create factory, version: current_preview_number
-
+        create_preview_version
         # preview version 4
-        create :version, :preview
-        create factory, version: current_preview_number
-
+        create_preview_version
         # version 5
         create_production_version
-        create factory, version: current_production_number
-
-        archive_test(initial_count: 5,
-                     count_total: 2,
-                     count_greater_equal_production: 1,
-                     archive_count: 3)
+        archive_test(5, 2, 1, 3)
       end
     end
 
@@ -81,19 +53,21 @@ RSpec.shared_examples 'an archivable model' do |options|
       it 'returns an error message' do
         error_message = 'BOOM!'
         allow(Archiver).to receive(:create_archives).and_raise(StandardError, error_message)
-        expect(Rails.logger).to receive(:error).with("There was an error of unexpected origin: #{error_message}")
+        expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
         Archiver.archive_previous_versions
       end
 
-      it 'logs errors at the database level' do
+      def create_invalid_statement
         error_message = 'BOOM!'
+        invalid_statement = ActiveRecord::StatementInvalid.new(error_message)
+        invalid_statement.set_backtrace(%(backtrace))
+        allow(Archiver).to receive(:create_archives).and_raise(invalid_statement)
+      end
 
-        statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
-        statement_invalid.set_backtrace(%(backtrace))
-
-        allow(Archiver).to receive(:create_archives).and_raise(statement_invalid)
+      it 'logs errors at the database level' do
+        create_invalid_statement
         expect(Rails.logger).to receive(:error)
-          .with("There was an error occurring at the database level: #{error_message}")
+          .with('There was an error occurring at the database level: BOOM!')
         Archiver.archive_previous_versions
       end
     end
@@ -101,10 +75,10 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   private
 
-  def archive_test(initial_count:,
-                   count_total:,
-                   count_greater_equal_production:,
-                   archive_count:)
+  def archive_test(initial_count,
+                   count_total,
+                   count_greater_equal_production,
+                   archive_count)
     expect(original_type.count).to eq(initial_count)
     expect(archived_type.count).to eq(0)
 
@@ -121,6 +95,12 @@ RSpec.shared_examples 'an archivable model' do |options|
   def create_production_version
     create :version, :preview
     create :version, :production, number: current_preview_number
+    create factory, version: current_production_number
+  end
+
+  def create_preview_version
+    create :version, :preview
+    create factory, version: current_preview_number
   end
 
   def current_preview_number

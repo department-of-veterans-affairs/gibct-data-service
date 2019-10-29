@@ -110,10 +110,14 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'locale_type' do
-    it 'maps locale numbers to descriptions' do
+    def locale_maps
       {
         'city' => [11, 12, 13], 'suburban' => [21, 22, 23], 'town' => [31, 32, 33], 'rural' => [41, 42, 43]
-      }.each_pair do |description, locales|
+      }
+    end
+
+    it 'maps locale numbers to descriptions' do
+      locale_maps.each_pair do |description, locales|
         locales.each do |locale|
           expect(build(:institution, locale: locale).locale_type).to eq(description)
         end
@@ -223,13 +227,17 @@ RSpec.describe Institution, type: :model do
         expect(described_class.search('address_1').count).to eq(0)
       end
 
+      def include_search_attribute
+        include(
+          "WHERE (facility_code = ('CHICAGO')",
+          "OR lower(institution) LIKE ('%chicago%')",
+          "OR lower(city) LIKE ('%chicago%'))"
+        )
+      end
+
       it 'searches when attribute is provided' do
         expect(described_class.search('chicago').to_sql)
-          .to include(
-            "WHERE (facility_code = ('CHICAGO')",
-            "OR lower(institution) LIKE ('%chicago%')",
-            "OR lower(city) LIKE ('%chicago%'))"
-          )
+          .to include_search_attribute
       end
     end
   end

@@ -13,35 +13,41 @@ describe ProgramValidator do
     end
 
     context 'when record does not have unique facility_code & description values' do
+      def check_invalid_programs(program, program_b)
+        expect(program.valid?(:after_import)).to eq(false)
+        expect(program_b.valid?(:after_import)).to eq(false)
+      end
+
+      def check_error_messages(program)
+        error_messages = program.errors.messages
+        expect(error_messages.any?).to eq(true)
+        error_message = 'The Facility Code & Description (Program Name) combination is not unique:' \
+"\n#{program.facility_code}, #{program.description}"
+        expect(error_messages[:base]).to include(error_message)
+      end
+
       it 'fails validation' do
         program = create :program
         program_b = create :program, facility_code: program.facility_code
-
-        expect(program.valid?(:after_import)).to eq(false)
-        expect(program_b.valid?(:after_import)).to eq(false)
-
-        error_messages = program.errors.messages
-        expect(error_messages.any?).to eq(true)
-
-        error_message = "The Facility Code & Description (Program Name) combination is not unique:
-#{program.facility_code}, #{program.description}"
-        expect(error_messages[:base]).to include(error_message)
+        check_invalid_programs(program, program_b)
+        check_error_messages(program)
       end
     end
 
     context 'when record has invalid facility code error message' do
-      it 'fails validation' do
-        program = create :program, facility_code: 0o0
-
-        expect(program.valid?(:after_import)).to eq(false)
-
+      def check_invalid_code_messages(program)
         error_messages = program.errors.messages
         expect(error_messages.any?).to eq(true)
-
         error_message =
-          "The Facility Code #{program.facility_code} is not contained within the most recently uploaded weams.csv"
-
+          "The Facility Code #{program.facility_code} " \
+        'is not contained within the most recently uploaded weams.csv'
         expect(error_messages[:base]).to include(error_message)
+      end
+
+      it 'fails validation' do
+        program = create :program, facility_code: 0o0
+        expect(program.valid?(:after_import)).to eq(false)
+        check_invalid_code_messages(program)
       end
     end
   end

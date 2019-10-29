@@ -17,6 +17,10 @@ RSpec.describe V0::ApiController, type: :controller do
     end
   end
 
+  def setup_rails_prod_env
+    allow(Rails).to(receive(:env)).and_return(ActiveSupport::StringInquirer.new('production'))
+  end
+
   let(:keys_for_all_env) { %w[title detail code status] }
   let(:keys_for_with_meta) { keys_for_all_env + ['meta'] }
 
@@ -37,10 +41,7 @@ RSpec.describe V0::ApiController, type: :controller do
 
     context 'with Rails.env.production' do
       it 'renders json error with production attributes' do
-        allow(Rails)
-          .to(receive(:env))
-          .and_return(ActiveSupport::StringInquirer.new('production'))
-
+        setup_rails_prod_env
         get :parameter_missing
         expect(subject.keys)
           .to eq(keys_for_all_env)
@@ -65,10 +66,7 @@ RSpec.describe V0::ApiController, type: :controller do
 
     context 'with Rails.env.production' do
       it 'renders json error with production attributes' do
-        allow(Rails)
-          .to(receive(:env))
-          .and_return(ActiveSupport::StringInquirer.new('production'))
-
+        setup_rails_prod_env
         get :internal_server_error
         expect(subject.keys)
           .to eq(keys_for_all_env)
@@ -93,13 +91,9 @@ RSpec.describe V0::ApiController, type: :controller do
 
     context 'with Rails.env.production' do
       it 'renders json error with production attributes' do
-        allow(Rails)
-          .to(receive(:env))
-          .and_return(ActiveSupport::StringInquirer.new('production'))
-
+        setup_rails_prod_env
         get :unauthorized
-        expect(subject.keys)
-          .to eq(keys_for_all_env)
+        expect(subject.keys).to eq(keys_for_all_env)
         expect(response.headers['WWW-Authenticate'])
           .to eq('Token realm="Application"')
       end

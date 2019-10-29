@@ -137,13 +137,15 @@ RSpec.describe Upload, type: :model do
       expect(described_class.since_last_preview_version.any?).to eq(true)
     end
 
-    it 'returns uploads after preview' do
+    def create_preview_set_csv_type(csv_type)
       create :version, :preview
-      described_class.where(csv_type: 'Weam')[1].update(ok: true)
-      create :version, :production, number: Version.current_preview.number
-      create :version, :preview
-      described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
+      described_class.where(csv_type: csv_type)[1].update(ok: true)
+    end
 
+    it 'returns uploads after preview' do
+      create_preview_set_csv_type('Weam')
+      create :version, :production, number: Version.current_preview.number
+      create_preview_set_csv_type('Crosswalk')
       expect(described_class.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
       expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
     end
