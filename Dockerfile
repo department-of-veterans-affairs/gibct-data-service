@@ -1,4 +1,4 @@
-FROM ruby:2.4.5-slim-stretch as ruby
+FROM ruby:2.4.5-slim-stretch
 
 # Match the jenkins uid/gid on the host (504)
 RUN groupadd -r gibct && \
@@ -37,5 +37,4 @@ WORKDIR /src/gibct
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-RUN ["/bin/bash", "--login", "-c", "yarn add webpack"]
 RUN ["/bin/bash", "--login", "-c", "yarn install"]
