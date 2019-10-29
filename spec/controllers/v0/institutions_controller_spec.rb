@@ -97,6 +97,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(facets['principles_of_excellence'].keys).to include('true', 'false')
       expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
     end
+
     def check_boolean_facets_2(facets)
       expect(facets['stem_offered'].keys).to include('true', 'false')
       expect(facets['independent_study'].keys).to include('true', 'false')
