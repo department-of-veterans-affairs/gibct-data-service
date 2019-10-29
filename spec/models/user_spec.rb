@@ -10,7 +10,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context 'emails' do
+    context 'with emails' do
       it 'are required' do
         expect { create(:user, :no_email) }.to raise_error(ActiveRecord::RecordInvalid)
       end
@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
       # end
     end
 
-    context 'passwords' do
+    context 'with passwords' do
       it 'are required' do
         expect { create :user, :no_password }.to raise_error(ActiveRecord::RecordInvalid)
       end
@@ -36,7 +36,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe 'class methods' do
+  describe 'with class methods' do
     let(:vaild_attributes) { { va_eauth_emailaddress: FactoryBot.create(:user).email } }
     let(:empty_attributes) { {} }
 

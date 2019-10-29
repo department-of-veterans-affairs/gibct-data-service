@@ -38,7 +38,7 @@ RSpec.describe GibctSiteMapper, type: :model do
       end
     end
 
-    context 'and ping is false' do
+    context 'when ping is false' do
       it 'does not ping the search engines' do
         expect_any_instance_of(described_class).not_to receive(:ping_search_engines)
 
@@ -48,7 +48,7 @@ RSpec.describe GibctSiteMapper, type: :model do
       end
     end
 
-    context 'and ping is true' do
+    context 'when ping is true' do
       it 'pings the search engines' do
         expect_any_instance_of(described_class).to receive(:ping_search_engines)
 

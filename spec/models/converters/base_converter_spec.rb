@@ -23,7 +23,7 @@ RSpec.describe BaseConverter do
     end
   end
 
-  context 'strings without forbidden words and characters' do
+  context 'without strings containing forbidden words and characters' do
     it 'strips leading and trailing blanks from strings' do
       expect(subject.convert('     t    ')).to eq('t')
     end
