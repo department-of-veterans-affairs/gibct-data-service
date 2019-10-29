@@ -18,14 +18,14 @@ RSpec.describe GibctSiteMapper, type: :model do
   end
 
   describe 'when initializing' do
-    it 'sets the default host and creates a sitemap' do
+    it 'checks the site map URL' do
       SiteMapperHelper.silence do
         mapper = described_class.new(false)
         expect(mapper.sitemap_location).to eq('https://www.va.gov/gids/sitemap.xml.gz')
       end
     end
 
-    it 'sets default_host to www.va.gov/gi-bill-comparison-tool' do
+    it 'checks the default host URL' do
       SiteMapperHelper.silence do
         described_class.new(false)
         expect(SitemapGenerator::Sitemap.default_host).to eq('https://www.va.gov/gi-bill-comparison-tool')
