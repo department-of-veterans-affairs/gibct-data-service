@@ -20,7 +20,7 @@ RSpec.describe V0::ApiController, type: :controller do
   let(:keys_for_all_env) { %w[title detail code status] }
   let(:keys_for_with_meta) { keys_for_all_env + ['meta'] }
 
-  context 'Parameter Missing' do
+  context 'with parameter Missing' do
     subject { JSON.parse(response.body)['errors'].first }
 
     before do
@@ -48,7 +48,7 @@ RSpec.describe V0::ApiController, type: :controller do
     end
   end
 
-  context 'Internal Server Error' do
+  context 'with Internal Server Error' do
     subject { JSON.parse(response.body)['errors'].first }
 
     before do
@@ -76,7 +76,7 @@ RSpec.describe V0::ApiController, type: :controller do
     end
   end
 
-  context 'Unauthorized' do
+  context 'when Unauthorized' do
     subject { JSON.parse(response.body)['errors'].first }
 
     before do

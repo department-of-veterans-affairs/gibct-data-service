@@ -28,7 +28,7 @@ RSpec.describe UploadsController, type: :controller do
   describe 'GET new' do
     login_user
 
-    context 'specifying a csv_type' do
+    context 'when specifying a csv_type' do
       before do
         get :new, params: { csv_type: 'Complaint' }
       end
@@ -42,7 +42,7 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    context 'specifying an invalid csv_type' do
+    context 'when specifying an invalid csv_type' do
       it 'redirects to the dashboard' do
         expect(get(:new, params: { csv_type: 'FexumGibberit' })).to redirect_to('/dashboards')
       end
@@ -55,7 +55,7 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    context 'specifying no csv_type' do
+    context 'when specifying no csv_type' do
       it 'redirects to the dashboard' do
         expect(
           get(:new)
@@ -76,7 +76,7 @@ RSpec.describe UploadsController, type: :controller do
 
     login_user
 
-    context 'having valid form input' do
+    context 'with having valid form input' do
       it 'Uploads a csv file' do
         expect do
           post :create,
@@ -99,7 +99,7 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    context 'having invalid form input' do
+    context 'with invalid form input' do
       context 'with a non-valid csv_type' do
         it 'renders the new view' do
           expect(
