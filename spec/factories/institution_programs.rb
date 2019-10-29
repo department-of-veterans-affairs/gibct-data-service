@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :institution_program do
-    facility_code { generate :facility_code }
+    version { 1 }
+    sequence(:description) { |n| "PROGRAM #{n}" }
     program_type { 'NCD' }
-    description { 'COMPUTER SCIENCE' }
     full_time_undergraduate { '360' }
     graduate { '234' }
     full_time_modifier { 'S' }
@@ -21,5 +21,30 @@ FactoryBot.define do
     vet_tec_program { 'COMPUTER SCIENCE' }
     tuition_amount { '360' }
     length_in_weeks { '1001' }
+    institution
+
+    trait :start_like_harv do
+      sequence(:description) { |n| ["HARV#{n}", "HARV #{n}"].sample }
+    end
+
+    trait :contains_harv do
+      sequence(:description) { |n| ["HASHARV#{n}", "HAS HARV #{n}"].sample }
+    end
+
+    trait :in_nyc do
+      institution { create(:institution, physical_city: 'NEW YORK', physical_country: 'USA', physical_state: 'NY') }
+    end
+
+    trait :in_new_rochelle do
+      institution { create(:institution, physical_city: 'NEW ROCHELLE', physical_country: 'USA', physical_state: 'NY') }
+    end
+
+    trait :in_chicago do
+      institution { create(:institution, physical_city: 'CHICAGO', physical_country: 'USA', physical_state: 'IL') }
+    end
+
+    trait :preferred_provider do
+      institution { create(:institution, preferred_provider: true) }
+    end
   end
 end

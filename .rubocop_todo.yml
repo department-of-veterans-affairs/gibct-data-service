@@ -28,6 +28,7 @@ RSpec/ContextWording:
     - 'spec/models/gibct_site_mapper_spec.rb'
     - 'spec/models/institution_builder_spec.rb'
     - 'spec/models/institution_spec.rb'
+    - 'spec/models/institution_program_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/models/version_spec.rb'
 
@@ -37,6 +38,7 @@ RSpec/ExampleLength:
   Exclude:
     - 'spec/controllers/v0/api_controller_spec.rb'
     - 'spec/controllers/v0/institutions_controller_spec.rb'
+    - 'spec/controllers/v0/institution_programs_controller_spec.rb'
     - 'spec/models/gibct_site_mapper_spec.rb'
     - 'spec/models/institution_builder_spec.rb'
     - 'spec/models/institution_spec.rb'

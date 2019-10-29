@@ -11,6 +11,15 @@ Upload.delete_all
 puts 'Deleting old institutions'
 Institution.delete_all
 
+puts 'Deleting old institution programs'
+InstitutionProgram.delete_all
+
+puts 'Deleting old zipcode rates'
+ZipcodeRate.delete_all
+
+puts 'Deleting old Versioned SCOs'
+VersionedSchoolCertifyingOfficial.delete_all
+
 puts 'Deleting old constants'
 CalculatorConstant.delete_all
 
