@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'an authenticating controller' do |action, destination|
   describe 'when being visited' do
-    context 'and not authenticated' do
+    context 'when not authenticated' do
       it 'redirects the user to login page' do
         get action
 
@@ -11,7 +11,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       end
     end
 
-    context 'and submitting credentials' do
+    context 'when submitting credentials' do
       let(:bad_user) { build :user, :bad_email }
 
       it 'outputs an error message if not successful' do
@@ -26,7 +26,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       end
     end
 
-    context 'and when authenticated' do
+    context 'when authenticated' do
       login_user
 
       it "sends that user to the #{destination}/#{action}" do

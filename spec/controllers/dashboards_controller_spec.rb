@@ -148,7 +148,7 @@ RSpec.describe DashboardsController, type: :controller do
         create :version
       end
 
-      context 'and is successful' do
+      context 'when successful' do
         before do
         end
 
@@ -175,9 +175,12 @@ RSpec.describe DashboardsController, type: :controller do
         end
       end
 
-      context 'and is not successful' do
+      context 'when not successful' do
         before do
           allow(Version).to receive(:create).and_return(Version.new)
+        end
+
+        it 'does not receive ping' do
           expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
         end
 

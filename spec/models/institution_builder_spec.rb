@@ -248,7 +248,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
 
-        context "the institution has a more recent 'restorative' action" do
+        context "with a more recent 'restorative' action for the institution" do
           AccreditationAction::RESTORATIVE_STATUSES.each do |status|
             it 'does not set the `accreditation_status`' do
               create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
@@ -487,7 +487,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       let(:nil_ipeds_ic_ay) { IpedsIcPy::COLS_USED_IN_INSTITUTION.each_with_object({}) { |v, o| o[v] = nil } }
 
-      context 'and the institution fields are nil' do
+      context 'when the institution fields are nil' do
         it 'copies columns used by institutions' do
           create :ipeds_ic_py, :institution_builder
           described_class.run(user)
@@ -498,7 +498,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      context 'and the institution fields are not nil' do
+      context 'when the institution fields are not nil' do
         it 'the institution record matches the ipeds_ic_ay record' do
           create :ipeds_ic_ay, :institution_builder
           create :ipeds_ic_py, :institution_builder
@@ -519,7 +519,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:sec702) { Sec702.first }
       let(:sec702_school) { Sec702School.first }
 
-      context 'and the school is non-public' do
+      context 'when the school is non-public' do
         it 'the institution is unaffected by Sec702School' do
           Weam.delete_all
           create :weam, :institution_builder, :private
@@ -539,7 +539,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      context 'and the school is public' do
+      context 'when the school is public' do
         describe 'sec_702' do
           it 'is set from Section702' do
             create :sec702, :institution_builder
@@ -586,12 +586,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          sec702_school_institution = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
 
-          expect(institutions.first.caution_flag).to be_falsey
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag).to be_falsey
         end
       end
 
@@ -615,12 +616,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          sec702_school_institution = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
 
-          expect(institutions.first.caution_flag_reason).to be_nil
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag_reason).to be_nil
         end
 
         it 'concatenates the sec_702 reason when sec_702 is false' do
@@ -892,15 +894,17 @@ RSpec.describe InstitutionBuilder, type: :model do
 
     describe 'when generating institution programs' do
       it 'properly generates institution programs from programs and edu_programs' do
-        create :program, facility_code: '0001'
-        create :edu_program, facility_code: '0001'
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
         expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
       end
 
       it 'does not generate instition programs without matching programs and edu_programs' do
-        create :program, facility_code: '0001'
-        create :edu_program, facility_code: '0002'
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '0001'
+        described_class.run(user)
         expect(InstitutionProgram.count).to eq(0)
       end
     end

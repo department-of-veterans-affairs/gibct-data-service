@@ -35,14 +35,14 @@ RSpec.describe Version, type: :model do
       expect(no_user).not_to be_valid
     end
 
-    context 'and setting a new version' do
+    context 'when setting a new version' do
       it 'sets the version to the max-version + 1' do
         subject.save
         expect(create(:version, :production).number).to eq(subject.number + 1)
       end
     end
 
-    context 'and rolling back' do
+    context 'when rolling back' do
       it 'requires an existing version when rolling back ' do
         subject.save
         expect(good_existing_version).to be_valid
@@ -65,14 +65,14 @@ RSpec.describe Version, type: :model do
       create :version, created_at: 0.days.ago
     end
 
-    context 'latest production version' do
+    context 'with latest production version' do
       let(:subject) { described_class.current_production }
 
       it 'has correct number' do
         expect(subject.number).to eq(3)
       end
 
-      it 'has correct attributes' do
+      it 'with correct attributes' do
         expect(subject).to be_latest_production
         expect(subject).to be_production
         expect(subject).not_to be_preview
@@ -81,14 +81,14 @@ RSpec.describe Version, type: :model do
       end
     end
 
-    context 'latest preview version' do
+    context 'with the latest preview version' do
       let(:subject) { described_class.current_preview }
 
-      it 'has correct number' do
+      it 'with the correct number' do
         expect(subject.number).to eq(4)
       end
 
-      it 'has correct attributes' do
+      it 'with the correct attributes' do
         expect(subject).not_to be_latest_production
         expect(subject).not_to be_production
         expect(subject).to be_preview
@@ -104,7 +104,7 @@ RSpec.describe Version, type: :model do
       create :version, completed_at: 0.days.ago, created_at: 0.days.ago
     end
 
-    context 'latest preview version' do
+    context 'with the latest preview version' do
       let(:subject) { described_class.current_preview }
 
       it 'has correct number' do
