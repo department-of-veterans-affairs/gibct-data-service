@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe InstitutionProgramSerializer, type: :serializer do
   subject { serialize(institution_program, serializer_class: described_class) }
 
-  let(:institution_program) { build :institution_program }
+  let(:institution_program) { create :institution_program, :in_nyc }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 
@@ -17,63 +17,43 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
     expect(attributes['description']).to eq(institution_program.description)
   end
 
-  it 'includes full_time_undergraduate' do
-    expect(attributes['full_time_undergraduate']).to eq(institution_program.full_time_undergraduate)
-  end
-
-  it 'includes graduate' do
-    expect(attributes['graduate']).to eq(institution_program.graduate)
-  end
-
-  it 'includes full_time_modifier' do
-    expect(attributes['full_time_modifier']).to eq(institution_program.full_time_modifier)
-  end
-
   it 'includes length_in_hours' do
     expect(attributes['length_in_hours']).to eq(institution_program.length_in_hours)
   end
 
-  it 'includes school_locale' do
-    expect(attributes['school_locale']).to eq(institution_program.school_locale)
+  it 'includes facility_code' do
+    expect(attributes['facility_code']).to eq(institution_program.facility_code)
   end
 
-  it 'includes provider_website' do
-    expect(attributes['provider_website']).to eq(institution_program.provider_website)
+  it 'includes institution_name' do
+    expect(attributes['institution_name']).to eq(institution_program.institution_name)
   end
 
-  it 'includes provider_email_address' do
-    expect(attributes['provider_email_address']).to eq(institution_program.provider_email_address)
+  it 'includes city' do
+    expect(attributes['city']).to eq(institution_program.city)
   end
 
-  it 'includes phone_area_code' do
-    expect(attributes['phone_area_code']).to eq(institution_program.phone_area_code)
+  it 'includes state' do
+    expect(attributes['state']).to eq(institution_program.state)
   end
 
-  it 'includes phone_number' do
-    expect(attributes['phone_number']).to eq(institution_program.phone_number)
+  it 'includes country' do
+    expect(attributes['country']).to eq(institution_program.country)
   end
 
-  it 'includes student_vet_group' do
-    expect(attributes['student_vet_group']).to eq(institution_program.student_vet_group)
-  end
-
-  it 'includes student_vet_group_website' do
-    expect(attributes['student_vet_group_website']).to eq(institution_program.student_vet_group_website)
-  end
-
-  it 'includes vet_success_name' do
-    expect(attributes['vet_success_name']).to eq(institution_program.vet_success_name)
-  end
-
-  it 'includes vet_success_email' do
-    expect(attributes['vet_success_email']).to eq(institution_program.vet_success_email)
+  it 'includes preferred_provider' do
+    expect(attributes['preferred_provider']).to eq(institution_program.preferred_provider)
   end
 
   it 'includes tuition_amount' do
     expect(attributes['tuition_amount']).to eq(institution_program.tuition_amount)
   end
 
-  it 'includes length_in_weeks' do
-    expect(attributes['length_in_weeks']).to eq(institution_program.length_in_weeks)
+  it 'includes va_bah' do
+    expect(attributes['va_bah']).to eq(institution_program.va_bah)
+  end
+
+  it 'includes dod_bah' do
+    expect(attributes['dod_bah']).to eq(institution_program.dod_bah)
   end
 end
