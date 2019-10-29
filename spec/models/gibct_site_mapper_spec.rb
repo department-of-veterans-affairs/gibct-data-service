@@ -18,30 +18,33 @@ RSpec.describe GibctSiteMapper, type: :model do
   end
 
   describe 'when initializing' do
-    it 'sets the default host' do
+    it 'sets the default host and creates a sitemap' do
       SiteMapperHelper.silence do
         mapper = described_class.new(false)
         expect(mapper.sitemap_location).to eq('https://www.va.gov/gids/sitemap.xml.gz')
       end
     end
 
-    it 'sets SitemapGenerator::Sitemap.default_host' do
+    it 'sets default_host to www.va.gov/gi-bill-comparison-tool' do
       SiteMapperHelper.silence do
         described_class.new(false)
         expect(SitemapGenerator::Sitemap.default_host).to eq('https://www.va.gov/gi-bill-comparison-tool')
       end
     end
 
-    it 'creates a sitemap with only production data' do
+    def create_sitemap_and_check_if_production
       SiteMapperHelper.silence do
         described_class.new(false)
       end
-
       Zlib::GzipReader.open(sitemaps_path) do |gz|
         sitemap = gz.read
         expect(sitemap).to match(Regexp.new("/profile/#{production_institution_fc}"))
         expect(sitemap).not_to match(Regexp.new("/profile/#{preview_institution_fc}"))
       end
+    end
+
+    it 'creates a sitemap with only production data' do
+      create_sitemap_and_check_if_production
     end
   end
 end
