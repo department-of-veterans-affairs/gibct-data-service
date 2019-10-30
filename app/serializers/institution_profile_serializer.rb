@@ -112,7 +112,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
 
   def programs
     object.institution_programs.map do |program|
-      InstitutionProgramSerializer.new(program)
+      InstitutionProgramProfileSerializer.new(program)
     end
   end
 end
