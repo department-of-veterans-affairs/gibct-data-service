@@ -82,8 +82,9 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      expect(Weam).to receive(:export)
+      allow(Weam).to receive(:export)
       get(:export, params: { csv_type: 'Weam', format: :csv })
+      expect(Weam).to have_received(:export)
     end
 
     it 'includes filename parameter in content-disposition header' do
@@ -111,8 +112,9 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      expect(Institution).to receive(:export_institutions_by_version)
+      allow(Institution).to receive(:export_institutions_by_version)
       get(:export_version, params: { format: :csv, number: 1 })
+      expect(Institution).to have_received(:export_institutions_by_version)
     end
 
     it 'includes filename parameter in content-disposition header' do
@@ -127,7 +129,6 @@ RSpec.describe DashboardsController, type: :controller do
 
   describe 'GET push' do
     before do
-      allow_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines)
       allow(Archiver).to receive(:archive_previous_versions).and_return(nil)
     end
 
@@ -135,9 +136,7 @@ RSpec.describe DashboardsController, type: :controller do
 
     context 'with no existing preview records' do
       it 'returns an error message' do
-        expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
         post(:push)
-
         expect(flash.alert).to eq('No preview version available')
         expect(Version.current_production).to be_blank
       end
@@ -148,7 +147,7 @@ RSpec.describe DashboardsController, type: :controller do
         create :version
       end
 
-      context 'and is successful' do
+      context 'when successful' do
         before do
         end
 
@@ -166,28 +165,26 @@ RSpec.describe DashboardsController, type: :controller do
           expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
 
-        it 'pings the search engines with a new sitemap' do
-          expect_any_instance_of(GibctSiteMapper).to receive(:ping_search_engines)
-
+        it 'updates production data' do
           SiteMapperHelper.silence do
             post(:push)
           end
-        end
-      end
-
-      context 'and is not successful' do
-        before do
-          allow(Version).to receive(:create).and_return(Version.new)
-          expect_any_instance_of(GibctSiteMapper).not_to receive(:ping_search_engines)
+          expect(flash.notice).to eq('Production data updated')
         end
 
-        it 'does not add a new version' do
-          expect { post(:push) }.to change(Version, :count).by(0)
-        end
+        context 'and is not successful' do
+          before do
+            allow(Version).to receive(:create).and_return(Version.new)
+          end
 
-        it 'returns an error message' do
-          post(:push)
-          expect(flash.alert).to eq('Production data not updated, remains at previous production version')
+          it 'does not add a new version' do
+            expect { post(:push) }.to change(Version, :count).by(0)
+          end
+
+          it 'returns an error message' do
+            post(:push)
+            expect(flash.alert).to eq('Production data not updated, remains at previous production version')
+          end
         end
       end
     end

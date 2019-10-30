@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe InstitutionProgramSerializer, type: :serializer do
+RSpec.describe InstitutionProgramProfileSerializer, type: :serializer do
   subject { serialize(institution_program, serializer_class: described_class) }
 
   let(:institution_program) { create :institution_program, :in_nyc }
@@ -25,28 +25,20 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
     expect(attributes['length_in_weeks']).to eq(institution_program.length_in_weeks)
   end
 
-  it 'includes facility_code' do
-    expect(attributes['facility_code']).to eq(institution_program.facility_code)
+  it 'includes provider_website' do
+    expect(attributes['provider_website']).to eq(institution_program.provider_website)
   end
 
-  it 'includes institution_name' do
-    expect(attributes['institution_name']).to eq(institution_program.institution_name)
+  it 'includes phone_area_code' do
+    expect(attributes['phone_area_code']).to eq(institution_program.phone_area_code)
   end
 
-  it 'includes city' do
-    expect(attributes['city']).to eq(institution_program.city)
+  it 'includes phone_number' do
+    expect(attributes['phone_number']).to eq(institution_program.phone_number)
   end
 
-  it 'includes state' do
-    expect(attributes['state']).to eq(institution_program.state)
-  end
-
-  it 'includes country' do
-    expect(attributes['country']).to eq(institution_program.country)
-  end
-
-  it 'includes preferred_provider' do
-    expect(attributes['preferred_provider']).to eq(institution_program.preferred_provider)
+  it 'includes school_locale' do
+    expect(attributes['school_locale']).to eq(institution_program.school_locale)
   end
 
   it 'includes tuition_amount' do

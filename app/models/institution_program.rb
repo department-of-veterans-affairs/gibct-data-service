@@ -14,12 +14,11 @@ class InstitutionProgram < ApplicationRecord
   belongs_to :institution
   delegate :dod_bah, to: :institution
   delegate :preferred_provider, to: :institution
+  delegate :facility_code, to: :institution
 
   def institution_name
     institution.institution
   end
-
-  delegate :facility_code, to: :institution
 
   def city
     institution.physical_city
@@ -41,19 +40,19 @@ class InstitutionProgram < ApplicationRecord
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    select('institution_programs.id, institutions.facility_code as value, description as label')
-      .where(
-        'lower(description) LIKE (?) OR lower(institutions.institution) LIKE (?)',
-        "#{search_term}%",
-        "#{search_term}%"
-      )
-      .group('institution_programs.id, institutions.facility_code, description')
-      .limit(limit)
+    joins(:institution).select('institution_programs.id, institutions.facility_code as value, description as label')
+                       .where(
+                         'lower(description) LIKE (?) OR lower(institutions.institution) LIKE (?)',
+                         "#{search_term}%",
+                         "#{search_term}%"
+                       )
+                       .group('institution_programs.id, institutions.facility_code, description')
+                       .limit(limit)
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, _include_address = false|
+  scope :search, lambda { |search_term|
     return if search_term.blank?
 
     clause = [

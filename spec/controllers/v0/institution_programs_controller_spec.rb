@@ -164,25 +164,25 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'includes type search term in facets' do
-      get(:index, params: { name: 'chicago', type: 'foreign' })
+      get(:index, params: { name: 'chicago' })
       facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['type']['foreign']).not_to be_nil
-      expect(facets['type']['foreign']).to eq(0)
+      expect(facets['type']['ncd']).not_to be_nil
+      expect(facets['type']['ncd']).to eq(1)
     end
 
     it 'includes state search term in facets' do
-      get(:index, params: { name: 'chicago', state: 'WY' })
+      get(:index, params: { name: 'chicago' })
       facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['state']['wy']).not_to be_nil
-      expect(facets['state']['wy']).to eq(0)
+      expect(facets['state']['il']).not_to be_nil
+      expect(facets['state']['il']).to eq(1)
     end
 
     it 'includes country search term in facets' do
-      get(:index, params: { name: 'chicago', country: 'france' })
+      get(:index, params: { name: 'chicago' })
       facets = JSON.parse(response.body)['meta']['facets']
-      match = facets['country'].select { |c| c['name'] == 'FRANCE' }.first
+      match = facets['country'].select { |c| c['name'] == 'USA' }.first
       expect(match).not_to be nil
-      expect(match['count']).to eq(0)
+      expect(match['count']).to eq(1)
     end
   end
 end

@@ -7,9 +7,9 @@ module V0
     # GET /v0/institution_programs/autocomplete?term=harv
     def autocomplete
       @data = []
-      if params[:term]
+      if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
-        @data = InstitutionProgram.version(@version[:number]).joins(:institution).autocomplete(@search_term)
+        @data = InstitutionProgram.version(@version[:number]).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -47,7 +47,7 @@ module V0
 
       relation = InstitutionProgram.version(@version[:number])
                                    .joins(:institution)
-                                   .search(@query[:name], @query[:include_address])
+                                   .search(@query[:name])
                                    .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
       [
         %i[program_type type],
@@ -55,7 +55,6 @@ module V0
         %w[institutions.physical_state state],
         %w[institutions.preferred_provider preferred_provider]
       ].each do |filter_args|
-        filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
 
@@ -72,13 +71,10 @@ module V0
     end
 
     def count_field(relation, field)
-      field_map = {}
+      field_map = Hash.new(0)
       relation.map do |program|
         value = program.send(field)
-        if value.present?
-          field_map[value] = 0 if field_map[value].nil?
-          field_map[value] += 1
-        end
+        field_map[value] += 1 if value.present?
       end
       field_map
     end
