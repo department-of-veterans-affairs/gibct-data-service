@@ -27,7 +27,7 @@ ENV NODE_ENV production
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
    apt-get install -y nodejs && \
    npm install -g yarn@$YARN_VERSION && \
-   npm install webpack webpack-cli --save-dev
+   npm install --global webpack webpack-cli
 
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
