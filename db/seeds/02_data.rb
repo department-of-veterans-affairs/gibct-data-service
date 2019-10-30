@@ -13,6 +13,15 @@ if ENV['CI'].blank?
   puts 'Deleting old institutions'
   Institution.delete_all
 
+  puts 'Deleting old institution programs'
+  InstitutionProgram.delete_all
+
+  puts 'Deleting old zipcode rates'
+  ZipcodeRate.delete_all
+
+  puts 'Deleting old Versioned SCOs'
+  VersionedSchoolCertifyingOfficial.delete_all
+
   puts 'Deleting old constants'
   CalculatorConstant.delete_all
 
@@ -59,7 +68,7 @@ if ENV['CI'].blank?
   else
     puts "Error occurred: #{result[:notice]}: #{result[:error_msg]}"
   end
-  
+
   puts "Done ... Woo Hoo!"
 end
 
