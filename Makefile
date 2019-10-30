@@ -15,6 +15,10 @@ bash:
 ci:
 	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
 
+.PHONY: ci_local
+ci_local:
+	@$(BASH_TEST) "RAILS_ENV=test CI=true bin/rails db:create db:schema:load db:migrate ci"
+
 .PHONY: console
 console:
 	@$(BASH_DEV) "bundle exec rails c"
