@@ -13,21 +13,18 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     expect(body['meta']['version']['number'].to_i).to eq(version_number)
   end
 
-  def create_preview_version
-    create(:version, :production)
-    create(:version, :preview)
-  end
-
   context 'when determining version' do
-    it 'uses a production version as a default' do
+    before do
       create(:version, :production)
+    end
+
+    it 'uses a production version as a default' do
       create(:institution_program, :contains_harv)
       get(:index)
       check_programs_response(response, 'institution_programs')
     end
 
     it 'accepts invalid version parameter and returns production data' do
-      create(:version, :production)
       create(:institution_program, :contains_harv)
       get(:index, params: { version: 'invalid_data' })
       check_programs_response(response, 'institution_programs')
@@ -35,7 +32,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'accepts version number as a version parameter and returns preview data' do
-      v = create_preview_version
+      v = create(:version, :preview)
       create(:institution_program, :contains_harv, version: Version.current_preview.number)
       get(:index, params: { version: v.uuid })
       check_programs_response(response, 'institution_programs')
