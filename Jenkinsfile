@@ -10,7 +10,7 @@ def env_vars = [
 
 pipeline {
   agent {
-    label 'vagov-general-purpose'
+    label 'vetsgov-general-purpose'
   }
 
   environment {
