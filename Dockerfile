@@ -26,8 +26,7 @@ ENV NODE_ENV production
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
    apt-get install -y nodejs && \
-   npm install -g yarn@$YARN_VERSION && \
-   npm install --global webpack webpack-cli
+   npm install -g yarn@$YARN_VERSION
 
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
@@ -38,4 +37,4 @@ WORKDIR /src/gibct
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-RUN ["/bin/bash", "--login", "-c", "yarn install --non-interactive"]
+RUN ["/bin/bash", "--login", "-c", "yarn install --force --non-interactive"]
