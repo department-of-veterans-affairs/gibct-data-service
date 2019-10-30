@@ -68,6 +68,7 @@ if ENV['CI'].blank?
   else
     puts "Error occurred: #{result[:notice]}: #{result[:error_msg]}"
   end
+
   puts "Done ... Woo Hoo!"
 end
 
