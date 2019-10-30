@@ -73,15 +73,18 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'logs errors at the database level' do
+        statement_invalid
         allow(described_class).to receive(:add_crosswalk).and_raise(statement_invalid)
-        expect(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
+        allow(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
         described_class.run(user)
+        expect(Rails.logger).to have_received(:error).with('There was an error occurring at the database level: BOOM!')
       end
 
       it 'logs errors at the Rails level' do
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
+        allow(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
         described_class.run(user)
+        expect(Rails.logger).to have_received(:error).with('There was an error of unexpected origin: BOOM!')
       end
 
       it 'does not change the institutions or versions if not successful' do
@@ -256,7 +259,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
 
-        context "the institution has a more recent 'restorative' action" do
+        context "with a more recent 'restorative' action for the institution" do
           AccreditationAction::RESTORATIVE_STATUSES.each do |status|
             it 'does not set the `accreditation_status`' do
               create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
@@ -288,12 +291,14 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set to true for any non-nil status' do
           create :accreditation_action_probationary
           described_class.run(user)
+
           expect(institution.caution_flag).to be_truthy
         end
 
         it 'is set falsey for any nil status' do
           create :accreditation_action
           described_class.run(user)
+
           expect(institution.caution_flag).to be_falsey
         end
       end
@@ -301,7 +306,9 @@ RSpec.describe InstitutionBuilder, type: :model do
       describe 'the caution_flag_reason' do
         it 'concatenates `action_description` and `justification_description`' do
           aap = create :accreditation_action_probationary
+
           described_class.run(user)
+
           expect(
             institution.caution_flag_reason
           ).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
@@ -370,7 +377,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'copies columns used by institutions' do
         create :mou, :institution_builder
         described_class.run(user)
-
         expect(mou.dodmou).to eq(institution.dodmou)
       end
 
@@ -389,6 +395,11 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the caution_flag_reason' do
+        def check_dod_status_caution_flag
+          expect(institution.caution_flag_reason).not_to match(/DoD/)
+          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
+        end
+
         it 'is set when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
@@ -396,18 +407,19 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'contentates the existing reasons' do
-          create_campus_probation_action
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
           expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)
         end
 
         it 'is unaltered when dod_status is not true' do
-          create_campus_probation_action
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :mou, :institution_builder, :by_title_iv
           described_class.run(user)
-          expect(institution.caution_flag_reason).not_to match(/DoD/)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
+          check_dod_status_caution_flag
         end
       end
     end
@@ -483,7 +495,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       let(:nil_ipeds_ic_ay) { IpedsIcPy::COLS_USED_IN_INSTITUTION.each_with_object({}) { |v, o| o[v] = nil } }
 
-      context 'and the institution fields are nil' do
+      context 'when the institution fields are nil' do
         it 'copies columns used by institutions' do
           create :ipeds_ic_py, :institution_builder
           described_class.run(user)
@@ -493,19 +505,19 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      def check_ipeds_ic_py
-        IpedsIcPy::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(ipeds_ic_py[column]).not_to eq(institution[column])
+      context 'when the institution fields are not nil' do
+        def check_ipeds_ic_py
+          IpedsIcPy::COLS_USED_IN_INSTITUTION.each do |column|
+            expect(ipeds_ic_py[column]).not_to eq(institution[column])
+          end
         end
-      end
 
-      def check_ipeds_ic_ay
-        IpedsIcAy::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(ipeds_ic_ay[column]).to eq(institution[column])
+        def check_ipeds_ic_ay
+          IpedsIcAy::COLS_USED_IN_INSTITUTION.each do |column|
+            expect(ipeds_ic_ay[column]).to eq(institution[column])
+          end
         end
-      end
 
-      context 'and the institution fields are not nil' do
         it 'the institution record matches the ipeds_ic_ay record' do
           create :ipeds_ic_ay, :institution_builder
           create :ipeds_ic_py, :institution_builder
@@ -520,7 +532,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:sec702) { Sec702.first }
       let(:sec702_school) { Sec702School.first }
 
-      context 'and the school is non-public' do
+      context 'when the school is non-public' do
         it 'the institution is unaffected by Sec702School' do
           Weam.delete_all
           create :weam, :institution_builder, :private
@@ -538,7 +550,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      context 'and the school is public' do
+      context 'when the school is public' do
         describe 'sec_702' do
           it 'is set from Section702' do
             create :sec702, :institution_builder
@@ -565,6 +577,10 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the caution_flag' do
+        def check_caution_flag_for_false(sec702_school_institution)
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag).to be_falsey
+        end
         it 'is set from Section702 when sec_702 is false' do
           create :sec702, :institution_builder
           described_class.run(user)
@@ -580,15 +596,19 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          sec702_school_institution = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(institutions.first.caution_flag).to be_falsey
+          check_caution_flag_for_false(sec702_school_institution)
         end
       end
 
       describe 'the caution_flag_reason' do
+        def check_caution_flag_for_nil(sec702_school_institution)
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag_reason).to be_nil
+        end
         let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
 
         it 'is set from Section702 when sec_702 is false' do
@@ -606,11 +626,11 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          sec702_school_institution = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to be_nil
+          check_caution_flag_for_nil(sec702_school_institution)
         end
 
         it 'concatenates the sec_702 reason when sec_702 is false' do
@@ -713,13 +733,15 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'calls update_ope_from_crosswalk' do
-        expect(Complaint).to receive(:update_ope_from_crosswalk)
+        allow(Complaint).to receive(:update_ope_from_crosswalk)
         described_class.run(user)
+        expect(Complaint).to have_received(:update_ope_from_crosswalk)
       end
 
       it 'calls rollup_sums for facility_code and ope6' do
-        expect(Complaint).to receive(:rollup_sums).twice
+        allow(Complaint).to receive(:rollup_sums).twice
         described_class.run(user)
+        expect(Complaint).to have_received(:rollup_sums).twice
       end
 
       it 'sums complaints by facility_code' do

@@ -50,13 +50,6 @@ RSpec.shared_examples 'an archivable model' do |options|
     end
 
     context 'when not successful' do
-      it 'returns an error message' do
-        error_message = 'BOOM!'
-        allow(Archiver).to receive(:create_archives).and_raise(StandardError, error_message)
-        expect(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
-        Archiver.archive_previous_versions
-      end
-
       def create_invalid_statement
         error_message = 'BOOM!'
         invalid_statement = ActiveRecord::StatementInvalid.new(error_message)
@@ -64,11 +57,23 @@ RSpec.shared_examples 'an archivable model' do |options|
         allow(Archiver).to receive(:create_archives).and_raise(invalid_statement)
       end
 
+      def check_log_for_error(error_message)
+        expect(Rails.logger).to have_received(:error)
+          .with(error_message)
+      end
+      it 'returns an error message' do
+        allow(Archiver).to receive(:create_archives).and_raise(StandardError, 'BOOM!')
+        allow(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
+        Archiver.archive_previous_versions
+        check_log_for_error('There was an error of unexpected origin: BOOM!')
+      end
+
       it 'logs errors at the database level' do
         create_invalid_statement
-        expect(Rails.logger).to receive(:error)
+        allow(Rails.logger).to receive(:error)
           .with('There was an error occurring at the database level: BOOM!')
         Archiver.archive_previous_versions
+        check_log_for_error('There was an error occurring at the database level: BOOM!')
       end
     end
   end

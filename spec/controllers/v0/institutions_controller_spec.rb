@@ -18,7 +18,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     create(:institution, trait)
   end
 
-  context 'version determination' do
+  context 'with version determination' do
     it 'uses a production version as a default' do
       create(:version, :production)
       create(:institution, :contains_harv)
@@ -47,7 +47,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'autocomplete results' do
+  context 'with autocomplete results' do
     it 'returns collection of matches' do
       create(:version, :production)
       create_list(:institution, 2, :start_like_harv)
@@ -89,7 +89,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'search results' do
+  context 'with search results' do
     # need to separate methods in order to pass metrics::AbcSize cop
     def create_facets_keys_array(facets)
       [
@@ -235,7 +235,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'category and type search results' do
+  context 'with category and type search results' do
     before do
       create(:version, :production)
       create(:institution, :in_nyc)
@@ -267,7 +267,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'institution profile' do
+  context 'with institution profile' do
     before do
       create(:version, :production)
     end
@@ -285,7 +285,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'institution children' do
+  context 'with institution children' do
     before do
       create(:version, :production)
     end
