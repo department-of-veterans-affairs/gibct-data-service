@@ -37,5 +37,5 @@ WORKDIR /src/gibct
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-RUN yarn add webpack webpack-cli && \
+RUN yarn global add webpack webpack-cli @rails/webpacker && \
   yarn install --force --non-interactive
