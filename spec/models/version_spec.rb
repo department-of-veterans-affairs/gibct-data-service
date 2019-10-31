@@ -3,56 +3,54 @@
 require 'rails_helper'
 
 RSpec.describe Version, type: :model do
+  subject(:version) { build :version, :production, user: user }
+
   let(:user) { create :user }
 
   describe 'attributes' do
-    subject { build :version, :production, user: user }
-
     it 'does not have a uuid until saved' do
-      expect(subject.uuid).to be_nil
-      subject.save
-      expect(subject.uuid).not_to be_nil
+      expect(version.uuid).to be_nil
+      version.save
+      expect(version.uuid).not_to be_nil
     end
 
     it 'has gibct_link based on configuration' do
-      subject.save
-      expect(subject.gibct_link).to eq(ENV['GIBCT_URL'])
+      version.save
+      expect(version.gibct_link).to eq(ENV['GIBCT_URL'])
     end
   end
 
   describe 'when validating' do
-    subject { build :version, :production, user: user }
-
     let(:no_user) { build :version, user: nil }
     let(:good_existing_version) { build :version, :production, number: 1, user: user }
     let(:bad_existing_version) { build :version, :production, number: 1000, user: user }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(version).to be_valid
     end
 
     it 'requires the requesting user' do
       expect(no_user).not_to be_valid
     end
 
-    context 'when setting a new version' do
+    context 'and setting a new version' do
       it 'sets the version to the max-version + 1' do
-        subject.save
-        expect(create(:version, :production).number).to eq(subject.number + 1)
+        version.save
+        expect(create(:version, :production).number).to eq(version.number + 1)
       end
     end
 
-    context 'when rolling back' do
+    context 'and rolling back' do
       it 'requires an existing version when rolling back ' do
-        subject.save
+        version.save
         expect(good_existing_version).to be_valid
         expect(bad_existing_version).not_to be_valid
       end
 
       it 'leaves version number as-is' do
-        subject.save
-        rollback = create :version, :production, number: subject.number
-        expect(rollback.number).to eq(subject.number)
+        version.save
+        rollback = create :version, :production, number: version.number
+        expect(rollback.number).to eq(version.number)
       end
     end
   end
@@ -65,35 +63,35 @@ RSpec.describe Version, type: :model do
       create :version, created_at: 0.days.ago
     end
 
-    context 'with latest production version' do
-      let(:subject) { described_class.current_production }
+    context 'latest production version' do
+      let(:version) { described_class.current_production }
 
       it 'has correct number' do
-        expect(subject.number).to eq(3)
+        expect(version.number).to eq(3)
       end
 
-      it 'with correct attributes' do
-        expect(subject).to be_latest_production
-        expect(subject).to be_production
-        expect(subject).not_to be_preview
-        expect(subject).not_to be_latest_preview
-        expect(subject).not_to be_publishable
+      it 'has correct attributes' do
+        expect(version).to be_latest_production
+        expect(version).to be_production
+        expect(version).not_to be_preview
+        expect(version).not_to be_latest_preview
+        expect(version).not_to be_publishable
       end
     end
 
-    context 'with the latest preview version' do
-      let(:subject) { described_class.current_preview }
+    context 'latest preview version' do
+      let(:version) { described_class.current_preview }
 
-      it 'with the correct number' do
-        expect(subject.number).to eq(4)
+      it 'has correct number' do
+        expect(version.number).to eq(4)
       end
 
-      it 'with the correct attributes' do
-        expect(subject).not_to be_latest_production
-        expect(subject).not_to be_production
-        expect(subject).to be_preview
-        expect(subject).to be_latest_preview
-        expect(subject).not_to be_publishable
+      it 'has correct attributes' do
+        expect(version).not_to be_latest_production
+        expect(version).not_to be_production
+        expect(version).to be_preview
+        expect(version).to be_latest_preview
+        expect(version).not_to be_publishable
       end
     end
   end
@@ -104,19 +102,19 @@ RSpec.describe Version, type: :model do
       create :version, completed_at: 0.days.ago, created_at: 0.days.ago
     end
 
-    context 'with the latest preview version' do
-      let(:subject) { described_class.current_preview }
+    context 'latest preview version' do
+      let(:version) { described_class.current_preview }
 
       it 'has correct number' do
-        expect(subject.number).to eq(2)
+        expect(version.number).to eq(2)
       end
 
       it 'has correct attributes' do
-        expect(subject).not_to be_latest_production
-        expect(subject).not_to be_production
-        expect(subject).to be_preview
-        expect(subject).to be_latest_preview
-        expect(subject).to be_publishable
+        expect(version).not_to be_latest_production
+        expect(version).not_to be_production
+        expect(version).to be_preview
+        expect(version).to be_latest_preview
+        expect(version).to be_publishable
       end
     end
   end

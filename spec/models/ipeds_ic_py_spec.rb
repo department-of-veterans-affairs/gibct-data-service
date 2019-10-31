@@ -9,10 +9,10 @@ RSpec.describe IpedsIcPy, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :ipeds_ic_py }
+    subject(:ipeds_ic_py) { build :ipeds_ic_py }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(ipeds_ic_py).to be_valid
     end
 
     it 'requires cross' do
@@ -28,8 +28,8 @@ RSpec.describe IpedsIcPy, type: :model do
     end
 
     it 'sets tuition_in_state and tuition_out_of_state' do
-      expect(subject.tuition_in_state).to eq(subject.chg1py3)
-      expect(subject.tuition_out_of_state).to eq(subject.chg1py3)
+      expect(ipeds_ic_py.tuition_in_state).to eq(ipeds_ic_py.chg1py3)
+      expect(ipeds_ic_py.tuition_out_of_state).to eq(ipeds_ic_py.chg1py3)
     end
   end
 end
