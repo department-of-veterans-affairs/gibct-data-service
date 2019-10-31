@@ -5,12 +5,12 @@ class AccreditationInstituteCampus < ApplicationRecord
 
   include CsvHelper
 
-  # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many(:accreditation_records, primary_key: :dapip_id, foreign_key: 'dapip_id',
-                                   inverse_of: :accreditation_institute_campus)
+                                   inverse_of: :accreditation_institute_campus,
+                                   dependent: :nullify)
   has_many(:accreditation_actions, primary_key: :dapip_id, foreign_key: 'dapip_id',
-                                   inverse_of: :accreditation_institute_campus)
-  # rubocop:enable Rails/HasManyOrHasOneDependent
+                                   inverse_of: :accreditation_institute_campus,
+                                   dependent: :nullify)
 
   CSV_CONVERTER_INFO = {
     'dapipid' => { column: :dapip_id, converter: NumberConverter },
