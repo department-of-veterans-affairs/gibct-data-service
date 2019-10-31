@@ -13,11 +13,11 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "bin/rails db:setup db:migrate webpacker:compile ci"
+	@$(BASH_TEST) "bin/rails db:setup db:migrate assets:precompile ci"
 
 .PHONY: ci_local
 ci_local:
-	@$(BASH_TEST) "RAILS_ENV=test CI=true bin/rails db:create db:schema:load db:migrate webpacker:compile ci"
+	@$(BASH_TEST) "RAILS_ENV=test CI=true bin/rails db:create db:schema:load db:migrate assets:precompile ci"
 
 .PHONY: console
 console:
