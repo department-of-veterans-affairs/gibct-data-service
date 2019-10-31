@@ -9,10 +9,10 @@ RSpec.describe Hcm, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 2
 
   describe 'when validating' do
-    subject { build :hcm }
+    subject(:hcm) { build :hcm }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(hcm).to be_valid
     end
 
     it 'requires a valid ope' do
@@ -28,7 +28,7 @@ RSpec.describe Hcm, type: :model do
     end
 
     it 'computes the ope6 from ope' do
-      expect(subject.ope6).to eql(subject.ope[1, 5])
+      expect(hcm.ope6).to eql(hcm.ope[1, 5])
     end
   end
 end

@@ -9,14 +9,14 @@ RSpec.describe EightKey, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 1
 
   describe 'when validating' do
-    subject { build :eight_key }
+    subject(:eight_key) { build :eight_key }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(eight_key).to be_valid
     end
 
     it 'computes the ope6 from ope' do
-      expect(subject.ope6).to eql(subject.ope[1, 5])
+      expect(eight_key.ope6).to eql(eight_key.ope[1, 5])
     end
 
     it 'requires a cross or an ope to be valid' do

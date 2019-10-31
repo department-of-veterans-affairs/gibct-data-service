@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe Upload, type: :model do
-  subject { build :upload, user: user }
+  subject(:upload) { build :upload, user: user }
 
   let(:user) { create :user }
 
   describe 'when validating' do
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(upload).to be_valid
     end
 
     it 'requires the requesting user' do
@@ -30,11 +30,11 @@ RSpec.describe Upload, type: :model do
 
     describe 'and deriving columns' do
       it 'initializes csv column when not persisted' do
-        expect(subject.csv).not_to be_blank
+        expect(upload.csv).not_to be_blank
       end
 
       it 'does not initalize csv column if persisted' do
-        subject.save
+        upload.save
         expect(described_class.first.csv).not_to be_blank
       end
     end
@@ -42,18 +42,18 @@ RSpec.describe Upload, type: :model do
 
   describe 'ok?' do
     it 'returns the value of the ok column' do
-      expect(subject.ok?).to eq(subject.ok)
-      subject.ok = !subject.ok
-      expect(subject.ok?).to eq(subject.ok)
+      expect(upload.ok?).to eq(upload.ok)
+      upload.ok = !upload.ok
+      expect(upload.ok?).to eq(upload.ok)
     end
   end
 
   describe 'header checking' do
     it 'has no missing or extra headers for a normal csv' do
-      subject.check_for_headers
+      upload.check_for_headers
 
-      expect(subject.missing_headers).to be_empty
-      expect(subject.extra_headers).to be_empty
+      expect(upload.missing_headers).to be_empty
+      expect(upload.extra_headers).to be_empty
     end
 
     it 'has missing headers when a csv column is missing' do
@@ -74,27 +74,27 @@ RSpec.describe Upload, type: :model do
 
     context 'with insufficient information' do
       it 'has no missing or extra headers if upload_file not valid' do
-        subject.upload_file = nil
-        subject.check_for_headers
+        upload.upload_file = nil
+        upload.check_for_headers
 
-        expect(subject.missing_headers).to be_empty
-        expect(subject.extra_headers).to be_empty
+        expect(upload.missing_headers).to be_empty
+        expect(upload.extra_headers).to be_empty
       end
 
       it 'has no missing or extra headers if csv_type not valid' do
-        subject.csv_type = nil
-        subject.check_for_headers
+        upload.csv_type = nil
+        upload.check_for_headers
 
-        expect(subject.missing_headers).to be_empty
-        expect(subject.extra_headers).to be_empty
+        expect(upload.missing_headers).to be_empty
+        expect(upload.extra_headers).to be_empty
       end
 
       it 'has no missing or extra headers if skip_lines is not valid' do
-        subject.skip_lines = nil
-        subject.check_for_headers
+        upload.skip_lines = nil
+        upload.check_for_headers
 
-        expect(subject.missing_headers).to be_empty
-        expect(subject.extra_headers).to be_empty
+        expect(upload.missing_headers).to be_empty
+        expect(upload.extra_headers).to be_empty
       end
     end
   end

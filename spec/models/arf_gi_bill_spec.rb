@@ -9,10 +9,10 @@ RSpec.describe ArfGiBill, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :arf_gi_bill }
+    subject(:arf_gi_bill) { build :arf_gi_bill }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(arf_gi_bill).to be_valid
     end
 
     it 'requires a valid facility_code' do

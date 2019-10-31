@@ -4,12 +4,12 @@ require 'rails_helper'
 
 RSpec.describe InstitutionProgram, type: :model do
   describe 'when validating' do
-    subject { create :institution_program, institution: institution }
+    subject(:institution_program) { create :institution_program, institution: institution }
 
     let(:institution) { create :institution, :physical_address }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(institution_program).to be_valid
     end
 
     it 'requires a version' do

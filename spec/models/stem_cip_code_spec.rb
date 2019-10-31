@@ -9,10 +9,10 @@ RSpec.describe StemCipCode, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :stem_cip_code }
+    subject(:stem_cip_code) { build :stem_cip_code }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(stem_cip_code).to be_valid
     end
 
     it 'requires a two digit series' do
