@@ -86,7 +86,7 @@ RSpec.describe StoragesController, type: :controller do
   describe 'GET edit' do
     login_user
 
-    context 'specifying a valid' do
+    context 'when specifying a valid' do
       before do
         create :storage
         get(:edit, params: { id: storage.id })

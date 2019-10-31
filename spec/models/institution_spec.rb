@@ -164,22 +164,23 @@ RSpec.describe Institution, type: :model do
     let(:institution) { build :institution }
 
     it 'returns versioned institution programs' do
-      create(:institution_program, facility_code: institution.facility_code, version: institution.version)
-      create(:institution_program, facility_code: institution.facility_code, version: 2)
+      InstitutionProgram.create(institution: institution, description: 'BBB',
+                                version: institution.version, facility_code: institution.facility_code)
       expect(institution.institution_programs.count).to eq(1)
     end
 
     it 'returns institution programs ordered by description' do
-      create(:institution_program, facility_code: institution.facility_code, version: institution.version)
-      create(:institution_program, facility_code: institution.facility_code, version: institution.version,
-                                   description: 'AAA')
+      InstitutionProgram.create(institution: institution, description: 'BBB',
+                                version: institution.version, facility_code: institution.facility_code)
+      InstitutionProgram.create(institution: institution, description: 'AAA',
+                                version: institution.version, facility_code: institution.facility_code)
       expect(institution.institution_programs.count).to eq(2)
       expect(institution.institution_programs.first.description).to eq('AAA')
     end
   end
 
   describe 'class methods and scopes' do
-    context 'version' do
+    context 'with version' do
       it 'retrieves institutions by a specific version number' do
         i = create_list :institution, 2, version: 1
         j = create_list :institution, 2, version: 2
@@ -196,7 +197,7 @@ RSpec.describe Institution, type: :model do
       end
     end
 
-    context 'filter scope' do
+    context 'with filter scope' do
       it 'raises an error if no arguments are provided' do
         expect { described_class.filter }.to raise_error(ArgumentError)
       end
@@ -212,7 +213,7 @@ RSpec.describe Institution, type: :model do
       end
     end
 
-    context 'search scope' do
+    context 'with search scope' do
       it 'returns nil if no search term is provided' do
         expect(described_class.search(nil)).to be_empty
       end
