@@ -188,7 +188,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
 
     it 'includes provider data in facets' do
       create(:institution_program, :ca_employer)
-      get(:index )
+      get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['provider']).not_to be_nil
       expect(facets['provider']['acme inc']).not_to be_nil
