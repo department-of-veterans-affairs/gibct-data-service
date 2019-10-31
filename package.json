@@ -9,7 +9,8 @@
     "react-dom": "^16.11.0",
     "react_ujs": "^2.6.0",
     "typescript": "^3.6.4",
-    "webpack": "^4.41.2"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.9.0"
