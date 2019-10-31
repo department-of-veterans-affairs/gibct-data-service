@@ -9,10 +9,10 @@ RSpec.describe YellowRibbonProgramSource, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :yellow_ribbon_program_source }
+    subject(:yellow_ribbon_program_source) { build :yellow_ribbon_program_source }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(yellow_ribbon_program_source).to be_valid
     end
 
     it 'expects a facility code' do

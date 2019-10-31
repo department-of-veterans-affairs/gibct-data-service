@@ -9,10 +9,10 @@ RSpec.describe SchoolCertifyingOfficial, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :school_certifying_official }
+    subject(:school_certifying_official) { build :school_certifying_official }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(school_certifying_official).to be_valid
     end
 
     it 'requires a valid facility_code' do
