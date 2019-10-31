@@ -11,5 +11,6 @@ class InstitutionProgramProfileSerializer < ActiveModel::Serializer
              :school_locale,
              :tuition_amount,
              :va_bah,
-             :dod_bah
+             :dod_bah,
+             :provider_email_address
 end
