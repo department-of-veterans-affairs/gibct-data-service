@@ -18,7 +18,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     create(:institution, trait)
   end
 
-  context 'with version determination' do
+  describe 'version determination' do
     it 'uses a production version as a default' do
       create(:version, :production)
       create(:institution, :contains_harv)
@@ -47,7 +47,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'with autocomplete results' do
+  describe '#autocomplete' do
     it 'returns collection of matches' do
       create(:version, :production)
       create_list(:institution, 2, :start_like_harv)
@@ -89,8 +89,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'with search results' do
-    # need to separate methods in order to pass metrics::AbcSize cop
+  describe '#index (search)' do
     def create_facets_keys_array(facets)
       [
         facets['student_vet_group'].keys,
@@ -119,86 +118,104 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :contains_harv, approved: false)
     end
 
-    it 'search returns results' do
+    it 'returns results' do
       get(:index)
       expect(JSON.parse(response.body)['data'].count).to eq(4)
       expect_response_match_schema('institutions')
     end
 
-    it 'search returns results matching name' do
+    it 'returns results matching name' do
       get(:index, params: { name: 'chicago' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect_response_match_schema('institutions')
     end
 
-    it 'search returns case-insensitive results' do
+    it 'returns case-insensitive results' do
       get(:index, params: { name: 'CHICAGO' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect_response_match_schema('institutions')
     end
 
-    it 'search with space returns results' do
-      get(:index, params: { name: 'New Roch' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
+    context 'with space in search parameter' do
+      it 'returns results' do
+        get(:index, params: { name: 'New Roch' })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+        expect_response_match_schema('institutions')
+      end
     end
 
-    it 'do not return results for extension institutions' do
+    it 'does not return extension institutions in results' do
       create_extension_institutions(:contains_harv)
       get(:index, params: { name: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect_response_match_schema('institutions')
     end
 
-    it 'filter by uppercase country returns results' do
-      get(:index, params: { name: 'chicago', country: 'USA' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
+    context 'with an uppercase country filter' do
+      it 'returns filtered results' do
+        get(:index, params: { name: 'chicago', country: 'USA' })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+        expect_response_match_schema('institutions')
+      end
     end
 
-    it 'filter by lowercase country returns results' do
-      get(:index, params: { name: 'chicago', country: 'usa' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
+    context 'with a lowecase country filter' do
+      it 'returns filtered results' do
+        get(:index, params: { name: 'chicago', country: 'usa' })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+        expect_response_match_schema('institutions')
+      end
     end
 
-    it 'filter by uppercase state returns results' do
-      get(:index, params: { name: 'new', state: 'NY' })
-      expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect_response_match_schema('institutions')
+    context 'with an uppercase state filter' do
+      it 'returns filtered results' do
+        get(:index, params: { name: 'new', state: 'NY' })
+        expect(JSON.parse(response.body)['data'].count).to eq(3)
+        expect_response_match_schema('institutions')
+      end
     end
 
-    it 'filters by online_only schools' do
-      get(:index, params: { online_only: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    context 'with an `online_only` filter' do
+      it 'returns filtered results' do
+        get(:index, params: { online_only: true })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+      end
     end
 
-    it 'filters by distance_learning schools' do
-      get(:index, params: { distance_learning: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    context 'with a `distance_learning` filter' do
+      it 'returns filtered results' do
+        get(:index, params: { distance_learning: true })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+      end
     end
 
-    it 'filters by vet_tec_provider schools' do
-      create(:institution, :vet_tec_provider)
-      create(:institution, :vet_tec_provider, vet_tec_provider: false)
-      get(:index, params: { vet_tec_provider: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    context 'with a `vet_tec_provider` filter' do
+      it 'returns filtered results' do
+        create(:institution, :vet_tec_provider)
+        create(:institution, :vet_tec_provider, vet_tec_provider: false)
+        get(:index, params: { vet_tec_provider: true })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+      end
     end
 
-    it 'filters by preferred_provider' do
-      create(:institution, :vet_tec_provider)
-      create(:institution, :vet_tec_preferred_provider)
-      get(:index, params: { vet_tec_provider: true, preferred_provider: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    context 'with a `preferred_provider` filter' do
+      it 'returns filtered results' do
+        create(:institution, :vet_tec_provider)
+        create(:institution, :vet_tec_preferred_provider)
+        get(:index, params: { vet_tec_provider: true, preferred_provider: true })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+      end
     end
 
-    it 'filter by lowercase state returns results' do
-      get(:index, params: { name: 'new', state: 'ny' })
-      expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect_response_match_schema('institutions')
+    context 'with a lowercase `state` filter' do
+      it 'returns filtered results' do
+        get(:index, params: { name: 'new', state: 'ny' })
+        expect(JSON.parse(response.body)['data'].count).to eq(3)
+        expect_response_match_schema('institutions')
+      end
     end
 
-    it 'has facet metadata' do
+    it 'includes facet metadata' do
       get(:index, params: { name: 'chicago' })
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['state']['il']).to eq(1)
@@ -233,41 +250,53 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       facets = JSON.parse(response.body)['meta']['facets']
       check_boolean_facets(facets)
     end
+
+    context 'with a `category` filter' do
+      before do
+        create(:institution, :ca_employer)
+      end
+
+      context 'with a category of "employer"' do
+        it 'returns employers in the results' do
+          get(:index, params: { category: 'employer' })
+          expect(JSON.parse(response.body)['data'].count).to eq(1)
+          expect_response_match_schema('institutions')
+        end
+      end
+
+      context 'with a category of "school"' do
+        it 'returns schools in the results' do
+          get(:index, params: { category: 'school' })
+          expect(JSON.parse(response.body)['data'].count).to eq(4)
+          expect_response_match_schema('institutions')
+        end
+      end
+    end
+
+    context 'with a `type` filter' do
+      before do
+        create(:institution, :ca_employer)
+      end
+
+      context 'with a type of "ojt"' do
+        it 'returns employers in results' do
+          get(:index, params: { type: 'ojt' })
+          expect(JSON.parse(response.body)['data'].count).to eq(1)
+          expect_response_match_schema('institutions')
+        end
+      end
+
+      context 'with a type of "private"' do
+        it 'returns private institutions in results' do
+          get(:index, params: { type: 'private' })
+          expect(JSON.parse(response.body)['data'].count).to eq(4)
+          expect_response_match_schema('institutions')
+        end
+      end
+    end
   end
 
-  context 'with category and type search results' do
-    before do
-      create(:version, :production)
-      create(:institution, :in_nyc)
-      create(:institution, :ca_employer)
-    end
-
-    it 'filters by employer category' do
-      get(:index, params: { category: 'employer' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
-    end
-
-    it 'filters by school category' do
-      get(:index, params: { category: 'school' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
-    end
-
-    it 'filters by employer type' do
-      get(:index, params: { type: 'ojt' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
-    end
-
-    it 'filters by school type' do
-      get(:index, params: { type: 'private' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect_response_match_schema('institutions')
-    end
-  end
-
-  context 'with institution profile' do
+  describe '#show' do
     before do
       create(:version, :production)
     end
@@ -285,29 +314,30 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
   end
 
-  context 'with institution children' do
+  describe '#children' do
     before do
       create(:version, :production)
     end
 
-    def expectations_children(school, child_school)
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(child_school.facility_code)
-      expect(JSON.parse(response.body)['data'][0]['attributes']['parent_facility_code_id']).to eq(school.facility_code)
+    context 'with an ID of a school that has "children"' do
+      let!(:school) { create(:institution, :in_chicago) }
+      let!(:child_school) { create(:institution, :in_chicago, parent_facility_code_id: school.facility_code) }
+
+      it 'returns institution children' do
+        get(:children, params: { id: school.facility_code, version: school.version })
+        expect(JSON.parse(response.body)['data'].count).to eq(1)
+        expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(child_school.facility_code)
+        expect(JSON.parse(response.body)['data'][0]['attributes']['parent_facility_code_id']).to eq(school.facility_code)
+        expect_response_match_schema('institutions')
+      end
     end
 
-    it 'returns institution children' do
-      school = create(:institution, :in_chicago)
-      child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code)
-      get(:children, params: { id: school.facility_code, version: school.version })
-      expectations_children(school, child_school)
-      expect_response_match_schema('institutions')
-    end
-
-    it 'returns empty record set' do
-      get(:children, params: { id: '10000' })
-      expect(response.content_type).to eq('application/json')
-      expect(JSON.parse(response.body)['data'].count).to eq(0)
+    context 'with an invalid ID' do
+      it 'returns empty record set' do
+        get(:children, params: { id: '10000' })
+        expect(response.content_type).to eq('application/json')
+        expect(JSON.parse(response.body)['data'].count).to eq(0)
+      end
     end
   end
 end
