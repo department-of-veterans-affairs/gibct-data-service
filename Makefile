@@ -1,6 +1,7 @@
 COMPOSE_DEV  := docker-compose
 COMPOSE_TEST := docker-compose -f docker-compose.test.yml
 BASH         := run --rm gibct bash --login
+BASH_C       := $(BASH) -c
 BASH_DEV     := $(COMPOSE_DEV) $(BASH) -c
 BASH_TEST    := $(COMPOSE_TEST) $(BASH) -c
 
@@ -17,7 +18,7 @@ ci:
 
 .PHONY: ci_local
 ci_local:
-	@$(BASH_TEST) "RAILS_ENV=test CI=true bin/rails db:create db:schema:load db:migrate assets:precompile ci"
+	@$(MAKE) "CI=true RAILS_ENV=test ci"
 
 .PHONY: console
 console:
