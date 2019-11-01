@@ -9,10 +9,10 @@ RSpec.describe Mou, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 1
 
   describe 'when validating' do
-    subject { build :mou }
+    subject(:mou) { build :mou }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(mou).to be_valid
     end
 
     it 'requires a valid ope' do
@@ -20,8 +20,8 @@ RSpec.describe Mou, type: :model do
     end
 
     it 'computes the ope6 from ope[1, 5]' do
-      subject.valid?
-      expect(subject.ope6).to eql(subject.ope[1, 5])
+      mou.valid?
+      expect(mou.ope6).to eql(mou.ope[1, 5])
     end
 
     it 'sets dodmou to true if status is not set' do

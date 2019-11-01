@@ -9,10 +9,10 @@ RSpec.describe Weam, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :weam }
+    subject(:weam) { build :weam }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(weam).to be_valid
     end
 
     it 'requires a valid facility_code' do
@@ -28,7 +28,7 @@ RSpec.describe Weam, type: :model do
     end
 
     it 'computes the ope6 from ope[1, 5]' do
-      expect(subject.ope6).to eql(subject.ope[1, 5])
+      expect(weam.ope6).to eql(weam.ope[1, 5])
     end
   end
 
@@ -202,18 +202,18 @@ RSpec.describe Weam, type: :model do
   end
 
   describe 'flags_for_approved?' do
-    subject { build :weam, :with_approved_indicators }
+    subject(:weam) { build :weam, :with_approved_indicators }
 
     let(:not_approved) { build :weam }
 
     it 'is true only if at least one indicator flag is set' do
-      expect(subject).to be_flags_for_approved
+      expect(weam).to be_flags_for_approved
       expect(not_approved).not_to be_flags_for_approved
     end
   end
 
   describe 'approved?' do
-    subject { build :weam, :approved_poo_and_law_code, :with_approved_indicators }
+    subject(:weam) { build :weam, :approved_poo_and_law_code, :with_approved_indicators }
 
     let(:withdrawn) { build :weam, :withdrawn_poo, :with_approved_indicators }
     let(:non_approved_law_code) { build :weam, :approved_poo_and_non_approved_law_code, ojt_indicator: true }
@@ -223,7 +223,7 @@ RSpec.describe Weam, type: :model do
     let(:vet_tec_invalid_law_code) { build :weam, :invalid_vet_tec_law_code }
 
     it 'is true if poo and law code are approved with at least one true indicator' do
-      expect(subject).to be_approved
+      expect(weam).to be_approved
     end
 
     it 'is false if the poo is withdrawn, or if law code is not approved or title 31' do

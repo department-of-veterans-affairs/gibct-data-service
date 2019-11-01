@@ -9,14 +9,14 @@ RSpec.describe AccreditationInstituteCampus, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :accreditation_institute_campus }
+    subject(:accreditation_institute_campus) { build :accreditation_institute_campus }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(accreditation_institute_campus).to be_valid
     end
 
     it 'computes the ope6 from ope' do
-      expect(subject.ope6).to eq(subject.ope[1, 5])
+      expect(accreditation_institute_campus.ope6).to eq(accreditation_institute_campus.ope[1, 5])
     end
   end
 end
