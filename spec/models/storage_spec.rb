@@ -11,13 +11,13 @@ RSpec.describe Storage, type: :model do
     )
   end
 
-  subject { build :storage, user: user }
+  subject(:storage) { build :storage, user: user }
 
   let(:user) { create :user }
 
   describe 'when validating' do
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(storage).to be_valid
     end
 
     it 'requires the requesting user' do
@@ -34,13 +34,13 @@ RSpec.describe Storage, type: :model do
 
     describe 'and deriving columns' do
       it 'initializes csv column when not persisted' do
-        expect(subject.csv).to eq(subject.upload_file.original_filename)
+        expect(storage.csv).to eq(storage.upload_file.original_filename)
       end
     end
 
     describe 'and reading files' do
       it 'reads the uploaded file when not persisted' do
-        expect(subject.data).to eq(File.open(subject.upload_file.path).read)
+        expect(storage.data).to eq(File.open(storage.upload_file.path).read)
       end
     end
   end

@@ -6,11 +6,11 @@ RSpec.describe DowncaseConverter do
   subject { described_class }
 
   it 'Downcases strings' do
-    expect(subject.convert('a - sPAce')).to eq('a - space')
+    expect(described_class.convert('a - sPAce')).to eq('a - space')
   end
 
   it 'converts blanks to nil' do
-    expect(subject.convert(nil)).to be_nil
-    expect(subject.convert('      ')).to be_nil
+    expect(described_class.convert(nil)).to be_nil
+    expect(described_class.convert('      ')).to be_nil
   end
 end

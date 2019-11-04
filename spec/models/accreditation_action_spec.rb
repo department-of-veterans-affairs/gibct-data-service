@@ -9,10 +9,10 @@ RSpec.describe AccreditationAction, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :accreditation_action }
+    subject(:accreditation_action) { build :accreditation_action }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(accreditation_action).to be_valid
     end
   end
 end

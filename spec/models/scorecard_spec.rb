@@ -9,13 +9,13 @@ RSpec.describe Scorecard, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :scorecard }
+    subject(:scorecard) { build :scorecard }
 
     let(:by_c150_4_pooled_supp) { create(:scorecard, :by_c150_4_pooled_supp) }
     let(:by_c150_l4_pooled_supp) { create(:scorecard, :by_c150_l4_pooled_supp) }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(scorecard).to be_valid
     end
 
     it 'requires a valid cross' do
@@ -28,7 +28,7 @@ RSpec.describe Scorecard, type: :model do
     end
 
     it 'prefers c150_4_pooled_supp over c150_l4_pooled_supp' do
-      expect(subject.graduation_rate_all_students).to eq(subject.c150_4_pooled_supp)
+      expect(scorecard.graduation_rate_all_students).to eq(scorecard.c150_4_pooled_supp)
     end
 
     it 'requires pred_degree_awarded to be between 0 and 4' do

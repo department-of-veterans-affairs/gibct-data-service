@@ -9,10 +9,10 @@ RSpec.describe P911Tf, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :p911_tf }
+    subject(:p911_tf) { build :p911_tf }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(p911_tf).to be_valid
     end
 
     it 'requires a valid facility_code' do

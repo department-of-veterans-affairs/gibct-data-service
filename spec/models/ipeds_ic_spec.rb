@@ -9,10 +9,10 @@ RSpec.describe IpedsIc, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :ipeds_ic }
+    subject(:ipeds_ic) { build :ipeds_ic }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(ipeds_ic).to be_valid
     end
 
     it 'requires a valid cross' do

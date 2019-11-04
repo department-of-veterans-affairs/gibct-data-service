@@ -15,14 +15,14 @@ RSpec.describe CalculatorConstant, type: :model do
   end
 
   describe 'when validating' do
-    subject { create :calculator_constant }
+    subject(:calculator_constant) { create :calculator_constant }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(calculator_constant).to be_valid
     end
 
     it 'requires uniqueness' do
-      expect(subject.dup).not_to be_valid
+      expect(calculator_constant.dup).not_to be_valid
     end
 
     it 'requires presence of name' do
