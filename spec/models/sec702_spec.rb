@@ -9,10 +9,10 @@ RSpec.describe Sec702, type: :model do
   it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
-    subject { build :sec702 }
+    subject(:sec702) { build :sec702 }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(sec702).to be_valid
     end
 
     it 'requires a valid state' do

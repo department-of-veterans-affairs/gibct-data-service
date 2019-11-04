@@ -13,16 +13,16 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'when validating' do
-    subject { create :institution }
+    subject(:institution) { create :institution }
 
     it 'has a valid factory' do
-      expect(subject).to be_valid
+      expect(institution).to be_valid
     end
 
     it 'requires a valid and unique facility_code' do
       expect(build(:institution, facility_code: nil)).not_to be_valid
 
-      duplicate_facility = build :institution, facility_code: subject.facility_code
+      duplicate_facility = build :institution, facility_code: institution.facility_code
       expect(duplicate_facility).not_to be_valid
       expect(duplicate_facility.errors.messages).to eq(facility_code: ['has already been taken'])
     end
@@ -110,14 +110,10 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'locale_type' do
-    def locale_maps
+    it 'maps locale numbers to descriptions' do
       {
         'city' => [11, 12, 13], 'suburban' => [21, 22, 23], 'town' => [31, 32, 33], 'rural' => [41, 42, 43]
-      }
-    end
-
-    it 'maps locale numbers to descriptions' do
-      locale_maps.each_pair do |description, locales|
+      }.each_pair do |description, locales|
         locales.each do |locale|
           expect(build(:institution, locale: locale).locale_type).to eq(description)
         end
@@ -230,17 +226,13 @@ RSpec.describe Institution, type: :model do
         expect(described_class.search('address_1').count).to eq(0)
       end
 
-      def include_search_attribute
-        include(
-          "WHERE (facility_code = ('CHICAGO')",
-          "OR lower(institution) LIKE ('%chicago%')",
-          "OR lower(city) LIKE ('%chicago%'))"
-        )
-      end
-
       it 'searches when attribute is provided' do
         expect(described_class.search('chicago').to_sql)
-          .to include_search_attribute
+          .to include(
+            "WHERE (facility_code = ('CHICAGO')",
+            "OR lower(institution) LIKE ('%chicago%')",
+            "OR lower(city) LIKE ('%chicago%'))"
+          )
       end
     end
   end

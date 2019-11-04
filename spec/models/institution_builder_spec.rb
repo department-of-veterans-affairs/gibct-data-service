@@ -6,11 +6,6 @@ RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
   let(:institutions) { Institution.version(Version.current_preview.number) }
 
-  def create_campus_probation_action
-    create :accreditation_institute_campus
-    create :accreditation_action_probationary
-  end
-
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
   end
@@ -26,18 +21,14 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(described_class.run(user)[:success]).to be_truthy
       end
 
-      def expects_successful_preview(version, old_version)
-        expect(version).to eq(Version.current_preview)
-        expect(version).not_to eq(old_version)
-        expect(version.production).to be_falsey
-        expect(version).not_to be_generating
-      end
-
       it 'returns the new preview version record if sucessful' do
         create :version
         old_version = Version.current_preview
         version = described_class.run(user)[:version]
-        expects_successful_preview(version, old_version)
+        expect(version).to eq(Version.current_preview)
+        expect(version).not_to eq(old_version)
+        expect(version.production).to be_falsey
+        expect(version).not_to be_generating
       end
 
       it 'returns a nil error_msg if sucessful' do
@@ -50,18 +41,6 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     context 'when not successful' do
-      def statement_invalid
-        error_message = 'BOOM!'
-        statement_invalid = ActiveRecord::StatementInvalid.new(error_message)
-        statement_invalid.set_backtrace(%(backtrace))
-        statement_invalid
-      end
-
-      def check_for_no_changes(version)
-        expect(Institution.count).to be_zero
-        expect(Version.current_preview).to eq(version)
-      end
-
       it 'returns a success = false' do
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         expect(described_class.run(user)[:success]).to be_falsey
@@ -73,18 +52,21 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'logs errors at the database level' do
-        statement_invalid
+        error_message = 'There was an error occurring at the database level: BOOM!'
+        statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
+        statement_invalid.set_backtrace(%(backtrace))
         allow(described_class).to receive(:add_crosswalk).and_raise(statement_invalid)
-        allow(Rails.logger).to receive(:error).with('There was an error occurring at the database level: BOOM!')
+        allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
-        expect(Rails.logger).to have_received(:error).with('There was an error occurring at the database level: BOOM!')
+        expect(Rails.logger).to have_received(:error).with(error_message)
       end
 
       it 'logs errors at the Rails level' do
+        error_message = 'There was an error of unexpected origin: BOOM!'
         allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        allow(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
+        allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
-        expect(Rails.logger).to have_received(:error).with('There was an error of unexpected origin: BOOM!')
+        expect(Rails.logger).to have_received(:error).with(error_message)
       end
 
       it 'does not change the institutions or versions if not successful' do
@@ -92,7 +74,8 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :version
         version = Version.current_preview
         described_class.run(user)
-        check_for_no_changes(version)
+        expect(Institution.count).to be_zero
+        expect(Version.current_preview).to eq(version)
       end
     end
 
@@ -395,11 +378,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'the caution_flag_reason' do
-        def check_dod_status_caution_flag
-          expect(institution.caution_flag_reason).not_to match(/DoD/)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
-        end
-
         it 'is set when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
@@ -419,7 +397,8 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_action_probationary
           create :mou, :institution_builder, :by_title_iv
           described_class.run(user)
-          check_dod_status_caution_flag
+          expect(institution.caution_flag_reason).not_to match(/DoD/)
+          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
         end
       end
     end
@@ -560,27 +539,23 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
 
           it 'is set from Section702School' do
-            sec702_school = create :sec702_school, :institution_builder
+            create :sec702_school, :institution_builder
             described_class.run(user)
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).not_to be_nil
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_falsey
+            expect(institutions.first.sec_702).not_to be_nil
+            expect(institutions.first.sec_702).to be_falsey
           end
 
           it 'prefers Sec702School over Section702' do
             create :weam, :institution_builder, :private
-            sec702_school = create :sec702_school, :institution_builder, sec_702: true
+            create :sec702_school, :institution_builder, sec_702: true
             create :sec702, :institution_builder
             described_class.run(user)
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_truthy
+            expect(institutions.first.sec_702).to be_truthy
           end
         end
       end
 
       describe 'the caution_flag' do
-        def check_caution_flag_for_false(sec702_school_institution)
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag).to be_falsey
-        end
         it 'is set from Section702 when sec_702 is false' do
           create :sec702, :institution_builder
           described_class.run(user)
@@ -600,15 +575,12 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          check_caution_flag_for_false(sec702_school_institution)
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag).to be_falsey
         end
       end
 
       describe 'the caution_flag_reason' do
-        def check_caution_flag_for_nil(sec702_school_institution)
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag_reason).to be_nil
-        end
         let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
 
         it 'is set from Section702 when sec_702 is false' do
@@ -630,18 +602,22 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          check_caution_flag_for_nil(sec702_school_institution)
+
+          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
+                     .caution_flag_reason).to be_nil
         end
 
         it 'concatenates the sec_702 reason when sec_702 is false' do
-          create_campus_probation_action
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :sec702, :institution_builder
           described_class.run(user)
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/).and match(/Tuition/)
         end
 
         it 'is left unaltered when sec_702 is true' do
-          create_campus_probation_action
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :sec702_school, :institution_builder, sec_702: true
           described_class.run(user)
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
@@ -678,7 +654,8 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is concatenated with the settlement_description' do
-          create_campus_probation_action
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :settlement, :institution_builder
           described_class.run(user)
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
@@ -715,7 +692,8 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'is concatenated with the hcm_reason' do
-          create_campus_probation_action
+          create :accreditation_institute_campus
+          create :accreditation_action_probationary
           create :hcm, :institution_builder
           described_class.run(user)
           expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
