@@ -24,11 +24,10 @@ RUN chmod +x /cc-test-reporter
 ENV YARN_VERSION 1.12.3
 ENV NODEJS_VERSION 10.15.3
 
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash && \
-    NVM_DIR=/root/.nvm && \
-    . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION} && \
-    PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
-
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
 RUN npm install -g yarn@$YARN_VERSION
 
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
