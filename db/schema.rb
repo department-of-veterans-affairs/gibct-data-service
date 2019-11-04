@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_22_125900) do
+ActiveRecord::Schema.define(version: 2019_11_04_095800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,9 +157,9 @@ ActiveRecord::Schema.define(version: 2019_10_22_125900) do
     t.string "phone_area_code", null: false
     t.string "phone_number", null: false
     t.string "student_vet_group"
-    t.string "student_vet_group_website", null: false
+    t.string "student_vet_group_website"
     t.string "vet_success_name", null: false
-    t.string "vet_success_email", null: false
+    t.string "vet_success_email"
     t.string "vet_tec_program"
     t.integer "tuition_amount", null: false
     t.integer "length_in_weeks", null: false
