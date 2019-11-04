@@ -52,4 +52,21 @@ RSpec.describe InstitutionProgramProfileSerializer, type: :serializer do
   it 'includes dod_bah' do
     expect(attributes['dod_bah']).to eq(institution_program.dod_bah)
   end
+
+  it 'includes student_vet_group' do
+    expect(attributes['student_vet_group']).to eq(institution_program.student_vet_group)
+  end
+
+  it 'includes student_vet_group_website' do
+    expect(attributes['student_vet_group_website']).to eq(institution_program.student_vet_group_website)
+  end
+
+  it 'includes vet_success_name' do
+    expect(attributes['vet_success_name']).to eq(institution_program.vet_success_name)
+  end
+
+  it 'includes vet_success_email' do
+    expect(attributes['vet_success_email']).to eq(institution_program.vet_success_email)
+  end
+
 end
