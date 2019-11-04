@@ -21,12 +21,16 @@ RUN apt-get install -y libfreetype6 libfreetype6-dev libfontconfig1 libfontconfi
 RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /cc-test-reporter
 RUN chmod +x /cc-test-reporter
 
-ENV YARN_VERSION 1.12.3
-ENV NODE_ENV production
+#ENV YARN_VERSION 1.12.3
+#ENV NODEJS_VERSION 10.15.3
+#
+#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash && \
+#    NVM_DIR=/root/.nvm && \
+#    . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION} && \
+#    PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
+#
+#RUN npm install -g yarn@$YARN_VERSION
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
-   apt-get install -y nodejs && \
-   npm install -g yarn@$YARN_VERSION
 
 RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 
