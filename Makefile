@@ -16,10 +16,6 @@ bash:
 ci:
 	@$(BASH_TEST) "bin/rails db:setup db:migrate assets:precompile ci"
 
-.PHONY: ci_local
-ci_local:
-	@$(MAKE) "CI=true RAILS_ENV=test ci"
-
 .PHONY: console
 console:
 	@$(BASH_DEV) "bundle exec rails c"
