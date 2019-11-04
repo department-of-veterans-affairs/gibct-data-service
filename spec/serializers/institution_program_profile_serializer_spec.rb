@@ -68,5 +68,4 @@ RSpec.describe InstitutionProgramProfileSerializer, type: :serializer do
   it 'includes vet_success_email' do
     expect(attributes['vet_success_email']).to eq(institution_program.vet_success_email)
   end
-
 end
