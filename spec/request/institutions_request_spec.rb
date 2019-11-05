@@ -33,35 +33,43 @@ RSpec.describe 'institutions', type: :request do
       expect(data['id'].to_i).to eq(institution.id)
       expect(data['attributes']['address_1']).to eq('address_1')
     end
+  end
+
+  describe '#search vet-tec' do
+    def create_vet_tec_institutions
+      create(:institution,
+             :vet_tec_provider,
+             version: Version.current_production.number,
+             institution: 'D')
+      create(:institution,
+             :vet_tec_provider,
+             version: Version.current_production.number,
+             institution: 'C')
+      create(:institution,
+             :vet_tec_provider,
+             version: Version.current_production.number,
+             institution: 'B')
+      create(:institution,
+             :vet_tec_provider,
+             version: Version.current_production.number,
+             institution: 'A')
+    end
+
+    def institution_name_from_response(body, index)
+      JSON.parse(body)['data'][index]['attributes']['name']
+    end
+
+    def check_institution_response_order(body)
+      expect(institution_name_from_response(body, 0)).to eq('A')
+      expect(institution_name_from_response(body, 1)).to eq('B')
+      expect(institution_name_from_response(body, 2)).to eq('C')
+      expect(institution_name_from_response(body, 3)).to eq('D')
+    end
 
     it 'orders correctly for vet_tec_providers' do
-      institution_a = create(:institution,
-                             :vet_tec_provider,
-                             version: Version.current_production.number,
-                             institution: 'A')
-      institution_b = create(:institution,
-                             :vet_tec_provider,
-                             version: Version.current_production.number,
-                             institution: 'B')
-      institution_c = create(:institution,
-                             :vet_tec_preferred_provider,
-                             version: Version.current_production.number,
-                             institution: 'C')
-      institution_d = create(:institution,
-                             :vet_tec_preferred_provider,
-                             version: Version.current_production.number,
-                             institution: 'D')
+      create_vet_tec_institutions
       get(v0_institutions_path(vet_tec_provider: true))
-
-      data_institution_c = JSON.parse(response.body)['data'][0]
-      data_institution_d = JSON.parse(response.body)['data'][1]
-      data_institution_a = JSON.parse(response.body)['data'][2]
-      data_institution_b = JSON.parse(response.body)['data'][3]
-
-      expect(data_institution_c['attributes']['name']).to eq(institution_c.institution)
-      expect(data_institution_d['attributes']['name']).to eq(institution_d.institution)
-      expect(data_institution_a['attributes']['name']).to eq(institution_a.institution)
-      expect(data_institution_b['attributes']['name']).to eq(institution_b.institution)
+      check_institution_response_order(response.body)
     end
   end
 
