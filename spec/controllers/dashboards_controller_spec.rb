@@ -172,7 +172,7 @@ RSpec.describe DashboardsController, type: :controller do
           expect(flash.notice).to eq('Production data updated')
         end
 
-        context 'and is not successful' do
+        context 'when is not successful' do
           before do
             allow(Version).to receive(:create).and_return(Version.new)
           end
