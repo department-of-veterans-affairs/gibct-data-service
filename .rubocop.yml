@@ -93,3 +93,6 @@ RSpec/FilePath:
 RSpec/DescribeClass:
   Exclude:
     - 'spec/config/initializers/csv_types_spec.rb'
+
+RSpec/ExampleLength:
+  Max: 8
