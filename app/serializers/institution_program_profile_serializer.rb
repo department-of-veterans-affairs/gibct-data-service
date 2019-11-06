@@ -6,6 +6,7 @@ class InstitutionProgramProfileSerializer < ActiveModel::Serializer
              :length_in_hours,
              :length_in_weeks,
              :provider_website,
+             :provider_email_address,
              :phone_area_code,
              :phone_number,
              :school_locale,
