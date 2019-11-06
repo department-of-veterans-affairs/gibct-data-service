@@ -143,7 +143,6 @@ RSpec.describe Upload, type: :model do
       create :version, :production, number: Version.current_preview.number
       create :version, :preview
       described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
-
       expect(described_class.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
       expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
     end

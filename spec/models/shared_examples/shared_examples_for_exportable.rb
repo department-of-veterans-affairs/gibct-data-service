@@ -13,12 +13,7 @@ RSpec.shared_examples 'an exportable model' do |options|
       described_class.load(csv_file, options)
     end
 
-    it 'creates a string representation of a csv_file' do
-      rows = subject.split("\n")
-      header_row = rows.shift.split(',').map(&:downcase)
-
-      rows = CSV.parse(rows.join("\n"))
-
+    def check_attributes_from_records(rows, header_row)
       described_class.find_each.with_index do |record, i|
         attributes = {}
 
@@ -32,6 +27,13 @@ RSpec.shared_examples 'an exportable model' do |options|
 
         expect(csv_test_attributes).to eq(test_attributes)
       end
+    end
+
+    it 'creates a string representation of a csv_file' do
+      rows = subject.split("\n")
+      header_row = rows.shift.split(',').map(&:downcase)
+      rows = CSV.parse(rows.join("\n"))
+      check_attributes_from_records(rows, header_row)
     end
   end
 end
