@@ -3,13 +3,31 @@
 require 'rails_helper'
 
 RSpec.describe V0::InstitutionsController, type: :controller do
+  def expect_response_match_schema(schema)
+    expect(response.content_type).to eq('application/json')
+    expect(response).to match_response_schema(schema)
+  end
+
+  def expect_meta_body_eq_preview(body, version_preview_number)
+    expect(body['meta']['version']['number'].to_i).to eq(version_preview_number)
+  end
+
+  def create_extension_institutions(trait)
+    create(:institution, trait, campus_type: 'E')
+    create(:institution, trait, campus_type: 'Y')
+    create(:institution, trait)
+  end
+
   context 'with version determination' do
     it 'uses a production version as a default' do
       create(:version, :production)
       create(:institution, :contains_harv)
       get(:index)
-      expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
+      expect_response_match_schema('institutions')
+    end
+
+    def preview_body(body)
+      JSON.parse(body)
     end
 
     it 'accepts invalid version parameter and returns production data' do
@@ -84,6 +102,26 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'with search results' do
+    # need to separate methods in order to pass metrics::AbcSize cop
+    def create_facets_keys_array(facets)
+      [
+        facets['student_vet_group'].keys,
+        facets['yellow_ribbon_scholarship'].keys,
+        facets['principles_of_excellence'].keys,
+        facets['eight_keys_to_veteran_success'].keys,
+        facets['stem_offered'].keys,
+        facets['independent_study'].keys,
+        facets['priority_enrollment'].keys,
+        facets['online_only'].keys,
+        facets['distance_learning'].keys
+      ]
+    end
+
+    def check_boolean_facets(facets)
+      facet_keys = create_facets_keys_array(facets)
+      expect(facet_keys).to RSpec::Matchers::BuiltIn::All.new(include('true', 'false'))
+    end
+
     before do
       create(:version, :production)
       create_list(:institution, 2, :in_nyc)
@@ -216,15 +254,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'includes boolean facets' do
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['student_vet_group'].keys).to include('true', 'false')
-      expect(facets['yellow_ribbon_scholarship'].keys).to include('true', 'false')
-      expect(facets['principles_of_excellence'].keys).to include('true', 'false')
-      expect(facets['eight_keys_to_veteran_success'].keys).to include('true', 'false')
-      expect(facets['stem_offered'].keys).to include('true', 'false')
-      expect(facets['independent_study'].keys).to include('true', 'false')
-      expect(facets['priority_enrollment'].keys).to include('true', 'false')
-      expect(facets['online_only'].keys).to include('true', 'false')
-      expect(facets['distance_learning'].keys).to include('true', 'false')
+      check_boolean_facets(facets)
     end
   end
 
@@ -292,9 +322,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'returns institution children' do
       school = create(:institution, :in_chicago)
       child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code)
-
       get(:children, params: { id: school.facility_code, version: school.version })
-
       expect(response.content_type).to eq('application/json')
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(child_school.facility_code)
@@ -304,7 +332,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns empty record set' do
       get(:children, params: { id: '10000' })
-
       expect(response.content_type).to eq('application/json')
       expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
