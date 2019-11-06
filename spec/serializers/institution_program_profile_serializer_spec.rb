@@ -53,6 +53,10 @@ RSpec.describe InstitutionProgramProfileSerializer, type: :serializer do
     expect(attributes['dod_bah']).to eq(institution_program.dod_bah)
   end
 
+  it 'includes provider_email_address' do
+    expect(attributes['provider_email_address']).to eq(institution_program.provider_email_address)
+  end
+
   it 'includes student_vet_group' do
     expect(attributes['student_vet_group']).to eq(institution_program.student_vet_group)
   end
