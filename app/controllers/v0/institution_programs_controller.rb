@@ -36,6 +36,7 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
+        query[:provider].try(:upcase!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
@@ -51,6 +52,7 @@ module V0
                                    .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
       [
         %i[program_type type],
+        %i[institutions.institution provider],
         %w[institutions.physical_country country],
         %w[institutions.physical_state state],
         %w[institutions.preferred_provider preferred_provider]
@@ -65,6 +67,7 @@ module V0
       result = {
         type: count_field(search_results, :program_type),
         state: count_field(search_results, :state),
+        provider: count_field(search_results, :institution_name),
         country: embed(count_field(search_results, :country))
       }
       add_active_search_facets(result)

@@ -46,5 +46,9 @@ FactoryBot.define do
     trait :preferred_provider do
       institution { create(:institution, preferred_provider: true) }
     end
+
+    trait :ca_employer do
+      institution { create(:institution, :ca_employer) }
+    end
   end
 end

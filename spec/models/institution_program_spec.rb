@@ -38,16 +38,6 @@ RSpec.describe InstitutionProgram, type: :model do
         expect(described_class.autocomplete('harv', 1).length).to eq(1)
       end
     end
-
-    context 'when search term is institution name' do
-      it 'returns collection of programs with institution name matches' do
-        program = create(:institution_program)
-        create_list(:institution_program, 2, :start_like_harv)
-        result = described_class.autocomplete(program.institution_name)
-        expect(result.length).to eq(1)
-        expect(result.first.id).to eq(program.id)
-      end
-    end
   end
 
   describe 'class methods and scopes' do

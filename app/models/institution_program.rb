@@ -37,13 +37,12 @@ class InstitutionProgram < ApplicationRecord
   end
 
   # Given a search term representing a partial school name, returns all
-  # schools starting with the search term.
+  # programs starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
     joins(:institution).select('institution_programs.id, institutions.facility_code as value, description as label')
                        .where(
-                         'lower(description) LIKE (?) OR lower(institutions.institution) LIKE (?)',
-                         "#{search_term}%",
+                         'lower(description) LIKE (?)',
                          "#{search_term}%"
                        )
                        .group('institution_programs.id, institutions.facility_code, description')
