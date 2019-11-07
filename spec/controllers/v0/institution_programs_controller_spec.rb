@@ -148,6 +148,22 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
+    it 'filters by uppercase provider' do
+      create(:institution_program, :ca_employer)
+      get(:index, params: { provider: 'ACME INC' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
+    it 'filters by lowercase provider' do
+      create(:institution_program, :ca_employer)
+      get(:index, params: { provider: 'acme inc' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
     it 'filter by lowercase state returns results' do
       get(:index, params: { name: 'new', state: 'ny' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
@@ -168,6 +184,15 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['type']['ncd']).not_to be_nil
       expect(facets['type']['ncd']).to eq(1)
+    end
+
+    it 'includes provider data in facets' do
+      create(:institution_program, :ca_employer)
+      get(:index)
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['provider']).not_to be_nil
+      expect(facets['provider']['acme inc']).not_to be_nil
+      expect(facets['provider']['acme inc']).to eq(1)
     end
 
     it 'includes state search term in facets' do
