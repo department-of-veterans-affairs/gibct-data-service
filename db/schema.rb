@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_04_095800) do
+ActiveRecord::Schema.define(version: 2019_11_12_183932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,20 +149,20 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
   end
 
   create_table "edu_programs", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.string "institution_name", null: false
-    t.string "school_locale", null: false
-    t.string "provider_website", null: false
-    t.string "provider_email_address", null: false
-    t.string "phone_area_code", null: false
-    t.string "phone_number", null: false
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "school_locale"
+    t.string "provider_website"
+    t.string "provider_email_address"
+    t.string "phone_area_code"
+    t.string "phone_number"
     t.string "student_vet_group"
     t.string "student_vet_group_website"
-    t.string "vet_success_name", null: false
+    t.string "vet_success_name"
     t.string "vet_success_email"
     t.string "vet_tec_program"
-    t.integer "tuition_amount", null: false
-    t.integer "length_in_weeks", null: false
+    t.integer "tuition_amount"
+    t.integer "length_in_weeks"
     t.index ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program"
   end
 
