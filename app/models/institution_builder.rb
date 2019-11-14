@@ -535,7 +535,7 @@ module InstitutionBuilder
         full_time_undergraduate,
         graduate,
         full_time_modifier,
-        length,
+        length_in_weeks,
         ?,
         school_locale,
         provider_website,
