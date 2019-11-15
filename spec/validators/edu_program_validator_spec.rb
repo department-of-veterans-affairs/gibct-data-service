@@ -56,7 +56,7 @@ describe EduProgramValidator do
         error_messages = edu_program.errors.messages
         expect(error_messages.any?).to eq(true)
         error_message =
-            "The Facility Code is blank:"
+          'The Facility Code is blank:'
 
         expect(error_messages[:base]).to include(error_message)
       end
@@ -73,7 +73,7 @@ describe EduProgramValidator do
         error_messages = edu_program.errors.messages
         expect(error_messages.any?).to eq(true)
         error_message =
-            "The VET TEC Program (Program Name) is blank:"
+          'The VET TEC Program (Program Name) is blank:'
 
         expect(error_messages[:base]).to include(error_message)
       end

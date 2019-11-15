@@ -505,6 +505,8 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  # edu_programs.length_in_weeks is being used twice because
+  # it is a short term fix to an issue that they aren't sure how we should fix
   def self.build_institution_programs(version_number)
     str = <<-SQL
       INSERT INTO institution_programs (
