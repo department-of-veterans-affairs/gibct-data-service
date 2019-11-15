@@ -49,11 +49,13 @@ pipeline {
 
         build job: 'deploys/gi-bill-data-service-vagov-dev', parameters: [
           booleanParam(name: 'notify_slack', value: true),
+          booleanParam(name: 'migration_status', value: true),
           stringParam(name: 'ref', value: commit),
         ], wait: false
 
         build job: 'deploys/gi-bill-data-service-vagov-staging', parameters: [
           booleanParam(name: 'notify_slack', value: true),
+          booleanParam(name: 'migration_status', value: true),
           stringParam(name: 'ref', value: commit),
         ], wait: false
       }
