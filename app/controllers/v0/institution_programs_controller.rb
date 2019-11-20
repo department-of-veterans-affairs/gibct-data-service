@@ -26,7 +26,6 @@ module V0
         count: search_results.count,
         facets: facets
       }
-
       render json: search_results.page(params[:page]), meta: @meta
     end
 
