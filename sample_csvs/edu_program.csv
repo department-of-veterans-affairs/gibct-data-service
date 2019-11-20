@@ -1,2 +1,126 @@
-Facility Code,Institution Name,School Locale,Provider Website,Provider Email Address,Phone Area Code,Phone Number,Student Vet Group,Student Vet Group Website,Vet Success Name,Vet Success Email,Vet Tec Program,Tuition Amount,Program Length 
-3V000113,CODE PLATOON,City,www.test.com,test@test.com,123,555-5555,Yes,www.test.com,success name,test@test.com,COMPUTER SCIENCE,10000,2
+facility code,institution name,school locale,provider website,provider email address,phone area code,phone number,student vet group,student vet group website,vet success name,vet success email,vet tec program,tuition amount,program length
+2V000232,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/new-york,newyork@galvanize.com,212,658-1791,No,,,,Galvanize Data Science Immersive,,360
+2V000232,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/new-york,newyork@galvanize.com,212,658-1791,No,,,,Hack Reactor Software Engineering Immersive,,420
+2V000203,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-phoenix,phoenix@galvanize.com,602,362-2670,No,,,,Galvanize Data Science Immersive,17980,480
+2V000203,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-phoenix,phoenix@galvanize.com,602,362-2670,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000105,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/los-angeles,info@galvanize.com,213,256-0369,No,,,,Galvanize Data Science Immersive,17980,480
+2V000105,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/los-angeles,info@galvanize.com,214,256-0369,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000205,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-san-francisco,sanfrancisco@galvanize.com,415,805-1888,No,,,,Galvanize Data Science Immersive,17980,480
+2V000205,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-san-francisco,sanfrancisco@galvanize.com,416,805-1888,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000306,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/denver-golden-triangle,,303,823-4170,No,,,,Galvanize Data Science Immersive,17980,480
+2V000306,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/denver-golden-triangle,,304,823-4170,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000406,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-boulder,boulder@galvanize.com,303,749-0038,No,,,,Galvanize Data Science Immersive,17980,480
+2V000406,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-boulder,boulder@galvanize.com,304,749-0038,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000206,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-boulder,boulder@galvanize.com,304,749-0038,No,,,,Galvanize Data Science Immersive,17980,480
+2V000206,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-boulder,boulder@galvanize.com,304,749-0038,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000143,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-austin,austin@galvanize.com,512,717-5244,No,,,,Galvanize Data Science Immersive,17980,480
+2V000143,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-austin,austin@galvanize.com,512,717-5244,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000147,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-seattle,seattle@galvanize.com,206,886-0556,No,,,,Galvanize Data Science Immersive,17980,480
+2V000147,"Galvanize, Inc.",City,https://www.galvanize.com/campuses/coworking-space-seattle,seattle@galvanize.com,206,886-0556,No,,,,Hack Reactor Software Engineering Immersive,,576
+2V000505,"Sabio Enterprises, Inc.",City,https://sabio.la/campuses/culvercity,join@sabio.la,424,750-3057,No,https://sabio.la/gi,,,Full Stack Web Development,15000,530
+2V000505,"Sabio Enterprises, Inc.",City,https://sabio.la/campuses/culvercity,join@sabio.la,424,750-3057,No,https://sabio.la/gi,,,Remote Full Stack Software Development,15000,530
+2V000505,"Sabio Enterprises, Inc.",City,https://sabio.la/campuses/irvine,join@sabio.la,424,750-3057,No,https://sabio.la/gi,,,Full Stack Web Development,15000,530
+2V000505,"Sabio Enterprises, Inc.",City,https://sabio.la/campuses/irvine,join@sabio.la,424,750-3057,No,https://sabio.la/gi,,,Remote Full Stack Software Development,15000,530
+2V000505,"Sabio Enterprises, Inc.",City,https://sabio.la/campuses/dtla,join@sabio.la,424,750-3057,No,https://sabio.la/gi,,,Full Stack Web Development,15000,530
+2V000505,"Sabio Enterprises, Inc.",City,https://sabio.la/campuses/dtla,join@sabio.la,424,750-3057,No,https://sabio.la/gi,,,Remote Full Stack Software Development,15000,530
+2V000125,Claim Academy,City,https://www.claimacademystl.com/,info@claimacademystl.com,314,499-5888,No,https://claimacademystl.com/veterans.php,,,C NET Full Stack Software Developer,12500,540
+2V000125,Claim Academy,City,https://www.claimacademystl.com/,info@claimacademystl.com,314,499-5888,No,https://claimacademystl.com/veterans.php,,,Java Full Stack Software Developer,12500,540
+2V000543,DigitalCrafts Houston,City,https://www.digitalcrafts.com/,,,,,,,,Full Stack Immersive,,440
+2V000111,DigitalCrafts Atlanta,City,https://www.digitalcrafts.com/,,,,,,,,Full Stack Immersive,,440
+25474647,Code Fellows,City,https://www.codefellows.org/,,,,,,,,Full-Stack Javascript (Night Program) ,,400
+25474647,Code Fellows,City,https://www.codefellows.org/,,,,,,,,Full-Stack Javascript (Day Program),,400
+25474647,Code Fellows,City,https://www.codefellows.org/,,,,,,,,ASP.NET Core ,,400
+25474647,Code Fellows,City,https://www.codefellows.org/,,,,,,,,Java - Mobile & Web ,,400
+25474647,Code Fellows,City,https://www.codefellows.org/,,,,,,,, Python,,400
+25026622,Global Information Technology,City,https://www.global-itech.com/,,,,,,,,IT Professional 2,,400
+25026622,Global Information Technology,City,https://www.global-itech.com/,,,,,,,,IT Professional 3,,400
+25026622,Global Information Technology,City,https://www.global-itech.com/,,,,,,,,IT Professional 4,,400
+25026622,Global Information Technology,City,https://www.global-itech.com/,,,,,,,,IT Professional 5,,400
+25026622,Global Information Technology,City,https://www.global-itech.com/,,,,,,,,IT Professional 6,,400
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,Cisco Certified Network Associate,,80
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,Computer User Support Specialist,,200
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,CyberSecurity Specialist,,120
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,Information Security Analyst,,120
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,Network Support Specialist,,160
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,Certified Information Systems Security,,40
+25024206,Leaderquest,City,https://www.leaderquestonline.com/colorado-springs-technical-school/,,,,,,,,Cisco Certified Network Associate,,80
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,Cisco Certified Network Associate,,80
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,Computer User Support Specialist,,200
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,CyberSecurity Specialist,,120
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,Information Security Analyst,,120
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,Network Support Specialist,,160
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,Certified Information Systems Security,,40
+25028306,Leaderquest,City,https://www.leaderquestonline.com/denver-it-training/,,,,,,,,Cisco Certified Network Associate,,80
+25143943,Leaderquest,City,https://www.leaderquestonline.com/dallas-it-training/,,,,,,,,Cisco Certified Network Associate,,80
+25143943,Leaderquest,City,https://www.leaderquestonline.com/dallas-it-training/,,,,,,,,Computer User Support Specialist,,200
+25143943,Leaderquest,City,https://www.leaderquestonline.com/dallas-it-training/,,,,,,,,CyberSecurity Specialist ,,120
+25143943,Leaderquest,City,https://www.leaderquestonline.com/dallas-it-training/,,,,,,,,Information Security Analyst,,120
+25143943,Leaderquest,City,https://www.leaderquestonline.com/dallas-it-training/,,,,,,,,Network Support Specialist,,160
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Certified Network Defender ,,40
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Comptia Network+,,40
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Comptia Security+,,40
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Computer Hacking Forensic Investigator ,,40
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,EC Council Certified Ethical Hacker,,40
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Certified Information Systems Security Specialist,,40
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Cisco Certified Network Associate ,,80
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,CompTIA A+,,80
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Computer User Support Specialist,,200
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,CyberSecurity Specialist ,,120
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Information Security Analyst,,120
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Network Support Specialist,,160
+25462010,Leaderquest,City,http://www.leaderquestonline.com/jacksonville-florida-technical-school/,,,,,,,,Information Security Analyst,,120
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,,Cisco Certified Network Associate,,80
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,,CompTIA Network Plus,,40
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,,CompTIA Security Plus,,40
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,,Computer User Support Specialist,,200
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,,Cybersecurity Specialist,,120
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,, Information Security Analyst,,120
+,Leaderquest,City,https://www.leaderquestonline.com/san-antonio-it-training/,,,,,,,,Network Support Specialist,,160
+2V000123,Prime Digital Academy,City,https://www.primeacademy.io/,,,,,,,,Full Stack Software Engineering,,503
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,Amazon Web Services Certified Solutions Architect - Associate,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,, ,Big Data Analytics Tableau and Splunk,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,Certified Ethical Hacker,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,Certified Information Systems Security Professional,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,Cisco Certified Network Associate,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,Cisco Certified Network Professional,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,CompTIA Cloud Plus,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,CompTIA Cybersecurity Analyst,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,CompTIA Network Plus,,36
+2V000146,Intellectual Point,City,https://www.intellectualpoint.com/,,,,,,,,CompTIA Security Plus,,36
+2V000106,Skill Distillery,City,https://skilldistillery.com/,,303,302-5234,,,,,Full Stack Web Development,19500,680
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Certified Ethical Hacker,,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Cisco Certified Design Associate (CCDA),,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Certified Information Systems Security Professional (CISSP),,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,VMWARE Certified Associate,,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Microsoft Certified Professional – MCP Windows 10,,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Cisco Certified Design Professional (CCDP),,301
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Cisco Certified Network Associate (CCNA) (Security, Voice, Wireless)",,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Database and Software Developer,,602
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Cisco Certified Network Professional (CCNP) (Security, Voice, Wireless)",,301
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"CompTIA Programs (A Plus, Linus Plus, Network Plus, Security Plus)",,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Microsoft Certified Solutions Associate (MCSA) (SQL Server, Windows 10)",,72
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Microsoft Certified Solutions Associate (MCSA) (Web Developer (C# and .NET), Windows Server 2016)",,301
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Microsoft Certified Solutions Associate (MCSA) Office 365,,241
+3V000142,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,, Netwok Security Engineer ,,602
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Certified Ethical Hacker,,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Cisco Certified Design Associate (CCDA),,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Certified Information Systems Security Professional (CISSP),,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,VMWARE Certified Associate,,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Microsoft Certified Professional – MCP Windows 10,,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Cisco Certified Design Professional (CCDP),,301
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Cisco Certified Network Associate (CCNA) (Security, Voice, Wireless)",,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Database and Software Developer,,602
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Cisco Certified Network Professional (CCNP) (Security, Voice, Wireless)",,301
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"CompTIA Programs (A Plus, Linus Plus, Network Plus, Security Plus)",,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Microsoft Certified Solutions Associate (MCSA) (SQL Server, Windows 10)",,72
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,"Microsoft Certified Solutions Associate (MCSA) (Web Developer (C# and .NET), Windows Server 2016)",,301
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,,Microsoft Certified Solutions Associate (MCSA) Office 365,,241
+3V000242,Lab Four,City,http://www.labfour.com/,,901,261-1111,,,,, Netwok Security Engineer ,,602
+,Divergance Academy,City,https://divergenceacademy.com/,hello@divergenceacademy.com,214,997-6100,,https://divergenceacademy.com/veteran-education,,,Cybersecurity Professional Penetration Tester,,400
+,Divergance Academy,City,https://divergenceacademy.com/,hello@divergenceacademy.com,214,997-6100,,https://divergenceacademy.com/veteran-education,,,Data Science Immersive,,400
+3V000108,Zip Code Wilmington,City,https://www.zipcodewilmington.com/,info@zipcodewilmington.com,302,256-5203,,,,,Software Development Bootcamp,12000,480
+3V000113,Code Platoon,City,https://www.codeplatoon.org/,info@codeplatoon.org,312,767-7673,,,,,Code Platoon,15500,560
+,Detroit School for Digital Technology (DSDT),City,https://www.dsdt.tech/,info@dsdt.tech,313,263-4200,,,,,Technology Professional 2,,80
+,Detroit School for Digital Technology (DSDT),City,https://www.dsdt.tech/,info@dsdt.tech,313,263-4200,,,,,Technology Professional 6,,240
+2V000137,PDX Code Guild LLC,City,https://pdxcodeguild.com/,sheri@pdxcodeguild.com ,503,444-8836,,https://pdxcodeguild.com/prospective_students/#veterans,,,14 Week Python Based Developer Bootcamp,18400,424
+2V000137,PDX Code Guild LLC,City,https://pdxcodeguild.com/,sheri@pdxcodeguild.com ,503,444-8836,,https://pdxcodeguild.com/prospective_students/#veterans,,,18 Week Python Based Developer Bootcamp,18400,324

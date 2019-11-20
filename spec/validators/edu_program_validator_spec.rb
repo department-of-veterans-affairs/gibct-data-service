@@ -50,5 +50,39 @@ describe EduProgramValidator do
         check_invalid_code_messages(edu_program)
       end
     end
+
+    context 'when record has no facility code error message' do
+      def check_invalid_code_messages(edu_program)
+        error_messages = edu_program.errors.messages
+        expect(error_messages.any?).to eq(true)
+        error_message =
+          'The Facility Code is blank:'
+
+        expect(error_messages[:base]).to include(error_message)
+      end
+
+      it 'fails validation' do
+        edu_program = create :edu_program, facility_code: nil
+        expect(edu_program.valid?(:after_import)).to eq(false)
+        check_invalid_code_messages(edu_program)
+      end
+    end
+
+    context 'when record has no vet_tec_program error message' do
+      def check_invalid_code_messages(edu_program)
+        error_messages = edu_program.errors.messages
+        expect(error_messages.any?).to eq(true)
+        error_message =
+          'The VET TEC Program (Program Name) is blank:'
+
+        expect(error_messages[:base]).to include(error_message)
+      end
+
+      it 'fails validation' do
+        edu_program = create :edu_program, vet_tec_program: nil
+        expect(edu_program.valid?(:after_import)).to eq(false)
+        check_invalid_code_messages(edu_program)
+      end
+    end
   end
 end
