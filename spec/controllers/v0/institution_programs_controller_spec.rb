@@ -191,8 +191,11 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['provider']).not_to be_nil
-      expect(facets['provider']['acme inc']).not_to be_nil
-      expect(facets['provider']['acme inc']).to eq(1)
+      expect(facets['provider'].size).to eq(5)
+
+      acme_provider = facets['provider'].select { |provider| provider['name'] == 'ACME INC' }.first
+      expect(acme_provider['name']).to eq('ACME INC')
+      expect(acme_provider['count']).to eq(1)
     end
 
     it 'includes state search term in facets' do

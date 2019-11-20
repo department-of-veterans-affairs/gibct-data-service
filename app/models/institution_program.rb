@@ -49,10 +49,6 @@ class InstitutionProgram < ApplicationRecord
                        .limit(limit)
   end
 
-  def self.total_counts
-    joins(:institution).group('institutions.institution').count
-  end
-
   # Finds exact-matching facility_code or partial-matching school and city names
   #
   scope :search, lambda { |search_term|

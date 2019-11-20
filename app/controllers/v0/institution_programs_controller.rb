@@ -26,6 +26,7 @@ module V0
         count: search_results.count,
         facets: facets
       }
+
       render json: search_results.page(params[:page]), meta: @meta
     end
 
@@ -67,9 +68,10 @@ module V0
       result = {
         type: count_field(search_results, :program_type),
         state: count_field(search_results, :state),
-        provider: InstitutionProgram.total_counts,
+        provider: count_named_field(search_results, :institution_name),
         country: embed(count_field(search_results, :country))
       }
+
       add_active_search_facets(result)
     end
 
@@ -80,6 +82,21 @@ module V0
         field_map[value] += 1 if value.present?
       end
       field_map
+    end
+
+    def count_named_field(relation, field)
+      field_map = {}
+      relation.map do |program|
+        value = program.send(field)
+        unless field_map.key?(value)
+          field_map[value] = {
+            name: value,
+            count: 0
+          }
+        end
+        field_map[value][:count] += 1 if value.present?
+      end
+      field_map.values
     end
 
     def add_active_search_facets(raw_facets)
