@@ -67,7 +67,7 @@ module V0
       result = {
         type: count_field(search_results, :program_type),
         state: count_field(search_results, :state),
-        provider: count_named_field(search_results, :institution_name),
+        provider: build_field_value_count_array(search_results, :institution_name),
         country: embed(count_field(search_results, :country))
       }
 
@@ -83,7 +83,7 @@ module V0
       field_map
     end
 
-    def count_named_field(relation, field)
+    def build_field_value_count_array(relation, field)
       field_map = {}
       relation.map do |program|
         value = program.send(field)
