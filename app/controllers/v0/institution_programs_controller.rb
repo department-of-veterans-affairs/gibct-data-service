@@ -67,7 +67,7 @@ module V0
       result = {
         type: count_field(search_results, :program_type),
         state: count_field(search_results, :state),
-        provider: build_field_value_count_array(search_results, :institution_name),
+        provider: embed(count_field(search_results, :institution_name)),
         country: embed(count_field(search_results, :country))
       }
 
@@ -81,21 +81,6 @@ module V0
         field_map[value] += 1 if value.present?
       end
       field_map
-    end
-
-    def build_field_value_count_array(relation, field)
-      field_map = {}
-      relation.map do |program|
-        value = program.send(field)
-        unless field_map.key?(value)
-          field_map[value] = {
-            name: value,
-            count: 0
-          }
-        end
-        field_map[value][:count] += 1 if value.present?
-      end
-      field_map.values
     end
 
     def add_active_search_facets(raw_facets)
