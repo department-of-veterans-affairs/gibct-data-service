@@ -40,7 +40,7 @@ class Upload < ApplicationRecord
   end
 
   def check_for_headers
-    return unless upload_file && csv_type && skip_lines
+    return unless upload_file && csv_type && skip_lines && col_sep
 
     missing_headers.clear
     extra_headers.clear
@@ -98,6 +98,7 @@ class Upload < ApplicationRecord
     csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1')
     skip_lines.to_i.times { csv.readline }
 
-    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
+    header_line = csv.readline
+    (header_line[0] || "").split(col_sep).select(&:present?).map { |header| header.downcase.strip }
   end
 end

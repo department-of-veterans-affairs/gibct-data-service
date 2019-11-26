@@ -79,7 +79,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :col_sep, :upload_file, :comment)
   end
 
   def call_load

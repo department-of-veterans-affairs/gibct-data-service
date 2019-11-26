@@ -13,6 +13,11 @@
       </div>
 
       <div class="form-group">
+        <%= f.label(:column_separator) %><br />
+        <%= f.text_field(:col_sep) %>
+      </div>
+
+      <div class="form-group">
         <%= f.label(:upload_file) %>
         <%= f.file_field(:upload_file, class: "form-control", required: true, accept: "text/csv, text/plain") %>
       </div>
