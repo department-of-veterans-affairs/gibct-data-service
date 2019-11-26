@@ -155,7 +155,7 @@ Sec109ClosedSchool:
 
 Program:
   skip_lines: 0
-  col_sep: ","
+  col_sep: "|"
   row_sep: "\r\n"
 
 SchoolCertifyingOfficial:

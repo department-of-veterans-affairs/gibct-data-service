@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
+  attr_accessor :skip_lines, :col_sep, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions
 

@@ -55,6 +55,7 @@ class UploadsController < ApplicationController
   def new_upload(csv_type)
     upload = Upload.new(csv_type: csv_type)
     upload.skip_lines = defaults(csv_type)['skip_lines']
+    upload.col_sep = defaults(csv_type)['col_sep']
 
     upload
   end
@@ -84,7 +85,8 @@ class UploadsController < ApplicationController
   def call_load
     file = @upload.upload_file.tempfile
     skip_lines = @upload.skip_lines.try(:to_i)
-    data = klass.load(file, skip_lines: skip_lines)
+    col_sep = @upload.col_sep
+    data = klass.load(file, {skip_lines: skip_lines, col_sep: col_sep})
 
     @upload.update(ok: data.present? && data.ids.present?)
     raise(StandardError, "There was no saved #{klass} data") unless @upload.ok?
