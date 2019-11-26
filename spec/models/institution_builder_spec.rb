@@ -875,6 +875,31 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
       end
 
+      it 'does not generate duplicate institution programs for duplicate edu-programs' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+      end
+
+      it 'does not generate duplicate institution programs for duplicate programs' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+      end
+
+      it 'defaults deduped InstitutionProgram length_in_weeks to 0' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+        expect(InstitutionProgram.first.length_in_weeks).to eq(0)
+      end
+
       it 'does not generate instition programs without matching programs and edu_programs' do
         create :program, facility_code: '1ZZZZZZZ'
         create :edu_program, facility_code: '0001'

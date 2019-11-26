@@ -508,6 +508,34 @@ module InstitutionBuilder
   # edu_programs.length_in_weeks is being used twice because
   # it is a short term fix to an issue that they aren't sure how we should fix
   def self.build_institution_programs(version_number)
+    # include invalid id number to prevent empty array as being interpolated as null
+    duplicate_edu_program_ids = [-1]
+    duplicate_edu_programs = EduProgram.select('facility_code, vet_tec_program')
+                                       .group(:facility_code, :vet_tec_program)
+                                       .having('count(*) > 1')
+    duplicate_edu_programs.each do |fields|
+      duplicate_edu_program_ids += EduProgram.select('id')
+                                             .where(
+                                               facility_code: fields['facility_code'],
+                                               vet_tec_program: fields['vet_tec_program']
+                                             )
+                                             .map { |edu_program| edu_program['id'] }
+    end
+
+    # include invalid id number to prevent empty array as being interpolated as null
+    duplicate_program_ids = [-1]
+    duplicate_programs = Program.select('facility_code, description')
+                                .group(:facility_code, :description)
+                                .having('count(*) > 1')
+    duplicate_programs.each do |fields|
+      duplicate_program_ids += Program.select('id')
+                                      .where(
+                                        facility_code: fields['facility_code'],
+                                        description: fields['description']
+                                      )
+                                      .map { |program| program['id'] }
+    end
+
     str = <<-SQL
       INSERT INTO institution_programs (
         program_type,
@@ -538,7 +566,7 @@ module InstitutionBuilder
         graduate,
         full_time_modifier,
         length_in_weeks,
-        ?,
+        c.version,
         school_locale,
         provider_website,
         provider_email_address,
@@ -559,9 +587,69 @@ module InstitutionBuilder
         INNER JOIN institutions c ON a.facility_code = c.facility_code
           AND c.version = ?
           AND c.approved = true
+      WHERE a.id NOT IN(?) AND b.id NOT IN(?)
+      UNION
+      SELECT
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        0,
+        c.version,
+        school_locale,
+        provider_website,
+        provider_email_address,
+        phone_area_code,
+        phone_number,
+        student_vet_group,
+        student_vet_group_website,
+        vet_success_name,
+        vet_success_email,
+        vet_tec_program,
+        tuition_amount,
+        0,
+        c.id
+      FROM programs a
+        INNER JOIN edu_programs b ON a.facility_code = b.facility_code
+          AND LOWER(description) = LOWER(vet_tec_program)
+          AND vet_tec_program IS NOT NULL
+        INNER JOIN institutions c ON a.facility_code = c.facility_code
+          AND c.version = ?
+          AND c.approved = true
+      WHERE a.id IN(?) OR b.id IN(?)
+      GROUP BY
+        program_type,
+        description,
+        full_time_undergraduate,
+        graduate,
+        full_time_modifier,
+        c.version,
+        school_locale,
+        provider_website,
+        provider_email_address,
+        phone_area_code,
+        phone_number,
+        student_vet_group,
+        student_vet_group_website,
+        vet_success_name,
+        vet_success_email,
+        vet_tec_program,
+        tuition_amount,
+        c.id
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
+    sql = InstitutionProgram.send(:sanitize_sql,
+                                  [
+                                    str,
+                                    version_number,
+                                    duplicate_program_ids,
+                                    duplicate_edu_program_ids,
+                                    version_number,
+                                    duplicate_program_ids,
+                                    duplicate_edu_program_ids
+                                  ])
+
     InstitutionProgram.connection.execute(sql)
   end
 
