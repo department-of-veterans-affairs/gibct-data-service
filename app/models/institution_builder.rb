@@ -561,7 +561,7 @@ module InstitutionBuilder
       )
       SELECT
         program_type,
-        description,
+        UPPER(description),
         full_time_undergraduate,
         graduate,
         full_time_modifier,
@@ -576,7 +576,7 @@ module InstitutionBuilder
         student_vet_group_website,
         vet_success_name,
         vet_success_email,
-        vet_tec_program,
+        UPPER(vet_tec_program),
         tuition_amount,
         length_in_weeks,
         c.id
@@ -591,7 +591,7 @@ module InstitutionBuilder
       UNION
       SELECT
         program_type,
-        description,
+        UPPER(description),
         full_time_undergraduate,
         graduate,
         full_time_modifier,
@@ -606,7 +606,7 @@ module InstitutionBuilder
         student_vet_group_website,
         vet_success_name,
         vet_success_email,
-        vet_tec_program,
+        UPPER(vet_tec_program),
         tuition_amount,
         0,
         c.id
@@ -620,7 +620,7 @@ module InstitutionBuilder
       WHERE a.id IN(?) OR b.id IN(?)
       GROUP BY
         program_type,
-        description,
+        UPPER(description),
         full_time_undergraduate,
         graduate,
         full_time_modifier,
@@ -634,7 +634,7 @@ module InstitutionBuilder
         student_vet_group_website,
         vet_success_name,
         vet_success_email,
-        vet_tec_program,
+        UPPER(vet_tec_program),
         tuition_amount,
         c.id
     SQL
