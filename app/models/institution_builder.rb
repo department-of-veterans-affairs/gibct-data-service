@@ -508,34 +508,6 @@ module InstitutionBuilder
   # edu_programs.length_in_weeks is being used twice because
   # it is a short term fix to an issue that they aren't sure how we should fix
   def self.build_institution_programs(version_number)
-    # include invalid id number to prevent empty array as being interpolated as null
-    duplicate_edu_program_ids = [-1]
-    duplicate_edu_programs = EduProgram.select('facility_code, vet_tec_program')
-                                       .group(:facility_code, :vet_tec_program)
-                                       .having('count(*) > 1')
-    duplicate_edu_programs.each do |fields|
-      duplicate_edu_program_ids += EduProgram.select('id')
-                                             .where(
-                                               facility_code: fields['facility_code'],
-                                               vet_tec_program: fields['vet_tec_program']
-                                             )
-                                             .map { |edu_program| edu_program['id'] }
-    end
-
-    # include invalid id number to prevent empty array as being interpolated as null
-    duplicate_program_ids = [-1]
-    duplicate_programs = Program.select('facility_code, description')
-                                .group(:facility_code, :description)
-                                .having('count(*) > 1')
-    duplicate_programs.each do |fields|
-      duplicate_program_ids += Program.select('id')
-                                      .where(
-                                        facility_code: fields['facility_code'],
-                                        description: fields['description']
-                                      )
-                                      .map { |program| program['id'] }
-    end
-
     str = <<-SQL
       INSERT INTO institution_programs (
         program_type,
@@ -587,7 +559,37 @@ module InstitutionBuilder
         INNER JOIN institutions c ON a.facility_code = c.facility_code
           AND c.version = ?
           AND c.approved = true
-      WHERE a.id NOT IN(?) AND b.id NOT IN(?)
+      WHERE
+        a.id NOT IN(
+            SELECT id
+            FROM programs
+              INNER JOIN (
+                SELECT
+                  UPPER(facility_code) facility_code,
+                  UPPER(description) description
+                FROM programs
+                GROUP BY
+                  UPPER(facility_code),
+                  UPPER(description)
+                HAVING COUNT(*) > 1
+              ) dupes on UPPER(programs.facility_code) = dupes.facility_code
+                AND UPPER(programs.description) = dupes.description
+          )
+        AND b.id NOT IN(
+          SELECT id
+          FROM edu_programs
+            INNER JOIN (
+              SELECT
+                UPPER(facility_code) facility_code,
+                UPPER(vet_tec_program) vet_tec_program
+              FROM edu_programs
+              GROUP BY
+                UPPER(facility_code),
+                UPPER(vet_tec_program)
+              HAVING COUNT(*) > 1
+            ) dupes on UPPER(edu_programs.facility_code) = dupes.facility_code
+              AND UPPER(edu_programs.vet_tec_program) = UPPER(dupes.vet_tec_program)
+        )
       UNION
       SELECT
         program_type,
@@ -617,7 +619,37 @@ module InstitutionBuilder
         INNER JOIN institutions c ON a.facility_code = c.facility_code
           AND c.version = ?
           AND c.approved = true
-      WHERE a.id IN(?) OR b.id IN(?)
+      WHERE
+        a.id IN(
+            SELECT id
+            FROM programs
+              INNER JOIN (
+                SELECT
+                  UPPER(facility_code) facility_code,
+                  UPPER(description) description
+                FROM programs
+                GROUP BY
+                  UPPER(facility_code),
+                  UPPER(description)
+                HAVING COUNT(*) > 1
+              ) dupes on UPPER(programs.facility_code) = dupes.facility_code
+                AND UPPER(programs.description) = dupes.description
+          )
+        OR b.id IN(
+          SELECT id
+          FROM edu_programs
+            INNER JOIN (
+              SELECT
+                UPPER(facility_code) facility_code,
+                UPPER(vet_tec_program) vet_tec_program
+              FROM edu_programs
+              GROUP BY
+                UPPER(facility_code),
+                UPPER(vet_tec_program)
+              HAVING COUNT(*) > 1
+            ) dupes on UPPER(edu_programs.facility_code) = dupes.facility_code
+              AND UPPER(edu_programs.vet_tec_program) = dupes.vet_tec_program
+        )
       GROUP BY
         program_type,
         UPPER(description),
@@ -639,17 +671,7 @@ module InstitutionBuilder
         c.id
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql,
-                                  [
-                                    str,
-                                    version_number,
-                                    duplicate_program_ids,
-                                    duplicate_edu_program_ids,
-                                    version_number,
-                                    duplicate_program_ids,
-                                    duplicate_edu_program_ids
-                                  ])
-
+    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
     InstitutionProgram.connection.execute(sql)
   end
 
