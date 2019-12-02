@@ -95,10 +95,9 @@ class Upload < ApplicationRecord
   end
 
   def csv_file_headers
-    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1')
+    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1', col_sep: col_sep)
     skip_lines.to_i.times { csv.readline }
 
-    header_line = csv.readline
-    (header_line[0] || "").split(col_sep).select(&:present?).map { |header| header.downcase.strip }
+    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
   end
 end
