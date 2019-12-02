@@ -20,7 +20,7 @@ module CsvHelper
       records = []
 
       records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
-      results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size
+      results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
       after_import_validations(records, results.failed_instances, options)
       results
     end
