@@ -63,7 +63,11 @@ module CsvHelper
       # add 1 for the difference in indexes and 1 for the header row itself.
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
-      records.each_with_index do |record, index|
+      # this a call to custom batch validation checks for large import CSVs
+      klass.after_import_validations(records, failed_instances, row_offset) if defined? klass.after_import_validations
+      return if defined? klass.after_import_validations
+
+      records.each_with_index do |record, _index|
         unless record.valid?(:after_import)
           record.errors.add(:row, "Line #{index + row_offset}")
           failed_instances << record if record.persisted?
