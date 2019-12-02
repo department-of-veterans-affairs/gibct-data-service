@@ -64,8 +64,9 @@ module CsvHelper
       row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
 
       # this a call to custom batch validation checks for large import CSVs
-      klass.after_import_validations(records, failed_instances, row_offset) if defined? klass.after_import_validations
-      return if defined? klass.after_import_validations
+      klass.after_import_batch_validations(records, failed_instances, row_offset) if
+          defined? klass.after_import_batch_validations
+      return if defined? klass.after_import_batch_validations
 
       records.each_with_index do |record, _index|
         unless record.valid?(:after_import)
