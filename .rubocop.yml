@@ -6,18 +6,18 @@ require:
 
 AllCops:
   Include:
-    - '**/Gemfile'
-    - '**/config.ru'
-    - '**/Rakefile'
-    - '**/*.rake'
-    - '**/*.rb'
+    - "**/Gemfile"
+    - "**/config.ru"
+    - "**/Rakefile"
+    - "**/*.rake"
+    - "**/*.rb"
   Exclude:
-    - 'db/**/*'
-    - 'script/**/*'
-    - 'vendor/**/*'
-    - 'config/**/*'
-    - 'bin/**/*'
-    - 'log/**/*'
+    - "db/**/*"
+    - "script/**/*"
+    - "vendor/**/*"
+    - "config/**/*"
+    - "bin/**/*"
+    - "log/**/*"
 
 # This is the rubocop default but putting it here explicitly
 # strong benefit for code readability and speed in reviewing PRs for code review
@@ -39,33 +39,33 @@ Rails:
 
 Rails/Output:
   Exclude:
-    - 'lib/**/*.rb'
+    - "lib/**/*.rb"
 
 Metrics/MethodLength:
   Max: 20
   Exclude:
-    - 'app/models/institution_builder.rb'
+    - "app/models/institution_builder.rb"
 
 Metrics/ClassLength:
   Exclude:
-    - 'app/models/scorecard.rb'
-    - 'app/models/ipeds_ic.rb'
-    - 'app/models/ipeds_ic_ay.rb'
-    - 'app/models/ipeds_ic_py.rb'
-    - 'app/models/institution.rb'
+    - "app/models/scorecard.rb"
+    - "app/models/ipeds_ic.rb"
+    - "app/models/ipeds_ic_ay.rb"
+    - "app/models/ipeds_ic_py.rb"
+    - "app/models/institution.rb"
 
 Metrics/AbcSize:
   Max: 40
 
 Metrics/ModuleLength:
   Exclude:
-    - 'app/models/institution_builder.rb'
+    - "app/models/institution_builder.rb"
 
 Metrics/BlockLength:
   Exclude:
-    - 'spec/**/*'
-    - 'rakelib/**/*.rake'
-    - 'config/**/*.rb'
+    - "spec/**/*"
+    - "rakelib/**/*.rake"
+    - "config/**/*.rb"
 
 # Don't worry about ambiguous blocks in RSpec
 # Official recommendation from rubocop team is to disable this rule for specs.
@@ -76,23 +76,26 @@ Lint/AmbiguousBlockAssociation:
 
 Naming/FileName:
   Exclude:
-    - 'Guardfile'
+    - "Guardfile"
 
 Lint/BooleanSymbol:
   Exclude:
-    - 'app/controllers/v0/institutions_controller.rb'
+    - "app/controllers/v0/institutions_controller.rb"
 
 Rails/HasManyOrHasOneDependent:
   Exclude:
-    - 'app/models/user.rb'
+    - "app/models/user.rb"
 
 RSpec/FilePath:
   Exclude:
-    - 'spec/fixtures/**/*'
+    - "spec/fixtures/**/*"
 
 RSpec/DescribeClass:
   Exclude:
-    - 'spec/config/initializers/csv_types_spec.rb'
+    - "spec/config/initializers/csv_types_spec.rb"
 
 RSpec/ExampleLength:
   Max: 8
+
+RSpec/NestedGroups:
+  Max: 4
