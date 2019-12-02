@@ -187,15 +187,15 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'includes provider data in facets' do
-      create(:institution_program, :ca_employer)
+      create_list(:institution_program, 2, :ca_employer)
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['provider']).not_to be_nil
       expect(facets['provider'].size).to eq(5)
 
-      acme_provider = facets['provider'].select { |provider| provider['name'] == 'ACME INC' }.first
-      expect(acme_provider['name']).to eq('ACME INC')
-      expect(acme_provider['count']).to eq(1)
+      acme_providers = facets['provider'].select { |provider| provider['name'] == 'ACME INC' }
+      expect(acme_providers.count).to eq(1)
+      expect(acme_providers.first['count']).to eq(2)
     end
 
     it 'includes state search term in facets' do
