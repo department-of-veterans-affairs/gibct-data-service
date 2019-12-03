@@ -10,6 +10,6 @@ class BaseValidator < ActiveModel::Validator
   def facility_code_in_weam?(record)
     facility_not_in_weam = record.facility_code.present? &&
                            Weam.where(['facility_code = ?', record.facility_code]).empty?
-    record.errors[:base] << missing_facility_error_msg(record) if facility_not_in_weam
+    record.errors[:base] << BaseValidator.missing_facility_error_msg(record) if facility_not_in_weam
   end
 end

@@ -68,7 +68,7 @@ module CsvHelper
           defined? klass.after_import_batch_validations
       return if defined? klass.after_import_batch_validations
 
-      records.each_with_index do |record, _index|
+      records.each_with_index do |record, index|
         unless record.valid?(:after_import)
           record.errors.add(:row, "Line #{index + row_offset}")
           failed_instances << record if record.persisted?
