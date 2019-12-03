@@ -5,3 +5,8 @@ active_record:
 
 archiver:
   archive: true
+
+csv_upload:
+  column_separators:
+    - ","
+    - "|"
