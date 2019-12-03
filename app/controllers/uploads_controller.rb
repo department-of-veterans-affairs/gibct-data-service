@@ -89,7 +89,8 @@ class UploadsController < ApplicationController
     data = klass.load(file, {skip_lines: skip_lines, col_sep: col_sep})
 
     @upload.update(ok: data.present? && data.ids.present?)
-    raise(StandardError, "There was no saved #{klass} data") unless @upload.ok?
+    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
+    raise(StandardError, error_msg) unless @upload.ok?
 
     data
   end
