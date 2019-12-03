@@ -22,18 +22,22 @@ class Program < ApplicationRecord
     facility_not_in_weam = missing_facility_in_weam
 
     records.each_with_index do |record, index|
-      duplicate = duplicate_results.to_a
-                                   .include?('facility_code' => record.facility_code&.upcase,
-                                             'description' => record.description&.upcase)
-      missing_facility = facility_not_in_weam.to_a.include?('facility_code' => record.facility_code&.upcase)
-
-      next unless duplicate || missing_facility
-
-      record.errors[:base] << non_unique_error_msg(record) if duplicate
-      record.errors[:base] << BaseValidator.missing_facility_error_msg(record) if missing_facility
-      record.errors.add(:row, "Line #{index + row_offset}")
-      failed_instances << record if record.persisted?
+      Thread.new{threaded_stuff(record, index, failed_instances, row_offset, duplicate_results, facility_not_in_weam)}
     end
+  end
+
+  def self.threaded_stuff(record, index, failed_instances, row_offset, duplicate_results, facility_not_in_weam)
+    duplicate = duplicate_results.to_a
+                    .include?('facility_code' => record.facility_code&.upcase,
+                              'description' => record.description&.upcase)
+    missing_facility = facility_not_in_weam.to_a.include?('facility_code' => record.facility_code&.upcase)
+
+    return unless duplicate || missing_facility
+
+    record.errors[:base] << non_unique_error_msg(record) if duplicate
+    record.errors[:base] << BaseValidator.missing_facility_error_msg(record) if missing_facility
+    record.errors.add(:row, "Line #{index + row_offset}")
+    failed_instances << { :index => index, :record => record } if record.persisted?
   end
 
   def self.duplicate_facility_description_results

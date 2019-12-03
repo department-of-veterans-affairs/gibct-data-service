@@ -21,7 +21,9 @@ module CsvHelper
 
       records = klass == Institution ? load_csv_with_version(file, records, options) : load_csv(file, records, options)
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
-      after_import_validations(records, results.failed_instances, options)
+      failed_instances = results.failed_instances.map{ |result| {:index => -1, :record => result}}
+      after_import_validations(records, failed_instances, options)
+      results.failed_instances = failed_instances
       results
     end
 
@@ -71,7 +73,7 @@ module CsvHelper
       records.each_with_index do |record, index|
         unless record.valid?(:after_import)
           record.errors.add(:row, "Line #{index + row_offset}")
-          failed_instances << record if record.persisted?
+          failed_instances << { :index => index, :record => record } if record.persisted?
         end
       end
     end
