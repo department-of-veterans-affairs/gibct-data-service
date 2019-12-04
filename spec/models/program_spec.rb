@@ -37,22 +37,18 @@ RSpec.describe Program, type: :model do
     end
 
     context 'when record does not have unique facility_code & description values' do
-      def check_error_messages(records, row_offset)
-        records.each_with_index do |record, index|
-          error_messages = record.errors.messages
-          expect(error_messages.any?).to eq(true)
+      def check_error_messages(failed_instances, row_offset)
+        failed_instances.each_with_index do |warning, index|
+          expect(warning[:message]).to include('The Facility Code & Description (Program Name) combination is not unique:')
 
-          error_message = 'The Facility Code & Description (Program Name) combination is not unique:' \
-"\n#{record.facility_code}, #{record.description}"
-          expect(error_messages[:base]).to include(error_message)
-
-          expect(error_messages[:row]).to include("Line #{index + row_offset}")
+          expect(warning[:message]).to include("Line #{index + row_offset}")
         end
       end
 
       it 'fails validation' do
-        program = create :program
-        program_b = create :program, facility_code: program.facility_code
+        weam = create :weam
+        program = create :program, facility_code: weam.facility_code, csv_row: 0
+        program_b = create :program, facility_code: weam.facility_code, csv_row: 1
         records = [program, program_b]
         failed_instances = []
         row_offset = 0
@@ -61,29 +57,23 @@ RSpec.describe Program, type: :model do
 
         expect(failed_instances).not_to be_empty
 
-        check_error_messages(records, row_offset)
+        check_error_messages(failed_instances, row_offset)
       end
     end
 
     context 'when record has invalid facility code error message' do
-      def check_error_messages(records, row_offset)
-        records.each_with_index do |record, index|
-          error_messages = record.errors.messages
-          expect(error_messages.any?).to eq(true)
+      def check_error_messages(failed_instances, row_offset)
+        failed_instances.each_with_index do |warning, index|
+          expect(warning[:message]).to include('The Facility Code ')
+          expect(warning[:message]).to include('is not contained within the most recently uploaded weams.csv')
 
-          error_message =
-            "The Facility Code #{record.facility_code} " \
-      'is not contained within the most recently uploaded weams.csv'
-          expect(error_messages[:base]).to include(error_message)
-
-          expect(error_messages[:row]).to include("Line #{index + row_offset}")
+          expect(warning[:message]).to include("Line #{index + row_offset}")
         end
       end
 
       it 'fails validation' do
-        program = create :program, facility_code: 0o0
-        program_b = create :program, facility_code: program.facility_code
-        records = [program, program_b]
+        program = create :program, facility_code: 0o0, csv_row: 0
+        records = [program]
         failed_instances = []
         row_offset = 0
 
@@ -91,7 +81,7 @@ RSpec.describe Program, type: :model do
 
         expect(failed_instances).not_to be_empty
 
-        check_error_messages(records, row_offset)
+        check_error_messages(failed_instances, row_offset)
       end
     end
   end
