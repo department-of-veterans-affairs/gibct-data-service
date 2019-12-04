@@ -151,17 +151,10 @@ RSpec.describe DashboardsController, type: :controller do
         before do
         end
 
-        it 'adds a new version record' do
-          SiteMapperHelper.silence do
-            expect { post(:push) }.to change(Version, :count).by(1)
-          end
-        end
-
         it 'sets the new production version number to the preview number' do
           SiteMapperHelper.silence do
             post(:push)
           end
-
           expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
 

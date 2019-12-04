@@ -54,7 +54,8 @@ class DashboardsController < ApplicationController
     if version.blank?
       flash.alert = 'No preview version available'
     else
-      production_version = Version.create(number: version.number, production: true, user: current_user)
+      production_version = Version.find_by(number: version.number)
+      production_version.update(production: true)
 
       if production_version.persisted?
         flash.notice = 'Production data updated'
