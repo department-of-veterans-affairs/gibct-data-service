@@ -24,8 +24,7 @@ class Program < ApplicationRecord
       failed_instances << warning
     end
 
-    missing_facility_in_weam.each do |record|
-      program = Program.new(record)
+    missing_facility_in_weam.each do |program|
       message = line_number(program.csv_row) + BaseValidator.missing_facility_error_msg(program)
       warning = { index: program.csv_row, message: message }
       failed_instances << warning
