@@ -8,4 +8,4 @@ archiver:
 
 csv_upload:
   batch_size:
-    validation: 50000
+    validation: 10000

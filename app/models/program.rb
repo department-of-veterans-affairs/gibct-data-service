@@ -30,13 +30,13 @@ class Program < ApplicationRecord
     mutex = Mutex.new
 
     records.in_groups_of(group_size, fill_with = false) do |group|
-      t = Thread.new{
+      Thread.new{
         mutex.synchronize do
           group_index += 1
         end
         validate_group(group, group_index * group_size,failed_instances)
       }
-      t.join
+      puts "Started group thread #{group_index} with #{group.length} rows"
     end
   end
 
