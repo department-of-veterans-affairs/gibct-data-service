@@ -72,7 +72,7 @@ Metrics/BlockLength:
 # See: https://github.com/rubocop-hq/rubocop/issues/4222
 Lint/AmbiguousBlockAssociation:
   Exclude:
-    - "spec/**/*"
+    - 'spec/**/*'
 
 Naming/FileName:
   Exclude:
@@ -96,3 +96,6 @@ RSpec/DescribeClass:
 
 RSpec/ExampleLength:
   Max: 8
+
+RSpec/NestedGroups:
+  Max: 4
