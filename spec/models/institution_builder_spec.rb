@@ -242,15 +242,13 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
 
-        context "with a more recent 'restorative' action for the institution" do
-          AccreditationAction::RESTORATIVE_STATUSES.each do |status|
-            it 'does not set the `accreditation_status`' do
-              create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
-                                            action_date: '2019-01-06'
-              create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
-              described_class.run(user)
-              expect(institution.accreditation_status).to be_nil
-            end
+        AccreditationAction::RESTORATIVE_STATUSES.each do |status|
+          it "with a more recent 'restorative' action for the institution does not set the `accreditation_status" do
+            create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
+                                          action_date: '2019-01-06'
+            create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
+            described_class.run(user)
+            expect(institution.accreditation_status).to be_nil
           end
         end
 
@@ -529,29 +527,27 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      context 'when the school is public' do
-        describe 'sec_702' do
-          it 'is set from Section702' do
-            create :sec702, :institution_builder
-            described_class.run(user)
-            expect(institutions.first.sec_702).not_to be_nil
-            expect(institutions.first.sec_702).to be_falsy
-          end
+      describe 'when the school is public and sec_702' do
+        it 'is set from Section702' do
+          create :sec702, :institution_builder
+          described_class.run(user)
+          expect(institutions.first.sec_702).not_to be_nil
+          expect(institutions.first.sec_702).to be_falsy
+        end
 
-          it 'is set from Section702School' do
-            sec702_school = create :sec702_school, :institution_builder
-            described_class.run(user)
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).not_to be_nil
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_falsey
-          end
+        it 'is set from Section702School' do
+          sec702_school = create :sec702_school, :institution_builder
+          described_class.run(user)
+          expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).not_to be_nil
+          expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_falsey
+        end
 
-          it 'prefers Sec702School over Section702' do
-            create :weam, :institution_builder, :private
-            sec702_school = create :sec702_school, :institution_builder, sec_702: true
-            create :sec702, :institution_builder
-            described_class.run(user)
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_truthy
-          end
+        it 'prefers Sec702School over Section702' do
+          create :weam, :institution_builder, :private
+          sec702_school = create :sec702_school, :institution_builder, sec_702: true
+          create :sec702, :institution_builder
+          described_class.run(user)
+          expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_truthy
         end
       end
 
