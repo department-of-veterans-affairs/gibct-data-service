@@ -54,13 +54,8 @@ class Program < ApplicationRecord
   end
 
   def self.missing_facility_in_weam
-    str = <<-SQL
-      SELECT programs.csv_row, programs.facility_code
-      FROM programs LEFT OUTER JOIN weams ON programs.facility_code = weams.facility_code
-      WHERE weams.facility_code IS NULL
-    SQL
-    sql = Program.send(:sanitize_sql, [str])
-    Program.connection.execute(sql)
+    Program.joins('LEFT OUTER JOIN weams ON programs.facility_code = weams.facility_code')
+        .where(weams: { facility_code: nil})
   end
 
   def self.line_number(csv_row)
