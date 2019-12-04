@@ -15,7 +15,7 @@ RSpec.shared_examples 'a loadable model' do |options|
     let(:csv_file_missing_column) { "./spec/fixtures/#{name}_missing_column.csv" }
     let(:user) { User.first }
 
-    default_options =  Rails.application.config.csv_defaults[name] || Rails.application.config.csv_defaults['generic']
+    default_options =  Rails.application.config.csv_defaults[described_class.name] || Rails.application.config.csv_defaults['generic']
     load_options = default_options.inject({}){|o, (k,v)| o[k.to_sym] =v; o}.merge(options)
 
     context 'with an error-free csv file' do
