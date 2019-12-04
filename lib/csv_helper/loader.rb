@@ -19,18 +19,19 @@ module CsvHelper
     def load_records(file, options)
       records = []
 
-      if klass == Program
-        records = load_csv_with_row(file, records, options)
-      elsif klass == Institution
-        records = load_csv_with_version(file, records, options)
-      else
-        records = load_csv(file, records, options)
-      end
+      records = if klass == Program
+                  load_csv_with_row(file, records, options)
+                elsif klass == Institution
+                  load_csv_with_version(file, records, options)
+                else
+                  load_csv(file, records, options)
+                end
 
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       # using index of -1 since these rows failed during save to the table and not during after_import_validations
-      failed_instances = results.failed_instances.map{ |result| {:index => -1, :message => result.display_errors_with_row}}
+      failed_instances = results.failed_instances
+                                .map { |result| { index: -1, message: result.display_errors_with_row } }
       after_import_validations(records, failed_instances, options)
 
       results.failed_instances = failed_instances
@@ -79,25 +80,24 @@ module CsvHelper
     # This method manually runs validations that were declared with a specific validation context (:after_import).
     # The result is warnings are generated for the end user while the data is allowed to persist to the database.
     def after_import_validations(records, failed_instances, options)
-
       # this a call to custom batch validation checks for large import CSVs
       klass.after_import_batch_validations(records, failed_instances, row_offset(options)) if
           defined? klass.after_import_batch_validations
       return if defined? klass.after_import_batch_validations
 
       records.each_with_index do |record, index|
-        unless record.valid?(:after_import)
-          csv_row_number = csv_row(index, options)
-          record.errors.add(:row, "Line #{csv_row_number}")
-          failed_instances << { :index => csv_row_number, :message => result.display_errors_with_row } if record.persisted?
-        end
+        next if record.valid?(:after_import)
+
+        csv_row_number = csv_row(index, options)
+        record.errors.add(:row, "Line #{csv_row_number}")
+        failed_instances << { index: csv_row_number, message: record.display_errors_with_row } if record.persisted?
       end
     end
 
     def row_offset(options)
       # Since row indexes start at 0 and spreadsheets on line 1,
       # add 1 for the difference in indexes and 1 for the header row itself.
-       CSV_FIRST_LINE + (options[:skip_lines] || 0)
+      CSV_FIRST_LINE + (options[:skip_lines] || 0)
     end
 
     def csv_row(index, options)

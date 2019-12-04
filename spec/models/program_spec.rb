@@ -39,7 +39,8 @@ RSpec.describe Program, type: :model do
     context 'when record does not have unique facility_code & description values' do
       def check_error_messages(failed_instances, row_offset)
         failed_instances.each_with_index do |warning, index|
-          expect(warning[:message]).to include('The Facility Code & Description (Program Name) combination is not unique:')
+          expect(warning[:message])
+            .to include('The Facility Code & Description (Program Name) combination is not unique:')
 
           expect(warning[:message]).to include("Line #{index + row_offset}")
         end
@@ -49,14 +50,11 @@ RSpec.describe Program, type: :model do
         weam = create :weam
         program = create :program, facility_code: weam.facility_code, csv_row: 0
         program_b = create :program, facility_code: weam.facility_code, csv_row: 1
-        records = [program, program_b]
         failed_instances = []
         row_offset = 0
-
-        described_class.after_import_batch_validations(records, failed_instances, row_offset)
+        described_class.after_import_batch_validations([program, program_b], failed_instances, row_offset)
 
         expect(failed_instances).not_to be_empty
-
         check_error_messages(failed_instances, row_offset)
       end
     end
@@ -73,11 +71,10 @@ RSpec.describe Program, type: :model do
 
       it 'fails validation' do
         program = create :program, facility_code: 0o0, csv_row: 0
-        records = [program]
         failed_instances = []
         row_offset = 0
 
-        described_class.after_import_batch_validations(records, failed_instances, row_offset)
+        described_class.after_import_batch_validations([program], failed_instances, row_offset)
 
         expect(failed_instances).not_to be_empty
 

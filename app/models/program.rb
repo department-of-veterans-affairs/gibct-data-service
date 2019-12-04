@@ -17,20 +17,19 @@ class Program < ApplicationRecord
   validates :facility_code, presence: true
   validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
 
-  def self.after_import_batch_validations(records, failed_instances, row_offset)
+  def self.after_import_batch_validations(_records, failed_instances, _row_offset)
     duplicate_facility_description_results.each do |record|
-      message = line_number(record["csv_row"]) + non_unique_error_msg(record["facility_code"], record["description"])
-      warning = { :index => record["csv_row"], :message => message }
+      message = line_number(record['csv_row']) + non_unique_error_msg(record['facility_code'], record['description'])
+      warning = { index: record['csv_row'], message: message }
       failed_instances << warning
     end
 
     missing_facility_in_weam.each do |record|
       program = Program.new(record)
       message = line_number(program.csv_row) + BaseValidator.missing_facility_error_msg(program)
-      warning = { :index => program.csv_row, :message => message }
+      warning = { index: program.csv_row, message: message }
       failed_instances << warning
     end
-
   end
 
   def self.duplicate_facility_description_results
