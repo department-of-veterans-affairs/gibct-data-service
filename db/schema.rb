@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_183932) do
+ActiveRecord::Schema.define(version: 2019_12_04_170301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1176,6 +1176,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_183932) do
     t.string "graduate", limit: 15
     t.string "full_time_modifier", limit: 1
     t.string "length", limit: 7
+    t.integer "csv_row"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 

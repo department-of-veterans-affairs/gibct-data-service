@@ -18,50 +18,27 @@ class Program < ApplicationRecord
   validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
 
   def self.after_import_batch_validations(records, failed_instances, row_offset)
-    @duplicate_results = duplicate_facility_description_results
-    @facility_not_in_weam = missing_facility_in_weam
-    @row_offset = row_offset
-
-    group_size = Settings.csv_upload.batch_size.validation
-    # starting this at -1 since incrementing before potentially lengthy validate_group method is kicked off
-    # this variable uses Mutex class to implement a simple semaphore lock for mutually exclusive access
-    # to preserve which row in the CSV is being referenced for user to look at row for specified error
-    group_index = -1
-    mutex = Mutex.new
-
-    records.in_groups_of(group_size, fill_with = false) do |group|
-      Thread.new{
-        mutex.synchronize do
-          group_index += 1
-        end
-        validate_group(group, group_index * group_size,failed_instances)
-      }
-      puts "Started group thread #{group_index} with #{group.length} rows"
-    end
-  end
-
-  def self.validate_group(group, group_offset, failed_instances)
-    group.each_with_index do |record, index|
-      csv_row = index + group_offset
-      duplicate = @duplicate_results.to_a
-                      .include?('facility_code' => record.facility_code&.upcase,
-                                'description' => record.description&.upcase)
-      missing_facility = @facility_not_in_weam.to_a.include?('facility_code' => record.facility_code&.upcase)
-
-      return unless duplicate || missing_facility
-
-      record.errors[:base] << non_unique_error_msg(record) if duplicate
-      record.errors[:base] << BaseValidator.missing_facility_error_msg(record) if missing_facility
-      record.errors.add(:row, "Line #{csv_row + @row_offset}")
-      failed_instances << { :index => csv_row, :record => record } if record.persisted?
+    duplicate_facility_description_results.each do |record|
+      message = line_number(record["csv_row"]) + non_unique_error_msg(record["facility_code"], record["description"])
+      warning = { :index => record["csv_row"], :message => message }
+      failed_instances << warning
     end
 
-    puts "finished group #{group_offset}"
+    missing_facility_in_weam.each do |record|
+      program = Program.new(record)
+      message = line_number(program.csv_row) + BaseValidator.missing_facility_error_msg(program)
+      warning = { :index => program.csv_row, :message => message }
+      failed_instances << warning
+    end
+
   end
 
   def self.duplicate_facility_description_results
     str = <<-SQL
-      SELECT
+     SELECT programs.csv_row, programs.facility_code, programs.description
+      FROM programs
+        INNER JOIN (
+        SELECT
           UPPER(facility_code) facility_code,
           UPPER(description) description
         FROM programs
@@ -69,6 +46,8 @@ class Program < ApplicationRecord
           UPPER(facility_code),
           UPPER(description)
         HAVING COUNT(*) > 1
+        ) dupes on UPPER(programs.facility_code) = dupes.facility_code
+        AND UPPER(programs.description) = dupes.description
     SQL
 
     sql = Program.send(:sanitize_sql, [str])
@@ -77,7 +56,7 @@ class Program < ApplicationRecord
 
   def self.missing_facility_in_weam
     str = <<-SQL
-      SELECT programs.facility_code
+      SELECT programs.csv_row, programs.facility_code
       FROM programs LEFT OUTER JOIN weams ON programs.facility_code = weams.facility_code
       WHERE weams.facility_code IS NULL
     SQL
@@ -85,8 +64,11 @@ class Program < ApplicationRecord
     Program.connection.execute(sql)
   end
 
-  def self.non_unique_error_msg(record)
-    "The Facility Code & Description (Program Name) combination is not unique:
-#{record.facility_code}, #{record.description}"
+  def self.line_number(csv_row)
+    "Line #{csv_row} : "
+  end
+
+  def self.non_unique_error_msg(facility_code, description)
+    "The Facility Code & Description (Program Name) combination is not unique: #{facility_code}, #{description}"
   end
 end
