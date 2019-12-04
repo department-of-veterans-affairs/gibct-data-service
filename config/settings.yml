@@ -5,3 +5,7 @@ active_record:
 
 archiver:
   archive: true
+
+csv_upload:
+  batch_size:
+    validation: 50000

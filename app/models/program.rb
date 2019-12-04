@@ -18,26 +18,45 @@ class Program < ApplicationRecord
   validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
 
   def self.after_import_batch_validations(records, failed_instances, row_offset)
-    duplicate_results = duplicate_facility_description_results
-    facility_not_in_weam = missing_facility_in_weam
+    @duplicate_results = duplicate_facility_description_results
+    @facility_not_in_weam = missing_facility_in_weam
+    @row_offset = row_offset
 
-    records.each_with_index do |record, index|
-      Thread.new{threaded_stuff(record, index, failed_instances, row_offset, duplicate_results, facility_not_in_weam)}
+    group_size = Settings.csv_upload.batch_size.validation
+    # starting this at -1 since incrementing before potentially lengthy validate_group method is kicked off
+    # this variable uses Mutex class to implement a simple semaphore lock for mutually exclusive access
+    # to preserve which row in the CSV is being referenced for user to look at row for specified error
+    group_index = -1
+    mutex = Mutex.new
+
+    records.in_groups_of(group_size, fill_with = false) do |group|
+      t = Thread.new{
+        mutex.synchronize do
+          group_index += 1
+        end
+        validate_group(group, group_index * group_size,failed_instances)
+      }
+      t.join
     end
   end
 
-  def self.threaded_stuff(record, index, failed_instances, row_offset, duplicate_results, facility_not_in_weam)
-    duplicate = duplicate_results.to_a
-                    .include?('facility_code' => record.facility_code&.upcase,
-                              'description' => record.description&.upcase)
-    missing_facility = facility_not_in_weam.to_a.include?('facility_code' => record.facility_code&.upcase)
+  def self.validate_group(group, group_offset, failed_instances)
+    group.each_with_index do |record, index|
+      csv_row = index + group_offset
+      duplicate = @duplicate_results.to_a
+                      .include?('facility_code' => record.facility_code&.upcase,
+                                'description' => record.description&.upcase)
+      missing_facility = @facility_not_in_weam.to_a.include?('facility_code' => record.facility_code&.upcase)
 
-    return unless duplicate || missing_facility
+      return unless duplicate || missing_facility
 
-    record.errors[:base] << non_unique_error_msg(record) if duplicate
-    record.errors[:base] << BaseValidator.missing_facility_error_msg(record) if missing_facility
-    record.errors.add(:row, "Line #{index + row_offset}")
-    failed_instances << { :index => index, :record => record } if record.persisted?
+      record.errors[:base] << non_unique_error_msg(record) if duplicate
+      record.errors[:base] << BaseValidator.missing_facility_error_msg(record) if missing_facility
+      record.errors.add(:row, "Line #{csv_row + @row_offset}")
+      failed_instances << { :index => csv_row, :record => record } if record.persisted?
+    end
+
+    puts "finished group #{group_offset}"
   end
 
   def self.duplicate_facility_description_results
