@@ -56,7 +56,7 @@ class DashboardsController < ApplicationController
     else
       version.update(production: true)
 
-      if production_version.persisted?
+      if version.persisted?
         flash.notice = 'Production data updated'
 
         # Build Sitemap and notify search engines in production only
