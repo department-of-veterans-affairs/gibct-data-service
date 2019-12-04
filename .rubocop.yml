@@ -96,3 +96,7 @@ RSpec/DescribeClass:
 
 RSpec/ExampleLength:
   Max: 8
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/MultipleExpectations:
+  Enabled: false
