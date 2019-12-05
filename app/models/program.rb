@@ -14,20 +14,6 @@ class Program < ApplicationRecord
     'length' => { column: :length, converter: BaseConverter }
   }.freeze
 
-  validate :facility_code_present
-  validate :program_type_valid
-
-  def facility_code_present
-    return if facility_code.present?
-
-    errors.add(:facility_code, "can't be blank")
-    errors.add(:row, csv_row)
-  end
-
-  def program_type_valid
-    return if InstitutionProgram::PROGRAM_TYPES.include?(program_type)
-
-    errors.add(:program_type, "#{program_type} is not included in the list of valid institution programs: #{InstitutionProgram::PROGRAM_TYPES.join(', ')}")
-    errors.add(:row, csv_row)
-  end
+  validates :facility_code, presence: true
+  validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
 end
