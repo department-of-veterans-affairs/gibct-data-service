@@ -164,23 +164,23 @@ RSpec.describe DashboardsController, type: :controller do
           end
           expect(flash.notice).to eq('Production data updated')
         end
+      end
 
-        context 'when is not successful' do
-          before do
-            version = double('Version')
-            allow(Version).to receive(:current_preview).and_return(version)
-            allow(version).to receive(:update).and_return(version)
-            allow(version).to receive(:persisted?).and_return(false)
-          end
+      context 'when is not successful' do
+        before do
+          version = instance_double('Version')
+          allow(Version).to receive(:current_preview).and_return(version)
+          allow(version).to receive(:update).and_return(version)
+          allow(version).to receive(:persisted?).and_return(false)
+        end
 
-          it 'does not add a new version' do
-            expect { post(:push) }.to change(Version, :count).by(0)
-          end
+        it 'does not add a new version' do
+          expect { post(:push) }.to change(Version, :count).by(0)
+        end
 
-          it 'returns an error message' do
-            post(:push)
-            expect(flash.alert).to eq('Production data not updated, remains at previous production version')
-          end
+        it 'returns an error message' do
+          post(:push)
+          expect(flash.alert).to eq('Production data not updated, remains at previous production version')
         end
       end
     end
