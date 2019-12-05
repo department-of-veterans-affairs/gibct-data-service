@@ -28,7 +28,7 @@ module CsvHelper
                 end
 
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
-      after_import_validations(records, results.failed_instances, options)
+      after_import_validations_and_row_assignments(records, results.failed_instances, options)
       results
     end
 
@@ -74,7 +74,7 @@ module CsvHelper
     # This method manually runs validations that were declared with a specific validation context (:after_import).
     # Or runs "#{klass.name}Validator" method after_import_batch_validations for large import CSVs
     # The result is warnings are generated for the end user while the data is allowed to persist to the database.
-    def after_import_validations(records, failed_instances, options)
+    def after_import_validations_and_row_assignment(records, failed_instances, options)
       # this a call to custom batch validation checks for large import CSVs
       validator_klass = "#{klass.name}Validator".safe_constantize
       validator_klass.try(:after_import_batch_validations, failed_instances)
