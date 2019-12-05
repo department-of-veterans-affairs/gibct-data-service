@@ -81,9 +81,11 @@ module CsvHelper
     # The result is warnings are generated for the end user while the data is allowed to persist to the database.
     def after_import_validations(records, failed_instances, options)
       # this a call to custom batch validation checks for large import CSVs
-      klass.after_import_batch_validations(records, failed_instances, row_offset(options)) if
-          defined? klass.after_import_batch_validations
-      return if defined? klass.after_import_batch_validations
+      validator_klass = "#{klass.name}Validator".safe_constantize
+
+      validator_klass&.after_import_batch_validations(failed_instances) if
+          defined? validator_klass&.after_import_batch_validations
+      return if defined? validator_klass&.after_import_batch_validations
 
       records.each_with_index do |record, index|
         next if record.valid?(:after_import)
