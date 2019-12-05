@@ -77,7 +77,7 @@ module CsvHelper
     def after_import_validations(records, failed_instances, options)
       # this a call to custom batch validation checks for large import CSVs
       validator_klass = "#{klass.name}Validator".safe_constantize
-      return if validator_klass&.after_import_batch_validations(failed_instances)
+      validator_klass.try(:after_import_batch_validations, failed_instances)
 
       records.each_with_index do |record, index|
         next if record.valid?(:after_import)
