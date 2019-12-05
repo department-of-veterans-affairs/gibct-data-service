@@ -17,11 +17,11 @@ describe ProgramValidator do
 
     context 'when record does not have unique facility_code & description values' do
       def check_error_messages(validation_warnings)
-        validation_warnings.each_with_index do |warning, index|
-          expect(warning[:record].display_errors_with_row)
+        validation_warnings.each_with_index do |record, index|
+          expect(record.display_errors_with_row)
             .to include('The Facility Code & Description (Program Name) combination is not unique:')
 
-          expect(warning[:record].display_errors_with_row).to include("Line #{index}")
+          expect(record.display_errors_with_row).to include("Line #{index}")
         end
       end
 
@@ -39,12 +39,12 @@ describe ProgramValidator do
 
     context 'when record has invalid facility code error message' do
       def check_error_messages(validation_warnings)
-        validation_warnings.each_with_index do |warning, index|
-          expect(warning[:record].display_errors_with_row).to include('The Facility Code ')
-          expect(warning[:record].display_errors_with_row)
+        validation_warnings.each_with_index do |record, index|
+          expect(record.display_errors_with_row).to include('The Facility Code ')
+          expect(record.display_errors_with_row)
             .to include('is not contained within the most recently uploaded weams.csv')
 
-          expect(warning[:record].display_errors_with_row).to include("Line #{index}")
+          expect(record.display_errors_with_row).to include("Line #{index}")
         end
       end
 

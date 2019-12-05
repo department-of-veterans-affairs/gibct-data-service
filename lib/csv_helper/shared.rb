@@ -11,7 +11,7 @@ module CsvHelper
     return '' if errors.messages.empty?
 
     row = errors[:row].try(:first).to_s
-    keys = errors.keys - [:row]
+    keys = errors.keys - [:row] - [:index]
 
     "Row #{row.presence || 'N/A'} : " + keys.map do |key|
       message = key.to_s == 'base' ? '' : "#{key} : "

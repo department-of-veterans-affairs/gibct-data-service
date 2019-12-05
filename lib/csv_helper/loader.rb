@@ -31,11 +31,10 @@ module CsvHelper
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       # using index of -1 since these rows failed during save to the table and not during after_import_validations
-      validation_warnings = results.failed_instances
-                                   .map { |result| { index: -1, record: result } }
-      after_import_validations(records, validation_warnings, options)
+      results.failed_instances.each { |result| result.errors.add(:index, -1) }
 
-      results.failed_instances = validation_warnings
+      after_import_validations(records, results.failed_instances, options)
+
       results
     end
 
@@ -81,12 +80,12 @@ module CsvHelper
     # This method manually runs validations that were declared with a specific validation context (:after_import).
     # Or runs "#{klass.name}Validator" method after_import_batch_validations for large import CSVs
     # The result is warnings are generated for the end user while the data is allowed to persist to the database.
-    def after_import_validations(records, validation_warnings, options)
+    def after_import_validations(records, failed_instances, options)
       # this a call to custom batch validation checks for large import CSVs
       validator_klass = "#{klass.name}Validator".safe_constantize
 
       if validator_klass.present? && defined? validator_klass.after_import_batch_validations
-        validator_klass.after_import_batch_validations(validation_warnings)
+        validator_klass.after_import_batch_validations(failed_instances)
         return
       end
 
@@ -95,7 +94,8 @@ module CsvHelper
 
         csv_row_number = csv_row(index, options)
         record.errors.add(:row, "Line #{csv_row_number}")
-        validation_warnings << { index: csv_row_number, record: record } if record.persisted?
+        record.errors.add(:index, csv_row_number)
+        failed_instances << record if record.persisted?
       end
     end
 
