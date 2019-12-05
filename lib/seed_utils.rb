@@ -6,7 +6,7 @@ module SeedUtils
   def seed_table_with_upload(klass, user, options = {})
     # Pull the default CSV options to be used
     default_options = Rails.application.config.csv_defaults[klass.name] ||
-        Rails.application.config.csv_defaults['generic']
+                      Rails.application.config.csv_defaults['generic']
     # Merge with provided options
     seed_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }.merge(options)
 

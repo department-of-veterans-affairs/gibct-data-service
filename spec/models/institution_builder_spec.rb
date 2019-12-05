@@ -542,14 +542,13 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_falsey
         end
 
-        # broken test, fails randomly commenting out for now
-        # it 'prefers Sec702School over Section702' do
-        #   create :weam, :institution_builder, :private
-        #   sec702_school = create :sec702_school, :institution_builder, sec_702: true
-        #   create :sec702, :institution_builder
-        #   described_class.run(user)
-        #   expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_truthy
-        # end
+        it 'prefers Sec702School over Section702' do
+          create :weam, :institution_builder, :private
+          sec702_school = create :sec702_school, :institution_builder, sec_702: true
+          create :sec702, :institution_builder
+          described_class.run(user)
+          expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_truthy
+        end
       end
 
       describe 'the caution_flag' do
