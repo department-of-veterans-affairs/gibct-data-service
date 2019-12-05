@@ -3,16 +3,19 @@
 class ProgramValidator < BaseValidator
   def self.after_import_batch_validations(failed_instances)
     duplicate_facility_description_results.each do |record|
-      message = line_number(record['csv_row']) + non_unique_error_msg(record['facility_code'], record['description'])
-      warning = { index: record['csv_row'], message: message }
-      failed_instances << warning
+      message = line_number(record.csv_row) + non_unique_error_msg(record)
+      add_warning_message(record, message, failed_instances)
     end
 
-    missing_facility_in_weam.each do |program|
-      message = line_number(program.csv_row) + BaseValidator.missing_facility_error_msg(program)
-      warning = { index: program.csv_row, message: message }
-      failed_instances << warning
+    missing_facility_in_weam.each do |record|
+      message = line_number(record.csv_row) + missing_facility_error_msg(record)
+      add_warning_message(record, message, failed_instances)
     end
+  end
+
+  def self.add_warning_message(record, message, failed_instances)
+    warning = { index: record.csv_row, message: message }
+    failed_instances << warning
   end
 
   def self.duplicate_facility_description_results
@@ -31,7 +34,9 @@ AND UPPER(programs.description) = dupes.description")
     "Line #{csv_row} : "
   end
 
-  def self.non_unique_error_msg(facility_code, description)
-    "The Facility Code & Description (Program Name) combination is not unique: #{facility_code}, #{description}"
+  def self.non_unique_error_msg(record)
+    "The Facility Code & Description (Program Name) combination is not unique
+#{record.facility_code}, #{record.description}"
   end
+
 end
