@@ -31,11 +31,11 @@ module CsvHelper
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       # using index of -1 since these rows failed during save to the table and not during after_import_validations
-      failed_instances = results.failed_instances
+      validation_warnings = results.failed_instances
                                 .map { |result| { index: -1, message: result.display_errors_with_row } }
-      after_import_validations(records, failed_instances, options)
+      after_import_validations(records, validation_warnings, options)
 
-      results.failed_instances = failed_instances
+      results.failed_instances = validation_warnings
       results
     end
 
@@ -81,12 +81,12 @@ module CsvHelper
     # This method manually runs validations that were declared with a specific validation context (:after_import).
     # Or runs "#{klass.name}Validator" method after_import_batch_validations for large import CSVs
     # The result is warnings are generated for the end user while the data is allowed to persist to the database.
-    def after_import_validations(records, failed_instances, options)
+    def after_import_validations(records, validation_warnings, options)
       # this a call to custom batch validation checks for large import CSVs
       validator_klass = "#{klass.name}Validator".safe_constantize
 
       if validator_klass.present? && defined? validator_klass.after_import_batch_validations
-        validator_klass.after_import_batch_validations(failed_instances)
+        validator_klass.after_import_batch_validations(validation_warnings)
         return
       end
 
@@ -95,7 +95,7 @@ module CsvHelper
 
         csv_row_number = csv_row(index, options)
         record.errors.add(:row, "Line #{csv_row_number}")
-        failed_instances << { index: csv_row_number, message: record.display_errors_with_row } if record.persisted?
+        validation_warnings << { index: csv_row_number, message: record.display_errors_with_row } if record.persisted?
       end
     end
 
