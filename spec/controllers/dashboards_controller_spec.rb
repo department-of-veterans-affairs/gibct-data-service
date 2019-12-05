@@ -167,7 +167,7 @@ RSpec.describe DashboardsController, type: :controller do
 
         context 'when is not successful' do
           before do
-            version = double("Version")
+            version = double('Version')
             allow(Version).to receive(:current_preview).and_return(version)
             allow(version).to receive(:update).and_return(version)
             allow(version).to receive(:persisted?).and_return(false)
