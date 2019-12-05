@@ -151,11 +151,11 @@ RSpec.describe DashboardsController, type: :controller do
         before do
         end
 
-        it 'sets the new production version number to the preview number' do
+        it 'sets the new production version' do
           SiteMapperHelper.silence do
-            post(:push)
+            expect { post(:push) }.to change(Version, :count).by(0)
+            expect(Version.current_production).not_to eq(nil)
           end
-          expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
 
         it 'updates production data' do
@@ -167,7 +167,10 @@ RSpec.describe DashboardsController, type: :controller do
 
         context 'when is not successful' do
           before do
-            allow(Version).to receive(:create).and_return(Version.new)
+            version = double("Version")
+            allow(Version).to receive(:current_preview).and_return(version)
+            allow(version).to receive(:update).and_return(version)
+            allow(version).to receive(:persisted?).and_return(false)
           end
 
           it 'does not add a new version' do
