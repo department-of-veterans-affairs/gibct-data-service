@@ -79,11 +79,10 @@ module CsvHelper
       validator_klass = "#{klass.name}Validator".safe_constantize
       return if validator_klass&.after_import_batch_validations(failed_instances)
 
-      row_offset = CSV_FIRST_LINE + (options[:skip_lines] || 0)
       records.each_with_index do |record, index|
         next if record.valid?(:after_import)
 
-        record.errors.add(:row, index + row_offset)
+        record.errors.add(:row, index + row_offset(options))
         failed_instances << record if record.persisted?
       end
     end
