@@ -20,14 +20,14 @@ class ProgramValidator < BaseValidator
 
   def self.duplicate_facility_description_results
     subquery = Program.select('UPPER(facility_code) as facility_code, UPPER(description) as description')
-                   .group('UPPER(facility_code), UPPER(description)').having('count(*) > 1')
+                      .group('UPPER(facility_code), UPPER(description)').having('count(*) > 1')
     Program.joins("INNER JOIN (#{subquery.to_sql}) dupes on UPPER(programs.facility_code) = dupes.facility_code
 AND UPPER(programs.description) = dupes.description")
   end
 
   def self.missing_facility_in_weam
     Program.joins('LEFT OUTER JOIN weams ON programs.facility_code = weams.facility_code')
-        .where(weams: { facility_code: nil})
+           .where(weams: { facility_code: nil })
   end
 
   def self.line_number(csv_row)
@@ -35,8 +35,7 @@ AND UPPER(programs.description) = dupes.description")
   end
 
   def self.non_unique_error_msg(record)
-    "The Facility Code & Description (Program Name) combination is not unique
+    "The Facility Code & Description (Program Name) combination is not unique:
 #{record.facility_code}, #{record.description}"
   end
-
 end

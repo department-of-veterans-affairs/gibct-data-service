@@ -19,7 +19,7 @@ describe ProgramValidator do
       def check_error_messages(failed_instances)
         failed_instances.each_with_index do |warning, index|
           expect(warning[:message])
-              .to include('The Facility Code & Description (Program Name) combination is not unique:')
+            .to include('The Facility Code & Description (Program Name) combination is not unique:')
 
           expect(warning[:message]).to include("Line #{index}")
         end

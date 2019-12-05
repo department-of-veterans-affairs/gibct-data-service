@@ -78,14 +78,16 @@ module CsvHelper
 
     # Default validations are run during import, which prevent bad data from being persisted to the database.
     # This method manually runs validations that were declared with a specific validation context (:after_import).
+    # Or runs "#{klass.name}Validator" method after_import_batch_validations for large import CSVs
     # The result is warnings are generated for the end user while the data is allowed to persist to the database.
     def after_import_validations(records, failed_instances, options)
       # this a call to custom batch validation checks for large import CSVs
       validator_klass = "#{klass.name}Validator".safe_constantize
 
-      validator_klass&.after_import_batch_validations(failed_instances) if
-          defined? validator_klass&.after_import_batch_validations
-      return if defined? validator_klass&.after_import_batch_validations
+      if validator_klass.present? && defined? validator_klass.after_import_batch_validations
+        validator_klass.after_import_batch_validations(failed_instances)
+        return
+      end
 
       records.each_with_index do |record, index|
         next if record.valid?(:after_import)
@@ -96,12 +98,13 @@ module CsvHelper
       end
     end
 
+    # Since row indexes start at 0 and spreadsheets on line 1,
+    # add 1 for the difference in indexes and 1 for the header row itself.
     def row_offset(options)
-      # Since row indexes start at 0 and spreadsheets on line 1,
-      # add 1 for the difference in indexes and 1 for the header row itself.
       CSV_FIRST_LINE + (options[:skip_lines] || 0)
     end
 
+    # actual row in CSV for use by user
     def csv_row(index, options)
       index + row_offset(options)
     end
