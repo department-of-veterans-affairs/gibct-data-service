@@ -9,8 +9,13 @@ RSpec.shared_examples 'an exportable model' do |options|
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
   describe 'when exporting' do
+    # Pull the default CSV options to be used
+    default_options =  Rails.application.config.csv_defaults[described_class.name] || Rails.application.config.csv_defaults['generic']
+    # Merge with provided options
+    load_options = default_options.inject({}){|o, (k,v)| o[k.to_sym] =v; o}.merge(options)
+
     before do
-      described_class.load(csv_file, options)
+      described_class.load(csv_file, load_options)
     end
 
     def check_attributes_from_records(rows, header_row)
