@@ -32,7 +32,7 @@ module CsvHelper
 
       # using index of -1 since these rows failed during save to the table and not during after_import_validations
       validation_warnings = results.failed_instances
-                                .map { |result| { index: -1, record: result } }
+                                   .map { |result| { index: -1, record: result } }
       after_import_validations(records, validation_warnings, options)
 
       results.failed_instances = validation_warnings
