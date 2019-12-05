@@ -82,7 +82,7 @@ module CsvHelper
       records.each_with_index do |record, index|
         next if record.valid?(:after_import)
 
-        record.errors.add(:row, index + row_offset(options))
+        record.errors.add(:row, csv_row(index, options))
         failed_instances << record if record.persisted?
       end
     end
