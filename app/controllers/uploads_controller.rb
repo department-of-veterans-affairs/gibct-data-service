@@ -86,7 +86,7 @@ class UploadsController < ApplicationController
     file = @upload.upload_file.tempfile
     skip_lines = @upload.skip_lines.try(:to_i)
     col_sep = @upload.col_sep
-    data = klass.load(file, {skip_lines: skip_lines, col_sep: col_sep})
+    data = klass.load(file, skip_lines: skip_lines, col_sep: col_sep)
 
     @upload.update(ok: data.present? && data.ids.present?)
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."

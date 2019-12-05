@@ -28,7 +28,7 @@ module CsvHelper
     end
 
     def generate(csv_headers)
-      CSV.generate(:col_sep => defaults['col_sep']) do |csv|
+      CSV.generate(col_sep: defaults['col_sep']) do |csv|
         csv << csv_headers.values
 
         klass == write_row(csv, csv_headers)
@@ -36,7 +36,7 @@ module CsvHelper
     end
 
     def generate_version(csv_headers, number)
-      CSV.generate(:col_sep => defaults['col_sep']) do |csv|
+      CSV.generate(col_sep: defaults['col_sep']) do |csv|
         csv << csv_headers.values
 
         klass == write_institution_row(csv, csv_headers, number)
