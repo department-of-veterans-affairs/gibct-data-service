@@ -19,9 +19,10 @@ module CsvHelper
     def load_records(file, options)
       records = []
 
-      records = if klass == Program
+      records = case name
+                when Program.name
                   load_csv_with_row(file, records, options)
-                elsif klass == Institution
+                when Institution.name
                   load_csv_with_version(file, records, options)
                 else
                   load_csv(file, records, options)
