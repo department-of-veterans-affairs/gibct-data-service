@@ -21,7 +21,7 @@ class UploadsController < ApplicationController
       @upload.check_for_headers
 
       validation_warnings = failed.sort { |a, b| a[:index] <=> b[:index] }
-                                  .map { |warning| warning[:message] }
+                                  .map { |warning| warning[:record].display_errors_with_row }
       header_warnings = @upload.all_warnings
 
       flash.alert = { 'The upload succeeded: ' => @upload.csv_type }

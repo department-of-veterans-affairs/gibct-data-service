@@ -32,7 +32,7 @@ module CsvHelper
 
       # using index of -1 since these rows failed during save to the table and not during after_import_validations
       validation_warnings = results.failed_instances
-                                .map { |result| { index: -1, message: result.display_errors_with_row } }
+                                .map { |result| { index: -1, record: result } }
       after_import_validations(records, validation_warnings, options)
 
       results.failed_instances = validation_warnings
@@ -95,7 +95,7 @@ module CsvHelper
 
         csv_row_number = csv_row(index, options)
         record.errors.add(:row, "Line #{csv_row_number}")
-        validation_warnings << { index: csv_row_number, message: record.display_errors_with_row } if record.persisted?
+        validation_warnings << { index: csv_row_number, record: record } if record.persisted?
       end
     end
 
