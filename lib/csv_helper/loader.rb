@@ -30,6 +30,10 @@ module CsvHelper
 
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
+      results.failed_instances.each do |record|
+        record.errors.add(:row, record.try(:csv_row))
+      end
+
       after_import_validations(records, results.failed_instances, options)
 
       results
