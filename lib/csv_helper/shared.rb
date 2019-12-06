@@ -10,7 +10,7 @@ module CsvHelper
   def display_errors_with_row
     return '' if errors.messages.empty?
 
-    row = errors[:row].try(:first).to_s
+    row = errors[:row]&.first.to_s
     keys = errors.keys - [:row]
 
     "Row #{row.presence || 'N/A'} : " + keys.map do |key|
