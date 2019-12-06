@@ -96,7 +96,7 @@ module CsvHelper
 
       if run_validations
         failed_instances.each do |record|
-          record.errors.add(:row, record.try(:csv_row))
+          record.errors.add(:row, record.csv_row)
         end
         validator_klass.after_import_batch_validations(failed_instances)
       end
