@@ -31,7 +31,7 @@ module CsvHelper
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       # using index of -1 since these rows failed during save to the table and not during after_import_validations
-      results.failed_instances.each { |result| result.errors.add(:index, -1) }
+      results.failed_instances.each { |result| result.errors.add(:row, -1) }
 
       after_import_validations(records, results.failed_instances, options)
 
@@ -93,8 +93,7 @@ module CsvHelper
         next if record.valid?(:after_import)
 
         csv_row_number = csv_row(index, options)
-        record.errors.add(:row, "Line #{csv_row_number}")
-        record.errors.add(:index, csv_row_number)
+        record.errors.add(:row, csv_row_number)
         failed_instances << record if record.persisted?
       end
     end

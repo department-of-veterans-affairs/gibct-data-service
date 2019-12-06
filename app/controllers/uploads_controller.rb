@@ -20,7 +20,7 @@ class UploadsController < ApplicationController
       failed = load_csv.failed_instances
       @upload.check_for_headers
 
-      validation_warnings = failed.sort { |a, b| a.errors[:index].try(:first) <=> b.errors[:index].try(:first) }
+      validation_warnings = failed.sort { |a, b| a.errors[:row].try(:first) <=> b.errors[:row].try(:first) }
                                   .map(&:display_errors_with_row)
       header_warnings = @upload.all_warnings
 

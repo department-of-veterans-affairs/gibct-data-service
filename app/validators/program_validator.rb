@@ -14,8 +14,7 @@ class ProgramValidator < BaseValidator
   end
 
   def self.add_warning_message(record, validation_warnings)
-    record.errors.add(:row, "Line #{record.csv_row}")
-    record.errors.add(:index, record.csv_row)
+    record.errors.add(:row, record.csv_row)
     validation_warnings << record
   end
 
