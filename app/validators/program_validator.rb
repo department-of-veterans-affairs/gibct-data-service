@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 class ProgramValidator < BaseValidator
-  def self.after_import_batch_validations(validation_warnings)
+  def self.after_import_batch_validations(failed_instances)
     duplicate_facility_description_results.each do |record|
       record.errors[:base] << non_unique_error_msg(record)
-      add_warning_message(record, validation_warnings)
+      add_warning_message(record, failed_instances)
     end
 
     missing_facility_in_weam.each do |record|
       record.errors[:base] << missing_facility_error_msg(record)
-      add_warning_message(record, validation_warnings)
+      add_warning_message(record, failed_instances)
     end
   end
 
-  def self.add_warning_message(record, validation_warnings)
+  def self.add_warning_message(record, failed_instances)
     record.errors.add(:row, record.csv_row)
-    validation_warnings << record
+    failed_instances << record
   end
 
   def self.duplicate_facility_description_results
