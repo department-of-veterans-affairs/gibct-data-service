@@ -177,11 +177,6 @@ RSpec.describe DashboardsController, type: :controller do
         it 'does not add a new version' do
           expect { post(:push) }.to change(Version, :count).by(0)
         end
-
-        it 'returns an error message' do
-          post(:push)
-          expect(flash.alert).to eq('Production data not updated, remains at previous production version')
-        end
       end
     end
   end

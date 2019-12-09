@@ -56,19 +56,15 @@ class DashboardsController < ApplicationController
     else
       version.update(production: true)
 
-      if version.persisted?
-        flash.notice = 'Production data updated'
+      flash.notice = 'Production data updated'
 
-        # Build Sitemap and notify search engines in production only
-        ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
-        GibctSiteMapper.new(ping: ping)
+      # Build Sitemap and notify search engines in production only
+      ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
+      GibctSiteMapper.new(ping: ping)
 
-        if Settings.archiver.archive
-          # Archive previous versions of generated data
-          Archiver.archive_previous_versions
-        end
-      else
-        flash.alert = 'Production data not updated, remains at previous production version'
+      if Settings.archiver.archive
+        # Archive previous versions of generated data
+        Archiver.archive_previous_versions
       end
     end
 

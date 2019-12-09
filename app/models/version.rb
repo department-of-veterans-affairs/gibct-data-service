@@ -28,11 +28,9 @@ class Version < ApplicationRecord
   end
 
   def self.current_preview
-    if Version.current_production && Version.preview.newest.first.created_at < Version.current_production.created_at
-      return Version.current_production
-    end
+    return current_production if current_production && preview.newest.first.created_at < current_production.created_at
 
-    Version.preview.newest.first
+    preview.newest.first
   end
 
   def self.previews_exist?
