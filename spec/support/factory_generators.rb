@@ -36,4 +36,6 @@ FactoryBot.define do
   sequence(:cross) do |n|
     n.to_s.rjust(6, '0')
   end
+
+  sequence(:csv_row)
 end
