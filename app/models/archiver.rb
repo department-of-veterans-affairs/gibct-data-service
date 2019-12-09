@@ -60,7 +60,7 @@ module Archiver
       INSERT INTO #{archive.table_name}
       SELECT s.* FROM #{source.table_name} s
       JOIN #{versions.table_name} v ON s.version_id = v.id
-      WHERE version >= ? AND version < ?;
+      WHERE v.number >= ? AND v.number < ?;
     SQL
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
     ApplicationRecord.connection.execute(sql)
@@ -72,7 +72,7 @@ module Archiver
       SELECT s.* FROM #{source.table_name} s
       JOIN #{institutions.table_name} i ON s.institution_id = i.id
       JOIN #{versions.table_name} v ON s.version_id = v.id
-      WHERE s.version >= ? AND s.version < ?;
+      WHERE v.number >= ? AND v.number < ?;
     SQL
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
     ApplicationRecord.connection.execute(sql)
