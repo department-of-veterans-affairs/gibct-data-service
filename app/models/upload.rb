@@ -74,11 +74,8 @@ class Upload < ApplicationRecord
   end
 
   def self.since_last_preview_version
-    preview = if Version.current_production && Version.current_preview.created_at < Version.current_production.created_at
-                Version.current_production
-              else
-                Version.current_preview
-              end
+    preview = Version.current_preview
+
     return Upload.last_uploads if preview.blank?
 
     Upload.last_uploads.where('updated_at > ?', preview.updated_at)

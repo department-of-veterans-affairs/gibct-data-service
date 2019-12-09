@@ -28,6 +28,10 @@ class Version < ApplicationRecord
   end
 
   def self.current_preview
+    if Version.current_production && Version.preview.newest.first.created_at < Version.current_production.created_at
+      return Version.current_production
+    end
+
     Version.preview.newest.first
   end
 
