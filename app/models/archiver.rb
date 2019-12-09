@@ -8,11 +8,9 @@ module Archiver
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive }
   ].freeze
 
-  ARCHIVE_TYPES_BY_VERSION_ID = [
-  ].freeze
+  ARCHIVE_TYPES_BY_VERSION_ID = [].freeze
 
-  ARCHIVE_TYPES_BY_PARENT_ID = [
-  ].freeze
+  ARCHIVE_TYPES_BY_PARENT_ID = [].freeze
 
   def self.archive_previous_versions
     production_version = Version.current_production.number
