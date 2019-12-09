@@ -10,5 +10,6 @@ FactoryBot.define do
     graduate { '234' }
     full_time_modifier { 'S' }
     length { '1001' }
+    csv_row { generate :csv_row }
   end
 end

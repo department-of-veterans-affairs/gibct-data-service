@@ -67,9 +67,10 @@ module V0
       result = {
         type: count_field(search_results, :program_type),
         state: count_field(search_results, :state),
-        provider: count_field(search_results, :institution_name),
+        provider: embed(count_field(search_results, :institution_name)),
         country: embed(count_field(search_results, :country))
       }
+
       add_active_search_facets(result)
     end
 

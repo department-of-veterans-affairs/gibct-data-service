@@ -99,3 +99,7 @@ RSpec/ExampleLength:
 
 RSpec/NestedGroups:
   Max: 4
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/MultipleExpectations:
+  Enabled: false
