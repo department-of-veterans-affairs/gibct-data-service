@@ -16,6 +16,8 @@ class InstitutionProgram < ApplicationRecord
   delegate :preferred_provider, to: :institution
   delegate :facility_code, to: :institution
 
+  self.per_page = 10
+
   def institution_name
     institution.institution
   end
