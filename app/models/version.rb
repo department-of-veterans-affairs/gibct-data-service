@@ -28,7 +28,7 @@ class Version < ApplicationRecord
   end
 
   def self.current_preview
-    return current_production if current_production && preview.newest.first.created_at < current_production.created_at
+    return nil if current_production && preview.newest.first.created_at < current_production.created_at
 
     preview.newest.first
   end
