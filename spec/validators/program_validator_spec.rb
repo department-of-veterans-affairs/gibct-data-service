@@ -3,51 +3,60 @@
 require 'rspec'
 
 describe ProgramValidator do
-  describe '#validate' do
+  describe 'after_import_batch_validations' do
     context 'when record is unique and facility_code is present in Weam table' do
       it 'passes validation' do
-        program = create :program
+        weam = create :weam
+        create :program, facility_code: weam.facility_code
 
-        expect(program).to be_valid
+        failed_instances = []
+        described_class.after_import_batch_validations(failed_instances)
+        expect(failed_instances).to be_empty
       end
     end
 
     context 'when record does not have unique facility_code & description values' do
-      def check_invalid_programs(program, program_b)
-        expect(program.valid?(:after_import)).to eq(false)
-        expect(program_b.valid?(:after_import)).to eq(false)
-      end
+      def check_error_messages(failed_instances)
+        failed_instances.each_with_index do |record, index|
+          expect(record.display_errors_with_row)
+            .to include('The Facility Code & Description (Program Name) combination is not unique:')
 
-      def check_error_messages(program)
-        error_messages = program.errors.messages
-        expect(error_messages.any?).to eq(true)
-        error_message = 'The Facility Code & Description (Program Name) combination is not unique:' \
-"\n#{program.facility_code}, #{program.description}"
-        expect(error_messages[:base]).to include(error_message)
+          expect(record.display_errors_with_row).to include("Row #{index}")
+        end
       end
 
       it 'fails validation' do
-        program = create :program
-        program_b = create :program, facility_code: program.facility_code
-        check_invalid_programs(program, program_b)
-        check_error_messages(program)
+        weam = create :weam
+        create :program, facility_code: weam.facility_code, csv_row: 0
+        create :program, facility_code: weam.facility_code, csv_row: 1
+        failed_instances = []
+        described_class.after_import_batch_validations(failed_instances)
+
+        expect(failed_instances).not_to be_empty
+        check_error_messages(failed_instances)
       end
     end
 
     context 'when record has invalid facility code error message' do
-      def check_invalid_code_messages(program)
-        error_messages = program.errors.messages
-        expect(error_messages.any?).to eq(true)
-        error_message =
-          "The Facility Code #{program.facility_code} " \
-        'is not contained within the most recently uploaded weams.csv'
-        expect(error_messages[:base]).to include(error_message)
+      def check_error_messages(failed_instances)
+        failed_instances.each_with_index do |record, index|
+          expect(record.display_errors_with_row).to include('The Facility Code ')
+          expect(record.display_errors_with_row)
+            .to include('is not contained within the most recently uploaded weams.csv')
+
+          expect(record.display_errors_with_row).to include("Row #{index}")
+        end
       end
 
       it 'fails validation' do
-        program = create :program, facility_code: 0o0
-        expect(program.valid?(:after_import)).to eq(false)
-        check_invalid_code_messages(program)
+        create :program, facility_code: 0o0, csv_row: 0
+        failed_instances = []
+
+        described_class.after_import_batch_validations(failed_instances)
+
+        expect(failed_instances).not_to be_empty
+
+        check_error_messages(failed_instances)
       end
     end
   end
