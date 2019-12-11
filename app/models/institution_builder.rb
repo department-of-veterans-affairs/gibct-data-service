@@ -560,7 +560,7 @@ module InstitutionBuilder
           AND c.version = ?
           AND c.approved = true;
 
-      UPDATE institution_programs SET 
+      UPDATE institution_programs SET
         length_in_hours = 0,
         length_in_weeks = 0
       WHERE id IN (
