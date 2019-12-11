@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_183932) do
+ActiveRecord::Schema.define(version: 2019_12_10_092800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -612,6 +612,8 @@ ActiveRecord::Schema.define(version: 2019_11_12_183932) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cross"], name: "index_ipeds_hds_on_cross"
+    t.index ["institution"], name: "index_ipeds_hds_on_institution"
+    t.index ["ope"], name: "index_ipeds_hds_on_ope"
   end
 
   create_table "ipeds_ic_ays", id: :serial, force: :cascade do |t|
@@ -1546,8 +1548,10 @@ ActiveRecord::Schema.define(version: 2019_11_12_183932) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
+    t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code", unique: true
     t.index ["institution"], name: "index_weams_on_institution"
+    t.index ["ope"], name: "index_weams_on_ope"
     t.index ["state"], name: "index_weams_on_state"
   end
 
