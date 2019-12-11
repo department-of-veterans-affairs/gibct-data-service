@@ -19,15 +19,7 @@ module CsvHelper
     def load_records(file, options)
       records = []
 
-      records = case name
-                when Program.name
-                  load_csv_with_row(file, records, options)
-                when Institution.name
-                  load_csv_with_version(file, records, options)
-                else
-                  load_csv(file, records, options)
-                end
-
+      records = [Program, Weam].include?(klass) ? load_csv_with_row(file, records, options) : load_csv(file, records, options)
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       after_import_validations(records, results.failed_instances, options)
@@ -38,15 +30,6 @@ module CsvHelper
     def load_csv(file, records, options)
       SmarterCSV.process(file, merge_options(options)).each do |row|
         records << klass.new(row)
-      end
-
-      records
-    end
-
-    def load_csv_with_version(file, records, options)
-      version = Version.current_preview
-      SmarterCSV.process(file, merge_options(options)).each do |row|
-        records << klass.new(row.merge(version: version.number))
       end
 
       records
