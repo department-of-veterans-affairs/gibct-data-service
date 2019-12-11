@@ -12,6 +12,8 @@ class Weam < ApplicationRecord
 
   REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'
 
+  TYPES = ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE', 'FLIGHT', 'FOR PROFIT', 'PUBLIC'].freeze
+
   LAW_CODES_BLOCKING_APPROVED_STATUS = [
     'educational institution is not approved',
     'educational institution is approved for chapter 31 only'
@@ -73,8 +75,9 @@ class Weam < ApplicationRecord
     'parent facility code' => { column: :parent_facility_code_id, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, :institution, :institution_type_name, presence: true
+  validates :facility_code, :institution, :institution_type_name, :country, presence: true
   validates :bah, numericality: true, allow_blank: true
+  validates :institution_type_name, inclusion: { in: TYPES }
 
   after_initialize :derive_dependent_columns
 
