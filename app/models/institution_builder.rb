@@ -533,12 +533,12 @@ module InstitutionBuilder
       )
       SELECT
         program_type,
-        UPPER(description),
+        description,
         full_time_undergraduate,
         graduate,
         full_time_modifier,
         length_in_weeks,
-        c.version,
+        ?,
         school_locale,
         provider_website,
         provider_email_address,
@@ -548,7 +548,7 @@ module InstitutionBuilder
         student_vet_group_website,
         vet_success_name,
         vet_success_email,
-        UPPER(vet_tec_program),
+        vet_tec_program,
         tuition_amount,
         length_in_weeks,
         c.id
@@ -558,117 +558,18 @@ module InstitutionBuilder
           AND vet_tec_program IS NOT NULL
         INNER JOIN institutions c ON a.facility_code = c.facility_code
           AND c.version = ?
-          AND c.approved = true
-      WHERE
-        a.id NOT IN(
-            SELECT id
-            FROM programs
-              INNER JOIN (
-                SELECT
-                  UPPER(facility_code) facility_code,
-                  UPPER(description) description
-                FROM programs
-                GROUP BY
-                  UPPER(facility_code),
-                  UPPER(description)
-                HAVING COUNT(*) > 1
-              ) dupes on UPPER(programs.facility_code) = dupes.facility_code
-                AND UPPER(programs.description) = dupes.description
-          )
-        AND b.id NOT IN(
-          SELECT id
-          FROM edu_programs
-            INNER JOIN (
-              SELECT
-                UPPER(facility_code) facility_code,
-                UPPER(vet_tec_program) vet_tec_program
-              FROM edu_programs
-              GROUP BY
-                UPPER(facility_code),
-                UPPER(vet_tec_program)
-              HAVING COUNT(*) > 1
-            ) dupes on UPPER(edu_programs.facility_code) = dupes.facility_code
-              AND UPPER(edu_programs.vet_tec_program) = UPPER(dupes.vet_tec_program)
-        )
-      UNION
-      SELECT
-        program_type,
-        UPPER(description),
-        full_time_undergraduate,
-        graduate,
-        full_time_modifier,
-        0,
-        c.version,
-        school_locale,
-        provider_website,
-        provider_email_address,
-        phone_area_code,
-        phone_number,
-        student_vet_group,
-        student_vet_group_website,
-        vet_success_name,
-        vet_success_email,
-        UPPER(vet_tec_program),
-        tuition_amount,
-        0,
-        c.id
-      FROM programs a
-        INNER JOIN edu_programs b ON a.facility_code = b.facility_code
-          AND LOWER(description) = LOWER(vet_tec_program)
-          AND vet_tec_program IS NOT NULL
-        INNER JOIN institutions c ON a.facility_code = c.facility_code
-          AND c.version = ?
-          AND c.approved = true
-      WHERE
-        a.id IN(
-            SELECT id
-            FROM programs
-              INNER JOIN (
-                SELECT
-                  UPPER(facility_code) facility_code,
-                  UPPER(description) description
-                FROM programs
-                GROUP BY
-                  UPPER(facility_code),
-                  UPPER(description)
-                HAVING COUNT(*) > 1
-              ) dupes on UPPER(programs.facility_code) = dupes.facility_code
-                AND UPPER(programs.description) = dupes.description
-          )
-        OR b.id IN(
-          SELECT id
-          FROM edu_programs
-            INNER JOIN (
-              SELECT
-                UPPER(facility_code) facility_code,
-                UPPER(vet_tec_program) vet_tec_program
-              FROM edu_programs
-              GROUP BY
-                UPPER(facility_code),
-                UPPER(vet_tec_program)
-              HAVING COUNT(*) > 1
-            ) dupes on UPPER(edu_programs.facility_code) = dupes.facility_code
-              AND UPPER(edu_programs.vet_tec_program) = dupes.vet_tec_program
-        )
-      GROUP BY
-        program_type,
-        UPPER(description),
-        full_time_undergraduate,
-        graduate,
-        full_time_modifier,
-        c.version,
-        school_locale,
-        provider_website,
-        provider_email_address,
-        phone_area_code,
-        phone_number,
-        student_vet_group,
-        student_vet_group_website,
-        vet_success_name,
-        vet_success_email,
-        UPPER(vet_tec_program),
-        tuition_amount,
-        c.id
+          AND c.approved = true;
+
+      UPDATE institution_programs SET 
+        length_in_hours = 0,
+        length_in_weeks = 0
+      WHERE id IN (
+        SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id HAVING COUNT(*) > 1
+      );
+
+      DELETE FROM institution_programs WHERE id NOT IN (
+        SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id
+      );
     SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
