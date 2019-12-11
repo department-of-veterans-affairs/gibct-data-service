@@ -578,9 +578,10 @@ module InstitutionBuilder
         phone_number,
         phone_extension,
         email,
-        version)
+        version,
+        institution_id)
       Select
-        facility_code,
+        a.facility_code,
         institution_name,
         priority,
         first_name,
@@ -590,11 +591,15 @@ module InstitutionBuilder
         phone_number,
         phone_extension,
         email,
-        ?
-      FROM school_certifying_officials
+        ?,
+        b.id
+      FROM school_certifying_officials a 
+        INNER JOIN institutions b ON a.facility_code = b.facility_code
+          AND b.version = ?
+          AND b.approved = true
     SQL
 
-    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
+    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
   end
 end
