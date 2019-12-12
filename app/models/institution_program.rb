@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ApplicationRecord
-  validates :version, :institution, :description, presence: true
+  validates :version, :institution, presence: true
 
   PROGRAM_TYPES = %w[
     IHL
