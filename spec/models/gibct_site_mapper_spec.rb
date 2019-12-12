@@ -3,17 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe GibctSiteMapper, type: :model do
+  let(:preview_version) { Version.current_preview }
   let(:production_version) { Version.current_production }
   let(:sitemaps_path) { Rails.root.join('public', 'sitemap.xml.gz') }
   let(:preview_institution_fc) { '00000001' }
   let(:production_institution_fc) { '00000002' }
 
   before do
-    create :version, :production
-    version = create :version, :preview
     File.delete(sitemaps_path) if File.exist?(sitemaps_path)
-    %i[preview production].each { |p| create :version, p }
-    create :institution, version: version.number, facility_code: preview_institution_fc
+    %i[production preview].each { |p| create :version, p }
+    create :institution, version: preview_version.number, facility_code: preview_institution_fc
     create :institution, version: production_version.number, facility_code: production_institution_fc
   end
 
