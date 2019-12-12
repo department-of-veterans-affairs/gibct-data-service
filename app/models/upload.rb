@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
+  attr_accessor :skip_lines, :col_sep, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions
 
@@ -39,8 +39,12 @@ class Upload < ApplicationRecord
     false
   end
 
+  def required_headers?
+    upload_file && csv_type && skip_lines && col_sep
+  end
+
   def check_for_headers
-    return unless upload_file && csv_type && skip_lines
+    return unless required_headers?
 
     missing_headers.clear
     extra_headers.clear
@@ -96,7 +100,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_file_headers
-    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1')
+    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1', col_sep: col_sep)
     skip_lines.to_i.times { csv.readline }
 
     (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }

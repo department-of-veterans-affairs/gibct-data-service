@@ -13,8 +13,15 @@
       </div>
 
       <div class="form-group">
+        <%= f.label(:column_separator) %><br />
+        <%= f.select(:col_sep, options_for_select(Settings.csv_upload.column_separators, @upload.col_sep),
+                     { include_blank: "Select column separator" },
+                     { class: "form-control", required: true }) %>
+      </div>
+
+      <div class="form-group">
         <%= f.label(:upload_file) %>
-        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: "text/csv") %>
+        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: "text/csv, text/plain") %>
       </div>
 
       <div class="form-group">

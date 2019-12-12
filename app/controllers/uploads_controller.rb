@@ -56,6 +56,7 @@ class UploadsController < ApplicationController
   def new_upload(csv_type)
     upload = Upload.new(csv_type: csv_type)
     upload.skip_lines = defaults(csv_type)['skip_lines']
+    upload.col_sep = defaults(csv_type)['col_sep']
 
     upload
   end
@@ -79,16 +80,18 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :col_sep, :upload_file, :comment)
   end
 
   def call_load
     file = @upload.upload_file.tempfile
     skip_lines = @upload.skip_lines.try(:to_i)
-    data = klass.load(file, skip_lines: skip_lines)
+    col_sep = @upload.col_sep
+    data = klass.load(file, skip_lines: skip_lines, col_sep: col_sep)
 
     @upload.update(ok: data.present? && data.ids.present?)
-    raise(StandardError, "There was no saved #{klass} data") unless @upload.ok?
+    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
+    raise(StandardError, error_msg) unless @upload.ok?
 
     data
   end
