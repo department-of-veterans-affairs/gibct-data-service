@@ -99,7 +99,7 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   def create_production_version
     create :version, :preview
-    create :version, :production, number: current_preview_number
+    Version.current_preview.update(production: true)
     create factory, version: current_production_number
   end
 
