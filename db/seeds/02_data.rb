@@ -64,7 +64,8 @@ if ENV['CI'].blank?
 
   if result[:success]
     puts "Setting version: #{result[:version].number} as production"
-    Version.create(user: user, number: result[:version].number, production: true)
+    version = Version.current_preview
+    version.update(production: true)
   else
     puts "Error occurred: #{result[:notice]}: #{result[:error_msg]}"
   end
