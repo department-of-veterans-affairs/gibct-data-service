@@ -558,7 +558,18 @@ module InstitutionBuilder
           AND vet_tec_program IS NOT NULL
         INNER JOIN institutions c ON a.facility_code = c.facility_code
           AND c.version = ?
-          AND c.approved = true
+          AND c.approved = true;
+
+      UPDATE institution_programs SET
+        length_in_hours = 0,
+        length_in_weeks = 0
+      WHERE id IN (
+        SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id HAVING COUNT(*) > 1
+      );
+
+      DELETE FROM institution_programs WHERE id NOT IN (
+        SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id
+      );
     SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
