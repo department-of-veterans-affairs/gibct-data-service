@@ -80,20 +80,27 @@ RSpec.describe UploadsController, type: :controller do
       it 'Uploads a csv file' do
         expect do
           post :create,
-               params: { upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } }
+               params: {
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ','  }
+               }
         end.to change(Weam, :count).by(2)
       end
 
       it 'redirects to show' do
         expect(
           post(:create,
-               params: { upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+               params: {
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ','  }
+               })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
 
       it 'formats an notice message when some records do not validate' do
         file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
-        post(:create, params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+        post(:create,
+             params: {
+               upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' }
+             })
 
         expect(flash[:alert]['The following rows should be checked: ']).to be_present
       end
@@ -104,7 +111,11 @@ RSpec.describe UploadsController, type: :controller do
         it 'renders the new view' do
           expect(
             post(:create,
-                 params: { upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Blah' } })
+                 params: {
+                   upload: {
+                     upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Blah', col_sep: ','
+                   }
+                 })
           ).to render_template(:new)
         end
       end
@@ -112,7 +123,10 @@ RSpec.describe UploadsController, type: :controller do
       context 'with a nil upload file' do
         it 'renders the new view' do
           expect(
-            post(:create, params: { upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+            post(:create,
+                 params: {
+                   upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' }
+                 })
           ).to render_template(:new)
         end
       end
@@ -123,13 +137,17 @@ RSpec.describe UploadsController, type: :controller do
         file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
 
         expect(
-          post(:create, params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+          post(:create,
+               params: {
+                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' }
+               })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
 
       it 'formats a notice message in the flash' do
         file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
-        post(:create, params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+        post(:create,
+             params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' } })
 
         message = flash[:alert]['The following headers should be checked: '].try(:first)
         expect(message).to match(/Independent study is a missing header/)
