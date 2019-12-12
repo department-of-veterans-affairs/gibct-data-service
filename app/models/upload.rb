@@ -39,8 +39,12 @@ class Upload < ApplicationRecord
     false
   end
 
+  def required_headers?
+    upload_file && csv_type && skip_lines && col_sep
+  end
+
   def check_for_headers
-    return unless upload_file && csv_type && skip_lines && col_sep
+    return unless required_headers?
 
     missing_headers.clear
     extra_headers.clear
