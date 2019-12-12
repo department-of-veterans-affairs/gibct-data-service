@@ -10,6 +10,7 @@ FactoryBot.define do
     end
 
     user
+    col_sep { ',' }
 
     csv_type { Weam.name }
     sequence :comment do |n|
