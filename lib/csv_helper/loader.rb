@@ -19,9 +19,12 @@ module CsvHelper
     def load_records(file, options)
       records = []
 
-      records = [Program, Weam].include?(klass) ?
-                    load_csv_with_row(file, records, options) :
-                    load_csv(file, records, options)
+      records = if [Program, Weam].include?(klass)
+                  load_csv_with_row(file, records, options)
+                else
+                  load_csv(file, records, options)
+                end
+
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       after_import_validations(records, results.failed_instances, options)
