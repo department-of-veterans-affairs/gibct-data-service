@@ -4,6 +4,12 @@ module SeedUtils
   module_function
 
   def seed_table_with_upload(klass, user, options = {})
+    # Pull the default CSV options to be used
+    default_options = Rails.application.config.csv_defaults[klass.name] ||
+                      Rails.application.config.csv_defaults['generic']
+    # Merge with provided options
+    seed_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }.merge(options)
+
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.csv"
     csv_path = 'sample_csvs'
@@ -18,7 +24,7 @@ module SeedUtils
     )
 
     upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-    seed_table(klass, "#{csv_path}/#{csv_name}", options)
+    seed_table(klass, "#{csv_path}/#{csv_name}", seed_options)
     upload.update(ok: true)
 
     puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
