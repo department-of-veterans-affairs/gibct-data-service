@@ -150,8 +150,11 @@ RSpec.describe DashboardsController, type: :controller do
       context 'when successful' do
         it 'sets the new production version' do
           SiteMapperHelper.silence do
-            expect { post(:push) }.to change(Version, :count).by(0)
-            expect(Version.current_production).not_to eq(nil)
+            current_preview = Version.current_preview
+            expect(Version.current_production).to eq(nil)
+            post(:push)
+            expect(Version.current_production.production).to eq(true)
+            expect(Version.current_production).to eq(current_preview)
           end
         end
 
@@ -160,19 +163,6 @@ RSpec.describe DashboardsController, type: :controller do
             post(:push)
           end
           expect(flash.notice).to eq('Production data updated')
-        end
-      end
-
-      context 'when is not successful' do
-        before do
-          version = instance_double('Version')
-          allow(Version).to receive(:current_preview).and_return(version)
-          allow(version).to receive(:update).and_return(version)
-          allow(version).to receive(:persisted?).and_return(false)
-        end
-
-        it 'does not add a new version' do
-          expect { post(:push) }.to change(Version, :count).by(0)
         end
       end
     end
