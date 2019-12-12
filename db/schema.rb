@@ -134,7 +134,6 @@ ActiveRecord::Schema.define(version: 2019_12_11_121312) do
     t.integer "weam_id"
     t.integer "crosswalk_id"
     t.integer "ipeds_hd_id"
-    t.boolean "processed"
   end
 
   create_table "crosswalks", id: :serial, force: :cascade do |t|
