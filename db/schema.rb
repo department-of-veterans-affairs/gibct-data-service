@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_092800) do
+ActiveRecord::Schema.define(version: 2019_12_11_121312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,13 @@ ActiveRecord::Schema.define(version: 2019_12_10_092800) do
     t.datetime "updated_at", null: false
     t.index ["facility_code"], name: "index_complaints_on_facility_code"
     t.index ["ope6"], name: "index_complaints_on_ope6"
+  end
+
+  create_table "crosswalk_issues", force: :cascade do |t|
+    t.integer "weam_id"
+    t.integer "crosswalk_id"
+    t.integer "ipeds_hd_id"
+    t.boolean "processed"
   end
 
   create_table "crosswalks", id: :serial, force: :cascade do |t|
@@ -1178,6 +1185,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_092800) do
     t.string "graduate", limit: 15
     t.string "full_time_modifier", limit: 1
     t.string "length", limit: 7
+    t.integer "csv_row"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 

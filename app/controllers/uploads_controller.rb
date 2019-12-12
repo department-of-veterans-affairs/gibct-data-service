@@ -20,7 +20,8 @@ class UploadsController < ApplicationController
       failed = load_csv.failed_instances
       @upload.check_for_headers
 
-      validation_warnings = failed.map(&:display_errors_with_row).sort
+      validation_warnings = failed.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
+                                  .map(&:display_errors_with_row)
       header_warnings = @upload.all_warnings
 
       flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
@@ -88,6 +89,8 @@ class UploadsController < ApplicationController
 
     @upload.update(ok: data.present? && data.ids.present?)
     raise(StandardError, "There was no saved #{klass} data") unless @upload.ok?
+
+    CrosswalkIssue.build if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     data
   end
