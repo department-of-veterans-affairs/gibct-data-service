@@ -11,8 +11,7 @@ RSpec.describe GibctSiteMapper, type: :model do
 
   before do
     File.delete(sitemaps_path) if File.exist?(sitemaps_path)
-
-    %i[preview production].each { |p| create :version, p }
+    %i[production preview].each { |p| create :version, p }
     create :institution, version: preview_version.number, facility_code: preview_institution_fc
     create :institution, version: production_version.number, facility_code: production_institution_fc
   end
