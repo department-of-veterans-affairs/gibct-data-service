@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ApplicationRecord
-
   PROGRAM_TYPES = %w[
     IHL
     NCD

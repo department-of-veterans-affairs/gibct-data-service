@@ -15,7 +15,7 @@ class WeamValidator
 
   def self.duplicate_facility_code
     subquery = Weam.select('UPPER(facility_code) as facility_code')
-                      .group('UPPER(facility_code)').having('count(*) > 1')
+                   .group('UPPER(facility_code)').having('count(*) > 1')
     Weam.joins("INNER JOIN (#{subquery.to_sql}) dupes on UPPER(weams.facility_code) = dupes.facility_code")
   end
 
