@@ -19,6 +19,10 @@ RSpec.describe Program, type: :model do
       expect(build(:program, facility_code: nil)).not_to be_valid
     end
 
+    it 'requires a valid description' do
+      expect(build(:program, description: nil)).not_to be_valid
+    end
+
     it 'requires a valid program_type' do
       expect(build(:program, program_type: 'NCD')).to be_valid
     end

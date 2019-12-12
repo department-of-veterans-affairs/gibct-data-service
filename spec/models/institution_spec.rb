@@ -4,6 +4,13 @@ require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Institution, type: :model do
+  describe 'when validating' do
+    subject(:institution) { create :institution }
+
+    it 'has a valid factory' do
+      expect(institution).to be_valid
+    end
+  end
 
   describe 'scorecard_link' do
     let(:url) { 'https://collegescorecard.ed.gov/school/?1234567-myschool' }
