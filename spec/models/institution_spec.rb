@@ -1,49 +1,9 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe Institution, type: :model do
-  describe 'when importing or exporting' do
-    before { create :version, production: false }
-
-    it_behaves_like 'a loadable model', skip_lines: 0
-    it_behaves_like 'an exportable model', skip_lines: 0
-  end
-
-  describe 'when validating' do
-    subject(:institution) { create :institution }
-
-    it 'has a valid factory' do
-      expect(institution).to be_valid
-    end
-
-    it 'requires a valid and unique facility_code' do
-      expect(build(:institution, facility_code: nil)).not_to be_valid
-
-      duplicate_facility = build :institution, facility_code: institution.facility_code
-      expect(duplicate_facility).not_to be_valid
-      expect(duplicate_facility.errors.messages).to eq(facility_code: ['has already been taken'])
-    end
-
-    it 'requires a version' do
-      expect(build(:institution, version: nil)).not_to be_valid
-    end
-
-    it 'requires an institution (name)' do
-      expect(build(:institution, institution: nil)).not_to be_valid
-    end
-
-    it 'requires a country' do
-      expect(build(:institution, country: nil)).not_to be_valid
-    end
-
-    it 'requires a valid institution_type_name' do
-      expect(build(:institution, institution_type_name: nil)).not_to be_valid
-      expect(build(:institution, institution_type_name: 'blah-blah')).not_to be_valid
-    end
-  end
 
   describe 'scorecard_link' do
     let(:url) { 'https://collegescorecard.ed.gov/school/?1234567-myschool' }
