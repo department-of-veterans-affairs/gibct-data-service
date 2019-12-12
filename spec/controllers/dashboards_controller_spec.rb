@@ -148,9 +148,6 @@ RSpec.describe DashboardsController, type: :controller do
       end
 
       context 'when successful' do
-        before do
-        end
-
         it 'sets the new production version' do
           SiteMapperHelper.silence do
             expect { post(:push) }.to change(Version, :count).by(0)
