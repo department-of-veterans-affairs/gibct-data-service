@@ -28,9 +28,9 @@ class Version < ApplicationRecord
   end
 
   def self.current_preview
-    return nil if current_production && preview.newest.first.created_at < current_production.created_at
-
-    preview.newest.first
+    cp = preview.newest
+    cp = cp.where('created_at > ?', current_production.created_at) if current_production
+    cp.first
   end
 
   def self.previews_exist?
