@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_11_203831) do
+ActiveRecord::Schema.define(version: 2019_12_13_163728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,11 +87,22 @@ ActiveRecord::Schema.define(version: 2019_12_11_203831) do
     t.index ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true
   end
 
+  create_table "arf_gibills", id: :serial, force: :cascade do |t|
+    t.string "facility_code", null: false
+    t.string "institution"
+    t.integer "gibill", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_code"], name: "index_arf_gibills_on_facility_code", unique: true
+    t.index ["institution"], name: "index_arf_gibills_on_institution"
+  end
+
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
     t.string "name"
     t.float "float_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_calculator_constants_on_name"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
