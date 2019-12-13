@@ -69,6 +69,9 @@ if ENV['CI'].blank?
     puts "Error occurred: #{result[:notice]}: #{result[:error_msg]}"
   end
 
+  puts 'Building CrosswalkIssues'
+  CrosswalkIssue.rebuild
+
   puts "Done ... Woo Hoo!"
 end
 

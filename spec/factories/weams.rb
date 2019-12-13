@@ -67,6 +67,10 @@ FactoryBot.define do
       facility_code { '10X00000' }
     end
 
+    trait :extension_campus_type do
+      campus_type { 'E' }
+    end
+
     trait :higher_learning do
       institution_of_higher_learning_indicator { true }
     end
@@ -135,6 +139,22 @@ FactoryBot.define do
       state { 'NY' }
 
       institution_of_higher_learning_indicator { true }
+    end
+
+    trait :crosswalk_issue_matchable_by_cross do
+      cross { '888888' }
+    end
+
+    trait :crosswalk_issue_matchable_by_ope do
+      ope { '88888888' }
+    end
+
+    trait :crosswalk_issue_matchable_by_institution do
+      institution { 'match' }
+    end
+
+    trait :crosswalk_issue_matchable_by_facility_code do
+      facility_code { '99Z99999' }
     end
 
     initialize_with do

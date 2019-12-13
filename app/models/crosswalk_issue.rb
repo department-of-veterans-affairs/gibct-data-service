@@ -13,11 +13,11 @@ class CrosswalkIssue < ApplicationRecord
     weam.nil? ? nil : weam.facility_code
   end
 
-  def weams_ipeds
+  def weam_ipeds
     weam.nil? ? nil : weam.cross
   end
 
-  def weams_ope
+  def weam_ope
     weam.nil? ? nil : weam.ope
   end
 
@@ -38,7 +38,7 @@ class CrosswalkIssue < ApplicationRecord
   end
 
   # rubocop:disable Metrics/MethodLength
-  def self.build
+  def self.rebuild
     CrosswalkIssue.delete_all
 
     sql = <<-SQL
@@ -59,21 +59,20 @@ class CrosswalkIssue < ApplicationRecord
       WHERE
         (institution_of_higher_learning_indicator = true OR non_college_degree_indicator = true)
         AND NOT(
-          weams.cross = ipeds_hds.cross
-          AND weams.cross = crosswalks.cross
-          AND weams.cross IS NOT NULL
+          weams.cross IS NOT NULL
           AND ipeds_hds.cross IS NOT NULL
           AND crosswalks.cross IS NOT NULL
+          AND weams.cross = ipeds_hds.cross
+          AND weams.cross = crosswalks.cross
         )
         AND NOT(
           weams.cross IS NULL
           AND weams.ope IS NULL
-          AND ipeds_hds.cross IS NULL
           AND ipeds_hds.ope IS NULL
           AND crosswalks.cross IS NULL
           AND crosswalks.ope IS NULL
         )
-        AND UPPER(weams.campus_type) != 'E'
+        AND NOT(weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) = 'E')
       ORDER BY weams.institution
     SQL
 
