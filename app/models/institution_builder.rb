@@ -50,7 +50,6 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version_number)
     build_institution_programs(version_number)
     build_versioned_school_certifying_official(version_number)
-    add_version_id(version_number)
   end
 
   def self.run(user)
@@ -474,8 +473,7 @@ module InstitutionBuilder
       mha_name,
       version,
       created_at,
-      updated_at,
-      version_id
+      updated_at
     )
     SELECT
       zip,
@@ -484,17 +482,16 @@ module InstitutionBuilder
       concat_ws(', ', physical_city, physical_state) as physical_location,
       ?,
       #{conn.quote(timestamp)},
-      #{conn.quote(timestamp)},
-      v.id
-      FROM weams JOIN versions v ON v.number = ?
+      #{conn.quote(timestamp)}
+    FROM weams
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
-    GROUP BY zip, bah, dod_bah, physical_location, v.id
+    GROUP BY zip, bah, dod_bah, physical_location
     ORDER BY zip
     SQL
 
-    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number, version_number])
+    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
     ZipcodeRate.connection.execute(sql)
   end
 
@@ -610,16 +607,5 @@ module InstitutionBuilder
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
-  end
-
-  def self.add_version_id(version_number)
-    str = <<-SQL
-      UPDATE institutions SET
-        version_id = versions.id
-      FROM versions
-      WHERE versions.number = #{version_number};
-    SQL
-
-    Institution.connection.update(str)
   end
 end
