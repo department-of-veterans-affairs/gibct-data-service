@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class EduProgramValidator < ActiveModel::Validator
+  VALIDATION_DESCRIPTIONS = [
+      "The Facility Code & VET TEC Program (Program Name) combination should be unique",
+      "The Facility Code should be contained within the most recently uploaded weams.csv"
+  ].freeze
+
   def validate(record)
     duplicates_exist = EduProgram.where(['vet_tec_program = ? AND facility_code = ? AND id != ?',
                                          record.vet_tec_program, record.facility_code, record.id]).any?

@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class ProgramValidator
+  VALIDATION_DESCRIPTIONS = [
+      "The Facility Code & Description (Program Name) combination should be unique",
+      "The Facility Code should be contained within the most recently uploaded weams.csv"
+  ].freeze
+
   def self.after_import_batch_validations(failed_instances)
     duplicate_facility_description_results.each do |record|
       record.errors[:base] << non_unique_error_msg(record)
