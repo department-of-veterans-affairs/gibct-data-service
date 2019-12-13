@@ -4,6 +4,7 @@ require 'rspec'
 
 describe WeamValidator do
   let(:row_offset) { 2 }
+
   describe 'after_import_batch_validations' do
     context 'when facility_code is unique' do
       it 'passes validation' do
@@ -27,7 +28,7 @@ describe WeamValidator do
 
       it 'fails validation' do
         weam = create :weam, csv_row: row_offset
-        create :weam, facility_code: weam.facility_code, csv_row: row_offset+1
+        create :weam, facility_code: weam.facility_code, csv_row: row_offset + 1
 
         failed_instances = []
         described_class.after_import_batch_validations(failed_instances)
