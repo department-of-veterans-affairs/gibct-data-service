@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe CrosswalkIssue, type: :model do
-
   describe 'accessors' do
     it 'return weam fields' do
       issue = create :crosswalk_issue, :with_weam_match

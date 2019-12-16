@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :crosswalk_issue do
-
     trait :with_weam_match do
       weam { create(:weam, cross: 'a', ope: 'b', institution: 'c', facility_code: 'd') }
     end
@@ -14,6 +13,5 @@ FactoryBot.define do
     trait :with_crosswalk_match do
       crosswalk { create(:crosswalk, cross: 'a', ope: 'b') }
     end
-
   end
 end
