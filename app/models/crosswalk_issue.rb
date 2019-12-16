@@ -5,38 +5,6 @@ class CrosswalkIssue < ApplicationRecord
   belongs_to :ipeds_hd
   belongs_to :weam
 
-  def institution_name
-    weam.nil? ? nil : weam.institution
-  end
-
-  def facility_code
-    weam.nil? ? nil : weam.facility_code
-  end
-
-  def weam_ipeds
-    weam.nil? ? nil : weam.cross
-  end
-
-  def weam_ope
-    weam.nil? ? nil : weam.ope
-  end
-
-  def ipeds_hd_ipeds
-    ipeds_hd.nil? ? nil : ipeds_hd.cross
-  end
-
-  def ipeds_hd_ope
-    ipeds_hd.nil? ? nil : ipeds_hd.ope
-  end
-
-  def crosswalk_ipeds
-    crosswalk.nil? ? nil : crosswalk.cross
-  end
-
-  def crosswalk_ope
-    crosswalk.nil? ? nil : crosswalk.ope
-  end
-
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
     CrosswalkIssue.delete_all

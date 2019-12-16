@@ -1,28 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe CrosswalkIssue, type: :model do
-  describe 'accessors' do
-    it 'return weam fields' do
-      issue = create :crosswalk_issue, :with_weam_match
-      expect(issue.weam_ipeds).not_to eq(nil)
-      expect(issue.weam_ope).not_to eq(nil)
-      expect(issue.institution_name).not_to eq(nil)
-      expect(issue.facility_code).not_to eq(nil)
-    end
-
-    it 'returns ipeds_hd fields' do
-      issue = create :crosswalk_issue, :with_ipeds_hd_match
-      expect(issue.ipeds_hd_ipeds).not_to eq(nil)
-      expect(issue.ipeds_hd_ope).not_to eq(nil)
-    end
-
-    it 'returns crosswalk fields' do
-      issue = create :crosswalk_issue, :with_crosswalk_match
-      expect(issue.crosswalk_ipeds).not_to eq(nil)
-      expect(issue.crosswalk_ope).not_to eq(nil)
-    end
-  end
-
   describe 'when building' do
     it 'matches NCD weams and ipeds_hds by cross (IPEDS)' do
       create :weam, :ncd, :crosswalk_issue_matchable_by_cross

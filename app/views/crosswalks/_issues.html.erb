@@ -1,10 +1,10 @@
 <tr class="<%= cycle('even', 'odd') -%>">
-  <td><%= issue.institution_name %></td>
-  <td><%= issue.facility_code %></td>
-  <td><%= issue.weam_ipeds %></td>
-  <td><%= issue.weam_ope %></td>
-  <td><%= issue.ipeds_hd_ipeds %></td>
-  <td><%= issue.ipeds_hd_ope %></td>
-  <td><%= issue.crosswalk_ipeds %></td>
-  <td><%= issue.crosswalk_ope %></td>
+  <td><%= issue.weam&.institution %></td>
+  <td><%= issue.weam&.facility_code %></td>
+  <td><%= issue.weam&.cross %></td>
+  <td><%= issue.weam&.ope %></td>
+  <td><%= issue.ipeds_hd&.cross %></td>
+  <td><%= issue.ipeds_hd&.ope %></td>
+  <td><%= issue.crosswalk&.cross %></td>
+  <td><%= issue.crosswalk&.ope %></td>
 </tr>
