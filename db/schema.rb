@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_170301) do
+ActiveRecord::Schema.define(version: 2019_12_16_192035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,16 +87,6 @@ ActiveRecord::Schema.define(version: 2019_12_04_170301) do
     t.index ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true
   end
 
-  create_table "arf_gibills", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.string "institution"
-    t.integer "gibill", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_arf_gibills_on_facility_code", unique: true
-    t.index ["institution"], name: "index_arf_gibills_on_institution"
-  end
-
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
     t.string "name"
     t.float "float_value"
@@ -156,120 +146,6 @@ ActiveRecord::Schema.define(version: 2019_12_04_170301) do
     t.index ["institution"], name: "index_crosswalks_on_institution"
     t.index ["ope"], name: "index_crosswalks_on_ope"
     t.index ["ope6"], name: "index_crosswalks_on_ope6"
-  end
-
-  create_table "csv_files", id: :serial, force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "upload_date", null: false
-    t.string "delimiter", default: ",", null: false
-    t.string "type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_csv_files_on_name"
-    t.index ["upload_date"], name: "index_csv_files_on_upload_date"
-  end
-
-  create_table "csv_storages", id: :serial, force: :cascade do |t|
-    t.binary "data_store"
-    t.string "csv_file_type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["csv_file_type"], name: "index_csv_storages_on_csv_file_type", unique: true
-  end
-
-  create_table "data_csvs", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.string "institution", null: false
-    t.string "city"
-    t.string "state"
-    t.string "zip"
-    t.string "country"
-    t.string "va_highest_degree_offered"
-    t.string "type"
-    t.integer "bah"
-    t.boolean "poe"
-    t.boolean "yr"
-    t.boolean "flight"
-    t.boolean "correspondence"
-    t.boolean "accredited"
-    t.string "ope"
-    t.string "ope6"
-    t.string "cross"
-    t.boolean "student_veteran", default: false
-    t.string "student_veteran_link"
-    t.string "vetsuccess_name"
-    t.string "vetsuccess_email"
-    t.boolean "eight_keys"
-    t.string "accreditation_status"
-    t.string "accreditation_type"
-    t.integer "gibill"
-    t.float "p911_tuition_fees"
-    t.integer "p911_recipients"
-    t.float "p911_yellow_ribbon"
-    t.integer "p911_yr_recipients"
-    t.boolean "dodmou"
-    t.string "insturl"
-    t.integer "pred_degree_awarded"
-    t.integer "locale"
-    t.integer "undergrad_enrollment"
-    t.float "retention_all_students_ba"
-    t.float "retention_all_students_otb"
-    t.float "graduation_rate_all_students"
-    t.float "transfer_out_rate_all_students"
-    t.float "salary_all_students"
-    t.float "repayment_rate_all_students"
-    t.float "avg_stu_loan_debt"
-    t.boolean "credit_for_mil_training"
-    t.boolean "vet_poc"
-    t.boolean "student_vet_grp_ipeds"
-    t.boolean "soc_member"
-    t.string "calendar"
-    t.boolean "online_all"
-    t.string "vet_tuition_policy_url"
-    t.integer "tuition_in_state"
-    t.integer "tuition_out_of_state"
-    t.integer "books"
-    t.boolean "sec_702"
-    t.boolean "caution_flag"
-    t.text "caution_flag_reason"
-    t.integer "complaints_facility_code"
-    t.integer "complaints_financial_by_fac_code"
-    t.integer "complaints_quality_by_fac_code"
-    t.integer "complaints_refund_by_fac_code"
-    t.integer "complaints_marketing_by_fac_code"
-    t.integer "complaints_accreditation_by_fac_code"
-    t.integer "complaints_degree_requirements_by_fac_code"
-    t.integer "complaints_student_loans_by_fac_code"
-    t.integer "complaints_grades_by_fac_code"
-    t.integer "complaints_credit_transfer_by_fac_code"
-    t.integer "complaints_job_by_fac_code"
-    t.integer "complaints_transcript_by_fac_code"
-    t.integer "complaints_other_by_fac_code"
-    t.integer "complaints_main_campus_roll_up"
-    t.integer "complaints_financial_by_ope_id_do_not_sum"
-    t.integer "complaints_quality_by_ope_id_do_not_sum"
-    t.integer "complaints_refund_by_ope_id_do_not_sum"
-    t.integer "complaints_marketing_by_ope_id_do_not_sum"
-    t.integer "complaints_accreditation_by_ope_id_do_not_sum"
-    t.integer "complaints_degree_requirements_by_ope_id_do_not_sum"
-    t.integer "complaints_student_loans_by_ope_id_do_not_sum"
-    t.integer "complaints_grades_by_ope_id_do_not_sum"
-    t.integer "complaints_credit_transfer_by_ope_id_do_not_sum"
-    t.integer "complaints_jobs_by_ope_id_do_not_sum"
-    t.integer "complaints_transcript_by_ope_id_do_not_sum"
-    t.integer "complaints_other_by_ope_id_do_not_sum"
-    t.float "retention_rate_veteran_ba"
-    t.float "retention_rate_veteran_otb"
-    t.float "persistance_rate_veteran_ba"
-    t.float "persistance_rate_veteran_otb"
-    t.float "graduation_rate_veteran"
-    t.float "transfer_out_rate_veteran"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cross"], name: "index_data_csvs_on_cross"
-    t.index ["facility_code"], name: "index_data_csvs_on_facility_code", unique: true
-    t.index ["institution"], name: "index_data_csvs_on_institution"
-    t.index ["ope"], name: "index_data_csvs_on_ope"
   end
 
   create_table "edu_programs", id: :serial, force: :cascade do |t|
@@ -1571,21 +1447,6 @@ ActiveRecord::Schema.define(version: 2019_12_04_170301) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  end
-
-  create_table "va_crosswalks", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.string "institution"
-    t.string "cross"
-    t.string "ope"
-    t.string "ope6"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cross"], name: "index_va_crosswalks_on_cross"
-    t.index ["facility_code"], name: "index_va_crosswalks_on_facility_code", unique: true
-    t.index ["institution"], name: "index_va_crosswalks_on_institution"
-    t.index ["ope"], name: "index_va_crosswalks_on_ope"
-    t.index ["ope6"], name: "index_va_crosswalks_on_ope6"
   end
 
   create_table "versioned_school_certifying_officials", id: :serial, force: :cascade do |t|
