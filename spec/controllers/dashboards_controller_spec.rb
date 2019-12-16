@@ -53,7 +53,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'builds a new institutions table and returns the version when successful' do
-      post(:rebuild)
+      post(:build)
 
       expect(assigns(:version)).not_to be_nil
       expect(Institution.count).to be_positive
@@ -61,7 +61,7 @@ RSpec.describe DashboardsController, type: :controller do
 
     it 'does not change the institutions table when not successful' do
       allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-      post(:rebuild)
+      post(:build)
 
       expect(assigns(:error_msg)).to eq('BOOM!')
       expect(Institution.count).to be_zero
@@ -78,7 +78,7 @@ RSpec.describe DashboardsController, type: :controller do
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
 
-      post(:rebuild)
+      post(:build)
     end
 
     it 'causes a CSV to be exported' do
@@ -108,7 +108,7 @@ RSpec.describe DashboardsController, type: :controller do
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
       end
 
-      post(:rebuild)
+      post(:build)
     end
 
     it 'causes a CSV to be exported' do
