@@ -92,7 +92,6 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :stem_indicator
   attribute :facility_map
   attribute :programs
-  attribute :versioned_school_certifying_officials
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
