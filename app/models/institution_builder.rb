@@ -485,7 +485,7 @@ module InstitutionBuilder
       ?,
       #{conn.quote(timestamp)},
       #{conn.quote(timestamp)},
-      v.id
+      b.version
       FROM weams JOIN versions v ON v.number = ?
     WHERE country = 'USA'
       AND bah IS NOT null
@@ -494,7 +494,7 @@ module InstitutionBuilder
     ORDER BY zip
     SQL
 
-    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number, version_number])
+    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
     ZipcodeRate.connection.execute(sql)
   end
 
