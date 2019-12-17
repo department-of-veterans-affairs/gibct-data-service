@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_16_192035) do
+ActiveRecord::Schema.define(version: 2019_12_16_192736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -510,23 +510,6 @@ ActiveRecord::Schema.define(version: 2019_12_16_192035) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
-    t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
-    t.index ["address_1"], name: "index_institutions_on_address_1"
-    t.index ["address_2"], name: "index_institutions_on_address_2"
-    t.index ["address_3"], name: "index_institutions_on_address_3"
-    t.index ["city"], name: "index_institutions_on_city"
-    t.index ["cross"], name: "index_institutions_on_cross"
-    t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
-    t.index ["facility_code"], name: "index_institutions_on_facility_code"
-    t.index ["institution"], name: "index_institutions_on_institution"
-    t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
-    t.index ["online_only"], name: "index_institutions_on_online_only"
-    t.index ["ope"], name: "index_institutions_on_ope"
-    t.index ["ope6"], name: "index_institutions_on_ope6"
-    t.index ["state"], name: "index_institutions_on_state"
-    t.index ["stem_offered"], name: "index_institutions_on_stem_offered"
-    t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id"
-    t.index ["version"], name: "index_institutions_on_version"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
