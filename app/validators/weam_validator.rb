@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class WeamValidator
-
-  VALIDATION_DESCRIPTIONS = ["Facility codes should be unique"].freeze
+  VALIDATION_DESCRIPTIONS = ['Facility codes should be unique'].freeze
 
   def self.after_import_batch_validations(failed_instances)
     duplicate_facility_code.each do |record|

@@ -2,8 +2,8 @@
 
 class ProgramValidator
   VALIDATION_DESCRIPTIONS = [
-      "The Facility Code & Description (Program Name) combination should be unique",
-      "The Facility Code should be contained within the most recently uploaded weams.csv"
+    'The Facility Code & Description (Program Name) combination should be unique',
+    'The Facility Code should be contained within the most recently uploaded weams.csv'
   ].freeze
 
   def self.after_import_batch_validations(failed_instances)
