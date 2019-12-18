@@ -69,6 +69,46 @@ RSpec.describe UploadsController, type: :controller do
         expect(flash[:alert]).to match('Csv type cannot be blank.')
       end
     end
+
+    context 'validators_messages for weams' do
+      before do
+        get :new, params: { csv_type: 'Weams' }
+      end
+
+      it 'returns validate uniqueness messages' do
+
+      end
+
+      it 'returns validate presence messages' do
+
+      end
+
+      it 'returns validate numericality messages' do
+
+      end
+
+      it 'returns validate inclusion messages' do
+
+      end
+
+      it 'returns validate WeamsValidator messages' do
+
+      end
+    end
+
+    context 'validators_messages for calculator_constants' do
+      before do
+        get :new, params: { csv_type: 'CalculatorConstants' }
+      end
+
+      it 'returns validate uniqueness messages' do
+
+      end
+
+      it 'returns validate presence messages' do
+
+      end
+    end
   end
 
   describe 'POST create' do
