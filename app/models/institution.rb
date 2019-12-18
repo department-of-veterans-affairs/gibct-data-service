@@ -23,8 +23,6 @@ class Institution < ApplicationRecord
     '4-year' => 4
   }.freeze
 
-  TYPES = ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE', 'FLIGHT', 'FOR PROFIT', 'PUBLIC'].freeze
-
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -153,10 +151,6 @@ class Institution < ApplicationRecord
       column: :complaints_other_by_ope_id_do_not_sum, converter: NumberConverter
     }
   }.freeze
-
-  validates :facility_code, uniqueness: true, presence: true
-  validates :version, :institution, :country, presence: true
-  validates :institution_type_name, inclusion: { in: TYPES }
 
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify

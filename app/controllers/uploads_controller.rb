@@ -7,6 +7,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = new_upload(params[:csv_type])
+    @validators = validators_messages
     return if @upload.csv_type_check?
 
     alert_and_log(@upload.errors.full_messages.join(', '))
@@ -98,5 +99,38 @@ class UploadsController < ApplicationController
 
   def klass
     @upload.csv_type.constantize
+  end
+
+  def validators_messages
+    messages = klass.validators.map{ |validations|
+      if validations.class == ActiveRecord::Validations::PresenceValidator
+        generic_validator("These columns must have a value: ", validations)
+      elsif validations.class == ActiveModel::Validations::InclusionValidator
+        inclusion_validator(validations)
+      elsif  validations.class == ActiveModel::Validations::NumericalityValidator
+        generic_validator("These columns can only contain numeric values: ", validations)
+      elsif validations.class == ActiveRecord::Validations::UniquenessValidator
+        generic_validator("These columns should contain unique values: ", validations)
+      end
+    }.select(&:present?)
+    
+    # this a call to custom validators that are not listed inside the class
+    validator_klass = "#{klass.name}Validator".safe_constantize
+    messages.push(*validator_klass::VALIDATION_DESCRIPTIONS) if validator_klass.present? &&
+        defined? validator_klass::VALIDATION_DESCRIPTIONS
+
+    messages
+  end
+
+  def map_attributes(validations)
+    validations.attributes.map(&:to_s).join(', ')
+  end
+
+  def generic_validator(message, validations)
+    message + map_attributes(validations)
+  end
+
+  def inclusion_validator(validations)
+    "For column " + map_attributes(validations) + " values must be one of these values: " + validations.options[:in].map(&:to_s).join(', ')
   end
 end
