@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_18_140802) do
+ActiveRecord::Schema.define(version: 2019_12_19_210002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1539,8 +1539,9 @@ ActiveRecord::Schema.define(version: 2019_12_18_140802) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
+    t.integer "csv_row"
     t.index ["cross"], name: "index_weams_on_cross"
-    t.index ["facility_code"], name: "index_weams_on_facility_code", unique: true
+    t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
     t.index ["ope"], name: "index_weams_on_ope"
     t.index ["state"], name: "index_weams_on_state"
