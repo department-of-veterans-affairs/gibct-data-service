@@ -1,0 +1,30 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <div>
+    <%= link_to 'Weams issues', crosswalks_weams_path,
+                class: "btn btn-success btn-xs",
+                role: "button"
+    %>
+    </div>
+    <h3>Ipeds issues</h3>
+    <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
+      <thead class="system-header">
+        <th colspan="3">IPEDS HD</th>
+        <th colspan="2">Crosswalk</th>
+        <th colspan="2">WEAMS</th>
+      </thead>
+      <thead>
+        <th>Institution Name</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+      </thead>
+      <tbody>
+      <%= render partial: 'ipeds_issues', collection: @issues, as: :issue %>
+      </tbody>
+    </table>
+  </div>
+</div>

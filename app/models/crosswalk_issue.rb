@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class CrosswalkIssue < ApplicationRecord
+  WEAMS_SOURCE = 'weams'
+  IPEDS_HDS_SOURCE = 'ipeds'
+
   belongs_to :crosswalk
   belongs_to :ipeds_hd
   belongs_to :weam
@@ -13,12 +16,14 @@ class CrosswalkIssue < ApplicationRecord
       INSERT INTO crosswalk_issues (
         weam_id,
         crosswalk_id,
-        ipeds_hd_id
+        ipeds_hd_id,
+        source
       )
       SELECT
         weams.id,
         crosswalks.id,
-        ipeds_hds.id
+        ipeds_hds.id,
+        '#{WEAMS_SOURCE}'
       FROM weams
         LEFT OUTER JOIN ipeds_hds ON weams.institution = ipeds_hds.institution
           OR (weams.cross = ipeds_hds.cross)
@@ -41,10 +46,21 @@ class CrosswalkIssue < ApplicationRecord
           AND crosswalks.ope IS NULL
         )
         AND NOT(weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) = 'E')
-      ORDER BY weams.institution
+      UNION
+      SELECT
+        weams.id,
+        crosswalks.id,
+        ipeds_hds.id,
+        '#{IPEDS_HDS_SOURCE}'
+      FROM ipeds_hds
+        LEFT OUTER JOIN weams on ipeds_hds.institution = weams.institution
+        LEFT OUTER JOIN crosswalks on ipeds_hds.institution = crosswalks.institution
+      WHERE weams.institution is null OR crosswalks.institution is null
     SQL
 
     InstitutionProgram.connection.execute(sql)
   end
   # rubocop:enable Metrics/MethodLength
+
+  scope :issue_source, ->(n) { where(source: n) }
 end

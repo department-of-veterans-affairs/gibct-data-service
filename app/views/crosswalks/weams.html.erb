@@ -1,6 +1,12 @@
 <div class="row row-space-6" style="padding-bottom: 10px">
   <div class="col-xs-12">
-    <h3>Issues</h3>
+    <div>
+      <%= link_to 'Ipeds issues', crosswalks_ipeds_path,
+                  class: "btn btn-success btn-xs",
+                  role: "button"
+      %>
+    </div>
+    <h3>Weams issues</h3>
     <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
       <thead class="system-header">
         <th colspan="4">WEAMS</th>
@@ -18,7 +24,7 @@
         <th>OPE</th>
       </thead>
       <tbody>
-      <%= render partial: 'issues', collection: @issues, as: :issue %>
+      <%= render partial: 'weams_issues', collection: @issues, as: :issue %>
       </tbody>
     </table>
   </div>
