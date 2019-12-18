@@ -6,7 +6,8 @@ module CsvHelper
 
     SMARTER_CSV_OPTIONS = {
       force_utf8: true, remove_zero_values: false, remove_empty_hashes: true,
-      remove_empty_values: true, convert_values_to_numeric: false, remove_unmapped_keys: true
+      remove_empty_values: true, convert_values_to_numeric: false, remove_unmapped_keys: true,
+      force_simple_split: true, strip_chars_from_headers: /[\-"]/
     }.freeze
 
     def load(file, options = {})
