@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_11_121312) do
+ActiveRecord::Schema.define(version: 2019_12_18_140802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -516,22 +516,6 @@ ActiveRecord::Schema.define(version: 2019_12_11_121312) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
-    t.index "lower((institution)::text) text_pattern_ops", name: "institutions_archives_lower_idx"
-    t.index ["address_1"], name: "institutions_archives_address_1_idx"
-    t.index ["address_2"], name: "institutions_archives_address_2_idx"
-    t.index ["address_3"], name: "institutions_archives_address_3_idx"
-    t.index ["city"], name: "institutions_archives_city_idx"
-    t.index ["cross"], name: "institutions_archives_cross_idx"
-    t.index ["distance_learning"], name: "institutions_archives_distance_learning_idx"
-    t.index ["facility_code"], name: "institutions_archives_facility_code_idx"
-    t.index ["institution"], name: "institutions_archives_institution_idx"
-    t.index ["institution_type_name"], name: "institutions_archives_institution_type_name_idx"
-    t.index ["online_only"], name: "institutions_archives_online_only_idx"
-    t.index ["ope"], name: "institutions_archives_ope_idx"
-    t.index ["ope6"], name: "institutions_archives_ope6_idx"
-    t.index ["state"], name: "institutions_archives_state_idx"
-    t.index ["stem_offered"], name: "institutions_archives_stem_offered_idx"
-    t.index ["version"], name: "institutions_archives_version_idx"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
