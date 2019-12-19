@@ -4,8 +4,22 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-xs-8">
-    <%= render 'form' %>
+<div class="container" style="float: left;">
+  <div class="row">
+    <div class="col-xs-8">
+      <%= render 'form' %>
+    </div>
+    <% if @validators.length > 0 %>
+      <div class="col-xs-4">
+        <div class="alert alert-info" role="alert">
+          <h4 class="alert-heading">CSV Data Requirements</h4><br />
+          <ul>
+            <% @validators.each do |validations| %>
+              <li><%= validations %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
