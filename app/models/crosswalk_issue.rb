@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class CrosswalkIssue < ApplicationRecord
-  WEAMS_SOURCE = 'weams'
-  IPEDS_HDS_SOURCE = 'ipeds'
+  PARTIAL_MATCH_TYPE = 'PARTIAL_MATCH_TYPE'
+  IPEDS_ORPHAN_TYPE = 'IPEDS_ORPHAN_TYPE'
 
   belongs_to :crosswalk
   belongs_to :ipeds_hd
@@ -17,13 +17,13 @@ class CrosswalkIssue < ApplicationRecord
         weam_id,
         crosswalk_id,
         ipeds_hd_id,
-        source
+        issue_type
       )
       SELECT
         weams.id,
         crosswalks.id,
         ipeds_hds.id,
-        '#{WEAMS_SOURCE}'
+        '#{PARTIAL_MATCH_TYPE}'
       FROM weams
         LEFT OUTER JOIN ipeds_hds ON (weams.cross = ipeds_hds.cross)
           OR (weams.ope = ipeds_hds.ope)
@@ -50,7 +50,7 @@ class CrosswalkIssue < ApplicationRecord
         NULL,
         crosswalks.id,
         ipeds_hds.id,
-        '#{IPEDS_HDS_SOURCE}'
+        '#{IPEDS_ORPHAN_TYPE}'
       FROM ipeds_hds
         LEFT OUTER JOIN crosswalks ON ipeds_hds.cross = crosswalks.cross OR ipeds_hds.ope = crosswalks.ope
       WHERE crosswalks.ID IS NULL
@@ -60,5 +60,5 @@ class CrosswalkIssue < ApplicationRecord
   end
   # rubocop:enable Metrics/MethodLength
 
-  scope :issue_source, ->(n) { where(source: n) }
+  scope :by_issue_type, ->(n) { where(issue_type: n) }
 end
