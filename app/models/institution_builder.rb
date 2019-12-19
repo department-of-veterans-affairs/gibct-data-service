@@ -90,16 +90,15 @@ module InstitutionBuilder
     conn = ApplicationRecord.connection
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
-    str += Weam      
-               .select(columns)
-               .select("#{version_number.to_i} as version")
-               .select("#{conn.quote(timestamp)} as created_at")
-               .select("#{conn.quote(timestamp)} as updated_at")
-               .select("v.id as version_id")
-               .to_sql     
+    str += Weam
+           .select(columns)
+           .select("#{version_number.to_i} as version")
+           .select("#{conn.quote(timestamp)} as created_at")
+           .select("#{conn.quote(timestamp)} as updated_at")
+           .select('v.id as version_id')
+           .to_sql
     str += " JOIN versions v ON v.number = #{version_number}"
     Institution.connection.insert(str)
-
   end
 
   def self.add_crosswalk(version_number)
