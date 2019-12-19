@@ -20,9 +20,8 @@ class CrosswalkIssue < ApplicationRecord
         crosswalks.id,
         ipeds_hds.id
       FROM weams
-        LEFT OUTER JOIN ipeds_hds ON weams.institution = ipeds_hds.institution
-          OR (weams.cross = ipeds_hds.cross)
-          OR (weams.ope = ipeds_hds.ope)
+        LEFT OUTER JOIN ipeds_hds ON  weams.cross = ipeds_hds.cross
+          OR weams.ope = ipeds_hds.ope
         LEFT OUTER JOIN crosswalks ON weams.facility_code = crosswalks.facility_code
       WHERE
         (institution_of_higher_learning_indicator = true OR non_college_degree_indicator = true)
