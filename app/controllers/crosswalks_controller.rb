@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CrosswalksController < ApplicationController
-
   def weams
     @issues = CrosswalkIssue.includes(%i[weam crosswalk ipeds_hd])
                             .issue_source(CrosswalkIssue::WEAMS_SOURCE)

@@ -2,6 +2,14 @@
 
 FactoryBot.define do
   factory :crosswalk_issue do
+    trait :weams_source do
+      source { CrosswalkIssue::WEAMS_SOURCE }
+    end
+
+    trait :ipeds_hd_source do
+      source { CrosswalkIssue::IPEDS_HDS_SOURCE }
+    end
+
     trait :with_weam_match do
       weam { create(:weam, cross: 'a', ope: 'b', institution: 'c', facility_code: 'd') }
     end
