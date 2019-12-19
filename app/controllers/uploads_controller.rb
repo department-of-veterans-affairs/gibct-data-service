@@ -107,6 +107,8 @@ class UploadsController < ApplicationController
     # this a call to custom validators that are not listed inside the class
     validator_klass = "#{klass.name}Validator".safe_constantize
     validation_messages.push(*validator_klass::VALIDATION_DESCRIPTIONS) if validator_klass?(validator_klass)
+
+    validation_messages
   end
 
   def validator_klass?(validator_klass)

@@ -70,43 +70,64 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    context 'validators_messages for weams' do
+    def validations(csv_class, validation_class)
+      csv_class.validators.
+          find{ |validations| validations.class == validation_class }
+    end
+
+    def map_attributes(csv_class, validation_class)
+      validations(csv_class, validation_class).
+          attributes.
+          map(&:to_s).
+          join(', ')
+    end
+
+    context 'validators_messages for Weam' do
       before do
-        get :new, params: { csv_type: 'Weams' }
-      end
-
-      it 'returns validate uniqueness messages' do
-
+        get :new, params: { csv_type: Weam.name }
       end
 
       it 'returns validate presence messages' do
-
+        message = 'These columns must have a value: ' +
+            map_attributes(Weam, ActiveRecord::Validations::PresenceValidator)
+        expect(assigns(:validators)).to include(message)
       end
 
       it 'returns validate numericality messages' do
-
+        message = 'These columns can only contain numeric values: ' +
+            map_attributes(Weam, ActiveModel::Validations::NumericalityValidator)
+        expect(assigns(:validators)).to include(message)
       end
 
       it 'returns validate inclusion messages' do
-
+        message = 'For column ' +
+            map_attributes(Weam, ActiveModel::Validations::InclusionValidator) +
+            ' values must be one of these values: ' +
+            validations(Weam, ActiveModel::Validations::InclusionValidator).options[:in].map(&:to_s).join(', ')
+        expect(assigns(:validators)).to include(message)
       end
 
       it 'returns validate WeamsValidator messages' do
-
+        expect(assigns(:validators)).to include(*WeamValidator::VALIDATION_DESCRIPTIONS)
       end
     end
 
-    context 'validators_messages for calculator_constants' do
+    context 'validators_messages for CalculatorConstant' do
       before do
-        get :new, params: { csv_type: 'CalculatorConstants' }
+        get :new, params: { csv_type: CalculatorConstant.name }
       end
 
       it 'returns validate uniqueness messages' do
-
+        validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
+        message = 'These columns should contain unique values: ' + validations_of_str
+        expect(assigns(:validators)).to include(message)
       end
 
-      it 'returns validate presence messages' do
 
+      it 'returns validate presence messages' do
+        message = 'These columns must have a value: ' +
+            map_attributes(CalculatorConstant, ActiveRecord::Validations::PresenceValidator)
+        expect(assigns(:validators)).to include(message)
       end
     end
   end
