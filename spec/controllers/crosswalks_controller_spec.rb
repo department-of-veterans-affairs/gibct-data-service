@@ -6,19 +6,19 @@ require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
 
 RSpec.describe CrosswalksController, type: :controller do
-  it_behaves_like 'an authenticating controller', :weams, 'crosswalks'
+  it_behaves_like 'an authenticating controller', :partials, 'crosswalks'
 
-  describe 'GET #weams' do
+  describe 'GET #partials' do
     login_user
 
     before do
-      create_list :crosswalk_issue, 3, :weams_source
-      create_list :crosswalk_issue, 2, :ipeds_hd_source
-      get(:weams)
+      create_list :crosswalk_issue, 3, :partial_match_type
+      create_list :crosswalk_issue, 2, :ipeds_orphan_type
+      get(:partials)
     end
 
     it 'populates an array of crosswalk issues' do
-      expect(assigns(:issues).length).to eq(CrosswalkIssue.issue_source(CrosswalkIssue::WEAMS_SOURCE).count)
+      expect(assigns(:issues).length).to eq(CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count)
     end
 
     it 'returns http success' do
@@ -26,17 +26,17 @@ RSpec.describe CrosswalksController, type: :controller do
     end
   end
 
-  describe 'GET #ipeds' do
+  describe 'GET #orphans' do
     login_user
 
     before do
-      create_list :crosswalk_issue, 3, :weams_source
-      create_list :crosswalk_issue, 2, :ipeds_hd_source
-      get(:ipeds)
+      create_list :crosswalk_issue, 3, :partial_match_type
+      create_list :crosswalk_issue, 2, :ipeds_orphan_type
+      get(:orphans)
     end
 
     it 'populates an array of crosswalk issues' do
-      expect(assigns(:issues).length).to eq(CrosswalkIssue.issue_source(CrosswalkIssue::IPEDS_HDS_SOURCE).count)
+      expect(assigns(:issues).length).to eq(CrosswalkIssue.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count)
     end
 
     it 'returns http success' do

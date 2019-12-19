@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :crosswalk_issue do
-    trait :weams_source do
-      source { CrosswalkIssue::WEAMS_SOURCE }
+    trait :partial_match_type do
+      issue_type { CrosswalkIssue::PARTIAL_MATCH_TYPE }
     end
 
-    trait :ipeds_hd_source do
-      source { CrosswalkIssue::IPEDS_HDS_SOURCE }
+    trait :ipeds_orphan_type do
+      issue_type { CrosswalkIssue::IPEDS_ORPHAN_TYPE }
     end
 
     trait :with_weam_match do
