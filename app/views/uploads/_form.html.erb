@@ -2,7 +2,7 @@
   <div class="col-xs-offset-1 col-xs-7">
     <%= form_for(@upload, multipart: true) do |f| %>
       <div class="form-group">
-        <label>CSV Validations</label><br />
+        <label>CSV Data Requirements</label><br />
         <ul>
           <% @validators.each do |validations| %>
             <li><%= validations %></li>
