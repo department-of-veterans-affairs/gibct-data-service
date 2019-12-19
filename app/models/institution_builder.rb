@@ -50,7 +50,6 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version_number)
     build_institution_programs(version_number)
     build_versioned_school_certifying_official(version_number)
-    add_version_id(version_number)
   end
 
   def self.run(user)
@@ -90,14 +89,17 @@ module InstitutionBuilder
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
-    str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
-    str += Weam.select(columns)
+    str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
+    str += Weam      
+               .select(columns)
                .select("#{version_number.to_i} as version")
                .select("#{conn.quote(timestamp)} as created_at")
                .select("#{conn.quote(timestamp)} as updated_at")
-               .to_sql
-
+               .select("v.id as version_id")
+               .to_sql     
+    str += " JOIN versions v ON v.number = #{version_number}"
     Institution.connection.insert(str)
+
   end
 
   def self.add_crosswalk(version_number)
@@ -610,16 +612,5 @@ module InstitutionBuilder
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
-  end
-
-  def self.add_version_id(version_number)
-    str = <<-SQL
-      UPDATE institutions SET
-        version_id = versions.id
-      FROM versions
-      WHERE versions.number = #{version_number};
-    SQL
-
-    Institution.connection.update(str)
   end
 end
