@@ -25,8 +25,7 @@ class CrosswalkIssue < ApplicationRecord
         ipeds_hds.id,
         '#{WEAMS_SOURCE}'
       FROM weams
-        LEFT OUTER JOIN ipeds_hds ON weams.institution = ipeds_hds.institution
-          OR (weams.cross = ipeds_hds.cross)
+        LEFT OUTER JOIN ipeds_hds ON (weams.cross = ipeds_hds.cross)
           OR (weams.ope = ipeds_hds.ope)
         LEFT OUTER JOIN crosswalks ON weams.facility_code = crosswalks.facility_code
       WHERE
@@ -48,14 +47,13 @@ class CrosswalkIssue < ApplicationRecord
         AND NOT(weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) = 'E')
       UNION
       SELECT
-        weams.id,
+        NULL,
         crosswalks.id,
         ipeds_hds.id,
         '#{IPEDS_HDS_SOURCE}'
       FROM ipeds_hds
-        LEFT OUTER JOIN weams on ipeds_hds.institution = weams.institution
-        LEFT OUTER JOIN crosswalks on ipeds_hds.institution = crosswalks.institution
-      WHERE weams.institution is null OR crosswalks.institution is null
+        LEFT OUTER JOIN crosswalks ON ipeds_hds.cross = crosswalks.cross OR ipeds_hds.ope = crosswalks.ope
+      WHERE crosswalks.ID IS NULL
     SQL
 
     InstitutionProgram.connection.execute(sql)
