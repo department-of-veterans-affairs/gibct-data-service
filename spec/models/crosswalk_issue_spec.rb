@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe CrosswalkIssue, type: :model do
-  describe 'when building' do
+  describe 'when building partial matches' do
     it 'matches NCD weams and ipeds_hds by cross (IPEDS)' do
       create :weam, :ncd, :crosswalk_issue_matchable_by_cross
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
@@ -62,7 +62,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
       create :crosswalk, :crosswalk_issue_matchable_by_facility_code, cross: '888888'
       described_class.rebuild
-      expect(described_class.count).to eq(0)
+      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
 
     it 'excludes extension weams' do
@@ -70,7 +70,31 @@ RSpec.describe CrosswalkIssue, type: :model do
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
 
       described_class.rebuild
-      expect(described_class.count).to eq(0)
+      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
+    end
+  end
+
+  describe 'when building IPEDS orphans' do
+    it 'excludes IpedsHD that match Crosswalk by cross (IPEDS)' do
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
+      create :crosswalk, :crosswalk_issue_matchable_by_cross
+
+      expect(described_class.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count).to eq(0)
+    end
+
+    it 'excludes IpedsHD that match Crosswalk by ope' do
+      create :ipeds_hd, :crosswalk_issue_matchable_by_ope
+      create :crosswalk, :crosswalk_issue_matchable_by_ope
+
+      expect(described_class.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count).to eq(0)
+    end
+
+    it 'includes orphan IpedsHD' do
+      create :ipeds_hd
+      create :crosswalk
+
+      expect { described_class.rebuild }
+          .to change { described_class.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count }.from(0).to(1)
     end
   end
 end
