@@ -16,20 +16,6 @@ RSpec.describe CrosswalkIssue, type: :model do
       expect { described_class.rebuild }.to change(described_class, :count).from(0).to(1)
     end
 
-    it 'matches NCD weams and ipeds_hds on institution name' do
-      create :weam, :ncd, :crosswalk_issue_matchable_by_institution
-      create :ipeds_hd, :crosswalk_issue_matchable_by_institution
-
-      expect { described_class.rebuild }.to change(described_class, :count).from(0).to(1)
-    end
-
-    it 'matches IHL weams and ipeds_hds on institution name' do
-      create :weam, :higher_learning, :crosswalk_issue_matchable_by_institution
-      create :ipeds_hd, :crosswalk_issue_matchable_by_institution
-
-      expect { described_class.rebuild }.to change(described_class, :count).from(0).to(1)
-    end
-
     it 'matches NCD weams and ipeds_hds on ope' do
       create :weam, :ncd, :crosswalk_issue_matchable_by_ope
       create :ipeds_hd, :crosswalk_issue_matchable_by_ope
@@ -66,17 +52,16 @@ RSpec.describe CrosswalkIssue, type: :model do
     end
 
     it 'excludes institution name matches when all cross and ope are null' do
-      create :weam, :ncd, :crosswalk_issue_matchable_by_institution, ope: nil
-      create :ipeds_hd, :crosswalk_issue_matchable_by_institution
+      create :weam, :ncd, ope: nil
+      create :ipeds_hd
       create :crosswalk
       described_class.rebuild
       expect(described_class.count).to eq(0)
     end
 
     it 'excludes cases where cross field matches across all tables' do
-      create :weam, :ncd, :crosswalk_issue_matchable_by_institution,
-             :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_cross
-      create :ipeds_hd, :crosswalk_issue_matchable_by_institution, :crosswalk_issue_matchable_by_cross
+      create :weam, :ncd, :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_cross
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
       create :crosswalk, :crosswalk_issue_matchable_by_facility_code, cross: '888888'
       described_class.rebuild
       expect(described_class.count).to eq(0)

@@ -16,10 +16,6 @@ FactoryBot.define do
       cross { '888888' }
     end
 
-    trait :crosswalk_issue_matchable_by_institution do
-      institution { 'match' }
-    end
-
     trait :crosswalk_issue_matchable_by_ope do
       ope { '88888888' }
     end

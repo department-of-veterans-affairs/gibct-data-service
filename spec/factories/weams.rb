@@ -149,10 +149,6 @@ FactoryBot.define do
       ope { '88888888' }
     end
 
-    trait :crosswalk_issue_matchable_by_institution do
-      institution { 'match' }
-    end
-
     trait :crosswalk_issue_matchable_by_facility_code do
       facility_code { '99Z99999' }
     end
