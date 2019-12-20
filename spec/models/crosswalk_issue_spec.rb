@@ -51,14 +51,6 @@ RSpec.describe CrosswalkIssue, type: :model do
       expect(described_class.count).to eq(0)
     end
 
-    it 'excludes institution name matches when all cross and ope are null' do
-      create :weam, :ncd, ope: nil
-      create :ipeds_hd
-      create :crosswalk
-      described_class.rebuild
-      expect(described_class.count).to eq(0)
-    end
-
     it 'excludes cases where cross field matches across all tables' do
       create :weam, :ncd, :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_cross
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
