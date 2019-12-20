@@ -94,7 +94,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       create :crosswalk
 
       expect { described_class.rebuild }
-          .to change { described_class.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count }.from(0).to(1)
+        .to change { described_class.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count }.from(0).to(1)
     end
   end
 end
