@@ -99,14 +99,6 @@ RSpec.describe UploadsController, type: :controller do
         expect(assigns(:validators)).to include(message)
       end
 
-      it 'returns validate inclusion messages' do
-        message = 'For column ' +
-            map_attributes(Weam, ActiveModel::Validations::InclusionValidator) +
-            ' values must be one of these values: ' +
-            validations(Weam, ActiveModel::Validations::InclusionValidator).options[:in].map(&:to_s).join(', ')
-        expect(assigns(:validators)).to include(message)
-      end
-
       it 'returns validate WeamsValidator messages' do
         expect(assigns(:validators)).to include(*WeamValidator::VALIDATION_DESCRIPTIONS)
       end
