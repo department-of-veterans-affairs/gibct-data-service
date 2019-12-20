@@ -97,7 +97,7 @@ module InstitutionBuilder
            .select("#{conn.quote(timestamp)} as updated_at")
            .select('v.id as version_id')
            .to_sql
-    str += " JOIN versions v ON v.number = #{version_number}"
+    str += "INNER JOIN versions v ON v.number = #{version_number}"
     Institution.connection.insert(str)
   end
 
@@ -483,11 +483,11 @@ module InstitutionBuilder
       bah,
       dod_bah,
       concat_ws(', ', physical_city, physical_state) as physical_location,
-      ?,
+      v.number,
       #{conn.quote(timestamp)},
       #{conn.quote(timestamp)},
       v.id
-      FROM weams JOIN versions v ON v.number = ?
+      FROM weams INNER JOIN versions v ON v.number = ?
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
@@ -495,7 +495,7 @@ module InstitutionBuilder
     ORDER BY zip
     SQL
 
-    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number, version_number])
+    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
     ZipcodeRate.connection.execute(sql)
   end
 
