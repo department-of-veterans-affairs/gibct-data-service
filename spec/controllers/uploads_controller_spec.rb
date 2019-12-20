@@ -71,31 +71,31 @@ RSpec.describe UploadsController, type: :controller do
     end
 
     def validations(csv_class, validation_class)
-      csv_class.validators.
-          find{ |validations| validations.class == validation_class }
+      csv_class.validators
+               .find { |validations| validations.class == validation_class }
     end
 
     def map_attributes(csv_class, validation_class)
-      validations(csv_class, validation_class).
-          attributes.
-          map(&:to_s).
-          join(', ')
+      validations(csv_class, validation_class)
+        .attributes
+        .map(&:to_s)
+        .join(', ')
     end
 
-    context 'validators_messages for Weam' do
+    describe 'validators_messages for Weam' do
       before do
         get :new, params: { csv_type: Weam.name }
       end
 
       it 'returns validate presence messages' do
         message = 'These columns must have a value: ' +
-            map_attributes(Weam, ActiveRecord::Validations::PresenceValidator)
+                  map_attributes(Weam, ActiveRecord::Validations::PresenceValidator)
         expect(assigns(:validators)).to include(message)
       end
 
       it 'returns validate numericality messages' do
         message = 'These columns can only contain numeric values: ' +
-            map_attributes(Weam, ActiveModel::Validations::NumericalityValidator)
+                  map_attributes(Weam, ActiveModel::Validations::NumericalityValidator)
         expect(assigns(:validators)).to include(message)
       end
 
@@ -104,7 +104,7 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    context 'validators_messages for CalculatorConstant' do
+    describe 'validators_messages for CalculatorConstant' do
       before do
         get :new, params: { csv_type: CalculatorConstant.name }
       end
@@ -115,10 +115,9 @@ RSpec.describe UploadsController, type: :controller do
         expect(assigns(:validators)).to include(message)
       end
 
-
       it 'returns validate presence messages' do
         message = 'These columns must have a value: ' +
-            map_attributes(CalculatorConstant, ActiveRecord::Validations::PresenceValidator)
+                  map_attributes(CalculatorConstant, ActiveRecord::Validations::PresenceValidator)
         expect(assigns(:validators)).to include(message)
       end
     end
