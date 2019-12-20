@@ -370,6 +370,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
+    t.integer "version_id"
     t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
     t.index ["address_1"], name: "index_institutions_on_address_1"
     t.index ["address_2"], name: "index_institutions_on_address_2"
@@ -510,6 +511,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
+    t.integer "version_id"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1600,6 +1602,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
+    t.integer "version_id"
     t.index ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code"
   end
 
@@ -1612,6 +1615,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
+    t.integer "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
