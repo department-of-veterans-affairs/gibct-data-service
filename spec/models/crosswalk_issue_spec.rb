@@ -62,7 +62,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
       create :crosswalk, :crosswalk_issue_matchable_by_facility_code, cross: '888888'
       described_class.rebuild
-      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
+      expect(described_class.count).to eq(0)
     end
 
     it 'excludes extension weams' do
@@ -70,7 +70,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
 
       described_class.rebuild
-      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
+      expect(described_class.count).to eq(0)
     end
   end
 end
