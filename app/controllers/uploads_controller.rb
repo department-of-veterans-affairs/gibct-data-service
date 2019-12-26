@@ -6,7 +6,7 @@ class UploadsController < ApplicationController
   end
 
   def new
-    @upload = new_upload(params[:csv_type])
+    @upload = Upload.from(params[:csv_type])
     return if @upload.csv_type_check?
 
     alert_and_log(@upload.errors.full_messages.join(', '))
@@ -31,7 +31,7 @@ class UploadsController < ApplicationController
 
       redirect_to @upload
     rescue StandardError => e
-      @upload = new_upload(merged_params[:csv_type])
+      @upload = Upload.from(merged_params[:csv_type])
 
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
@@ -53,14 +53,6 @@ class UploadsController < ApplicationController
     flash.alert = message
   end
 
-  def new_upload(csv_type)
-    upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = defaults(csv_type)['skip_lines']
-    upload.col_sep = defaults(csv_type)['col_sep']
-
-    upload
-  end
-
   def load_csv
     return unless @upload.persisted?
 
@@ -69,10 +61,6 @@ class UploadsController < ApplicationController
 
   def original_filename
     @original_filename ||= upload_params[:upload_file].try(:original_filename)
-  end
-
-  def defaults(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
   end
 
   def merged_params

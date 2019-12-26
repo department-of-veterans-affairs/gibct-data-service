@@ -25,6 +25,8 @@ Rails.application.routes.draw do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
   end
 
+  get 'api_fetch(/:csv_type)', to: 'api_fetch#index', as: :api_fetch
+
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
 

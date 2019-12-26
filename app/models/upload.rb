@@ -85,6 +85,18 @@ class Upload < ApplicationRecord
     Upload.last_uploads.where('updated_at > ?', last_preview.updated_at)
   end
 
+  def self.from(csv_type)
+    upload = Upload.new(csv_type: csv_type)
+    upload.skip_lines = defaults(csv_type)['skip_lines']
+    upload.col_sep = defaults(csv_type)['col_sep']
+
+    upload
+  end
+
+  def self.defaults(csv_type)
+    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
+  end
+
   private
 
   def initialize_warnings

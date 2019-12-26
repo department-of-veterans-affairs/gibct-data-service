@@ -5,7 +5,12 @@
   <td><%= upload.created_at.blank? ? '-' : upload.created_at.to_formatted_s(:long_ordinal) %></td>
   <td><%= upload.user.blank? ? '-' : upload.user.email %></td>
   <td><%= upload.comment.blank? ? '-' : upload.comment %></td>
-  <td>
+  <td class="text-center">
+    <% if CSV_TYPES_HAS_API_TABLE_NAMES.include?(upload.csv_type) %>
+      <%= link_to 'Fetch', api_fetch_path(upload.csv_type),
+                  class: "btn btn-success btn-xs", role: "button" %>
+    <% end %>
+
     <%= link_to 'Upload', new_upload_path(upload.csv_type),
         class: "btn btn-success btn-xs", role: "button" %>
 
