@@ -131,9 +131,12 @@ ActiveRecord::Schema.define(version: 2019_12_19_210002) do
   end
 
   create_table "crosswalk_issues", force: :cascade do |t|
-    t.integer "weam_id"
-    t.integer "crosswalk_id"
-    t.integer "ipeds_hd_id"
+    t.bigint "weam_id"
+    t.bigint "crosswalk_id"
+    t.bigint "ipeds_hd_id"
+    t.index ["crosswalk_id"], name: "index_crosswalk_issues_on_crosswalk_id"
+    t.index ["ipeds_hd_id"], name: "index_crosswalk_issues_on_ipeds_hd_id"
+    t.index ["weam_id"], name: "index_crosswalk_issues_on_weam_id"
   end
 
   create_table "crosswalks", id: :serial, force: :cascade do |t|
@@ -1625,4 +1628,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_210002) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "crosswalk_issues", "crosswalks"
+  add_foreign_key "crosswalk_issues", "ipeds_hds"
+  add_foreign_key "crosswalk_issues", "weams"
 end
