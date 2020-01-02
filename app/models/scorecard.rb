@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'scorecard_api/client'
+
 class Scorecard < ApplicationRecord
   include CsvHelper
 
@@ -149,6 +151,23 @@ class Scorecard < ApplicationRecord
   }.freeze
 
   after_initialize :derive_dependent_columns
+
+  def self.populate
+    results = get_schools.body[:results]
+    "Scorecard CSV table populated from https://collegescorecard.ed.gov/data/" if results
+  end
+
+  def self.get_schools
+    params = {
+        'school.degrees_awarded.predominant':'2,3',
+        'fields':'id,school.name,2013.student.size'
+    }
+    Scorecard.client.get_schools(params)
+  end
+
+  def self.client
+    ScorecardApi::Client.new
+  end
 
   def derive_dependent_columns
     self.graduation_rate_all_students = to_graduation_rate_all_students

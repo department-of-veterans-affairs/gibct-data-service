@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/dashboards' => 'dashboards#index'
   post '/dashboards/build' => 'dashboards#build', as: :dashboard_build
   get '/dashboards/export/:csv_type' => 'dashboards#export', as: :dashboard_export, defaults: { format: 'csv' }
+  get '/dashboards/api_fetch/:csv_type' => 'dashboards#api_fetch', as: :dashboard_api_fetch
   get '/dashboards/export/institutions/:number' => 'dashboards#export_version', as: :dashboard_export_version, defaults: { format: 'csv' }
   post '/dashboards/push' => 'dashboards#push', as: :dashboard_push
 
@@ -24,8 +25,6 @@ Rails.application.routes.draw do
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
   end
-
-  get 'api_fetch(/:csv_type)', to: 'api_fetch#index', as: :api_fetch
 
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'

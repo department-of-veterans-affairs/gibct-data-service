@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'common/exceptions/exception_handler'
+
 class DashboardsController < ApplicationController
   def index
     @uploads = Upload.last_uploads_rows
@@ -71,6 +73,18 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path
   end
 
+  def api_fetch
+    upload = Upload.from(params[:csv_type])
+    message = fetch_api_data(upload) if upload.csv_type_check?
+
+    redirect_to dashboards_path, alert: message
+
+  rescue StandardError => e
+    message = Common::Exceptions::ExceptionHandler.new(e, upload.csv_type).serialize_error
+    Rails.logger.error message
+    redirect_to dashboards_path, alert: message
+  end
+
   private
 
   def csv_model(csv_type)
@@ -78,5 +92,12 @@ class DashboardsController < ApplicationController
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
+  end
+
+  def fetch_api_data(upload)
+    klass = upload.csv_type.constantize
+    has_api = klass.present? && defined? klass.populate
+    return klass.populate if has_api
+    "#{upload.csv_type} does not have populate from api implemented" unless has_api
   end
 end
