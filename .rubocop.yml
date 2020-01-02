@@ -31,8 +31,29 @@ Style/Documentation:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+# This cop forces you to put a return at the beginning of a block of code rather than having an if statement
+# whose body carries to the end of the function. For example:
+#
+# def foo
+#   ...
+#   if test
+#     ...
+#   end
+# end
+#
+# would be considered bad, and the cop would force you to put a `return if !test` before that block and
+# then remove the if. The problem is that this hides intent, since the if test does have a purpose in
+# readability, and it could also be easier for future changes to miss the return statement and add code
+# after it expecting it to be executed.
+Style/GuardClause:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 120
+
+# removing rule because get_session implies HTTP GET, and informs method
+Naming/AccessorMethodName:
+  Enabled: false
 
 Rails:
   Enabled: true
@@ -53,6 +74,7 @@ Metrics/ClassLength:
     - 'app/models/ipeds_ic_ay.rb'
     - 'app/models/ipeds_ic_py.rb'
     - 'app/models/institution.rb'
+    - 'lib/common/models/collection.rb'
 
 Metrics/AbcSize:
   Max: 40
