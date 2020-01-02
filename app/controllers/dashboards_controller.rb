@@ -74,7 +74,7 @@ class DashboardsController < ApplicationController
   end
 
   def api_fetch
-    upload = Upload.from(params[:csv_type])
+    upload = Upload.from_csv_type(params[:csv_type])
     message = fetch_api_data(upload) if upload.csv_type_check?
 
     redirect_to dashboards_path, alert: message

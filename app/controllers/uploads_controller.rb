@@ -6,7 +6,7 @@ class UploadsController < ApplicationController
   end
 
   def new
-    @upload = Upload.from(params[:csv_type])
+    @upload = Upload.from_csv_type(params[:csv_type])
     return if @upload.csv_type_check?
 
     alert_and_log(@upload.errors.full_messages.join(', '))
@@ -31,7 +31,7 @@ class UploadsController < ApplicationController
 
       redirect_to @upload
     rescue StandardError => e
-      @upload = Upload.from(merged_params[:csv_type])
+      @upload = Upload.from_csv_type(merged_params[:csv_type])
 
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
