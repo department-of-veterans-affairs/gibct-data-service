@@ -77,5 +77,6 @@ class IpedsHd < ApplicationRecord
     'dfrcuscg' => { column: :dfrcuscg, converter: BaseConverter }
   }.freeze
 
+  has_many :crosswalk_issue, dependent: :nullify
   validates :cross, presence: true
 end
