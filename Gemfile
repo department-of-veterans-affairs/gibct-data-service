@@ -37,14 +37,18 @@ gem 'virtus', '~> 1.0.5'
 # Mass importing of CSV data
 gem 'activerecord-import'
 
+gem 'breakers'
 gem 'config'
 
 # Use devise for authentication
 gem 'devise'
+gem 'faraday'
+gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 
 # CORS
 gem 'rack-cors', require: 'rack/cors'
