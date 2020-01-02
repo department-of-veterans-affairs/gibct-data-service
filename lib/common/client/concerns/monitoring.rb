@@ -7,7 +7,7 @@ module Common::Client
     def with_monitoring(trace_location = 1)
       caller = caller_locations(trace_location, 1)[0].label
       yield
-    rescue => e
+    rescue StandardError => e
       increment_failure(caller, e)
       raise e
     ensure

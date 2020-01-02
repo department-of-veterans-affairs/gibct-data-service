@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'common/client/base'
 require 'scorecard_api/configuration'
 
@@ -6,8 +8,7 @@ module ScorecardApi
   class Client < Common::Client::Base
     configuration ScorecardApi::Configuration
 
-
-    def get_schools(params = {})
+    def schools(params = {})
       perform(:get, 'schools', merged_params(params))
     end
 

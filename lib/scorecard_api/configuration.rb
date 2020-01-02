@@ -8,8 +8,8 @@ require 'common/client/middleware/response/snakecase'
 
 module ScorecardApi
   class Configuration < Common::Client::Configuration::REST
-    self.read_timeout = Settings.scorecard.read_timeout || self.read_timeout
-    self.open_timeout = Settings.scorecard.open_timeout || self.open_timeout
+    self.read_timeout = Settings.scorecard.read_timeout || read_timeout
+    self.open_timeout = Settings.scorecard.open_timeout || open_timeout
 
     def base_path
       "#{Settings.scorecard.url}/"

@@ -153,16 +153,16 @@ class Scorecard < ApplicationRecord
   after_initialize :derive_dependent_columns
 
   def self.populate
-    results = get_schools.body[:results]
-    "Scorecard CSV table populated from https://collegescorecard.ed.gov/data/" if results
+    results = schools.body[:results]
+    'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/' if results
   end
 
-  def self.get_schools
+  def self.schools
     params = {
-        'school.degrees_awarded.predominant':'2,3',
-        'fields':'id,school.name,2013.student.size'
+      'school.degrees_awarded.predominant': '2,3',
+      'fields': 'id,school.name,2013.student.size'
     }
-    Scorecard.client.get_schools(params)
+    Scorecard.client.schools(params)
   end
 
   def self.client

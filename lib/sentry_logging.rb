@@ -59,8 +59,8 @@ module SentryLogging
     end
   end
 
-  def non_nil_hash?(h)
-    h.is_a?(Hash) && !h.empty?
+  def non_nil_hash?(hash)
+    hash.is_a?(Hash) && !hash.empty?
   end
 
   private

@@ -82,13 +82,13 @@ module Common
           end
 
           # not using breakers for Redis at this time
-          #if handlers.include?(Breakers::UptimeMiddleware)
+          # if handlers.include?(Breakers::UptimeMiddleware)
           #  return connection if handlers.first == Breakers::UptimeMiddleware
           #
           #  raise BreakersImplementationError, 'Breakers should be the first middleware implemented.'
-          #else
+          # else
           #  warn("Breakers is not implemented for service: #{config.service_name}")
-          #end
+          # end
 
           connection
         end.call

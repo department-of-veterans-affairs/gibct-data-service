@@ -49,7 +49,7 @@ module Common
         #
         def ssl_cert
           OpenSSL::X509::Certificate.new(File.read(self.class.ssl_cert_path))
-        rescue => e
+        rescue StandardError => e
           # :nocov:
           unless allow_missing_certs?
             Rails.logger.warn "Could not load #{service_name} SSL cert: #{e.message}"
@@ -66,7 +66,7 @@ module Common
         #
         def ssl_key
           OpenSSL::PKey::RSA.new(File.read(self.class.ssl_key_path))
-        rescue => e
+        rescue StandardError => e
           # :nocov:
           Rails.logger.warn "Could not load #{service_name} SSL key: #{e.message}"
           raise e if Rails.env.production?
