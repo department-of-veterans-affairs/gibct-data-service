@@ -154,6 +154,7 @@ class Scorecard < ApplicationRecord
 
   def self.populate
     results = schools.body[:results]
+    load_from_api(results)
     'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/' if results
   end
 
