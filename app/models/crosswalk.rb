@@ -15,7 +15,7 @@ class Crosswalk < ApplicationRecord
     'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 
-  has_many :crosswalk_issue, dependent: :nullify
+  has_many :crosswalk_issue, dependent: :delete_all
   validates :facility_code, presence: true
   after_initialize :derive_dependent_columns
 

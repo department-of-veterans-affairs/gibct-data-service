@@ -73,7 +73,7 @@ class Weam < ApplicationRecord
     'parent facility code' => { column: :parent_facility_code_id, converter: BaseConverter }
   }.freeze
 
-  has_many :crosswalk_issue, dependent: :nullify
+  has_many :crosswalk_issue, dependent: :delete_all
   validates :facility_code, :institution, :institution_type_name, presence: true
   validates :bah, numericality: true, allow_blank: true
 

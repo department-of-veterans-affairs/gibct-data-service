@@ -7,8 +7,6 @@ class CrosswalkIssue < ApplicationRecord
 
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
-    CrosswalkIssue.delete_all
-
     sql = <<-SQL
       INSERT INTO crosswalk_issues (
         weam_id,
