@@ -37,7 +37,6 @@ gem 'virtus', '~> 1.0.5'
 # Mass importing of CSV data
 gem 'activerecord-import'
 
-gem 'breakers'
 gem 'config'
 
 # Use devise for authentication

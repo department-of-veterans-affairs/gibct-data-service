@@ -67,9 +67,6 @@ GEM
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     brakeman (4.7.1)
-    breakers (0.3.0)
-      faraday (>= 0.7.4, < 0.18)
-      multi_json (~> 1.0)
     builder (3.2.3)
     bundler-audit (0.6.1)
       bundler (>= 1.2.0, < 3)
@@ -400,7 +397,6 @@ DEPENDENCIES
   activerecord-session_store (~> 1.0)
   bcrypt (~> 3.1.7)
   brakeman
-  breakers
   bundler-audit
   byebug
   cancancan (~> 1.13, >= 1.13.1)
