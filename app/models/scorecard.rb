@@ -32,12 +32,12 @@ class Scorecard < ApplicationRecord
     'instnm' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'stabbr' => { column: :state, converter: StateConverter },
-    'insturl' => { column: :insturl, converter: BaseConverter },
+    'insturl' => { column: :insturl, converter: BaseConverter }, # school.school_url
     'npcurl' => { column: :npcurl, converter: BaseConverter },
     'hcm2' => { column: :hcm2, converter: NumberConverter },
-    'preddeg' => { column: :pred_degree_awarded, converter: NumberConverter },
+    'preddeg' => { column: :pred_degree_awarded, converter: NumberConverter }, # school.degrees_awarded.predominant
     'control' => { column: :control, converter: NumberConverter },
-    'locale' => { column: :locale, converter: NumberConverter },
+    'locale' => { column: :locale, converter: NumberConverter }, # school.locale
     'hbcu' => { column: :hbcu, converter: NumberConverter },
     'pbi' => { column: :pbi, converter: NumberConverter },
     'annhi' => { column: :annhi, converter: NumberConverter },
@@ -110,7 +110,7 @@ class Scorecard < ApplicationRecord
     'pcip52' => { column: :pcip52, converter: NumberConverter },
     'pcip54' => { column: :pcip54, converter: NumberConverter },
     'distanceonly' => { column: :distanceonly, converter: NumberConverter },
-    'ugds' => { column: :undergrad_enrollment, converter: NumberConverter },
+    'ugds' => { column: :undergrad_enrollment, converter: NumberConverter }, #school.size
     'ugds_white' => { column: :ugds_white, converter: NumberConverter },
     'ugds_black' => { column: :ugds_black, converter: NumberConverter },
     'ugds_hisp' => { column: :ugds_hisp, converter: NumberConverter },
@@ -135,7 +135,7 @@ class Scorecard < ApplicationRecord
     'npt44_priv' => { column: :npt44_priv, converter: NumberConverter },
     'npt45_priv' => { column: :npt45_priv, converter: NumberConverter },
     'pctpell' => { column: :pctpell, converter: NumberConverter },
-    'ret_ft4' => { column: :retention_all_students_ba, converter: NumberConverter },
+    'ret_ft4' => { column: :retention_all_students_ba, converter: NumberConverter }, # school.retention_rate.four_year.full_time
     'ret_ftl4' => { column: :retention_all_students_otb, converter: NumberConverter },
     'ret_pt4' => { column: :ret_pt4, converter: NumberConverter },
     'ret_ptl4' => { column: :ret_ptl4, converter: NumberConverter },
