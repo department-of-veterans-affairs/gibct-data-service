@@ -512,7 +512,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
-    t.integer "version_id"
+    t.bigint "version_id"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1617,7 +1617,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
-    t.integer "version_id"
+    t.bigint "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
