@@ -1619,11 +1619,8 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.integer "version"
     t.bigint "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
-    t.index ["version_id"], name: "index_zipcode_rates_archives_on_version_id"
   end
 
   add_foreign_key "institutions", "versions"
-  add_foreign_key "institutions_archives", "versions"
   add_foreign_key "zipcode_rates", "versions"
-  add_foreign_key "zipcode_rates_archives", "versions"
 end
