@@ -90,9 +90,15 @@ class UploadsController < ApplicationController
 
   def call_load
     file = @upload.upload_file.tempfile
-    skip_lines = @upload.skip_lines.try(:to_i)
-    col_sep = @upload.col_sep
-    data = klass.load(file, skip_lines: skip_lines, col_sep: col_sep)
+    csv_type = @upload.csv_type
+    options = {}
+    unless defaults(csv_type)['force_simple_split'].nil?
+      options[:force_simple_split] = defaults(csv_type)['force_simple_split']
+    end
+    unless defaults(csv_type)['strip_chars_from_headers'].nil?
+      options[:strip_chars_from_headers] = defaults(csv_type)['strip_chars_from_headers']
+    end
+    data = klass.load(file, options)
 
     @upload.update(ok: data.present? && data.ids.present?)
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."

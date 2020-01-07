@@ -153,6 +153,18 @@ RSpec.describe UploadsController, type: :controller do
         expect(message).to match(/Independent study is a missing header/)
       end
     end
+
+    context 'when specifying SchoolCertifyingOfficial csv_type' do
+      it 'Uploads a SchoolCertifyingOfficial file' do
+        file = build(:upload, csv_name: 'school_certifying_official.csv').upload_file
+        expect do
+          post(:create,
+               params: {
+                   upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'SchoolCertifyingOfficial', col_sep: '|' }
+               })
+        end.to change(SchoolCertifyingOfficial, :count).by(2)
+      end
+    end
   end
 
   describe 'GET show' do
