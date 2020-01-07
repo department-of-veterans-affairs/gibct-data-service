@@ -37,7 +37,10 @@ class CrosswalkIssue < ApplicationRecord
           AND crosswalks.cross IS NULL
           AND crosswalks.ope IS NULL
         )
-        AND UPPER(weams.campus_type) != 'E'
+        AND (
+          weams.campus_type IS NULL 
+          OR (weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) != 'E')
+        )
     SQL
 
     InstitutionProgram.connection.execute(sql)
