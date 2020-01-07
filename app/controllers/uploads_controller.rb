@@ -57,7 +57,12 @@ class UploadsController < ApplicationController
     upload = Upload.new(csv_type: csv_type)
     upload.skip_lines = defaults(csv_type)['skip_lines']
     upload.col_sep = defaults(csv_type)['col_sep']
-
+    unless defaults(csv_type)['force_simple_split'].nil?
+      upload.force_simple_split = defaults(csv_type)['force_simple_split']
+    end
+    unless defaults(csv_type)['strip_chars_from_headers'].nil?
+      upload.strip_chars_from_headers = defaults(csv_type)['strip_chars_from_headers']
+    end
     upload
   end
 
