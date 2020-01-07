@@ -79,8 +79,9 @@ class DashboardsController < ApplicationController
 
     redirect_to dashboards_path, alert: message
   rescue StandardError => e
+    binding.pry
     message = Common::Exceptions::ExceptionHandler.new(e, upload.csv_type).serialize_error
-    Rails.logger.error message
+    Rails.logger.error e
     redirect_to dashboards_path, alert: message
   end
 
@@ -95,7 +96,7 @@ class DashboardsController < ApplicationController
 
   def fetch_api_data(upload)
     klass = upload.csv_type.constantize
-    has_api = klass.present? && defined? klass.populate
+    has_api = klass.present? && klass.respond_to?(:populate)
     return klass.populate if has_api
 
     "#{upload.csv_type} does not have populate from api implemented" unless has_api
