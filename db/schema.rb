@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_19_203831) do
+ActiveRecord::Schema.define(version: 2019_12_19_210002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,15 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.datetime "updated_at", null: false
     t.index ["facility_code"], name: "index_complaints_on_facility_code"
     t.index ["ope6"], name: "index_complaints_on_ope6"
+  end
+
+  create_table "crosswalk_issues", force: :cascade do |t|
+    t.bigint "weam_id"
+    t.bigint "crosswalk_id"
+    t.bigint "ipeds_hd_id"
+    t.index ["crosswalk_id"], name: "index_crosswalk_issues_on_crosswalk_id"
+    t.index ["ipeds_hd_id"], name: "index_crosswalk_issues_on_ipeds_hd_id"
+    t.index ["weam_id"], name: "index_crosswalk_issues_on_weam_id"
   end
 
   create_table "crosswalks", id: :serial, force: :cascade do |t|
@@ -599,6 +608,8 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cross"], name: "index_ipeds_hds_on_cross"
+    t.index ["institution"], name: "index_ipeds_hds_on_institution"
+    t.index ["ope"], name: "index_ipeds_hds_on_ope"
   end
 
   create_table "ipeds_ic_ays", id: :serial, force: :cascade do |t|
@@ -1535,8 +1546,10 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.integer "csv_row"
+    t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
+    t.index ["ope"], name: "index_weams_on_ope"
     t.index ["state"], name: "index_weams_on_state"
   end
 
@@ -1619,11 +1632,11 @@ ActiveRecord::Schema.define(version: 2019_12_19_203831) do
     t.integer "version"
     t.bigint "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
-    t.index ["version_id"], name: "index_zipcode_rates_archives_on_version_id"
   end
 
+  add_foreign_key "crosswalk_issues", "crosswalks"
+  add_foreign_key "crosswalk_issues", "ipeds_hds"
+  add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institutions", "versions"
-  add_foreign_key "institutions_archives", "versions"
   add_foreign_key "zipcode_rates", "versions"
-  add_foreign_key "zipcode_rates_archives", "versions"
 end
