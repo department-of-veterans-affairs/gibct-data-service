@@ -92,12 +92,15 @@ class UploadsController < ApplicationController
     file = @upload.upload_file.tempfile
     csv_type = @upload.csv_type
     options = {}
+    options[:skip_lines] = @upload.skip_lines
+    options[:col_sep] = @upload.col_sep
     unless defaults(csv_type)['force_simple_split'].nil?
       options[:force_simple_split] = defaults(csv_type)['force_simple_split']
     end
     unless defaults(csv_type)['strip_chars_from_headers'].nil?
       options[:strip_chars_from_headers] = defaults(csv_type)['strip_chars_from_headers']
     end
+
     data = klass.load(file, options)
 
     @upload.update(ok: data.present? && data.ids.present?)
