@@ -38,7 +38,6 @@ class CrosswalkIssue < ApplicationRecord
           AND crosswalks.ope IS NULL
         )
         AND NOT(weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) = 'E')
-      ORDER BY weams.institution
     SQL
 
     InstitutionProgram.connection.execute(sql)
