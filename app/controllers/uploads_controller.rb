@@ -92,7 +92,7 @@ class UploadsController < ApplicationController
     file = @upload.upload_file.tempfile
     csv_type = @upload.csv_type
     options = {}
-    options[:skip_lines] = @upload.skip_lines
+    options[:skip_lines] = @upload.skip_lines.try(:to_i)
     options[:col_sep] = @upload.col_sep
     unless defaults(csv_type)['force_simple_split'].nil?
       options[:force_simple_split] = defaults(csv_type)['force_simple_split']
