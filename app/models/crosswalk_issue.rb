@@ -38,7 +38,7 @@ class CrosswalkIssue < ApplicationRecord
           AND crosswalks.ope IS NULL
         )
         AND (
-          weams.campus_type IS NULL 
+          weams.campus_type IS NULL
           OR (weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) != 'E')
         )
     SQL
