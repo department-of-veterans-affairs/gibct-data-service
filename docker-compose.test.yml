@@ -6,8 +6,6 @@ services:
     environment:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
-    volumes:
-      - "./data:/var/lib/postgresql/data"
     command: "postgres -c 'bytea_output=escape'"
   gibct:
     build:
