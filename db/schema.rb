@@ -131,10 +131,13 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
   end
 
   create_table "crosswalk_issues", force: :cascade do |t|
-    t.integer "weam_id"
-    t.integer "crosswalk_id"
-    t.integer "ipeds_hd_id"
+    t.bigint "weam_id"
+    t.bigint "crosswalk_id"
+    t.bigint "ipeds_hd_id"
     t.string "issue_type"
+    t.index ["crosswalk_id"], name: "index_crosswalk_issues_on_crosswalk_id"
+    t.index ["ipeds_hd_id"], name: "index_crosswalk_issues_on_ipeds_hd_id"
+    t.index ["weam_id"], name: "index_crosswalk_issues_on_weam_id"
   end
 
   create_table "crosswalks", id: :serial, force: :cascade do |t|
@@ -377,6 +380,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
+    t.bigint "version_id"
     t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
     t.index ["address_1"], name: "index_institutions_on_address_1"
     t.index ["address_2"], name: "index_institutions_on_address_2"
@@ -394,6 +398,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
     t.index ["stem_offered"], name: "index_institutions_on_stem_offered"
     t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id"
     t.index ["version"], name: "index_institutions_on_version"
+    t.index ["version_id"], name: "index_institutions_on_version_id"
   end
 
   create_table "institutions_archives", id: :integer, default: -> { "nextval('institutions_id_seq'::regclass)" }, force: :cascade do |t|
@@ -517,6 +522,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
+    t.bigint "version_id"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1611,7 +1617,9 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
+    t.bigint "version_id"
     t.index ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code"
+    t.index ["version_id"], name: "index_zipcode_rates_on_version_id"
   end
 
   create_table "zipcode_rates_archives", id: :integer, default: -> { "nextval('zipcode_rates_id_seq'::regclass)" }, force: :cascade do |t|
@@ -1623,7 +1631,13 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
+    t.bigint "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "crosswalk_issues", "crosswalks"
+  add_foreign_key "crosswalk_issues", "ipeds_hds"
+  add_foreign_key "crosswalk_issues", "weams"
+  add_foreign_key "institutions", "versions"
+  add_foreign_key "zipcode_rates", "versions"
 end
