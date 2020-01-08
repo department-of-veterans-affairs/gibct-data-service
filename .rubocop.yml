@@ -74,7 +74,6 @@ Metrics/ClassLength:
     - 'app/models/ipeds_ic_ay.rb'
     - 'app/models/ipeds_ic_py.rb'
     - 'app/models/institution.rb'
-    - 'lib/common/models/collection.rb'
 
 Metrics/AbcSize:
   Max: 40

@@ -2,8 +2,6 @@
 
 require 'faraday'
 require 'common/client/errors'
-require 'common/models/collection'
-require 'sentry_logging'
 
 require 'common/exceptions/external/backend_service_exception'
 
@@ -47,7 +45,6 @@ module Common
     #   end
     #
     class Base
-      include SentryLogging
 
       ##
       # Sets the configuration singleton to use
