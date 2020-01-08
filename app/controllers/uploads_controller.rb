@@ -98,8 +98,6 @@ class UploadsController < ApplicationController
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
     raise(StandardError, error_msg) unless @upload.ok?
 
-    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
-
     data
   end
 
