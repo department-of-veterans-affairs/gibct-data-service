@@ -5,7 +5,6 @@ require 'common/client/errors'
 module Common
   module Exceptions
     class ExceptionHandler
-
       attr_reader :error, :service
 
       # @param error [ErrorClass] An external service error

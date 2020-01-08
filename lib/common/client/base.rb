@@ -45,7 +45,6 @@ module Common
     #   end
     #
     class Base
-
       ##
       # Sets the configuration singleton to use
       #
