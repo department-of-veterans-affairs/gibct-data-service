@@ -87,13 +87,16 @@ class UploadsController < ApplicationController
     file = @upload.upload_file.tempfile
     skip_lines = @upload.skip_lines.try(:to_i)
     col_sep = @upload.col_sep
+
+    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
+
     data = klass.load(file, skip_lines: skip_lines, col_sep: col_sep)
+
+    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?)
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
     raise(StandardError, error_msg) unless @upload.ok?
-
-    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     data
   end

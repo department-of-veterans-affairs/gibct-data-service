@@ -21,8 +21,10 @@ Rails.application.routes.draw do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
 
-  get '/crosswalks/partials' => 'crosswalks#partials', as: :crosswalks_partials
-  get '/crosswalks/orphans' => 'crosswalks#orphans', as: :crosswalks_orphans
+  resources :crosswalks, only: :index do
+    get '/crosswalks/partials' => 'crosswalks#partials', as: :crosswalks_partials
+    get '/crosswalks/orphans' => 'crosswalks#orphans', as: :crosswalks_orphans
+  end
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }

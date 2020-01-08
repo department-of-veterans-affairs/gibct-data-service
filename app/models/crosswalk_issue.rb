@@ -10,8 +10,6 @@ class CrosswalkIssue < ApplicationRecord
 
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
-    CrosswalkIssue.delete_all
-
     sql = <<-SQL
       INSERT INTO crosswalk_issues (
         weam_id,
@@ -25,8 +23,8 @@ class CrosswalkIssue < ApplicationRecord
         ipeds_hds.id,
         '#{PARTIAL_MATCH_TYPE}'
       FROM weams
-        LEFT OUTER JOIN ipeds_hds ON (weams.cross = ipeds_hds.cross)
-          OR (weams.ope = ipeds_hds.ope)
+        LEFT OUTER JOIN ipeds_hds ON  weams.cross = ipeds_hds.cross
+          OR weams.ope = ipeds_hds.ope
         LEFT OUTER JOIN crosswalks ON weams.facility_code = crosswalks.facility_code
       WHERE
         (institution_of_higher_learning_indicator = true OR non_college_degree_indicator = true)
@@ -44,7 +42,7 @@ class CrosswalkIssue < ApplicationRecord
           AND crosswalks.cross IS NULL
           AND crosswalks.ope IS NULL
         )
-        AND NOT(weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) = 'E')
+        AND UPPER(weams.campus_type) is distinct from 'E'
       UNION
       SELECT
         NULL,

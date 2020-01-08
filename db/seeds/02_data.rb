@@ -25,6 +25,9 @@ if ENV['CI'].blank?
   puts 'Deleting old constants'
   CalculatorConstant.delete_all
 
+  puts 'Deleting old crosswalk issues'
+  CrosswalkIssue.delete_all
+
   puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
   SeedUtils.seed_table_with_upload(CalculatorConstant, user)
   SeedUtils.seed_table_with_upload(Program, user)
