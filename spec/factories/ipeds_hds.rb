@@ -12,6 +12,14 @@ FactoryBot.define do
       cross { '999999' }
     end
 
+    trait :crosswalk_issue_matchable_by_cross do
+      cross { '888888' }
+    end
+
+    trait :crosswalk_issue_matchable_by_ope do
+      ope { '88888888' }
+    end
+
     initialize_with do
       new(
         cross: cross, vet_tuition_policy_url: vet_tuition_policy_url,
