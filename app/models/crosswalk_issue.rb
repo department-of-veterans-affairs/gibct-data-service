@@ -7,8 +7,6 @@ class CrosswalkIssue < ApplicationRecord
 
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
-    CrosswalkIssue.delete_all
-
     sql = <<-SQL
       INSERT INTO crosswalk_issues (
         weam_id,
@@ -39,8 +37,7 @@ class CrosswalkIssue < ApplicationRecord
           AND crosswalks.cross IS NULL
           AND crosswalks.ope IS NULL
         )
-        AND NOT(weams.campus_type IS NOT NULL AND UPPER(weams.campus_type) = 'E')
-      ORDER BY weams.institution
+        AND UPPER(weams.campus_type) is distinct from 'E'
     SQL
 
     InstitutionProgram.connection.execute(sql)
