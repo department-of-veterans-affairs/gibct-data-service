@@ -79,7 +79,6 @@ class DashboardsController < ApplicationController
 
     redirect_to dashboards_path, alert: message
   rescue StandardError => e
-    binding.pry
     message = Common::Exceptions::ExceptionHandler.new(e, upload.csv_type).serialize_error
     Rails.logger.error e
     redirect_to dashboards_path, alert: message
