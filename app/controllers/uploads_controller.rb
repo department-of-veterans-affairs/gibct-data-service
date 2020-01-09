@@ -101,7 +101,12 @@ class UploadsController < ApplicationController
       options[:strip_chars_from_headers] = defaults(csv_type)['strip_chars_from_headers']
     end
 
+
+    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
+
     data = klass.load(file, options)
+
+    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?)
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."

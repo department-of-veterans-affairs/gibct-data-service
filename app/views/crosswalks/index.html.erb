@@ -1,0 +1,25 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <h3>Issues</h3>
+    <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
+      <thead class="system-header">
+        <th colspan="4">WEAMS</th>
+        <th colspan="2">IPEDS HD</th>
+        <th colspan="2">Crosswalk</th>
+      </thead>
+      <thead>
+        <th>Institution Name</th>
+        <th>Facility Code</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+      </thead>
+      <tbody>
+      <%= render partial: 'issues', collection: @issues, as: :issue %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -174,3 +174,12 @@
     margin-bottom: 1em;
 }
 
+.crosswalk-issues .even:not(:hover) td {
+    background-color: #f3f3ff;
+}
+
+thead.system-header th {
+    background-color: #333333;
+    color: #ffffff;
+    text-align: center;
+}
