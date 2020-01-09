@@ -88,19 +88,19 @@ class UploadsController < ApplicationController
     @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :col_sep, :upload_file, :comment)
   end
 
-  def call_load
-    file = @upload.upload_file.tempfile
+  def set_options
     csv_type = @upload.csv_type
-    options = {}
-    options[:skip_lines] = @upload.skip_lines.try(:to_i)
-    options[:col_sep] = @upload.col_sep
-    unless defaults(csv_type)['force_simple_split'].nil?
+    options = { skip_lines: @upload.skip_lines.try(:to_i), col_sep: @upload.col_sep }
+    unless defaults(csv_type)['force_simple_split'].nil? && defaults(csv_type)['strip_chars_from_headers'].nil?
       options[:force_simple_split] = defaults(csv_type)['force_simple_split']
-    end
-    unless defaults(csv_type)['strip_chars_from_headers'].nil?
       options[:strip_chars_from_headers] = defaults(csv_type)['strip_chars_from_headers']
     end
+    options
+  end
 
+  def call_load
+    file = @upload.upload_file.tempfile
+    options = set_options
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 

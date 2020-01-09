@@ -160,7 +160,8 @@ RSpec.describe UploadsController, type: :controller do
         expect do
           post(:create,
                params: {
-                   upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'SchoolCertifyingOfficial', col_sep: ',' }
+                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'SchoolCertifyingOfficial',
+                           col_sep: ',' }
                })
         end.to change(SchoolCertifyingOfficial, :count).by(2)
       end
