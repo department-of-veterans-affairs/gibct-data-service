@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EduProgramValidator < ActiveModel::Validator
-  VALIDATION_DESCRIPTIONS = [
+  REQUIREMENT_DESCRIPTIONS = [
     'The Facility Code & VET TEC Program (Program Name) combination should be unique',
     'The Facility Code should be contained within the most recently uploaded weams.csv'
   ].freeze

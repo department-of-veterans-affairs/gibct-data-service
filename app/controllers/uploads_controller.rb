@@ -113,7 +113,7 @@ class UploadsController < ApplicationController
   def requirements_messages
     messages = validation_messages
     # this a call to custom validators that are not listed inside the class
-    custom_validator_messages = "#{klass.name}Validator::VALIDATION_DESCRIPTIONS".safe_constantize
+    custom_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
     messages.push(*custom_validator_messages)
 
     messages
@@ -123,27 +123,27 @@ class UploadsController < ApplicationController
     klass.validators.map do |validations|
       case validations
       when ActiveRecord::Validations::PresenceValidator
-        generic_validator('These columns must have a value: ', validations)
+        generic_requirement_message('These columns must have a value: ', validations)
       when ActiveModel::Validations::InclusionValidator
-        inclusion_validator(validations)
+        inclusion_requirement_message(validations)
       when ActiveModel::Validations::NumericalityValidator
-        generic_validator('These columns can only contain numeric values: ', validations)
+        generic_requirement_message('These columns can only contain numeric values: ', validations)
       when ActiveRecord::Validations::UniquenessValidator
-        generic_validator('These columns should contain unique values: ', validations)
+        generic_requirement_message('These columns should contain unique values: ', validations)
       end
     end
   end
 
-  def map_attributes(validations)
+  def affected_attributes(validations)
     validations.attributes.map(&:to_s).join(', ')
   end
 
-  def generic_validator(message, validations)
-    message + map_attributes(validations)
+  def generic_requirement_message(message, validations)
+    message + affected_attributes(validations)
   end
 
-  def inclusion_validator(validations)
-    'For column ' + map_attributes(validations) + ' values must be one of these values: ' +
+  def inclusion_requirement_message(validations)
+    'For column ' + affected_attributes(validations) + ' values must be one of these values: ' +
       validations.options[:in].map(&:to_s).join(', ')
   end
 end

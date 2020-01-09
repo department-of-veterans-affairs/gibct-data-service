@@ -9,7 +9,7 @@
     <div class="col-xs-8">
       <%= render 'form' %>
     </div>
-    <% if @requirements.length > 0 %>
+    <% if @requirements.any? %>
       <div class="col-xs-4">
         <div class="alert alert-info" role="alert">
           <h4 class="alert-heading">CSV Data Requirements</h4><br />

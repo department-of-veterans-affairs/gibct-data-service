@@ -100,7 +100,7 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validate WeamsValidator messages' do
-        expect(assigns(:validators)).to include(*WeamValidator::VALIDATION_DESCRIPTIONS)
+        expect(assigns(:validators)).to include(*WeamValidator::REQUIREMENT_DESCRIPTIONS)
       end
     end
 
