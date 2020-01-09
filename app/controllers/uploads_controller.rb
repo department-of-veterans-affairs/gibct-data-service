@@ -9,8 +9,10 @@ class UploadsController < ApplicationController
     @upload = new_upload(params[:csv_type])
     csv_type_check = @upload.csv_type_check?
 
-    @validators = validators_messages if csv_type_check
-    return if csv_type_check
+    if csv_type_check
+      @requirements = requirements_messages
+      return
+    end
 
     alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
@@ -108,33 +110,28 @@ class UploadsController < ApplicationController
     @upload.csv_type.constantize
   end
 
-  def validators_messages
-    # this a call to custom validators that are not listed inside the class
-    validator_klass = "#{klass.name}Validator".safe_constantize
-
+  def requirements_messages
     messages = validation_messages
-    messages.push(*validator_klass::VALIDATION_DESCRIPTIONS) if validator_klass?(validator_klass)
+    # this a call to custom validators that are not listed inside the class
+    custom_validator_messages = "#{klass.name}Validator::VALIDATION_DESCRIPTIONS".safe_constantize
+    messages.push(*custom_validator_messages)
 
     messages
   end
 
-  def validator_klass?(validator_klass)
-    # this a call to custom validators that are not listed inside the class
-    validator_klass.present? && defined? validator_klass::VALIDATION_DESCRIPTIONS
-  end
-
   def validation_messages
     klass.validators.map do |validations|
-      if validations.class == ActiveRecord::Validations::PresenceValidator
+      case validations
+      when ActiveRecord::Validations::PresenceValidator
         generic_validator('These columns must have a value: ', validations)
-      elsif validations.class == ActiveModel::Validations::InclusionValidator
+      when ActiveModel::Validations::InclusionValidator
         inclusion_validator(validations)
-      elsif validations.class == ActiveModel::Validations::NumericalityValidator
+      when ActiveModel::Validations::NumericalityValidator
         generic_validator('These columns can only contain numeric values: ', validations)
-      elsif validations.class == ActiveRecord::Validations::UniquenessValidator
+      when ActiveRecord::Validations::UniquenessValidator
         generic_validator('These columns should contain unique values: ', validations)
       end
-    end.select(&:present?)
+    end
   end
 
   def map_attributes(validations)
