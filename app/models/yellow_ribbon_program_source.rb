@@ -48,8 +48,4 @@ class YellowRibbonProgramSource < ApplicationRecord
   validates :division_professional_school, presence: true
   validates :number_of_students, numericality: true
   validates :contribution_amount, numericality: true
-
-  after_initialize :derive_dependent_columns
-
-  def derive_dependent_columns; end
 end
