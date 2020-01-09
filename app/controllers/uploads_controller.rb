@@ -135,7 +135,14 @@ class UploadsController < ApplicationController
   end
 
   def affected_attributes(validations)
-    validations.attributes.map(&:to_s).join(', ')
+    validations.attributes
+        .map{|column| csv_column_name(column).to_s}
+        .select(&:present?) # derive_dependent_columns or columns not in CSV_CONVERTER_INFO will be blank
+        .join(', ')
+  end
+
+  def csv_column_name(column)
+    klass::CSV_CONVERTER_INFO.select{|_k,v| v[:column] == column}.keys.join(', ')
   end
 
   def generic_requirement_message(message, validations)
