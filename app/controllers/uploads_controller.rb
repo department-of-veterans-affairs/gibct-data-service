@@ -57,12 +57,9 @@ class UploadsController < ApplicationController
     upload = Upload.new(csv_type: csv_type)
     upload.skip_lines = defaults(csv_type)['skip_lines']
     upload.col_sep = defaults(csv_type)['col_sep']
-    unless defaults(csv_type)['force_simple_split'].nil?
-      upload.force_simple_split = defaults(csv_type)['force_simple_split']
-    end
-    unless defaults(csv_type)['strip_chars_from_headers'].nil?
-      upload.strip_chars_from_headers = defaults(csv_type)['strip_chars_from_headers']
-    end
+    upload.force_simple_split = defaults(csv_type)['force_simple_split']
+    upload.strip_chars_from_headers = defaults(csv_type)['strip_chars_from_headers']
+    # end
     upload
   end
 
@@ -90,11 +87,10 @@ class UploadsController < ApplicationController
 
   def set_options
     csv_type = @upload.csv_type
-    options = { skip_lines: @upload.skip_lines.try(:to_i), col_sep: @upload.col_sep }
-    unless defaults(csv_type)['force_simple_split'].nil? && defaults(csv_type)['strip_chars_from_headers'].nil?
-      options[:force_simple_split] = defaults(csv_type)['force_simple_split']
-      options[:strip_chars_from_headers] = defaults(csv_type)['strip_chars_from_headers']
-    end
+    options = { skip_lines: @upload.skip_lines.try(:to_i),
+                col_sep: @upload.col_sep,
+                force_simple_split: defaults(csv_type)['force_simple_split'],
+                strip_chars_from_headers: defaults(csv_type)['strip_chars_from_headers'] }
     options
   end
 
