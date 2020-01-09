@@ -7,12 +7,8 @@ module Specs
     module Client
       class DefaultConfiguration < ::Common::Client::Configuration::REST
         def connection
-          @conn ||= Faraday.new(base_path) do |faraday|
-            unless adapter_only
-              faraday.use     :breakers
-              faraday.use     Faraday::Response::RaiseError
-              faraday.use     :remove_cookies
-            end
+          @connection ||= Faraday.new(base_path) do |faraday|
+            faraday.use Faraday::Response::RaiseError unless adapter_only
             faraday.adapter :httpclient
           end
         end

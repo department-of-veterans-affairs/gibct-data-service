@@ -12,7 +12,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
   describe '.initialize' do
     context 'when initialized without a nil error' do
       it 'raises an exception' do
-        expect { Common::Exceptions::ExceptionHandler.new(nil, service) }.to raise_error(Common::Exceptions::ParameterMissing)
+        expect { described_class.new(nil, service) }.to raise_error(Common::Exceptions::ParameterMissing)
       end
     end
   end
@@ -20,7 +20,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
   describe '#serialize_error' do
     context 'with a Common::Client::Errors::ClientError' do
       let(:error) { Common::Client::Errors::ClientError.new(message, 503, error_body) }
-      let(:results) { Common::Exceptions::ExceptionHandler.new(error, service).serialize_error }
+      let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
         expect(results[:description]).to include message, error_body.to_s
@@ -41,7 +41,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
 
     context 'with a Common::Exceptions::GatewayTimeout' do
       let(:error) { Common::Exceptions::GatewayTimeout.new }
-      let(:results) { Common::Exceptions::ExceptionHandler.new(error, service).serialize_error }
+      let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
         expect(results[:description]).to include 'Gateway timeout', '504'
@@ -54,19 +54,19 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
 
     def server_error_exception
       Common::Exceptions::BackendServiceException.new(
-          'SCORECARD_503',
-          { source: 'ScorecardApi::Client' },
-          503,
-          'some error body'
+        'SCORECARD_503',
+        { source: 'ScorecardApi::Client' },
+        503,
+        'some error body'
       )
     end
 
     context 'with a Common::Exceptions::BackendServiceException' do
       let(:error) { server_error_exception }
-      let(:results) { Common::Exceptions::ExceptionHandler.new(error, service).serialize_error }
+      let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
-        expect(results[:description]).to include 'MVI_503', '503', 'Service unavailable'
+        expect(results[:description]).to include 'SCORECARD_503', '503', 'Service unavailable'
       end
 
       it 'returns a status' do
@@ -76,7 +76,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
 
     context 'with a StandardError' do
       let(:error) { StandardError.new(message) }
-      let(:results) { Common::Exceptions::ExceptionHandler.new(error, service).serialize_error }
+      let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
         expect(results[:description]).to include message, 'StandardError'
