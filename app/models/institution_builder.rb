@@ -89,13 +89,15 @@ module InstitutionBuilder
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
-    str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at) "
-    str += Weam.select(columns)
-               .select("#{version_number.to_i} as version")
-               .select("#{conn.quote(timestamp)} as created_at")
-               .select("#{conn.quote(timestamp)} as updated_at")
-               .to_sql
-
+    str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
+    str += Weam
+           .select(columns)
+           .select("#{version_number.to_i} as version")
+           .select("#{conn.quote(timestamp)} as created_at")
+           .select("#{conn.quote(timestamp)} as updated_at")
+           .select('v.id as version_id')
+           .to_sql
+    str += "INNER JOIN versions v ON v.number = #{version_number}"
     Institution.connection.insert(str)
 
     # remove duplicates
@@ -483,21 +485,23 @@ module InstitutionBuilder
       mha_name,
       version,
       created_at,
-      updated_at
+      updated_at,
+      version_id
     )
     SELECT
       zip,
       bah,
       dod_bah,
       concat_ws(', ', physical_city, physical_state) as physical_location,
-      ?,
+      v.number,
       #{conn.quote(timestamp)},
-      #{conn.quote(timestamp)}
-    FROM weams
+      #{conn.quote(timestamp)},
+      v.id
+      FROM weams INNER JOIN versions v ON v.number = ?
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
-    GROUP BY zip, bah, dod_bah, physical_location
+    GROUP BY zip, bah, dod_bah, physical_location, v.id
     ORDER BY zip
     SQL
 
