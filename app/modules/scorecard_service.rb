@@ -25,38 +25,35 @@ module ScorecardApi
       'latest.completion.rate_suppressed.lt_four_year_150percent': :c150_l4_pooled_supp
     }.freeze
 
-    def populate
-      @results = []
-      @results.push(*schools_api_call(0)) #  call for page 0 to get initial @total
+    def self.populate
+      results = []
 
-      number_of_pages = (@total / MAGIC_PAGE_NUMBER).to_f.ceil
+      response_body = schools_api_call(0) #  call for page 0 to get initial @total
+      results.push(*response_body[:results])
 
-      (1..number_of_pages).each { |page_num| @results.push(*schools_api_call(page_num)) }
+      number_of_pages = (response_body[:metadata][:total] / MAGIC_PAGE_NUMBER).to_f.ceil
 
-      map_results
+      (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num)[:results]) }
+
+      map_results(results)
     end
 
-    private
-
-    def schools_api_call(page)
+    def self.schools_api_call(page)
       params = {
         'fields': API_MAPPINGS.keys.join(','),
         'per_page': MAGIC_PAGE_NUMBER.to_s,
         'page': page
       }
 
-      response_body = client.schools(params).body
-      @total = response_body[:metadata][:total]
-
-      response_body[:results]
+      client.schools(params).body
     end
 
-    def client
+    def self.client
       ScorecardApi::Client.new
     end
 
-    def map_results
-      @results.map do |result|
+    def self.map_results(results)
+      results.map do |result|
         scorecard = Scorecard.new
         result.each_pair { |key, value| scorecard[API_MAPPINGS[key]] = value }
         scorecard.derive_dependent_columns

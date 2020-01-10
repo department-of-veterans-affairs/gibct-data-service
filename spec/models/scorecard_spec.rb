@@ -3,6 +3,7 @@
 require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
+require_relative '../../app/modules/scorecard_service'
 
 RSpec.describe Scorecard, type: :model do
   it_behaves_like 'a loadable model', skip_lines: 0
@@ -82,6 +83,19 @@ RSpec.describe Scorecard, type: :model do
     it 'requires c150_4_pooled_supp to be a number or nil' do
       expect(build(:scorecard, c150_4_pooled_supp: nil)).to be_valid
       expect(build(:scorecard, c150_4_pooled_supp: 'abc')).not_to be_valid
+    end
+  end
+
+  describe 'populate' do
+    subject(:scorecard) { build :scorecard }
+    it 'causes populate to be called for a CSV' do
+      allow(ScorecardApi::Service).to receive(:populate).and_return([scorecard])
+      allow(Scorecard).to receive(:load_from_api)
+      message = Scorecard.populate
+
+      expect(message).to eq('Scorecard CSV table populated from https://collegescorecard.ed.gov/data/')
+      expect(ScorecardApi::Service).to have_received(:populate)
+      expect(Scorecard).to have_received(:load_from_api)
     end
   end
 end

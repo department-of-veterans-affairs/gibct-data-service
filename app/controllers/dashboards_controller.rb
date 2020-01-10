@@ -95,9 +95,8 @@ class DashboardsController < ApplicationController
 
   def fetch_api_data(upload)
     klass = upload.csv_type.constantize
-    has_api = klass.present? && klass.respond_to?(:populate)
-    return klass.populate if has_api
+    return klass.populate if klass.present? && klass.respond_to?(:populate)
 
-    "#{upload.csv_type} does not have populate from api implemented" unless has_api
+    "#{upload.csv_type} does not have populate from api implemented"
   end
 end

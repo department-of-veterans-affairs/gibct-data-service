@@ -151,9 +151,11 @@ class Scorecard < ApplicationRecord
   after_initialize :derive_dependent_columns
 
   def self.populate
-    results = ScorecardApi::Service.new.populate
-    load_from_api(results)
-    'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/' if results
+    results = ScorecardApi::Service.populate
+    if results.any?
+      load_from_api(results)
+      'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/'
+    end
   end
 
   def derive_dependent_columns

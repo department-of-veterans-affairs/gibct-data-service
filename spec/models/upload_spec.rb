@@ -147,4 +147,13 @@ RSpec.describe Upload, type: :model do
       expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
     end
   end
+
+  describe 'from_csv_type' do
+    it 'returns upload object with of CSV type' do
+      upload = Upload.from_csv_type(Weam.name)
+      expect(upload.csv_type).to eq(Weam.name)
+      expect(upload.skip_lines).to eq(0)
+      expect(upload.col_sep).to eq(',')
+    end
+  end
 end
