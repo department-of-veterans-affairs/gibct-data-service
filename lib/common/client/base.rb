@@ -45,7 +45,6 @@ module Common
     #   end
     #
     class Base
-
       ##
       # Sets the configuration singleton to use
       #
@@ -71,12 +70,13 @@ module Common
       def connection
         @connection ||= lambda do
           connection = config.connection
-          handlers = connection.builder.handlers
+          # handlers = connection.builder.handlers
 
-          if handlers.include?(Faraday::Adapter::HTTPClient) &&
-             !handlers.include?(Common::Client::Middleware::Request::RemoveCookies)
-            raise SecurityError, 'http client needs cookies stripped'
-          end
+          # not using HTTPClient
+          # if handlers.include?(Faraday::Adapter::HTTPClient) &&
+          #   !handlers.include?(Common::Client::Middleware::Request::RemoveCookies)
+          #  raise SecurityError, 'http client needs cookies stripped'
+          # end
 
           # not using breakers for Redis at this time
           # if handlers.include?(Breakers::UptimeMiddleware)

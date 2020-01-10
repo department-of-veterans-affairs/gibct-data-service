@@ -100,6 +100,14 @@ en:
         detail: "An outage has been reported on the %{service} since %{since}"
         code: 503
         status: 503
+      gateway_timeout: &gateway_timeout
+        <<: *defaults
+        title: Gateway timeout
+        detail: "Did not receive a timely response from an upstream server"
+        code: 504
+        status: 504
+      sentry_ignored_gateway_timeout:
+        <<: *gateway_timeout
 # EXTERNAL EXCEPTIONS
       # This is a Generic Error corresponding to backend services
       backend_service_exception: &external_defaults
@@ -112,8 +120,14 @@ en:
       # Below this line just define the minor code as key to be used by client error
       VA900:
         <<: *external_defaults
-      SCORECARD_403:
+      SCORECARDAPI_KEY_MISSING:
         <<: *external_defaults
         code: 'SCORECARD_403'
         detail: 'Missing API Key'
         status: 403
+      SCORECARD_503:
+        <<: *external_defaults
+        title: Service unavailable
+        detail: "Scorecard service is currently unavailable"
+        code: 'SCORECARD_503'
+        status: 503
