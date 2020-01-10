@@ -59,7 +59,6 @@ class UploadsController < ApplicationController
     upload.col_sep = defaults(csv_type)['col_sep']
     upload.force_simple_split = defaults(csv_type)['force_simple_split']
     upload.strip_chars_from_headers = defaults(csv_type)['strip_chars_from_headers']
-    # end
     upload
   end
 
