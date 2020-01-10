@@ -3,7 +3,7 @@ require 'rspec'
 require_relative '../../app/modules/scorecard_service'
 
 describe ScorecardApi::Service do
-  class ResponseClass
+  class MockResponse < Faraday::Env
     attr_accessor :body
     def initialize(body)
       self.body = body
@@ -18,7 +18,7 @@ describe ScorecardApi::Service do
     context 'when total is greater than MAGIC_PAGE_NUMBER' do
       let(:total) {ScorecardApi::Service::MAGIC_PAGE_NUMBER + 50}
       let(:body) {{:results => response_results, :metadata => {total: total}}}
-      let(:response) { ResponseClass.new(body) }
+      let(:response) { MockResponse.new(body) }
 
       it 'calls ScorecardApi::Client twice' do
         allow_any_instance_of(ScorecardApi::Client).to receive(:schools).and_return(response)
@@ -32,7 +32,7 @@ describe ScorecardApi::Service do
     context 'when total is less than MAGIC_PAGE_NUMBER' do
       let(:total) {ScorecardApi::Service::MAGIC_PAGE_NUMBER - 50}
       let(:body) {{:results => response_results, :metadata => {total: total}}}
-      let(:response) { ResponseClass.new(body) }
+      let(:response) { MockResponse.new(body) }
 
       it 'calls ScorecardApi::Client once' do
         allow_any_instance_of(ScorecardApi::Client).to receive(:schools).and_return(response)
