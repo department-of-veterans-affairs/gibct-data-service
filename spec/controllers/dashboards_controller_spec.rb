@@ -48,7 +48,9 @@ RSpec.describe DashboardsController, type: :controller do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
+                          force_simple_split: defaults[klass.name]['force_simple_split'],
+                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
       end
     end
 
@@ -75,7 +77,9 @@ RSpec.describe DashboardsController, type: :controller do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
+                          force_simple_split: defaults[klass.name]['force_simple_split'],
+                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
       end
 
       post(:build)
@@ -105,7 +109,9 @@ RSpec.describe DashboardsController, type: :controller do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
+                          force_simple_split: defaults[klass.name]['force_simple_split'],
+                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
       end
 
       post(:build)
