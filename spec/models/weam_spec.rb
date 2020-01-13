@@ -27,6 +27,14 @@ RSpec.describe Weam, type: :model do
       expect(build(:weam, bah: true)).not_to be_valid
     end
 
+    it 'requires a country' do
+      expect(build(:weam, country: nil)).not_to be_valid
+    end
+  end
+
+  describe 'after_initialize' do
+    subject(:weam) { build :weam }
+
     it 'computes the ope6 from ope[1, 5]' do
       expect(weam.ope6).to eql(weam.ope[1, 5])
     end
