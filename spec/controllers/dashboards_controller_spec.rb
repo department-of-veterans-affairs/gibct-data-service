@@ -174,7 +174,6 @@ RSpec.describe DashboardsController, type: :controller do
     end
   end
 
-
   describe 'GET api_fetch' do
     login_user
 

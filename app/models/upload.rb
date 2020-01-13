@@ -88,13 +88,15 @@ class Upload < ApplicationRecord
 
   def self.from_csv_type(csv_type)
     upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = defaults(csv_type)['skip_lines']
-    upload.col_sep = defaults(csv_type)['col_sep']
+    upload.skip_lines = default_options(csv_type)['skip_lines']
+    upload.col_sep = default_options(csv_type)['col_sep']
+    upload.force_simple_split = default_options(csv_type)['force_simple_split']
+    upload.strip_chars_from_headers = default_options(csv_type)['strip_chars_from_headers']
 
     upload
   end
 
-  def self.defaults(csv_type)
+  def self.default_options(csv_type)
     Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
   end
 

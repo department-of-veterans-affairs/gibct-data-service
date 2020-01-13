@@ -32,8 +32,8 @@ REQUIRED_TABLES = [
 ].freeze
 
 API_TABLES = [
-    Scorecard.name
-]
+  Scorecard.name
+].freeze
 
 RSpec.describe 'CSV_TYPES' do
   describe 'all_tables' do

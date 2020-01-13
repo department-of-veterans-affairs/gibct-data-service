@@ -7,8 +7,8 @@ describe ScorecardApi::Configuration do
   describe '.open_timeout' do
     context 'when Settings.scorecard.open_timeout is not set' do
       it 'uses the setting' do
-        expect(ScorecardApi::Configuration.instance.open_timeout)
-            .to eq(Common::Client::Configuration::Base.instance.open_timeout)
+        expect(described_class.instance.open_timeout)
+          .to eq(Common::Client::Configuration::Base.instance.open_timeout)
       end
     end
   end
@@ -16,8 +16,8 @@ describe ScorecardApi::Configuration do
   describe '.read_timeout' do
     context 'when Settings.scorecard.timeout is not set' do
       it 'uses the setting' do
-        expect(ScorecardApi::Configuration.instance.read_timeout)
-            .to eq(Common::Client::Configuration::Base.instance.read_timeout)
+        expect(described_class.instance.read_timeout)
+          .to eq(Common::Client::Configuration::Base.instance.read_timeout)
       end
     end
   end
