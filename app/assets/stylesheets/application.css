@@ -21,22 +21,24 @@
 @font-face {
   font-family: 'Glyphicons Halflings';
   src: url('/assets/glyphicons-halflings-regular.eot');
-  src: url('/assets/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
-  url('/assets/glyphicons-halflings-regular.woff') format('woff'),
-  url('/assets/glyphicons-halflings-regular.ttf') format('truetype'),
-  url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+  src: url('/assets/glyphicons-halflings-regular.eot?#iefix')
+      format('embedded-opentype'),
+    url('/assets/glyphicons-halflings-regular.woff') format('woff'),
+    url('/assets/glyphicons-halflings-regular.ttf") format("truetype'),
+    url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular')
+      format('svg');
 }
 
 .row-space-6 {
-	padding: 3px 0;
+  padding: 3px 0;
 }
 
 .control-space {
-  margin-top: 1rem
+  margin-top: 1rem;
 }
 
 .section-margin-24 {
-	margin: 12px 0;
+  margin: 12px 0;
 }
 
 .digg_pagination {
@@ -45,7 +47,9 @@
   /* self-clearing method: */
 }
 
-.digg_pagination a, .digg_pagination span, .digg_pagination em {
+.digg_pagination a,
+.digg_pagination span,
+.digg_pagination em {
   padding: 0.2em 0.5em;
   display: block;
   float: left;
@@ -53,7 +57,7 @@
 }
 
 .digg_pagination .disabled {
-  color: #999999;
+  color: #767676;
   border: 1px solid #dddddd;
 }
 
@@ -71,9 +75,10 @@
   border: 1px solid #9aafe5;
 }
 
-.digg_pagination a:hover, .digg_pagination a:focus {
-    color: #000033;
-    border-color: #000033;
+.digg_pagination a:hover,
+.digg_pagination a:focus {
+  color: #000033;
+  border-color: #000033;
 }
 
 .digg_pagination .page_info {
@@ -86,13 +91,13 @@
 }
 
 .digg_pagination .page_info b {
-    color: #000033;
-    background: #6aa6ed;
-    padding: 0.1em 0.25em;
+  color: #000033;
+  background: #6aa6ed;
+  padding: 0.1em 0.25em;
 }
 
 .digg_pagination:after {
-  content: ".";
+  content: '.';
   display: block;
   height: 0;
   clear: both;
@@ -115,7 +120,8 @@
   cursor: default;
 }
 
-.apple_pagination a, .apple_pagination span {
+.apple_pagination a,
+.apple_pagination span {
   padding: 0.2em 0.3em;
 }
 
@@ -142,44 +148,86 @@
   color: black;
 }
 
-.apple_pagination a:hover, .apple_pagination a:focus {
-    text-decoration: underline;
+.apple_pagination a:hover,
+.apple_pagination a:focus {
+  text-decoration: underline;
 }
 
 #preview_dialog {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #preview_dialog_div {
-    min-width: 250px;
-    text-align: center;
+  min-width: 250px;
+  text-align: center;
 }
 
 .generate_preview_button_div {
-    text-align: center;
+  text-align: center;
 }
 
 .generate_preview_table {
-    display: inline-block;
-    overflow-y: scroll;
-    max-height: 500px;
+  display: inline-block;
+  overflow-y: scroll;
+  max-height: 500px;
 }
 
 .generate_preview_question {
-    text-align: center;
-    font-size: large;
-    margin-top: 1em;
-    margin-bottom: 1em;
+  text-align: center;
+  font-size: large;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .crosswalk-issues .even:not(:hover) td {
-    background-color: #f3f3ff;
+  background-color: #f3f3ff;
 }
 
 thead.system-header th {
-    background-color: #333333;
-    color: #ffffff;
-    text-align: center;
+  background-color: #333333;
+  color: #ffffff;
+  text-align: center;
+}
+
+.dashboard-btn-success {
+  background-color: #2c882c;
+  color: #fff;
+  border-color: #4cae4c;
+}
+.dashboard-btn-success:hover {
+  color: #ffffff !important;
+  background-color: #4cae4c;
+  border-color: #398439;
+}
+
+.dashboard-btn-warning {
+  color: #ffffff;
+  background-color: #aa6708;
+  border-color: #eea236;
+}
+.dashboard-btn-warning:hover {
+  color: #ffffff !important;
+  background-color: #eea236;
+}
+.dashboard-btn-info {
+  color: #ffffff;
+  background-color: #1b8098;
+  border-color: #24687c;
+}
+.dashboard-btn-info:hover {
+  color: #ffffff !important;
+  background-color: #70bdd4;
+}
+.dashboard-header {
+  color: #767676 !important;
+}
+.dashboard-btn-danger {
+  color: #ffffff;
+  background-color: #ce4844;
+}
+.dashboard-btn-danger:hover {
+  color: #ffffff !important;
+  background-color: #dd5050;
 }
