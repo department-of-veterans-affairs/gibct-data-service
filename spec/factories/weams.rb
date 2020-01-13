@@ -16,6 +16,7 @@ FactoryBot.define do
     poo_status { nil }
     applicable_law_code { nil }
     ojt_indicator { false }
+    csv_row { generate :csv_row }
 
     # Facility_code second digit is 0
     trait :ojt do
