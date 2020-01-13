@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'scorecard_api/configuration'
 
-describe GI::Configuration do
+describe ScorecardApi::Configuration do
   describe '.open_timeout' do
-    context 'when Settings.gi.open_timeout is set' do
+    context 'when Settings.scorecard.open_timeout is not set' do
       it 'uses the setting' do
-        expect(GI::Configuration.instance.open_timeout).to eq(1)
+        expect(ScorecardApi::Configuration.instance.open_timeout)
+            .to eq(Common::Client::Configuration::Base.instance.open_timeout)
       end
     end
   end
 
   describe '.read_timeout' do
-    context 'when Settings.gi.timeout is set' do
+    context 'when Settings.scorecard.timeout is not set' do
       it 'uses the setting' do
-        expect(GI::Configuration.instance.read_timeout).to eq(1)
+        expect(ScorecardApi::Configuration.instance.read_timeout)
+            .to eq(Common::Client::Configuration::Base.instance.read_timeout)
       end
     end
   end
