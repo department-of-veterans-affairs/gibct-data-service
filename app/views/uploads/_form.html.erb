@@ -8,12 +8,12 @@
       <% end %>
 
       <div class="form-group">
-        <%= f.label(:skip_lines_before_header) %><br />
+        <%= f.label(:skip_lines_before_header, for: "upload_skip_lines") %><br />
         <%= f.text_field(:skip_lines) %>
       </div>
 
       <div class="form-group">
-        <%= f.label(:column_separator) %><br />
+        <%= f.label(:column_separator, for: "upload_col_sep") %><br />
         <%= f.select(:col_sep, options_for_select(Settings.csv_upload.column_separators, @upload.col_sep),
                      { include_blank: "Select column separator" },
                      { class: "form-control", required: true }) %>
