@@ -53,6 +53,7 @@ Metrics/ClassLength:
     - 'app/models/ipeds_ic_ay.rb'
     - 'app/models/ipeds_ic_py.rb'
     - 'app/models/institution.rb'
+    - 'app/controllers/uploads_controller.rb'
 
 Metrics/AbcSize:
   Max: 40
