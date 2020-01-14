@@ -120,15 +120,6 @@ class UploadsController < ApplicationController
   end
 
   def requirements_messages
-    messages = validation_messages
-    # this a call to custom validators that are not listed inside the class
-    custom_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    messages.push(*custom_validator_messages)
-
-    messages
-  end
-
-  def validation_messages
     klass.validators.map do |validations|
       case validations
       when ActiveRecord::Validations::PresenceValidator
@@ -139,8 +130,12 @@ class UploadsController < ApplicationController
         generic_requirement_message('These columns can only contain numeric values: ', validations)
       when ActiveRecord::Validations::UniquenessValidator
         generic_requirement_message('These columns should contain unique values: ', validations)
+      when "#{klass.name}Validator".safe_constantize
+        "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+      else
+        validations.class.to_s
       end
-    end
+    end.flatten
   end
 
   def affected_attributes(validations)
