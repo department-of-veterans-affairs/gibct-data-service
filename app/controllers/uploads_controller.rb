@@ -121,8 +121,8 @@ class UploadsController < ApplicationController
   def requirements_messages
     messages = validation_messages
     # this a call to custom validators that are not listed inside the class
-    custom_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    messages.push(*custom_validator_messages)
+    custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    messages.push(*custom_batch_validator_messages)
 
     messages.uniq # remove duplicates for objects that have validate: #{klass.name}Validator
   end
