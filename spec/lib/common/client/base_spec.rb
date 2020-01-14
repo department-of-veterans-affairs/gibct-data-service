@@ -66,45 +66,71 @@ describe Common::Client::Base do
 
   describe '#request' do
     let(:path) { '/' }
-    let(:params) { {} }
 
     it 'raises NotAuthenticated' do
       headers = { Token: nil }
-      expect { test_service.send(:request, :get, path, params, headers) }
+      expect { test_service.send(:request, :get, path, {}, headers) }
         .to raise_error(Common::Client::Errors::NotAuthenticated)
     end
 
-    describe '#get' do
-      it 'returns status 200' do
-        response = test_service.send(:perform, :get, path, params)
-        expect(response.status).to eq(200)
-      end
-
-      it 'raises error' do
-        response = test_service.send(:perform, :get, path, params)
-        expect(response.status).to eq(200)
+    context 'when rescuing Common::Exceptions::BackendServiceException' do
+      it 'raises Specs::Common::Client::ServiceException' do
+        service = Specs::Common::Client::BackendServiceExceptionService.new
+        expect { service.send(:request, :get, path) }
+          .to raise_error { |error|
+                expect(error.class.name).to eq('Specs::Common::Client::ServiceException')
+              }
       end
     end
 
-    # context 'post' do
-    #  it 'should return status 200' do
-    #    response = test_service.send(:perform, :post, path, params)
-    #    expect(response.status).to eq(200)
-    #  end
-    # end
-    #
-    # context 'put' do
-    #  it 'should return status 200' do
-    #    response = test_service.send(:perform, :put, path, params)
-    #    expect(response.status).to eq(200)
-    #  end
-    # end
-    #
-    # context 'delete' do
-    #  it 'should return status 200' do
-    #    response = test_service.send(:perform, :delete, path, params)
-    #    expect(response.status).to eq(200)
-    #  end
-    # end
+    context 'when rescuing Timeout::Error, Faraday::TimeoutError' do
+      it 'raises Common::Exceptions::GatewayTimeout' do
+        service = Specs::Common::Client::TimeoutExceptionService.new
+        expect { service.send(:request, :get, path) }
+          .to raise_error(Common::Exceptions::GatewayTimeout)
+      end
+    end
+
+    context 'when rescuing Faraday::ClientError' do
+      it 'raises Common::Client::Errors::ParsingError' do
+        service = Specs::Common::Client::ParsingErrorExceptionService.new
+        expect { service.send(:request, :get, path) }
+          .to raise_error(Common::Client::Errors::ParsingError)
+      end
+
+      it 'raises Common::Client::Errors::ClientError' do
+        service = Specs::Common::Client::ClientErrorExceptionService.new
+        expect { service.send(:request, :get, path) }
+          .to raise_error(Common::Client::Errors::ClientError)
+      end
+    end
   end
+
+  describe '#get' do
+    it 'returns status 200' do
+      response = test_service.send(:perform, :get, '/', {})
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # context 'post' do
+  #  it 'should return status 200' do
+  #    response = test_service.send(:perform, :post, path, params)
+  #    expect(response.status).to eq(200)
+  #  end
+  # end
+  #
+  # context 'put' do
+  #  it 'should return status 200' do
+  #    response = test_service.send(:perform, :put, path, params)
+  #    expect(response.status).to eq(200)
+  #  end
+  # end
+  #
+  # context 'delete' do
+  #  it 'should return status 200' do
+  #    response = test_service.send(:perform, :delete, path, params)
+  #    expect(response.status).to eq(200)
+  #  end
+  # end
 end
