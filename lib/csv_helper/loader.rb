@@ -19,11 +19,8 @@ module CsvHelper
     def load_records(file, options)
       records = []
 
-      records = case name
-                when Program.name
+      records = if [Program, Weam].include?(klass)
                   load_csv_with_row(file, records, options)
-                when Institution.name
-                  load_csv_with_version(file, records, options)
                 else
                   load_csv(file, records, options)
                 end
@@ -42,15 +39,6 @@ without a closing double quote (\"). "
     def load_csv(file, records, options)
       SmarterCSV.process(file, merge_options(options)).each do |row|
         records << klass.new(row)
-      end
-
-      records
-    end
-
-    def load_csv_with_version(file, records, options)
-      version = Version.current_preview
-      SmarterCSV.process(file, merge_options(options)).each do |row|
-        records << klass.new(row.merge(version: version.number))
       end
 
       records

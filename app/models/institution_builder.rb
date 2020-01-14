@@ -99,6 +99,16 @@ module InstitutionBuilder
            .to_sql
     str += "INNER JOIN versions v ON v.number = #{version_number}"
     Institution.connection.insert(str)
+
+    # remove duplicates
+    delete_str = <<-SQL
+      DELETE FROM institutions WHERE id NOT IN (
+        SELECT MIN(id) FROM institutions WHERE version = ? GROUP BY UPPER(facility_code)
+      ) AND version = ?;
+    SQL
+    sql = InstitutionProgram.send(:sanitize_sql, [delete_str, version_number, version_number])
+
+    Institution.connection.execute(sql)
   end
 
   def self.add_crosswalk(version_number)

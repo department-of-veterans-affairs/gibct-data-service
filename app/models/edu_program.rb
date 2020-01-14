@@ -20,5 +20,6 @@ class EduProgram < ApplicationRecord
     'program length' => { column: :length_in_weeks, converter: NumberConverter }
   }.freeze
 
+  validates :facility_code, presence: true
   validates_with EduProgramValidator, on: :after_import
 end

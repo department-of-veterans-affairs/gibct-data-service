@@ -11,18 +11,6 @@ RSpec.describe InstitutionProgram, type: :model do
     it 'has a valid factory' do
       expect(institution_program).to be_valid
     end
-
-    it 'requires a version' do
-      expect(build(:institution_program, institution: institution, version: nil)).not_to be_valid
-    end
-
-    it 'requires an institution' do
-      expect(build(:institution_program, institution: nil)).not_to be_valid
-    end
-
-    it 'requires a description' do
-      expect(build(:institution_program, institution: institution, description: nil)).not_to be_valid
-    end
   end
 
   describe 'autocomplete' do
