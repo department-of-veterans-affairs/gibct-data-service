@@ -8,6 +8,8 @@ class CrosswalkIssue < ApplicationRecord
   belongs_to :ipeds_hd
   belongs_to :weam
 
+  scope :by_issue_type, ->(n) { where(issue_type: n) }
+
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
     sql = <<-SQL
@@ -57,6 +59,4 @@ class CrosswalkIssue < ApplicationRecord
     InstitutionProgram.connection.execute(sql)
   end
   # rubocop:enable Metrics/MethodLength
-
-  scope :by_issue_type, ->(n) { where(issue_type: n) }
 end
