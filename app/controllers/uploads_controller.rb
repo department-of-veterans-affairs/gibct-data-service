@@ -7,9 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = new_upload(params[:csv_type])
-    csv_type_check = @upload.csv_type_check?
-
-    if csv_type_check
+    
+    if @upload.csv_type_check?
       @requirements = requirements_messages
       return
     end
