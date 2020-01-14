@@ -119,6 +119,15 @@ class UploadsController < ApplicationController
   end
 
   def requirements_messages
+    messages = validation_messages
+    # this a call to custom validators that are not listed inside the class
+    custom_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    messages.push(*custom_validator_messages)
+
+    messages.uniq # remove duplicates for objects that have validate: #{klass.name}Validator
+  end
+
+  def validation_messages
     klass.validators.map do |validations|
       case validations
       when ActiveRecord::Validations::PresenceValidator
@@ -135,6 +144,8 @@ class UploadsController < ApplicationController
         validations.class.to_s
       end
     end.flatten
+    # flatten out #{klass.name}Validator::REQUIREMENT_DESCRIPTIONS for objects
+    # that have validate: #{klass.name}Validator
   end
 
   def affected_attributes(validations)
