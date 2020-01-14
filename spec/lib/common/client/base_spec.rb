@@ -3,6 +3,7 @@
 require 'rails_helper'
 require 'common/client/base'
 require 'support/client_helper'
+require 'support/configuration_helper'
 
 describe Common::Client::Base do
   subject(:test_service) { Specs::Common::Client::TestService.new }
@@ -77,9 +78,7 @@ describe Common::Client::Base do
       it 'raises Specs::Common::Client::ServiceException' do
         service = Specs::Common::Client::BackendServiceExceptionService.new
         expect { service.send(:request, :get, path) }
-          .to raise_error { |error|
-                expect(error.class.name).to eq('Specs::Common::Client::ServiceException')
-              }
+          .to raise_error { Specs::Common::Client::ServiceException }
       end
     end
 
