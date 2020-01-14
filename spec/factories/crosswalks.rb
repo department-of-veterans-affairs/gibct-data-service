@@ -20,6 +20,14 @@ FactoryBot.define do
       facility_code { '99Z99999' }
     end
 
+    trait :crosswalk_issue_matchable_by_cross do
+      cross { '888888' }
+    end
+
+    trait :crosswalk_issue_matchable_by_ope do
+      ope { '88888888' }
+    end
+
     initialize_with do
       new(facility_code: facility_code, ope: ope, cross: cross)
     end

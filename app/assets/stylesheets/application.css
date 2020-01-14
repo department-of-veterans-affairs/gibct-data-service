@@ -185,10 +185,19 @@
   background-color: #f3f3ff;
 }
 
-thead.system-header th {
-  background-color: #333333;
-  color: #ffffff;
-  text-align: center;
+table.crosswalk-issues thead.system-header th {
+    background-color: #333333;
+    color: #ffffff;
+    text-align: center;
+    position: sticky;
+    top: 0;
+}
+
+table.crosswalk-issues thead.sub th {
+    background-color: #999999;
+    position: sticky;
+    top: 29px;
+    color:#ffffff;
 }
 
 .dashboard-btn-success {
