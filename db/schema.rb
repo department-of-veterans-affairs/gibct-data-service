@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_19_210002) do
+ActiveRecord::Schema.define(version: 2019_12_19_210003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_210002) do
     t.bigint "weam_id"
     t.bigint "crosswalk_id"
     t.bigint "ipeds_hd_id"
+    t.string "issue_type"
     t.index ["crosswalk_id"], name: "index_crosswalk_issues_on_crosswalk_id"
     t.index ["ipeds_hd_id"], name: "index_crosswalk_issues_on_ipeds_hd_id"
     t.index ["weam_id"], name: "index_crosswalk_issues_on_weam_id"

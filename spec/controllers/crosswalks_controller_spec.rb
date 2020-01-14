@@ -6,18 +6,37 @@ require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
 
 RSpec.describe CrosswalksController, type: :controller do
-  it_behaves_like 'an authenticating controller', :index, 'crosswalks'
+  it_behaves_like 'an authenticating controller', :partials, 'crosswalks'
 
-  describe 'GET #index' do
+  describe 'GET #partials' do
     login_user
 
     before do
-      create_list :crosswalk_issue, 3
-      get(:index)
+      create_list :crosswalk_issue, 3, :partial_match_type
+      create_list :crosswalk_issue, 2, :ipeds_orphan_type
+      get(:partials)
     end
 
     it 'populates an array of crosswalk issues' do
-      expect(assigns(:issues).length).to eq(CrosswalkIssue.count)
+      expect(assigns(:issues).length).to eq(CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count)
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe 'GET #orphans' do
+    login_user
+
+    before do
+      create_list :crosswalk_issue, 3, :partial_match_type
+      create_list :crosswalk_issue, 2, :ipeds_orphan_type
+      get(:orphans)
+    end
+
+    it 'populates an array of crosswalk issues' do
+      expect(assigns(:issues).length).to eq(CrosswalkIssue.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count)
     end
 
     it 'returns http success' do
