@@ -2,6 +2,8 @@
 
 require 'common/exceptions/serializable_error'
 require 'common/exceptions/base_error'
+require 'common/exceptions/external/backend_service_exception'
+require 'common/exceptions/external/gateway_timeout'
 require 'common/exceptions/internal/filter_not_allowed'
 require 'common/exceptions/internal/internal_server_error'
 require 'common/exceptions/internal/invalid_field_value'
