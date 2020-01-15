@@ -8,13 +8,13 @@
 
     <% if storage.data.present? %>
       <%= link_to 'Download', download_storage_path(storage.id),
-        class: "btn btn-success btn-xs", role: "button" %>
+        class: "btn dashboard-btn-success btn-xs", role: "button" %>
     <% else %>
-      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" >
+      <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
         Download
       </a>
     <% end %>
     <%= link_to 'Upload', edit_storage_path(storage.id),
-      class: "btn btn-success btn-xs", role: "button" %>
+      class: "btn dashboard-btn-success btn-xs", role: "button" %>
   </td>
 </tr>

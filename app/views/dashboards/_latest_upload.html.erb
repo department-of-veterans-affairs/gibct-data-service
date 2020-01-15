@@ -12,13 +12,13 @@
     <% end %>
 
     <%= link_to 'Upload', new_upload_path(upload.csv_type),
-        class: "btn btn-success btn-xs", role: "button" %>
+        class: "btn dashboard-btn-success btn-xs", role: "button" %>
 
     <% if upload.ok? %>
       <%= link_to 'Export', dashboard_export_path(upload.csv_type),
-        class: "btn btn-success btn-xs", role: "button" %>
+        class: "btn dashboard-btn-success btn-xs", role: "button" %>
     <% else %>
-      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" >
+      <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
         Export
       </a>
     <% end %>

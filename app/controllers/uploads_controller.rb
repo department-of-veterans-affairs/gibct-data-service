@@ -7,7 +7,12 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    return if @upload.csv_type_check?
+    csv_type_check = @upload.csv_type_check?
+
+    if csv_type_check
+      @requirements = requirements_messages
+      return
+    end
 
     alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
@@ -97,5 +102,49 @@ class UploadsController < ApplicationController
 
   def klass
     @upload.csv_type.constantize
+  end
+
+  def requirements_messages
+    messages = validation_messages
+    # this a call to custom validators that are not listed inside the class
+    custom_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    messages.push(*custom_validator_messages)
+
+    messages
+  end
+
+  def validation_messages
+    klass.validators.map do |validations|
+      case validations
+      when ActiveRecord::Validations::PresenceValidator
+        generic_requirement_message('These columns must have a value: ', validations)
+      when ActiveModel::Validations::InclusionValidator
+        inclusion_requirement_message(validations)
+      when ActiveModel::Validations::NumericalityValidator
+        generic_requirement_message('These columns can only contain numeric values: ', validations)
+      when ActiveRecord::Validations::UniquenessValidator
+        generic_requirement_message('These columns should contain unique values: ', validations)
+      end
+    end
+  end
+
+  def affected_attributes(validations)
+    validations.attributes
+               .map { |column| csv_column_name(column).to_s }
+               .select(&:present?) # derive_dependent_columns or columns not in CSV_CONVERTER_INFO will be blank
+               .join(', ')
+  end
+
+  def csv_column_name(column)
+    klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+  end
+
+  def generic_requirement_message(message, validations)
+    message + affected_attributes(validations)
+  end
+
+  def inclusion_requirement_message(validations)
+    'For column ' + affected_attributes(validations) + ' values must be one of these values: ' +
+      validations.options[:in].map(&:to_s).join(', ')
   end
 end

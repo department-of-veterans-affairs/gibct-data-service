@@ -74,10 +74,17 @@ class Weam < ApplicationRecord
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
-  validates :facility_code, :institution, :institution_type_name, presence: true
+  validates :facility_code, :institution, :country, presence: true
+  validate :institution_type
   validates :bah, numericality: true, allow_blank: true
 
   after_initialize :derive_dependent_columns
+
+  def institution_type
+    msg = 'Unable to determine institution type'
+    errors.add(:institution_type, msg) unless ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE',
+                                               'FLIGHT', 'FOR PROFIT', 'PUBLIC'].include?(institution_type_name)
+  end
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving

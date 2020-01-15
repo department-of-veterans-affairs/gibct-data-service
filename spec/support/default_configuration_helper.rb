@@ -9,7 +9,7 @@ module Specs
         def connection
           @connection ||= Faraday.new(base_path) do |faraday|
             faraday.use Faraday::Response::RaiseError unless adapter_only
-            faraday.adapter :httpclient
+            faraday.adapter Faraday.default_adapter
           end
         end
 

@@ -62,7 +62,7 @@ module Common
         ##
         # Creates a custom service exception with the same namespace as the implementing class.
         #
-        # @return Common::Exceptions::BackendServiceException execption with the class' namespace
+        # @return Common::Exceptions::BackendServiceException exception with the class' namespace
         #
         def service_exception
           if current_module.const_defined?('ServiceException')
@@ -82,37 +82,6 @@ module Common
             open_timeout: open_timeout,
             timeout: read_timeout
           }
-        end
-
-        ##
-        # Default request options, sets the read and open timeouts.
-        #
-        # @return Hash default request options.
-        #
-        def breakers_service
-          return @service if defined?(@service)
-
-          base_uri = URI.parse(base_path)
-          matcher = proc do |request_env|
-            request_env.url.host == base_uri.host && request_env.url.port == base_uri.port &&
-              request_env.url.path =~ /^#{base_uri.path}/
-          end
-
-          exception_handler = proc do |exception|
-            if exception.is_a?(Common::Exceptions::BackendServiceException)
-              (500..599).cover?(exception.response_values[:status])
-            elsif exception.is_a?(Common::Client::Errors::HTTPError)
-              (500..599).cover?(exception.status)
-            else
-              false
-            end
-          end
-
-          @service = Breakers::Service.new(
-            name: service_name,
-            request_matcher: matcher,
-            exception_handler: exception_handler
-          )
         end
 
         private

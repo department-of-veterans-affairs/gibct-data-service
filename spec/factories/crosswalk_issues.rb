@@ -2,6 +2,14 @@
 
 FactoryBot.define do
   factory :crosswalk_issue do
+    trait :partial_match_type do
+      issue_type { CrosswalkIssue::PARTIAL_MATCH_TYPE }
+    end
+
+    trait :ipeds_orphan_type do
+      issue_type { CrosswalkIssue::IPEDS_ORPHAN_TYPE }
+    end
+
     trait :with_weam_match do
       weam { create(:weam, cross: 'a', ope: 'b', institution: 'c', facility_code: 'd') }
     end

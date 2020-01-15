@@ -69,6 +69,58 @@ RSpec.describe UploadsController, type: :controller do
         expect(flash[:alert]).to match('Csv type cannot be blank.')
       end
     end
+
+    def requirements(csv_class, requirement_class)
+      csv_class.validators
+               .find { |requirements| requirements.class == requirement_class }
+    end
+
+    def map_attributes(csv_class, requirement_class)
+      requirements(csv_class, requirement_class)
+        .attributes
+        .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
+        .join(', ')
+    end
+
+    describe 'requirements_messages for Weam' do
+      before do
+        get :new, params: { csv_type: Weam.name }
+      end
+
+      it 'returns validates presence messages' do
+        message = 'These columns must have a value: ' +
+                  map_attributes(Weam, ActiveRecord::Validations::PresenceValidator)
+        expect(assigns(:requirements)).to include(message)
+      end
+
+      it 'returns validates numericality messages' do
+        message = 'These columns can only contain numeric values: ' +
+                  map_attributes(Weam, ActiveModel::Validations::NumericalityValidator)
+        expect(assigns(:requirements)).to include(message)
+      end
+
+      it 'returns validates WeamsValidator messages' do
+        expect(assigns(:requirements)).to include(*WeamValidator::REQUIREMENT_DESCRIPTIONS)
+      end
+    end
+
+    describe 'requirements_messages for CalculatorConstant' do
+      before do
+        get :new, params: { csv_type: CalculatorConstant.name }
+      end
+
+      it 'returns validates uniqueness messages' do
+        validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
+        message = 'These columns should contain unique values: ' + validations_of_str
+        expect(assigns(:requirements)).to include(message)
+      end
+
+      it 'returns validates presence messages' do
+        message = 'These columns must have a value: ' +
+                  map_attributes(CalculatorConstant, ActiveRecord::Validations::PresenceValidator)
+        expect(assigns(:requirements)).to include(message)
+      end
+    end
   end
 
   describe 'POST create' do
