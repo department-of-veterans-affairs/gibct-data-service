@@ -7,9 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    csv_type_check = @upload.csv_type_check?
 
-    if csv_type_check
+    if @upload.csv_type_check?
       @requirements = requirements_messages
       return
     end
@@ -107,10 +106,10 @@ class UploadsController < ApplicationController
   def requirements_messages
     messages = validation_messages
     # this a call to custom validators that are not listed inside the class
-    custom_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    messages.push(*custom_validator_messages)
+    custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    messages.push(*custom_batch_validator_messages)
 
-    messages
+    messages.compact
   end
 
   def validation_messages
