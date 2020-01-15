@@ -124,7 +124,7 @@ class UploadsController < ApplicationController
     custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
     messages.push(*custom_batch_validator_messages)
 
-    messages.uniq # remove duplicates for objects that have validate: #{klass.name}Validator
+    messages.compact
   end
 
   def validation_messages
@@ -138,14 +138,8 @@ class UploadsController < ApplicationController
         generic_requirement_message('These columns can only contain numeric values: ', validations)
       when ActiveRecord::Validations::UniquenessValidator
         generic_requirement_message('These columns should contain unique values: ', validations)
-      when "#{klass.name}Validator".safe_constantize
-        "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-      else
-        validations.class.to_s
       end
-    end.flatten
-    # flatten out #{klass.name}Validator::REQUIREMENT_DESCRIPTIONS for objects
-    # that have validate: #{klass.name}Validator
+    end
   end
 
   def affected_attributes(validations)
