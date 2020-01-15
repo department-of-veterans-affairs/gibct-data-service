@@ -5,7 +5,6 @@ require 'common/client/middleware/response/snakecase'
 
 describe Common::Client::Middleware::Response::Snakecase do
   let(:app) { {} }
-  let(:error_prefix) { 'TEST' }
   let(:snakecase_instance) { described_class.new(app) }
 
   describe '#on_complete' do
