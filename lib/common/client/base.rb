@@ -60,25 +60,7 @@ module Common
 
       def connection
         @connection ||= lambda do
-          connection = config.connection
-          # handlers = connection.builder.handlers
-
-          # not using HTTPClient
-          # if handlers.include?(Faraday::Adapter::HTTPClient) &&
-          #   !handlers.include?(Common::Client::Middleware::Request::RemoveCookies)
-          #  raise SecurityError, 'http client needs cookies stripped'
-          # end
-
-          # not using breakers for Redis at this time
-          # if handlers.include?(Breakers::UptimeMiddleware)
-          #  return connection if handlers.first == Breakers::UptimeMiddleware
-          #
-          #  raise BreakersImplementationError, 'Breakers should be the first middleware implemented.'
-          # else
-          #  warn("Breakers is not implemented for service: #{config.service_name}")
-          # end
-
-          connection
+          config.connection
         end.call
       end
 
