@@ -18,7 +18,6 @@ module Common
           def on_complete(env)
             return if env.success?
 
-            binding.pry
             @body = env[:body]
             @status = env.status.to_i
             raise_error!

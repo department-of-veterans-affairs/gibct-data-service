@@ -38,7 +38,7 @@ module Common
         self.open_timeout = 15
         self.read_timeout = 15
         self.request_types = %i[get put post delete].freeze
-        self.user_agent = 'Vets.gov Agent'
+        self.user_agent = 'VA.gov Agent'
         self.base_request_headers = {
           'Accept' => 'application/json',
           'Content-Type' => 'application/json',
