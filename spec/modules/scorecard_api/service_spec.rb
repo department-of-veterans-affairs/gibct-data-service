@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rspec'
-require 'support/middleware_helper'
 
 describe ScorecardApi::Service do
   let(:result_1) { { id: '1', 'school.degrees_awarded.predominant': 0 } }
@@ -13,7 +12,11 @@ describe ScorecardApi::Service do
     context 'when total is greater than MAGIC_PAGE_NUMBER' do
       let(:total) { ScorecardApi::Service::MAGIC_PAGE_NUMBER + 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
-      let(:response) { Specs::Common::Client::MockEnv.new(body: body) }
+      let(:response) do
+        response = Faraday::Env.new
+        response[:body] = body
+        response
+      end
 
       it 'calls ScorecardApi::Client twice' do
         allow(ScorecardApi::Client).to receive(:new).and_return(client_instance)
@@ -28,7 +31,11 @@ describe ScorecardApi::Service do
     context 'when total is less than MAGIC_PAGE_NUMBER' do
       let(:total) { ScorecardApi::Service::MAGIC_PAGE_NUMBER - 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
-      let(:response) { Specs::Common::Client::MockEnv.new(body: body) }
+      let(:response) do
+        response = Faraday::Env.new
+        response[:body] = body
+        response
+      end
 
       it 'calls ScorecardApi::Client once' do
         allow(ScorecardApi::Client).to receive(:new).and_return(client_instance)
