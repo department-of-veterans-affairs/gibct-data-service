@@ -78,7 +78,7 @@ describe Common::Client::Base do
       it 'raises Specs::Common::Client::ServiceException' do
         service = Specs::Common::Client::BackendServiceExceptionService.new
         expect { service.send(:request, :get, path) }
-          .to raise_error { Specs::Common::Client::ServiceException }
+          .to raise_error(Specs::Common::Client::ServiceException)
       end
     end
 
@@ -111,25 +111,4 @@ describe Common::Client::Base do
       expect(response.status).to eq(200)
     end
   end
-
-  # context 'post' do
-  #  it 'should return status 200' do
-  #    response = test_service.send(:perform, :post, path, params)
-  #    expect(response.status).to eq(200)
-  #  end
-  # end
-  #
-  # context 'put' do
-  #  it 'should return status 200' do
-  #    response = test_service.send(:perform, :put, path, params)
-  #    expect(response.status).to eq(200)
-  #  end
-  # end
-  #
-  # context 'delete' do
-  #  it 'should return status 200' do
-  #    response = test_service.send(:perform, :delete, path, params)
-  #    expect(response.status).to eq(200)
-  #  end
-  # end
 end
