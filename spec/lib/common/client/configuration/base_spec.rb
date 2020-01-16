@@ -28,7 +28,7 @@ describe Common::Client::Configuration::Base do
       expect { base_configuration.base_path }.to raise_error(NotImplementedError)
     end
   end
-  
+
   describe '#request_options' do
     let(:request_options) { base_configuration.request_options }
 

@@ -11,7 +11,7 @@ describe ScorecardApi::Client do
 
     params = {
       'fields': ScorecardApi::Service::API_MAPPINGS.keys.join(','),
-      'per_page': ScorecardApi::Service::MAGIC_PAGE_NUMBER.to_s,
+      'per_page': ScorecardApi::Service::MAX_PAGE_SIZE.to_s,
       'page': 0
     }
 

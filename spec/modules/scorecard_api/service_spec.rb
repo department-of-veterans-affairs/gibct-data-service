@@ -10,7 +10,7 @@ describe ScorecardApi::Service do
 
   describe 'populate' do
     context 'when total is greater than MAGIC_PAGE_NUMBER' do
-      let(:total) { ScorecardApi::Service::MAGIC_PAGE_NUMBER + 50 }
+      let(:total) { ScorecardApi::Service::MAX_PAGE_SIZE + 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
       let(:response) do
         response = Faraday::Env.new
@@ -29,7 +29,7 @@ describe ScorecardApi::Service do
     end
 
     context 'when total is less than MAGIC_PAGE_NUMBER' do
-      let(:total) { ScorecardApi::Service::MAGIC_PAGE_NUMBER - 50 }
+      let(:total) { ScorecardApi::Service::MAX_PAGE_SIZE - 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
       let(:response) do
         response = Faraday::Env.new

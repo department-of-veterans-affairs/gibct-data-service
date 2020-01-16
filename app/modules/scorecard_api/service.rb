@@ -6,7 +6,7 @@ module ScorecardApi
   class Service
     # per_page is set to the max according to
     # https://github.com/RTICWDT/open-data-maker/blob/master/lib/data_magic/query_builder.rb#L15
-    MAGIC_PAGE_NUMBER = 100
+    MAX_PAGE_SIZE = 100
 
     API_MAPPINGS = {
       id: :cross,
@@ -31,7 +31,7 @@ module ScorecardApi
       response_body = schools_api_call(0) #  call for page 0 to get initial @total
       results.push(*response_body[:results])
 
-      number_of_pages = (response_body[:metadata][:total] / MAGIC_PAGE_NUMBER).to_f.ceil
+      number_of_pages = (response_body[:metadata][:total] / MAX_PAGE_SIZE).to_f.ceil
 
       (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num)[:results]) }
 
@@ -41,7 +41,7 @@ module ScorecardApi
     def self.schools_api_call(page)
       params = {
         'fields': API_MAPPINGS.keys.join(','),
-        'per_page': MAGIC_PAGE_NUMBER.to_s,
+        'per_page': MAX_PAGE_SIZE.to_s,
         'page': page
       }
 
