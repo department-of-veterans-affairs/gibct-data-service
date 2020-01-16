@@ -14,6 +14,7 @@ module ScorecardApi
 
     private
 
+    # api_key is created by following instructions at https://collegescorecard.ed.gov/data/documentation/
     def merged_params(params = {})
       params.merge(api_key: Settings.scorecard.api_key)
     end
