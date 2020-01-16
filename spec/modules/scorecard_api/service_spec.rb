@@ -9,7 +9,7 @@ describe ScorecardApi::Service do
   let(:client_instance) { instance_double(ScorecardApi::Client) }
 
   describe 'populate' do
-    context 'when total is greater than MAGIC_PAGE_NUMBER' do
+    context 'when total is greater than MAX_PAGE_SIZE' do
       let(:total) { ScorecardApi::Service::MAX_PAGE_SIZE + 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
       let(:response) do
@@ -28,7 +28,7 @@ describe ScorecardApi::Service do
       end
     end
 
-    context 'when total is less than MAGIC_PAGE_NUMBER' do
+    context 'when total is less than MAX_PAGE_SIZE' do
       let(:total) { ScorecardApi::Service::MAX_PAGE_SIZE - 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
       let(:response) do
