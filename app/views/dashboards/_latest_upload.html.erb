@@ -1,4 +1,6 @@
-<tr class="<%= latest_upload_class(upload) %>" title="<%= latest_upload_title(upload) %>">
+<tr id="row_<%=upload.csv_type%>"
+    class="<%= latest_upload_class(upload) %>"
+    title="<%= latest_upload_title(upload) %>">
   <td><%= upload.csv_type %></td>
   <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
   <td><%= upload.csv.blank? ? '-' : upload.csv %></td>
@@ -8,7 +10,9 @@
   <td class="text-center">
     <% if CSV_TYPES_HAS_API_TABLE_NAMES.include?(upload.csv_type) %>
       <%= link_to 'Fetch', dashboard_api_fetch_path(upload.csv_type),
-                  class: "btn dashboard-btn-success btn-xs", role: "button" %>
+                  class: "btn dashboard-btn-success btn-xs",
+                  role: "button",
+                  id: "api_fetch_" + upload.csv_type %>
     <% end %>
 
     <%= link_to 'Upload', new_upload_path(upload.csv_type),
