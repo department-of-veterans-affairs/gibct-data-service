@@ -53,6 +53,13 @@ module Common
         end
 
         ##
+        # The service name that shows up in breakers metrics and logs. Implemented by sub classes.
+        #
+        def service_name
+          raise NotImplementedError, "Subclass #{self.class.name} of Configuration must implement service_name"
+        end
+
+        ##
         # Creates a custom service exception with the same namespace as the implementing class.
         #
         # @return Common::Exceptions::BackendServiceException exception with the class' namespace
