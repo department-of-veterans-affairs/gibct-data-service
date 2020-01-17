@@ -13,4 +13,4 @@ csv_upload:
 
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"
-  api_key: "fEx07gsLbDZRb5dvyZqE25bPu2UQfs8KuRBKD8Fx"
+  api_key:
