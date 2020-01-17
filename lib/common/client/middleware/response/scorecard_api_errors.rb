@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/StringLiterals
 module Common
   module Client
     module Middleware
@@ -9,17 +8,16 @@ module Common
           def on_complete(env)
             return if env.success?
 
-            mapped_error = env[:body]["error"]
+            mapped_error = env[:body]['error']
             return if mapped_error.nil?
 
-            env[:body]['code'] = mapped_error["code"]
-            env[:body]['detail'] = mapped_error["message"]
+            env[:body]['code'] = mapped_error['code']
+            env[:body]['detail'] = mapped_error['message']
           end
         end
       end
     end
   end
 end
-# rubocop:enable Style/StringLiterals
 
 Faraday::Response.register_middleware scorecard_api_errors: Common::Client::Middleware::Response::ScorecardApiErrors
