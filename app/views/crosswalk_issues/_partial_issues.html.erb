@@ -7,4 +7,7 @@
   <td><%= issue.ipeds_hd&.ope %></td>
   <td><%= issue.crosswalk&.cross %></td>
   <td><%= issue.crosswalk&.ope %></td>
+  <td>
+    <%= link_to 'Edit', crosswalk_issue_path(issue), class: "btn btn-warning" %>
+  </td>
 </tr>

@@ -240,3 +240,7 @@ table.crosswalk-issues thead.sub th {
   color: #ffffff !important;
   background-color: #dd5050;
 }
+
+.weams_override {
+    color: #d43f3a;
+}
