@@ -76,11 +76,10 @@ class UploadsController < ApplicationController
   end
 
   def options
-    csv_type = @upload.csv_type
     { skip_lines: @upload.skip_lines.try(:to_i),
       col_sep: @upload.col_sep,
-      force_simple_split: Upload.default_options(csv_type)['force_simple_split'],
-      strip_chars_from_headers: Upload.default_options(csv_type)['strip_chars_from_headers'] }
+      force_simple_split: @upload.force_simple_split,
+      strip_chars_from_headers: @upload.strip_chars_from_headers }
   end
 
   def call_load

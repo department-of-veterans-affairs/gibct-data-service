@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :col_sep, :upload_file, :missing_headers, :extra_headers,
-                :force_simple_split, :strip_chars_from_headers
+  attr_accessor :skip_lines, :col_sep, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions
 
@@ -55,6 +54,14 @@ class Upload < ApplicationRecord
     headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
   end
 
+  def force_simple_split
+    self.class.default_options(csv_type)['force_simple_split']
+  end
+
+  def strip_chars_from_headers
+    self.class.default_options(csv_type)['strip_chars_from_headers']
+  end
+
   def self.last_uploads
     Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
   end
@@ -90,8 +97,6 @@ class Upload < ApplicationRecord
     upload = Upload.new(csv_type: csv_type)
     upload.skip_lines = default_options(csv_type)['skip_lines']
     upload.col_sep = default_options(csv_type)['col_sep']
-    upload.force_simple_split = default_options(csv_type)['force_simple_split']
-    upload.strip_chars_from_headers = default_options(csv_type)['strip_chars_from_headers']
 
     upload
   end
