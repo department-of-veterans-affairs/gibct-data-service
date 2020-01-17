@@ -868,7 +868,8 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :edu_program, facility_code: '1ZZZZZZZ'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
-        expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
+        expect(InstitutionProgram.first.institution_id).to eq(Institution.first.id)
+        expect(Institution.first.version_id).to eq(Version.current_preview.id)
       end
 
       it 'does not generate duplicate institution programs for duplicate edu-programs' do
@@ -949,12 +950,5 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when generating versioned school certifying official table' do
-      it 'properly generates versioned school certifying official from school certifying official' do
-        create :school_certifying_official, facility_code: '2V000105'
-        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
-        expect(VersionedSchoolCertifyingOfficial.first.version).to eq(Version.current_preview.number)
-      end
-    end
   end
 end

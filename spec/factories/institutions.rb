@@ -9,7 +9,7 @@ FactoryBot.define do
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name { 'PRIVATE' }
-    version { 1 }
+
     approved { true }
 
     trait :in_nyc do

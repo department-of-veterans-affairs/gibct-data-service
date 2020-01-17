@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'an archivable model' do |options|
+RSpec.shared_examples 'an archivable model by parent id' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory) { options[:factory] }
   let(:original_type) { options[:original_type] }
@@ -54,7 +54,7 @@ RSpec.shared_examples 'an archivable model' do |options|
         error_message = 'BOOM!'
         invalid_statement = ActiveRecord::StatementInvalid.new(error_message)
         invalid_statement.set_backtrace(%(backtrace))
-        allow(Archiver).to receive(:create_archives).and_raise(invalid_statement)
+        allow(Archiver).to receive(:create_archives_by_parent_id).and_raise(invalid_statement)
       end
 
       def check_log_for_error(error_message)
@@ -62,7 +62,7 @@ RSpec.shared_examples 'an archivable model' do |options|
           .with(error_message)
       end
       it 'returns an error message' do
-        allow(Archiver).to receive(:create_archives).and_raise(StandardError, 'BOOM!')
+        allow(Archiver).to receive(:create_archives_by_parent_id).and_raise(StandardError, 'BOOM!')
         allow(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
         Archiver.archive_previous_versions
         check_log_for_error('There was an error of unexpected origin: BOOM!')
@@ -90,22 +90,22 @@ RSpec.shared_examples 'an archivable model' do |options|
     Archiver.archive_previous_versions
 
     expect(original_type.count).to eq(count_total)
-    expect(original_type.where('version >= ?', current_production_number).size)
-      .to eq(count_greater_equal_production)
-
     expect(archived_type.count).to eq(archive_count)
-    expect(archived_type.where('version < ?', current_production_number).size).to eq(archive_count)
+    
   end
 
   def create_production_version
     create :version, :preview
     Version.current_preview.update(production: true)
-    create factory, version: current_production_number
+    create :institution, version_id: current_production_id, version: current_production_number
+    create factory, institution_id: Institution.last.id
+    
   end
 
   def create_preview_version
     create :version, :preview
-    create factory, version: current_preview_number
+    create :institution, version_id: current_preview_id, version: current_preview_number
+    create factory, institution_id: Institution.last.id
   end
 
   def current_preview_number
@@ -114,5 +114,13 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   def current_production_number
     Version.current_production.number
+  end
+
+  def current_preview_id
+    Version.current_preview.id
+  end
+
+  def current_production_id
+    Version.current_production.id
   end
 end

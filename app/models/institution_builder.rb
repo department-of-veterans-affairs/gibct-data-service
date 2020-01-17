@@ -14,8 +14,10 @@ module InstitutionBuilder
   def self.add_vet_tec_provider(version_number)
     str = <<-SQL
     UPDATE institutions SET vet_tec_provider = TRUE
+      from versions
       WHERE substring(institutions.facility_code, 2 , 1) = 'V'
-        AND institutions.version = #{version_number};
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id;
     SQL
     Institution.connection.update(str)
   end
@@ -49,7 +51,8 @@ module InstitutionBuilder
     add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
     build_institution_programs(version_number)
-    build_versioned_school_certifying_official(version_number)
+    build_school_certifying_officials(version_number)
+    add_sco_institution_id(version_number)
   end
 
   def self.run(user)
@@ -114,9 +117,10 @@ module InstitutionBuilder
   def self.add_crosswalk(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Crosswalk)}
-      FROM crosswalks
+      FROM crosswalks, versions
       WHERE institutions.facility_code = crosswalks.facility_code
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -125,9 +129,10 @@ module InstitutionBuilder
   def self.add_sec109_closed_school(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Sec109ClosedSchool)}
-      FROM  sec109_closed_schools
+      FROM  sec109_closed_schools, versions
       WHERE institutions.facility_code = sec109_closed_schools.facility_code
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -137,9 +142,10 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         student_veteran = TRUE, student_veteran_link = svas.student_veteran_link
-      FROM svas
+      FROM svas, versions
       WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -148,9 +154,10 @@ module InstitutionBuilder
   def self.add_vsoc(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Vsoc)}
-      FROM vsocs
+      FROM vsocs, versions
       WHERE institutions.facility_code = vsocs.facility_code
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -159,10 +166,11 @@ module InstitutionBuilder
   def self.add_eight_key(version_number)
     str = <<-SQL
       UPDATE institutions SET eight_keys = TRUE
-      FROM eight_keys
+      FROM eight_keys, versions
       WHERE institutions.cross = eight_keys.cross
         AND eight_keys.cross IS NOT NULL
-        AND institutions.version = #{version_number};
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -177,13 +185,14 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         accreditation_type = accreditation_records.accreditation_type
-      FROM accreditation_institute_campuses, accreditation_records
+      FROM accreditation_institute_campuses, accreditation_records, versions
       WHERE {{JOIN_CLAUSE}}
         AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
         AND institutions.ope IS NOT NULL
         AND accreditation_records.accreditation_end_date IS NULL
         AND accreditation_records.program_id = 1
-        AND institutions.version = #{version_number}
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id
         AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
@@ -197,7 +206,7 @@ module InstitutionBuilder
       SET accreditation_status = aa.action_description,
           caution_flag = TRUE,
           caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
-      FROM accreditation_institute_campuses, accreditation_actions aa
+      FROM accreditation_institute_campuses, accreditation_actions aa, versions
       WHERE {{JOIN_CLAUSE}}
         -- has received a probationary action
         AND aa.id = (
@@ -218,7 +227,8 @@ module InstitutionBuilder
             LIMIT 1
         ) IS NULL
         AND institutions.ope IS NOT NULL
-        AND institutions.version = #{version_number};
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id;
     SQL
 
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
@@ -229,9 +239,10 @@ module InstitutionBuilder
   def self.add_arf_gi_bill(version_number)
     str = <<-SQL
       UPDATE institutions SET gibill = arf_gi_bills.gibill
-      FROM arf_gi_bills
+      FROM arf_gi_bills, versions
       WHERE institutions.facility_code = arf_gi_bills.facility_code
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -240,9 +251,10 @@ module InstitutionBuilder
   def self.add_p911_tf(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(P911Tf)}
-      FROM p911_tfs
+      FROM p911_tfs, versions
       WHERE institutions.facility_code = p911_tfs.facility_code
-      AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -251,9 +263,10 @@ module InstitutionBuilder
   def self.add_p911_yr(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(P911Yr)}
-      FROM p911_yrs
+      FROM p911_yrs, versions
       WHERE institutions.facility_code = p911_yrs.facility_code
-      AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -267,9 +280,10 @@ module InstitutionBuilder
       UPDATE institutions SET
         dodmou = mous.dodmou,
         caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
-      FROM mous
+      FROM mous, versions
       WHERE institutions.ope6 = mous.ope6
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -281,9 +295,10 @@ module InstitutionBuilder
         caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
       FROM (
         SELECT distinct(ope6), '#{reason}' AS reason FROM mous
-        WHERE dod_status = TRUE) as reasons_list
+        WHERE dod_status = TRUE) as reasons_list, versions
       WHERE institutions.ope6 = reasons_list.ope6
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -292,9 +307,10 @@ module InstitutionBuilder
   def self.add_scorecard(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Scorecard)}
-      FROM scorecards
+      FROM scorecards, versions
       WHERE institutions.cross = scorecards.cross
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -303,9 +319,10 @@ module InstitutionBuilder
   def self.add_ipeds_ic(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsIc)}
-      FROM ipeds_ics
+      FROM ipeds_ics, versions
       WHERE institutions.cross = ipeds_ics.cross
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -314,9 +331,10 @@ module InstitutionBuilder
   def self.add_ipeds_hd(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsHd)}
-      FROM ipeds_hds
+      FROM ipeds_hds, versions
       WHERE institutions.cross = ipeds_hds.cross
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -325,9 +343,10 @@ module InstitutionBuilder
   def self.add_ipeds_ic_ay(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsIcAy)}
-      FROM ipeds_ic_ays
+      FROM ipeds_ic_ays, versions
       WHERE institutions.cross = ipeds_ic_ays.cross
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -340,9 +359,10 @@ module InstitutionBuilder
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
-      FROM ipeds_ic_pies
+      FROM ipeds_ic_pies, versions
       WHERE institutions.cross = ipeds_ic_pies.cross
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -365,10 +385,11 @@ module InstitutionBuilder
           INNER JOIN sec702s ON sec702s.state = institutions.state
             EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
             UNION SELECT facility_code, sec_702 FROM sec702_schools
-      ) AS s702_list
+      ) AS s702_list, versions
       WHERE institutions.facility_code = s702_list.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
-        AND institutions.version = #{version_number};
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -386,9 +407,10 @@ module InstitutionBuilder
         FROM settlements
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
-      ) settlement_list
+      ) settlement_list, versions
       WHERE institutions.cross = settlement_list.cross
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -406,9 +428,10 @@ module InstitutionBuilder
           array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
         FROM hcms
         GROUP BY ope6
-      ) hcm_list
+      ) hcm_list, versions
       WHERE institutions.ope6 = hcm_list.ope6
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -423,9 +446,10 @@ module InstitutionBuilder
   def self.add_outcome(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Outcome)}
-      FROM outcomes
+      FROM outcomes, versions
       WHERE institutions.facility_code = outcomes.facility_code
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -434,12 +458,13 @@ module InstitutionBuilder
   def self.add_stem_offered(version_number)
     str = <<-SQL
       UPDATE institutions SET stem_offered=true
-      FROM ipeds_cip_codes, stem_cip_codes
+      FROM ipeds_cip_codes, stem_cip_codes, versions
       WHERE institutions.cross = ipeds_cip_codes.cross
         AND institutions.cross IS NOT NULL
         AND ipeds_cip_codes.ctotalt > 0
         AND ipeds_cip_codes.cipcode = stem_cip_codes.twentyten_cip_code
-        AND institutions.version = #{version_number};
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -453,9 +478,10 @@ module InstitutionBuilder
         (SELECT
           i.version, i.id, yrs.degree_level, yrs.division_professional_school,
             yrs.number_of_students, yrs.contribution_amount, NOW(), NOW()
-          FROM institutions as i, yellow_ribbon_program_sources as yrs
+          FROM institutions as i, yellow_ribbon_program_sources as yrs, versions
           WHERE i.facility_code = yrs.facility_code
-          AND i.version = ?);
+          AND versions.number = #{version_number}
+          AND versions.id = i.version_id);
     SQL
 
     sql = Institution.send(:sanitize_sql, [str, version_number])
@@ -465,9 +491,10 @@ module InstitutionBuilder
   def self.add_school_closure(version_number)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(SchoolClosure)}
-      FROM school_closures
+      FROM school_closures, versions
       WHERE institutions.facility_code = school_closures.facility_code
-        AND institutions.version = #{version_number};
+      AND versions.number = #{version_number}
+      AND versions.id = institutions.version_id;
     SQL
 
     Institution.connection.update(str)
@@ -512,14 +539,15 @@ module InstitutionBuilder
   def self.add_extension_campus_type(version_number)
     str = <<-SQL
     UPDATE institutions SET campus_type = 'E'
+    FROM versions
       WHERE substring(institutions.facility_code, 3 , 1) = 'X'
         AND institutions.campus_type IS NULL
-        AND institutions.version = #{version_number};
+        AND versions.number = #{version_number}
+        AND versions.id = institutions.version_id;
     SQL
     Institution.connection.update(str)
   end
-
-  # edu_programs.length_in_weeks is being used twice because
+# edu_programs.length_in_weeks is being used twice because
   # it is a short term fix to an issue that they aren't sure how we should fix
   def self.build_institution_programs(version_number)
     str = <<-SQL
@@ -530,7 +558,6 @@ module InstitutionBuilder
         graduate,
         full_time_modifier,
         length_in_hours,
-        version,
         school_locale,
         provider_website,
         provider_email_address,
@@ -552,7 +579,6 @@ module InstitutionBuilder
         graduate,
         full_time_modifier,
         length_in_weeks,
-        ?,
         school_locale,
         provider_website,
         provider_email_address,
@@ -565,14 +591,15 @@ module InstitutionBuilder
         vet_tec_program,
         tuition_amount,
         length_in_weeks,
-        c.id
-      FROM programs a
-        INNER JOIN edu_programs b ON a.facility_code = b.facility_code
+        i.id
+      FROM programs p
+        INNER JOIN edu_programs e ON p.facility_code = e.facility_code
           AND LOWER(description) = LOWER(vet_tec_program)
           AND vet_tec_program IS NOT NULL
-        INNER JOIN institutions c ON a.facility_code = c.facility_code
-          AND c.version = ?
-          AND c.approved = true;
+        INNER JOIN institutions i ON p.facility_code = i.facility_code
+        INNER JOIN versions v ON v.number = ?
+        WHERE v.id = i.version_id
+          AND i.approved = true;
 
       UPDATE institution_programs SET
         length_in_hours = 0,
@@ -586,14 +613,26 @@ module InstitutionBuilder
       );
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number, version_number])
+    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
     InstitutionProgram.connection.execute(sql)
   end
 
-  def self.build_versioned_school_certifying_official(version_number)
+  def self.build_school_certifying_officials(version_number)
     str = <<-SQL
-      INSERT INTO versioned_school_certifying_officials(
-        facility_code,
+        INSERT INTO school_certifying_officials(
+          facility_code,
+          institution_name,
+          priority,
+          first_name,
+          last_name,
+          title,
+          phone_area_code,
+          phone_number,
+          phone_extension,
+          email,
+          institution_id)
+       SELECT DISTINCT
+        s.facility_code,
         institution_name,
         priority,
         first_name,
@@ -603,23 +642,29 @@ module InstitutionBuilder
         phone_number,
         phone_extension,
         email,
-        version)
-      Select
-        facility_code,
-        institution_name,
-        priority,
-        first_name,
-        last_name,
-        title,
-        phone_area_code,
-        phone_number,
-        phone_extension,
-        email,
-        ?
-      FROM school_certifying_officials
+        i.id
+      FROM school_certifying_officials s
+      INNER JOIN institutions i ON s.facility_code = i.facility_code
+      INNER JOIN versions v ON v.number = ?
+      WHERE v.id = i.version_id
+      AND s.institution_id IS NOT NULL;
     SQL
-
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
   end
+
+  def self.add_sco_institution_id(version_number)
+    str = <<-SQL
+        UPDATE school_certifying_officials s
+        SET institution_id = i.id
+        FROM institutions i
+        INNER JOIN versions v ON v.number = ?
+        WHERE s.facility_code = i.facility_code
+        AND i.version_id = v.id
+        AND s.institution_id IS NULL;
+    SQL
+    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
+    SchoolCertifyingOfficial.connection.execute(sql)
+  end
+
 end
