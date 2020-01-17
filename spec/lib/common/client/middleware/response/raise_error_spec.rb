@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'common/client/middleware/response/raise_error'
 
 describe Common::Client::Middleware::Response::RaiseError do
   let(:app) { {} }

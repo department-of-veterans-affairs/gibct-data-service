@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'common/client/base'
-require 'scorecard_api/configuration'
-
 module ScorecardApi
   # Core class responsible for api interface operations
   class Client < Common::Client::Base

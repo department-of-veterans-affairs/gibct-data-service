@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'common/client/middleware/response/json_parser'
 
 describe Common::Client::Middleware::Response::JsonParser do
   let(:json_parser_instance) { described_class.new }

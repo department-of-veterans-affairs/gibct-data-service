@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'common/client/middleware/response/scorecard_api_errors'
 
 describe Common::Client::Middleware::Response::ScorecardApiErrors do
   let(:error_instance) { described_class.new }
