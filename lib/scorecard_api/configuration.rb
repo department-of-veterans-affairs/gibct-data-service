@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'common/client/configuration/rest'
 require 'common/client/middleware/response/scorecard_api_errors'
 require 'common/client/middleware/response/json_parser'
 require 'common/client/middleware/response/raise_error'
