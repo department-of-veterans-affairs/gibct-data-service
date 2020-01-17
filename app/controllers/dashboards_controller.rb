@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'common/exceptions/exception_handler'
-
 class DashboardsController < ApplicationController
   def index
     @uploads = Upload.last_uploads_rows
@@ -95,7 +93,7 @@ class DashboardsController < ApplicationController
 
   def fetch_api_data(upload)
     klass = upload.csv_type.constantize
-    return klass.populate if klass.present? && klass.respond_to?(:populate)
+    return klass.populate if klass&.respond_to?(:populate)
 
     "#{upload.csv_type} does not have populate from api implemented"
   end
