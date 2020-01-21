@@ -93,8 +93,15 @@ class DashboardsController < ApplicationController
 
   def fetch_api_data(upload)
     klass = upload.csv_type.constantize
-    return klass.populate if klass&.respond_to?(:populate)
+    populated = klass.populate if klass&.respond_to?(:populate)
 
-    "#{upload.csv_type} does not have populate from api implemented"
+    if populated
+      message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
+      return message if message.present?
+
+      return "#{klass.name} finished fetching data from it's api"
+    end
+
+    "#{upload.csv_type} does not know how to fetch data from an api"
   end
 end

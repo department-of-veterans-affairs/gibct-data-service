@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Unfortunately there is a conflict between RSpec's all and Capybara's all
 # see https://github.com/jnicklas/capybara/issues/1396.
 # The all that you are calling is actually Capybara's all.

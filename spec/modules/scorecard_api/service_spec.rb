@@ -25,7 +25,7 @@ describe ScorecardApi::Service do
         results = described_class.populate
 
         expect(results.size).to eq(response_results.size * 2)
-        expect(results).to all( be_a(Scorecard) )
+        expect(results).to all(be_a(Scorecard))
       end
     end
 
@@ -45,7 +45,7 @@ describe ScorecardApi::Service do
         results = described_class.populate
 
         expect(results.size).to eq(response_results.size)
-        expect(results).to all( be_a(Scorecard) )
+        expect(results).to all(be_a(Scorecard))
       end
     end
   end
