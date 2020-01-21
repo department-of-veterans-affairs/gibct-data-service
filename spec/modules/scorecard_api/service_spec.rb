@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rspec'
+require 'rails_helper'
 
 describe ScorecardApi::Service do
   let(:result_1) { { id: '1', 'school.degrees_awarded.predominant': 0 } }
@@ -25,6 +25,7 @@ describe ScorecardApi::Service do
         results = described_class.populate
 
         expect(results.size).to eq(response_results.size * 2)
+        expect(results).to all( be_a(Scorecard) )
       end
     end
 
@@ -43,7 +44,8 @@ describe ScorecardApi::Service do
 
         results = described_class.populate
 
-        expect(results.size).to eq(response_results.size * 1)
+        expect(results.size).to eq(response_results.size)
+        expect(results).to all( be_a(Scorecard) )
       end
     end
   end
