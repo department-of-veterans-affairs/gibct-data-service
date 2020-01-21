@@ -187,5 +187,12 @@ RSpec.describe DashboardsController, type: :controller do
       get(:api_fetch, params: { csv_type: CalculatorConstant.name })
       expect(flash.alert).to eq("#{CalculatorConstant.name} does not have populate from api implemented")
     end
+
+    it 'displays error message' do
+      message = 'displays error message'
+      allow(Scorecard).to receive(:populate).and_raise(StandardError, message)
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.alert).to include(message)
+    end
   end
 end
