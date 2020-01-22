@@ -83,7 +83,7 @@ class DashboardsController < ApplicationController
     if message
       flash.notice = message
     else
-      flash.alert = "#{upload.csv_type} does not know how to fetch data from an api"
+      flash.alert = "#{upload.csv_type} is not configured to fetch data from an api"
     end
     redirect_to dashboards_path
   rescue StandardError => e
@@ -101,8 +101,8 @@ class DashboardsController < ApplicationController
     raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
   end
 
-  def fetch_api_data(upload)
-    klass = upload.csv_type.constantize
+  def fetch_api_data(api_upload)
+    klass = api_upload.csv_type.constantize
     populated = klass.populate if klass&.respond_to?(:populate)
 
     if populated
