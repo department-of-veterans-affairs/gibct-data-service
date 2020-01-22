@@ -75,7 +75,7 @@ class DashboardsController < ApplicationController
     upload = Upload.from_csv_type(params[:csv_type])
     message = fetch_api_data(upload) if upload.csv_type_check?
 
-    redirect_to dashboards_path, alert: message
+    redirect_to dashboards_path, notice: message
   rescue StandardError => e
     message = Common::Exceptions::ExceptionHandler.new(e, upload.csv_type).serialize_error
     Rails.logger.error e
