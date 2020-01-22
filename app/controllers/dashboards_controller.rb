@@ -72,12 +72,12 @@ class DashboardsController < ApplicationController
   end
 
   def api_fetch
-    api_upload = ApiUpload.new(csv_type: csv_type)
+    api_upload = ApiUpload.create(csv_type: params[:csv_type])
     message = fetch_api_data(api_upload) if api_upload.csv_type_check?
 
     redirect_to dashboards_path, notice: message
   rescue StandardError => e
-    message = Common::Exceptions::ExceptionHandler.new(e, api_upload.csv_type).serialize_error
+    message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
     Rails.logger.error e
     redirect_to dashboards_path, alert: message
   end
