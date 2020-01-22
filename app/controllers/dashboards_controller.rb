@@ -72,8 +72,13 @@ class DashboardsController < ApplicationController
   end
 
   def api_fetch
-    api_upload = ApiUpload.create(csv_type: params[:csv_type])
-    message = fetch_api_data(api_upload) if api_upload.csv_type_check?
+    klass = params[:csv_type].constantize
+    csv = "#{klass.name}::API_SOURCE".safe_constantize || "#{klass.name} API"
+    api_upload = Upload.create(csv_type: params[:csv_type],
+                               user: current_user,
+                               csv: csv)
+    binding.pry
+    #message = fetch_api_data(api_upload) if api_upload.csv_type_check?
 
     redirect_to dashboards_path, notice: message
   rescue StandardError => e
@@ -96,7 +101,7 @@ class DashboardsController < ApplicationController
     populated = klass.populate if klass&.respond_to?(:populate)
 
     if populated
-      api_upload.update(completed_at: Time.now.utc.to_s(:db))
+      #api_upload.update(completed_at: Time.now.utc.to_s(:db))
 
       message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
       return message if message.present?
