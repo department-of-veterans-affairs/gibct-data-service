@@ -36,6 +36,14 @@ class InstitutionProgram < ApplicationRecord
     institution.bah
   end
 
+  def school_closing
+    institution.school_closing
+  end
+
+  def caution_flag
+    institution.caution_flag
+  end
+
   # Given a search term representing a partial school name, returns all
   # programs starting with the search term.
   #
