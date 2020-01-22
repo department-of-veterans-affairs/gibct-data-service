@@ -149,7 +149,6 @@ RSpec.describe Institution, type: :model do
 
   describe 'class methods and scopes' do
     context 'with version_id' do
-
       it 'retrieves institutions by a specific version id' do
         create(:version, :production)
         i = create_list :institution, 2, version_id: Version.current_production.id

@@ -270,7 +270,6 @@ class Institution < ApplicationRecord
     group(field).where.not(field => nil).order(field).count
   }
 
-  scope :version, ->(n) { where(version: n) }
   scope :version_id, ->(n) { joins("INNER JOIN versions v ON institutions.version_id = #{n}") }
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 end
