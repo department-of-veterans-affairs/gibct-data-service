@@ -4,7 +4,6 @@ module InstitutionTree
   def self.build(institution)
     main = main_campus(institution)
     all = descendants(main)
-
     {
       'main' => {
         'institution' => main,
@@ -38,43 +37,40 @@ module InstitutionTree
       return institution if institution.campus_type == 'Y' || institution.campus_type.nil?
 
       str = <<-SQL
-        WITH RECURSIVE related_up AS(
-          SELECT campus_type, facility_code, parent_facility_code_id
-          FROM institutions WHERE facility_code = ? AND version = ?
-          UNION
-            SELECT
-              i.campus_type, i.facility_code, i.parent_facility_code_id
-            FROM institutions i
-            INNER JOIN related_up r ON r.parent_facility_code_id = i.facility_code
-            WHERE i.version = ?
-        ) SELECT * FROM related_up where campus_type = 'Y'
+      WITH RECURSIVE related_up AS(
+        SELECT campus_type, facility_code, parent_facility_code_id
+        FROM institutions WHERE facility_code = ?
+        UNION
+          SELECT
+            i.campus_type, i.facility_code, i.parent_facility_code_id
+          FROM institutions i
+          INNER JOIN related_up r ON r.parent_facility_code_id = i.facility_code
+          WHERE i.version_id = ?
+      ) SELECT * FROM related_up where campus_type = 'Y'
       SQL
       sql = Institution.send(:sanitize_sql,
-                             [str, institution.facility_code, institution.version, institution.version])
+                             [str, institution.facility_code, institution.version_id])
       main_facility_code = Institution.connection.execute(sql).first['facility_code']
-
-      Institution.find_by(facility_code: main_facility_code, version: institution.version)
+      Institution.find_by(facility_code: main_facility_code, version_id: institution.version_id)
     end
 
     def descendants(ancestor)
       str = <<-SQL
         WITH RECURSIVE related_down AS(
-          SELECT facility_code
-          FROM institutions
-          WHERE facility_code = ? AND version = ?
+          SELECT i.facility_code
+          FROM institutions i
+          WHERE i.facility_code = ?
           UNION
             SELECT i.facility_code
             FROM institutions i
             INNER JOIN related_down r ON i.parent_facility_code_id = r.facility_code
-            WHERE i.version = ?
+            INNER JOIN versions v ON v.id = i.version_id
         ) SELECT facility_code FROM related_down WHERE facility_code != ?
       SQL
-
       sql = Institution.send(:sanitize_sql,
-                             [str, ancestor.facility_code, ancestor.version, ancestor.version, ancestor.facility_code])
+                             [str, ancestor.facility_code, ancestor.facility_code])
       facility_codes = Institution.connection.execute(sql).field_values('facility_code')
-
-      Institution.where(facility_code: facility_codes, version: ancestor.version)
+      Institution.where(facility_code: facility_codes, version_id: ancestor.version_id)
     end
   end
 end

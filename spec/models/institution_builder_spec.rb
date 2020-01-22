@@ -949,6 +949,5 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institutions.find_by(facility_code: '1VZZZZZZ').approved).to be_truthy
       end
     end
-
   end
 end

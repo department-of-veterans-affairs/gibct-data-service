@@ -82,7 +82,7 @@ RSpec.shared_examples 'an archivable model by parent id' do |options|
 
   def archive_test(initial_count,
                    count_total,
-                   count_greater_equal_production,
+                   _count_greater_equal_production,
                    archive_count)
     expect(original_type.count).to eq(initial_count)
     expect(archived_type.count).to eq(0)
@@ -91,7 +91,6 @@ RSpec.shared_examples 'an archivable model by parent id' do |options|
 
     expect(original_type.count).to eq(count_total)
     expect(archived_type.count).to eq(archive_count)
-    
   end
 
   def create_production_version
@@ -99,7 +98,6 @@ RSpec.shared_examples 'an archivable model by parent id' do |options|
     Version.current_preview.update(production: true)
     create :institution, version_id: current_production_id, version: current_production_number
     create factory, institution_id: Institution.last.id
-    
   end
 
   def create_preview_version

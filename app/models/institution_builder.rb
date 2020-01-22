@@ -547,7 +547,8 @@ module InstitutionBuilder
     SQL
     Institution.connection.update(str)
   end
-# edu_programs.length_in_weeks is being used twice because
+
+  # edu_programs.length_in_weeks is being used twice because
   # it is a short term fix to an issue that they aren't sure how we should fix
   def self.build_institution_programs(version_number)
     str = <<-SQL
@@ -666,5 +667,4 @@ module InstitutionBuilder
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
   end
-
 end

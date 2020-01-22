@@ -14,6 +14,7 @@ RSpec.describe Archiver, type: :model do
       end
     end
   end
+
   describe '::ARCHIVE_TYPES_BY_VERSION_ID' do
     context 'when mapped' do
       Archiver::ARCHIVE_TYPES_BY_VERSION_ID.each do |archivable|
