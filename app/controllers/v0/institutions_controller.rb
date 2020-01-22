@@ -10,6 +10,7 @@ module V0
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
+
         @data = approved_institutions.autocomplete(@search_term)
       end
       @meta = {
@@ -49,7 +50,7 @@ module V0
 
     # GET /v0/institituons/20005123/children
     def children
-      children = Institution.version(@version[:number])
+      children = Institution.version_id(@version[:id])
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
                             .page(params[:page])
@@ -103,7 +104,8 @@ module V0
         [:priority_enrollment], # boolean
         [:vet_tec_provider], # boolean
         [:preferred_provider], # boolean
-        [:stem_indicator] # boolean
+        [:stem_indicator], # boolean
+        [:version_id]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
@@ -146,7 +148,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.version(@version[:number]).no_extentions.where(approved: true)
+      Institution.version_id(@version[:id]).no_extentions.where(approved: true)
     end
   end
   # rubocop:enable Metrics/ClassLength

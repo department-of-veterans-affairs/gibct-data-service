@@ -20,6 +20,7 @@ module V0
 
       @version = {
         number: version.number,
+        id: version.id,
         created_at: version.created_at,
         preview: version.preview?
       }

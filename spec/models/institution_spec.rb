@@ -148,13 +148,12 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'class methods and scopes' do
-    context 'with version' do
-      it 'retrieves institutions by a specific version number' do
-        i = create_list :institution, 2, version: 1
-        j = create_list :institution, 2, version: 2
+    context 'with version_id' do
 
-        expect(described_class.version(i.first.version)).to match_array(i.to_a)
-        expect(described_class.version(j.first.version)).to match_array(j.to_a)
+      it 'retrieves institutions by a specific version id' do
+        create(:version, :production)
+        i = create_list :institution, 2, version_id: Version.current_production.id
+        expect(described_class.version_id(i.first.version_id)).to match_array(i.to_a)
       end
     end
 

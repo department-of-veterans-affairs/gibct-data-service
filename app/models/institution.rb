@@ -214,7 +214,7 @@ class Institution < ApplicationRecord
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    select('id, facility_code as value, institution as label')
+    select('institutions.id, facility_code as value, institution as label')
       .where('lower(institution) LIKE (?)', "#{search_term}%")
       .limit(limit)
   end
@@ -271,6 +271,6 @@ class Institution < ApplicationRecord
   }
 
   scope :version, ->(n) { where(version: n) }
-
+  scope :version_id, ->(n) { joins("INNER JOIN versions v ON institutions.version_id = #{n}") }
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 end
