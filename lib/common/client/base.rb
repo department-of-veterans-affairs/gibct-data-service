@@ -15,12 +15,6 @@ module Common
     end
 
     ##
-    # Raised when the breakers Faraday middleware is not first in the stack.
-    #
-    class BreakersImplementationError < StandardError
-    end
-
-    ##
     # Base class for creating HTTP services. Wraps the Faraday gem and is configured via by passing in a
     # {Common::Client::Configuration::REST} or {Common::Client::Configuration::SOAP} depending on the type
     # of service you're connecting to. Once configured requests are made via the `perform` method.

@@ -35,6 +35,8 @@ Note that queries are PostgreSQL-specific.
 - `bundle exec rake ci` - Run all build steps performed in Travis CI.
 
 ## Pre-Setup Configuration
+
+### Environment Variables
 The following environment variables need to be configured for **GIDS**:
 
 1. `GIBCT_URL`: this a link to the **GIBCT** that is used for looking at the data served by **GIDS**, and should
@@ -73,6 +75,25 @@ You can create additional users by adding them to the `/db/seeds/01_users.rb` fi
 
 ```
 User.create(email: 'xxxxxx', password: 'xxxxxx')
+```
+
+### Settings
+The following settings need to be configured for **GIDS**:
+
+GIDS uses https://github.com/rubyconfig/config for various settings throughout the application. Some of these settings 
+are not set within the repository for security reasons as such you will need to set these up within 
+a `config/settings.local.yml` file
+
+#### Scorecard API
+Scorecard data can be retrieved via an API detailed at https://collegescorecard.ed.gov/data/documentation/ . 
+This requires an `api_key`. Check https://collegescorecard.ed.gov/data/documentation/ for latest information.
+
+1. Go to https://api.data.gov/signup and get an API key
+2. In `config/settings.local.yml` add
+
+```
+scorecard:
+  api_key: "YOUR_API_KEY"
 ```
 
 ## Development Instructions

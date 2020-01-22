@@ -30,6 +30,11 @@ REQUIRED_TABLES = [
   SchoolClosure.name,
   Sec109ClosedSchool.name
 ].freeze
+
+API_TABLES = [
+  Scorecard.name
+].freeze
+
 RSpec.describe 'CSV_TYPES' do
   describe 'all_tables' do
     it 'lengths should be equal' do
@@ -40,6 +45,12 @@ RSpec.describe 'CSV_TYPES' do
   describe 'required_table_names' do
     it 'contains tables' do
       expect(CSV_TYPES_REQUIRED_TABLE_NAMES).to eq(REQUIRED_TABLES)
+    end
+  end
+
+  describe 'has_api_table_names' do
+    it 'contains tables' do
+      expect(CSV_TYPES_HAS_API_TABLE_NAMES).to eq(API_TABLES)
     end
   end
 end
