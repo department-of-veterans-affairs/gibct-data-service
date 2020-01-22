@@ -28,5 +28,3 @@ module Common
     end
   end
 end
-
-Faraday::Response.register_middleware json_parser: Common::Client::Middleware::Response::JsonParser

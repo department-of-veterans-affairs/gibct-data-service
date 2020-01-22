@@ -19,5 +19,3 @@ module Common
     end
   end
 end
-
-Faraday::Response.register_middleware scorecard_api_errors: Common::Client::Middleware::Response::ScorecardApiErrors

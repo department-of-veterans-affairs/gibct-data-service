@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require 'common/client/middleware/response/scorecard_api_errors'
-require 'common/client/middleware/response/json_parser'
-require 'common/client/middleware/response/raise_error'
-require 'common/client/middleware/response/snakecase'
-
 module ScorecardApi
   class Configuration < Common::Client::Configuration::REST
     self.read_timeout = Settings.scorecard.read_timeout || read_timeout
