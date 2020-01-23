@@ -94,12 +94,6 @@ en:
         title: Internal server error
         code: 500
         status: 500
-      service_outage:
-        <<: *defaults
-        title: Service unavailable
-        detail: "An outage has been reported on the %{service} since %{since}"
-        code: 503
-        status: 503
       gateway_timeout: &gateway_timeout
         <<: *defaults
         title: Gateway timeout
@@ -120,7 +114,7 @@ en:
       # Below this line just define the minor code as key to be used by client error
       VA900:
         <<: *external_defaults
-      SCORECARD_403:
+      SCORECARDAPI_KEY_MISSING:
         <<: *external_defaults
         code: 'SCORECARD_403'
         detail: 'Missing API Key'

@@ -150,6 +150,14 @@ class Scorecard < ApplicationRecord
 
   after_initialize :derive_dependent_columns
 
+  POPULATE_SUCCESS_MESSAGE = 'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/'
+
+  def self.populate
+    results = ScorecardApi::Service.populate
+    load_from_api(results) if results.any?
+    results.any?
+  end
+
   def derive_dependent_columns
     self.graduation_rate_all_students = to_graduation_rate_all_students
     self.ope6 = Ope6Converter.convert(ope)
