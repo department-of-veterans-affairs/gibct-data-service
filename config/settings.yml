@@ -13,4 +13,4 @@ csv_upload:
 
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"
-  api_key:
+  api_key: <%= ENV['SCORECARD_API_KEY'] %>
