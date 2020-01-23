@@ -74,21 +74,6 @@ ActiveRecord::Schema.define(version: 2020_01_22_135649) do
     t.index ["dapip_id"], name: "index_accreditation_records_on_dapip_id"
   end
 
-  create_table "api_uploads", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "api", null: false
-    t.string "csv_type", null: false
-    t.string "comment"
-    t.boolean "ok", default: false, null: false
-    t.datetime "completed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["completed_at"], name: "index_api_uploads_on_completed_at"
-    t.index ["csv_type"], name: "index_api_uploads_on_csv_type"
-    t.index ["updated_at"], name: "index_api_uploads_on_updated_at"
-    t.index ["user_id"], name: "index_api_uploads_on_user_id"
-  end
-
   create_table "arf_gi_bills", id: :serial, force: :cascade do |t|
     t.string "facility_code", null: false
     t.integer "gibill"
