@@ -46,41 +46,15 @@ module Common
       def base_error
         exception = error.errors.first
 
-        error_template.merge(
-          description: "#{exception.code}, #{exception.status}, #{exception.title}, #{exception.detail}",
-          status: exception.status.to_i
-        )
+        "#{service}: #{exception.title}, #{exception.detail}"
       end
 
       def client_error
-        error_template.merge(
-          description: "#{error.class}, #{error.status}, #{error.message}, #{error.body}",
-          status: error.status.to_i
-        )
+        "#{service}: #{error.message}, #{error.body}"
       end
 
       def standard_error
-        error_template.merge(
-          description: "#{error.class}, #{error.message}, #{error}",
-          status: standard_error_status(error)
-        )
-      end
-
-      def error_template
-        {
-          external_service: service,
-          start_time: Time.current.iso8601,
-          end_time: nil,
-          description: nil,
-          status: nil
-        }
-      end
-
-      def standard_error_status(error)
-        error.try(:status).presence ||
-          error.try(:status_code).presence ||
-          error.try(:code).presence ||
-          503
+        "#{service}: #{error.message}, #{error}"
       end
     end
   end

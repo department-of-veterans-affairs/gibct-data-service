@@ -6,7 +6,7 @@ class UploadsController < ApplicationController
   end
 
   def new
-    @upload = new_upload(params[:csv_type])
+    @upload = Upload.from_csv_type(params[:csv_type])
 
     if @upload.csv_type_check?
       @requirements = requirements_messages
@@ -35,7 +35,7 @@ class UploadsController < ApplicationController
 
       redirect_to @upload
     rescue StandardError => e
-      @upload = new_upload(merged_params[:csv_type])
+      @upload = Upload.from_csv_type(merged_params[:csv_type])
 
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
@@ -57,15 +57,6 @@ class UploadsController < ApplicationController
     flash.alert = message
   end
 
-  def new_upload(csv_type)
-    upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = defaults(csv_type)['skip_lines']
-    upload.col_sep = defaults(csv_type)['col_sep']
-    upload.force_simple_split = defaults(csv_type)['force_simple_split']
-    upload.strip_chars_from_headers = defaults(csv_type)['strip_chars_from_headers']
-    upload
-  end
-
   def load_csv
     return unless @upload.persisted?
 
@@ -76,10 +67,6 @@ class UploadsController < ApplicationController
     @original_filename ||= upload_params[:upload_file].try(:original_filename)
   end
 
-  def defaults(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
-  end
-
   def merged_params
     upload_params.merge(csv: original_filename, user: current_user)
   end
@@ -88,18 +75,15 @@ class UploadsController < ApplicationController
     @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :col_sep, :upload_file, :comment)
   end
 
-  def set_options
-    csv_type = @upload.csv_type
-    options = { skip_lines: @upload.skip_lines.try(:to_i),
-                col_sep: @upload.col_sep,
-                force_simple_split: defaults(csv_type)['force_simple_split'],
-                strip_chars_from_headers: defaults(csv_type)['strip_chars_from_headers'] }
-    options
+  def options
+    { skip_lines: @upload.skip_lines.try(:to_i),
+      col_sep: @upload.col_sep,
+      force_simple_split: @upload.force_simple_split,
+      strip_chars_from_headers: @upload.strip_chars_from_headers }
   end
 
   def call_load
     file = @upload.upload_file.tempfile
-    options = set_options
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
