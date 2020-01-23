@@ -9,7 +9,7 @@ Config.setup do |config|
   # Overwrite an existing value when merging a `nil` value.
   # When set to `false`, the existing value is retained after merge.
   #
-  config.merge_nil_values = false
+  # config.merge_nil_values = true
 
   # Overwrite arrays found in previously loaded settings file. When set to `false`, arrays will be merged.
   #
@@ -17,11 +17,11 @@ Config.setup do |config|
 
   # Load environment variables from the `ENV` object and override any settings defined in files.
   #
-  config.use_env = true
+  # config.use_env = false
 
   # Define ENV variable prefix deciding which variables to load into config.
   #
-  config.env_prefix = 'Settings'
+  # config.env_prefix = 'Settings'
 
   # What string to use as level separator for settings loaded from ENV variables. Default value of '.' works well
   # with Heroku, but you might want to change it for example for '__' to easy override settings from command line, where
