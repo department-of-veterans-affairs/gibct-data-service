@@ -56,6 +56,10 @@ The following are required, but related to a SAML login flow only available when
 7. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
 8. `SAML_ISSUER`: shared between the GIDS and SSOe team.
 
+The following is for use with Scorecard API.
+
+9. `Settings.scorecard.api_key`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
+
 To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
 
 ```
@@ -75,25 +79,6 @@ You can create additional users by adding them to the `/db/seeds/01_users.rb` fi
 
 ```
 User.create(email: 'xxxxxx', password: 'xxxxxx')
-```
-
-### Settings
-The following settings need to be configured for **GIDS**:
-
-GIDS uses https://github.com/rubyconfig/config for various settings throughout the application. Some of these settings 
-are not set within the repository for security reasons as such you will need to set these up within 
-a `config/settings.local.yml` file
-
-#### Scorecard API
-Scorecard data can be retrieved via an API detailed at https://collegescorecard.ed.gov/data/documentation/ . 
-This requires an `api_key`. Check https://collegescorecard.ed.gov/data/documentation/ for latest information.
-
-1. Go to https://api.data.gov/signup and get an API key
-2. In `config/settings.local.yml` add
-
-```
-scorecard:
-  api_key: "YOUR_API_KEY"
 ```
 
 ## Development Instructions
