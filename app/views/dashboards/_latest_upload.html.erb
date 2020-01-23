@@ -9,7 +9,8 @@
   <td><%= upload.comment.blank? ? '-' : upload.comment %></td>
   <td class="text-center">
     <% if CSV_TYPES_HAS_API_TABLE_NAMES.include?(upload.csv_type) %>
-      <%= link_to 'Fetch', dashboard_api_fetch_path(upload.csv_type),
+      <%= link_to_if  can_fetch_api(upload.csv_type),
+                  'Fetch', dashboard_api_fetch_path(upload.csv_type),
                   class: "btn dashboard-btn-success btn-xs",
                   role: "button",
                   id: "api_fetch_" + upload.csv_type %>

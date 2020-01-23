@@ -105,6 +105,14 @@ class Upload < ApplicationRecord
     Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
   end
 
+  def self.fetching?(csv_type)
+    binding.pry
+    Upload.select('DISTINCT ON("csv_type") *')
+        .where(ok: false, completed_at: nil, csv_type: csv_type)
+        .order(csv_type: :asc)
+        .order(updated_at: :desc).any?
+  end
+
   private
 
   def initialize_warnings

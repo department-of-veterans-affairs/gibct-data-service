@@ -105,8 +105,8 @@ class DashboardsController < ApplicationController
     klass = api_upload.csv_type.constantize
     populated = klass.populate if klass&.respond_to?(:populate)
 
-    api_upload.update(ok: populated)
-    #api_upload.update(completed_at: Time.now.utc.to_s(:db))
+    api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
+
     if populated
 
       message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
