@@ -58,7 +58,7 @@ The following are required, but related to a SAML login flow only available when
 
 The following is for use with Scorecard API.
 
-9. `Settings.scorecard.api_key`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
+9. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
 
 To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
 
