@@ -6,6 +6,7 @@ RSpec.describe DashboardsHelper, type: :helper do
   let(:upload) { build :upload, :valid_upload }
   let(:missing_required) { build :upload, :missing_required }
   let(:missing_upload) { build :upload, :missing_upload }
+  let(:user) { User.first }
 
   describe 'latest_upload_class' do
     it 'no class for ok upload' do
@@ -32,6 +33,16 @@ RSpec.describe DashboardsHelper, type: :helper do
 
     it 'warning class for missing upload' do
       expect(helper.latest_upload_title(missing_upload)).to eq('Missing upload')
+    end
+  end
+
+  describe 'cannot_fetch_api' do
+    context 'when fetch is not in progress' do
+      let(:scorecard_fetch) { build :upload, :scorecard_finished }
+
+      it 'returns false' do
+        expect(helper.cannot_fetch_api(Weam.name)).to be_falsey
+      end
     end
   end
 end
