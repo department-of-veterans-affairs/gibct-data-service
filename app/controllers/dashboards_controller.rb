@@ -72,12 +72,12 @@ class DashboardsController < ApplicationController
   end
 
   def api_fetch
-    klass = params[:csv_type].constantize
-    csv = "#{klass.name}::API_SOURCE".safe_constantize || "#{klass.name} API"
+    class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
+    csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
     api_upload = Upload.create(csv_type: params[:csv_type],
                                user: current_user,
                                csv: csv,
-                               comment: "#{klass.name} API Request")
+                               comment: "#{class_name} API Request")
     message = fetch_api_data(api_upload) if api_upload.csv_type_check?
 
     if message

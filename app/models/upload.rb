@@ -16,7 +16,7 @@ class Upload < ApplicationRecord
   after_initialize :derive_dependent_columns, unless: :persisted?
 
   def derive_dependent_columns
-    self.csv = self.csv || upload_file.try(:original_filename)
+    self.csv = csv || upload_file.try(:original_filename)
   end
 
   def ok?
@@ -107,10 +107,10 @@ class Upload < ApplicationRecord
 
   def self.fetching_for?(csv_type)
     Upload.select('DISTINCT ON("csv_type") *')
-        .where(ok: false, completed_at: nil, csv_type: csv_type)
-        .order(csv_type: :asc)
-        .order(updated_at: :desc)
-        .any?
+          .where(ok: false, completed_at: nil, csv_type: csv_type)
+          .order(csv_type: :asc)
+          .order(updated_at: :desc)
+          .any?
   end
 
   private
