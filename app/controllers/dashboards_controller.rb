@@ -77,7 +77,7 @@ class DashboardsController < ApplicationController
     api_upload = Upload.create(csv_type: params[:csv_type],
                                user: current_user,
                                csv: csv,
-                               comment: "#{klass.name} API")
+                               comment: "#{klass.name} API Request")
     message = fetch_api_data(api_upload) if api_upload.csv_type_check?
 
     if message
