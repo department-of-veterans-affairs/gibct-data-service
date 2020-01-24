@@ -74,7 +74,7 @@ class DashboardsController < ApplicationController
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
     csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
-    api_upload = Upload.create(csv_type: params[:csv_type],
+    api_upload = Upload.create(csv_type: class_name,
                                user: current_user,
                                csv: csv,
                                comment: "#{class_name} API Request")
@@ -83,11 +83,11 @@ class DashboardsController < ApplicationController
     if message
       flash.notice = message
     else
-      flash.alert = "#{api_upload.csv_type} is not configured to fetch data from an api"
+      flash.alert = "#{params[:csv_type]} is not configured to fetch data from an api"
     end
     redirect_to dashboards_path
   rescue StandardError => e
-    message = Common::Exceptions::ExceptionHandler.new(e, upload.csv_type).serialize_error
+    message = Common::Exceptions::ExceptionHandler.new(e, api_upload.csv_type).serialize_error
     Rails.logger.error e
     redirect_to dashboards_path, alert: message
   end
@@ -103,7 +103,7 @@ class DashboardsController < ApplicationController
 
   def fetch_api_data(api_upload)
     klass = api_upload.csv_type.constantize
-    populated = klass.populate if klass&.respond_to?(:populate)
+    populated = klass&.respond_to?(:populate) ? klass.populate : false
 
     api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
 
