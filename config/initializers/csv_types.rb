@@ -15,7 +15,7 @@ CSV_TYPES_TABLES = [
   { klass: Outcome, required?: true },
   { klass: P911Tf, required?: true },
   { klass: P911Yr, required?: true },
-  { klass: Scorecard, required?: true },
+  { klass: Scorecard, required?: true, has_api?: true },
   { klass: Sec702School, required?: true },
   { klass: Sec702, required?: true },
   { klass: Settlement, required?: true },
@@ -34,4 +34,5 @@ CSV_TYPES_TABLES = [
 ].freeze
 
 CSV_TYPES_REQUIRED_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:required?] }.map { |table| table[:klass].name }
+CSV_TYPES_HAS_API_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }
 CSV_TYPES_ALL_TABLES = CSV_TYPES_TABLES.map { |table| table[:klass] }

@@ -20,7 +20,6 @@ module Common
       #
       #     def connection
       #       Faraday.new(base_path, headers: base_request_headers, request: request_options) do |faraday|
-      #         faraday.use :breakers
       #         faraday.request :json
       #
       #         faraday.response :raise_error, error_prefix: service_name

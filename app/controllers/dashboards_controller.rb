@@ -71,6 +71,22 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path
   end
 
+  def api_fetch
+    upload = Upload.from_csv_type(params[:csv_type])
+    message = fetch_api_data(upload) if upload.csv_type_check?
+
+    if message
+      flash.notice = message
+    else
+      flash.alert = "#{upload.csv_type} does not know how to fetch data from an api"
+    end
+    redirect_to dashboards_path
+  rescue StandardError => e
+    message = Common::Exceptions::ExceptionHandler.new(e, upload.csv_type).serialize_error
+    Rails.logger.error e
+    redirect_to dashboards_path, alert: message
+  end
+
   private
 
   def csv_model(csv_type)
@@ -78,5 +94,17 @@ class DashboardsController < ApplicationController
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
+  end
+
+  def fetch_api_data(upload)
+    klass = upload.csv_type.constantize
+    populated = klass.populate if klass&.respond_to?(:populate)
+
+    if populated
+      message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
+      return message if message.present?
+
+      "#{klass.name} finished fetching data from it's api"
+    end
   end
 end

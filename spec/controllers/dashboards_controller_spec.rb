@@ -173,4 +173,34 @@ RSpec.describe DashboardsController, type: :controller do
       end
     end
   end
+
+  describe 'GET api_fetch' do
+    login_user
+
+    it 'causes populate to be called for a CSV' do
+      allow(Scorecard).to receive(:populate)
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(Scorecard).to have_received(:populate)
+    end
+
+    it 'displays no populate message for a CSV without it' do
+      get(:api_fetch, params: { csv_type: CalculatorConstant.name })
+      expect(flash.alert).to eq("#{CalculatorConstant.name} does not know how to fetch data from an api")
+    end
+
+    it 'displays default populate message for a CSV without POPULATE_SUCCESS_MESSAGE' do
+      allow(Scorecard).to receive(:populate).and_return(true)
+      stub_const('Scorecard::POPULATE_SUCCESS_MESSAGE', nil)
+
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.notice).to eq("#{Scorecard.name} finished fetching data from it's api")
+    end
+
+    it 'displays error message' do
+      message = 'displays error message'
+      allow(Scorecard).to receive(:populate).and_raise(StandardError, message)
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.alert).to include(message)
+    end
+  end
 end

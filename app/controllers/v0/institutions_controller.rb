@@ -47,7 +47,7 @@ module V0
              meta: { version: @version }, links: @links
     end
 
-    # GET /v0/institituons/20005123/children
+    # GET /v0/institutions/20005123/children
     def children
       children = Institution.version(@version[:number])
                             .where(parent_facility_code_id: params[:id])

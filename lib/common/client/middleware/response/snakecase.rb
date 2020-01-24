@@ -44,5 +44,3 @@ module Common
     end
   end
 end
-
-Faraday::Response.register_middleware snakecase: Common::Client::Middleware::Response::Snakecase
