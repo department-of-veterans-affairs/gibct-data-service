@@ -106,8 +106,7 @@ class Upload < ApplicationRecord
   end
 
   def self.fetching_for?(csv_type)
-    Upload.select('DISTINCT ON("csv_type") *')
-          .where(ok: false, completed_at: nil, csv_type: csv_type)
+    Upload.where(ok: false, completed_at: nil, csv_type: csv_type)
           .order(updated_at: :desc)
           .any?
   end
