@@ -78,16 +78,23 @@ class DashboardsController < ApplicationController
                                user: current_user,
                                csv: csv,
                                comment: "#{class_name} API Request")
-    message = fetch_api_data(api_upload) if api_upload.csv_type_check?
+    message = api_upload.csv_type_check? ? fetch_api_data(api_upload) : ''
 
-    if message
+    if message.present?
       flash.notice = message
+      api_upload.update(ok: true, completed_at: Time.now.utc.to_s(:db))
     else
       flash.alert = "#{params[:csv_type]} is not configured to fetch data from an api"
+      api_upload.update(ok: false,
+                        comment: "#{class_name} API Request Failure",
+                        completed_at: Time.now.utc.to_s(:db))
     end
+
     redirect_to dashboards_path
   rescue StandardError => e
-    message = Common::Exceptions::ExceptionHandler.new(e, api_upload.csv_type).serialize_error
+    message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
+    api_upload&.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+
     Rails.logger.error e
     redirect_to dashboards_path, alert: message
   end
@@ -104,8 +111,6 @@ class DashboardsController < ApplicationController
   def fetch_api_data(api_upload)
     klass = api_upload.csv_type.constantize
     populated = klass&.respond_to?(:populate) ? klass.populate : false
-
-    api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
 
     if populated
 
