@@ -74,9 +74,7 @@ class DashboardsController < ApplicationController
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
     csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
-    api_upload = Upload.create(csv_type: class_name,
-                               user: current_user,
-                               csv: csv,
+    api_upload = Upload.create(csv_type: class_name, user: current_user, csv: csv,
                                comment: "#{class_name} API Request")
     message = api_upload.csv_type_check? ? fetch_api_data(api_upload) : ''
 
@@ -85,8 +83,7 @@ class DashboardsController < ApplicationController
       api_upload.update(ok: true, completed_at: Time.now.utc.to_s(:db))
     else
       flash.alert = "#{params[:csv_type]} is not configured to fetch data from an api"
-      api_upload.update(ok: false,
-                        comment: "#{class_name} API Request Failure",
+      api_upload.update(ok: false, comment: "#{class_name} API Request Failure",
                         completed_at: Time.now.utc.to_s(:db))
     end
 

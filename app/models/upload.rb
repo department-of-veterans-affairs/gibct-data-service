@@ -64,8 +64,8 @@ class Upload < ApplicationRecord
 
   def self.last_uploads
     Upload.select('DISTINCT ON("csv_type") *')
-        .order(csv_type: :asc)
-        .order(updated_at: :desc)
+          .order(csv_type: :asc)
+          .order(updated_at: :desc)
   end
 
   def self.last_uploads_rows
