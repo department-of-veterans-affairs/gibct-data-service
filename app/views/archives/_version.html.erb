@@ -1,4 +1,4 @@
-<tr class="success">
+<tr class="<%= cycle('even', 'odd') -%>">
   <td><%= version.number %></td>
   <td><%= version.uuid %></td>
   <td><%= version.user.email %></td>
