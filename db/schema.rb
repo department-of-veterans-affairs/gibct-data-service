@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_19_210003) do
+ActiveRecord::Schema.define(version: 2020_01_24_135649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1425,6 +1425,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_210003) do
     t.boolean "ok", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "completed_at"
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"

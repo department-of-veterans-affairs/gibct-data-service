@@ -7,7 +7,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
   let(:user) { build(:user, :loa3) }
   let(:message) { 'the server responded with status 503' }
   let(:error_body) { { 'status' => 'some service unavailable status' } }
-  let(:service) { 'Vet360' }
+  let(:service) { 'Scorecard' }
 
   describe '.initialize' do
     context 'when initialized without a nil error' do
@@ -23,19 +23,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
       let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
-        expect(results[:description]).to include message, error_body.to_s
-      end
-
-      it 'identifies the external service' do
-        expect(results[:external_service]).to eq service
-      end
-
-      it 'sets the start_time' do
-        expect(results[:start_time]).to be_present
-      end
-
-      it 'returns a status' do
-        expect(results[:status]).to eq 503
+        expect(results).to include message, error_body.to_s
       end
     end
 
@@ -44,11 +32,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
       let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
-        expect(results[:description]).to include 'Gateway timeout', '504'
-      end
-
-      it 'returns a status' do
-        expect(results[:status]).to eq 504
+        expect(results).to include 'Gateway timeout'
       end
     end
 
@@ -66,11 +50,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
       let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
-        expect(results[:description]).to include 'SCORECARD_503', '503', 'Service unavailable'
-      end
-
-      it 'returns a status' do
-        expect(results[:status]).to eq 503
+        expect(results).to include 'Service unavailable'
       end
     end
 
@@ -79,11 +59,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
       let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
-        expect(results[:description]).to include message, 'StandardError'
-      end
-
-      it 'returns a status' do
-        expect(results[:status]).to eq 503
+        expect(results).to include message
       end
     end
   end
