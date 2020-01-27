@@ -13,7 +13,7 @@ class ArchivesController < ApplicationController
   def export
     respond_to do |format|
       format.csv do
-        send_data InstitutionsArchive.export_institutions_by_version(params[:number]),
+        send_data csv_model(params[:csv_type]).export_institutions_by_version(params[:number]),
                   type: 'text/csv',
                   filename: "institutions_version_#{params[:number]}.csv"
       end
