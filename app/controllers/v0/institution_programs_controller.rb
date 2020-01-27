@@ -9,7 +9,7 @@ module V0
       @data = []
       if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
-        @data = InstitutionProgram.version(@version[:number]).autocomplete(@search_term)
+        @data = InstitutionProgram.autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -46,10 +46,10 @@ module V0
     def search_results
       @query ||= normalized_query_params
 
-      relation = InstitutionProgram.version(@version[:number])
-                                   .joins(:institution)
+      relation = InstitutionProgram.joins(:institution)
                                    .search(@query[:name])
                                    .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
+
       [
         %i[program_type type],
         %i[institutions.institution provider],

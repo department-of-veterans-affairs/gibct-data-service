@@ -52,6 +52,8 @@ Metrics/LineLength:
   Max: 120
   Exclude:
     - "spec/models/institution_tree_spec.rb"
+    - "spec/controllers/v0/institutions_controller_spec.rb"
+    - "app/controllers/v0/institutions_controller.rb"
 
 # removing rule because get_session implies HTTP GET, and informs method
 Naming/AccessorMethodName:
