@@ -39,7 +39,7 @@ module CsvHelper
       CSV.generate(col_sep: defaults['col_sep']) do |csv|
         csv << csv_headers.values
 
-        klass == write_institution_row(csv, csv_headers, number)
+        klass == write_versioned_row(csv, csv_headers, number)
       end
     end
 
@@ -49,7 +49,8 @@ module CsvHelper
       end
     end
 
-    def write_institution_row(csv, csv_headers, number)
+    def write_versioned_row(csv, csv_headers, number)
+      raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.respond_to?(:version)
       klass.where(version: number).find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
       end
