@@ -1,0 +1,10 @@
+<tr class="success">
+  <td><%= version.number %></td>
+  <td><%= version.uuid %></td>
+  <td><%= version.user.email %></td>
+  <td><%= version.created_at.to_formatted_s(:long_ordinal) %></td>
+  <td>
+      <%= link_to 'Download Export CSV', archives_export_path(version.number),
+                  class: "btn dashboard-btn-warning btn-xs", role: "button" %>
+  </td>
+</tr>
