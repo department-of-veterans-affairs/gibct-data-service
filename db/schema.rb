@@ -260,7 +260,7 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
   end
 
   create_table "institutions", id: :serial, force: :cascade do |t|
-    t.integer "version", null: false
+    t.integer "version"
     t.string "institution_type_name"
     t.string "facility_code"
     t.string "institution"
@@ -1190,6 +1190,21 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
+    t.integer "institution_id"
+  end
+
+  create_table "school_certifying_officials_archives", id: :integer, default: -> { "nextval('school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "priority"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "title"
+    t.string "phone_area_code"
+    t.string "phone_number"
+    t.string "phone_extension"
+    t.string "email"
+    t.integer "institution_id"
   end
 
   create_table "school_closures", id: :serial, force: :cascade do |t|
