@@ -16,7 +16,7 @@ class Upload < ApplicationRecord
   after_initialize :derive_dependent_columns, unless: :persisted?
 
   def derive_dependent_columns
-    self.csv = csv || upload_file.try(:original_filename)
+    self.csv ||= upload_file.try(:original_filename)
   end
 
   def ok?
