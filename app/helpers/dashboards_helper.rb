@@ -18,4 +18,8 @@ module DashboardsHelper
   def can_generate_preview(preview_versions)
     'disabled' if preview_versions[0]&.generating?
   end
+
+  def cannot_fetch_api(csv_type)
+    Upload.fetching_for?(csv_type)
+  end
 end

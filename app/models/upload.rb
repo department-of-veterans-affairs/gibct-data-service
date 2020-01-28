@@ -16,7 +16,7 @@ class Upload < ApplicationRecord
   after_initialize :derive_dependent_columns, unless: :persisted?
 
   def derive_dependent_columns
-    self.csv = upload_file.try(:original_filename)
+    self.csv ||= upload_file.try(:original_filename)
   end
 
   def ok?
@@ -103,6 +103,10 @@ class Upload < ApplicationRecord
 
   def self.default_options(csv_type)
     Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
+  end
+
+  def self.fetching_for?(csv_type)
+    Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
 
   private
