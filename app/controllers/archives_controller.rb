@@ -15,10 +15,10 @@ class ArchivesController < ApplicationController
       format.csv do
         send_data csv_model(params[:csv_type]).export_institutions_by_version(params[:number]),
                   type: 'text/csv',
-                  filename: "institutions_version_#{params[:number]}.csv"
+                  filename: "#{params[:csv_type]}_version_#{params[:number]}.csv"
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat, MissingAttributeError => e
     Rails.logger.error e.message
     redirect_to archives_path, alert: e.message
   end

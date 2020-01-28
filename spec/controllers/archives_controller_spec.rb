@@ -12,13 +12,13 @@ RSpec.describe ArchivesController, type: :controller do
     login_user
 
     before do
-      create_list :version, :production, 3
+      create_list :version, 3, :production
 
       get(:index)
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(CSV_TYPES_ALL_TABLES.length)
+      expect(assigns(:archive_versions).length).to eq(2)
     end
 
     it 'returns http success' do
@@ -30,31 +30,26 @@ RSpec.describe ArchivesController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
-      CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
-      end
-
-      post(:build)
+      create_list :version, 3, :production
     end
 
     it 'causes a CSV to be exported' do
-      allow(Weam).to receive(:export)
-      get(:export, params: { csv_type: 'Weam', format: :csv })
-      expect(Weam).to have_received(:export)
+      allow(InstitutionsArchive).to receive(:export_institutions_by_version)
+      get(:export, params: { csv_type: InstitutionsArchive.name, number: 2, format: :csv })
+      expect(InstitutionsArchive).to have_received(:export_institutions_by_version)
     end
 
     it 'includes filename parameter in content-disposition header' do
-      get(:export, params: { csv_type: 'Sva', format: :csv })
-      expect(response.headers['Content-Disposition']).to include('filename="Sva.csv"')
+      csv_type = InstitutionsArchive.name
+      number = 2
+      filename = "#{csv_type}_version_#{number}.csv"
+      get(:export, params: { csv_type: csv_type, number: number, format: :csv})
+      expect(response.headers['Content-Disposition']).to include("filename=\"#{filename}\"")
     end
 
     it 'redirects to index on error' do
-      expect(get(:export, params: { csv_type: 'BlahBlah', format: :csv })).to redirect_to(action: :index)
-      expect(get(:export, params: { csv_type: 'Weam', format: :xml })).to redirect_to(action: :index)
+      expect(get(:export, params: { csv_type: 'BlahBlah', format: :csv, number: 2 })).to redirect_to(action: :index)
+      expect(get(:export, params: { csv_type: 'Weam', format: :xml, number: 2 })).to redirect_to(action: :index)
     end
   end
 end
