@@ -31,6 +31,7 @@ class CrosswalkIssue < ApplicationRecord
       WHERE
         (institution_of_higher_learning_indicator = true OR non_college_degree_indicator = true)
         AND LOWER(poo_status) = 'aprvd'
+        AND LENGTH(applicable_law_code) > 0
         AND LOWER(applicable_law_code) != 'educational institution is not approved'
         AND LOWER(applicable_law_code) != 'educational institution is approved for chapter 31 only'
         AND NOT(

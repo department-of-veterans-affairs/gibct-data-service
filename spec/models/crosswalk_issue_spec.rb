@@ -96,6 +96,22 @@ RSpec.describe CrosswalkIssue, type: :model do
       described_class.rebuild
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
+
+    it 'excludes weams with blank applicable_low_code' do
+      create :weam, :higher_learning, :crosswalk_issue_matchable_by_cross, poo_status: 'APRVD', applicable_law_code: ''
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
+
+      described_class.rebuild
+      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
+    end
+
+    it 'excludes weams with null applicable_low_code' do
+      create :weam, :higher_learning, :crosswalk_issue_matchable_by_cross, poo_status: 'APRVD'
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
+
+      described_class.rebuild
+      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
+    end
   end
 
   describe 'when building IPEDS orphans' do
