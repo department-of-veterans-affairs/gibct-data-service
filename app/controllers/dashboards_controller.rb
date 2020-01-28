@@ -73,27 +73,25 @@ class DashboardsController < ApplicationController
 
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
-    csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
-    api_upload = Upload.create(csv_type: class_name, user: current_user, csv: csv,
-                               comment: "#{class_name} API Request")
-    message = api_upload.csv_type_check? ? fetch_api_data(api_upload) : ''
 
-    if message.present?
-      flash.notice = message
-      api_upload.update(ok: true, completed_at: Time.now.utc.to_s(:db))
+    if class_name.present?
+      csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
+      begin
+        api_upload = Upload.new(csv_type: class_name, user: current_user, csv: csv,
+                                comment: "#{class_name} API Request")
+        flash.notice = fetch_api_data(api_upload) if api_upload.save!
+      rescue StandardError => e
+        message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
+        api_upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+
+        Rails.logger.error e
+        flash.alert = message
+      end
     else
       flash.alert = "#{params[:csv_type]} is not configured to fetch data from an api"
-      api_upload.update(ok: false, comment: "#{class_name} API Request Failure",
-                        completed_at: Time.now.utc.to_s(:db))
     end
 
     redirect_to dashboards_path
-  rescue StandardError => e
-    message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
-    api_upload&.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
-
-    Rails.logger.error e
-    redirect_to dashboards_path, alert: message
   end
 
   private
@@ -108,6 +106,7 @@ class DashboardsController < ApplicationController
   def fetch_api_data(api_upload)
     klass = api_upload.csv_type.constantize
     populated = klass&.respond_to?(:populate) ? klass.populate : false
+    api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
 
     if populated
 
