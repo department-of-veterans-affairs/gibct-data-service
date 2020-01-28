@@ -1190,10 +1190,12 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
-    t.integer "institution_id"
+    t.bigint "institution_id"
+    t.index ["institution_id"], name: "index_school_certifying_officials_on_institution_id"
   end
 
-  create_table "school_certifying_officials_archives", id: :integer, default: -> { "nextval('school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "school_certifying_officials_archives", id: false, force: :cascade do |t|
+    t.integer "id", default: -> { "nextval('school_certifying_officials_id_seq'::regclass)" }, null: false
     t.string "facility_code"
     t.string "institution_name"
     t.string "priority"
@@ -1204,7 +1206,7 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
-    t.integer "institution_id"
+    t.bigint "institution_id"
   end
 
   create_table "school_closures", id: :serial, force: :cascade do |t|
@@ -1655,5 +1657,6 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institutions", "versions"
+  add_foreign_key "school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
 end
