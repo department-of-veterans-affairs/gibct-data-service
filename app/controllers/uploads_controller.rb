@@ -91,11 +91,8 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
+    @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
-    @upload.update(ok: data.present? && data.ids.present?,
-                   comment: error_msg,
-                   completed_at: Time.now.utc.to_s(:db))
-
     raise(StandardError, error_msg) unless @upload.ok?
 
     data

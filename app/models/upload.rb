@@ -106,9 +106,7 @@ class Upload < ApplicationRecord
   end
 
   def self.fetching_for?(csv_type)
-    Upload.where(ok: false, completed_at: nil, csv_type: csv_type)
-          .order(updated_at: :desc)
-          .any?
+    Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
 
   private

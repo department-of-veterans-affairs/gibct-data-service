@@ -37,12 +37,14 @@ RSpec.describe DashboardsHelper, type: :helper do
   end
 
   describe 'cannot_fetch_api' do
-    context 'when fetch is not in progress' do
-      let(:scorecard_fetch) { build :upload, :scorecard_finished }
+    it 'returns false when fetch is not in progress' do
+      create :upload, :scorecard_finished
+      expect(helper.cannot_fetch_api(Scorecard.name)).to eq(false)
+    end
 
-      it 'returns false' do
-        expect(helper.cannot_fetch_api(Weam.name)).to be_falsey
-      end
+    it 'returns true when fetch is in progress' do
+      create :upload, :scorecard_in_progress
+      expect(helper.cannot_fetch_api(Scorecard.name)).to eq(true)
     end
   end
 end

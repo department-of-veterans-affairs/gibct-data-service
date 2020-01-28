@@ -57,8 +57,7 @@ FactoryBot.define do
     trait :scorecard_finished do
       csv_type { Scorecard.name }
       csv { Scorecard.name }
-      ok { false }
-      completed_at { nil }
+      ok { true }
     end
   end
 end
