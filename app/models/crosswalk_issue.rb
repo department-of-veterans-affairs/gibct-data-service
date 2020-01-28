@@ -30,6 +30,9 @@ class CrosswalkIssue < ApplicationRecord
         LEFT OUTER JOIN crosswalks ON weams.facility_code = crosswalks.facility_code
       WHERE
         (institution_of_higher_learning_indicator = true OR non_college_degree_indicator = true)
+        AND LOWER(poo_status) = 'aprvd'
+        AND LOWER(applicable_law_code) != 'educational institution is not approved'
+        AND LOWER(applicable_law_code) != 'educational institution is approved for chapter 31 only'
         AND NOT(
           weams.cross IS NOT NULL
           AND ipeds_hds.cross IS NOT NULL
