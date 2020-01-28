@@ -148,7 +148,9 @@ module V0
     end
 
     def approved_institutions
-      Institution.version_id(@version[:id]).no_extentions.where(approved: true).where("v.number = #{@version[:number]}")
+      Institution.version_id(@version[:id]).no_extentions
+                 .where(approved: true)
+                 .where('v.number = ?', @version[:number])
     end
   end
   # rubocop:enable Metrics/ClassLength
