@@ -11,12 +11,17 @@ module CsvHelper
 
     def load(file, options = {})
       delete_all
-      load_records(file, options)
+      load_csv_file(file, options)
+    end
+
+    def load_from_api(results, options = {})
+      delete_all
+      load_records(results, options)
     end
 
     private
 
-    def load_records(file, options)
+    def load_csv_file(file, options)
       records = []
 
       records = if [Program, Weam].include?(klass)
@@ -25,15 +30,19 @@ module CsvHelper
                   load_csv(file, records, options)
                 end
 
+      load_records(records, options)
+    rescue EOFError
+      error_msg = "Bad data was found in a row. Please check ALL ROWS for a double quote (\")
+without a closing double quote (\"). "
+      raise(StandardError, error_msg)
+    end
+
+    def load_records(records, options)
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       after_import_validations(records, results.failed_instances, options)
 
       results
-    rescue EOFError
-      error_msg = "Bad data was found in a row. Please check ALL ROWS for a double quote (\")
-without a closing double quote (\"). "
-      raise(StandardError, error_msg)
     end
 
     def load_csv(file, records, options)
@@ -82,7 +91,7 @@ without a closing double quote (\"). "
     end
 
     def run_after_import_batch_validations?(failed_instances)
-      # this a call to custom batch validation checks for large import CSVs
+      # this is a call to custom batch validation checks for large import CSVs
       validator_klass = "#{klass.name}Validator".safe_constantize
       run_validations = validator_klass.present? && defined? validator_klass.after_import_batch_validations
 

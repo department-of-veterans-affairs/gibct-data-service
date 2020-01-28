@@ -54,5 +54,3 @@ module Common
     end
   end
 end
-
-Faraday::Response.register_middleware raise_error: Common::Client::Middleware::Response::RaiseError

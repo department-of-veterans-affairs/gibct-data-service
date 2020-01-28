@@ -35,6 +35,8 @@ Note that queries are PostgreSQL-specific.
 - `bundle exec rake ci` - Run all build steps performed in Travis CI.
 
 ## Pre-Setup Configuration
+
+### Environment Variables
 The following environment variables need to be configured for **GIDS**:
 
 1. `GIBCT_URL`: this a link to the **GIBCT** that is used for looking at the data served by **GIDS**, and should
@@ -53,6 +55,10 @@ The following are required, but related to a SAML login flow only available when
 6. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
 7. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
 8. `SAML_ISSUER`: shared between the GIDS and SSOe team.
+
+The following is for use with Scorecard API.
+
+9. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
 
 To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
 

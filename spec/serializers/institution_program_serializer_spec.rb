@@ -60,4 +60,12 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
   it 'includes dod_bah' do
     expect(attributes['dod_bah']).to eq(institution_program.dod_bah)
   end
+
+  it 'includes school_closing' do
+    expect(attributes['school_closing']).to eq(institution_program.school_closing)
+  end
+
+  it 'includes caution_flag' do
+    expect(attributes['caution_flag']).to eq(institution_program.caution_flag)
+  end
 end

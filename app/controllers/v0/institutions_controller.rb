@@ -48,7 +48,7 @@ module V0
              meta: { version: @version }, links: @links
     end
 
-    # GET /v0/institituons/20005123/children
+    # GET /v0/institutions/20005123/children
     def children
       children = Institution.version_id(@version[:id])
                             .where(parent_facility_code_id: params[:id])
@@ -105,7 +105,6 @@ module V0
         [:vet_tec_provider], # boolean
         [:preferred_provider], # boolean
         [:stem_indicator], # boolean
-        [:version_id]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter(filter_args[0], @query[filter_args[1]])

@@ -36,6 +36,10 @@ class InstitutionProgram < ApplicationRecord
     institution.bah
   end
 
+  delegate :school_closing, to: :institution
+
+  delegate :caution_flag, to: :institution
+
   # Given a search term representing a partial school name, returns all
   # programs starting with the search term.
   #
