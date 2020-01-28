@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   get '/crosswalk_issues/partials/:id' => 'crosswalk_issues#show_partial', as: :crosswalk_issues_partials_show
   put '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial'
 
-  get '/crosswalk_issues/orphans' => 'crosswalk_issues#orphans', as: :crosswalks_orphans
+  get '/crosswalk_issues/orphans' => 'crosswalk_issues#orphans', as: :crosswalk_issues_orphans
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
