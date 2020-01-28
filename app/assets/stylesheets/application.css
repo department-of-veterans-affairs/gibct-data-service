@@ -194,10 +194,10 @@ table.crosswalk-issues thead.system-header th {
 }
 
 table.crosswalk-issues thead.sub th {
-    background-color: #999999;
+    background-color: #FFFFFF;
     position: sticky;
     top: 29px;
-    color:#ffffff;
+    color:#000000;
 }
 
 .dashboard-btn-success {

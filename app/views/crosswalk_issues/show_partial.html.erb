@@ -63,9 +63,9 @@
               <th>Facility Code</th>
               <th>City</th>
               <th>State</th>
-              <th>IPEDS</th>
-              <th>OPE</th>
-              <th>NOTES</th>
+              <th><%= label_tag('cross', 'IPEDS') %></th>
+              <th><%= label_tag('ope', 'OPE') %></th>
+              <th><%= label_tag('notes', 'Notes') %></th>
             </thead>
             <tbody>
               <td>
@@ -107,7 +107,7 @@
           <input
             type="button"
             id="set_from_ipeds"
-            class="btn btn-info crosswalk_update"
+            class="btn dashboard-btn-warning crosswalk_update"
             value="Update Crosswalk from WEAMS"
             cross="<%= @issue.weam.cross %>"
             ope="<%= @issue.weam.ope %>"
@@ -116,16 +116,16 @@
           <input
             type="button"
             id="set_from_weams"
-            class="btn btn-info crosswalk_update"
+            class="btn dashboard-btn-warning crosswalk_update"
             <%= @issue.ipeds_hd.presence || 'disabled' %>
             value="Update Crosswalk from IPEDS"
             cross="<%= @issue.ipeds_hd&.cross %>"
             ope="<%= @issue.ipeds_hd&.ope %>"
           />
 
-          <input type="button" id="clear_ipeds_ope" class="btn btn-info" value="Clear IPEDS/OPE" />
+          <input type="button" id="clear_ipeds_ope" class="btn dashboard-btn-warning" value="Clear IPEDS/OPE" />
 
-          <%= submit_tag("Update", class: 'btn btn-success') %>
+          <%= submit_tag("Update", class: 'btn dashboard-btn-success') %>
         <% end %>
       </div>
     </div>
