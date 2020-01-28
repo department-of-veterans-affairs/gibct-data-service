@@ -81,7 +81,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
 
-    it 'excludes weams with not-approved applicable_low_code' do
+    it 'excludes weams with not-approved applicable_law_code' do
       create :weam, :approved_poo_and_non_approved_law_code, :higher_learning, :crosswalk_issue_matchable_by_cross
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
 
@@ -89,7 +89,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
 
-    it 'excludes weams with chapter 31 only applicable_low_code' do
+    it 'excludes weams with chapter 31 only applicable_law_code' do
       create :weam, :approved_poo_and_law_code_title_31, :higher_learning, :crosswalk_issue_matchable_by_cross
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
 
@@ -97,7 +97,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
 
-    it 'excludes weams with blank applicable_low_code' do
+    it 'excludes weams with blank applicable_law_code' do
       create :weam, :higher_learning, :crosswalk_issue_matchable_by_cross, poo_status: 'APRVD', applicable_law_code: ''
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
 
@@ -105,7 +105,7 @@ RSpec.describe CrosswalkIssue, type: :model do
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
 
-    it 'excludes weams with null applicable_low_code' do
+    it 'excludes weams with null applicable_law_code' do
       create :weam, :higher_learning, :crosswalk_issue_matchable_by_cross, poo_status: 'APRVD'
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
 
