@@ -10,6 +10,10 @@ class CrosswalkIssue < ApplicationRecord
 
   scope :by_issue_type, ->(n) { where(issue_type: n) }
 
+  def resolved?
+    weam_ipeds_hd_match? && weam_crosswalk_match?
+  end
+
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
     sql = <<-SQL
@@ -63,4 +67,16 @@ class CrosswalkIssue < ApplicationRecord
     InstitutionProgram.connection.execute(sql)
   end
   # rubocop:enable Metrics/MethodLength
+
+  private
+
+  def weam_ipeds_hd_match?
+    weam.present? && ipeds_hd.present? &&
+      weam.cross == ipeds_hd.cross && weam.ope == ipeds_hd.ope
+  end
+
+  def weam_crosswalk_match?
+    weam.present? && crosswalk.present? &&
+      weam.cross == crosswalk.cross && weam.ope == crosswalk.ope
+  end
 end

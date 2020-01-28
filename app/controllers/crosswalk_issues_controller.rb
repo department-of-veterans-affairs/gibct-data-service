@@ -11,7 +11,6 @@ class CrosswalkIssuesController < ApplicationController
     @issue = CrosswalkIssue.find(params[:id])
   end
 
-  # Create or update a Crosswalk in order to resolve the CrosswalkIssue
   def resolve_partial
     @issue = CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).find(params[:id])
 
@@ -26,11 +25,16 @@ class CrosswalkIssuesController < ApplicationController
     crosswalk.save
 
     @issue.crosswalk = crosswalk
-    @issue.save
 
-    flash.notice = 'Crosswalk record updated'
-
-    redirect_to action: :show_partial, id: @issue.id
+    if @issue.resolved?
+      @issue.delete
+      flash.notice = 'Crosswalk issue resolved'
+      redirect_to action: :partials
+    else
+      @issue.save
+      flash.notice = 'Crosswalk record updated'
+      redirect_to action: :show_partial, id: @issue.id
+    end
   end
 
   def orphans

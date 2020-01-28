@@ -26,7 +26,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
     end
   end
 
-  describe 'SHOW #show_partial' do
+  describe 'GET #show_partial' do
     login_user
 
     before do
@@ -44,7 +44,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
     end
   end
 
-  describe 'PUT #resolve_partial' do
+  describe 'POST #resolve_partial' do
     login_user
 
     context 'when related Crosswalk does not exist' do
@@ -62,14 +62,14 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
       end
 
       it 'correctly updates Crosswalk fields from params' do
-        put(:resolve_partial, params: params)
+        post(:resolve_partial, params: params)
         expect(crosswalk[:cross]).to eq(params[:cross])
         expect(crosswalk[:ope]).to eq(params[:ope])
         expect(crosswalk[:notes]).to eq(params[:notes])
       end
 
       it 'correctly updates Crosswalk fields from weams' do
-        put(:resolve_partial, params: params)
+        post(:resolve_partial, params: params)
         expect(crosswalk[:facility_code]).to eq(weam[:facility_code])
         expect(crosswalk[:institution]).to eq(weam[:institution])
         expect(crosswalk[:city]).to eq(weam[:city])
@@ -80,7 +80,6 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
     context 'when related Crosswalk exists' do
       let(:issue) { create :crosswalk_issue, :partial_match_type, :with_weam_match, :with_crosswalk_match }
       let(:weam) { CrosswalkIssue.find(params[:id]).weam }
-      let(:existing_crosswalk) { issue.crosswalk }
       let(:crosswalk) { CrosswalkIssue.find(params[:id]).crosswalk }
 
       let(:params) do
@@ -93,24 +92,59 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
       end
 
       it 'does not update crosswalk_id' do
-        put(:resolve_partial, params: params)
-        expect(issue[:crosswalk_id]).to eq(existing_crosswalk[:id])
+        expect { post(:resolve_partial, params: params) }.not_to change { issue[:crosswalk_id] }
       end
 
       it 'correctly updates Crosswalk fields from params' do
-        put(:resolve_partial, params: params)
+        post(:resolve_partial, params: params)
         expect(crosswalk[:cross]).to eq(params[:cross])
         expect(crosswalk[:ope]).to eq(params[:ope])
         expect(crosswalk[:notes]).to eq(params[:notes])
       end
 
       it 'correctly updates Crosswalk fields from weams' do
-        put(:resolve_partial, params: params)
+        post(:resolve_partial, params: params)
         expect(crosswalk[:facility_code]).to eq(weam[:facility_code])
         expect(crosswalk[:institution]).to eq(weam[:institution])
         expect(crosswalk[:city]).to eq(weam[:city])
         expect(crosswalk[:state]).to eq(weam[:state])
       end
+    end
+
+    context 'when Crosswalk is resolved' do
+      let(:issue) { create :crosswalk_issue, :partial_match_type, :with_weam_match, :with_ipeds_hd_match}
+
+      let(:params) do
+        {
+            id: issue.id,
+            cross: issue.weam[:cross],
+            ope: issue.weam[:ope]
+        }
+      end
+
+      it 'is deleted' do
+        post(:resolve_partial, params: params)
+        expect(CrosswalkIssue.exists?(issue.id)).to eq(false)
+      end
+
+    end
+
+    context 'when Crosswalk is not resolved' do
+      let(:issue) { create :crosswalk_issue, :partial_match_type, :with_weam_match}
+
+      let(:params) do
+        {
+            id: issue.id,
+            cross: issue.weam[:cross],
+            ope: issue.weam[:ope]
+        }
+      end
+
+      it 'is not deleted' do
+        post(:resolve_partial, params: params)
+        expect(CrosswalkIssue.exists?(issue.id)).to eq(true)
+      end
+
     end
   end
 

@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   get '/crosswalk_issues/partials' => 'crosswalk_issues#partials', as: :crosswalk_issues_partials
   get '/crosswalk_issues/partials/:id' => 'crosswalk_issues#show_partial', as: :crosswalk_issues_partials_show
-  put '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial'
+  post '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial'
 
   get '/crosswalk_issues/orphans' => 'crosswalk_issues#orphans', as: :crosswalk_issues_orphans
 

@@ -137,4 +137,20 @@ RSpec.describe CrosswalkIssue, type: :model do
         .to change { described_class.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count }.from(0).to(1)
     end
   end
+
+  describe '#resolved?' do
+    context 'when cross and ope fields match across ipeds_hd, crosswalk, and weams' do
+      it 'is resolved' do
+        issue = create :crosswalk_issue, :with_weam_match, :with_crosswalk_match, :with_ipeds_hd_match
+        expect(issue.resolved?).to eq(true)
+      end
+    end
+
+    context 'when cross and ope fields do not match across ipeds_hd, crosswalk, and weams' do
+      it 'is not resolved' do
+        issue = create :crosswalk_issue, :with_weam_match
+        expect(issue.resolved?).to eq(false)
+      end
+    end
+  end
 end
