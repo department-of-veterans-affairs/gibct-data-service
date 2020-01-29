@@ -185,7 +185,7 @@ RSpec.describe DashboardsController, type: :controller do
 
     it 'displays no populate message for a CSV without it' do
       get(:api_fetch, params: { csv_type: CalculatorConstant.name })
-      expect(flash.alert).to eq("#{CalculatorConstant.name} does not know how to fetch data from an api")
+      expect(flash.alert).to eq("#{CalculatorConstant.name} is not configured to fetch data from an api")
     end
 
     it 'displays default populate message for a CSV without POPULATE_SUCCESS_MESSAGE' do
@@ -199,6 +199,13 @@ RSpec.describe DashboardsController, type: :controller do
     it 'displays error message' do
       message = 'displays error message'
       allow(Scorecard).to receive(:populate).and_raise(StandardError, message)
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.alert).to include(message)
+    end
+
+    it 'displays already fetching alert' do
+      message = "#{Scorecard.name} is already being fetched by another user"
+      create :upload, :scorecard_in_progress
       get(:api_fetch, params: { csv_type: Scorecard.name })
       expect(flash.alert).to include(message)
     end

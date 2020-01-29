@@ -151,6 +151,7 @@ class Scorecard < ApplicationRecord
   after_initialize :derive_dependent_columns
 
   POPULATE_SUCCESS_MESSAGE = 'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/'
+  API_SOURCE = 'https://collegescorecard.ed.gov/data/'
 
   def self.populate
     results = ScorecardApi::Service.populate
