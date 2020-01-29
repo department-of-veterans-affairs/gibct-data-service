@@ -17,7 +17,6 @@ module Facets
   end
 
   def add_search_facet(raw_facets, field)
-    # binding.pry
     return if @query[field].blank?
 
     key = @query[field].downcase
