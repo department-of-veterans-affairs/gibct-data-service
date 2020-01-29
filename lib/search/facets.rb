@@ -7,7 +7,17 @@ module Facets
   end
   # rubocop:enable Lint/BooleanSymbol
 
+  def count_field(relation, field)
+    field_map = Hash.new(0)
+    relation.map do |program|
+      value = program.send(field)
+      field_map[value] += 1 if value.present?
+    end
+    field_map
+  end
+
   def add_search_facet(raw_facets, field)
+    # binding.pry
     return if @query[field].blank?
 
     key = @query[field].downcase

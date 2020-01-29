@@ -23,7 +23,7 @@ module V0
     def index
       @meta = {
         version: @version,
-        count: search_results.count,
+        count: search_results.load.size,
         facets: facets
       }
       render json: search_results.page(params[:page]), meta: @meta
@@ -72,15 +72,6 @@ module V0
       }
 
       add_active_search_facets(result)
-    end
-
-    def count_field(relation, field)
-      field_map = Hash.new(0)
-      relation.map do |program|
-        value = program.send(field)
-        field_map[value] += 1 if value.present?
-      end
-      field_map
     end
 
     def add_active_search_facets(raw_facets)
