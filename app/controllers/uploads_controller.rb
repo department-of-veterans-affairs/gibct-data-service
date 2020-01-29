@@ -21,8 +21,8 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
 
     begin
-      failed = load_csv.failed_instances
       @upload.check_for_headers
+      failed = load_csv.failed_instances
 
       validation_warnings = failed.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                   .map(&:display_errors_with_row)
@@ -75,24 +75,17 @@ class UploadsController < ApplicationController
     @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :col_sep, :upload_file, :comment)
   end
 
-  def options
-    { skip_lines: @upload.skip_lines.try(:to_i),
-      col_sep: @upload.col_sep,
-      force_simple_split: @upload.force_simple_split,
-      strip_chars_from_headers: @upload.strip_chars_from_headers }
-  end
-
   def call_load
     file = @upload.upload_file.tempfile
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    data = klass.load(file, options)
+    data = klass.load(file, @upload.options)
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
+    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
     raise(StandardError, error_msg) unless @upload.ok?
 
     data

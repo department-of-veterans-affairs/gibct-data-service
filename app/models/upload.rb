@@ -54,6 +54,13 @@ class Upload < ApplicationRecord
     headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
   end
 
+  def options
+    { skip_lines: skip_lines.try(:to_i),
+      col_sep: col_sep,
+      force_simple_split: force_simple_split,
+      strip_chars_from_headers: strip_chars_from_headers }
+  end
+
   def force_simple_split
     self.class.default_options(csv_type)['force_simple_split']
   end
@@ -124,9 +131,26 @@ class Upload < ApplicationRecord
   end
 
   def csv_file_headers
-    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1', col_sep: col_sep)
+    csv = File.open(upload_file.tempfile, encoding: 'ISO-8859-1')
     skip_lines.to_i.times { csv.readline }
 
-    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
+    first_line = csv.readline
+    set_delimiter(first_line)
+
+    first_line.split(col_sep).select(&:present?).map { |header| header.downcase.strip }
+  end
+
+  def set_delimiter(first_line)
+    delimiter_counts = {}
+    Settings.csv_upload.column_separators.each do |delimiter|
+      delimiter_counts[delimiter] = first_line.count(delimiter)
+    end
+    delimiter_counts = delimiter_counts.sort {|a,b| b[1]<=>a[1]}
+
+    valid_delimiters = Settings.csv_upload.column_separators.map{|cs| "\"#{cs}\""}.join(' and ')
+    error_message = "Unable to determine column separator. Valid column separators are: #{valid_delimiters}."
+    raise(StandardError, error_message) if delimiter_counts[0][1] == 0
+
+    self.col_sep = delimiter_counts[0][0]
   end
 end
