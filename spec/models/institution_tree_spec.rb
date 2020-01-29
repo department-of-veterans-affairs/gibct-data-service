@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe InstitutionTree, type: :model do
-  let(:version) { Version.current_preview }
+  let(:version) { create(:version, :production) }
 
   describe 'institution tree' do
     before do

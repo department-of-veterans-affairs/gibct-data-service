@@ -45,7 +45,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-
+      
       relation = InstitutionProgram.joins(:institution)
                                    .search(@query[:name])
                                    .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')

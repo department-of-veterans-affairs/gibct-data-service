@@ -4,7 +4,6 @@ class CreateSchoolCertifyingOfficialsArchives < ActiveRecord::Migration[5.2]
         execute "create table school_certifying_officials_archives (like school_certifying_officials
           including defaults
           including constraints
-          including indexes
       );"
       end
     end

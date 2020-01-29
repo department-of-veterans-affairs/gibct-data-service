@@ -32,8 +32,8 @@ class GibctSiteMapper
     SitemapGenerator::Sitemap.create do
       add '/search', priority: 0.9, changefreq: 'monthly'
 
-      Institution.version_id(version).find_each(batch_size: Settings.active_record.batch_size.find_each) do |i|
-        add "/profile/#{i.facility_code}", priority: 0.8, changefreq: 'weekly'
+      Institution.version_id(version).find_each(batch_size: Settings.active_record.batch_size.find_each) do |institution|
+        add "/profile/#{institution.facility_code}", priority: 0.8, changefreq: 'weekly'
       end
     end
   end
