@@ -9,17 +9,15 @@
     <div class="col-xs-8">
       <%= render 'form' %>
     </div>
-    <% if @requirements&.any? %>
-      <div class="col-xs-4">
-        <div class="alert alert-info" role="alert">
-          <h4 class="alert-heading">CSV Data Requirements</h4><br />
-          <ul>
-            <% @requirements.each do |validations| %>
-              <li><%= validations %></li>
-            <% end %>
-          </ul>
-        </div>
+    <div class="col-xs-4">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">CSV Data Requirements</h4><br />
+        <ul>
+          <% @requirements.each do |validations| %>
+            <li><%= validations %></li>
+          <% end %>
+        </ul>
       </div>
-    <% end %>
+    </div>
   </div>
 </div>
