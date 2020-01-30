@@ -74,7 +74,9 @@ class DashboardsController < ApplicationController
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
-    if class_name.present?
+    if Upload.fetching_for?(params[:csv_type])
+      flash.alert = "#{params[:csv_type]} is already being fetched by another user"
+    elsif class_name.present?
       csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
       begin
         api_upload = Upload.new(csv_type: class_name, user: current_user, csv: csv,

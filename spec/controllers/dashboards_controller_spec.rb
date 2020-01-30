@@ -202,5 +202,12 @@ RSpec.describe DashboardsController, type: :controller do
       get(:api_fetch, params: { csv_type: Scorecard.name })
       expect(flash.alert).to include(message)
     end
+
+    it 'displays already fetching alert' do
+      message = "#{Scorecard.name} is already being fetched by another user"
+      create :upload, :scorecard_in_progress
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.alert).to include(message)
+    end
   end
 end
