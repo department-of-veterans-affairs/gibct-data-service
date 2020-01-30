@@ -116,6 +116,10 @@ class Upload < ApplicationRecord
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
 
+  def self.valid_col_seps
+    Settings.csv_upload.column_separators.map{|cs| "\"#{cs}\""}.join(' and ')
+  end
+
   private
 
   def initialize_warnings
@@ -135,22 +139,20 @@ class Upload < ApplicationRecord
     skip_lines.to_i.times { csv.readline }
 
     first_line = csv.readline
-    set_delimiter(first_line)
+    set_col_sep(first_line)
 
     first_line.split(col_sep).select(&:present?).map { |header| header.downcase.strip }
   end
 
-  def set_delimiter(first_line)
-    delimiter_counts = {}
-    Settings.csv_upload.column_separators.each do |delimiter|
-      delimiter_counts[delimiter] = first_line.count(delimiter)
+  def set_col_sep(first_line)
+    Settings.csv_upload.column_separators.each do |column_separator|
+      if first_line.include?(column_separator)
+        self.col_sep = column_separator
+        return
+      end
     end
-    delimiter_counts = delimiter_counts.sort {|a,b| b[1]<=>a[1]}
 
-    valid_delimiters = Settings.csv_upload.column_separators.map{|cs| "\"#{cs}\""}.join(' and ')
-    error_message = "Unable to determine column separator. Valid column separators are: #{valid_delimiters}."
-    raise(StandardError, error_message) if delimiter_counts[0][1] == 0
-
-    self.col_sep = delimiter_counts[0][0]
+    error_message = "Unable to determine column separator. Valid column separators are: #{Upload.valid_col_seps}."
+    raise(StandardError, error_message)
   end
 end
