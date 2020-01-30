@@ -2,13 +2,16 @@
 
 require 'rails_helper'
 
-RSpec.describe InstitutionProgramSerializer, type: :serializer, focus: true do
+RSpec.describe InstitutionProgramSerializer, type: :serializer do
   subject { serialize(institution_program, serializer_class: described_class) }
   
   let(:institution_program) { create :institution_program, :in_nyc }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 
+  before do
+    create(:version, :production)
+  end
 
   it 'includes program_type' do
     expect(attributes['program_type']).to eq(institution_program.program_type)
