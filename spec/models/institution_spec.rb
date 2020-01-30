@@ -158,7 +158,6 @@ RSpec.describe Institution, type: :model do
         create(:version, :production)
         j = create_list :institution, 2, version_id: Version.current_production.id
         expect(described_class.version_id(j.first.version_id).where('v.number = ?', Version.current_production.number)).to match_array(j.to_a)
-        
       end
     end
 

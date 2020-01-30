@@ -950,14 +950,13 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       describe 'when generating school certifying official table' do
-      it 'properly generates school certifying official with instituion_id' do	
-        create :school_certifying_official, facility_code: '1ZZZZZZZ'
-        expect(SchoolCertifyingOfficial.first.institution_id).to be_nil
-        described_class.run(user)
-        expect(SchoolCertifyingOfficial.first.institution_id).to be_truthy
+        it 'properly generates school certifying official with instituion_id' do
+          create :school_certifying_official, facility_code: '1ZZZZZZZ'
+          expect(SchoolCertifyingOfficial.first.institution_id).to be_nil
+          described_class.run(user)
+          expect(SchoolCertifyingOfficial.first.institution_id).to be_truthy
+        end
       end
-
-    end
     end
   end
 end

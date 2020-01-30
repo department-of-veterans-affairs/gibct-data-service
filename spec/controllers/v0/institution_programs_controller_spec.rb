@@ -84,7 +84,8 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search returns results matching program name' do
-      create(:institution_program, description: 'TEST')
+      create(:institution, version_id: Version.last.id)
+      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
       get(:index, params: { name: 'TEST' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
@@ -92,7 +93,8 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search returns results matching program type name' do
-      create(:institution_program, program_type: 'FLGT')
+      create(:institution, version_id: Version.last.id)
+      create(:institution_program, program_type: 'FLGT', institution_id: Institution.last.id)
       get(:index, params: { type: 'FLGT' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
