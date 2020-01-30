@@ -40,7 +40,7 @@ class Upload < ApplicationRecord
   end
 
   def required_headers?
-    upload_file && csv_type && skip_lines && col_sep
+    upload_file && csv_type && skip_lines
   end
 
   def check_for_headers
