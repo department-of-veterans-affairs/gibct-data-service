@@ -99,9 +99,9 @@ class UploadsController < ApplicationController
     # this a call to custom validators that are not listed inside the class
     custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
     [Upload.valid_col_seps]
-        .push(*validation_messages)
-        .push(*custom_batch_validator_messages)
-        .compact
+      .push(*validation_messages)
+      .push(*custom_batch_validator_messages)
+      .compact
   end
 
   def validation_messages
