@@ -89,4 +89,8 @@ class InstitutionProgram < ApplicationRecord
   }
 
   scope :version, ->(n) { where(version: n) }
+
+  scope :filter_count, lambda { |field|
+    group(field).where.not(field => nil).order(field).count
+  }
 end

@@ -23,10 +23,10 @@ module V0
     def index
       @meta = {
         version: @version,
-        count: search_results.load.size,
+        count: search_results.count,
         facets: facets
       }
-      render json: search_results.page(params[:page]), meta: @meta
+      render json: search_results.order('institutions.preferred_provider DESC NULLS LAST, institutions.institution').page(params[:page]), meta: @meta
     end
 
     private
@@ -49,7 +49,7 @@ module V0
       relation = InstitutionProgram.version(@version[:number])
                                    .joins(:institution)
                                    .search(@query[:name])
-                                   .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
+
       [
         %i[program_type type],
         %i[institutions.institution provider],
@@ -65,10 +65,10 @@ module V0
 
     def facets
       result = {
-        type: count_field(search_results, :program_type),
-        state: count_field(search_results, :state),
-        provider: embed(count_field(search_results, :institution_name)),
-        country: embed(count_field(search_results, :country))
+        type: search_results.filter_count(:program_type),
+        state: search_results.filter_count('institutions.state'),
+        provider: embed(search_results.filter_count('institutions.institution')),
+        country: embed(search_results.filter_count('institutions.country'))
       }
 
       add_active_search_facets(result)

@@ -224,10 +224,12 @@ class Institution < ApplicationRecord
   scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?
 
+    upper_search_term = search_term.upcase
+
     clause = [
       'facility_code = (:facility_code)',
       'lower(institution) LIKE (:search_term)',
-      'lower(city) LIKE (:search_term)'
+      'city LIKE (:upper_search_term)'
     ]
 
     if include_address
@@ -238,7 +240,8 @@ class Institution < ApplicationRecord
 
     where(
       sanitize_sql_for_conditions([clause.join(' OR '),
-                                   facility_code: search_term.upcase,
+                                   facility_code: upper_search_term,
+                                   upper_search_term: upper_search_term,
                                    search_term: "%#{search_term}%"])
     )
   }

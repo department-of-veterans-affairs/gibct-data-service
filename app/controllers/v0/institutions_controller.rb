@@ -24,7 +24,7 @@ module V0
     def index
       @meta = {
         version: @version,
-        count: search_results.load.size,
+        count: search_results.count,
         facets: facets
       }
 
@@ -56,7 +56,7 @@ module V0
 
       @meta = {
         version: @version,
-        count: children.size
+        count: children.count
       }
       @links = { self: self_link }
       render json: children,
@@ -114,17 +114,17 @@ module V0
     # rubocop:enable Metrics/MethodLength
 
     # TODO: If filter counts are desired in the future, change boolean facets
-    # to use count_field(search_results, :field_name) instead of default value
+    # to use search_results.filter_count(param) instead of default value
     def facets
-      institution_types = count_field(search_results, :institution_type_name)
+      institution_types = search_results.filter_count(:institution_type_name)
       result = {
         category: {
           school: institution_types.except(Institution::EMPLOYER).inject(0) { |count, (_t, n)| count + n },
           employer: institution_types[Institution::EMPLOYER].to_i
         },
         type: institution_types,
-        state: count_field(search_results, :state),
-        country: embed(count_field(search_results, :country)),
+        state: search_results.filter_count(:state),
+        country: embed(search_results.filter_count(:country)),
         student_vet_group: boolean_facet,
         yellow_ribbon_scholarship: boolean_facet,
         principles_of_excellence: boolean_facet,
