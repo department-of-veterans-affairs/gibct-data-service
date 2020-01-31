@@ -38,6 +38,7 @@ class UploadsController < ApplicationController
       @upload = Upload.from_csv_type(merged_params[:csv_type])
 
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+      @requirements = requirements_messages
       render :new
     end
   end
