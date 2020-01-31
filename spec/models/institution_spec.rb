@@ -159,6 +159,12 @@ RSpec.describe Institution, type: :model do
         j = create_list :institution, 2, version_id: Version.current_production.id
         expect(described_class.version_id(j.first.version_id).where('v.number = ?', Version.current_production.number)).to match_array(j.to_a)
       end
+
+      it 'returns blank if a nil or non-existent version_id is supplied' do
+        create :institution	
+        expect(described_class.version_id(-1)).to eq([])	        
+        expect(described_class.version_id(nil)).to eq([])	        
+      end
     end
 
     context 'with filter scope' do
