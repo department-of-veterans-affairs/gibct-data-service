@@ -26,7 +26,9 @@ module V0
         count: search_results.count,
         facets: facets
       }
-      render json: search_results.order('institutions.preferred_provider DESC NULLS LAST, institutions.institution').page(params[:page]), meta: @meta
+      render json: search_results
+        .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
+        .page(params[:page]), meta: @meta
     end
 
     private
