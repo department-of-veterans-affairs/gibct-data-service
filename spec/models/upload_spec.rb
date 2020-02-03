@@ -175,8 +175,8 @@ RSpec.describe Upload, type: :model do
     it 'raises error when neither comma or pipe are found' do
       first_line = 'a/b\c'
       upload = create :upload
-      error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
-      expect{upload.send(:set_col_sep, first_line)}.to raise_error(StandardError, error_message)
+      error_message = "Unable to determine column separator. #{described_class.valid_col_seps}"
+      expect { upload.send(:set_col_sep, first_line) }.to raise_error(StandardError, error_message)
     end
   end
 end

@@ -209,12 +209,9 @@ RSpec.describe UploadsController, type: :controller do
     context 'with a csv file with invalid delimiters' do
       it 'formats a notice message in the flash' do
         file = build(:upload, csv_name: 'weam_caret_col_sep.csv').upload_file
-
         expect(
-            post(:create,
-                 params: {
-                     upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
-                 })
+          post(:create,
+               params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
         ).to render_template(:new)
         error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
         expect(flash.alert).to include(error_message)
