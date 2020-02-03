@@ -226,7 +226,7 @@ class Institution < ApplicationRecord
 
     clause = [
       'facility_code = (:facility_code)',
-      'lower(institution) LIKE (:search_term)',
+      'institution LIKE (:search_term)',
       'city LIKE (:upper_search_term)'
     ]
 
@@ -240,7 +240,7 @@ class Institution < ApplicationRecord
       sanitize_sql_for_conditions([clause.join(' OR '),
                                    facility_code: search_term.upcase,
                                    upper_search_term: "%#{search_term.upcase}%",
-                                   search_term: "%#{search_term}%"])
+                                   search_term: "%#{search_term.upcase}%"])
     )
   }
 
