@@ -161,9 +161,9 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'returns blank if a nil or non-existent version_id is supplied' do
-        create :institution	
-        expect(described_class.version_id(-1)).to eq([])	        
-        expect(described_class.version_id(nil)).to eq([])	        
+        create :institution
+        expect(described_class.version_id(-1)).to eq([])
+        expect(described_class.version_id(nil)).to eq([])
       end
     end
 

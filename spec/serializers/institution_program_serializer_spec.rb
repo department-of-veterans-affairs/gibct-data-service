@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionProgramSerializer, type: :serializer do
   subject { serialize(institution_program, serializer_class: described_class) }
-  
+
   let(:institution_program) { create :institution_program, :in_nyc }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }

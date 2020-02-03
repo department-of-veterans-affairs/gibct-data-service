@@ -30,9 +30,7 @@ RSpec.describe InstitutionProgram, type: :model do
 
   describe 'class methods' do
     context 'versioning' do
-      
       it 'retrieves institutions by a specific version number' do
-
         create :version, :production
         create :institution, :physical_address, version_id: Version.last.id
         i = create_list :institution_program, 2, institution: Institution.last
@@ -49,8 +47,7 @@ RSpec.describe InstitutionProgram, type: :model do
                               .where('v.number = 2')).to match_array(j.to_a)
       end
 
-      it 'returns blank if a non-existent or null version_id is supplied'do
-    
+      it 'returns blank if a non-existent or null version_id is supplied' do
         create :version, :production
         create :institution, :physical_address, version_id: Version.last.id
         create :institution_program, institution: Institution.last
