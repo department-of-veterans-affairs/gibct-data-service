@@ -382,6 +382,9 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1_trgm", using: :gin
+    t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2_trgm", using: :gin
+    t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3_trgm", using: :gin
     t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
     t.index ["address_1"], name: "index_institutions_on_address_1"
     t.index ["address_2"], name: "index_institutions_on_address_2"
