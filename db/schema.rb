@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_30_135649) do
+ActiveRecord::Schema.define(version: 2020_02_03_122400) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "accreditation_actions", id: :serial, force: :cascade do |t|
@@ -386,10 +387,13 @@ ActiveRecord::Schema.define(version: 2020_01_30_135649) do
     t.index ["address_2"], name: "index_institutions_on_address_2"
     t.index ["address_3"], name: "index_institutions_on_address_3"
     t.index ["city"], name: "index_institutions_on_city"
+    t.index ["city"], name: "index_institutions_on_city_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
     t.index ["institution"], name: "index_institutions_on_institution"
+    t.index ["institution"], name: "index_institutions_on_institution_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
