@@ -65,6 +65,14 @@ class Version < ApplicationRecord
     "#{ENV['GIBCT_URL']}#{version_info}"
   end
 
+  def as_json(options = nil)
+    {
+      number: number,
+      created_at: created_at,
+      preview: preview?
+    }
+  end
+
   # private instance methods
   private
 
