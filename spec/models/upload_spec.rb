@@ -156,4 +156,27 @@ RSpec.describe Upload, type: :model do
       expect(upload.col_sep).to eq(',')
     end
   end
+
+  describe 'set_col_sep' do
+    it 'sets col_sep to comma when csv first line' do
+      first_line = 'a,b,c'
+      upload = create :upload
+      upload.send(:set_col_sep, first_line)
+      expect(upload.col_sep).to eq(',')
+    end
+
+    it 'sets col_sep to pipe when pipe delimited first line and contains a comma in a column' do
+      first_line = 'a|,b|c'
+      upload = create :upload
+      upload.send(:set_col_sep, first_line)
+      expect(upload.col_sep).to eq('|')
+    end
+
+    it 'raises error when neither comma or pipe are found' do
+      first_line = 'a/b\c'
+      upload = create :upload
+      error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
+      expect{upload.send(:set_col_sep, first_line)}.to raise_error(StandardError, error_message)
+    end
+  end
 end
