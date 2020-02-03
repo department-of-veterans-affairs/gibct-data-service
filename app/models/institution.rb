@@ -226,13 +226,13 @@ class Institution < ApplicationRecord
 
     clause = [
       'facility_code = (:facility_code)',
-      'institution LIKE (:search_term)',
+      'institution LIKE (:upper_search_term)',
       'city LIKE (:upper_search_term)'
     ]
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE (:search_term)"
+        clause << "lower(address_#{i + 1}) LIKE (:lower_search_term)"
       end
     end
 
@@ -240,7 +240,7 @@ class Institution < ApplicationRecord
       sanitize_sql_for_conditions([clause.join(' OR '),
                                    facility_code: search_term.upcase,
                                    upper_search_term: "%#{search_term.upcase}%",
-                                   search_term: "%#{search_term.upcase}%"])
+                                   lower_search_term: "%#{search_term.downcase}%"])
     )
   }
 

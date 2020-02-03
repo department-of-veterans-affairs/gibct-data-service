@@ -68,9 +68,9 @@ module V0
     def facets
       result = {
         type: search_results.filter_count(:program_type),
-        state: search_results.filter_count('institutions.state'),
+        state: search_results.filter_count('institutions.physical_state'),
         provider: embed(search_results.filter_count('institutions.institution')),
-        country: embed(search_results.filter_count('institutions.country'))
+        country: embed(search_results.filter_count('institutions.physical_country'))
       }
 
       add_active_search_facets(result)
