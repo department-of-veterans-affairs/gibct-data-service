@@ -87,6 +87,4 @@ class InstitutionProgram < ApplicationRecord
       where(field => value)
     end
   }
-
-  scope :version, ->(n) { where(version: n) }
 end

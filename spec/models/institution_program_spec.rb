@@ -28,23 +28,39 @@ RSpec.describe InstitutionProgram, type: :model do
     end
   end
 
-  describe 'class methods and scopes' do
-    context 'version' do
-      let(:institution) { create :institution, :physical_address }
-
+  describe 'class methods' do
+    context 'versioning' do
+      
       it 'retrieves institutions by a specific version number' do
-        i = create_list :institution_program, 2, version: 1, institution: institution
-        j = create_list :institution_program, 2, version: 2, institution: institution
 
-        expect(described_class.version(i.first.version)).to match_array(i.to_a)
-        expect(described_class.version(j.first.version)).to match_array(j.to_a)
+        create :version, :production
+        create :institution, :physical_address, version_id: Version.last.id
+        i = create_list :institution_program, 2, institution: Institution.last
+
+        create :version, :production
+        create :institution, :physical_address, version_id: Version.last.id
+        j = create_list :institution_program, 2, institution: Institution.last
+
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = 1')).to match_array(i.to_a)
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = 2')).to match_array(j.to_a)
       end
 
-      it 'returns blank if a nil or non-existent version number is supplied' do
-        create :institution_program, institution: institution
+      it 'returns blank if a non-existent or null version_id is supplied'do
+    
+        create :version, :production
+        create :institution, :physical_address, version_id: Version.last.id
+        create :institution_program, institution: Institution.last
 
-        expect(described_class.version(-1)).to eq([])
-        expect(described_class.version(nil)).to eq([])
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = -1')).to eq([])
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = ?', nil)).to eq([])
       end
     end
 

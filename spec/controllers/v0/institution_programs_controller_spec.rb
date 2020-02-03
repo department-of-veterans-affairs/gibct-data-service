@@ -35,16 +35,21 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
   end
 
   context 'when autocomplete' do
-    it 'returns collection of matches' do
+
+    before do
       create(:version, :production)
-      create_list(:institution_program, 2, :start_like_harv)
+      create :institution, :physical_address, version_id: Version.last.id
+    end
+
+    it 'returns collection of matches' do
+      create_list(:institution_program, 2, :start_like_harv, institution: Institution.last)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
     end
 
     it 'limits results to 6' do
-      create(:version, :production)
-      create_list(:institution_program, 7, :start_like_harv)
+      
+      create_list(:institution_program, 7, :start_like_harv, institution: Institution.last)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
       expect(response.content_type).to eq('application/json')
@@ -52,7 +57,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'returns empty collection on missing term parameter' do
-      create(:version, :production)
+      
       create(:institution_program, :start_like_harv)
       get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
