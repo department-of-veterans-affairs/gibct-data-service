@@ -50,6 +50,7 @@ module V0
 
       relation = InstitutionProgram.version(@version[:number])
                                    .includes(:institution)
+                                   .references(:institution)
                                    .search(@query[:name])
 
       [
