@@ -133,7 +133,7 @@ RSpec.describe UploadsController, type: :controller do
         expect do
           post :create,
                params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ','  }
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam'  }
                }
         end.to change(Weam, :count).by(2)
       end
@@ -142,7 +142,7 @@ RSpec.describe UploadsController, type: :controller do
         expect(
           post(:create,
                params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ','  }
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam'  }
                })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
@@ -151,7 +151,7 @@ RSpec.describe UploadsController, type: :controller do
         file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
         post(:create,
              params: {
-               upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' }
+               upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
              })
 
         expect(flash[:alert]['The following rows should be checked: ']).to be_present
@@ -165,7 +165,7 @@ RSpec.describe UploadsController, type: :controller do
             post(:create,
                  params: {
                    upload: {
-                     upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Blah', col_sep: ','
+                     upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Blah'
                    }
                  })
           ).to render_template(:new)
@@ -177,7 +177,7 @@ RSpec.describe UploadsController, type: :controller do
           expect(
             post(:create,
                  params: {
-                   upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' }
+                   upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
                  })
           ).to render_template(:new)
         end
@@ -191,7 +191,7 @@ RSpec.describe UploadsController, type: :controller do
         expect(
           post(:create,
                params: {
-                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' }
+                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
                })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
@@ -199,10 +199,22 @@ RSpec.describe UploadsController, type: :controller do
       it 'formats a notice message in the flash' do
         file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
         post(:create,
-             params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', col_sep: ',' } })
+             params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
 
         message = flash[:alert]['The following headers should be checked: '].try(:first)
         expect(message).to match(/Independent study is a missing header/)
+      end
+    end
+
+    context 'with a csv file with invalid delimiters' do
+      it 'formats a notice message in the flash' do
+        file = build(:upload, csv_name: 'weam_caret_col_sep.csv').upload_file
+        expect(
+          post(:create,
+               params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+        ).to render_template(:new)
+        error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
+        expect(flash.alert).to include(error_message)
       end
     end
 
@@ -212,8 +224,7 @@ RSpec.describe UploadsController, type: :controller do
         expect do
           post(:create,
                params: {
-                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'SchoolCertifyingOfficial',
-                           col_sep: ',' }
+                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'SchoolCertifyingOfficial' }
                })
         end.to change(SchoolCertifyingOfficial, :count).by(2)
       end
