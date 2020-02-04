@@ -156,6 +156,7 @@ class Institution < ApplicationRecord
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
   has_many :school_certifying_officials, -> { order 'priority, last_name' },
            primary_key: :facility_code, foreign_key: 'facility_code', inverse_of: :institution
+  belongs_to :version
 
   self.per_page = 10
 

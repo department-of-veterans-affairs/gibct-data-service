@@ -9,9 +9,7 @@ module V0
       @data = []
       if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
-        @data = InstitutionProgram.joins('INNER JOIN versions v ON v.id = institutions.version_id')
-                                  .where('v.number = ?', @version.number)
-                                  .autocomplete(@search_term)
+        @data = InstitutionProgram.autocomplete(@search_term, @version)
       end
       @meta = {
         version: @version,
