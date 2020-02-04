@@ -49,7 +49,7 @@ module V0
       @query ||= normalized_query_params
 
       relation = InstitutionProgram.version(@version[:number])
-                                   .joins(:institution)
+                                   .includes(:institution)
                                    .search(@query[:name])
 
       [
