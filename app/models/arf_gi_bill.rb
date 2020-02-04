@@ -16,6 +16,5 @@ class ArfGiBill < ApplicationRecord
   validates :facility_code, presence: true
   validates :gibill, numericality: true, allow_blank: true
   belongs_to(:weam, foreign_key: 'facility_code', primary_key: :facility_code,
-             inverse_of: :arf_gi_bill)
-
+                    inverse_of: :arf_gi_bill)
 end

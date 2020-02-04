@@ -77,8 +77,8 @@ class Weam < ApplicationRecord
   validates :facility_code, :institution, :country, presence: true
   validate :institution_type
   validates :bah, numericality: true, allow_blank: true
-  has_one(:arf_gi_bill,foreign_key: 'facility_code', primary_key: :facility_code,
-          inverse_of: :weam)
+  has_one(:arf_gi_bill, foreign_key: 'facility_code', primary_key: :facility_code,
+                        inverse_of: :weam, dependent: :delete)
 
   after_initialize :derive_dependent_columns
 
