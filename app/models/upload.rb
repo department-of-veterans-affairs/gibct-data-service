@@ -40,7 +40,7 @@ class Upload < ApplicationRecord
   end
 
   def required_headers?
-    upload_file && csv_type && skip_lines && col_sep
+    upload_file && csv_type && skip_lines
   end
 
   def check_for_headers
@@ -52,6 +52,13 @@ class Upload < ApplicationRecord
     headers = diffed_headers
     headers[:missing_headers].each { |header| missing_headers.add(header.to_sym, 'is a missing header') }
     headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
+  end
+
+  def options
+    { skip_lines: skip_lines.try(:to_i),
+      col_sep: col_sep,
+      force_simple_split: force_simple_split,
+      strip_chars_from_headers: strip_chars_from_headers }
   end
 
   def force_simple_split
@@ -109,6 +116,11 @@ class Upload < ApplicationRecord
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
 
+  def self.valid_col_seps
+    valid_col_seps = Settings.csv_upload.column_separators.map { |cs| "\"#{cs}\"" }.join(' and ')
+    "Valid column separators are: #{valid_col_seps}."
+  end
+
   private
 
   def initialize_warnings
@@ -124,9 +136,20 @@ class Upload < ApplicationRecord
   end
 
   def csv_file_headers
-    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1', col_sep: col_sep)
+    csv = File.open(upload_file.tempfile, encoding: 'ISO-8859-1')
     skip_lines.to_i.times { csv.readline }
 
-    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
+    first_line = csv.readline
+    set_col_sep(first_line)
+
+    first_line.split(col_sep).select(&:present?).map { |header| header.downcase.strip }
+  end
+
+  def set_col_sep(first_line)
+    self.col_sep = Settings.csv_upload.column_separators
+                           .find { |column_separator| first_line.include?(column_separator) }
+
+    error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
+    raise(StandardError, error_message) if col_sep.blank?
   end
 end
