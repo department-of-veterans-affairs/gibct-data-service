@@ -8,8 +8,8 @@ archiver:
 
 csv_upload:
   column_separators:
-    - ","
     - "|"
+    - ","
 
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"
