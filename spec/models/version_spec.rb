@@ -15,8 +15,13 @@ RSpec.describe Version, type: :model do
     end
 
     it 'has gibct_link based on configuration' do
-      version.save
       expect(version.gibct_link).to eq(ENV['GIBCT_URL'])
+    end
+
+    describe '#as_json' do
+      it 'returns attributes appropriate for API responses' do
+        expect(version.as_json.keys).to eq(%i[number created_at preview])
+      end
     end
   end
 

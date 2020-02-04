@@ -50,7 +50,7 @@ module V0
 
     # GET /v0/institutions/20005123/children
     def children
-      children = Institution.version_id(@version[:id])
+      children = Institution.version_id(@version.id)
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
                             .page(params[:page])
@@ -147,7 +147,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.version_id(@version[:id]).no_extentions
+      Institution.version_id(@version.id).no_extentions
                  .where(approved: true)
                  .where('v.number = ?', @version[:number])
     end

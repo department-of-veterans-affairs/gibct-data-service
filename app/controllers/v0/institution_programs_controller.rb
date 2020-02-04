@@ -10,7 +10,7 @@ module V0
       if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
         @data = InstitutionProgram.joins('INNER JOIN versions v ON v.id = institutions.version_id')
-                                  .where('v.number = ?', @version[:number])
+                                  .where('v.number = ?', @version.number)
                                   .autocomplete(@search_term)
       end
       @meta = {
@@ -50,7 +50,7 @@ module V0
 
       relation = InstitutionProgram.joins(:institution)
                                    .joins('INNER JOIN versions v ON v.id = institutions.version_id')
-                                   .where('v.number = ?', @version[:number])
+                                   .where('v.number = ?', @version.number)
                                    .search(@query[:name])
                                    .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
 
