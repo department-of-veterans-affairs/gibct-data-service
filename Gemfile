@@ -23,6 +23,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+gem 'newrelic_rpm'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 gem 'sentry-raven', '~> 2.9.0'
