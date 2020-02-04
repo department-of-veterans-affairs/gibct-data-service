@@ -12,7 +12,7 @@ RSpec.describe CrosswalksController, type: :controller do
     login_user
 
     before do
-      create_list :crosswalk_issue, 3, :partial_match_type
+      create_list :crosswalk_issue, 3, :partial_match_type, :with_weam_match
       create_list :crosswalk_issue, 2, :ipeds_orphan_type
       get(:partials)
     end
@@ -23,6 +23,11 @@ RSpec.describe CrosswalksController, type: :controller do
 
     it 'returns http success' do
       expect(response).to have_http_status(:success)
+    end
+
+    it 'orders by arf_gi_bill.gibill' do
+      issues = assigns(:issues)
+      expect(issues.first.weam.arf_gi_bill.gibill).to be > issues.last.weam.arf_gi_bill.gibill
     end
   end
 
