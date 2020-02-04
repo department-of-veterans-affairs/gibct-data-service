@@ -160,7 +160,7 @@ RSpec.describe Upload, type: :model do
   describe 'set_col_sep' do
     it 'sets col_sep to comma when csv first line' do
       first_line = 'a,b,c'
-      upload = create :upload
+      upload = build :upload
       upload.send(:set_col_sep, first_line)
       expect(upload.col_sep).to eq(',')
     end
