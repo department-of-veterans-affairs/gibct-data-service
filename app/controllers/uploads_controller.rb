@@ -21,8 +21,8 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
 
     begin
-      failed = load_csv.failed_instances
       @upload.check_for_headers
+      failed = load_csv.failed_instances
 
       validation_warnings = failed.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                   .map(&:display_errors_with_row)
@@ -38,6 +38,7 @@ class UploadsController < ApplicationController
       @upload = Upload.from_csv_type(merged_params[:csv_type])
 
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+      @requirements = requirements_messages if @upload.csv_type_check?
       render :new
     end
   end
@@ -72,14 +73,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :col_sep, :upload_file, :comment)
-  end
-
-  def options
-    { skip_lines: @upload.skip_lines.try(:to_i),
-      col_sep: @upload.col_sep,
-      force_simple_split: @upload.force_simple_split,
-      strip_chars_from_headers: @upload.strip_chars_from_headers }
+    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
   end
 
   def call_load
@@ -87,12 +81,12 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    data = klass.load(file, options)
+    data = klass.load(file, @upload.options)
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\" or \"Column separator\"."
+    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
     raise(StandardError, error_msg) unless @upload.ok?
 
     data
@@ -103,12 +97,12 @@ class UploadsController < ApplicationController
   end
 
   def requirements_messages
-    messages = validation_messages
-    # this a call to custom validators that are not listed inside the class
+    # this is a call to custom validators that are not listed inside the class
     custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    messages.push(*custom_batch_validator_messages)
-
-    messages.compact
+    [Upload.valid_col_seps]
+      .push(*validation_messages)
+      .push(*custom_batch_validator_messages)
+      .compact
   end
 
   def validation_messages
