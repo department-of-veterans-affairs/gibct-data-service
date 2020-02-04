@@ -3,6 +3,7 @@
 require 'securerandom'
 
 class Version < ApplicationRecord
+  has_many :institutions, dependent: :nullify
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 
