@@ -18,7 +18,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
     end
 
     it 'populates an array of crosswalk issues' do
-      expect(assigns(:issues).length).to eq(CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count)
+      expect(assigns(:issues).all.map { |a| a[:issue_type] }).to all( eq(CrosswalkIssue::PARTIAL_MATCH_TYPE))
     end
 
     it 'returns http success' do
@@ -156,7 +156,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
     end
 
     it 'populates an array of crosswalk issues' do
-      expect(assigns(:issues).length).to eq(CrosswalkIssue.by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE).count)
+      expect(assigns(:issues).all.map { |a| a[:issue_type] }).to all( eq(CrosswalkIssue::IPEDS_ORPHAN_TYPE))
     end
 
     it 'returns http success' do
