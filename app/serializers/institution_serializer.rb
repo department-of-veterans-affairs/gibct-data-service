@@ -57,4 +57,10 @@ class InstitutionSerializer < ActiveModel::Serializer
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:self) { v0_institution_url(object.facility_code) }
+
+  def yellow_ribbon_programs
+    object.yellow_ribbon_programs.map do |yrp|
+      YellowRibbonProgramSerializer.new(yrp)
+    end
+  end
 end
