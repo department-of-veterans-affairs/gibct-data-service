@@ -181,26 +181,20 @@ class Weam < ApplicationRecord
     flags_for_approved?
   end
 
+  def address_values
+    [self.address_1, self.address_2, self.address_3, self.city, self.state, self.zip].compact
+  end
+
+  def physical_address_values
+    [self.physical_address_1, self.physical_address_2, self.physical_address_3, self.city, self.state, self.zip].compact
+  end
+
   def full_address
-    address = self.address_1
-    if self.address_2
-      address = address + self.address_2
-    end
-    if self.address_3
-      address = address  + self.address_3
-    end
-    address + ", " + self.city + ", " + self.state + ", " + self.zip
+    address_values.join(", ")
   end
 
   def full_physical_address
-    address = self.physical_address_1
-    if self.address_2
-      address = address  + ", " + self.physical_address_2
-    end
-    if self.address_3
-      address = address + ", " + self.physical_address_3
-    end
-    address + ", " + self.physical_city + ", " + self.physical_state + ", " + self.physical_zip
+    physical_address_values.join(", ")
   end
 
   private

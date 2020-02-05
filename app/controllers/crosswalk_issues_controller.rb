@@ -45,15 +45,9 @@ class CrosswalkIssuesController < ApplicationController
 
   def find_matches
     @issue = CrosswalkIssue.find(params[:id])
-    address_val = @issue.weam.city + @issue.weam.state + @issue.weam.zip
-    #   + " " + @issue.weam.address_2
-    #   + " " + @issue.weam.address_3
-    #   + " " + @issue.weam.physical_address_1
-    # + " " + @issue.weam.physical_address_2
-    # + " " + @issue.weam.physical_address_3
-    institution_name_results = IpedsHd.where("institution ILIKE ?", "%#{@issue.weam.institution}%")
-    address_results = IpedsHd.where("(city||state||zip) ILIKE ?", "%#{address_val}%")
-    @ipeds = institution_name_results + address_results
+    string_to_match = @issue.weam.institution + (@issue.weam.address_values + @issue.weam.physical_address_values).uniq.join
+    results = IpedsHd.where("(institution||city||state||zip||addr) % ?", "%#{string_to_match}%")
+    @ipeds = results
   end
 
   def match_iped
@@ -82,6 +76,23 @@ class CrosswalkIssuesController < ApplicationController
     crosswalk_issue.destroy
 
     redirect_to action: :partials
+  end
+
+  private
+
+  def pattern_to_match
+    institution =  @issue.weam.institution ?  @issue.weam.institution : ""
+    city = @issue.weam.city ? @issue.weam.city : ""
+    state = @issue.weam.state ? @issue.weam.state : ""
+    zip = @issue.weam.zip ? @issue.weam.zip : ""
+    address_1 = @issue.weam.address_1 ? @issue.weam.address_1 : ""
+    address_2 = @issue.weam.address_2 ? @issue.weam.address_2 : ""
+    address_3 = @issue.weam.address_3 ? @issue.weam.address_3 : ""
+    physical_address_1 = @issue.weam.physical_address_1 ? @issue.weam.physical_address_1 : ""
+    physical_address_2 = @issue.weam.physical_address_2 ? @issue.weam.physical_address_2 : ""
+    physical_address_3 = @issue.weam.physical_address_3 ? @issue.weam.physical_address_3 : ""
+
+    institution + city + state + zip + address_1 + address_2 + address_3 + physical_address_1 + physical_address_2 + physical_address_3
   end
 
 end
