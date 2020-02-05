@@ -215,7 +215,7 @@ class Institution < ApplicationRecord
   #
   def self.autocomplete(search_term, limit = 6)
     select('id, facility_code as value, institution as label')
-      .where('lower(institution) LIKE (?)', "#{search_term}%")
+      .where('institution LIKE (?)', "#{search_term.upcase}%")
       .limit(limit)
   end
 
