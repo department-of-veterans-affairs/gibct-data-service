@@ -46,9 +46,8 @@ module V0
     def search_results
       @query ||= normalized_query_params
 
-      relation = InstitutionProgram.joins(:institution)
-                                   .joins('INNER JOIN versions v ON v.id = institutions.version_id')
-                                   .where('v.number = ?', @version.number)
+      relation = InstitutionProgram.joins(institution: :version)
+                                   .where(institutions: { version: @version })
                                    .search(@query[:name])
                                    .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
 
