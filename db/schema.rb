@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_24_135649) do
+ActiveRecord::Schema.define(version: 2020_02_03_122400) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "accreditation_actions", id: :serial, force: :cascade do |t|
@@ -260,7 +261,7 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
   end
 
   create_table "institutions", id: :serial, force: :cascade do |t|
-    t.integer "version", null: false
+    t.integer "version"
     t.string "institution_type_name"
     t.string "facility_code"
     t.string "institution"
@@ -381,15 +382,15 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
-    t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
-    t.index ["address_1"], name: "index_institutions_on_address_1"
-    t.index ["address_2"], name: "index_institutions_on_address_2"
-    t.index ["address_3"], name: "index_institutions_on_address_3"
-    t.index ["city"], name: "index_institutions_on_city"
+    t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
+    t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
+    t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
+    t.index ["city"], name: "index_institutions_on_city", opclass: :gin_trgm_ops, using: :gin
+    t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
-    t.index ["institution"], name: "index_institutions_on_institution"
+    t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
@@ -1190,6 +1191,23 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
+    t.bigint "institution_id"
+    t.index ["institution_id"], name: "index_school_certifying_officials_on_institution_id"
+  end
+
+  create_table "school_certifying_officials_archives", id: false, force: :cascade do |t|
+    t.integer "id", default: -> { "nextval('school_certifying_officials_id_seq'::regclass)" }, null: false
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "priority"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "title"
+    t.string "phone_area_code"
+    t.string "phone_number"
+    t.string "phone_extension"
+    t.string "email"
+    t.bigint "institution_id"
   end
 
   create_table "school_closures", id: :serial, force: :cascade do |t|
@@ -1640,5 +1658,6 @@ ActiveRecord::Schema.define(version: 2020_01_24_135649) do
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institutions", "versions"
+  add_foreign_key "school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
 end
