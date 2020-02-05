@@ -240,3 +240,7 @@ table.crosswalk-issues thead.sub th {
   color: #ffffff !important;
   background-color: #dd5050;
 }
+
+.archives .even:not(:hover) td {
+    background-color: #f3f3ff;
+}

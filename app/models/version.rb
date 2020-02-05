@@ -37,6 +37,12 @@ class Version < ApplicationRecord
     Version.newest.first.preview?
   end
 
+  def self.archived
+    Version.select('distinct on (number) *')
+           .where('number < ?', Version.current_production&.number)
+           .order(number: :desc)
+  end
+
   # public instance methods
   def preview?
     !production?
