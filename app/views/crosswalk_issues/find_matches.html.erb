@@ -1,0 +1,49 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12 ">
+
+    <div class="row row-space-12">
+      <div class="col-xs-12">
+        <h2>Weams</h2>
+        <table class="table table-hover table-condensed table-bordered table-responsive">
+          <thead>
+          <th>Name</th>
+          <th>Full Address</th>
+          <th>Full Physical Address</th>
+          </thead>
+          <tbody>
+          <td><%= @issue.weam.institution %></td>
+          <td><%= @issue.weam.full_address %></td>
+          <td><%= @issue.weam.full_physical_address %></td>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row row-space-12">
+      <div class="col-xs-12">
+        <h2>IPEDS HD</h2>
+        <table class="table table-hover table-condensed table-bordered table-responsive">
+          <thead>
+          <th>Name</th>
+          <th>OPE</th>
+          <th>IPE</th>
+          <th>Match</th>
+          </thead>
+          <tbody>
+            <% @ipeds.each do |iped| %>
+            <tr>
+              <td><%= iped.institution %></td>
+              <td><%= iped.ope %></td>
+              <td><%= iped.cross %></td>
+<!--              <td><%#= link_to 'Match', crosswalk_issues_match_iped_path(iped), class: "btn dashboard-btn-success"%>-->
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
