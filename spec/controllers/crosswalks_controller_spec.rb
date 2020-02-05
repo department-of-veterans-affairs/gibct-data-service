@@ -27,7 +27,8 @@ RSpec.describe CrosswalksController, type: :controller do
 
     it 'orders by arf_gi_bill.gibill' do
       issues = assigns(:issues)
-      expect(issues.first.weam.arf_gi_bill.gibill).to be > issues.last.weam.arf_gi_bill.gibill
+      issues_last = issues[issues.length - 1]
+      expect(issues.first.weam.arf_gi_bill.gibill).to be > issues_last.weam.arf_gi_bill.gibill
     end
   end
 
