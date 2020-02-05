@@ -200,18 +200,11 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
-    it 'filters by vet_tec_provider schools' do
-      create(:institution, :vet_tec_provider)
-      create(:institution, :vet_tec_provider, vet_tec_provider: false)
-      get(:index, params: { vet_tec_provider: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-    end
-
     it 'filters by preferred_provider' do
-      create(:institution, :vet_tec_provider)
-      create(:institution, :vet_tec_preferred_provider)
-      get(:index, params: { vet_tec_provider: true, preferred_provider: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      create(:institution, :in_nyc)
+      create(:institution, :preferred_provider)
+      get(:index, params: { preferred_provider: true })
+      expect(JSON.parse(response.body)['data'].map { |a| a['attributes']['preferred_provider'] }).to all(eq(true))
     end
 
     it 'filter by lowercase state returns results' do
