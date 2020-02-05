@@ -43,7 +43,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
       v = create(:version, :preview)
-      create(:institution, :contains_harv, version: Version.current_preview.number)
+      create(:institution, :contains_harv, version_id: Version.current_preview.id)
       get(:index, params: { version: v.uuid })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
