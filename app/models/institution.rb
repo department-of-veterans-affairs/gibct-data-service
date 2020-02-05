@@ -215,7 +215,7 @@ class Institution < ApplicationRecord
   #
   def self.autocomplete(search_term, limit = 6)
     select('id, facility_code as value, institution as label')
-      .where('lower(institution) LIKE (?)', "#{search_term}%")
+      .where('institution LIKE (?)', "#{search_term.upcase}%")
       .limit(limit)
   end
 
@@ -226,20 +226,21 @@ class Institution < ApplicationRecord
 
     clause = [
       'facility_code = (:facility_code)',
-      'lower(institution) LIKE (:search_term)',
-      'lower(city) LIKE (:search_term)'
+      'institution LIKE (:upper_search_term)',
+      'city LIKE (:upper_search_term)'
     ]
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE (:search_term)"
+        clause << "lower(address_#{i + 1}) LIKE (:lower_search_term)"
       end
     end
 
     where(
       sanitize_sql_for_conditions([clause.join(' OR '),
                                    facility_code: search_term.upcase,
-                                   search_term: "%#{search_term}%"])
+                                   upper_search_term: "%#{search_term.upcase}%",
+                                   lower_search_term: "%#{search_term.downcase}%"])
     )
   }
 
