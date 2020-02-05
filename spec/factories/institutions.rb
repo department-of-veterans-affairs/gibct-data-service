@@ -81,7 +81,6 @@ FactoryBot.define do
       ope { '00279100' }
       ope6 { '02791' }
       cross { '999999' }
-      version { 1 }
     end
 
     trait :vet_tec_provider do
