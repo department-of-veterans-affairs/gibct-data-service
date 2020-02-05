@@ -2,7 +2,7 @@ class RemoveInstitutionsAddressIndexes < ActiveRecord::Migration[5.2]
 
   def change
     safety_assured do
-      execute "DROP INDEX index_institutions_institution_lprefix;"
+      execute "DROP INDEX IF EXISTS index_institutions_institution_lprefix;"
     end
 
     remove_index :institutions, :institution
