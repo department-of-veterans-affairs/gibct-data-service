@@ -32,6 +32,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :distance_learning
   attribute :dod_bah
   attribute :physical_zip
+  attribute :yellow_ribbon_programs
 
   attribute :bah
   attribute :tuition_in_state
