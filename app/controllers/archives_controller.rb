@@ -27,6 +27,6 @@ class ArchivesController < ApplicationController
     model = TABLES.find { |klass| klass.name == csv_type }
     return model if model.present?
 
-    raise(ArgumentError, "#{csv_type} is not a valid Archive CSV type") if model.blank?
+    raise(ArgumentError, "#{csv_type} is not a valid Archive CSV type")
   end
 end
