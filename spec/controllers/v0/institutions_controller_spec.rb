@@ -200,6 +200,13 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
+    it 'excludes vet_tec_provider institutions' do
+      create(:institution, :vet_tec_provider)
+      create(:institution, :vet_tec_provider, vet_tec_provider: false)
+      get(:index, params: { name: 'vet tec' })
+      expect(JSON.parse(response.body)['data'].map { |a| a['attributes']['vet_tec_provider'] }).to all(eq(false))
+    end
+
     it 'filters by preferred_provider' do
       create(:institution, :in_nyc)
       create(:institution, :preferred_provider)
