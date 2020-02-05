@@ -60,7 +60,7 @@ class InstitutionProgram < ApplicationRecord
 
     clause = [
       'institution_programs.facility_code = (:facility_code)',
-      'lower(institutions.institution) LIKE (:search_term)',
+      'institutions.institution LIKE (:upper_search_term)',
       'lower(description) LIKE (:search_term)',
       'lower(institutions.physical_city) LIKE (:search_term)'
     ]
@@ -69,6 +69,7 @@ class InstitutionProgram < ApplicationRecord
       sanitize_sql_for_conditions(
         [clause.join(' OR '),
          facility_code: search_term.upcase,
+         upper_search_term: "%#{search_term.upcase}%",
          search_term: "%#{search_term}%"]
       )
     )
@@ -89,4 +90,8 @@ class InstitutionProgram < ApplicationRecord
   }
 
   scope :version, ->(n) { where(version: n) }
+
+  scope :filter_count, lambda { |field|
+    group(field).where.not(field => nil).order(field).count
+  }
 end
