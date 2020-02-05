@@ -4,6 +4,7 @@ require 'securerandom'
 
 class Version < ApplicationRecord
   has_many :institutions, dependent: :nullify
+  has_many :zipcode_rates, dependent: :nullify
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 

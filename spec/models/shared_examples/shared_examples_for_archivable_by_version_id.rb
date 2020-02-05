@@ -90,30 +90,28 @@ RSpec.shared_examples 'an archivable model by version id' do |options|
     Archiver.archive_previous_versions
 
     expect(original_type.count).to eq(count_total)
-    expect(original_type.where('version >= ?', current_production_number).size)
-      .to eq(count_greater_equal_production)
-
     expect(archived_type.count).to eq(archive_count)
-    expect(archived_type.where('version < ?', current_production_number).size).to eq(archive_count)
+
+    if Version.current_preview
+      expect(original_type.where('version_id = ? OR version_id = ?', current_production_id, current_preview_id).size)
+      .to eq(count_greater_equal_production)
+      expect(archived_type.where('version_id != ? OR version_id != ?', current_production_id, current_preview_id).size).to eq(archive_count)
+    else
+       expect(original_type.where('version_id = ?', current_production_id).size)
+       .to eq(count_greater_equal_production)
+       expect(archived_type.where('version_id != ?', current_production_id).size).to eq(archive_count)
+    end
   end
 
   def create_production_version
     create :version, :preview
     Version.current_preview.update(production: true)
-    create factory, version: current_production_number, version_id: current_production_id
+    create factory, version_id: current_production_id
   end
 
   def create_preview_version
     create :version, :preview
-    create factory, version: current_preview_number, version_id: current_preview_id
-  end
-
-  def current_preview_number
-    Version.current_preview.number
-  end
-
-  def current_production_number
-    Version.current_production.number
+    create factory, version_id: current_preview_id
   end
 
   def current_preview_id
