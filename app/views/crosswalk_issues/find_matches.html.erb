@@ -22,7 +22,7 @@
     <div class="row row-space-12">
       <div class="col-xs-12">
         <h2>IPEDS HD</h2>
-        <table class="table table-hover table-condensed table-bordered table-responsive">
+      <table class="table table-hover table-condensed table-bordered table-responsive">
           <thead>
           <th>Name</th>
           <th>OPE</th>
@@ -31,13 +31,18 @@
           </thead>
           <tbody>
             <% @ipeds.each do |iped| %>
-            <tr>
-              <td><%= iped.institution %></td>
-              <td><%= iped.ope %></td>
-              <td><%= iped.cross %></td>
-<!--              <td><%#= link_to 'Match', crosswalk_issues_match_iped_path(iped), class: "btn dashboard-btn-success"%>-->
-              </td>
-            </tr>
+              <tr>
+                  <td><%= iped.institution %></td>
+                  <td><%= iped.ope %></td>
+                  <td><%= iped.cross %></td>
+                  <td>
+                    <%= form_with(url: "/crosswalk_issues/match_iped", method: "post") do %>
+                      <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
+                      <input type="hidden" name="iped_id" value="<%= iped.id %>" />
+                      <%= submit_tag("Match", class: 'btn dashboard-btn-success') %>
+                    <% end %>
+                  </td>
+                </tr>
             <% end %>
           </tbody>
         </table>

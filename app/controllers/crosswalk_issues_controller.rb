@@ -57,9 +57,30 @@ class CrosswalkIssuesController < ApplicationController
   end
 
   def match_iped
-    ipedhd = CrosswalkIssue.find(params[:id])
-    parameters = params
-    byebug
+    crosswalk_issue = CrosswalkIssue.find(params[:issue_id])
+    iped = IpedsHd.find(params[:iped_id])
+    weam = Weam.find(crosswalk_issue.weam_id)
+
+    if crosswalk_issue.crosswalk_id == nil
+      crosswalk = Crosswalk.new
+      crosswalk.facility_code = weam.facility_code
+      crosswalk.cross = iped.cross
+      crosswalk.ope = iped.ope
+      crosswalk.city = weam.city
+      crosswalk.state = weam.state
+      crosswalk.institution = weam.institution
+      crosswalk.derive_dependent_columns
+      crosswalk.save
+    else
+      crosswalk = Crosswalk.find(crosswalk_issue.crosswalk_id)
+      crosswalk.cross = iped.cross
+      crosswalk.ope = iped.ope
+      crosswalk.derive_dependent_columns
+      crosswalk.save
+    end
+
+    crosswalk_issue.destroy
+
     redirect_to action: :partials
   end
 
