@@ -11,7 +11,7 @@ RSpec.shared_examples 'an archivable model by parent id' do |options|
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
   end
 
-  describe 'archives archived model' do
+  describe 'archives archived model', focus: true do
     before do
       # version 1
       create_production_version
@@ -96,22 +96,14 @@ RSpec.shared_examples 'an archivable model by parent id' do |options|
   def create_production_version
     create :version, :preview
     Version.current_preview.update(production: true)
-    create :institution, version_id: current_production_id, version: current_production_number
+    create :institution, version_id: current_production_id
     create factory, institution_id: Institution.last.id
   end
 
   def create_preview_version
     create :version, :preview
-    create :institution, version_id: current_preview_id, version: current_preview_number
+    create :institution, version_id: current_preview_id
     create factory, institution_id: Institution.last.id
-  end
-
-  def current_preview_number
-    Version.current_preview.number
-  end
-
-  def current_production_number
-    Version.current_production.number
   end
 
   def current_preview_id
