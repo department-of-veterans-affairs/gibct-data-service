@@ -26,6 +26,7 @@
           <table class="table table-hover table-condensed table-bordered table-responsive">
             <thead>
             <th>Name</th>
+            <th>Address</th>
             <th>OPE</th>
             <th>IPE</th>
             <th>Actions</th>
@@ -34,6 +35,7 @@
             <% @ipeds_hd_arr.each do |iped| %>
               <tr>
                 <td><%= iped.institution %></td>
+                <td><%= iped.full_address %></td>
                 <td><%= iped.ope %></td>
                 <td><%= iped.cross %></td>
                 <td>

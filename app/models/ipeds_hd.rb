@@ -79,4 +79,8 @@ class IpedsHd < ApplicationRecord
 
   has_many :crosswalk_issue, dependent: :delete_all
   validates :cross, presence: true
+
+  def full_address
+    [addr, city, state, zip].compact.join(', ')
+  end
 end
