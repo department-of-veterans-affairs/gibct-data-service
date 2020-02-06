@@ -1,4 +1,4 @@
-# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/)
+# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=testing/gibct-data-service/master)](http://jenkins.vfs.va.gov/job/builds/job/gi-bill-data-service/)[![Maintainability](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/maintainability)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/test_coverage)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/test_coverage) [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](LICENSE.md)
 
 ## Introduction
 The GIBCT Data Service (**GIDS**) compiles data from a variety of federal CSV-formatted sources into a set of
@@ -15,9 +15,9 @@ data retrieved via the API has not yet been approved by the VA Education Stakeho
 the actual data pushed to **GIBCT** for public consumption.
 
 ### Primary User Flow
-Institution profile data is synthesized from 21 separate CSVs maintained by various federal sources. Once the CSVs are
+Institution profile data is synthesized from separate CSVs maintained by various federal sources. Once the CSVs are
 uploaded, a `preview` version can be compiled. The data for the `preview` version can then be viewed by using the GIBCT
-in the link provided on the **GIDS** dashboard. Once the new preview version is "approved" it can then be pushed to
+in the link provided on the **GIDS** dashboard. Once the new preview version is "approved" it can then be published to
 `production`.
 
 ## Developer Setup
@@ -33,6 +33,7 @@ Note that queries are PostgreSQL-specific.
 - `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!
 - `bundle exec rake security` - Run the suite of security scanners on the codebase.
 - `bundle exec rake ci` - Run all build steps performed in Travis CI.
+- `bundle exec rspec spec/path/to/spec` - Run a specific spec
 
 ## Pre-Setup Configuration
 
@@ -120,7 +121,8 @@ To work on your code submission, follow [GitHub Flow](https://guides.github.com/
 
 1. Branch or Fork
 1. Commit changes
-1. Submit Pull Request
+1. Create Draft Request
+1. Mark as "Ready to review" once all checks have passed
 1. Discuss via Pull Request
 1. Pull Request gets approved or denied by core team member
 
@@ -128,9 +130,30 @@ If you're from the community, it may take one to two weeks to review your pull r
 
 ## Deployment
 
-Deployment is handled the same way as `vets-api`, commits to master are tested by Jenkins and a deploy is kicked off (to change the branches, edit the Jenkinsfile) to dev and staging. Production releases are manually gated. Navigate to http://jenkins.vetsgov-internal/job/releases/job/gi-bill-data-service/ and kick off a release job with the git sha for the release and it will automatically deploy to production.
+### Dev, Staging
+Deployment is handled the same way as `vets-api`, commits to master are tested by Jenkins and a deploy is kicked off (to change the branches, edit the Jenkinsfile) to dev and staging.
 
-The `production` branch is kept around for references to older deployments, but is no longer in use by the deployment systems.
+If there are database migrations to be run 
+1. Check that the relevant [dev](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-dev/) or [staging](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-staging/) deploy is finished
+1. Navigate to either [dev](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-dev-post-deploy/) or [staging](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-staging-post-deploy/) post deploy actions
+1. Run a "Build with Parameters" job
+1. Check console output of run to ensure the migration ran correctly
+
+### Production
+Production releases are manually gated. 
+1. Check that the [prod](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod/) deploy is finished
+1. Find the git sha you wish to use from https://github.com/department-of-veterans-affairs/gibct-data-service/commits/master
+1. Navigate to http://jenkins.vfs.va.gov/job/releases/job/gi-bill-data-service/
+1. "Build with Parameters" with the git sha for the release and it will automatically deploy to production.
+
+If there are database migrations to be run 
+1. Navigate to http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod-post-deploy/
+1. Run a "Build with Parameters" job
+1. Check console output of run to ensure the migration ran correctly
+
+### Notes
+- If you do not have permission to run "Build with Parameters" jobs, contact your DSVA product owner
+- The `production` branch is kept around for references to older deployments, but is no longer in use by the deployment systems.
 
 ## Contact
 
