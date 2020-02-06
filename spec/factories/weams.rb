@@ -155,8 +155,9 @@ FactoryBot.define do
     end
 
     trait :arf_gi_bill do
-      cross { 'a' }
       arf_gi_bill { create(:arf_gi_bill, facility_code: facility_code) }
+      city { 'Test' }
+      state { 'TN' }
     end
 
     initialize_with do
