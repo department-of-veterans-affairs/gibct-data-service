@@ -182,19 +182,19 @@ class Weam < ApplicationRecord
   end
 
   def address_values
-    [self.address_1, self.address_2, self.address_3, self.city, self.state, self.zip].compact
+    [address_1, address_2, address_3, city, state, zip].compact
   end
 
   def physical_address_values
-    [self.physical_address_1, self.physical_address_2, self.physical_address_3, self.city, self.state, self.zip].compact
+    [physical_address_1, physical_address_2, physical_address_3, city, state, zip].compact
   end
 
   def full_address
-    address_values.join(", ")
+    address_values.join(', ')
   end
 
   def full_physical_address
-    physical_address_values.join(", ")
+    physical_address_values.join(', ')
   end
 
   private

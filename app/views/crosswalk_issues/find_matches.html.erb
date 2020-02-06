@@ -40,7 +40,7 @@
                   <%= form_with(url: "/crosswalk_issues/match_iped", method: "post") do %>
                     <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
                     <input type="hidden" name="iped_id" value="<%= iped.id %>" />
-                    <%= submit_tag("Match", class: 'btn dashboard-btn-success') %>
+                    <%= submit_tag( "Match", class: 'btn dashboard-btn-success', data: { confirm: "Are you sure?" })%>
                   <% end %>
                 </td>
               </tr>
@@ -48,7 +48,7 @@
             </tbody>
           </table>
         <% else %>
-          <p>No matches found</p>
+          <p>No matches found.</p>
         <% end %>
       </div>
     </div>

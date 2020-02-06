@@ -45,9 +45,10 @@ class CrosswalkIssuesController < ApplicationController
 
   def find_matches
     @issue = CrosswalkIssue.find(params[:id])
-    string_to_match = @issue.weam.institution + (@issue.weam.address_values + @issue.weam.physical_address_values).uniq.join
-    results = IpedsHd.where("(institution||city||state||zip||addr) % ?", "%#{string_to_match}%")
-    @ipeds = results
+    address_data_to_match = (@issue.weam.address_values + @issue.weam.physical_address_values).uniq.join
+    institution_results = IpedsHd.where('institution % ?', "%#{@issue.weam.institution}%").order('institution')
+    address_results = IpedsHd.where('(city||state||zip||addr) % ?', "%#{address_data_to_match}%").order('institution')
+    @ipeds = (institution_results + address_results).uniq.sort! { |a, b| a.institution <=> b.institution }
   end
 
   def match_iped
@@ -55,44 +56,21 @@ class CrosswalkIssuesController < ApplicationController
     iped = IpedsHd.find(params[:iped_id])
     weam = Weam.find(crosswalk_issue.weam_id)
 
-    if crosswalk_issue.crosswalk_id == nil
+    if crosswalk_issue.crosswalk_id.nil?
       crosswalk = Crosswalk.new
       crosswalk.facility_code = weam.facility_code
-      crosswalk.cross = iped.cross
-      crosswalk.ope = iped.ope
       crosswalk.city = weam.city
       crosswalk.state = weam.state
       crosswalk.institution = weam.institution
-      crosswalk.derive_dependent_columns
-      crosswalk.save
     else
       crosswalk = Crosswalk.find(crosswalk_issue.crosswalk_id)
-      crosswalk.cross = iped.cross
-      crosswalk.ope = iped.ope
-      crosswalk.derive_dependent_columns
-      crosswalk.save
     end
-
+    crosswalk.cross = iped.cross
+    crosswalk.ope = iped.ope
+    crosswalk.derive_dependent_columns
+    crosswalk.save
     crosswalk_issue.destroy
 
     redirect_to action: :partials
   end
-
-  private
-
-  def pattern_to_match
-    institution =  @issue.weam.institution ?  @issue.weam.institution : ""
-    city = @issue.weam.city ? @issue.weam.city : ""
-    state = @issue.weam.state ? @issue.weam.state : ""
-    zip = @issue.weam.zip ? @issue.weam.zip : ""
-    address_1 = @issue.weam.address_1 ? @issue.weam.address_1 : ""
-    address_2 = @issue.weam.address_2 ? @issue.weam.address_2 : ""
-    address_3 = @issue.weam.address_3 ? @issue.weam.address_3 : ""
-    physical_address_1 = @issue.weam.physical_address_1 ? @issue.weam.physical_address_1 : ""
-    physical_address_2 = @issue.weam.physical_address_2 ? @issue.weam.physical_address_2 : ""
-    physical_address_3 = @issue.weam.physical_address_3 ? @issue.weam.physical_address_3 : ""
-
-    institution + city + state + zip + address_1 + address_2 + address_3 + physical_address_1 + physical_address_2 + physical_address_3
-  end
-
 end
