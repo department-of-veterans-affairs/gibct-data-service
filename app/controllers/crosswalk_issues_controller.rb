@@ -46,6 +46,7 @@ class CrosswalkIssuesController < ApplicationController
   def find_matches
     @issue = CrosswalkIssue.find(params[:id])
     address_data_to_match = (@issue.weam.address_values + @issue.weam.physical_address_values).uniq.join
+    ActiveRecord::Base.connection.execute("SELECT set_limit(0.4);")
     institution_results = IpedsHd.where('institution % ?', "%#{@issue.weam.institution}%").order('institution')
     address_results = IpedsHd.where('(city||state||zip||addr) % ?', "%#{address_data_to_match}%").order('institution')
     @ipeds_hd_arr = (institution_results + address_results).uniq.sort! { |a, b| a.institution <=> b.institution }
