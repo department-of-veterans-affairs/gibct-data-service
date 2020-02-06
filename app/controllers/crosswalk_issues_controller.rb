@@ -8,7 +8,7 @@ class CrosswalkIssuesController < ApplicationController
   end
 
   def show_partial
-    @issue = CrosswalkIssue.find(params[:id])
+    @issue = CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).find(params[:id])
   end
 
   def resolve_partial
