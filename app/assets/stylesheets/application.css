@@ -241,6 +241,10 @@ table.crosswalk-issues thead.sub th {
   background-color: #dd5050;
 }
 
+.archives .even:not(:hover) td {
+    background-color: #f3f3ff;
+}
+
 .weams_override {
     color: #d43f3a;
 }
