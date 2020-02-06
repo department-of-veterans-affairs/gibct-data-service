@@ -121,7 +121,7 @@ To work on your code submission, follow [GitHub Flow](https://guides.github.com/
 
 1. Branch or Fork
 1. Commit changes
-1. Create Draft Request
+1. Create draft Pull Request
 1. Mark as "Ready to review" once all checks have passed
 1. Discuss via Pull Request
 1. Pull Request gets approved or denied by core team member
