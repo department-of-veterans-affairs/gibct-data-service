@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
-  let(:institutions) { Institution.version_id(Version.current_preview.id) }
+  let(:institutions) { Institution.joins(:version) }
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
@@ -730,6 +730,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         Complaint::OPE6_ROLL_UP_SUMS.each_key do |column|
+          
           expect(institution[column]).to eq(2)
         end
       end
@@ -858,7 +859,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(zipcode_rate.zip_code).to eq(institution.zip)
         expect(zipcode_rate.mha_rate).to eq(1000)
         expect(zipcode_rate.mha_rate_grandfathered).to eq(1100)
-        expect(zipcode_rate.version).to eq(Version.current_preview.number)
+        expect(zipcode_rate.version.id).to eq(Version.current_preview.id)
       end
     end
 
