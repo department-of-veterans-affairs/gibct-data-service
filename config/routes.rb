@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   post '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial'
 
   get '/crosswalk_issues/find_matches/:id' => 'crosswalk_issues#find_matches', as: :crosswalk_issues_find_matches
-  post '/crosswalk_issues/match_iped' => 'crosswalk_issues#match_iped', as: :crosswalk_issues_match_iped
+  post '/crosswalk_issues/match_ipeds_hd' => 'crosswalk_issues#match_ipeds_hd', as: :crosswalk_issues_match_ipeds_hd
 
   get '/crosswalk_issues/orphans' => 'crosswalk_issues#orphans', as: :crosswalk_issues_orphans
 

@@ -48,12 +48,12 @@ class CrosswalkIssuesController < ApplicationController
     address_data_to_match = (@issue.weam.address_values + @issue.weam.physical_address_values).uniq.join
     institution_results = IpedsHd.where('institution % ?', "%#{@issue.weam.institution}%").order('institution')
     address_results = IpedsHd.where('(city||state||zip||addr) % ?', "%#{address_data_to_match}%").order('institution')
-    @ipeds = (institution_results + address_results).uniq.sort! { |a, b| a.institution <=> b.institution }
+    @ipeds_hd_arr = (institution_results + address_results).uniq.sort! { |a, b| a.institution <=> b.institution }
   end
 
-  def match_iped
+  def match_ipeds_hd
     crosswalk_issue = CrosswalkIssue.find(params[:issue_id])
-    iped = IpedsHd.find(params[:iped_id])
+    ipeds_hd = IpedsHd.find(params[:iped_id])
     weam = Weam.find(crosswalk_issue.weam_id)
 
     if crosswalk_issue.crosswalk_id.nil?
@@ -65,8 +65,8 @@ class CrosswalkIssuesController < ApplicationController
     else
       crosswalk = Crosswalk.find(crosswalk_issue.crosswalk_id)
     end
-    crosswalk.cross = iped.cross
-    crosswalk.ope = iped.ope
+    crosswalk.cross = ipeds_hd.cross
+    crosswalk.ope = ipeds_hd.ope
     crosswalk.derive_dependent_columns
     crosswalk.save
     crosswalk_issue.destroy

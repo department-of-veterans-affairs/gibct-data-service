@@ -163,4 +163,55 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
+
+  describe 'GET #find_matches' do
+    login_user
+
+    context 'when matching ipeds_hd to weam' do
+      before do
+        create :ipeds_hd, cross: 'r', ope: 's',
+                          institution: 'college of nowhere',
+                          city: 'NA', state: 'SC', zip: '99999'
+        create :ipeds_hd, cross: 't', ope: 'u',
+                          institution: 'college', city: 'Test',
+                          state: 'TN', zip: '99991'
+        create :ipeds_hd, cross: 'w', ope: 'x',
+                          institution: 'university', city: 'nowhere',
+                          state: 'CA', zip: '88888'
+        issue = create :crosswalk_issue, :with_weam_match, :partial_match_type
+        get(:find_matches, params: { id: issue.id })
+      end
+
+      it 'populates an array of  returns array of Ipeds_hds' do
+        expect(assigns(:ipeds_hd_arr).length).to eq(2)
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+    end
+  end
+
+  describe 'POST #match_ipeds_hd' do
+    login_user
+
+    context 'when selecting a ipeds_hd to match with weam to crosswalk' do
+      let :ipeds_hd do
+        create :ipeds_hd, cross: 'r', ope: 's',
+                          institution: 'college of nowhere',
+                          city: 'NA', state: 'SC', zip: '99999'
+      end
+      let :issue do
+        create :crosswalk_issue, :with_weam_match, :partial_match_type
+      end
+
+      before do
+        post(:match_ipeds_hd, params: { issue_id: issue.id, iped_id: ipeds_hd.id })
+      end
+
+      it 'creates a new matching crosswalk' do
+        expect(Crosswalk.where(cross: 'r', ope: 's')).to exist
+      end
+    end
+  end
 end

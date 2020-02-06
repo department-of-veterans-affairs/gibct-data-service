@@ -22,7 +22,7 @@
     <div class="row row-space-12">
       <div class="col-xs-12">
         <h2>IPEDS HD</h2>
-        <% if @ipeds.any? %>
+        <% if @ipeds_hd_arr.any? %>
           <table class="table table-hover table-condensed table-bordered table-responsive">
             <thead>
             <th>Name</th>
@@ -31,13 +31,13 @@
             <th>Actions</th>
             </thead>
             <tbody>
-            <% @ipeds.each do |iped| %>
+            <% @ipeds_hd_arr.each do |iped| %>
               <tr>
                 <td><%= iped.institution %></td>
                 <td><%= iped.ope %></td>
                 <td><%= iped.cross %></td>
                 <td>
-                  <%= form_with(url: "/crosswalk_issues/match_iped", method: "post") do %>
+                  <%= form_with(url: "/crosswalk_issues/match_ipeds_hd", method: "post") do %>
                     <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
                     <input type="hidden" name="iped_id" value="<%= iped.id %>" />
                     <%= submit_tag( "Match", class: 'btn dashboard-btn-success', data: { confirm: "Are you sure?" })%>
