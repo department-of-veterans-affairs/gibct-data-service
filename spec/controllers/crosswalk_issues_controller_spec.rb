@@ -62,14 +62,14 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
       end
 
       it 'correctly updates Crosswalk fields from params' do
-        post(:resolve_partial, params: params)
+        expect { post(:resolve_partial, params: params) }.to change(Crosswalk, :count).from(0).to(1)
         expect(crosswalk[:cross]).to eq(params[:cross])
         expect(crosswalk[:ope]).to eq(params[:ope])
         expect(crosswalk[:notes]).to eq(params[:notes])
       end
 
       it 'correctly updates Crosswalk fields from weams' do
-        post(:resolve_partial, params: params)
+        expect { post(:resolve_partial, params: params) }.to change(Crosswalk, :count).from(0).to(1)
         expect(crosswalk[:facility_code]).to eq(weam[:facility_code])
         expect(crosswalk[:institution]).to eq(weam[:institution])
         expect(crosswalk[:city]).to eq(weam[:city])
