@@ -22,8 +22,14 @@ Rails.application.routes.draw do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
 
-  get '/crosswalks/partials' => 'crosswalks#partials', as: :crosswalks_partials
-  get '/crosswalks/orphans' => 'crosswalks#orphans', as: :crosswalks_orphans
+  get '/crosswalk_issues/partials' => 'crosswalk_issues#partials', as: :crosswalk_issues_partials
+  get '/crosswalk_issues/partials/:id' => 'crosswalk_issues#show_partial', as: :crosswalk_issues_partials_show
+  post '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial'
+
+  get '/crosswalk_issues/orphans' => 'crosswalk_issues#orphans', as: :crosswalk_issues_orphans
+
+  get '/archives' => 'archives#index'
+  get '/archives/export/:csv_type/:number' => 'archives#export', as: :archives_export, defaults: { format: 'csv' }
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }

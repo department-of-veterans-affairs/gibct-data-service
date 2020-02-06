@@ -10,6 +10,10 @@ class CrosswalkIssue < ApplicationRecord
 
   scope :by_issue_type, ->(n) { where(issue_type: n) }
 
+  def resolved?
+    weam_ipeds_hd_match? && weam_crosswalk_match?
+  end
+
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
     sql = <<-SQL
@@ -30,6 +34,10 @@ class CrosswalkIssue < ApplicationRecord
         LEFT OUTER JOIN crosswalks ON weams.facility_code = crosswalks.facility_code
       WHERE
         (institution_of_higher_learning_indicator = true OR non_college_degree_indicator = true)
+        AND LOWER(poo_status) = 'aprvd'
+        AND LENGTH(applicable_law_code) > 0
+        AND LOWER(applicable_law_code) != 'educational institution is not approved'
+        AND LOWER(applicable_law_code) != 'educational institution is approved for chapter 31 only'
         AND NOT(
           weams.cross IS NOT NULL
           AND ipeds_hds.cross IS NOT NULL
@@ -59,4 +67,16 @@ class CrosswalkIssue < ApplicationRecord
     InstitutionProgram.connection.execute(sql)
   end
   # rubocop:enable Metrics/MethodLength
+
+  private
+
+  def weam_ipeds_hd_match?
+    weam.present? && ipeds_hd.present? &&
+      weam.cross == ipeds_hd.cross && weam.ope == ipeds_hd.ope
+  end
+
+  def weam_crosswalk_match?
+    weam.present? && crosswalk.present? &&
+      weam.cross == crosswalk.cross && weam.ope == crosswalk.ope
+  end
 end
