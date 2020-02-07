@@ -123,4 +123,14 @@ RSpec.describe Version, type: :model do
       end
     end
   end
+
+  describe '#archived' do
+    it 'has correct number of archived versions' do
+      create :version, :production
+      create :version, :production
+      create :version, :production
+
+      expect(described_class.archived.to_a.size).to eq(2)
+    end
+  end
 end

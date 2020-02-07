@@ -91,12 +91,10 @@ FactoryBot.define do
       vet_tec_provider { true }
     end
 
-    trait :vet_tec_preferred_provider do
-      institution { 'COLLEGE OF VET TEC PROVIDER' }
+    trait :preferred_provider do
       city { 'CHARLESTON' }
       state { 'SC' }
       country { 'USA' }
-      vet_tec_provider { true }
       preferred_provider { true }
     end
 

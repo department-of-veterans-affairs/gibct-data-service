@@ -180,8 +180,8 @@ RSpec.describe Institution, type: :model do
         expect(described_class.search('chicago').to_sql)
           .to include(
             "WHERE (facility_code = ('CHICAGO')",
-            "OR lower(institution) LIKE ('%chicago%')",
-            "OR lower(city) LIKE ('%chicago%'))"
+            "OR institution LIKE ('%CHICAGO%')",
+            "OR city LIKE ('%CHICAGO%'))"
           )
       end
     end

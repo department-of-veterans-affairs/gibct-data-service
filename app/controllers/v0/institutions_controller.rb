@@ -29,12 +29,7 @@ module V0
         facets: facets
       }
 
-      if params[:vet_tec_provider] == 'true'
-        render json: search_results.order('preferred_provider DESC NULLS LAST, institution')
-                                   .page(params[:page]), meta: @meta
-      else
-        render json: search_results.order(:institution).page(params[:page]), meta: @meta
-      end
+      render json: search_results.order(:institution).page(params[:page]), meta: @meta
     end
 
     # GET /v0/institutions/20005123
@@ -78,7 +73,7 @@ module V0
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning vet_tec_provider].each do |k|
+           online_only distance_learning].each do |k|
           query[k].try(:downcase!)
         end
       end
@@ -102,7 +97,6 @@ module V0
         [:online_only],
         [:distance_learning],
         [:priority_enrollment], # boolean
-        [:vet_tec_provider], # boolean
         [:preferred_provider], # boolean
         [:stem_indicator] # boolean
       ].each do |filter_args|
@@ -147,8 +141,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.joins(:version).no_extentions
-                 .where(approved: true)
+      Institution.joins(:version).no_extentions.where(approved: true, vet_tec_provider: false)
     end
   end
   # rubocop:enable Metrics/ClassLength
