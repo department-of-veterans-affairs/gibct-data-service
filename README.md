@@ -32,7 +32,7 @@ Note that queries are PostgreSQL-specific.
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
 - `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!
 - `bundle exec rake security` - Run the suite of security scanners on the codebase.
-- `bundle exec rake ci` - Run all build steps performed in Travis CI.
+- `bundle exec rake ci` - Runs the continuous integration scripts which includes linters, security scanners, tests, and code coverage
 - `bundle exec rspec spec/path/to/spec` - Run a specific spec
 
 ## Pre-Setup Configuration
