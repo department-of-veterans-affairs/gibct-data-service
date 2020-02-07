@@ -22,7 +22,7 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.run_insertions(version_number)
+  def self.run_insertions(version_number, version_id)
     initialize_with_weams(version_number)
     add_crosswalk(version_number)
     add_sva(version_number)
@@ -41,7 +41,7 @@ module InstitutionBuilder
     add_sec_702(version_number)
     add_settlement(version_number)
     add_hcm(version_number)
-    add_complaint(version_number)
+    add_complaint(version_id)
     add_outcome(version_number)
     add_stem_offered(version_number)
     add_yellow_ribbon_programs(version_number)
@@ -61,7 +61,7 @@ module InstitutionBuilder
 
     begin
       Institution.transaction do
-        run_insertions(version.number)
+        run_insertions(version.number, version.id)
       end
 
       version.update(completed_at: Time.now.utc.to_s(:db))
@@ -437,10 +437,10 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.add_complaint(version_number)
+  def self.add_complaint(version_id)
     Complaint.update_ope_from_crosswalk
-    Complaint.rollup_sums(:facility_code, version_number)
-    Complaint.rollup_sums(:ope6, version_number)
+    Complaint.rollup_sums(:facility_code, version_id)
+    Complaint.rollup_sums(:ope6, version_id)
   end
 
   def self.add_outcome(version_number)
