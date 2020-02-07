@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_03_122400) do
+ActiveRecord::Schema.define(version: 2020_02_04_193119) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "accreditation_actions", id: :serial, force: :cascade do |t|
@@ -216,7 +215,6 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
     t.string "graduate"
     t.string "full_time_modifier"
     t.string "length_in_hours"
-    t.integer "version"
     t.string "school_locale"
     t.string "provider_website"
     t.string "provider_email_address"
@@ -230,7 +228,6 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
-    t.index ["description", "version"], name: "index_institution_programs"
     t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
 
@@ -242,7 +239,6 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
     t.string "graduate"
     t.string "full_time_modifier"
     t.string "length_in_hours"
-    t.integer "version"
     t.string "school_locale"
     t.string "provider_website"
     t.string "provider_email_address"
@@ -256,7 +252,6 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
-    t.index ["description", "version"], name: "index_institution_programs_archives"
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
 
@@ -382,15 +377,15 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
-    t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
-    t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
-    t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
-    t.index ["city"], name: "index_institutions_on_city", opclass: :gin_trgm_ops, using: :gin
-    t.index ["country"], name: "index_institutions_on_country"
+    t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
+    t.index ["address_1"], name: "index_institutions_on_address_1"
+    t.index ["address_2"], name: "index_institutions_on_address_2"
+    t.index ["address_3"], name: "index_institutions_on_address_3"
+    t.index ["city"], name: "index_institutions_on_city"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
-    t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
+    t.index ["institution"], name: "index_institutions_on_institution"
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
