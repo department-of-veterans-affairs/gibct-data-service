@@ -299,7 +299,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
     end
 
-    it 'returns profile details ' do
+    it 'returns profile details' do
       school = create(:institution, :in_chicago)
       get(:show, params: { id: school.facility_code, version: school.version })
       expect(response.content_type).to eq('application/json')
