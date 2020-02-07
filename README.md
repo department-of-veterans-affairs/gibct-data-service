@@ -141,12 +141,12 @@ If there are database migrations to be run
 
 ### Production
 Production releases are manually gated. 
-1. Check that the [prod](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod/) deploy is finished
 1. Find the git sha you wish to use from https://github.com/department-of-veterans-affairs/gibct-data-service/commits/master
 1. Navigate to http://jenkins.vfs.va.gov/job/releases/job/gi-bill-data-service/
 1. "Build with Parameters" with the git sha for the release and it will automatically deploy to production.
 
 If there are database migrations to be run 
+1. Check that the [prod](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod/) deploy is finished
 1. Navigate to http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod-post-deploy/
 1. Run a "Build with Parameters" job
 1. Check console output of run to ensure the migration ran correctly
