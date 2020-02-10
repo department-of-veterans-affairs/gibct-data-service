@@ -184,7 +184,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
         create :ipeds_hd, cross: 'w', ope: 'x',
                           institution: 'university', city: 'nowhere',
                           state: 'CA', zip: '88888'
-        issue = create :crosswalk_issue, :with_weam_match, :partial_match_type
+        issue = create :crosswalk_issue, :with_weam_match_partial, :partial_match_type
         get(:find_matches, params: { id: issue.id })
       end
 
@@ -208,7 +208,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
                           city: 'NA', state: 'SC', zip: '99999'
       end
       let :issue do
-        create :crosswalk_issue, :with_weam_match, :partial_match_type
+        create :crosswalk_issue, :with_weam_match_partial, :partial_match_type
       end
 
       before do
