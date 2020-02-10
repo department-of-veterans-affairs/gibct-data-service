@@ -103,7 +103,6 @@ RSpec.describe Complaint, type: :model do
     end
 
     describe 'by ope6' do
-
       before do
         # Different facility codes, same ope
         create :version, :production
@@ -116,7 +115,6 @@ RSpec.describe Complaint, type: :model do
       end
 
       it 'the institution receives the sums grouped by ope6' do
-        
         Institution.all.each do |institution|
           Complaint::OPE6_ROLL_UP_SUMS.each_key do |ope6_sum|
             expect(institution[ope6_sum]).to eq(5)

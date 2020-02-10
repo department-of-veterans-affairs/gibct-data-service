@@ -147,8 +147,7 @@ RSpec.describe Institution, type: :model do
     end
   end
 
-  describe 'class methods and scopes'do
-    
+  describe 'class methods and scopes' do
     context 'with filter scope' do
       it 'raises an error if no arguments are provided' do
         expect { described_class.filter }.to raise_error(ArgumentError)

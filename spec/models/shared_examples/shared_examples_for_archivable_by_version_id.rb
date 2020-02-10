@@ -94,12 +94,12 @@ RSpec.shared_examples 'an archivable model by version id' do |options|
 
     if Version.current_preview
       expect(original_type.where('version_id = ? OR version_id = ?', current_production_id, current_preview_id).size)
-      .to eq(count_greater_equal_production)
+        .to eq(count_greater_equal_production)
       expect(archived_type.where('version_id != ? OR version_id != ?', current_production_id, current_preview_id).size).to eq(archive_count)
     else
-       expect(original_type.where('version_id = ?', current_production_id).size)
-       .to eq(count_greater_equal_production)
-       expect(archived_type.where('version_id != ?', current_production_id).size).to eq(archive_count)
+      expect(original_type.where('version_id = ?', current_production_id).size)
+        .to eq(count_greater_equal_production)
+      expect(archived_type.where('version_id != ?', current_production_id).size).to eq(archive_count)
     end
   end
 

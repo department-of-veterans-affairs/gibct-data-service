@@ -730,7 +730,6 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         Complaint::OPE6_ROLL_UP_SUMS.each_key do |column|
-          
           expect(institution[column]).to eq(2)
         end
       end
