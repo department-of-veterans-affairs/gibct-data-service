@@ -154,6 +154,12 @@ FactoryBot.define do
       facility_code { '99Z99999' }
     end
 
+    trait :arf_gi_bill do
+      arf_gi_bill { create(:arf_gi_bill, facility_code: facility_code) }
+      city { 'Test' }
+      state { 'TN' }
+    end
+
     initialize_with do
       new(
         facility_code: facility_code, institution: institution, ope: ope, state: state,
