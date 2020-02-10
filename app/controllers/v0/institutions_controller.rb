@@ -10,8 +10,7 @@ module V0
       @data = []
       if params[:term]
         @search_term = params[:term]&.strip&.downcase
-
-        @data = approved_institutions.autocomplete(@search_term)
+        @data = approved_institutions.where(vet_tec_provider: false).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -82,7 +81,7 @@ module V0
     # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
-      relation = approved_institutions.search(@query[:name], @query[:include_address])
+      relation = approved_institutions.where(vet_tec_provider: false).search(@query[:name], @query[:include_address])
       [
         %i[institution_type_name type],
         [:category],
@@ -141,7 +140,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.joins(:version).no_extentions.where(approved: true, vet_tec_provider: false)
+      Institution.joins(:version).no_extentions.where(approved: true)
     end
   end
   # rubocop:enable Metrics/ClassLength
