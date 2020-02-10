@@ -12,8 +12,8 @@
           </thead>
           <tbody>
           <td><%= @issue.weam.institution %></td>
-          <td><%= @issue.weam.full_address %></td>
-          <td><%= @issue.weam.full_physical_address %></td>
+          <td><%= @issue.weam.address_values.join(', ') %></td>
+          <td><%= @issue.weam.physical_address_values.join(', ') %></td>
           </tbody>
         </table>
       </div>

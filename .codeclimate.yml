@@ -15,8 +15,6 @@ checks:
   method-count:
     config:
       threshold: 20
-    exclude_patterns:
-      -  'app/models/weam.rb'
   method-lines:
     config:
       threshold: 25

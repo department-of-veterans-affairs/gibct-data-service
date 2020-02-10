@@ -191,14 +191,6 @@ class Weam < ApplicationRecord
     [physical_address_1, physical_address_2, physical_address_3, city, state, zip].compact
   end
 
-  def full_address
-    address_values.join(', ')
-  end
-
-  def full_physical_address
-    physical_address_values.join(', ')
-  end
-
   private
 
   def poo_status_valid?
