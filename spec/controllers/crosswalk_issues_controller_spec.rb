@@ -179,8 +179,8 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
                           institution: 'college of nowhere',
                           city: 'NA', state: 'SC', zip: '99999'
         create :ipeds_hd, cross: 't', ope: 'u',
-                          institution: 'college', city: 'Test',
-                          state: 'TN', zip: '99991'
+                          institution: 'college of', city: 'Test',
+                          state: 'TN', zip: '99999'
         create :ipeds_hd, cross: 'w', ope: 'x',
                           institution: 'university', city: 'nowhere',
                           state: 'CA', zip: '88888'
@@ -188,7 +188,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
         get(:find_matches, params: { id: issue.id })
       end
 
-      it 'populates an array of  returns array of Ipeds_hds' do
+      it 'populates an array of Ipeds_hds' do
         expect(assigns(:ipeds_hd_arr).length).to eq(2)
       end
 

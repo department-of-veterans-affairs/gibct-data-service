@@ -11,9 +11,9 @@ FactoryBot.define do
     end
 
     trait :with_weam_match do
-      weam
-        create(:weam, :arf_gi_bill, cross: 'a', ope: 'b', institution: 'college of nowhere',
-                      facility_code: 'd', city: 'Test', state: 'TN', zip: '99999')
+      weam do create(:weam, :arf_gi_bill, cross: 'a', ope: 'b', institution: 'college of nowhere',
+                    facility_code: 'd', city: 'Test', state: 'TN', zip: '99999')
+        end
     end
 
     trait :with_ipeds_hd_match do
