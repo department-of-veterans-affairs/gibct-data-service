@@ -306,6 +306,13 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_profile')
     end
 
+    it 'returns profile details for VET TEC institution' do
+      school = create(:institution, :vet_tec_provider)
+      get(:show, params: { id: school.facility_code, version: school.version })
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_profile')
+    end
+
     it 'returns common exception response if school not found' do
       get(:show, params: { id: '10000' })
       assert_response :missing
