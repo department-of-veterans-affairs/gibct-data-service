@@ -47,11 +47,16 @@ class CrosswalkIssuesController < ApplicationController
     @issue = CrosswalkIssue.find(params[:id])
     address_data_to_match = @issue.weam.address_values.join
     physical_address_data = @issue.weam.physical_address_values.join
+    query = 'similarity(institution, ?) > 0.5 OR similarity((city||state||zip||addr), ?) > 0.3' \
+            'OR similarity((city||state||zip||addr), ?) > 0.3'
+    institution_results = IpedsHd.where(query, "%#{@issue.weam.institution}%",
+                                        "%#{address_data_to_match}%",
+                                        "%#{physical_address_data}%")
+                                 .order("similarity(institution, '#{@issue.weam.institution}') DESC,
+                                         similarity((city||state||zip||addr), '#{address_data_to_match}') DESC,
+                                         similarity((city||state||zip||addr), '#{physical_address_data}') DESC")
 
-    institution_results = IpedsHd.where("similarity(institution, ?) > 0.5 OR similarity((city||state||zip||addr), ?) > 0.3 OR similarity((city||state||zip||addr), ?) > 0.3", "%#{@issue.weam.institution}%", "%#{address_data_to_match}%", "%#{physical_address_data}%" )
-                              .order("similarity(institution, '#{@issue.weam.institution}'), similarity((city||state||zip||addr), '#{address_data_to_match}'), similarity((city||state||zip||addr), '#{physical_address_data}')")
-
-    @ipeds_hd_arr = (institution_results).uniq
+    @ipeds_hd_arr = institution_results.uniq
   end
 
   def match_ipeds_hd
