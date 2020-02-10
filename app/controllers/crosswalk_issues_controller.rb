@@ -2,9 +2,9 @@
 
 class CrosswalkIssuesController < ApplicationController
   def partials
-    @issues = CrosswalkIssue.includes(%i[weam crosswalk ipeds_hd])
+    @issues = CrosswalkIssue.includes(:crosswalk, :ipeds_hd, weam: :arf_gi_bill)
                             .by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE)
-                            .order('weams.institution, weams.facility_code')
+                            .order('arf_gi_bills.gibill desc nulls last, weams.institution, weams.facility_code')
   end
 
   def show_partial
