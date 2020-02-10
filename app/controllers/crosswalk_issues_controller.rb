@@ -53,7 +53,7 @@ class CrosswalkIssuesController < ApplicationController
     sanitize_order = IpedsHd.sanitize_sql_for_order("similarity(institution, #{escaped_institution}),
                                          similarity((city||state||zip||addr), '#{address_data_to_match}'),
                                          similarity((city||state||zip||addr), '#{physical_address_data}')")
-    
+
     @ipeds_hd_arr = IpedsHd.where(query, "%#{@issue.weam.institution}%",
                                   "%#{address_data_to_match}%",
                                   "%#{physical_address_data}%")
