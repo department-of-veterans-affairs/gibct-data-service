@@ -66,7 +66,6 @@ Metrics/MethodLength:
   Max: 20
   Exclude:
     - 'app/models/institution_builder.rb'
-    - 'app/models/weam.rb'
 
 Metrics/ClassLength:
   Exclude:
