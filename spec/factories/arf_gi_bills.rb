@@ -4,7 +4,10 @@ FactoryBot.define do
   factory :arf_gi_bill do
     institution { 'SOME SCHOOL' }
     facility_code { generate :facility_code }
-    gibill { Random.rand(1000) }
+
+    sequence :gibill do |n|
+      n
+    end
 
     trait :institution_builder do
       facility_code { '1ZZZZZZZ' }
