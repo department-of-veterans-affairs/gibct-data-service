@@ -49,12 +49,13 @@ class CrosswalkIssuesController < ApplicationController
     physical_address_data = @issue.weam.physical_address_values.join
     query = 'similarity(institution, ?) > 0.5 OR similarity((city||state||zip||addr), ?) > 0.3' \
             'OR similarity((city||state||zip||addr), ?) > 0.3'
+    sanitize_order = ApplicationRecord::sanitize_sql_for_order("similarity(institution, '#{@issue.weam.institution}') DESC,
+                                         similarity((city||state||zip||addr), '#{address_data_to_match}') DESC,
+                                         similarity((city||state||zip||addr), '#{physical_address_data}') DESC")
     @ipeds_hd_arr = IpedsHd.where(query, "%#{@issue.weam.institution}%",
                                   "%#{address_data_to_match}%",
                                   "%#{physical_address_data}%")
-                           .order("similarity(institution, '#{@issue.weam.institution}') DESC,
-                                         similarity((city||state||zip||addr), '#{address_data_to_match}') DESC,
-                                         similarity((city||state||zip||addr), '#{physical_address_data}') DESC")
+                           .order(sanitize_order)
   end
 
   def match_ipeds_hd
