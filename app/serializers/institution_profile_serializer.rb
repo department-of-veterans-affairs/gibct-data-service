@@ -105,7 +105,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   end
 
   def versioned_school_certifying_officials
-    object.school_certifying_officials.select { |sco| sco.institution_id == object.id }.map do |sco|
+    object.school_certifying_officials.select do |sco|
       VersionedSchoolCertifyingOfficialSerializer.new(sco)
     end
   end
