@@ -50,9 +50,9 @@ class CrosswalkIssuesController < ApplicationController
     query = 'similarity(institution, ?) > 0.5 OR similarity((city||state||zip||addr), ?) > 0.3' \
             'OR similarity((city||state||zip||addr), ?) > 0.3'
     escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
-    sanitize_order = IpedsHd.sanitize_sql_for_order("similarity(institution, #{escaped_institution}),
-                                         similarity((city||state||zip||addr), '#{address_data_to_match}'),
-                                         similarity((city||state||zip||addr), '#{physical_address_data}')")
+    sanitize_order = IpedsHd.sanitize_sql_for_order("similarity(institution, #{escaped_institution}) DESC,
+                                         similarity((city||state||zip||addr), '#{address_data_to_match}') DESC,
+                                         similarity((city||state||zip||addr), '#{physical_address_data}') DESC")
 
     @ipeds_hd_arr = IpedsHd.where(query, "%#{@issue.weam.institution}%",
                                   "%#{address_data_to_match}%",
