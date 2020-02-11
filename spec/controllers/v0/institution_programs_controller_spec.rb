@@ -35,15 +35,17 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
   end
 
   context 'when autocomplete' do
-    it 'returns collection of matches' do
+    before do
       create(:version, :production)
+    end
+
+    it 'returns collection of matches' do
       create_list(:institution_program, 2, :start_like_harv)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
     end
 
     it 'limits results to 6' do
-      create(:version, :production)
       create_list(:institution_program, 7, :start_like_harv)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
@@ -52,10 +54,39 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'returns empty collection on missing term parameter' do
-      create(:version, :production)
       create(:institution_program, :start_like_harv)
       get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by uppercase provider' do
+      program = create(:institution_program, :start_like_harv, :ca_employer)
+      create(:institution_program, :start_like_harv)
+      get(:autocomplete, params: { term: 'harv', provider: 'ACME INC' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(program.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by lowercase provider' do
+      program = create(:institution_program, :start_like_harv, :ca_employer)
+      create(:institution_program, :start_like_harv)
+      get(:autocomplete, params: { term: 'harv', provider: 'acme inc' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(program.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by preferred_provider' do
+      program = create(:institution_program, :start_like_harv, :preferred_provider)
+      create(:institution_program, :start_like_harv)
+      get(:autocomplete, params: { term: 'harv', preferred_provider: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(program.id)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end

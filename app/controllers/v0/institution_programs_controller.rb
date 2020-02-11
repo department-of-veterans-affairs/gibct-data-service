@@ -9,7 +9,7 @@ module V0
       @data = []
       if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
-        @data = InstitutionProgram.version(@version[:number]).autocomplete(@search_term)
+        @data = filter_results(InstitutionProgram.version(@version[:number])).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -38,6 +38,7 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
+        query[:preferred_provider].try(:downcase!)
         query[:provider].try(:upcase!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
@@ -52,12 +53,17 @@ module V0
                                    .eager_load(:institution)
                                    .search(@query[:name])
 
+      filter_results(relation)
+    end
+
+    def filter_results(relation)
+      @query ||= normalized_query_params
       [
-        %i[program_type type],
-        %i[institutions.institution provider],
-        %w[institutions.physical_country country],
-        %w[institutions.physical_state state],
-        %w[institutions.preferred_provider preferred_provider]
+          %i[program_type type],
+          %i[institutions.institution provider],
+          %w[institutions.physical_country country],
+          %w[institutions.physical_state state],
+          %w[institutions.preferred_provider preferred_provider]
       ].each do |filter_args|
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
