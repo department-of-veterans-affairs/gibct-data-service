@@ -59,11 +59,11 @@ module V0
     def filter_results(relation)
       @query ||= normalized_query_params
       [
-          %i[program_type type],
-          %i[institutions.institution provider],
-          %w[institutions.physical_country country],
-          %w[institutions.physical_state state],
-          %w[institutions.preferred_provider preferred_provider]
+        %i[program_type type],
+        %i[institutions.institution provider],
+        %w[institutions.physical_country country],
+        %w[institutions.physical_state state],
+        %w[institutions.preferred_provider preferred_provider]
       ].each do |filter_args|
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
