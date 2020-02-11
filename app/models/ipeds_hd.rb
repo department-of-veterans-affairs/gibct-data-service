@@ -81,6 +81,7 @@ class IpedsHd < ApplicationRecord
   validates :cross, presence: true
 
   def full_address
-    [addr, city, state, zip].compact.join(', ')
+    [addr, city, state, zip].compact
   end
+
 end

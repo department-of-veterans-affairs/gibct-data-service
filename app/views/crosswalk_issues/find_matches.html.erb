@@ -35,11 +35,11 @@
             <% @ipeds_hd_arr.each do |iped| %>
               <tr>
                 <td><%= iped.institution %></td>
-                <td><%= iped.full_address %></td>
+                <td><%= iped.full_address.join(', ') %></td>
                 <td><%= iped.ope %></td>
                 <td><%= iped.cross %></td>
                 <td>
-                  <%= form_with(url: "/crosswalk_issues/match_ipeds_hd", method: "post") do %>
+                  <%= form_with(url: "/crosswalk_issues/match_ipeds_hd") do %>
                     <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
                     <input type="hidden" name="iped_id" value="<%= iped.id %>" />
                     <%= submit_tag( "Match", class: 'btn dashboard-btn-success', data: { confirm: "Are you sure?" })%>
