@@ -183,6 +183,14 @@ class Weam < ApplicationRecord
     flags_for_approved?
   end
 
+  def address_values
+    [address_1, address_2, address_3, city, state, zip].compact
+  end
+
+  def physical_address_values
+    [physical_address_1, physical_address_2, physical_address_3, city, state, zip].compact
+  end
+
   private
 
   def poo_status_valid?
