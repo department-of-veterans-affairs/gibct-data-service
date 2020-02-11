@@ -19,13 +19,13 @@ module Archiver
       ApplicationRecord.transaction do
         ARCHIVE_TYPES_BY_PARENT_ID.each do |archivable|
           create_archives_by_parent_id(archivable[:source], archivable[:archive], previous_version, production_version)
-          delete_by_parent_id(archivable[:source], archivable[:archive], previous_version, production_version)
+          archivable[:source].joins(institution: :version).where('number >= ? AND number <?', previous_version, production_version).delete_all
         end
       end
       ApplicationRecord.transaction do
         ARCHIVE_TYPES_BY_VERSION_ID.each do |archivable|
           create_archives_by_version_id(archivable[:source], archivable[:archive], previous_version, production_version)
-          delete_by_version(archivable[:source], archivable[:archive], previous_version, production_version)
+          archivable[:source].joins(:version).where('number >= ? AND number <?', previous_version, production_version).delete_all
         end
       end
     rescue ActiveRecord::StatementInvalid => e
@@ -49,36 +49,12 @@ module Archiver
     ApplicationRecord.connection.execute(sql)
   end
 
-  def self.delete_by_parent_id(source, archive, previous_version, production_version)
-    str = <<-SQL
-      DELETE FROM #{source.table_name} s
-      USING institutions i, versions v
-      WHERE
-          s.institution_id = i.id
-      AND i.version_id = v.id
-      AND v.number >= ? AND v.number < ?;
-    SQL
-    sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
-    ApplicationRecord.connection.execute(sql)
-  end
-
   def self.create_archives_by_version_id(source, archive, previous_version, production_version)
     str = <<-SQL
       INSERT INTO #{archive.table_name}
       SELECT s.* FROM #{source.table_name} s
       JOIN versions v ON s.version_id = v.id
       WHERE v.number >= ? AND v.number < ?;
-    SQL
-    sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
-    ApplicationRecord.connection.execute(sql)
-  end
-
-  def self.delete_by_version(source, archive, previous_version, production_version)
-    str = <<-SQL
-      DELETE FROM #{source.table_name} s
-      USING versions v
-      WHERE s.version_id = v.id
-      AND v.number >= ? AND v.number < ?;
     SQL
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
     ApplicationRecord.connection.execute(sql)
