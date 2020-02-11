@@ -42,4 +42,44 @@ class CrosswalkIssuesController < ApplicationController
                             .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
                             .order('ipeds_hds.institution')
   end
+
+  def find_matches
+    @issue = CrosswalkIssue.find(params[:id])
+    address_data_to_match = @issue.weam.address_values.join
+    physical_address_data = @issue.weam.physical_address_values.join
+    query = 'similarity(institution, ?) > 0.5 OR similarity((city||state||zip||addr), ?) > 0.3' \
+            'OR similarity((city||state||zip||addr), ?) > 0.3'
+    escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
+    sanitize_order = IpedsHd.sanitize_sql_for_order("similarity(institution, #{escaped_institution}) DESC,
+                                         similarity((city||state||zip||addr), '#{address_data_to_match}') DESC,
+                                         similarity((city||state||zip||addr), '#{physical_address_data}') DESC")
+
+    @ipeds_hd_arr = IpedsHd.where(query, "%#{@issue.weam.institution}%",
+                                  "%#{address_data_to_match}%",
+                                  "%#{physical_address_data}%")
+                           .order(sanitize_order)
+  end
+
+  def match_ipeds_hd
+    crosswalk_issue = CrosswalkIssue.find(params[:issue_id])
+    ipeds_hd = IpedsHd.find(params[:iped_id])
+    weam = Weam.find(crosswalk_issue.weam_id)
+
+    if crosswalk_issue.crosswalk_id.nil?
+      crosswalk = Crosswalk.new
+      crosswalk.facility_code = weam.facility_code
+      crosswalk.city = weam.city
+      crosswalk.state = weam.state
+      crosswalk.institution = weam.institution
+    else
+      crosswalk = Crosswalk.find(crosswalk_issue.crosswalk_id)
+    end
+    crosswalk.cross = ipeds_hd.cross
+    crosswalk.ope = ipeds_hd.ope
+    crosswalk.derive_dependent_columns
+    crosswalk.save
+    crosswalk_issue.destroy
+
+    redirect_to action: :partials
+  end
 end
