@@ -83,5 +83,4 @@ class IpedsHd < ApplicationRecord
   def full_address
     [addr, city, state, zip].compact
   end
-
 end
