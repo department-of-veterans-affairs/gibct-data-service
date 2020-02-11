@@ -632,23 +632,23 @@ module InstitutionBuilder
           phone_extension,
           email,
           institution_id)
-       SELECT DISTINCT
-        s.facility_code,
-        institution_name,
-        priority,
-        first_name,
-        last_name,
-        title,
-        phone_area_code,
-        phone_number,
-        phone_extension,
-        email,
+       SELECT
+        i.facility_code,
+        i.institution,
+        s.priority,
+        s.first_name,
+        s.last_name,
+        s.title,
+        s.phone_area_code,
+        s.phone_number,
+        s.phone_extension,
+        s.email,
         i.id
-      FROM school_certifying_officials s
-      INNER JOIN institutions i ON s.facility_code = i.facility_code
+      FROM institutions i
+      INNER JOIN school_certifying_officials s ON i.facility_code = s.facility_code
       INNER JOIN versions v ON v.number = ?
       WHERE v.id = i.version_id
-      AND s.institution_id IS NOT NULL;
+      AND i.id IS NOT NULL;
     SQL
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
