@@ -39,7 +39,7 @@
                 <td><%= [i["addr"], i["state"], i["city"], i["zip"]].compact.join(", ") %></td>
                 <td><%= i["ope"] %></td>
                 <td><%= i["cross"] %></td>
-                <td><%= i["match_score"] %></td>
+                <td><%= (i["match_score"].to_f * 100).round(3) %>%</td>
                 <td>
                   <%= form_with(url: "/crosswalk_issues/match_ipeds_hd", method: "post") do %>
                     <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
