@@ -50,9 +50,8 @@ class CrosswalkIssuesController < ApplicationController
     escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
 
     str = <<-SQL
-        SELECT *, GREATEST(
-                    GREATEST(similarity(institution, #{escaped_institution}),
-                      similarity((city||state||zip||addr), '#{address_data_to_match}'))
+        SELECT *, GREATEST(similarity(institution, #{escaped_institution}),
+                      similarity((city||state||zip||addr), '#{address_data_to_match}')
                   , similarity((city||state||zip||addr), '#{physical_address_data}')) AS match_score
         FROM ipeds_hds
         WHERE (similarity(institution,  #{escaped_institution}) > 0.5
