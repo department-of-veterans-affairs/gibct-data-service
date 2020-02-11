@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_03_122400) do
+ActiveRecord::Schema.define(version: 2020_02_10_150004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -403,7 +403,7 @@ ActiveRecord::Schema.define(version: 2020_02_03_122400) do
   end
 
   create_table "institutions_archives", id: :integer, default: -> { "nextval('institutions_id_seq'::regclass)" }, force: :cascade do |t|
-    t.integer "version", null: false
+    t.integer "version"
     t.string "institution_type_name"
     t.string "facility_code"
     t.string "institution"
