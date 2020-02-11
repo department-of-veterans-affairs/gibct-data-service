@@ -79,5 +79,4 @@ class IpedsHd < ApplicationRecord
 
   has_many :crosswalk_issue, dependent: :delete_all
   validates :cross, presence: true
-
 end

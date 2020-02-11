@@ -48,16 +48,14 @@ class CrosswalkIssuesController < ApplicationController
     address_data_to_match = @issue.weam.address_values.join
     physical_address_data = @issue.weam.physical_address_values.join
     escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
-    sanitize_order = IpedsHd.sanitize_sql_for_order("GREATEST(GREATEST(similarity(institution, #{escaped_institution}),
-                                         similarity((city||state||zip||addr), '#{address_data_to_match}')),
-                                         similarity((city||state||zip||addr), '#{physical_address_data}')) DESC")
+
     str = <<-SQL
         SELECT *, GREATEST(
-                    GREATEST(similarity(institution, #{escaped_institution}), 
+                    GREATEST(similarity(institution, #{escaped_institution}),
                       similarity((city||state||zip||addr), '#{address_data_to_match}'))
                   , similarity((city||state||zip||addr), '#{physical_address_data}')) AS match_score
         FROM ipeds_hds
-        WHERE (similarity(institution,  #{escaped_institution}) > 0.5 
+        WHERE (similarity(institution,  #{escaped_institution}) > 0.5
           OR similarity((city||state||zip||addr), '#{address_data_to_match}') > 0.3
           OR similarity((city||state||zip||addr), '#{physical_address_data}') > 0.3)
         ORDER BY GREATEST(GREATEST(similarity(institution, #{escaped_institution}),
@@ -65,15 +63,16 @@ class CrosswalkIssuesController < ApplicationController
                                          similarity((city||state||zip||addr), '#{physical_address_data}')) DESC
     SQL
     sql = Institution.send(:sanitize_sql, str)
-
     results = ActiveRecord::Base.connection.execute(sql)
-    results.each do |r|
-      iped = IpedsHd.where(id: r["id"])[0]
-      r[:iped] = iped
-    end
-    @ipeds_hd_arr = results
+    @ipeds_hd_arr = map_ipeds_hd_to_score(results)
   end
 
+  def map_ipeds_hd_to_score(results)
+    results.each do |r|
+      r[:iped] = IpedsHd.where(id: r['id'])[0]
+    end
+    results
+  end
 
   def match_ipeds_hd
     crosswalk_issue = CrosswalkIssue.find(params[:issue_id])
