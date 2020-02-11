@@ -32,9 +32,7 @@ class GibctSiteMapper
     SitemapGenerator::Sitemap.create do
       add '/search', priority: 0.9, changefreq: 'monthly'
 
-      # Institution.joins("INNER JOIN versions v ON institutions.version_id = #{version}")
-      #            .find_each(batch_size: Settings.active_record.batch_size.find_each) do |institution|
-      Institution.joins('INNER JOIN versions v ON institutions.version_id = ', version.to_s)
+      Institution.where(version_id: version)
                  .find_each(batch_size: Settings.active_record.batch_size.find_each) do |institution|
         add "/profile/#{institution.facility_code}", priority: 0.8, changefreq: 'weekly'
       end

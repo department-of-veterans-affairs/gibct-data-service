@@ -40,6 +40,7 @@ module InstitutionTree
       WITH RECURSIVE related_up AS(
         SELECT campus_type, facility_code, parent_facility_code_id
         FROM institutions WHERE facility_code = ?
+        AND version_id = institutions.version_id
         UNION
           SELECT
             i.campus_type, i.facility_code, i.parent_facility_code_id
@@ -60,15 +61,16 @@ module InstitutionTree
           SELECT i.facility_code
           FROM institutions i
           WHERE i.facility_code = ?
+          AND version_id = i.version_id
           UNION
             SELECT i.facility_code
             FROM institutions i
             INNER JOIN related_down r ON i.parent_facility_code_id = r.facility_code
-            INNER JOIN versions v ON v.id = i.version_id
+            WHERE i.version_id = ?
         ) SELECT facility_code FROM related_down WHERE facility_code != ?
       SQL
       sql = Institution.send(:sanitize_sql,
-                             [str, ancestor.facility_code, ancestor.facility_code])
+                             [str, ancestor.facility_code, ancestor.version_id, ancestor.facility_code])
       facility_codes = Institution.connection.execute(sql).field_values('facility_code')
       Institution.where(facility_code: facility_codes, version_id: ancestor.version_id)
     end
