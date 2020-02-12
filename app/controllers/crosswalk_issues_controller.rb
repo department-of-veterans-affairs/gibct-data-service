@@ -50,7 +50,7 @@ class CrosswalkIssuesController < ApplicationController
     escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
 
     str = <<-SQL
-        SELECT *, GREATEST(similarity(institution, #{escaped_institution}),
+        SELECT id, ipeds_hds.cross, institution, addr, state, city, zip, ope, GREATEST(similarity(institution, #{escaped_institution}),
                       similarity((city||state||zip||addr), '#{address_data_to_match}')
                   , similarity((city||state||zip||addr), '#{physical_address_data}')) AS match_score
         FROM ipeds_hds
@@ -60,8 +60,7 @@ class CrosswalkIssuesController < ApplicationController
         ORDER BY match_score DESC
     SQL
     sql = Institution.send(:sanitize_sql, str)
-    results = ActiveRecord::Base.connection.execute(sql)
-    @ipeds_hd_arr = map_ipeds_hd_to_score(results)
+    @ipeds_hd_arr = ActiveRecord::Base.connection.execute(sql)
   end
 
   def match_ipeds_hd
@@ -85,14 +84,5 @@ class CrosswalkIssuesController < ApplicationController
     crosswalk_issue.destroy
 
     redirect_to action: :partials
-  end
-
-  private
-
-  def map_ipeds_hd_to_score(results)
-    results.each do |r|
-      r[:iped] = IpedsHd.where(id: r['id'])[0]
-    end
-    results
   end
 end
