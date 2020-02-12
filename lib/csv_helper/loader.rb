@@ -4,8 +4,6 @@ module CsvHelper
   module Loader
     CSV_FIRST_LINE = 2
 
-
-
     SMARTER_CSV_OPTIONS = {
       force_utf8: true, remove_zero_values: false, remove_empty_hashes: true,
       remove_empty_values: true, convert_values_to_numeric: false, remove_unmapped_keys: true
@@ -22,7 +20,7 @@ module CsvHelper
       klass.transaction do
         delete_all
         load_records(results, options)
-      end  
+      end
     end
 
     private
