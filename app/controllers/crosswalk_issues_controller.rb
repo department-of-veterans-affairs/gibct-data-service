@@ -64,13 +64,6 @@ class CrosswalkIssuesController < ApplicationController
     @ipeds_hd_arr = map_ipeds_hd_to_score(results)
   end
 
-  def map_ipeds_hd_to_score(results)
-    results.each do |r|
-      r[:iped] = IpedsHd.where(id: r['id'])[0]
-    end
-    results
-  end
-
   def match_ipeds_hd
     crosswalk_issue = CrosswalkIssue.find(params[:issue_id])
     ipeds_hd = IpedsHd.find(params[:iped_id])
@@ -92,5 +85,14 @@ class CrosswalkIssuesController < ApplicationController
     crosswalk_issue.destroy
 
     redirect_to action: :partials
+  end
+
+  private
+
+  def map_ipeds_hd_to_score(results)
+    results.each do |r|
+      r[:iped] = IpedsHd.where(id: r['id'])[0]
+    end
+    results
   end
 end
