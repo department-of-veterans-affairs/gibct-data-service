@@ -46,7 +46,8 @@ RSpec.shared_examples 'a loadable model' do |options|
 
       it 'does not delete previous record if upload is invalid' do
         results = described_class.load(csv_file_invalid, load_options)
-        expect { results }.not_to change(described_class, :count).from(1)
+        initial_result_count = 1
+        expect { results }.not_to change(described_class, :count).from(initial_result_count)
       end
     end
   end
