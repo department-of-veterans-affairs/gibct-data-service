@@ -57,9 +57,7 @@ class CrosswalkIssuesController < ApplicationController
         WHERE (similarity(institution,  #{escaped_institution}) > 0.5
           OR similarity((city||state||zip||addr), '#{address_data_to_match}') > 0.3
           OR similarity((city||state||zip||addr), '#{physical_address_data}') > 0.3)
-        ORDER BY GREATEST(GREATEST(similarity(institution, #{escaped_institution}),
-                                         similarity((city||state||zip||addr), '#{address_data_to_match}')),
-                                         similarity((city||state||zip||addr), '#{physical_address_data}')) DESC
+        ORDER BY match_score DESC
     SQL
     sql = Institution.send(:sanitize_sql, str)
     results = ActiveRecord::Base.connection.execute(sql)
