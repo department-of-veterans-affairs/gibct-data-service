@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_12_205137) do
+ActiveRecord::Schema.define(version: 2020_02_12_206022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1193,21 +1193,6 @@ ActiveRecord::Schema.define(version: 2020_02_12_205137) do
     t.string "email"
     t.bigint "institution_id"
     t.index ["institution_id"], name: "index_school_certifying_officials_on_institution_id"
-  end
-
-  create_table "school_certifying_officials_archives", id: false, force: :cascade do |t|
-    t.integer "id", default: -> { "nextval('school_certifying_officials_id_seq'::regclass)" }, null: false
-    t.string "facility_code"
-    t.string "institution_name"
-    t.string "priority"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "title"
-    t.string "phone_area_code"
-    t.string "phone_number"
-    t.string "phone_extension"
-    t.string "email"
-    t.bigint "institution_id"
   end
 
   create_table "school_closures", id: :serial, force: :cascade do |t|
