@@ -154,7 +154,7 @@ class Institution < ApplicationRecord
 
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
-  has_many :school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
+  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
   belongs_to :version
 
   self.per_page = 10

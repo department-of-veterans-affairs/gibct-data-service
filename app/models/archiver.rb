@@ -3,7 +3,7 @@
 module Archiver
   ARCHIVE_TYPES_BY_PARENT_ID = [
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
-    { source: SchoolCertifyingOfficial, archive: SchoolCertifyingOfficialsArchive }
+    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive }
   ].freeze
 
   ARCHIVE_TYPES_BY_VERSION_ID = [
@@ -48,6 +48,7 @@ module Archiver
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
     ApplicationRecord.connection.execute(sql)
   end
+  
 
   def self.create_archives_by_version_id(source, archive, previous_version, production_version)
     str = <<-SQL

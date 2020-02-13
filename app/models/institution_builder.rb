@@ -51,8 +51,7 @@ module InstitutionBuilder
     add_sec109_closed_school(version_number)
     build_zip_code_rates_from_weams(version_number)
     build_institution_programs(version_number)
-    build_school_certifying_officials(version_number)
-    add_sco_institution_id(version_number)
+    build_versioned_school_certifying_official(version_number)
   end
 
   def self.run(user)
@@ -618,52 +617,39 @@ module InstitutionBuilder
     InstitutionProgram.connection.execute(sql)
   end
 
-  def self.build_school_certifying_officials(version_number)
-    str = <<-SQL
-        INSERT INTO school_certifying_officials(
-          facility_code,
-          institution_name,
-          priority,
-          first_name,
-          last_name,
-          title,
-          phone_area_code,
-          phone_number,
-          phone_extension,
-          email,
-          institution_id)
-       SELECT DISTINCT
-        i.facility_code,
-        i.institution,
-        s.priority,
-        s.first_name,
-        s.last_name,
-        s.title,
-        s.phone_area_code,
-        s.phone_number,
-        s.phone_extension,
-        s.email,
-        i.id
-      FROM institutions i
-      INNER JOIN school_certifying_officials s ON i.facility_code = s.facility_code
-      INNER JOIN versions v ON v.number = ?
-      WHERE v.id = i.version_id
-      AND s.institution_id IS NOT NULL;
-    SQL
-    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
-    SchoolCertifyingOfficial.connection.execute(sql)
-  end
 
-  def self.add_sco_institution_id(version_number)
+  def self.build_versioned_school_certifying_official(version_number)
     str = <<-SQL
-        UPDATE school_certifying_officials s
-        SET institution_id = i.id
-        FROM institutions i
-        INNER JOIN versions v ON v.number = ?
-        WHERE s.facility_code = i.facility_code
-        AND i.version_id = v.id
-        AND s.institution_id IS NULL;
+      INSERT INTO versioned_school_certifying_officials(
+        facility_code,
+        institution_name,
+        priority,
+        first_name,
+        last_name,
+        title,
+        phone_area_code,
+        phone_number,
+        phone_extension,
+        email,
+        institution_id)
+      Select
+        i.facility_code,
+        institution_name,
+        priority,
+        first_name,
+        last_name,
+        title,
+        phone_area_code,
+        phone_number,
+        phone_extension,
+        email,
+        i.id
+      FROM school_certifying_officials s
+      INNER JOIN versions v ON v.number = ?
+      INNER JOIN institutions i ON i.facility_code = s.facility_code
+      WHERE v.id = i.version_id
     SQL
+
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
     SchoolCertifyingOfficial.connection.execute(sql)
   end
