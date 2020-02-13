@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_10_150004) do
+ActiveRecord::Schema.define(version: 2020_02_12_205137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1478,6 +1478,8 @@ ActiveRecord::Schema.define(version: 2020_02_10_150004) do
     t.string "phone_extension"
     t.string "email"
     t.integer "version"
+    t.bigint "institution_id"
+    t.index ["institution_id"], name: "index_versioned_school_certifying_officials_on_institution_id"
   end
 
   create_table "versioned_school_certifying_officials_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
@@ -1492,6 +1494,7 @@ ActiveRecord::Schema.define(version: 2020_02_10_150004) do
     t.string "phone_extension"
     t.string "email"
     t.integer "version"
+    t.bigint "institution_id"
   end
 
   create_table "versions", id: :serial, force: :cascade do |t|
@@ -1659,5 +1662,6 @@ ActiveRecord::Schema.define(version: 2020_02_10_150004) do
   add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institutions", "versions"
   add_foreign_key "school_certifying_officials", "institutions"
+  add_foreign_key "versioned_school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
 end
