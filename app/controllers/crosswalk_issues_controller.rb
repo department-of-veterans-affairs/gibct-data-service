@@ -47,17 +47,20 @@ class CrosswalkIssuesController < ApplicationController
     @issue = CrosswalkIssue.find(params[:id])
     address_data_to_match = @issue.weam.address_values.join
     physical_address_data = @issue.weam.physical_address_values.join
-    query = 'similarity(institution, ?) > 0.5 OR similarity((city||state||zip||addr), ?) > 0.3' \
-            'OR similarity((city||state||zip||addr), ?) > 0.3'
     escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
-    sanitize_order = IpedsHd.sanitize_sql_for_order("similarity(institution, #{escaped_institution}) DESC,
-                                         similarity((city||state||zip||addr), '#{address_data_to_match}') DESC,
-                                         similarity((city||state||zip||addr), '#{physical_address_data}') DESC")
 
-    @ipeds_hd_arr = IpedsHd.where(query, "%#{@issue.weam.institution}%",
-                                  "%#{address_data_to_match}%",
-                                  "%#{physical_address_data}%")
-                           .order(sanitize_order)
+    str = <<-SQL
+        SELECT id, ipeds_hds.cross, institution, addr, state, city, zip, ope, GREATEST(similarity(institution, #{escaped_institution}),
+                      similarity((city||state||zip||addr), '#{address_data_to_match}')
+                  , similarity((city||state||zip||addr), '#{physical_address_data}')) AS match_score
+        FROM ipeds_hds
+        WHERE (similarity(institution,  #{escaped_institution}) > 0.5
+          OR similarity((city||state||zip||addr), '#{address_data_to_match}') > 0.3
+          OR similarity((city||state||zip||addr), '#{physical_address_data}') > 0.3)
+        ORDER BY match_score DESC
+    SQL
+    sql = IpedsHd.sanitize_sql(str)
+    @ipeds_hd_arr = ActiveRecord::Base.connection.execute(sql)
   end
 
   def match_ipeds_hd
