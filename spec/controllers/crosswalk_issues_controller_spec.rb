@@ -189,7 +189,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
       end
 
       it 'populates an array of Ipeds_hds' do
-        expect(assigns(:ipeds_hd_arr).length).to eq(2)
+        expect(assigns(:ipeds_hd_arr).count).to eq(2)
       end
 
       it 'returns http success' do
