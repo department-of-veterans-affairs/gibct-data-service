@@ -49,8 +49,8 @@ module InstitutionBuilder
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
     build_zip_code_rates_from_weams(version.number)
-    build_institution_programs(version.number)
-    build_versioned_school_certifying_official(version.number)
+    build_institution_programs(version.id)
+    build_versioned_school_certifying_official(version.id)
   end
 
   def self.run(user)
@@ -460,7 +460,7 @@ module InstitutionBuilder
           AND versions.id = i.version_id);
     SQL
 
-    sql = Institution.send(:sanitize_sql, [str, version_number])
+    sql = Institution.send(:sanitize_sql, [str])
     Institution.connection.execute(sql)
   end
 
@@ -524,7 +524,7 @@ module InstitutionBuilder
 
   # edu_programs.length_in_weeks is being used twice because
   # it is a short term fix to an issue that they aren't sure how we should fix
-  def self.build_institution_programs(version_number)
+  def self.build_institution_programs(version_id)
     str = <<-SQL
       INSERT INTO institution_programs (
         program_type,
@@ -572,9 +572,8 @@ module InstitutionBuilder
           AND LOWER(description) = LOWER(vet_tec_program)
           AND vet_tec_program IS NOT NULL
         INNER JOIN institutions i ON p.facility_code = i.facility_code
-        INNER JOIN versions v ON v.number = ?
-        WHERE v.id = i.version_id
-          AND i.approved = true;
+        WHERE i.version_id = #{version_id}
+          AND i.approved = true;;
 
       UPDATE institution_programs SET
         length_in_hours = 0,
@@ -588,11 +587,11 @@ module InstitutionBuilder
       );
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql, [str, version_number])
+    sql = InstitutionProgram.send(:sanitize_sql, [str])
     InstitutionProgram.connection.execute(sql)
   end
 
-  def self.build_versioned_school_certifying_official(version_number)
+  def self.build_versioned_school_certifying_official(version_id)
     str = <<-SQL
       INSERT INTO versioned_school_certifying_officials(
         facility_code,
@@ -619,12 +618,11 @@ module InstitutionBuilder
         email,
         i.id
       FROM school_certifying_officials s
-      INNER JOIN versions v ON v.number = ?
       INNER JOIN institutions i ON i.facility_code = s.facility_code
-      WHERE v.id = i.version_id
+      WHERE i.version_id = #{version_id}
     SQL
 
-    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str, version_number])
+    sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
     SchoolCertifyingOfficial.connection.execute(sql)
   end
 end
