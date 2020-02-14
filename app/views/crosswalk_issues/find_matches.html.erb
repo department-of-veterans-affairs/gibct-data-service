@@ -33,17 +33,17 @@
             <th>Actions</th>
             </thead>
             <tbody>
-            <% @ipeds_hd_arr.each do |i| %>
+            <% @ipeds_hd_arr.each do |iped| %>
               <tr>
-                <td><%= i["institution"] %></td>
-                <td><%= [i["addr"], i["state"], i["city"], i["zip"]].compact.join(", ") %></td>
-                <td><%= i["ope"] %></td>
-                <td><%= i["cross"] %></td>
-                <td><%= (i["match_score"].to_f * 100).round(3) %>%</td>
+                <td><%= iped["institution"] %></td>
+                <td><%= [iped["addr"], iped["state"], iped["city"], iped["zip"]].compact.join(", ") %></td>
+                <td><%= iped["ope"] %></td>
+                <td><%= iped["cross"] %></td>
+                <td><%= (iped["match_score"].to_f * 100).round(3) %>%</td>
                 <td>
                   <%= form_with(url: "/crosswalk_issues/match_ipeds_hd", method: "post") do %>
                     <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
-                    <input type="hidden" name="iped_id" value="<%= i["id"] %>" />
+                    <input type="hidden" name="iped_id" value="<%= iped["id"] %>" />
                     <%= submit_tag( "Match", class: 'btn dashboard-btn-success', data: { confirm: "Are you sure?" })%>
                   <% end %>
                 </td>

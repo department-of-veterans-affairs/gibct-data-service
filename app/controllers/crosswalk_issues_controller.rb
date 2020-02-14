@@ -59,8 +59,7 @@ class CrosswalkIssuesController < ApplicationController
           OR similarity((city||state||zip||addr), '#{physical_address_data}') > 0.3)
         ORDER BY match_score DESC
     SQL
-    sql = Institution.send(:sanitize_sql, str)
-    @ipeds_hd_arr = ActiveRecord::Base.connection.execute(sql)
+    @ipeds_hd_arr = ActiveRecord::Base.connection.execute(str)
   end
 
   def match_ipeds_hd
