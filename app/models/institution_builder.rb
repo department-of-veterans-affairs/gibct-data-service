@@ -11,47 +11,46 @@ module InstitutionBuilder
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
-  def self.add_vet_tec_provider(version_number)
+  def self.add_vet_tec_provider(version_id)
     str = <<-SQL
     UPDATE institutions SET vet_tec_provider = TRUE
       from versions
       WHERE substring(institutions.facility_code, 2 , 1) = 'V'
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
     Institution.connection.update(str)
   end
 
-  def self.run_insertions(version_number, version_id)
-    initialize_with_weams(version_number)
-    add_crosswalk(version_number)
-    add_sva(version_number)
-    add_vsoc(version_number)
-    add_eight_key(version_number)
-    add_accreditation(version_number)
-    add_arf_gi_bill(version_number)
-    add_p911_tf(version_number)
-    add_p911_yr(version_number)
-    add_mou(version_number)
-    add_scorecard(version_number)
-    add_ipeds_ic(version_number)
-    add_ipeds_hd(version_number)
-    add_ipeds_ic_ay(version_number)
-    add_ipeds_ic_py(version_number)
-    add_sec_702(version_number)
-    add_settlement(version_number)
-    add_hcm(version_number)
-    add_complaint(version_id)
-    add_outcome(version_number)
-    add_stem_offered(version_number)
-    add_yellow_ribbon_programs(version_number)
-    add_school_closure(version_number)
-    add_vet_tec_provider(version_number)
-    add_extension_campus_type(version_number)
-    add_sec109_closed_school(version_number)
-    build_zip_code_rates_from_weams(version_number)
-    build_institution_programs(version_number)
-    build_versioned_school_certifying_official(version_number)
+  def self.run_insertions(version)
+    initialize_with_weams(version.number)
+    add_crosswalk(version.id)
+    add_sva(version.id)
+    add_vsoc(version.id)
+    add_eight_key(version.id)
+    add_accreditation(version.id)
+    add_arf_gi_bill(version.id)
+    add_p911_tf(version.id)
+    add_p911_yr(version.id)
+    add_mou(version.id)
+    add_scorecard(version.id)
+    add_ipeds_ic(version.id)
+    add_ipeds_hd(version.id)
+    add_ipeds_ic_ay(version.id)
+    add_ipeds_ic_py(version.id)
+    add_sec_702(version.id)
+    add_settlement(version.id)
+    add_hcm(version.id)
+    add_complaint(version.id)
+    add_outcome(version.id)
+    add_stem_offered(version.id)
+    add_yellow_ribbon_programs(version.number)
+    add_school_closure(version.id)
+    add_vet_tec_provider(version.id)
+    add_extension_campus_type(version.id)
+    add_sec109_closed_school(version.id)
+    build_zip_code_rates_from_weams(version.number)
+    build_institution_programs(version.number)
+    build_versioned_school_certifying_official(version.number)
   end
 
   def self.run(user)
@@ -60,7 +59,7 @@ module InstitutionBuilder
 
     begin
       Institution.transaction do
-        run_insertions(version.number, version.id)
+        run_insertions(version)
       end
 
       version.update(completed_at: Time.now.utc.to_s(:db))
@@ -113,69 +112,64 @@ module InstitutionBuilder
     Institution.connection.execute(sql)
   end
 
-  def self.add_crosswalk(version_number)
+  def self.add_crosswalk(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Crosswalk)}
-      FROM crosswalks, versions
+      FROM crosswalks
       WHERE institutions.facility_code = crosswalks.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_sec109_closed_school(version_number)
+  def self.add_sec109_closed_school(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Sec109ClosedSchool)}
-      FROM  sec109_closed_schools, versions
+      FROM  sec109_closed_schools
       WHERE institutions.facility_code = sec109_closed_schools.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_sva(version_number)
+  def self.add_sva(version_id)
     str = <<-SQL
       UPDATE institutions SET
         student_veteran = TRUE, student_veteran_link = svas.student_veteran_link
-      FROM svas, versions
+      FROM svas
       WHERE institutions.cross = svas.cross AND svas.cross IS NOT NULL
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_vsoc(version_number)
+  def self.add_vsoc(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Vsoc)}
-      FROM vsocs, versions
+      FROM vsocs
       WHERE institutions.facility_code = vsocs.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_eight_key(version_number)
+  def self.add_eight_key(version_id)
     str = <<-SQL
       UPDATE institutions SET eight_keys = TRUE
-      FROM eight_keys, versions
+      FROM eight_keys
       WHERE institutions.cross = eight_keys.cross
         AND eight_keys.cross IS NOT NULL
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id;
+        AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_accreditation(version_number)
+  def self.add_accreditation(version_id)
     # Set the `accreditation_type`, `accreditation_status`, `caution_flag` and `caution_reason` by joining on
     # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
     # have a unique `ope` provided.
@@ -184,14 +178,13 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         accreditation_type = accreditation_records.accreditation_type
-      FROM accreditation_institute_campuses, accreditation_records, versions
+      FROM accreditation_institute_campuses, accreditation_records
       WHERE {{JOIN_CLAUSE}}
         AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
         AND institutions.ope IS NOT NULL
         AND accreditation_records.accreditation_end_date IS NULL
         AND accreditation_records.program_id = 1
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id
+        AND institutions.version_id = #{version_id}
         AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
@@ -205,7 +198,7 @@ module InstitutionBuilder
       SET accreditation_status = aa.action_description,
           caution_flag = TRUE,
           caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
-      FROM accreditation_institute_campuses, accreditation_actions aa, versions
+      FROM accreditation_institute_campuses, accreditation_actions aa
       WHERE {{JOIN_CLAUSE}}
         -- has received a probationary action
         AND aa.id = (
@@ -226,8 +219,7 @@ module InstitutionBuilder
             LIMIT 1
         ) IS NULL
         AND institutions.ope IS NOT NULL
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id;
+        AND institutions.version_id = #{version_id}
     SQL
 
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
@@ -235,43 +227,40 @@ module InstitutionBuilder
     end
   end
 
-  def self.add_arf_gi_bill(version_number)
+  def self.add_arf_gi_bill(version_id)
     str = <<-SQL
       UPDATE institutions SET gibill = arf_gi_bills.gibill
-      FROM arf_gi_bills, versions
+      FROM arf_gi_bills
       WHERE institutions.facility_code = arf_gi_bills.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_p911_tf(version_number)
+  def self.add_p911_tf(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(P911Tf)}
-      FROM p911_tfs, versions
+      FROM p911_tfs
       WHERE institutions.facility_code = p911_tfs.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_p911_yr(version_number)
+  def self.add_p911_yr(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(P911Yr)}
-      FROM p911_yrs, versions
+      FROM p911_yrs
       WHERE institutions.facility_code = p911_yrs.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_mou(version_number)
+  def self.add_mou(version_id)
     reason = 'DoD Probation For Military Tuition Assistance'
 
     # Sets the caution flag for any approved school having a probatiton (status == true)
@@ -279,10 +268,9 @@ module InstitutionBuilder
       UPDATE institutions SET
         dodmou = mous.dodmou,
         caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
-      FROM mous, versions
+      FROM mous
       WHERE institutions.ope6 = mous.ope6
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
@@ -294,80 +282,74 @@ module InstitutionBuilder
         caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
       FROM (
         SELECT distinct(ope6), '#{reason}' AS reason FROM mous
-        WHERE dod_status = TRUE) as reasons_list, versions
+        WHERE dod_status = TRUE) as reasons_list
       WHERE institutions.ope6 = reasons_list.ope6
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_scorecard(version_number)
+  def self.add_scorecard(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Scorecard)}
-      FROM scorecards, versions
+      FROM scorecards
       WHERE institutions.cross = scorecards.cross
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_ic(version_number)
+  def self.add_ipeds_ic(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsIc)}
-      FROM ipeds_ics, versions
+      FROM ipeds_ics
       WHERE institutions.cross = ipeds_ics.cross
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_hd(version_number)
+  def self.add_ipeds_hd(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsHd)}
-      FROM ipeds_hds, versions
+      FROM ipeds_hds
       WHERE institutions.cross = ipeds_hds.cross
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_ic_ay(version_number)
+  def self.add_ipeds_ic_ay(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsIcAy)}
-      FROM ipeds_ic_ays, versions
+      FROM ipeds_ic_ays
       WHERE institutions.cross = ipeds_ic_ays.cross
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_ipeds_ic_py(version_number)
+  def self.add_ipeds_ic_py(version_id)
     columns = IpedsIcPy::COLS_USED_IN_INSTITUTION.map(&:to_s).map do |col|
       %("#{col}" = CASE WHEN institutions.#{col} IS NULL THEN ipeds_ic_pies.#{col} ELSE institutions.#{col} END)
     end.join(', ')
 
     str = <<-SQL
       UPDATE institutions SET #{columns}
-      FROM ipeds_ic_pies, versions
+      FROM ipeds_ic_pies
       WHERE institutions.cross = ipeds_ic_pies.cross
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_sec_702(version_number)
+  def self.add_sec_702(version_id)
     # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
     # only approved public schools can be SEC 702 complaint
     reason = 'Does Not Offer Required In-State Tuition Rates'
@@ -384,17 +366,16 @@ module InstitutionBuilder
           INNER JOIN sec702s ON sec702s.state = institutions.state
             EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
             UNION SELECT facility_code, sec_702 FROM sec702_schools
-      ) AS s702_list, versions
+      ) AS s702_list
       WHERE institutions.facility_code = s702_list.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id;
+        AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_settlement(version_number)
+  def self.add_settlement(version_id)
     # Sets caution flags and caution flag reasons if the corresponing approved school (by IPEDs id)
     # has an entry in the settlements table.
     str = <<-SQL
@@ -406,16 +387,15 @@ module InstitutionBuilder
         FROM settlements
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
-      ) settlement_list, versions
+      ) settlement_list
       WHERE institutions.cross = settlement_list.cross
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_hcm(version_number)
+  def self.add_hcm(version_id)
     # Sets caution flags and caution flag reasons if the corresponing approved school (by ope6)
     # has an entry in the hcms table.
     str = <<-SQL
@@ -427,10 +407,9 @@ module InstitutionBuilder
           array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
         FROM hcms
         GROUP BY ope6
-      ) hcm_list, versions
+      ) hcm_list
       WHERE institutions.ope6 = hcm_list.ope6
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
@@ -442,28 +421,26 @@ module InstitutionBuilder
     Complaint.rollup_sums(:ope6, version_id)
   end
 
-  def self.add_outcome(version_number)
+  def self.add_outcome(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Outcome)}
-      FROM outcomes, versions
+      FROM outcomes
       WHERE institutions.facility_code = outcomes.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_stem_offered(version_number)
+  def self.add_stem_offered(version_id)
     str = <<-SQL
       UPDATE institutions SET stem_offered=true
-      FROM ipeds_cip_codes, stem_cip_codes, versions
+      FROM ipeds_cip_codes, stem_cip_codes
       WHERE institutions.cross = ipeds_cip_codes.cross
         AND institutions.cross IS NOT NULL
         AND ipeds_cip_codes.ctotalt > 0
         AND ipeds_cip_codes.cipcode = stem_cip_codes.twentyten_cip_code
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id;
+        AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
@@ -487,13 +464,12 @@ module InstitutionBuilder
     Institution.connection.execute(sql)
   end
 
-  def self.add_school_closure(version_number)
+  def self.add_school_closure(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(SchoolClosure)}
-      FROM school_closures, versions
+      FROM school_closures
       WHERE institutions.facility_code = school_closures.facility_code
-      AND versions.number = #{version_number}
-      AND versions.id = institutions.version_id;
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
@@ -535,14 +511,13 @@ module InstitutionBuilder
     ZipcodeRate.connection.execute(sql)
   end
 
-  def self.add_extension_campus_type(version_number)
+  def self.add_extension_campus_type(version_id)
     str = <<-SQL
     UPDATE institutions SET campus_type = 'E'
     FROM versions
       WHERE substring(institutions.facility_code, 3 , 1) = 'X'
         AND institutions.campus_type IS NULL
-        AND versions.number = #{version_number}
-        AND versions.id = institutions.version_id;
+        AND institutions.version_id = #{version_id}
     SQL
     Institution.connection.update(str)
   end
