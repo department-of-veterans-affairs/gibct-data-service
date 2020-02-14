@@ -54,7 +54,7 @@ RSpec.shared_examples 'an archivable model by version id' do |options|
         error_message = 'BOOM!'
         invalid_statement = ActiveRecord::StatementInvalid.new(error_message)
         invalid_statement.set_backtrace(%(backtrace))
-        allow(Archiver).to receive(:create_archives_by_version_id).and_raise(invalid_statement)
+        allow(Archiver).to receive(:create_archives).and_raise(invalid_statement)
       end
 
       def check_log_for_error(error_message)
@@ -62,7 +62,7 @@ RSpec.shared_examples 'an archivable model by version id' do |options|
           .with(error_message)
       end
       it 'returns an error message' do
-        allow(Archiver).to receive(:create_archives_by_version_id).and_raise(StandardError, 'BOOM!')
+        allow(Archiver).to receive(:create_archives).and_raise(StandardError, 'BOOM!')
         allow(Rails.logger).to receive(:error).with('There was an error of unexpected origin: BOOM!')
         Archiver.archive_previous_versions
         check_log_for_error('There was an error of unexpected origin: BOOM!')
