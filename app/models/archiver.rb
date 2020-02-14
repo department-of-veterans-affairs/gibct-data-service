@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Archiver
-
   ARCHIVE_TYPES = [
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
@@ -21,7 +20,7 @@ module Archiver
                      archivable[:source].joins(institution: :version)
                    else
                      archivable[:source].joins(:version)
-          end
+                   end
           source.where('number >= ? AND number <?', previous_version, production_version).delete_all
         end
       end

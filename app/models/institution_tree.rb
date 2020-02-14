@@ -69,6 +69,7 @@ module InstitutionTree
             WHERE i.version_id = ?
         ) SELECT facility_code FROM related_down WHERE facility_code != ?
       SQL
+
       sql = Institution.send(:sanitize_sql,
                              [str, ancestor.facility_code, ancestor.version_id, ancestor.version_id, ancestor.facility_code])
       facility_codes = Institution.connection.execute(sql).field_values('facility_code')

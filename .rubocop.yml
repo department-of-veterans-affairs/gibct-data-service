@@ -55,6 +55,7 @@ Metrics/LineLength:
     - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
     - "app/models/gibct_site_mapper.rb"
     - "app/models/archiver.rb"
+    - "app/models/institution_tree.rb"
     - "spec/models/institution_tree_spec.rb"
     - "spec/controllers/v0/institutions_controller_spec.rb"
     - "spec/models/institution_spec.rb"
@@ -91,6 +92,7 @@ Metrics/AbcSize:
   Max: 40
   Exclude:
     - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
+    - "app/models/institution_builder.rb"
 
 Metrics/ModuleLength:
   Exclude:
@@ -128,6 +130,7 @@ RSpec/FilePath:
 RSpec/DescribeClass:
   Exclude:
     - "spec/config/initializers/csv_types_spec.rb"
+    - "spec/models/archiver_spec.rb"
 
 RSpec/ExampleLength:
   Max: 8

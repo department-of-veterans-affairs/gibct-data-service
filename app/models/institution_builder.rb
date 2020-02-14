@@ -592,7 +592,6 @@ module InstitutionBuilder
     InstitutionProgram.connection.execute(sql)
   end
 
-
   def self.build_versioned_school_certifying_official(version_number)
     str = <<-SQL
       INSERT INTO versioned_school_certifying_officials(
