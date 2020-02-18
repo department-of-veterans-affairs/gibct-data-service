@@ -45,24 +45,16 @@ RSpec.shared_examples 'a loadable model' do |options|
       end
 
       it 'does roll back to the old table content if the upload is invalid' do
-        allow(described_class).to receive(:load_csv_file).and_raise('error in csv')
+        allow(described_class).to receive(:load_csv_file).and_raise(StandardError)
         before_count = described_class.count
-        begin
-          described_class.load(csv_file_invalid, load_options)
-        rescue StandardError => e
-          puts e
-        end
+        expect { described_class.load(csv_file_invalid, load_options) }.to raise_error(StandardError)
         expect(before_count).to eq(described_class.count)
       end
 
       it 'does roll back to the old table content if the upload loaded records are invalid' do
         allow(described_class).to receive(:load_records).and_raise(StandardError)
         before_count = described_class.count
-        begin
-          described_class.load_from_api([], load_options)
-        rescue StandardError => e
-          puts e
-        end
+        expect { described_class.load_from_api([], load_options) }.to raise_error(StandardError)
         expect(before_count).to eq(described_class.count)
       end
     end
