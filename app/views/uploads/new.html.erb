@@ -13,11 +13,15 @@
       <div class="col-xs-4">
         <div class="alert alert-info" role="alert">
           <h4 class="alert-heading">CSV Data Requirements</h4><br />
-          <ul>
-            <% @requirements.each do |validations| %>
-              <li><%= validations %></li>
+          <ol>
+            <% @requirements.each do |requirement | %>
+              <%= requirement[:message] %>
+              <ul>
+              <li><%= requirement[:value] %></li>
+              
+              <ul>
             <% end %>
-          </ul>
+          </ol>
         </div>
       </div>
     <% end %>

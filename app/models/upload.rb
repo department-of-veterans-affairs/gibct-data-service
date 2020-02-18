@@ -115,10 +115,17 @@ class Upload < ApplicationRecord
   def self.fetching_for?(csv_type)
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
-
-  def self.valid_col_seps
+  # original Method
+  def self.OGvalid_col_seps
     valid_col_seps = Settings.csv_upload.column_separators.map { |cs| "\"#{cs}\"" }.join(' and ')
     "Valid column separators are: #{valid_col_seps}."
+  end
+
+  def self.valid_col_seps
+    
+    array = Settings.csv_upload.column_separators.each { |cs|}
+     {:value  => array, :message => "Valid_column_separators_are"}
+  
   end
 
   private
