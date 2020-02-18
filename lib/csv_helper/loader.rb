@@ -14,8 +14,6 @@ module CsvHelper
         delete_all
         load_csv_file(file, options)
       end
-    rescue StandardError => e
-      "Error #{e.message}"
     end
 
     def load_from_api(results, options = {})
@@ -23,8 +21,6 @@ module CsvHelper
         delete_all
         load_records(results, options)
       end
-    rescue StandardError => e
-      "Error #{e.message}"
     end
 
     private
