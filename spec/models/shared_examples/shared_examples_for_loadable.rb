@@ -44,7 +44,7 @@ RSpec.shared_examples 'a loadable model' do |options|
         expect(results.ids.length).to eq(1)
       end
 
-      it 'does rolls back to the old table content if the upload is invalid' do
+      it 'does roll back to the old table content if the upload is invalid' do
         allow(described_class).to receive(:load_csv_file).and_raise('error in csv')
         before_count = described_class.count
         begin
@@ -55,7 +55,7 @@ RSpec.shared_examples 'a loadable model' do |options|
         expect(before_count).to eq(described_class.count)
       end
 
-      it 'does rolls back to the old table content if the upload loaded records are invalid' do
+      it 'does roll back to the old table content if the upload loaded records are invalid' do
         allow(described_class).to receive(:load_records).and_raise(StandardError)
         before_count = described_class.count
         begin
