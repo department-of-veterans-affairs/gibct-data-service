@@ -29,19 +29,21 @@
             <th>Address</th>
             <th>OPE</th>
             <th>IPE</th>
+            <th>Matching Score</th>
             <th>Actions</th>
             </thead>
             <tbody>
             <% @ipeds_hd_arr.each do |iped| %>
               <tr>
-                <td><%= iped.institution %></td>
-                <td><%= iped.full_address.join(', ') %></td>
-                <td><%= iped.ope %></td>
-                <td><%= iped.cross %></td>
+                <td><%= iped["institution"] %></td>
+                <td><%= [iped["addr"], iped["state"], iped["city"], iped["zip"]].compact.join(", ") %></td>
+                <td><%= iped["ope"] %></td>
+                <td><%= iped["cross"] %></td>
+                <td><%= (iped["match_score"].to_f * 100).round(3) %>%</td>
                 <td>
-                  <%= form_with(url: "/crosswalk_issues/match_ipeds_hd") do %>
+                  <%= form_with(url: crosswalk_issues_match_ipeds_hd_path) do %>
                     <input type="hidden" name="issue_id" value="<%= @issue.id %>" />
-                    <input type="hidden" name="iped_id" value="<%= iped.id %>" />
+                    <input type="hidden" name="iped_id" value="<%= iped["id"] %>" />
                     <%= submit_tag( "Match", class: 'btn dashboard-btn-success', data: { confirm: "Are you sure?" })%>
                   <% end %>
                 </td>
