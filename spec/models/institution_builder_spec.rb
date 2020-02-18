@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
-  let(:institutions) { Institution.joins(:version) }
+  let(:institutions) { Institution.where(version: Version.current_preview) }
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
