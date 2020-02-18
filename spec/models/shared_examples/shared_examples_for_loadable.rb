@@ -44,10 +44,17 @@ RSpec.shared_examples 'a loadable model' do |options|
         expect(results.ids.length).to eq(1)
       end
 
-      it 'does not delete previous record if upload is invalid' do
-        results = described_class.load(csv_file_invalid, load_options)
-        initial_result_count = 1
-        expect { results }.not_to change(described_class, :count).from(initial_result_count)
+      it 'does rolls back to the old table content if the upload is invalid' do
+        allow(described_class).to receive(:load_csv_file).and_raise('error in csv')
+        expect { described_class.load(csv_file_invalid, load_options) }.not_to change(described_class, :count)
+      end
+
+      it 'api test' do
+        error_msg = "Bad data was found in a row. Please check ALL ROWS for a double quote (\")
+        without a closing double quote (\"). "
+
+        allow(described_class).to receive(:load_records).and_raise(StandardError, error_msg)
+        expect { described_class.load_from_api([], load_options) }.not_to change(described_class, :count)
       end
     end
   end
