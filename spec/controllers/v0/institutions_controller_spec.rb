@@ -301,14 +301,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns profile details' do
       school = create(:institution, :in_chicago, version_id: Version.current_production.id)
-      get(:show, params: { id: school.facility_code, version_id: school.version_id })
+      get(:show, params: { id: school.facility_code })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end
 
     it 'returns profile details for VET TEC institution' do
       school = create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
-      get(:show, params: { id: school.facility_code, version_id: school.version_id })
+      get(:show, params: { id: school.facility_code })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end
@@ -330,7 +330,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       school = create(:institution, :in_chicago, version_id: Version.current_production.id)
 
       child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code, version_id: school.version_id)
-      get(:children, params: { id: school.facility_code, version_id: school.version_id })
+      get(:children, params: { id: school.facility_code })
       expect(response.content_type).to eq('application/json')
 
       expect(JSON.parse(response.body)['data'].count).to eq(1)
