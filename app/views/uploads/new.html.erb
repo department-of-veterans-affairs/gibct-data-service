@@ -12,14 +12,18 @@
     <% if @requirements&.any? %>
       <div class="col-xs-4">
         <div class="alert alert-info" role="alert">
-          <h4 class="alert-heading">CSV Data Requirements</h4><br />
+          <% CSV_TYPES_ALL_TABLES.map(&:name) do |x| %>
+          <h4 class="alert-heading"><%=x%> Data Requirements</h4><br />
           <ol>
             <% @requirements.each do |requirement | %>
-              <%= requirement[:message] %>
-              <ul>
-              <li><%= requirement[:value] %></li>
-              
-              <ul>
+              <li>
+                <%= requirement[:message] %>
+                <ul>
+                  <% requirement[:value].each do |value|  %>
+                  <li><%= "\""+ value +"\"" %></li>
+                  <% end %>
+                </ul>
+              </li>
             <% end %>
           </ol>
         </div>
