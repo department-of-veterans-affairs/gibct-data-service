@@ -8,7 +8,7 @@ module V0
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @data = []
-      if params[:term]
+      if params[:term].present?
         @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
         @data = filter_results(approved_institutions).where(vet_tec_provider: false).autocomplete(@search_term)
