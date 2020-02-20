@@ -30,7 +30,7 @@ gem 'sentry-raven', '~> 2.9.0'
 
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'sitemap_generator', '~> 5.3', '>= 5.3.1'
+gem 'sitemap_generator'
 gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
