@@ -63,7 +63,7 @@
                 <td><%= @issue.ipeds_hd&.ope %></td>
                 <td>
                   <%= link_to @issue.ipeds_hd&.cross,
-                              "https://nces.ed.gov/collegenavigator/?id=#{@issue.ipeds_hd&.cross}",
+                              "#{Settings.college_navigator_url}/?id=#{@issue.ipeds_hd&.cross}",
                               target: :_blank
                   %>
                 <td/>
@@ -77,7 +77,7 @@
                 <td><%= iped["ope"] %></td>
                 <td>
                   <%= link_to iped["cross"],
-                              "https://nces.ed.gov/collegenavigator/?id=#{iped["cross"]}",
+                              "#{Settings.college_navigator_url}/?id=#{iped["cross"]}",
                               target: :_blank
                   %>
                 </td>
