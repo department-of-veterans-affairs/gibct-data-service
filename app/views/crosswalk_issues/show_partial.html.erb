@@ -23,8 +23,8 @@
                             target: :_blank
                 %>
               </td>
-              <td><%= [@issue.weam.address_1, @issue.weam.state, @issue.weam.city, @issue.weam.zip].compact.join(", ") %></td>
-              <td><%= [@issue.weam.physical_address_1, @issue.weam.physical_state, @issue.weam.physical_city, @issue.weam.physical_zip].compact.join(", ") %></td>
+              <td><%= @issue.weam.address_values.join(", ") %></td>
+              <td><%= @issue.weam.physical_address_values.join(", ") %></td>
               <td><%= @issue.weam.cross %></td>
               <td><%= @issue.weam.ope %></td>
               <td>
@@ -51,7 +51,7 @@
               <th>Name</th>
               <th>Address</th>
               <th>OPE</th>
-              <th>IPE</th>
+              <th>IPEDS</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -61,7 +61,11 @@
                 <td><%= @issue.ipeds_hd&.institution %></td>
                 <td><%= [@issue.ipeds_hd&.addr, @issue.ipeds_hd&.state, @issue.ipeds_hd&.city, @issue.ipeds_hd&.zip].compact.join(", ") %></td>
                 <td><%= @issue.ipeds_hd&.ope %></td>
-                <td><%= @issue.ipeds_hd&.cross %></td>
+                <td>
+                  <%= link_to @issue.ipeds_hd&.cross,
+                              "https://nces.ed.gov/collegenavigator/?id=#{@issue.ipeds_hd&.cross}",
+                              target: :_blank
+                  %>
                 <td/>
               </tr>
             <% end %>
