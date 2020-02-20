@@ -10,13 +10,17 @@ module CsvHelper
     }.freeze
 
     def load(file, options = {})
-      delete_all
-      load_csv_file(file, options)
+      klass.transaction do
+        delete_all
+        load_csv_file(file, options)
+      end
     end
 
     def load_from_api(results, options = {})
-      delete_all
-      load_records(results, options)
+      klass.transaction do
+        delete_all
+        load_records(results, options)
+      end
     end
 
     private
