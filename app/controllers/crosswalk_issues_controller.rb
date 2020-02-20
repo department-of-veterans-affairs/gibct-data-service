@@ -59,27 +59,4 @@ class CrosswalkIssuesController < ApplicationController
                             .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
                             .order('ipeds_hds.institution')
   end
-
-  def match_ipeds_hd
-    crosswalk_issue = CrosswalkIssue.find(params[:issue_id])
-    ipeds_hd = IpedsHd.find(params[:iped_id])
-    weam = Weam.find(crosswalk_issue.weam_id)
-
-    if crosswalk_issue.crosswalk_id.nil?
-      crosswalk = Crosswalk.new
-      crosswalk.facility_code = weam.facility_code
-      crosswalk.city = weam.city
-      crosswalk.state = weam.state
-      crosswalk.institution = weam.institution
-    else
-      crosswalk = Crosswalk.find(crosswalk_issue.crosswalk_id)
-    end
-    crosswalk.cross = ipeds_hd.cross
-    crosswalk.ope = ipeds_hd.ope
-    crosswalk.derive_dependent_columns
-    crosswalk.save
-    crosswalk_issue.destroy
-
-    redirect_to action: :partials
-  end
 end

@@ -10,10 +10,6 @@ class CrosswalkIssue < ApplicationRecord
 
   scope :by_issue_type, ->(n) { where(issue_type: n) }
 
-  def ipeds_hd_address
-    [ipeds_hd&.addr, ipeds_hd&.state, ipeds_hd&.city, ipeds_hd&.zip].compact.join(", ")
-  end
-
   def resolved?
     weam_ipeds_hd_match? && weam_crosswalk_match?
   end
