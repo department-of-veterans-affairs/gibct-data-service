@@ -9,7 +9,7 @@ FactoryBot.define do
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name { 'PRIVATE' }
-    version { 1 }
+
     approved { true }
 
     trait :in_nyc do
@@ -81,7 +81,6 @@ FactoryBot.define do
       ope { '00279100' }
       ope6 { '02791' }
       cross { '999999' }
-      version { 1 }
     end
 
     trait :vet_tec_provider do

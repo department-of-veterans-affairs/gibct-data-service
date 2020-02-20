@@ -21,7 +21,7 @@ RSpec.describe 'zipcode_rates', type: :request do
       )
     end
     it 'returns the rates for the given zip_code' do
-      create(:zipcode_rate, version: Version.current_production.number)
+      create(:zipcode_rate, version_id: Version.current_production.id)
       get '/v0/zipcode_rates/20001'
       check_response(response)
     end

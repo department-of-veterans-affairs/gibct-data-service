@@ -50,7 +50,7 @@ module CsvHelper
     end
 
     def write_versioned_row(csv, csv_headers, number)
-      raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.respond_to?(:version)
+      raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
 
       klass.where(version: number).find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }

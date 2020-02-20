@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
-  let(:institutions) { Institution.version(Version.current_preview.number) }
+  let(:institutions) { Institution.where(version: Version.current_preview) }
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
@@ -858,7 +858,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(zipcode_rate.zip_code).to eq(institution.zip)
         expect(zipcode_rate.mha_rate).to eq(1000)
         expect(zipcode_rate.mha_rate_grandfathered).to eq(1100)
-        expect(zipcode_rate.version).to eq(Version.current_preview.number)
+        expect(zipcode_rate.version.id).to eq(Version.current_preview.id)
       end
     end
 
@@ -868,7 +868,8 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :edu_program, facility_code: '1ZZZZZZZ'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
-        expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
+        expect(InstitutionProgram.first.institution_id).to eq(Institution.first.id)
+        expect(Institution.first.version_id).to eq(Version.current_preview.id)
       end
 
       it 'does not generate duplicate institution programs for duplicate edu-programs' do
@@ -947,13 +948,13 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sets correctly for VET TEC institution' do
         expect(institutions.find_by(facility_code: '1VZZZZZZ').approved).to be_truthy
       end
-    end
 
-    describe 'when generating versioned school certifying official table' do
-      it 'properly generates versioned school certifying official from school certifying official' do
-        create :school_certifying_official, facility_code: '2V000105'
-        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
-        expect(VersionedSchoolCertifyingOfficial.first.version).to eq(Version.current_preview.number)
+      describe 'when generating school certifying official table' do
+        it 'properly generates school certifying official with instituion_id' do
+          create :school_certifying_official, facility_code: '1ZZZZZZZ'
+          expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
+          expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
+        end
       end
     end
   end
