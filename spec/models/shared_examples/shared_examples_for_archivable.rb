@@ -96,7 +96,9 @@ RSpec.shared_examples 'an archivable model' do |options|
     expect(original_type.count).to eq(count_total)
     expect(archived_type.count).to eq(archive_count)
 
-    expect(original_type.distinct.pluck(:version_id)).to include(*[Version.current_production.id, Version.current_preview&.id].compact)
+    expect(original_type.distinct.pluck(:version_id)).to include(
+      *[Version.current_production.id, Version.current_preview&.id].compact
+    )
     expect(archived_type.pluck(:id)).not_to include(*original_type.pluck(:id))
   end
 
