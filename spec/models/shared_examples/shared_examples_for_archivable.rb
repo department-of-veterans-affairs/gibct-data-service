@@ -93,7 +93,6 @@ RSpec.shared_examples 'an archivable model' do |options|
 
     Archiver.archive_previous_versions
 
-
     expect(original_type.count).to eq(count_total)
     expect(archived_type.count).to eq(archive_count)
 
