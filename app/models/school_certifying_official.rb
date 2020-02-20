@@ -5,6 +5,8 @@ class SchoolCertifyingOfficial < ApplicationRecord
 
   belongs_to :institution
 
+  self.ignored_columns = ['institution_id']
+
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },
