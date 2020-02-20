@@ -14,15 +14,9 @@ module V0
     # Newest production data version assumed when version param is undefined
     def resolve_version
       v = params[:version]
-      version = Version.find_by(uuid: v) || Version.current_production
+      @version = Version.find_by(uuid: v) || Version.current_production
 
-      raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless version.try(:number)
-
-      @version = {
-        number: version.number,
-        created_at: version.created_at,
-        preview: version.preview?
-      }
+      raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless @version.try(:number)
     end
 
     def self_link

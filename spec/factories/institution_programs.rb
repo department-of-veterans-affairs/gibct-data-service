@@ -32,23 +32,23 @@ FactoryBot.define do
     end
 
     trait :in_nyc do
-      institution { create(:institution, physical_city: 'NEW YORK', physical_country: 'USA', physical_state: 'NY') }
+      institution { create(:institution, physical_city: 'NEW YORK', physical_country: 'USA', physical_state: 'NY', version_id: Version.last.id) }
     end
 
     trait :in_new_rochelle do
-      institution { create(:institution, physical_city: 'NEW ROCHELLE', physical_country: 'USA', physical_state: 'NY') }
+      institution { create(:institution, physical_city: 'NEW ROCHELLE', physical_country: 'USA', physical_state: 'NY', version_id: Version.last.id) }
     end
 
     trait :in_chicago do
-      institution { create(:institution, physical_city: 'CHICAGO', physical_country: 'USA', physical_state: 'IL') }
+      institution { create(:institution, physical_city: 'CHICAGO', physical_country: 'USA', physical_state: 'IL', version_id: Version.last.id) }
     end
 
     trait :preferred_provider do
-      institution { create(:institution, preferred_provider: true) }
+      institution { create(:institution, preferred_provider: true, version_id: Version.last.id) }
     end
 
     trait :ca_employer do
-      institution { create(:institution, :ca_employer) }
+      institution { create(:institution, :ca_employer, version_id: Version.last.id) }
     end
   end
 end
