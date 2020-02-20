@@ -148,23 +148,6 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'class methods and scopes' do
-    context 'with version' do
-      it 'retrieves institutions by a specific version number' do
-        i = create_list :institution, 2, version: 1
-        j = create_list :institution, 2, version: 2
-
-        expect(described_class.version(i.first.version)).to match_array(i.to_a)
-        expect(described_class.version(j.first.version)).to match_array(j.to_a)
-      end
-
-      it 'returns blank if a nil or non-existent version number is supplied' do
-        create :institution
-
-        expect(described_class.version(-1)).to eq([])
-        expect(described_class.version(nil)).to eq([])
-      end
-    end
-
     context 'with filter scope' do
       it 'raises an error if no arguments are provided' do
         expect { described_class.filter }.to raise_error(ArgumentError)

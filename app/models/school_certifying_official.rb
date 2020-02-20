@@ -3,7 +3,7 @@
 class SchoolCertifyingOfficial < ApplicationRecord
   include CsvHelper
 
-  belongs_to :institution
+  self.ignored_columns = ['institution_id']
 
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },

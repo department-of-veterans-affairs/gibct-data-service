@@ -44,7 +44,8 @@ module V0
 
     # GET /v0/institutions/20005123/children
     def children
-      children = Institution.version(@version[:number])
+      children = Institution.joins(:version)
+                            .where(version: @version)
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
                             .page(params[:page])
@@ -140,7 +141,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.version(@version[:number]).no_extentions.where(approved: true)
+      Institution.joins(:version).no_extentions.where(approved: true, version: @version)
     end
   end
   # rubocop:enable Metrics/ClassLength
