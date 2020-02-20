@@ -35,44 +35,6 @@ RSpec.describe 'institutions', type: :request do
     end
   end
 
-  describe '#search vet-tec' do
-    def create_vet_tec_institutions
-      create(:institution,
-             :vet_tec_provider,
-             version: Version.current_production.number,
-             institution: 'D')
-      create(:institution,
-             :vet_tec_provider,
-             version: Version.current_production.number,
-             institution: 'C')
-      create(:institution,
-             :vet_tec_provider,
-             version: Version.current_production.number,
-             institution: 'B')
-      create(:institution,
-             :vet_tec_provider,
-             version: Version.current_production.number,
-             institution: 'A')
-    end
-
-    def institution_name_from_response(body, index)
-      JSON.parse(body)['data'][index]['attributes']['name']
-    end
-
-    def check_institution_response_order(body)
-      expect(institution_name_from_response(body, 0)).to eq('A')
-      expect(institution_name_from_response(body, 1)).to eq('B')
-      expect(institution_name_from_response(body, 2)).to eq('C')
-      expect(institution_name_from_response(body, 3)).to eq('D')
-    end
-
-    it 'orders correctly for vet_tec_providers' do
-      create_vet_tec_institutions
-      get(v0_institutions_path(vet_tec_provider: true))
-      check_institution_response_order(response.body)
-    end
-  end
-
   describe '#show' do
     it 'uses LINK_HOST in self link' do
       school = create(:institution, :contains_harv, version: Version.current_production.number)

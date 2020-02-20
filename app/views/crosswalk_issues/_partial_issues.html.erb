@@ -1,4 +1,5 @@
 <tr class="<%= cycle('even', 'odd') -%>">
+  <td><%= issue.weam.arf_gi_bill&.gibill %></td>
   <td><%= issue.weam.institution %></td>
   <td><%= issue.weam.facility_code %></td>
   <td><%= issue.weam.cross %></td>
@@ -9,5 +10,6 @@
   <td><%= issue.crosswalk&.ope %></td>
   <td>
     <%= link_to 'Edit', crosswalk_issues_partials_show_path(issue), class: "btn dashboard-btn-success" %>
+    <%= link_to 'Find', crosswalk_issues_find_matches_path(issue), class: "btn dashboard-btn-success"%>
   </td>
 </tr>

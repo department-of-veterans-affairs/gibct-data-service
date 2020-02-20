@@ -77,6 +77,8 @@ class Weam < ApplicationRecord
   validates :facility_code, :institution, :country, presence: true
   validate :institution_type
   validates :bah, numericality: true, allow_blank: true
+  has_one(:arf_gi_bill, foreign_key: 'facility_code', primary_key: :facility_code,
+                        inverse_of: :weam, dependent: :delete)
 
   after_initialize :derive_dependent_columns
 
@@ -179,6 +181,14 @@ class Weam < ApplicationRecord
     return false if invalid_law_code?
 
     flags_for_approved?
+  end
+
+  def address_values
+    [address_1, address_2, address_3, city, state, zip].compact
+  end
+
+  def physical_address_values
+    [physical_address_1, physical_address_2, physical_address_3, city, state, zip].compact
   end
 
   private
