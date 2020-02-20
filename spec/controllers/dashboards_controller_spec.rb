@@ -45,7 +45,7 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+      defaults = YAML.load_file(Rails.root.join('config/csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
@@ -74,7 +74,7 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+      defaults = YAML.load_file(Rails.root.join('config/csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
@@ -106,7 +106,7 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+      defaults = YAML.load_file(Rails.root.join('config/csv_file_defaults.yml'))
 
       CSV_TYPES_ALL_TABLES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
