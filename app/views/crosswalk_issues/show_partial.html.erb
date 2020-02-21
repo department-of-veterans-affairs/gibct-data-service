@@ -50,8 +50,8 @@
               <th>Match %</th>
               <th>Name</th>
               <th>Full Address</th>
-              <th>OPE</th>
               <th>IPEDS</th>
+              <th>OPE</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -60,13 +60,13 @@
                 <td>Current</td>
                 <td><%= @issue.ipeds_hd&.institution %></td>
                 <td><%= [@issue.ipeds_hd&.addr, @issue.ipeds_hd&.state, @issue.ipeds_hd&.city, @issue.ipeds_hd&.zip].compact.join(", ") %></td>
-                <td><%= @issue.ipeds_hd&.ope %></td>
                 <td>
                   <%= link_to @issue.ipeds_hd&.cross,
                               "#{Settings.college_navigator_url}/?id=#{@issue.ipeds_hd&.cross}",
                               target: :_blank
                   %>
                 <td/>
+                <td><%= @issue.ipeds_hd&.ope %></td>
               </tr>
             <% end %>
             <% @ipeds_hd_arr.each do |iped| %>
@@ -74,13 +74,13 @@
                 <td><%= (iped["match_score"].to_f * 100).round(3) %>%</td>
                 <td><%= iped["institution"] %></td>
                 <td><%= [iped["addr"], iped["state"], iped["city"], iped["zip"]].compact.join(", ") %></td>
-                <td><%= iped["ope"] %></td>
                 <td>
                   <%= link_to iped["cross"],
                               "#{Settings.college_navigator_url}/?id=#{iped["cross"]}",
                               target: :_blank
                   %>
                 </td>
+                <td><%= iped["ope"] %></td>
                 <td>
                   <input
                     type="button"
