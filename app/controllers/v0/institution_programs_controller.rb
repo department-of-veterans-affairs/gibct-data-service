@@ -9,7 +9,7 @@ module V0
       @data = []
       if params[:term].present?
         @search_term = params[:term]&.strip&.downcase
-        @data = InstitutionProgram.autocomplete(@search_term, @version)
+        @data = autocomplete_results(@search_term, @version)
       end
       @meta = {
         version: @version,
@@ -38,6 +38,7 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
+        query[:preferred_provider].try(:downcase!)
         query[:provider].try(:upcase!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
@@ -53,6 +54,23 @@ module V0
                                    .eager_load(:institution)
                                    .search(@query[:name])
 
+      filter_results(relation)
+    end
+
+    # Given a search term representing a partial school name, returns all
+    # programs starting with the search term.
+    def autocomplete_results(search_term, version, limit = 6)
+      filter_results(
+        InstitutionProgram.select(:id, 'institutions.facility_code as value', 'description as label')
+        .joins(institution: :version)
+        .where(institutions: { version: version })
+      )
+        .where('lower(description) LIKE (?)', "#{search_term}%")
+        .limit(limit)
+    end
+
+    def filter_results(relation)
+      @query ||= normalized_query_params
       [
         %i[program_type type],
         %i[institutions.institution provider],

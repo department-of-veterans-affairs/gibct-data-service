@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :institution_program do
-    version { 1 }
     sequence(:description) { |n| "PROGRAM #{n}" }
     program_type { 'NCD' }
     full_time_undergraduate { '360' }
@@ -49,6 +48,10 @@ FactoryBot.define do
 
     trait :ca_employer do
       institution { create(:institution, :ca_employer, version_id: Version.last.id) }
+    end
+
+    trait :last_version do
+      institution { create(:institution, version_id: Version.last.id) }
     end
   end
 end
