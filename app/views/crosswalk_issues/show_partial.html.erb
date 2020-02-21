@@ -177,6 +177,10 @@
               </tr>
             </tbody>
           </table>
+          <div>
+            <input type="checkbox" name="ignore" id="ignore" />
+            <label for="clear_ipeds_ope">Mark crosswalk issue as resolved</label>
+          </div>
           <%= link_to 'Cancel', crosswalk_issues_partials_path, class: "btn dashboard-btn-danger" %>
           <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
         <% end %>
