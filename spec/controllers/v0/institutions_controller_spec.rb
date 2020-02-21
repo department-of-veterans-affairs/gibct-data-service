@@ -43,7 +43,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
       v = create(:version, :preview)
-      create(:institution, :contains_harv, version_id: Version.current_preview.id)
+      create(:institution, :contains_harv, :production_version)
       get(:index, params: { version: v.uuid })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -53,9 +53,12 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   end
 
   context 'with autocomplete results' do
-    it 'returns collection of matches' do
+    before do
       create(:version, :production)
-      create_list(:institution, 2, :start_like_harv, version_id: Version.current_production.id)
+    end
+
+    it 'returns collection of matches' do
+      create_list(:institution, 2, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
@@ -63,8 +66,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'limits results to 6' do
-      create(:version, :production)
-      create_list(:institution, 7, :start_like_harv, approved: true, version_id: Version.current_production.id)
+      create_list(:institution, 7, :start_like_harv, :production_version, approved: true)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
       expect(response.content_type).to eq('application/json')
@@ -72,7 +74,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'returns empty collection on missing term parameter' do
-      create(:version, :production)
       create(:institution, :start_like_harv)
       get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
@@ -81,7 +82,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'does not return results for non-approved institutions' do
-      create(:version, :production)
       create(:institution, :start_like_harv, approved: false)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
@@ -90,12 +90,169 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'does not return results for extension institutions' do
-      create(:version, :production)
-      create(:institution, :start_like_harv, campus_type: 'E', version_id: Version.current_production.id)
-      create(:institution, :start_like_harv, campus_type: 'Y', version_id: Version.current_production.id)
-      create(:institution, :start_like_harv, version_id: Version.current_production.id)
+      create(:institution, :start_like_harv, :production_version, campus_type: 'E')
+      create(:institution, :start_like_harv, :production_version, campus_type: 'Y')
+      create(:institution, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'excludes vet_tec_provider institutions' do
+      create(:institution, :vet_tec_provider, :start_like_harv)
+      get(:autocomplete, params: { term: 'harv' })
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by type' do
+      institution = create(:institution, :start_like_harv, :production_version)
+      create(:institution, :start_like_harv, :production_version, institution_type_name: 'PUBLIC')
+      get(:autocomplete, params: { term: 'harv', type: 'private' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by category' do
+      institution = create(:institution, :start_like_harv, :production_version)
+      create(:institution, :start_like_harv, :production_version, institution_type_name: Institution::EMPLOYER)
+      get(:autocomplete, params: { term: 'harv', category: 'school' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by country' do
+      institution = create(:institution, :start_like_harv, :production_version)
+      create(:institution, :start_like_harv, :production_version, country: 'CAN')
+      get(:autocomplete, params: { term: 'harv', country: 'usa' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by state' do
+      institution = create(:institution, :start_like_harv, :production_version)
+      create(:institution, :start_like_harv, :production_version, state: 'MD')
+      get(:autocomplete, params: { term: 'harv', state: 'ma' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by student_veteran_group' do
+      institution = create(:institution, :start_like_harv, :production_version, student_veteran: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', student_veteran_group: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by yellow_ribbon_scholarship' do
+      institution = create(:institution, :start_like_harv, :production_version, yr: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', yellow_ribbon_scholarship: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by principles_of_excellence' do
+      institution = create(:institution, :start_like_harv, :production_version, poe: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', principles_of_excellence: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by eight_keys_to_veteran_success' do
+      institution = create(:institution, :start_like_harv, :production_version, eight_keys: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', eight_keys_to_veteran_success: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by stem_offered' do
+      institution = create(:institution, :start_like_harv, :production_version, stem_offered: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', stem_offered: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by independent_study' do
+      institution = create(:institution, :start_like_harv, :production_version, independent_study: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', independent_study: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by online_only' do
+      institution = create(:institution, :start_like_harv, :production_version, online_only: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', online_only: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by distance_learning' do
+      institution = create(:institution, :start_like_harv, :production_version, distance_learning: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', distance_learning: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by priority_enrollment' do
+      institution = create(:institution, :start_like_harv, :production_version, priority_enrollment: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', priority_enrollment: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by preferred_provider' do
+      institution = create(:institution, :start_like_harv, :production_version, preferred_provider: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', preferred_provider: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
+    it 'filters by stem_indicator' do
+      institution = create(:institution, :start_like_harv, :production_version, stem_indicator: 'true')
+      create(:institution, :start_like_harv, :production_version)
+      get(:autocomplete, params: { term: 'harv', stem_indicator: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
@@ -261,8 +418,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
   context 'with category and type search results' do
     before do
       create(:version, :production)
-      create(:institution, :in_nyc, version_id: Version.current_production.id)
-      create(:institution, :ca_employer, version_id: Version.current_production.id)
+      create(:institution, :in_nyc, :production_version)
+      create(:institution, :ca_employer, :production_version)
     end
 
     it 'filters by employer category' do
@@ -300,14 +457,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'returns profile details' do
-      school = create(:institution, :in_chicago, version_id: Version.current_production.id)
+      school = create(:institution, :in_chicago, :production_version)
       get(:show, params: { id: school.facility_code })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end
 
     it 'returns profile details for VET TEC institution' do
-      school = create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+      school = create(:institution, :vet_tec_provider, :production_version)
       get(:show, params: { id: school.facility_code })
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
@@ -327,7 +484,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'returns institution children' do
-      school = create(:institution, :in_chicago, version_id: Version.current_production.id)
+      school = create(:institution, :in_chicago, :production_version)
 
       child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code, version_id: school.version_id)
       get(:children, params: { id: school.facility_code })

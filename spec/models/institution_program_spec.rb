@@ -13,25 +13,6 @@ RSpec.describe InstitutionProgram, type: :model do
     end
   end
 
-  describe 'autocomplete' do
-    context 'when search term is program name' do
-      before do
-        create :version, :production
-        create :institution, :start_like_harv, version_id: Version.current_production.id
-        create_list(:institution_program, 2, :start_like_harv, institution_id: Institution.last.id)
-      end
-
-      it 'returns collection of programs with program name matches' do
-        create(:institution_program)
-        expect(described_class.autocomplete('harv', Version.last).length).to eq(2)
-      end
-
-      it 'limits results' do
-        expect(described_class.autocomplete('harv', Version.last, 1).length).to eq(1)
-      end
-    end
-  end
-
   describe 'class methods' do
     context 'versioning' do
       it 'retrieves institutions by a specific version number' do
