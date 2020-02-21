@@ -3,6 +3,8 @@
 require 'securerandom'
 
 class Version < ApplicationRecord
+  has_many :institutions, dependent: :nullify
+  has_many :zipcode_rates, dependent: :nullify
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 
@@ -69,6 +71,14 @@ class Version < ApplicationRecord
   def gibct_link
     version_info = production? ? '' : "?version=#{uuid}"
     "#{ENV['GIBCT_URL']}#{version_info}"
+  end
+
+  def as_json(_options = nil)
+    {
+      number: number,
+      created_at: created_at,
+      preview: preview?
+    }
   end
 
   # private instance methods

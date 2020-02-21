@@ -14,7 +14,7 @@ class GibctSiteMapper
   end
 
   def version
-    @version ||= Version.current_production&.number
+    @version ||= Version.current_production&.id
   end
 
   def sitemap_location
@@ -32,7 +32,8 @@ class GibctSiteMapper
     SitemapGenerator::Sitemap.create do
       add '/search', priority: 0.9, changefreq: 'monthly'
 
-      Institution.version(version).find_each(batch_size: Settings.active_record.batch_size.find_each) do |institution|
+      Institution.where(version_id: version)
+                 .find_each(batch_size: Settings.active_record.batch_size.find_each) do |institution|
         add "/profile/#{institution.facility_code}", priority: 0.8, changefreq: 'weekly'
       end
     end

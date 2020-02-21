@@ -40,19 +40,6 @@ class InstitutionProgram < ApplicationRecord
 
   delegate :caution_flag, to: :institution
 
-  # Given a search term representing a partial school name, returns all
-  # programs starting with the search term.
-  #
-  def self.autocomplete(search_term, limit = 6)
-    joins(:institution).select('institution_programs.id, institutions.facility_code as value, description as label')
-                       .where(
-                         'lower(description) LIKE (?)',
-                         "#{search_term}%"
-                       )
-                       .group('institution_programs.id, institutions.facility_code, description')
-                       .limit(limit)
-  end
-
   # Finds exact-matching facility_code or partial-matching school and city names
   #
   scope :search, lambda { |search_term|
