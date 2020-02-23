@@ -66,3 +66,29 @@
     <%= @upload.comment %>
   </div>
 </div>
+
+<div class="container" style="float: left;">
+  <div class="row">
+    <div class="col-xs-8">
+    </div>
+    <% if @requirements&.any? %>
+      <div class="col-xs-4">  
+        <div class="alert alert-info" style="margin-top: -11em;" role="alert">
+          <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Data Requirements</h4><br />      
+          <ol>
+            <% @requirements.map do |requirement | %>
+              <li>
+                <%= requirement[:message] %>
+                <ul>
+                  <% requirement[:value].each do |value|  %>
+                  <li><%= value.humanize %></li>
+                  <% end %>
+                </ul>
+              </li>
+            <% end %>
+          </ol>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

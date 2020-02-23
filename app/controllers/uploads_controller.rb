@@ -10,7 +10,6 @@ class UploadsController < ApplicationController
 
     if @upload.csv_type_check?
       @requirements = requirements_messages
-
       return
     end
     alert_and_log(@upload.errors.full_messages.join(', '))
@@ -45,6 +44,7 @@ class UploadsController < ApplicationController
 
   def show
     @upload = Upload.find_by(id: params[:id])
+    @requirements = requirements_messages
     return if @upload.present?
 
     alert_and_log("Upload with id: '#{params[:id]}' not found")
@@ -99,27 +99,71 @@ class UploadsController < ApplicationController
   def requirements_messages
     # this is a call to custom validators that are not listed inside the class
     custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+ 
     [Upload.valid_col_seps]
-      .push(*validation_messages)
-      .push(*custom_batch_validator_messages)
-      # .compact
+    .push(*validation_messages_presence)
+    .push(*validation_messages_numericality)
+    .push(*validation_messages_uniqueness)
+    .push(*validation_messages_inclusion)
+    #.push(*custom_batch_validator_messages)
   end
 
+  def validation_messages_presence
+  
+    presence = {:message => 'These columns must have a value: ', :value => []}
 
-
-  def validation_messages
     klass.validators.map do |validations|
       case validations
-      when ActiveRecord::Validations::PresenceValidator
-        {:message => 'These columns must have a value: ', :value => [generic_requirement_message( validations)]}
-       when ActiveModel::Validations::InclusionValidator
-         {:message => 'For column ' + affected_attributes(validations) + ' values must be one of these values: ', :value => [inclusion_requirement_message(validations)]}
-       when ActiveModel::Validations::NumericalityValidator
-         {:message => 'These columns can only contain numeric values: ', :value => [generic_requirement_message(validations)]}
-       when ActiveRecord::Validations::UniquenessValidator
-         {:message => 'These columns should contain unique values: ', :value => [generic_requirement_message(validations)]}
-       end
+        when ActiveRecord::Validations::PresenceValidator
+          presence[:value].push(generic_requirement_message(validations))
+        end
     end
+
+      [presence]
+    
+
+
+  end
+
+  def validation_messages_inclusion
+    inclusion = {:message => 'Must be one of these values: ', :value => []}
+    
+    klass.validators.map do |validations|
+      case validations
+      when ActiveModel::Validations::InclusionValidator
+        inclusion[:value].push(inclusion_requirement_message(validations))
+        end
+      end
+
+  
+    [inclusion]
+  
+   end
+
+  def validation_messages_numericality
+    numericality = {:message => 'These columns can only contain numeric values: ', :value => []}
+
+    klass.validators.map do |validations|
+      case validations
+        when ActiveModel::Validations::NumericalityValidator
+          numericality[:value].push(generic_requirement_message(validations))
+        end
+      end
+   
+     [numericality]
+
+   end
+
+  def validation_messages_uniqueness
+    uniqueness = {:message => 'These columns should contain unique values: ', :value => []}
+    klass.validators.map do |validations|
+      case validations
+        when ActiveRecord::Validations::UniquenessValidator
+          uniqueness[:value].push(generic_requirement_message(validations))  
+        end
+      end
+ 
+    [uniqueness]
   end
 
   def affected_attributes(validations)
@@ -143,7 +187,7 @@ class UploadsController < ApplicationController
   # end
 
   def inclusion_requirement_message(validations)
-    
+    'For column ' + affected_attributes(validations) + ' values must be one of these values: ' +
       validations.options[:in].map(&:to_s).join(', ')
   end
 end

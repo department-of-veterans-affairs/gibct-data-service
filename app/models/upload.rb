@@ -124,7 +124,8 @@ class Upload < ApplicationRecord
   def self.valid_col_seps
     
     valid_col_seps = Settings.csv_upload.column_separators.each { |cs| "\"#{cs}\""}
-    {:value  => valid_col_seps, :message => "Valid column separators are:"}
+   {:value  => valid_col_seps, :message => "Valid column separators are:"}
+    #{:message => "Valid column separators are:", :value  => valid_col_seps,}
   
   end
 
