@@ -54,7 +54,7 @@ class UploadsController < ApplicationController
   private
 
   def alert_and_log(message, error = nil)
-    Rails.logger.error message + (error&.backtrace).to_s
+    Rails.logger.error message + error&.backtrace.to_s
     flash.alert = message
   end
 
