@@ -66,8 +66,8 @@ class UploadsController < ApplicationController
     }.compact
 
     flash[:danger] = {
-      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?),
-      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?)
+      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
+      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
     }.compact
   end
 
