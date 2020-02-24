@@ -31,7 +31,9 @@ class CrosswalkIssuesController < ApplicationController
   def resolve_partial
     @issue = CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).find(params[:id])
 
-    update_or_create_crosswalk(@issue)
+    crosswalk = update_or_create_crosswalk(@issue)
+    @issue.crosswalk = crosswalk
+
     ignore_issue(@issue) if params[:ignore]
 
     if @issue.resolved? || params[:ignore]
@@ -39,7 +41,6 @@ class CrosswalkIssuesController < ApplicationController
       flash.notice = 'Crosswalk issue resolved'
       redirect_to action: :partials
     else
-      @issue.crosswalk = crosswalk
       @issue.save
       flash.notice = 'Crosswalk record updated'
       redirect_to action: :show_partial, id: @issue.id
@@ -64,11 +65,14 @@ class CrosswalkIssuesController < ApplicationController
     crosswalk.ope = params['ope']
     crosswalk.notes = params['notes']
     crosswalk.save
+
+    crosswalk
   end
 
   def ignore_issue(issue)
     IgnoredCrosswalkIssue.create(
       cross: issue.ipeds_hd.present? ? issue.ipeds_hd.cross : issue.crosswalk.cross,
+      ope: issue.ipeds_hd.present? ? issue.ipeds_hd.ope : issue.crosswalk.ope,
       facility_code: issue.weam.facility_code
     )
   end

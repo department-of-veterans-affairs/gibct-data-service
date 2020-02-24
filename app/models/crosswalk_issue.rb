@@ -68,11 +68,16 @@ class CrosswalkIssue < ApplicationRecord
       WHERE id IN(
         SELECT crosswalk_issues.id FROM crosswalk_issues
           INNER JOIN weams on weams.id = weam_id
-          LEFT OUTER JOIN ipeds_hds on ipeds_hds.id = ipeds_hd_id
+          LEFT OUTER JOIN ipeds_hds ON ipeds_hds.id = ipeds_hd_id
           LEFT OUTER JOIN crosswalks ON crosswalks.id = crosswalk_id
           INNER JOIN ignored_crosswalk_issues
             ON weams.facility_code = ignored_crosswalk_issues.facility_code
-            AND (ipeds_hds.cross = ignored_crosswalk_issues.cross OR crosswalks.cross = ignored_crosswalk_issues.cross)
+            AND (
+              ipeds_hds.cross = ignored_crosswalk_issues.cross
+              OR crosswalks.cross = ignored_crosswalk_issues.cross
+              OR ipeds_hds.ope = ignored_crosswalk_issues.ope
+              OR crosswalks.ope = ignored_crosswalk_issues.ope
+            )
       );
     SQL
 

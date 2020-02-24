@@ -211,6 +211,7 @@ ActiveRecord::Schema.define(version: 2020_02_21_090200) do
   create_table "ignored_crosswalk_issues", force: :cascade do |t|
     t.string "facility_code"
     t.string "cross"
+    t.string "ope"
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|

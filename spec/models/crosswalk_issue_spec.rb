@@ -112,6 +112,45 @@ RSpec.describe CrosswalkIssue, type: :model do
       described_class.rebuild
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
     end
+
+    it 'excludes ignored crosswalk issues with ipeds_hd IPEDS match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_cross,
+             :crosswalk_issue_matchable_by_facility_code
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
+      create :ignored_crosswalk_issue, :matchable_by_cross, :matchable_by_facility_code
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'excludes ignored crosswalk issues with ipeds_hd OPE match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_ope,
+             :crosswalk_issue_matchable_by_facility_code
+      create :ipeds_hd, :crosswalk_issue_matchable_by_ope
+      create :ignored_crosswalk_issue, :matchable_by_ope, :matchable_by_facility_code
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'excludes ignored crosswalk issues with crosswalk IPEDS match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_facility_code,
+             :crosswalk_issue_matchable_by_facility_code
+      create :crosswalk, :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_cross
+      create :ignored_crosswalk_issue, :matchable_by_cross, :matchable_by_facility_code
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'excludes ignored crosswalk issues with crosswalk OPE match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_facility_code
+      create :crosswalk, :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_ope
+      create :ignored_crosswalk_issue, :matchable_by_ope, :matchable_by_facility_code
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
   end
 
   describe 'when building IPEDS orphans' do
