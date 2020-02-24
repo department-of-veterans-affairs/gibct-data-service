@@ -50,8 +50,8 @@ RSpec.describe UploadsController, type: :controller do
       it 'formats an error message in the flash' do
         get :new, params: { csv_type: 'FexumGibberit' }
 
-        expect(flash[:alert]).to be_present
-        expect(flash[:alert]).to match('Csv type FexumGibberit is not a valid CSV data source')
+        expect(flash[:danger]).to be_present
+        expect(flash[:danger]).to match('Csv type FexumGibberit is not a valid CSV data source')
       end
     end
 
@@ -65,8 +65,8 @@ RSpec.describe UploadsController, type: :controller do
       it 'formats an error message in the flash' do
         get :new
 
-        expect(flash[:alert]).to be_present
-        expect(flash[:alert]).to match('Csv type cannot be blank.')
+        expect(flash[:danger]).to be_present
+        expect(flash[:danger]).to match('Csv type cannot be blank.')
       end
     end
 
@@ -153,8 +153,7 @@ RSpec.describe UploadsController, type: :controller do
              params: {
                upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
              })
-
-        expect(flash[:alert]['The following rows should be checked: ']).to be_present
+        expect(flash[:danger].key?(:'The following rows should be checked: ')).to be true
       end
     end
 
@@ -201,7 +200,7 @@ RSpec.describe UploadsController, type: :controller do
         post(:create,
              params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
 
-        message = flash[:alert]['The following headers should be checked: '].try(:first)
+        message = flash[:danger][:'The following headers should be checked: '].try(:first)
         expect(message).to match(/Independent study is a missing header/)
       end
     end
@@ -214,7 +213,7 @@ RSpec.describe UploadsController, type: :controller do
                params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
         ).to render_template(:new)
         error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
-        expect(flash.alert).to include(error_message)
+        expect(flash[:danger]).to include(error_message)
       end
     end
 
