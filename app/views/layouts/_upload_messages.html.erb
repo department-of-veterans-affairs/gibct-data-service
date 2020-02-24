@@ -1,0 +1,13 @@
+<% flash.each do |key, value| %>
+  <% if value.present? %>
+    <div class="alert alert-<%= key %>">
+      <% if value.is_a? Hash %>
+        <% value.each_pair do |label, alerts| %>
+          <%= pretty_error(alerts, label) %>
+        <% end %>
+      <% else %>
+        <%= value.html_safe %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

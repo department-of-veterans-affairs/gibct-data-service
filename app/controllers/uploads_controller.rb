@@ -22,16 +22,8 @@ class UploadsController < ApplicationController
 
     begin
       @upload.check_for_headers
-      failed = load_csv.failed_instances
-
-      validation_warnings = failed.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
-                                  .map(&:display_errors_with_row)
-      header_warnings = @upload.all_warnings
-
-      flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
-
-      flash.alert['The following rows should be checked: '] = validation_warnings unless validation_warnings.empty?
-      flash.alert['The following headers should be checked: '] = header_warnings unless header_warnings.empty?
+      loaded_csv = load_csv
+      alert_messages(loaded_csv)
 
       redirect_to @upload
     rescue StandardError => e
@@ -53,9 +45,35 @@ class UploadsController < ApplicationController
 
   private
 
+  def alert_messages(loaded_csv)
+    total_rows_count = loaded_csv.ids.length
+    failed_rows = loaded_csv.failed_instances
+    failed_rows_count = failed_rows.length
+    valid_rows = total_rows_count - failed_rows_count
+    validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
+                                     .map(&:display_errors_with_row)
+    header_warnings = @upload.all_warnings
+
+    successful_messages = [
+      @upload.csv_type + '.csv',
+      'Total data rows: ' + total_rows_count.to_s,
+      'Valid data rows: ' + valid_rows.to_s,
+      'Invalid data rows: ' + failed_rows_count.to_s
+    ]
+
+    flash[:success] = {
+      'The upload succeeded: ': successful_messages
+    }.compact
+
+    flash[:danger] = {
+      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?),
+      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?)
+    }.compact
+  end
+
   def alert_and_log(message, error = nil)
     Rails.logger.error message + error&.backtrace.to_s
-    flash.alert = message
+    flash[:danger] = message
   end
 
   def load_csv
@@ -82,7 +100,6 @@ class UploadsController < ApplicationController
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     data = klass.load(file, @upload.options)
-
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
