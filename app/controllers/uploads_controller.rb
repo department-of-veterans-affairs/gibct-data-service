@@ -54,16 +54,10 @@ class UploadsController < ApplicationController
                                      .map(&:display_errors_with_row)
     header_warnings = @upload.all_warnings
 
-    successful_messages = [
-      @upload.csv_type + '.csv',
-      'Total data rows: ' + total_rows_count.to_s,
-      'Valid data rows: ' + valid_rows.to_s,
-      'Invalid data rows*: ' + failed_rows_count.to_s,
-      'Invalid Data Rows are not included in new version generation.',
-    ]
-
-    flash[:success] = {
-      'The upload succeeded: ': successful_messages
+    flash[:csv_success] = {
+        :total_rows_count =>total_rows_count.to_s,
+      :valid_rows => valid_rows.to_s,
+        :failed_rows_count => failed_rows_count.to_s,
     }.compact
 
     flash[:warning] = {
