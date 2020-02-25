@@ -1,13 +1,35 @@
-<% flash.each do |key, value| %>
-  <% if value.present? %>
-    <div class="alert alert-<%= key %>">
-      <% if value.is_a? Hash %>
-        <% value.each_pair do |label, alerts| %>
-          <%= pretty_error(alerts, label) %>
-        <% end %>
-      <% else %>
-        <%= value.html_safe %>
+<% if flash[:success].present? %>
+  <aside class="alert alert-success">
+    <% if flash[:success].is_a? Hash %>
+      <% flash[:success].each_pair do |label, successes| %>
+        <%= pretty_error(successes, label) %>
       <% end %>
-    </div>
-  <% end %>
+    <% else %>
+      <%= pretty_error(flash[:success], notice || '') %>
+    <% end %>
+  </aside>
+<% end %>
+
+<% if flash[:warning].present? %>
+  <aside class="alert alert-warning">
+    <% if flash[:warning].is_a? Hash %>
+      <% flash[:warning].each_pair do |label, dangers| %>
+        <%= pretty_error(dangers, label) %>
+      <% end %>
+    <% else %>
+      <%= flash[:warning].html_safe %>
+    <% end %>
+  </aside>
+<% end %>
+
+<% if flash[:danger].present? %>
+  <aside class="alert alert-danger">
+    <% if flash[:danger].is_a? Hash %>
+      <% flash[:danger].each_pair do |label, dangers| %>
+        <%= pretty_error(dangers, label) %>
+      <% end %>
+    <% else %>
+      <%= flash[:danger].html_safe %>
+    <% end %>
+  </aside>
 <% end %>
