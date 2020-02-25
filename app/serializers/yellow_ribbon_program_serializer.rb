@@ -6,6 +6,7 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :degree_level,
              :division_professional_school,
              :facility_code,
+             :institution_id,
              :number_of_students,
              :school_name_in_yr_database,
              :state,

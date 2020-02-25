@@ -9,7 +9,6 @@ FactoryBot.define do
     degree_level { 'Undergraduate' }
     division_professional_school { 'Non-Traditional' }
     facility_code { generate :facility_code }
-    institution_id { Institution.last.id }
     number_of_students { 99_999 }
     school_name_in_yr_database { 'University'}
     state { 'CO' }
