@@ -3,7 +3,12 @@
 RSpec.shared_examples 'an archivable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory) { options[:factory] }
-  let(:original_type) { options[:original_type] }
+  let(:belongs_to_institution?) { options[:original_type].reflections.keys.include?('institution') }
+  let(:original_type) do
+    rel = options[:original_type]
+    rel = rel.joins(:institution) if belongs_to_institution?
+    rel
+  end
   let(:archived_type) { described_class }
   let(:user) { User.first }
 
@@ -14,38 +19,38 @@ RSpec.shared_examples 'an archivable model' do |options|
   describe 'archives archived model' do
     before do
       # version 1
-      create_production_version
+      create_version(:production)
       # version 2
-      create_production_version
+      create_version(:production)
     end
 
     context 'when successful' do
       it 'archives previous production version', js: true do
         # version 3
-        create_production_version
+        create_version(:production)
         # version 4
-        create_production_version
-        archive_test(4, 3, 1, 1)
+        create_version(:production)
+        archive_test(4, 3, 1)
       end
 
       it 'does not archive preview versions greater than current production', js: true do
         # version 3
-        create_production_version
+        create_version(:production)
         # version 4
-        create_production_version
+        create_version(:production)
         # preview version 5
-        create_preview_version
-        archive_test(5, 4, 2, 1)
+        create_version(:preview)
+        archive_test(5, 4, 1)
       end
 
       it 'archives previous production version and preview versions less than current production', js: true do
         # preview version 3
-        create_preview_version
+        create_version(:preview)
         # preview version 4
-        create_preview_version
+        create_version(:preview)
         # version 5
-        create_production_version
-        archive_test(5, 2, 1, 3)
+        create_version(:production)
+        archive_test(5, 2, 3)
       end
     end
 
@@ -82,7 +87,6 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   def archive_test(initial_count,
                    count_total,
-                   count_greater_equal_production,
                    archive_count)
     expect(original_type.count).to eq(initial_count)
     expect(archived_type.count).to eq(0)
@@ -90,29 +94,21 @@ RSpec.shared_examples 'an archivable model' do |options|
     Archiver.archive_previous_versions
 
     expect(original_type.count).to eq(count_total)
-    expect(original_type.where('version >= ?', current_production_number).size)
-      .to eq(count_greater_equal_production)
-
     expect(archived_type.count).to eq(archive_count)
-    expect(archived_type.where('version < ?', current_production_number).size).to eq(archive_count)
+
+    expect(original_type.distinct.pluck(:version_id)).to include(
+      *[Version.current_production.id, Version.current_preview&.id].compact
+    )
+    expect(archived_type.pluck(:id)).not_to include(*original_type.pluck(:id))
   end
 
-  def create_production_version
-    create :version, :preview
-    Version.current_preview.update(production: true)
-    create factory, version: current_production_number
-  end
-
-  def create_preview_version
-    create :version, :preview
-    create factory, version: current_preview_number
-  end
-
-  def current_preview_number
-    Version.current_preview.number
-  end
-
-  def current_production_number
-    Version.current_production.number
+  def create_version(level)
+    version = create :version, level
+    if belongs_to_institution?
+      institution = create :institution, version: version
+      create factory, institution: institution
+    else
+      create factory, version: version
+    end
   end
 end

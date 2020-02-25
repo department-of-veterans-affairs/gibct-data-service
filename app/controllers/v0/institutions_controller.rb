@@ -8,9 +8,10 @@ module V0
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @data = []
-      if params[:term]
+      if params[:term].present?
+        @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = approved_institutions.where(vet_tec_provider: false).autocomplete(@search_term)
+        @data = filter_results(approved_institutions).where(vet_tec_provider: false).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -44,7 +45,8 @@ module V0
 
     # GET /v0/institutions/20005123/children
     def children
-      children = Institution.version(@version[:number])
+      children = Institution.joins(:version)
+                            .where(version: @version)
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
                             .page(params[:page])
@@ -78,10 +80,14 @@ module V0
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
       relation = approved_institutions.where(vet_tec_provider: false).search(@query[:name], @query[:include_address])
+      filter_results(relation)
+    end
+
+    # rubocop:disable Metrics/MethodLength
+    def filter_results(relation)
       [
         %i[institution_type_name type],
         [:category],
@@ -140,7 +146,7 @@ module V0
     end
 
     def approved_institutions
-      Institution.version(@version[:number]).no_extentions.where(approved: true)
+      Institution.joins(:version).no_extentions.where(approved: true, version: @version)
     end
   end
   # rubocop:enable Metrics/ClassLength

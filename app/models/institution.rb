@@ -154,8 +154,8 @@ class Institution < ApplicationRecord
 
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
-  has_many :school_certifying_officials, -> { order 'priority, last_name' },
-           primary_key: :facility_code, foreign_key: 'facility_code', inverse_of: :institution
+  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
+  belongs_to :version
 
   self.per_page = 10
 
@@ -214,7 +214,7 @@ class Institution < ApplicationRecord
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    select('id, facility_code as value, institution as label')
+    select('institutions.id, facility_code as value, institution as label')
       .where('institution LIKE (?)', "#{search_term.upcase}%")
       .limit(limit)
   end
@@ -270,8 +270,6 @@ class Institution < ApplicationRecord
   scope :filter_count, lambda { |field|
     group(field).where.not(field => nil).order(field).count
   }
-
-  scope :version, ->(n) { where(version: n) }
 
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 end

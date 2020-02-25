@@ -3,8 +3,6 @@
 class SchoolCertifyingOfficial < ApplicationRecord
   include CsvHelper
 
-  belongs_to :institution
-
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },

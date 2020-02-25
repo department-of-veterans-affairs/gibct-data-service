@@ -9,6 +9,10 @@ RSpec.describe InstitutionProgramProfileSerializer, type: :serializer do
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 
+  before do
+    create(:version, :production)
+  end
+
   it 'includes program_type' do
     expect(attributes['program_type']).to eq(institution_program.program_type)
   end
