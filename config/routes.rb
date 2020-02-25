@@ -48,6 +48,7 @@ Rails.application.routes.draw do
     end
 
     resources :yellow_ribbon_programs, only: :index
+    resources :yellow_ribbon_programs_source, only: :index
 
     resources :zipcode_rates, only: :show
   end

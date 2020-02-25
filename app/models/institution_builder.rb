@@ -450,10 +450,30 @@ module InstitutionBuilder
     str = <<-SQL
       INSERT INTO yellow_ribbon_programs
         (version, institution_id, degree_level, division_professional_school,
-          number_of_students, contribution_amount, created_at, updated_at)
+          number_of_students, contribution_amount, amendment_date, campus,
+          city, consolidated_agreement, date_agreement_received,
+          date_confirmation_sent, date_yr_signed_by_yr_official, facility_code,
+          flight_school, ineligible, initials_yr_processor, missed_deadline,
+          modified, new_school, notes, open_ended_agreement, public_private,
+          school_name_in_weams, school_name_in_yr_database, sco_email_address,
+          sco_name, sco_telephone_number, sfr_email_address, sfr_name,
+          sfr_telephone_number, state, street_address, updated_for_2011_2012,
+          withdrawn, year_of_yr_participation, zip, created_at, updated_at)
         (SELECT
           i.version, i.id, yrs.degree_level, yrs.division_professional_school,
-            yrs.number_of_students, yrs.contribution_amount, NOW(), NOW()
+            yrs.number_of_students, yrs.contribution_amount,
+            yrs.amendment_date, yrs.campus, yrs.city,
+            yrs.consolidated_agreement, yrs.date_agreement_received,
+            yrs.date_confirmation_sent, yrs.date_yr_signed_by_yr_official,
+            yrs.facility_code, yrs.flight_school, yrs.ineligible,
+            yrs.initials_yr_processor, yrs.missed_deadline, yrs.modified,
+            yrs.new_school, yrs.notes, yrs.open_ended_agreement,
+            yrs.public_private, yrs.school_name_in_weams,
+            yrs.school_name_in_yr_database, yrs.sco_email_address, yrs.sco_name,
+            yrs.sco_telephone_number, yrs.sfr_email_address, yrs.sfr_name,
+            yrs.sfr_telephone_number, yrs.state, yrs.street_address,
+            yrs.updated_for_2011_2012, yrs.withdrawn, yrs.year_of_yr_participation,
+            yrs.zip, NOW(), NOW()
           FROM institutions as i, yellow_ribbon_program_sources as yrs, versions
           WHERE i.facility_code = yrs.facility_code
           AND versions.number = #{version_number}

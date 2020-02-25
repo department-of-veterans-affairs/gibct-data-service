@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module V0
-  class YellowRibbonProgramsController < ApiController
+  class YellowRibbonProgramSourcesController < ApiController
     include Facets
 
-    # GET /v0/yellow_ribbon_programs?name=duluth
+    # GET /v0/yellow_ribbon_program_sources?name=duluth
     def index
       @meta = {
         version: @version,
@@ -25,7 +25,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      YellowRibbonProgram.search(@query[:name])
+      YellowRibbonProgramSource.search(@query[:name])
     end
   end
 end
