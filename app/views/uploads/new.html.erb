@@ -9,24 +9,52 @@
     <div class="col-xs-8">
       <%= render 'form' %>
     </div>
-   <% if @requirements&.any? %>
-      <div class="col-xs-4">  
-        <div class="alert alert-info" role="alert">
-          <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Data Requirements</h4><br />      
+        <% if @requirements&.any? %>
+    <div class="col-xs-4">  
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Data Requirements</h4><br />      
           <ol>
             <% @requirements.map do |requirement | %>
               <li>
                 <%= requirement[:message] %>
-                <ul>
-                  <% requirement[:value].each do |value|  %>
-                  <li><%= value.humanize %></li>
-                  <% end %>
-                </ul>
+                  <ul>
+                    <% requirement[:value].each do |value|  %>
+                      <li><%= value.humanize %></li>
+                    <% end %>
+                  </ul>
               </li>
             <% end %>
+          <%end%>
+
+       <% @inclusion.map do |columns | %>
+                <%columns.each do |col| %>
+                <li> 
+                  The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
+                    <ul>
+                      <%col[:value].each do |attributes|%>
+                      <li><%=attributes%></li>
+                      <%end%>
+                    </ul>
+                </li>
+              <%end%>
+            <% end %>
+         
+         
+          <%  @custom_batch_validator.map do |batch| %>
+            <li>
+              <%= batch[:message] %>
+              <ul>
+              <% if batch[:value].present?%>
+                <% batch[:value].each do |value| %>
+                <li><%=value%></li>
+                <% end %> 
+              <%end%>
+              </ul>
+            </li>
+          <% end %>
+        
           </ol>
         </div>
-      </div>
-    <% end %>
+    </div>
   </div>
 </div>

@@ -9,42 +9,47 @@ class UploadsController < ApplicationController
     @upload = Upload.from_csv_type(params[:csv_type])
 
     if @upload.csv_type_check?
-      @requirements = requirements_messages
+      csv_requirements
+
       return
     end
     alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
   end
 
+  def csv_requirements
+    @requirements = requirements_messages
+    @custom_batch_validator = batch
+    @inclusion = validation_messages_inclusion
+  end
+
   def create
     @upload = Upload.create(merged_params)
-
     begin
-      @upload.check_for_headers
-      failed = load_csv.failed_instances
+     @upload.check_for_headers
+     failed = load_csv.failed_instances
 
-      validation_warnings = failed.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
-                                  .map(&:display_errors_with_row)
-      header_warnings = @upload.all_warnings
+     validation_warnings = failed.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
+                                 .map(&:display_errors_with_row)
+     header_warnings = @upload.all_warnings
 
-      flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
+     flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
 
-      flash.alert['The following rows should be checked: '] = validation_warnings unless validation_warnings.empty?
-      flash.alert['The following headers should be checked: '] = header_warnings unless header_warnings.empty?
+     flash.alert['The following rows should be checked: '] = validation_warnings unless validation_warnings.empty?
+     flash.alert['The following headers should be checked: '] = header_warnings unless header_warnings.empty?
 
-      redirect_to @upload
+     redirect_to @upload
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
-
+      csv_requirements if @upload.csv_type_check?
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
-      @requirements = requirements_messages if @upload.csv_type_check?
       render :new
-    end
+   end
   end
 
   def show
     @upload = Upload.find_by(id: params[:id])
-    @requirements = requirements_messages
+
     return if @upload.present?
 
     alert_and_log("Upload with id: '#{params[:id]}' not found")
@@ -97,77 +102,93 @@ class UploadsController < ApplicationController
   end
 
   def requirements_messages
-    # this is a call to custom validators that are not listed inside the class
-    custom_batch_validator_messages = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
- 
     [Upload.valid_col_seps]
-    .push(*validation_messages_presence)
-    .push(*validation_messages_numericality)
-    .push(*validation_messages_uniqueness)
-    .push(*validation_messages_inclusion)
-    #.push(*custom_batch_validator_messages)
+      .push(*validation_messages_presence)
+      .push(*validation_messages_numericality)
+      .push(*validation_messages_uniqueness)
+  end
+
+  def batch
+    custom_batch_validator_messages = {
+      message: 'Requirement Description:',
+      value: "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    }
+    if custom_batch_validator_messages[:value].nil?
+      {}
+    else
+      [custom_batch_validator_messages]
+    end
   end
 
   def validation_messages_presence
-  
-    presence = {:message => 'These columns must have a value: ', :value => []}
+    presence = { message: 'These columns must have a value: ', value: [] }
 
+    presence[:value] = thing(ActiveRecord::Validations::PresenceValidator)
+
+    return [presence] unless presence[:value].empty?
+
+    {}
+  end
+
+  def thing(validation_class)
     klass.validators.map do |validations|
-      case validations
-        when ActiveRecord::Validations::PresenceValidator
-          presence[:value].push(generic_requirement_message(validations))
-        end
-    end
-
-      [presence]
-    
-
-
+      generic_requirement_message(validations) if validation_class == validations.class
+    end.compact
   end
 
   def validation_messages_inclusion
-    inclusion = {:message => 'Must be one of these values: ', :value => []}
-    
+    inclusion = []
+
     klass.validators.map do |validations|
       case validations
       when ActiveModel::Validations::InclusionValidator
-        inclusion[:value].push(inclusion_requirement_message(validations))
-        end
+        array = { message: affected_attributes(validations), value: inclusion_requirement_message(validations) }
+        inclusion.push(array)
       end
+    end
 
-  
-    [inclusion]
-  
-   end
+    if !inclusion.empty?
+      [inclusion]
+    else
+      inclusion = {}
+    end
+  end
 
   def validation_messages_numericality
-    numericality = {:message => 'These columns can only contain numeric values: ', :value => []}
+    numericality = { message: 'These columns can only contain numeric values: ', value: [] }
 
     klass.validators.map do |validations|
       case validations
-        when ActiveModel::Validations::NumericalityValidator
-          numericality[:value].push(generic_requirement_message(validations))
-        end
+      when ActiveModel::Validations::NumericalityValidator
+        numericality[:value].push(generic_requirement_message(validations))
       end
-   
-     [numericality]
+    end
 
-   end
+    if !numericality[:value].empty?
+      [numericality]
+    else
+      numericality = {}
+    end
+  end
 
   def validation_messages_uniqueness
-    uniqueness = {:message => 'These columns should contain unique values: ', :value => []}
+    uniqueness = { message: 'These columns should contain unique values: ', value: [] }
     klass.validators.map do |validations|
       case validations
-        when ActiveRecord::Validations::UniquenessValidator
-          uniqueness[:value].push(generic_requirement_message(validations))  
-        end
+      when ActiveRecord::Validations::UniquenessValidator
+        uniqueness[:value].push(generic_requirement_message(validations))
       end
- 
-    [uniqueness]
+    end
+
+    if !uniqueness[:value].empty?
+      [uniqueness]
+    else
+      uniqueness = {}
+    end
   end
 
   def affected_attributes(validations)
-     array = validations.attributes
+    validations.attributes
                .each { |column| csv_column_name(column).to_s }
                .select(&:present?) # derive_dependent_columns or columns not in CSV_CONVERTER_INFO will be blank
                .join(', ')
@@ -181,13 +202,7 @@ class UploadsController < ApplicationController
     affected_attributes(validations)
   end
 
-  # def inclusion_requirement_message(validations)
-  #   'For column ' + affected_attributes(validations) + ' values must be one of these values: ' +
-  #     validations.options[:in].map(&:to_s).join(', ')
-  # end
-
   def inclusion_requirement_message(validations)
-    'For column ' + affected_attributes(validations) + ' values must be one of these values: ' +
-      validations.options[:in].map(&:to_s).join(', ')
+    validations.options[:in].map(&:to_s)
   end
 end
