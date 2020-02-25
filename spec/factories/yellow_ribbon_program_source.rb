@@ -8,9 +8,9 @@ FactoryBot.define do
     division_professional_school { 'Non-Traditional' }
     facility_code { generate :facility_code }
     number_of_students { 99_999 }
-    school_name_in_yr_database { 'University'}
+    school_name_in_yr_database { 'University' }
     state { 'CO' }
-    street_address { '1234 University Drive'}
+    street_address { '1234 University Drive' }
     zip { '80303' }
 
     trait :institution_builder do

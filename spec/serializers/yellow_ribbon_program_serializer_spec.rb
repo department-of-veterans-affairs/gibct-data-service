@@ -44,5 +44,4 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
   it 'includes zip' do
     expect(attributes['zip']).to eq(yellow_ribbon_program.zip)
   end
-
 end
