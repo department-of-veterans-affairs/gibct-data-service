@@ -159,8 +159,7 @@ class UploadsController < ApplicationController
     inclusion = []
 
     klass.validators.map do |validations|
-      case validations
-      when ActiveModel::Validations::InclusionValidator
+      if validations.class == ActiveModel::Validations::InclusionValidator
         array = { message: affected_attributes(validations), value: inclusion_requirement_message(validations) }
         inclusion.push(array)
       end
