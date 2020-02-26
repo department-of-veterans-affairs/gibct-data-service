@@ -127,7 +127,7 @@ class UploadsController < ApplicationController
 
   def klass_validator(validation_class)
     klass.validators.map do |validations|
-      generic_requirement_message(validations) if validation_class == validations.class
+      affected_attributes(validations) if validation_class == validations.class
     end.flatten.compact
   end
 
@@ -168,23 +168,18 @@ class UploadsController < ApplicationController
     {}
   end
 
-
-
-   def affected_attributes(validations)
+  def affected_attributes(validations)
     array = []
-    validations.attributes.map do |column| csv_column_name(column)
+    validations.attributes.map do |column|
+      csv_column_name(column)
       array.push(column.to_s)
-    end  
-             
-    [array]           
+    end
+
+    [array]
   end
 
   def csv_column_name(column)
     klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
-  end
-
-  def generic_requirement_message(validations)
-    affected_attributes(validations)
   end
 
   def inclusion_requirement_message(validations)
