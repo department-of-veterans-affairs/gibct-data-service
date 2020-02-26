@@ -49,6 +49,7 @@ class UploadsController < ApplicationController
 
   def show
     @upload = Upload.find_by(id: params[:id])
+    csv_requirements
 
     return if @upload.present?
 
@@ -120,20 +121,34 @@ class UploadsController < ApplicationController
     end
   end
 
-  def validation_messages_presence
-    presence = { message: 'These columns must have a value: ', value: [] }
-
-    presence[:value] = thing(ActiveRecord::Validations::PresenceValidator)
-
-    return [presence] unless presence[:value].empty?
-
-    {}
-  end
-
-  def thing(validation_class)
+  def klass_validator(validation_class)
     klass.validators.map do |validations|
       generic_requirement_message(validations) if validation_class == validations.class
     end.compact
+  end
+
+  def validation_messages_presence
+    presence = { message: 'These columns must have a value: ', value: [] }
+
+    presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
+
+    return [presence] unless presence[:value].empty?
+  end
+
+  def validation_messages_numericality
+    numericality = { message: 'These columns can only contain numeric values: ', value: [] }
+
+    numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator)
+
+    return [numericality] unless numericality[:value].empty?
+  end
+
+  def validation_messages_uniqueness
+    uniqueness = { message: 'These columns should contain unique values: ', value: [] }
+
+    uniqueness[:value] = klass_validator(ActiveRecord::Validations::UniquenessValidator)
+
+    return [uniqueness] unless uniqueness[:value].empty?
   end
 
   def validation_messages_inclusion
@@ -151,39 +166,6 @@ class UploadsController < ApplicationController
       [inclusion]
     else
       inclusion = {}
-    end
-  end
-
-  def validation_messages_numericality
-    numericality = { message: 'These columns can only contain numeric values: ', value: [] }
-
-    klass.validators.map do |validations|
-      case validations
-      when ActiveModel::Validations::NumericalityValidator
-        numericality[:value].push(generic_requirement_message(validations))
-      end
-    end
-
-    if !numericality[:value].empty?
-      [numericality]
-    else
-      numericality = {}
-    end
-  end
-
-  def validation_messages_uniqueness
-    uniqueness = { message: 'These columns should contain unique values: ', value: [] }
-    klass.validators.map do |validations|
-      case validations
-      when ActiveRecord::Validations::UniquenessValidator
-        uniqueness[:value].push(generic_requirement_message(validations))
-      end
-    end
-
-    if !uniqueness[:value].empty?
-      [uniqueness]
-    else
-      uniqueness = {}
     end
   end
 

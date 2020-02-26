@@ -97,8 +97,8 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates presence messages' do
-        validations_of_str = 'facility_code, institution, country'
-        message = { message: 'Valid column separators are:', value: [validations_of_str] }
+        validations_of_str = '|', ','
+        message = { message: 'Valid column separators are:', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end
 
