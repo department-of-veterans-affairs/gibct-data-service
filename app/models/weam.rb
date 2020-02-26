@@ -74,8 +74,8 @@ class Weam < ApplicationRecord
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
-  validates :facility_code,  presence: true
-  validates :institution,  presence: true
+  validates :facility_code, presence: true
+  validates :institution, presence: true
   validates :country, presence: true
   validate :institution_type
   validates :bah, numericality: true, allow_blank: true
