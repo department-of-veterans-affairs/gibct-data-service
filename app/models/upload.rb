@@ -148,8 +148,8 @@ class Upload < ApplicationRecord
   def set_col_sep(first_line)
     self.col_sep = Settings.csv_upload.column_separators
                            .find { |column_separator| first_line.include?(column_separator) }
-
-    error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
+    valid_col_seps = Upload.valid_col_seps[:value].map { |cs| "\"#{cs}\"" }.join(' and ')
+    error_message = "Unable to determine column separator. #{valid_col_seps}"
     raise(StandardError, error_message) if col_sep.blank?
   end
 end

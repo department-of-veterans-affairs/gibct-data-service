@@ -214,7 +214,7 @@ RSpec.describe UploadsController, type: :controller do
           post(:create,
                params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
         ).to render_template(:new)
-        error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
+        error_message = 'Unable to determine column separator. "|" and ","'
         expect(flash.alert).to include(error_message)
       end
     end
