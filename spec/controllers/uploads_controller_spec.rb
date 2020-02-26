@@ -153,7 +153,7 @@ RSpec.describe UploadsController, type: :controller do
              params: {
                upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
              })
-        expect(flash[:danger].key?(:'The following rows should be checked: ')).to be true
+        expect(flash[:warning].key?(:'The following rows should be checked: ')).to be true
       end
     end
 
@@ -200,7 +200,7 @@ RSpec.describe UploadsController, type: :controller do
         post(:create,
              params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
 
-        message = flash[:danger][:'The following headers should be checked: '].try(:first)
+        message = flash[:warning][:'The following headers should be checked: '].try(:first)
         expect(message).to match(/Independent study is a missing header/)
       end
     end

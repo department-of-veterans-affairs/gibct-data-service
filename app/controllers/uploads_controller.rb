@@ -55,9 +55,9 @@ class UploadsController < ApplicationController
     header_warnings = @upload.all_warnings
 
     flash[:csv_success] = {
-        :total_rows_count =>total_rows_count.to_s,
-      :valid_rows => valid_rows.to_s,
-        :failed_rows_count => failed_rows_count.to_s,
+      total_rows_count: total_rows_count.to_s,
+      valid_rows: valid_rows.to_s,
+      failed_rows_count: failed_rows_count.to_s
     }.compact
 
     flash[:warning] = {
