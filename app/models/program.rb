@@ -14,7 +14,6 @@ class Program < ApplicationRecord
     'length' => { column: :length, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, presence: true
-  validates :description, presence: true
+  validates :facility_code, :description, presence: true
   validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
 end

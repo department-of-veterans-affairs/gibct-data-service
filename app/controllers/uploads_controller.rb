@@ -128,14 +128,13 @@ class UploadsController < ApplicationController
   def klass_validator(validation_class)
     klass.validators.map do |validations|
       generic_requirement_message(validations) if validation_class == validations.class
-    end.compact
+    end.flatten.compact
   end
 
   def validation_messages_presence
     presence = { message: 'These columns must have a value: ', value: [] }
 
     presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
-
     return [presence] unless presence[:value].empty?
   end
 
@@ -164,17 +163,20 @@ class UploadsController < ApplicationController
         inclusion.push(array)
       end
     end
-
     return [inclusion] unless inclusion.empty?
 
     {}
   end
 
-  def affected_attributes(validations)
-    validations.attributes
-               .each { |column| csv_column_name(column).to_s }
-               .select(&:present?) # derive_dependent_columns or columns not in CSV_CONVERTER_INFO will be blank
-               .join(', ')
+
+
+   def affected_attributes(validations)
+    array = []
+    validations.attributes.map do |column| csv_column_name(column)
+      array.push(column.to_s)
+    end  
+             
+    [array]           
   end
 
   def csv_column_name(column)

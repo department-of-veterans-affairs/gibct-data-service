@@ -121,10 +121,7 @@ class IpedsIc < ApplicationRecord
   }.freeze
 
   validates :cross, presence: true
-  validates :vet2, inclusion: { in: (-2..1) }
-  validates :vet3, inclusion: { in: (-2..1) }
-  validates :vet4, inclusion: { in: (-2..1) }
-  validates :vet5, inclusion: { in: (-2..1) }
+  validates :vet2, :vet3, :vet4, :vet5, inclusion: { in: (-2..1) }
   validates :distnced, inclusion: { in: [-2, -1, 1, 2] }
   validates :calsys, inclusion: { in: [-2, 1, 2, 3, 4, 5, 6, 7] }
   after_initialize :derive_dependent_columns

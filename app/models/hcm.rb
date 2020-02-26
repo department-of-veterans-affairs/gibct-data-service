@@ -14,9 +14,7 @@ class Hcm < ApplicationRecord
     'method reason desc' => { column: :hcm_reason, converter: BaseConverter }
   }.freeze
 
-  validates :ope, presence: true
-  validates :hcm_type, presence: true
-  validates :hcm_reason, presence: true
+  validates :ope, :hcm_type, presence: true
 
   after_initialize :derive_dependent_columns
 

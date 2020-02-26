@@ -17,7 +17,7 @@
        <% @inclusion.map do |columns | %>
                 <%columns.each do |col| %>
                 <li> 
-                  The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
+                  The <strong><%="\""+col[:message].join('').humanize.downcase+"\""%></strong> column data must be one of these values:
                     <ul>
                       <%col[:value].each do |attributes|%>
                       <li><%=attributes%></li>
