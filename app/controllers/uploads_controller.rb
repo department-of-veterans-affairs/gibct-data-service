@@ -17,12 +17,6 @@ class UploadsController < ApplicationController
     redirect_to dashboards_path
   end
 
-  def csv_requirements
-    @requirements = requirements_messages
-    @custom_batch_validator = batch
-    @inclusion = validation_messages_inclusion
-  end
-
   def create
     @upload = Upload.create(merged_params)
     begin
@@ -50,7 +44,7 @@ class UploadsController < ApplicationController
   def show
     @upload = Upload.find_by(id: params[:id])
 
-    csv_requirements if @upload
+    csv_requirements if @upload.present?
     return if @upload.present?
 
     alert_and_log("Upload with id: '#{params[:id]}' not found")
@@ -58,6 +52,12 @@ class UploadsController < ApplicationController
   end
 
   private
+
+  def csv_requirements
+    @requirements = requirements_messages
+    @custom_batch_validator = batch
+    @inclusion = validation_messages_inclusion
+  end
 
   def alert_and_log(message, error = nil)
     Rails.logger.error message + error&.backtrace.to_s
@@ -119,6 +119,10 @@ class UploadsController < ApplicationController
     else
       [custom_batch_validator_messages]
     end
+
+    return [custom_batch_validator_messages] unless custom_batch_validator_messages[:value].nil?
+
+    {}
   end
 
   def klass_validator(validation_class)
@@ -140,7 +144,7 @@ class UploadsController < ApplicationController
 
     numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator)
 
-    return [numericality] unless numericality[:value].empty?
+    [numericality] unless numericality[:value].empty?
   end
 
   def validation_messages_uniqueness
@@ -162,11 +166,9 @@ class UploadsController < ApplicationController
       end
     end
 
-    if !inclusion.empty?
-      [inclusion]
-    else
-      inclusion = {}
-    end
+    return [inclusion] unless inclusion.empty?
+
+    {}
   end
 
   def affected_attributes(validations)

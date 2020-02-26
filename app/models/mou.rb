@@ -16,7 +16,8 @@ class Mou < ApplicationRecord
     'approval date' => { column: :approval_date, converter: BaseConverter }
   }.freeze
 
-  validates :ope, :ope6, presence: true
+  validates :ope, presence: true
+  validates :ope6, presence: true
 
   after_initialize :derive_dependent_columns
 

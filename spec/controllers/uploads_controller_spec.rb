@@ -81,16 +81,6 @@ RSpec.describe UploadsController, type: :controller do
         .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
     end
 
-    # def map_attributes(csv_class, requirement_class)
-    #   binding.pry
-    #   requirements(csv_class, requirement_class)
-    #     .map do |requirement|
-    #       requirement.attributes.map do |column|
-    #         csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys
-    #       end
-    #     end
-    # end
-
     describe 'requirements_messages for Weam' do
       before do
         get :new, params: { csv_type: Weam.name }

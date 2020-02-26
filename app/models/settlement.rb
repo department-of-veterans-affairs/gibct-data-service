@@ -14,4 +14,5 @@ class Settlement < ApplicationRecord
   }.freeze
 
   validates :cross, :settlement_description, presence: true
+  validates :settlement_description, presence: true
 end
