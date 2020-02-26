@@ -49,10 +49,10 @@ class UploadsController < ApplicationController
 
   def show
     @upload = Upload.find_by(id: params[:id])
-    csv_requirements
-
+   
+    csv_requirements if @upload
     return if @upload.present?
-
+   
     alert_and_log("Upload with id: '#{params[:id]}' not found")
     redirect_to uploads_path
   end
