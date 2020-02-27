@@ -186,13 +186,14 @@ RSpec.describe Institution, type: :model do
     end
   end
 
+  # This spec is based off of what is done in spec/models/shared_examples/shared_examples_for_exportable.rb
+  # Since institutions are not imported via CSV create_list is used instead
   describe 'when exporting' do
     let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
     # Pull the default CSV options to be used
     default_options = Rails.application.config.csv_defaults[described_class.name] ||
                       Rails.application.config.csv_defaults['generic']
-    load_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }
 
     def check_attributes_from_records(rows, header_row)
       described_class.find_each.with_index do |record, i|
@@ -215,8 +216,8 @@ RSpec.describe Institution, type: :model do
       create_list :institution, 10, version_id: version.id
 
       rows = described_class.export.split("\n")
-      header_row = rows.shift.split(load_options[:col_sep]).map(&:downcase)
-      rows = CSV.parse(rows.join("\n"), col_sep: load_options[:col_sep])
+      header_row = rows.shift.split(default_options['col_sep']).map(&:downcase)
+      rows = CSV.parse(rows.join("\n"), col_sep: default_options['col_sep'])
       check_attributes_from_records(rows, header_row)
     end
   end
