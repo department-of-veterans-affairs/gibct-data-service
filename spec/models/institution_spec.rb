@@ -185,4 +185,40 @@ RSpec.describe Institution, type: :model do
       end
     end
   end
+
+  # This spec is based off of what is done in spec/models/shared_examples/shared_examples_for_exportable.rb
+  # Since institutions are not imported via CSV create_list is used instead
+  describe 'when exporting' do
+    let(:mapping) { described_class::CSV_CONVERTER_INFO }
+
+    # Pull the default CSV options to be used
+    default_options = Rails.application.config.csv_defaults[described_class.name] ||
+                      Rails.application.config.csv_defaults['generic']
+
+    def check_attributes_from_records(rows, header_row)
+      described_class.find_each.with_index do |record, i|
+        attributes = {}
+
+        rows[i].each.with_index { |value, j| attributes[mapping[header_row[j]][:column]] = value }
+        csv_record = described_class.new(attributes)
+        csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
+
+        csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
+        test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
+        test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
+
+        expect(csv_test_attributes).to eq(test_attributes)
+      end
+    end
+
+    it 'creates a string representation of a csv_file when version.id does not equal version.number' do
+      version = create :version, :production, id: 40_000
+      create_list :institution, 10, version_id: version.id
+
+      rows = described_class.export.split("\n")
+      header_row = rows.shift.split(default_options['col_sep']).map(&:downcase)
+      rows = CSV.parse(rows.join("\n"), col_sep: default_options['col_sep'])
+      check_attributes_from_records(rows, header_row)
+    end
+  end
 end
