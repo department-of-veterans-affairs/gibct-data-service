@@ -93,7 +93,7 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates numericality messages' do
-        validations_of_str = 'bah'
+        validations_of_str = 'current academic year va bah rate'
         message = { message: 'These columns can only contain numeric values: ', value: [validations_of_str] }
         expect(assigns(:requirements)).to include(message)
       end
@@ -117,7 +117,7 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates presence messages' do
-        validations_of_str = 'name', 'float_value'
+        validations_of_str = 'name', 'value'
         message = { message: 'These columns must have a value: ', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end

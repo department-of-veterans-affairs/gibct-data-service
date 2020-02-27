@@ -158,10 +158,11 @@ class UploadsController < ApplicationController
     inclusion = []
 
     klass.validators.map do |validations|
-      if validations.class == ActiveModel::Validations::InclusionValidator
-        array = { message: affected_attributes(validations).join(', '), value: inclusion_requirement_message(validations) }
-        inclusion.push(array)
-      end
+      next unless validations.class == ActiveModel::Validations::InclusionValidator
+
+      array = { message: affected_attributes(validations).join(', '),
+                value: inclusion_requirement_message(validations) }
+      inclusion.push(array)
     end
     return [inclusion] unless inclusion.empty?
 
