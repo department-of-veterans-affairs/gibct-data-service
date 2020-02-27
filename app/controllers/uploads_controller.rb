@@ -159,7 +159,7 @@ class UploadsController < ApplicationController
 
     klass.validators.map do |validations|
       if validations.class == ActiveModel::Validations::InclusionValidator
-        array = { message: affected_attributes(validations), value: inclusion_requirement_message(validations) }
+        array = { message: affected_attributes(validations).join(', '), value: inclusion_requirement_message(validations) }
         inclusion.push(array)
       end
     end
@@ -169,13 +169,9 @@ class UploadsController < ApplicationController
   end
 
   def affected_attributes(validations)
-    array = []
-    validations.attributes.map do |column|
-      csv_column_name(column)
-      array.push(column.to_s)
-    end
-
-    [array]
+    validations.attributes
+               .map { |column| csv_column_name(column).to_s }
+               .select(&:present?) # derive_dependent_columns or columns not in CSV_CONVERTER_INFO will be blank
   end
 
   def csv_column_name(column)
