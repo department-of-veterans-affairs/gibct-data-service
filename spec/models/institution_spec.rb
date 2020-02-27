@@ -192,7 +192,6 @@ RSpec.describe Institution, type: :model do
     # Pull the default CSV options to be used
     default_options = Rails.application.config.csv_defaults[described_class.name] ||
                       Rails.application.config.csv_defaults['generic']
-    # Merge with provided options
     load_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }
 
     def check_attributes_from_records(rows, header_row)
