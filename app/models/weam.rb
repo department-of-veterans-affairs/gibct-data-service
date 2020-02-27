@@ -191,6 +191,14 @@ class Weam < ApplicationRecord
     [physical_address_1, physical_address_2, physical_address_3, city, state, zip].compact
   end
 
+  def address_values_for_match
+    [address_1, address_2, address_3, city, zip].compact
+  end
+
+  def physical_address_values_for_match
+    [physical_address_1, physical_address_2, physical_address_3, city, zip].compact
+  end
+
   private
 
   def poo_status_valid?

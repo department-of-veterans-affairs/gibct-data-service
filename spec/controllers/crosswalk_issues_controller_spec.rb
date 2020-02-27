@@ -58,14 +58,32 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
                           institution: 'college of', city: 'Test',
                           state: 'TN', zip: '99999'
         create :ipeds_hd, cross: 'w', ope: 'x',
-                          institution: 'university', city: 'nowhere',
+                          institution: 'college of', city: 'nowhere',
                           state: 'CA', zip: '88888'
-        issue = create :crosswalk_issue, :with_weam_match_partial, :partial_match_type
-        get(:show_partial, params: { id: issue.id })
       end
 
-      it 'populates an array of Ipeds_hds' do
-        expect(assigns(:ipeds_hd_arr).count).to eq(2)
+      it 'populates an array of Ipeds_hds possible matches with state matching weams state' do
+        issue = create :crosswalk_issue, :with_weam_match_partial, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).map { |match| match['state'] }).to all(eq(issue.weam.state))
+        expect(assigns(:possible_ipeds_matches).count).to eq(1)
+      end
+
+      it 'populates an array of Ipeds_hds with state matching weams physical state' do
+        issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).map { |match| match['state'] }).to all(eq(issue.weam.physical_state))
+        expect(assigns(:possible_ipeds_matches).count).to eq(1)
+      end
+
+      it 'populates an array of Ipeds_hds possible matches orderd by match amount' do
+        best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
+                                       institution: 'college of', city: 'test',
+                                       state: 'CA', zip: '88888'
+        issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
+        expect(assigns(:possible_ipeds_matches).count).to eq(2)
       end
 
       it 'returns http success' do

@@ -44,7 +44,7 @@
     <div class="row row-space-12">
       <div class="col-xs-12">
         <h2>IPEDS HD</h2>
-        <% if @ipeds_hd_arr.any? %>
+        <% if @possible_ipeds_matches.any? %>
           <table class="table table-hover table-condensed table-bordered table-responsive">
             <thead>
               <th>Match %</th>
@@ -65,11 +65,11 @@
                               "#{Settings.college_navigator_url}/?id=#{@issue.ipeds_hd&.cross}",
                               target: :_blank
                   %>
-                <td/>
                 <td><%= @issue.ipeds_hd&.ope %></td>
+                <td/>
               </tr>
             <% end %>
-            <% @ipeds_hd_arr.each do |iped| %>
+            <% @possible_ipeds_matches.each do |iped| %>
               <tr>
                 <td><%= (iped["match_score"].to_f * 100).round(3) %>%</td>
                 <td><%= iped["institution"] %></td>
