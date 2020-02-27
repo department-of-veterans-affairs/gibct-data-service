@@ -9,6 +9,7 @@ FactoryBot.define do
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name { 'PRIVATE' }
+    school_closing { false }
 
     approved { true }
 
