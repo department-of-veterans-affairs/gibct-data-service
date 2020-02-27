@@ -109,5 +109,9 @@ FactoryBot.define do
       physical_state { 'IL' }
       physical_country { 'USA' }
     end
+
+    trait :production_version do
+      version_id { Version.current_production.id }
+    end
   end
 end
