@@ -7,7 +7,7 @@
                 <%= requirement[:message] %>
                   <ul>
                     <% requirement[:value].each do |value|  %>
-                      <li><%= value.humanize %></li>
+                      <li><%= value.humanize.downcase %></li>
                     <% end %>
                   </ul>
               </li>
