@@ -211,7 +211,7 @@ RSpec.describe Institution, type: :model do
       end
     end
 
-    it 'creates a string representation of a csv_file' do
+    it 'creates a string representation of a csv_file when version.id does not equal version.number' do
       version = create :version, :production, id: 40_000
       create_list :institution, 10, version_id: version.id
 
