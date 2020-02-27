@@ -212,6 +212,8 @@ ActiveRecord::Schema.define(version: 2020_02_21_090200) do
     t.string "facility_code"
     t.string "cross"
     t.string "ope"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
