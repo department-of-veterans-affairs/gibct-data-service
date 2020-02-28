@@ -8,11 +8,8 @@ class UploadsController < ApplicationController
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
 
-    if @upload.csv_type_check?
-      csv_requirements
+    return csv_requirements if @upload.csv_type_check?
 
-      return
-    end
     alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
   end
@@ -114,11 +111,6 @@ class UploadsController < ApplicationController
       message: 'Requirement Description:',
       value: "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
     }
-    if custom_batch_validator_messages[:value].nil?
-      {}
-    else
-      [custom_batch_validator_messages]
-    end
 
     return [custom_batch_validator_messages] unless custom_batch_validator_messages[:value].nil?
 
