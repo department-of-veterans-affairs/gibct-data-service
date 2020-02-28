@@ -34,9 +34,9 @@ RSpec.describe ArchivesController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      allow(InstitutionsArchive).to receive(:export_institutions_by_version)
+      allow(InstitutionsArchive).to receive(:export_by_version)
       get(:export, params: { csv_type: InstitutionsArchive.name, number: 2, format: :csv })
-      expect(InstitutionsArchive).to have_received(:export_institutions_by_version)
+      expect(InstitutionsArchive).to have_received(:export_by_version)
     end
 
     it 'includes filename parameter in content-disposition header' do
