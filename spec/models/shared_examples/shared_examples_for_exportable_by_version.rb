@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'an exportable model by version' do |options|
+RSpec.shared_examples 'an exportable model by version' do
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
@@ -23,8 +23,10 @@ RSpec.shared_examples 'an exportable model by version' do |options|
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
 
-        csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
-        test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
+        csv_test_attributes = csv_record.attributes
+                                        .except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
+        test_attributes = record.attributes
+                                .except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
         test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
 
         expect(csv_test_attributes).to eq(test_attributes)
