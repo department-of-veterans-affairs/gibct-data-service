@@ -38,22 +38,51 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
     end
 
     it 'search returns results matching school_name_in_yr_database' do
-      get(:index, params: { name: 'Future' })
+      get(:index, params: { school_name_in_yr_database: 'Future' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
     it 'search returns case-insensitive results' do
-      get(:index, params: { name: 'FUTURE' })
+      get(:index, params: { school_name_in_yr_database: 'FUTURE' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
     it 'search with space returns results' do
-      get(:index, params: { name: 'Future Tech' })
+      get(:index, params: { school_name_in_yr_database: 'Future Tech' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('yellow_ribbon_program')
+    end
+
+    it 'search returns results ordered by number_of_students desc' do
+      get(:index, params: { sort_by: 'number_of_students', sort_direction: 'desc' })
+      expect(JSON.parse(response.body)['data'].last['attributes']['number_of_students']).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('yellow_ribbon_program')
+    end
+
+    it 'search returns case-insensitive results' do
+      get(:index, params: { sort_by: 'Number_of_Students', sort_direction: 'desc' })
+      expect(JSON.parse(response.body)['data'].last['attributes']['number_of_students']).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('yellow_ribbon_program')
+    end
+
+    it 'search with space returns results' do
+      get(:index, params: { sort_by: ' number_of_students ', sort_direction: 'desc' })
+      expect(JSON.parse(response.body)['data'].last['attributes']['number_of_students']).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('yellow_ribbon_program')
+    end
+
+    it 'search with invalid sorting query params' do
+      get(:index, params: { sort_by: 'asdf', sort_direction: 'asdf' })
+      expect(JSON.parse(response.body)['data'].count).to eq(4)
+      expect(JSON.parse(response.body)['data'].first['attributes']['school_name_in_yr_database']).to eq('Future Tech University')
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end

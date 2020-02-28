@@ -23,6 +23,7 @@ FactoryBot.define do
     trait :in_florence do
       city { 'Florence' }
       school_name_in_yr_database { 'Future Tech University' }
+      number_of_students { 1 }
       state { 'KY' }
       zip { '41042' }
     end
