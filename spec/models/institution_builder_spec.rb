@@ -104,8 +104,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :weam, facility_code: '18181818', institution: 'REAL SCHOOL'
         create :weam, facility_code: '18181818', institution: 'FAKE SCHOOL'
         described_class.run(user)
-        expect(institutions.last.institution).to eq('REAL SCHOOL')
-        expect(institutions.last.institution).not_to eq('FAKE SCHOOL')
+        expect(institutions.where(facility_code: '18181818').count).to eq(1)
       end
     end
 
