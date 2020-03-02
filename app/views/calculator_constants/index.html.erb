@@ -1,0 +1,13 @@
+<h3>Manage Calculator Constants</h3>
+<%= form_with(url: calculator_constants_update_path, id: 'calculator_constants_update') do %>
+  <% @calculator_constants.each do |constant| %>
+    <div class="form-group">
+      <%= label_tag(constant.name, constant.name) %>
+      <br>
+      <%= text_field_tag constant.name,constant.value %>
+    </div>
+  <% end %>
+  <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
+<% end %>
+
+

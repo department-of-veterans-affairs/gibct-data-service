@@ -30,6 +30,8 @@ Rails.application.routes.draw do
 
   get '/archives' => 'archives#index'
   get '/archives/export/:csv_type/:number' => 'archives#export', as: :archives_export, defaults: { format: 'csv' }
+  get '/calculator_constants' => 'calculator_constants#index'
+  post '/calculator_constants' => 'calculator_constants#update', as: :calculator_constants_update
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
