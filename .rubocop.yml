@@ -48,7 +48,17 @@ Style/ClassAndModuleChildren:
 Style/GuardClause:
   Enabled: false
 
-Metrics/LineLength:
+# https://rubocop.readthedocs.io/en/latest/cops_style/#stylehasheachmethods
+Style/HashEachMethods:
+  Enabled: true
+# https://rubocop.readthedocs.io/en/latest/cops_style/#stylehashtransformkeys
+Style/HashTransformKeys:
+  Enabled: true
+# https://rubocop.readthedocs.io/en/latest/cops_style/#stylehashtransformvalues
+Style/HashTransformValues:
+  Enabled: true
+
+Layout/LineLength:
   Max: 120
   Exclude:
     - "app/controllers/v0/institutions_controller.rb"
