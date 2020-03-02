@@ -118,9 +118,9 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'causes a CSV to be exported' do
-      allow(Institution).to receive(:export_institutions_by_version)
+      allow(Institution).to receive(:export_by_version)
       get(:export_version, params: { format: :csv, number: 1 })
-      expect(Institution).to have_received(:export_institutions_by_version)
+      expect(Institution).to have_received(:export_by_version)
     end
 
     it 'includes filename parameter in content-disposition header' do
