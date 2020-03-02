@@ -99,6 +99,15 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'when preventing duplicates' do
+      it 'duplicates in WEAMs are not present in institutions' do
+        create :weam, facility_code: '18181818', institution: 'REAL SCHOOL'
+        create :weam, facility_code: '18181818', institution: 'FAKE SCHOOL'
+        described_class.run(user)
+        expect(institutions.where(facility_code: '18181818').count).to eq(1)
+      end
+    end
+
     describe 'when adding Crosswalk data' do
       let(:institution) { institutions.find_by(facility_code: crosswalk.facility_code) }
       let(:crosswalk) { Crosswalk.first }
