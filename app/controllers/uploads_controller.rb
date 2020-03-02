@@ -17,9 +17,9 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-      @upload.check_for_headers
-      loaded_csv = load_csv
-      alert_messages(loaded_csv)
+     @upload.check_for_headers
+     loaded_csv = load_csv
+     alert_messages(loaded_csv)
 
      redirect_to @upload
     rescue StandardError => e
@@ -47,7 +47,7 @@ class UploadsController < ApplicationController
     @custom_batch_validator = batch
     @inclusion = validation_messages_inclusion
   end
-    
+
   def alert_messages(loaded_csv)
     total_rows_count = loaded_csv.ids.length
     failed_rows = loaded_csv.failed_instances
