@@ -1,44 +1,42 @@
-<% if @requirements&.any? %>
-   
-             
-          <ol>
-            <% @requirements.map do |requirement | %>
-              <li>
-                <%= requirement[:message] %>
-                  <ul>
-                    <% requirement[:value].each do |value|  %>
-                      <li><%= value.humanize.downcase %></li>
-                    <% end %>
-                  </ul>
-              </li>
+<ol>
+  <% if @requirements&.any? %>
+    <% @requirements.map do |requirement | %>
+      <li>
+        <%= requirement[:message] %>
+          <ul>
+            <% requirement[:value].each do |value|  %>
+              <li><%= value.humanize.downcase %></li>
             <% end %>
-          <%end%>
+          </ul>
+      </li>
+    <% end %>
+  <%end%>
 
-       <% @inclusion.map do |columns | %>
-                <%columns.each do |col| %>
-                <li> 
-                  The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
-                    <ul>
-                      <%col[:value].each do |attributes|%>
-                      <li><%=attributes%></li>
-                      <%end%>
-                    </ul>
-                </li>
+  <% if @inclusion&.any? %>
+    <% @inclusion.map do |columns | %>
+      <%columns.each do |col| %>
+        <li>
+          The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
+            <ul>
+              <%col[:value].each do |attributes|%>
+              <li><%=attributes%></li>
               <%end%>
-            <% end %>
-         
-         
+            </ul>
+        </li>
+      <%end%>
+    <% end %>
+  <% end %>
+
+
+  <% if @custom_batch_validator&.any? %>
+      <li>
+        Requirement Description:
+        <ul>
           <%  @custom_batch_validator.map do |batch| %>
-            <li>
-              <%= batch[:message] %>
-              <ul>
-              <% if batch[:value].present?%>
-                <% batch[:value].each do |value| %>
-                <li><%=value%></li>
-                <% end %> 
-              <%end%>
-              </ul>
-            </li>
-          <% end %>
-        
-          </ol>
+            <li><%=batch%></li>
+          <%end%>
+        </ul>
+      </li>
+  <% end %>
+
+</ol>

@@ -44,7 +44,7 @@ class UploadsController < ApplicationController
 
   def csv_requirements
     @requirements = requirements_messages
-    @custom_batch_validator = batch
+    @custom_batch_validator = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
     @inclusion = validation_messages_inclusion
   end
 
@@ -118,17 +118,6 @@ class UploadsController < ApplicationController
       .push(*validation_messages_uniqueness)
   end
 
-  def batch
-    custom_batch_validator_messages = {
-      message: 'Requirement Description:',
-      value: "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    }
-
-    return [custom_batch_validator_messages] unless custom_batch_validator_messages[:value].nil?
-
-    {}
-  end
-
   def klass_validator(validation_class)
     klass.validators.map do |validations|
       affected_attributes(validations) if validation_class == validations.class
@@ -139,7 +128,7 @@ class UploadsController < ApplicationController
     presence = { message: 'These columns must have a value: ', value: [] }
 
     presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
-    return [presence] unless presence[:value].empty?
+    [presence] unless presence[:value].empty?
   end
 
   def validation_messages_numericality
@@ -155,7 +144,7 @@ class UploadsController < ApplicationController
 
     uniqueness[:value] = klass_validator(ActiveRecord::Validations::UniquenessValidator)
 
-    return [uniqueness] unless uniqueness[:value].empty?
+    [uniqueness] unless uniqueness[:value].empty?
   end
 
   def validation_messages_inclusion
@@ -168,9 +157,7 @@ class UploadsController < ApplicationController
                 value: inclusion_requirement_message(validations) }
       inclusion.push(array)
     end
-    return [inclusion] unless inclusion.empty?
-
-    {}
+    [inclusion] unless inclusion.empty?
   end
 
   def affected_attributes(validations)
