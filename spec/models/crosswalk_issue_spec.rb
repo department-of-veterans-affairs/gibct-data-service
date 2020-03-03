@@ -193,7 +193,7 @@ RSpec.describe CrosswalkIssue, type: :model do
 
       described_class.rebuild
 
-      ignore_and_validate_delete_of_only_partial_match_issues
+      ignore_and_validate_delete_of_only_partial_match_issue
 
       # Record now has an `ope` set.  Since ope has changed, we expect an issue to be generated
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross, ope: '0000000A'
