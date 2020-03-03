@@ -99,8 +99,8 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates WeamsValidator messages' do
-        validations_of_str = 'Facility codes should be unique'
-        message = { message: 'Requirement Description:', value: [validations_of_str] }
+        message = 'Facility codes should be unique'
+        # message = { message: 'Requirement Description:', value: [validations_of_str] }
         expect(assigns(:custom_batch_validator)).to include(message)
       end
     end
