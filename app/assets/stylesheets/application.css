@@ -252,3 +252,9 @@ table.crosswalk-issues thead.sub th {
 .current {
   background-color: #d9edf7;
 }
+
+.calculator_constants_header {
+    padding-bottom: 9px;
+    margin: 10px 0 20px;
+    border-bottom: 1px solid #eee;
+}

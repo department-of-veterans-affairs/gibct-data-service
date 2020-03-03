@@ -1,13 +1,25 @@
-<h3>Manage Calculator Constants</h3>
-<%= form_with(url: calculator_constants_update_path, id: 'calculator_constants_update') do %>
-  <% @calculator_constants.each do |constant| %>
-    <div class="form-group">
-      <%= label_tag(constant.name, constant.name) %>
-      <br>
-      <%= text_field_tag constant.name,constant.value %>
+<div class="row row-space-6">
+  <div class="col-md-4">
+    <div class="calculator_constants_header">
+      <h3>Manage Calculator Constants</h3>
+      <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
     </div>
-  <% end %>
-  <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
-<% end %>
+    <div>
+      <%= form_with(url: calculator_constants_update_path, id: 'calculator_constants_update') do %>
+        <% @calculator_constants.each do |constant| %>
+          <div class="form-group">
+            <%= label_tag(constant.name, constant.name) %>
+            <p id=<%=constant.name+"-description"%>></p>
+            <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01 %>
+          </div>
+        <% end %>
+        <div class="form-group">
+          <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
+          <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
 
 
