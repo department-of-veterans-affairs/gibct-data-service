@@ -4,7 +4,17 @@ module V0
   class YellowRibbonProgramsController < ApiController
     include Facets
 
-    # GET /v0/yellow_ribbon_programs?school_name_in_yr_database=duluth&sort_direction=desc
+    # GET /v0/yellow_ribbon_programs
+    # ?page=1
+    # &per_page=30
+    # &sort_by=number_of_students
+    # &sort_direction=desc
+    # &city=boulder
+    # &country=usa
+    # &contribution_amount=%3E10000
+    # &number_of_students=%3C10000
+    # &school_name_in_yr_database=university
+    # &state=co
     def index
       @meta = {
         version: @version,
@@ -18,8 +28,26 @@ module V0
     def normalized_query_params
       query = params.deep_dup
       query.tap do
+        # Filtering query params.
+        query[:city].try(:strip!)
+        query[:city].try(:downcase!)
+
+        query[:country].try(:strip!)
+        query[:country].try(:downcase!)
+
+        query[:contribution_amount].try(:strip!)
+        query[:contribution_amount].try(:downcase!)
+
+        query[:number_of_students].try(:strip!)
+        query[:number_of_students].try(:downcase!)
+
         query[:school_name_in_yr_database].try(:strip!)
         query[:school_name_in_yr_database].try(:downcase!)
+
+        query[:state].try(:strip!)
+        query[:state].try(:downcase!)
+
+        # Sorting query params.
         query[:sort_by].try(:strip!)
         query[:sort_by].try(:downcase!)
         query[:sort_direction].try(:strip!)
@@ -31,7 +59,7 @@ module V0
       @query ||= normalized_query_params
 
       # Derive the search results.
-      results = YellowRibbonProgram.search(@query[:school_name_in_yr_database])
+      results = YellowRibbonProgram.search(@query)
 
       # Derive the order properties.
       order_properties = {}
