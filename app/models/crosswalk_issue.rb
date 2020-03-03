@@ -73,10 +73,10 @@ class CrosswalkIssue < ApplicationRecord
           INNER JOIN ignored_crosswalk_issues
             ON weams.facility_code = ignored_crosswalk_issues.facility_code
             AND (
-              ipeds_hds.cross = ignored_crosswalk_issues.cross
-              OR crosswalks.cross = ignored_crosswalk_issues.cross
-              OR ipeds_hds.ope = ignored_crosswalk_issues.ope
-              OR crosswalks.ope = ignored_crosswalk_issues.ope
+              (ipeds_hds.cross IS NOT DISTINCT FROM ignored_crosswalk_issues.cross
+                AND ipeds_hds.ope IS NOT DISTINCT FROM ignored_crosswalk_issues.ope)
+              OR (crosswalks.cross IS NOT DISTINCT FROM ignored_crosswalk_issues.cross
+                AND crosswalks.ope IS NOT DISTINCT FROM ignored_crosswalk_issues.ope)
             )
       );
     SQL
