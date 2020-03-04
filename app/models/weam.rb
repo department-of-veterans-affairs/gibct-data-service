@@ -192,11 +192,11 @@ class Weam < ApplicationRecord
   end
 
   def address_values_for_match
-    [address_1, address_2, address_3, city, zip].compact
+    [city, zip, address_1].compact
   end
 
   def physical_address_values_for_match
-    [physical_address_1, physical_address_2, physical_address_3, city, zip].compact
+    [city, zip, physical_address_1].compact
   end
 
   private
