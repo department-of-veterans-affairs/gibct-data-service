@@ -27,6 +27,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     end
 
     it 'updated calculator constants' do
+      create :upload, :calculator_constant
       create :calculator_constant, :avg_dod_bah_constant
       post(:update, params: params)
       expect(CalculatorConstant.where(name: 'AVGDODBAH')[0].float_value).to eq(test_rate)

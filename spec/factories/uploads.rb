@@ -59,5 +59,11 @@ FactoryBot.define do
       csv { Scorecard.name }
       ok { true }
     end
+
+    trait :calculator_constant do
+      csv_type { CalculatorConstant.name }
+      csv { CalculatorConstant.name }
+      ok { true }
+    end
   end
 end
