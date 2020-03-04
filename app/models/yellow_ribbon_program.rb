@@ -3,7 +3,7 @@
 class YellowRibbonProgram < ApplicationRecord
   belongs_to :institution
 
-  delegate :country, to: :institution
+  delegate :country, :insturl, to: :institution
 
   validates :contribution_amount, numericality: true
   validates :degree_level, presence: true
