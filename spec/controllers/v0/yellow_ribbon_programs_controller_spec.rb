@@ -6,10 +6,14 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
   context 'when determining version' do
     it 'uses a production version as a default' do
       create(:version, :production)
+      preview = create(:version, :preview)
       create(:yellow_ribbon_program)
+      create(:yellow_ribbon_program, version: preview.number)
       get(:index)
-      expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('yellow_ribbon_program')
+      body = JSON.parse response.body
+      # we have one record associated with the production version, so we expect one result.
+      # this fails because we are getting back both the production and preview records
+      expect(body['data'].count).to eq(1)
     end
 
     it 'accepts invalid version parameter and returns production data' do
