@@ -8,6 +8,10 @@ RSpec.describe YellowRibbonProgram, type: :model do
   describe 'when validating' do
     subject(:yellow_ribbon_program) { build :yellow_ribbon_program }
 
+    before do
+      create(:version, :production)
+    end
+
     it 'has a valid factory' do
       expect(yellow_ribbon_program).to be_valid
     end
