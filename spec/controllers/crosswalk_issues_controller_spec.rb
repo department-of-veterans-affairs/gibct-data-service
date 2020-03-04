@@ -99,17 +99,27 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
       it 'calculates full name and physical address match correctly' do
         best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
                                        institution: 'COLLEGE OF NOWHERE', city: 'test',
-                                       addr: '123 test st', state: 'CA', zip: '9999'
+                                       addr: '123 test st', state: 'CA', zip: '99999'
         issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
         get(:show_partial, params: { id: issue.id })
         expect(assigns(:possible_ipeds_matches).first['match_score']).to eq(1.0)
         expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
       end
 
-      it 'calculates name witout address match correctly correctly' do
+      it 'calculates name match without address match correctly' do
         best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
                                        institution: 'COLLEGE OF NOWHERE', city: 'Houston',
                                        state: 'CA', zip: '11111'
+        issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).first['match_score']).to eq(0.5)
+        expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
+      end
+
+      it 'calculates address match without name match correctly' do
+        best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
+                                       institution: 'zzz', city: 'test',
+                                       addr: '123 test st', state: 'CA', zip: '99999'
         issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
         get(:show_partial, params: { id: issue.id })
         expect(assigns(:possible_ipeds_matches).first['match_score']).to eq(0.5)
