@@ -11,8 +11,8 @@ module V0
     # &sort_direction=desc
     # &city=boulder
     # &country=usa
-    # &contribution_amount=%3E10000
-    # &number_of_students=%3C10000
+    # &contribution_amount=unlimited
+    # &number_of_students=unlimited
     # &school_name_in_yr_database=university
     # &state=co
     def index
@@ -50,6 +50,7 @@ module V0
         # Sorting query params.
         query[:sort_by].try(:strip!)
         query[:sort_by].try(:downcase!)
+
         query[:sort_direction].try(:strip!)
         query[:sort_direction].try(:downcase!)
       end

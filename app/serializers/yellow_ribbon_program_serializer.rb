@@ -3,6 +3,7 @@
 class YellowRibbonProgramSerializer < ActiveModel::Serializer
   attributes :city,
              :contribution_amount,
+             :country,
              :degree_level,
              :division_professional_school,
              :facility_code,
