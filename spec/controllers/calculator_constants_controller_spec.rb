@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'support/controller_macros'
 require 'support/devise'
@@ -10,7 +12,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     it 'returns calculator constants' do
       create_list(:calculator_constant, 2)
       get :index
-        expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
+      expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
     end
   end
 
@@ -20,15 +22,14 @@ RSpec.describe CalculatorConstantsController, type: :controller do
 
     let(:params) do
       {
-          AVGDODBAH: test_rate
+        AVGDODBAH: test_rate
       }
     end
 
     it 'updated calculator constants' do
       create :calculator_constant, :avg_dod_bah_constant
       post(:update, params: params)
-      expect(CalculatorConstant.where(name: "AVGDODBAH")[0].float_value).to eq(test_rate)
+      expect(CalculatorConstant.where(name: 'AVGDODBAH')[0].float_value).to eq(test_rate)
     end
   end
-
 end

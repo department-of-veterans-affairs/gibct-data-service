@@ -11,7 +11,6 @@ FactoryBot.define do
 
   trait :avg_dod_bah_constant do
     name { 'AVGDODBAH' }
-    float_value {1000.00}
+    float_value { 1000.00 }
   end
-
 end
