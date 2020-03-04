@@ -60,7 +60,7 @@ module V0
       @query ||= normalized_query_params
 
       # Derive the search results.
-      results = YellowRibbonProgram.search(@query)
+      results = YellowRibbonProgram.version(@version).search(@query)
 
       # Derive the order properties.
       order_properties = {}

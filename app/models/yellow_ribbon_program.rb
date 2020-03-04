@@ -39,4 +39,6 @@ class YellowRibbonProgram < ApplicationRecord
       )
     )
   }
+
+  scope :version, ->(n) { where(version: n) }
 end

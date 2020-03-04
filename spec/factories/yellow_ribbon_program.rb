@@ -13,7 +13,7 @@ FactoryBot.define do
     school_name_in_yr_database { 'University' }
     state { 'CO' }
     street_address { '1234 University Drive' }
-    version { 1 }
+    version { Version.current_production.id }
     zip { '80303' }
 
     trait :institution_builder do
