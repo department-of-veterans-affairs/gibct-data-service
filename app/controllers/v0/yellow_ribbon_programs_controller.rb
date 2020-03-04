@@ -71,7 +71,7 @@ module V0
     end
 
     def sanitized_sort_by
-      YellowRibbonProgram.last.attributes.include?(@query[:sort_by]) ? @query[:sort_by] : :school_name_in_yr_database
+      YellowRibbonProgram.new.attributes.include?(@query[:sort_by]) ? @query[:sort_by] : :school_name_in_yr_database
     end
 
     def sanitized_sort_direction
