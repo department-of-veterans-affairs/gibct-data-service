@@ -6,7 +6,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
   context 'when determining version' do
     it 'uses a production version as a default' do
       create(:version, :production)
-      v = create(:version, :preview)
+      create(:version, :preview)
       create(:institution_program, :contains_harv)
       get(:index)
       expect(response.content_type).to eq('application/json')
