@@ -48,6 +48,4 @@ class YellowRibbonProgramSource < ApplicationRecord
   validates :division_professional_school, presence: true
   validates :facility_code, presence: true
   validates :number_of_students, numericality: true
-
-  scope :version, ->(n) { where(version: n) }
 end
