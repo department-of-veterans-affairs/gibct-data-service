@@ -43,7 +43,7 @@ module InstitutionBuilder
     add_complaint(version.id)
     add_outcome(version.id)
     add_stem_offered(version.id)
-    add_yellow_ribbon_programs(version.number)
+    add_yellow_ribbon_programs(version.id)
     add_school_closure(version.id)
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
@@ -446,7 +446,7 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.add_yellow_ribbon_programs(version_number)
+  def self.add_yellow_ribbon_programs(version_id)
     str = <<-SQL
       INSERT INTO yellow_ribbon_programs
         (version, institution_id, degree_level, division_professional_school,
@@ -474,10 +474,11 @@ module InstitutionBuilder
             yrs.sfr_telephone_number, yrs.state, yrs.street_address,
             yrs.updated_for_2011_2012, yrs.withdrawn, yrs.year_of_yr_participation,
             yrs.zip, NOW(), NOW()
-          FROM institutions as i, yellow_ribbon_program_sources as yrs, versions
-          WHERE i.facility_code = yrs.facility_code
-          AND versions.number = #{version_number}
-          AND versions.id = i.version_id);
+          FROM institutions as i
+          INNER JOIN yellow_ribbon_program_sources as yrs
+          ON i.facility_code = yrs.facility_code
+          WHERE i.version_id = #{version_id}
+        )
     SQL
 
     sql = Institution.send(:sanitize_sql, [str])
