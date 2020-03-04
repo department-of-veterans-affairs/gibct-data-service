@@ -23,7 +23,9 @@ class YellowRibbonProgram < ApplicationRecord
     clause.push('contribution_amount::int >= 99999') if query['contribution_amount'] == 'unlimited'
     clause.push('number_of_students::int >= 99999') if query['number_of_students'] == 'unlimited'
     clause.push('lower(state) LIKE (:state)') if query['state']
-    clause.push('lower(school_name_in_yr_database) LIKE (:school_name_in_yr_database)') if query['school_name_in_yr_database']
+    if query['school_name_in_yr_database']
+      clause.push('lower(school_name_in_yr_database) LIKE (:school_name_in_yr_database)')
+    end
 
     where(
       sanitize_sql_for_conditions(
