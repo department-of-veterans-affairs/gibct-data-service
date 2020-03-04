@@ -79,7 +79,6 @@ RSpec.describe UploadsController, type: :controller do
       requirements(csv_class, requirement_class)
         .attributes
         .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
-        .join(', ')
     end
 
     describe 'requirements_messages for Weam' do
@@ -88,19 +87,21 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates presence messages' do
-        message = 'These columns must have a value: ' +
-                  map_attributes(Weam, ActiveRecord::Validations::PresenceValidator)
+        validations_of_str = '|', ','
+        message = { message: 'Valid column separators are:', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end
 
       it 'returns validates numericality messages' do
-        message = 'These columns can only contain numeric values: ' +
-                  map_attributes(Weam, ActiveModel::Validations::NumericalityValidator)
+        validations_of_str = 'current academic year va bah rate'
+        message = { message: 'These columns can only contain numeric values: ', value: [validations_of_str] }
         expect(assigns(:requirements)).to include(message)
       end
 
       it 'returns validates WeamsValidator messages' do
-        expect(assigns(:requirements)).to include(*WeamValidator::REQUIREMENT_DESCRIPTIONS)
+        message = 'Facility codes should be unique'
+        # message = { message: 'Requirement Description:', value: [validations_of_str] }
+        expect(assigns(:custom_batch_validator)).to include(message)
       end
     end
 
@@ -111,13 +112,13 @@ RSpec.describe UploadsController, type: :controller do
 
       it 'returns validates uniqueness messages' do
         validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
-        message = 'These columns should contain unique values: ' + validations_of_str
+        message = { message: 'These columns should contain unique values: ', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end
 
       it 'returns validates presence messages' do
-        message = 'These columns must have a value: ' +
-                  map_attributes(CalculatorConstant, ActiveRecord::Validations::PresenceValidator)
+        validations_of_str = 'name', 'value'
+        message = { message: 'These columns must have a value: ', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end
     end
@@ -212,7 +213,7 @@ RSpec.describe UploadsController, type: :controller do
           post(:create,
                params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
         ).to render_template(:new)
-        error_message = "Unable to determine column separator. #{Upload.valid_col_seps}"
+        error_message = 'Unable to determine column separators, valid separators equal "|" and ","'
         expect(flash[:danger]).to include(error_message)
       end
     end

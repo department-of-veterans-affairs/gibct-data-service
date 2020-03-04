@@ -22,7 +22,7 @@ module InstitutionBuilder
   end
 
   def self.run_insertions(version)
-    initialize_with_weams(version.number)
+    initialize_with_weams(version)
     add_crosswalk(version.id)
     add_sva(version.id)
     add_vsoc(version.id)
@@ -85,7 +85,7 @@ module InstitutionBuilder
     { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
   end
 
-  def self.initialize_with_weams(version_number)
+  def self.initialize_with_weams(version)
     columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
@@ -93,21 +93,21 @@ module InstitutionBuilder
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
     str += Weam
            .select(columns)
-           .select("#{version_number.to_i} as version")
+           .select("#{version.number.to_i} as version")
            .select("#{conn.quote(timestamp)} as created_at")
            .select("#{conn.quote(timestamp)} as updated_at")
            .select('v.id as version_id')
            .to_sql
-    str += "INNER JOIN versions v ON v.number = #{version_number}"
+    str += "INNER JOIN versions v ON v.number = #{version.number}"
     Institution.connection.insert(str)
 
     # remove duplicates
     delete_str = <<-SQL
       DELETE FROM institutions WHERE id NOT IN (
-        SELECT MIN(id) FROM institutions WHERE version = ? GROUP BY UPPER(facility_code)
-      ) AND version = ?;
+        SELECT MIN(id) FROM institutions WHERE version_id = ? GROUP BY UPPER(facility_code)
+      ) AND version_id = ?;
     SQL
-    sql = InstitutionProgram.send(:sanitize_sql, [delete_str, version_number, version_number])
+    sql = InstitutionProgram.send(:sanitize_sql, [delete_str, version.id, version.id])
 
     Institution.connection.execute(sql)
   end
