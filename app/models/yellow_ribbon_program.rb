@@ -18,16 +18,16 @@ class YellowRibbonProgram < ApplicationRecord
     clause = []
 
     # Filter YellowRibbonPrograms.
-    clause.push('lower(city) LIKE (:city)') if query['city']
-    # clause.push('lower(country) LIKE (:country)') if query['country']
+    clause.push('lower(yellow_ribbon_programs.city) LIKE (:city)') if query['city']
+    clause.push('lower(institutions.country) LIKE (:country)') if query['country']
     clause.push('contribution_amount::int >= 99999') if query['contribution_amount'] == 'unlimited'
     clause.push('number_of_students::int >= 99999') if query['number_of_students'] == 'unlimited'
-    clause.push('lower(state) LIKE (:state)') if query['state']
+    clause.push('lower(yellow_ribbon_programs.state) LIKE (:state)') if query['state']
     if query['school_name_in_yr_database']
-      clause.push('lower(school_name_in_yr_database) LIKE (:school_name_in_yr_database)')
+      clause.push('lower(yellow_ribbon_programs.school_name_in_yr_database) LIKE (:school_name_in_yr_database)')
     end
 
-    where(
+    joins(:institution).where(
       sanitize_sql_for_conditions(
         [
           clause.join(' AND '),
