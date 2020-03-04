@@ -55,6 +55,12 @@ class CrosswalkIssuesController < ApplicationController
           city,
           zip,
           ope,
+          SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{address_data_to_match}) address_match_score,
+          SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{physical_address_data}) physical_address_match_score,
+          GREATEST(
+              SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{address_data_to_match}),
+              SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{physical_address_data})
+          ) best_address_match_score,
           (
             GREATEST(
               SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{address_data_to_match}),

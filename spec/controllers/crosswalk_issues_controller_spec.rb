@@ -76,14 +76,44 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
         expect(assigns(:possible_ipeds_matches).count).to eq(1)
       end
 
-      it 'populates an array of Ipeds_hds possible matches orderd by match amount' do
+      it 'populates an array of Ipeds_hds possible matches ordered by match amount' do
         best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
-                                       institution: 'college of', city: 'test',
+                                       institution: 'COLLEGE OF NOWHERE', city: 'test',
                                        state: 'CA', zip: '88888'
         issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
         get(:show_partial, params: { id: issue.id })
         expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
         expect(assigns(:possible_ipeds_matches).count).to eq(2)
+      end
+
+      it 'calculates full name and address match correctly' do
+        best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
+                                       institution: 'COLLEGE OF NOWHERE', city: 'test',
+                                       state: 'TN', zip: '99999'
+        issue = create :crosswalk_issue, :with_weam_match_partial, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).first['match_score']).to eq(1.0)
+        expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
+      end
+
+      it 'calculates full name and physical address match correctly' do
+        best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
+                                       institution: 'COLLEGE OF NOWHERE', city: 'test',
+                                       addr: '123 test st', state: 'CA', zip: '9999'
+        issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).first['match_score']).to eq(1.0)
+        expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
+      end
+
+      it 'calculates name witout address match correctly correctly' do
+        best_match = create :ipeds_hd, cross: 'aa', ope: 'dd',
+                                       institution: 'COLLEGE OF NOWHERE', city: 'Houston',
+                                       state: 'CA', zip: '11111'
+        issue = create :crosswalk_issue, :with_weam_match_partial_physical_ca, :partial_match_type
+        get(:show_partial, params: { id: issue.id })
+        expect(assigns(:possible_ipeds_matches).first['match_score']).to eq(0.5)
+        expect(assigns(:possible_ipeds_matches).first['id']).to eq(best_match['id'])
       end
 
       it 'returns http success' do
