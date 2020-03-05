@@ -11,8 +11,6 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       create(:yellow_ribbon_program, version: preview.number)
       get(:index)
       body = JSON.parse response.body
-      # we have one record associated with the production version, so we expect one result.
-      # this fails because we are getting back both the production and preview records
       expect(body['data'].count).to eq(1)
     end
 
