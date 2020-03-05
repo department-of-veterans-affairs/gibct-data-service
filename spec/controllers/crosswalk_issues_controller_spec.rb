@@ -174,6 +174,29 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
         expect(CrosswalkIssue.exists?(issue.id)).to eq(true)
       end
     end
+
+    context 'when Crosswalk is manually resolved' do
+      let(:issue) { create :crosswalk_issue, :partial_match_type, :with_weam_match }
+
+      let(:params) do
+        {
+          id: issue.id,
+          cross: issue.weam[:cross],
+          ope: issue.weam[:ope],
+          ignore: '1'
+        }
+      end
+
+      it 'is deleted' do
+        post(:resolve_partial, params: params)
+        expect(CrosswalkIssue.exists?(issue.id)).to eq(false)
+      end
+
+      it 'creates IgnoredCrosswalkIssue' do
+        expect { post(:resolve_partial, params: params) }
+          .to change(IgnoredCrosswalkIssue, :count).from(0).to(1)
+      end
+    end
   end
 
   describe 'GET #orphans' do

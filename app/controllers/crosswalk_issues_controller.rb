@@ -31,19 +31,12 @@ class CrosswalkIssuesController < ApplicationController
   def resolve_partial
     @issue = CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).find(params[:id])
 
-    crosswalk = @issue.crosswalk.presence || Crosswalk.new
-    crosswalk.facility_code = @issue.weam.facility_code
-    crosswalk.institution = @issue.weam.institution
-    crosswalk.city = @issue.weam.city
-    crosswalk.state = @issue.weam.state
-    crosswalk.cross = params['cross']
-    crosswalk.ope = params['ope']
-    crosswalk.notes = params['notes']
-    crosswalk.save
-
+    crosswalk = update_or_create_crosswalk(@issue)
     @issue.crosswalk = crosswalk
 
-    if @issue.resolved?
+    ignore_issue(@issue) if params[:ignore]
+
+    if @issue.resolved? || params[:ignore]
       @issue.delete
       flash.notice = 'Crosswalk issue resolved'
       redirect_to action: :partials
@@ -58,5 +51,29 @@ class CrosswalkIssuesController < ApplicationController
     @issues = CrosswalkIssue.includes(%i[weam crosswalk ipeds_hd])
                             .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
                             .order('ipeds_hds.institution')
+  end
+
+  private
+
+  def update_or_create_crosswalk(issue)
+    crosswalk = issue.crosswalk.presence || Crosswalk.new
+    crosswalk.facility_code = issue.weam.facility_code
+    crosswalk.institution = issue.weam.institution
+    crosswalk.city = issue.weam.city
+    crosswalk.state = issue.weam.state
+    crosswalk.cross = params['cross']
+    crosswalk.ope = params['ope']
+    crosswalk.notes = params['notes']
+    crosswalk.save
+
+    crosswalk
+  end
+
+  def ignore_issue(issue)
+    IgnoredCrosswalkIssue.create(
+      cross: issue.ipeds_hd.present? ? issue.ipeds_hd.cross : issue.crosswalk.cross,
+      ope: issue.ipeds_hd.present? ? issue.ipeds_hd.ope : issue.crosswalk.ope,
+      facility_code: issue.weam.facility_code
+    )
   end
 end
