@@ -40,5 +40,5 @@ class YellowRibbonProgram < ApplicationRecord
     )
   }
 
-  scope :version, ->(version) { where(version: version.id) }
+  scope :version, ->(version) { where(version: version.number) }
 end

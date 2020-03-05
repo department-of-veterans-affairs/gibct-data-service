@@ -26,7 +26,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
   end
 
   context 'when searching' do
-    before do
+    before(:all) do
       create(:version, :production)
       create_list(:yellow_ribbon_program, 3)
       create(:yellow_ribbon_program, :in_florence)
