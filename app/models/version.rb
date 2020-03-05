@@ -41,7 +41,7 @@ class Version < ApplicationRecord
 
   def self.archived
     Version.select('distinct on (number) *')
-           .where('number < ?', Version.current_production&.number)
+           .where('number < ? and production = true', Version.current_production&.number)
            .order(number: :desc)
   end
 
