@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
   context 'when determining version' do
     it 'uses a production version as a default' do
-      create(:version, :production)
+      production = create(:version, :production)
       preview = create(:version, :preview)
-      create(:yellow_ribbon_program)
+      create(:yellow_ribbon_program, version: production.number)
       create(:yellow_ribbon_program, version: preview.number)
       get(:index)
       body = JSON.parse response.body
@@ -26,10 +26,10 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
   end
 
   context 'when searching' do
-    before(:all) do
-      create(:version, :production)
-      create_list(:yellow_ribbon_program, 3)
-      create(:yellow_ribbon_program, :in_florence)
+    before do
+      version = create(:version, :production)
+      create_list(:yellow_ribbon_program, 3, version: version.number)
+      create(:yellow_ribbon_program, :in_florence, version: version.number)
     end
 
     it 'search returns results' do
