@@ -6,10 +6,13 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
   context 'when determining version' do
     it 'uses a production version as a default' do
       create(:version, :production)
+      create(:version, :preview)
       create(:institution_program, :contains_harv)
       get(:index)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
+      body = JSON.parse response.body
+      expect(body['meta']['version']['number'].to_i).to eq(Version.current_production.number)
     end
 
     it 'accepts invalid version parameter and returns production data' do

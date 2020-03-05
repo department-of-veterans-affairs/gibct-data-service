@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_21_090200) do
+ActiveRecord::Schema.define(version: 2020_02_24_205220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1617,6 +1617,37 @@ ActiveRecord::Schema.define(version: 2020_02_21_090200) do
     t.decimal "contribution_amount", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "amendment_date"
+    t.string "campus"
+    t.string "city"
+    t.boolean "consolidated_agreement"
+    t.date "date_agreement_received"
+    t.date "date_confirmation_sent"
+    t.date "date_yr_signed_by_yr_official"
+    t.string "facility_code"
+    t.boolean "flight_school"
+    t.boolean "ineligible"
+    t.string "initials_yr_processor"
+    t.boolean "missed_deadline"
+    t.boolean "modified"
+    t.boolean "new_school"
+    t.text "notes"
+    t.boolean "open_ended_agreement"
+    t.string "public_private"
+    t.string "school_name_in_weams"
+    t.string "school_name_in_yr_database"
+    t.string "sco_email_address"
+    t.string "sco_name"
+    t.string "sco_telephone_number"
+    t.string "sfr_email_address"
+    t.string "sfr_name"
+    t.string "sfr_telephone_number"
+    t.string "state"
+    t.string "street_address"
+    t.boolean "updated_for_2011_2012"
+    t.boolean "withdrawn"
+    t.string "year_of_yr_participation"
+    t.string "zip"
     t.index ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id"
     t.index ["version"], name: "index_yellow_ribbon_programs_on_version"
   end

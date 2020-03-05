@@ -47,6 +47,8 @@ Rails.application.routes.draw do
       get :autocomplete, on: :collection
     end
 
+    resources :yellow_ribbon_programs, only: :index
+
     resources :zipcode_rates, only: :show
   end
 end
