@@ -1,8 +1,17 @@
 # frozen_string_literal: true
 
 class YellowRibbonProgramSerializer < ActiveModel::Serializer
-  attribute :degree_level
-  attribute :division_professional_school
-  attribute :number_of_students
-  attribute :contribution_amount
+  attributes :city,
+             :contribution_amount,
+             :country,
+             :degree_level,
+             :division_professional_school,
+             :facility_code,
+             :institution_id,
+             :insturl,
+             :number_of_students,
+             :school_name_in_yr_database,
+             :state,
+             :street_address,
+             :zip
 end
