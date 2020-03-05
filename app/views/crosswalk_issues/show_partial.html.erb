@@ -65,8 +65,9 @@
                               "#{Settings.college_navigator_url}/?id=#{@issue.ipeds_hd&.cross}",
                               target: :_blank
                   %>
-                <td/>
+                </td>
                 <td><%= @issue.ipeds_hd&.ope %></td>
+                <td/>
               </tr>
             <% end %>
             <% @ipeds_hd_arr.each do |iped| %>
@@ -177,6 +178,10 @@
               </tr>
             </tbody>
           </table>
+          <div>
+            <%= check_box_tag "ignore" %>
+            <label for="ignore">Mark crosswalk issue as resolved</label>
+          </div>
           <%= link_to 'Cancel', crosswalk_issues_partials_path, class: "btn dashboard-btn-danger" %>
           <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
         <% end %>

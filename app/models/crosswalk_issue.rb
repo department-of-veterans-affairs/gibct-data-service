@@ -61,7 +61,24 @@ class CrosswalkIssue < ApplicationRecord
         '#{IPEDS_ORPHAN_TYPE}'
       FROM ipeds_hds
         LEFT OUTER JOIN crosswalks ON ipeds_hds.cross = crosswalks.cross OR ipeds_hds.ope = crosswalks.ope
-      WHERE crosswalks.ID IS NULL
+      WHERE crosswalks.ID IS NULL;
+
+      DELETE
+      FROM crosswalk_issues
+      WHERE id IN(
+        SELECT crosswalk_issues.id FROM crosswalk_issues
+          INNER JOIN weams on weams.id = weam_id
+          LEFT OUTER JOIN ipeds_hds ON ipeds_hds.id = ipeds_hd_id
+          LEFT OUTER JOIN crosswalks ON crosswalks.id = crosswalk_id
+          INNER JOIN ignored_crosswalk_issues
+            ON weams.facility_code = ignored_crosswalk_issues.facility_code
+            AND (
+              (ipeds_hds.cross IS NOT DISTINCT FROM ignored_crosswalk_issues.cross
+                AND ipeds_hds.ope IS NOT DISTINCT FROM ignored_crosswalk_issues.ope)
+              OR (crosswalks.cross IS NOT DISTINCT FROM ignored_crosswalk_issues.cross
+                AND crosswalks.ope IS NOT DISTINCT FROM ignored_crosswalk_issues.ope)
+            )
+      );
     SQL
 
     InstitutionProgram.connection.execute(sql)

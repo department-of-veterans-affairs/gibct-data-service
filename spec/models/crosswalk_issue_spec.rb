@@ -2,6 +2,24 @@
 
 RSpec.describe CrosswalkIssue, type: :model do
   describe 'when building partial matches' do
+    def ignore_issue(issue)
+      # copied from controller
+      IgnoredCrosswalkIssue.create(
+        cross: issue.ipeds_hd.present? ? issue.ipeds_hd.cross : issue.crosswalk.cross,
+        ope: issue.ipeds_hd.present? ? issue.ipeds_hd.ope : issue.crosswalk.ope,
+        facility_code: issue.weam.facility_code
+      )
+    end
+
+    def ignore_and_validate_delete_of_only_partial_match_issue
+      issue = described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).first
+      ignore_issue(issue)
+      issue.delete
+
+      # issue is gone:
+      expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq 0
+    end
+
     it 'matches NCD weams and ipeds_hds by cross (IPEDS)' do
       create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_cross
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
@@ -111,6 +129,77 @@ RSpec.describe CrosswalkIssue, type: :model do
 
       described_class.rebuild
       expect(described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count).to eq(0)
+    end
+
+    it 'excludes ignored crosswalk issues with ipeds_hd IPEDS match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_cross,
+             :crosswalk_issue_matchable_by_facility_code
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
+
+      expect { described_class.rebuild }
+        .to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }.from(0).to(1)
+
+      ignore_and_validate_delete_of_only_partial_match_issue
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'excludes ignored crosswalk issues with ipeds_hd OPE match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_ope,
+             :crosswalk_issue_matchable_by_facility_code
+      create :ipeds_hd, :crosswalk_issue_matchable_by_ope
+
+      expect { described_class.rebuild }
+        .to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }.from(0).to(1)
+
+      ignore_and_validate_delete_of_only_partial_match_issue
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'excludes ignored crosswalk issues with crosswalk IPEDS match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_facility_code,
+             :crosswalk_issue_matchable_by_facility_code
+      create :crosswalk, :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_cross
+
+      expect { described_class.rebuild }
+        .to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }.from(0).to(1)
+
+      ignore_and_validate_delete_of_only_partial_match_issue
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'excludes ignored crosswalk issues with crosswalk OPE match' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_facility_code
+      create :crosswalk, :crosswalk_issue_matchable_by_facility_code, :crosswalk_issue_matchable_by_ope
+
+      expect { described_class.rebuild }
+        .to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }.from(0).to(1)
+
+      ignore_and_validate_delete_of_only_partial_match_issue
+
+      expect { described_class.rebuild }
+        .not_to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }
+    end
+
+    it 'does not exclude partial match ignored crosswalk issues on following rebuild' do
+      create :weam, :ncd, :approved_poo_and_law_code, :crosswalk_issue_matchable_by_cross,
+             :crosswalk_issue_matchable_by_facility_code
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross
+
+      described_class.rebuild
+
+      ignore_and_validate_delete_of_only_partial_match_issue
+
+      # Record now has an `ope` set.  Since ope has changed, we expect an issue to be generated
+      create :ipeds_hd, :crosswalk_issue_matchable_by_cross, ope: '0000000A'
+
+      expect { described_class.rebuild }
+        .to change { described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count }.from(0).to(1)
     end
   end
 
