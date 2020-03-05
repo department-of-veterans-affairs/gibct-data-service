@@ -12,7 +12,12 @@ RSpec.describe ArchivesController, type: :controller do
     login_user
 
     before do
-      create_list :version, 3, :production
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
 
       get(:index)
     end
@@ -30,7 +35,12 @@ RSpec.describe ArchivesController, type: :controller do
     login_user
 
     before do
-      create_list :version, 3, :production
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
     end
 
     it 'causes a CSV to be exported' do
