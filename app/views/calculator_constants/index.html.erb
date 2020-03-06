@@ -9,7 +9,13 @@
         <% @calculator_constants.each do |constant| %>
           <div class="form-group">
             <%= label_tag(constant.name, constant.name) %>
-            <p class="dashboard-header"id=<%=constant.name+"-description"%>></p>
+            <p class="dashboard-header"id=<%=constant.name+"-description"%>>
+              <% if constant.description %>
+                <span class="fa fa-info-circle"><%=" " + constant.description %></span>
+              <% else %>
+                <span class="fa fa-info-circle"> TBD</span>
+            <% end %>
+            </p>
             <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01, required: true%>
           </div>
         <% end %>
