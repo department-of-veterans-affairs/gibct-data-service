@@ -9,23 +9,7 @@ class CrosswalkIssuesController < ApplicationController
 
   def show_partial
     @issue = CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).find(params[:id])
-
-    address_data_to_match = @issue.weam.address_values.join
-    physical_address_data = @issue.weam.physical_address_values.join
-    escaped_institution = ApplicationRecord.connection.quote(@issue.weam.institution)
-
-    str = <<-SQL
-        SELECT id, ipeds_hds.cross, institution, addr, state, city, zip, ope, GREATEST(similarity(institution, #{escaped_institution}),
-                      similarity((city||state||zip||addr), '#{address_data_to_match}')
-                  , similarity((city||state||zip||addr), '#{physical_address_data}')) AS match_score
-        FROM ipeds_hds
-        WHERE (similarity(institution,  #{escaped_institution}) > 0.5
-          OR similarity((city||state||zip||addr), '#{address_data_to_match}') > 0.3
-          OR similarity((city||state||zip||addr), '#{physical_address_data}') > 0.3)
-        ORDER BY match_score DESC
-    SQL
-    sql = IpedsHd.sanitize_sql(str)
-    @ipeds_hd_arr = ActiveRecord::Base.connection.execute(sql)
+    @possible_ipeds_matches = possible_ipeds_matches(@issue)
   end
 
   def resolve_partial
@@ -54,6 +38,43 @@ class CrosswalkIssuesController < ApplicationController
   end
 
   private
+
+  # rubocop:disable Metrics/MethodLength
+  def possible_ipeds_matches(issue)
+    address_data_to_match = ApplicationRecord.connection.quote(issue.weam.address_values_for_match.join)
+    physical_address_data = ApplicationRecord.connection.quote(issue.weam.physical_address_values_for_match.join)
+    institution = ApplicationRecord.connection.quote(issue.weam.institution)
+
+    str = <<-SQL
+        SELECT
+          id,
+          ipeds_hds.cross,
+          institution,
+          addr,
+          state,
+          city,
+          zip,
+          ope,
+          (
+            GREATEST(
+              SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{address_data_to_match}),
+              SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{physical_address_data})
+            )
+            + SIMILARITY(institution, #{institution})
+          ) / 2 AS match_score
+        FROM ipeds_hds
+        WHERE
+          (
+            SIMILARITY(institution, #{institution}) > 0.5
+            OR SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{address_data_to_match}) > 0.3
+            OR SIMILARITY(COALESCE(city,'')||COALESCE(zip,'')||COALESCE(addr,''), #{physical_address_data}) > 0.3
+          )
+          AND (state = '#{issue.weam.physical_state}' OR state = '#{issue.weam.state}')
+        ORDER BY match_score DESC
+    SQL
+    ApplicationRecord.connection.execute(ApplicationRecord.sanitize_sql(str))
+  end
+  # rubocop:enable Metrics/MethodLength
 
   def update_or_create_crosswalk(issue)
     crosswalk = issue.crosswalk.presence || Crosswalk.new
