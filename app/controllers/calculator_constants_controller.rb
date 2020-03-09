@@ -6,7 +6,7 @@ class CalculatorConstantsController < ApplicationController
   end
 
   def update
-    upload = Upload.where({ csv_type: 'CalculatorConstant', ok: true }).order(updated_at: :desc).first
+    upload = Upload.where(csv_type: 'CalculatorConstant', ok: true).order(updated_at: :desc).first
     params.each do |key, value|
       next unless CalculatorConstant.exists?(name: key)
 
