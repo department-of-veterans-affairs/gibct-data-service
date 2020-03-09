@@ -16,8 +16,25 @@ $(function() {
                 $(this).val(parseFloat($(this).val()).toFixed(2));
             });
         }
-        let selector = "#"+ field_id + "-description";
-        let description = CONSTANT_DESCRIPTIONS[field_id];
-        $(selector).append("<span class=\"fa fa-info-circle\"></span> " + description);
     });
+
+    $('.constant_btn').on('click', function () {
+        $('.constant_btn').each(function () {
+            $(this).css('color', '#555');
+            $(this).css('background-color', 'white');
+        });
+        $('.constant-form').each(function () {
+           $(this).hide();
+        });
+        $(this).css('background-color', '#007bff');
+        $(this).css('color', 'white');
+        var formToShow = $(this).val();
+        $("#"+formToShow).show();
+
+
+    });
+
+
+
+
 });

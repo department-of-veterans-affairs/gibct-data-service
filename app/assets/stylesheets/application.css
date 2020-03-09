@@ -258,3 +258,10 @@ table.crosswalk-issues thead.sub th {
     margin: 10px 0 20px;
     border-bottom: 1px solid #eee;
 }
+
+.list-group{
+    max-height: 500px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
+

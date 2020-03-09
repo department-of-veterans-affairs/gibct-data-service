@@ -1,31 +1,45 @@
 <div class="row row-space-6">
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="calculator_constants_header">
       <h3>Manage Calculator Constants</h3>
-      <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
+      <span class="dashboard-header">The constants below are used by CT for various benefit calculations. Select one to edit.</span>
     </div>
-    <div>
+  </div>
+  </div>
+<div class="row row-space-6">
+  <div class="col-md-3">
+    <div class="list-group">
+      <% @calculator_constants.each do |constant| %>
+        <button type="button" class="list-group-item list-group-item-action constant_btn" value=<%="form-"+constant.name%> id=<%="constant-btn-"+constant.name%>>
+           <%=constant.name%>
+          <input type="hidden" id=<%="value-"+constant.name%> value=<%=constant.value%>>
+        </button>
+      <% end %>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <% @calculator_constants.each do |constant| %>
+      <div style="display: none" class="constant-form" id=<%="form-"+constant.name%>>
       <%= form_with(url: calculator_constants_update_path, id: 'calculator_constants_update') do %>
-        <% @calculator_constants.each do |constant| %>
           <div class="form-group">
             <%= label_tag(constant.name, constant.name) %>
             <p class="dashboard-header"id=<%=constant.name+"-description"%>>
+              <span class="fa fa-info-circle"></span>
               <% if constant.description %>
-                <span class="fa fa-info-circle"><%=" " + constant.description %></span>
+                <%=" " + constant.description %>
               <% else %>
-                <span class="fa fa-info-circle"> TBD</span>
-            <% end %>
+                <%=" TBD" %>
+              <% end %>
             </p>
-            <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01, required: true%>
+            <%= number_field_tag "updated_value",constant.value, class: "form-control", step: 0.01, required: true%>
+            <input type="hidden" name="id" value="<%= constant.id %>" />
           </div>
-        <% end %>
         <div class="form-group">
           <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
           <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
         </div>
       <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
 </div>
-
-
