@@ -16,8 +16,5 @@ $(function() {
                 $(this).val(parseFloat($(this).val()).toFixed(2));
             });
         }
-        let selector = "#"+ field_id + "-description";
-        let description = CONSTANT_DESCRIPTIONS[field_id];
-        $(selector).append("<span class=\"fa fa-info-circle\"></span> " + description);
     });
 });

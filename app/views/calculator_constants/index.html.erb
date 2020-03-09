@@ -1,28 +1,31 @@
 <div class="row row-space-6">
-  <div class="col-md-4">
+  <div class="col-md-10">
     <div class="calculator_constants_header">
       <h3>Manage Calculator Constants</h3>
       <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
     </div>
     <div>
       <%= form_with(url: calculator_constants_update_path, id: 'calculator_constants_update') do %>
-        <% @calculator_constants.each do |constant| %>
-          <div class="form-group">
-            <%= label_tag(constant.name, constant.name) %>
-            <p class="dashboard-header"id=<%=constant.name+"-description"%>>
-              <% if constant.description %>
-                <span class="fa fa-info-circle"><%=" " + constant.description %></span>
-              <% else %>
-                <span class="fa fa-info-circle"> TBD</span>
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+        <thead class="sub">
+          <th>Name</th>
+          <th>Description</th>
+          <th>Value</th>
+        </thead>
+        <tbody>
+            <% @calculator_constants.each do |constant| %>
+              <tr>
+                <td> <%= constant.name %></td>
+                <td> <%= constant.description %></td>
+                <td> <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01, required: true%></td>
+              </tr>
             <% end %>
-            </p>
-            <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01, required: true%>
-          </div>
-        <% end %>
-        <div class="form-group">
-          <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
-          <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
-        </div>
+        </tbody>
+      </table>
+      <div>
+        <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
+        <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
+      </div>
       <% end %>
     </div>
   </div>
