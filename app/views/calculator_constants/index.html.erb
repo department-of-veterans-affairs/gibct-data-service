@@ -16,7 +16,13 @@
             <% @calculator_constants.each do |constant| %>
               <tr>
                 <td> <%= constant.name %></td>
-                <td> <%= constant.description %></td>
+                <td>
+                  <% if constant.description %>
+                    <%= constant.description %>
+                  <% else %>
+                    TBD
+                  <% end %>
+                </td>
                 <td> <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01, required: true%></td>
               </tr>
             <% end %>
