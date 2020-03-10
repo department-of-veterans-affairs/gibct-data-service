@@ -48,7 +48,7 @@ module InstitutionBuilder
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
-    build_zip_code_rates_from_weams(version.number)
+    build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
   end
@@ -185,12 +185,10 @@ module InstitutionBuilder
         AND accreditation_records.accreditation_end_date IS NULL
         AND accreditation_records.program_id = 1
         AND institutions.version_id = #{version_id}
-        AND accreditation_records.accreditation_type = {{ACC_TYPE}};
+        AND accreditation_records.accreditation_type IN ('hybrid', 'national', 'regional')
     SQL
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
-      %w[hybrid national regional].each do |acc_type|
-        Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
-      end
+        Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
 
     str = <<-SQL
@@ -221,7 +219,6 @@ module InstitutionBuilder
         AND institutions.ope IS NOT NULL
         AND institutions.version_id = #{version_id}
     SQL
-
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
@@ -496,7 +493,7 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.build_zip_code_rates_from_weams(version_number)
+  def self.build_zip_code_rates_from_weams(version_id)
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
@@ -506,7 +503,6 @@ module InstitutionBuilder
       mha_rate_grandfathered,
       mha_rate,
       mha_name,
-      version,
       created_at,
       updated_at,
       version_id
@@ -516,19 +512,18 @@ module InstitutionBuilder
       bah,
       dod_bah,
       concat_ws(', ', physical_city, physical_state) as physical_location,
-      v.number,
       #{conn.quote(timestamp)},
       #{conn.quote(timestamp)},
-      v.id
-      FROM weams INNER JOIN versions v ON v.number = ?
+      ?
+      FROM weams
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
-    GROUP BY zip, bah, dod_bah, physical_location, v.id
+    GROUP BY zip, bah, dod_bah, physical_location, ?
     ORDER BY zip
     SQL
 
-    sql = ZipcodeRate.send(:sanitize_sql, [str, version_number])
+    sql = ZipcodeRate.send(:sanitize_sql, [str, version_id, version_id])
     ZipcodeRate.connection.execute(sql)
   end
 
