@@ -185,10 +185,12 @@ module InstitutionBuilder
         AND accreditation_records.accreditation_end_date IS NULL
         AND accreditation_records.program_id = 1
         AND institutions.version_id = #{version_id}
-        AND accreditation_records.accreditation_type IN ('hybrid', 'national', 'regional')
+        AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
-        Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
+      %w[hybrid national regional].each do |acc_type|
+        Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
+      end
     end
 
     str = <<-SQL
@@ -219,6 +221,7 @@ module InstitutionBuilder
         AND institutions.ope IS NOT NULL
         AND institutions.version_id = #{version_id}
     SQL
+
     ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
@@ -514,16 +517,16 @@ module InstitutionBuilder
       concat_ws(', ', physical_city, physical_state) as physical_location,
       #{conn.quote(timestamp)},
       #{conn.quote(timestamp)},
-      ?
+      #{version_id}
       FROM weams
     WHERE country = 'USA'
       AND bah IS NOT null
       AND dod_bah IS NOT null
-    GROUP BY zip, bah, dod_bah, physical_location, ?
+    GROUP BY zip, bah, dod_bah, physical_location
     ORDER BY zip
     SQL
 
-    sql = ZipcodeRate.send(:sanitize_sql, [str, version_id, version_id])
+    sql = ZipcodeRate.send(:sanitize_sql, [str])
     ZipcodeRate.connection.execute(sql)
   end
 
