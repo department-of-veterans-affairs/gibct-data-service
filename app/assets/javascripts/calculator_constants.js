@@ -1,33 +1,28 @@
 $(function() {
-    const formatFloatInputToCurrency = function (field) {
-        $(field).val(parseFloat($(field).val()).toFixed(2));
+    formatInputFields = function (field) {
+        let field_id = $(field).attr("id");
+        if (field_id === "FISCALYEAR") {
+            $(field).val(parseInt($(field).val()));
+        } else {
+            formatFloatInputToCurrency(field);
+        }
     };
 
-    const floatInputOnChange = function (field) {
+    const formatFloatInputToCurrency = function (field) {
         if (!$(field).val()) {
             $(field).val(0);
         }
-        formatFloatInputToCurrency(field);
+        $(field).val(parseFloat($(field).val()).toFixed(2));
     };
 
     const calculator_constant_fields  = $(':input[type="number"]');
 
     calculator_constant_fields.each( function () {
-        let field_id = $(this).attr("id");
-        if (field_id === "FISCALYEAR") {
-            $(this).val(parseInt($(this).val()));
-        } else {
-            formatFloatInputToCurrency(this);
-        }
+        formatInputFields(this);
     });
 
     calculator_constant_fields.change( function () {
-        let field_id = $(this).attr("id");
-        if (field_id === "FISCALYEAR") {
-            $(this).val(parseInt($(this).val()));
-        } else {
-            floatInputOnChange(this)
-        }
+        formatInputFields(this);
         $("#submit-button").prop("disabled", false);
     });
 

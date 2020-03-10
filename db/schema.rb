@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_60_102230) do
+ActiveRecord::Schema.define(version: 2020_03_09_101010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -404,6 +404,7 @@ ActiveRecord::Schema.define(version: 2020_03_60_102230) do
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
     t.index ["ope6"], name: "index_institutions_on_ope6"
+    t.index ["parent_facility_code_id"], name: "index_institutions_on_parent_facility_code_id"
     t.index ["state"], name: "index_institutions_on_state"
     t.index ["stem_offered"], name: "index_institutions_on_stem_offered"
     t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id"
