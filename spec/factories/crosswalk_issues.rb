@@ -21,6 +21,14 @@ FactoryBot.define do
       end
     end
 
+    trait :with_weam_match_partial_physical_ca do
+      weam do
+        create(:weam, :arf_gi_bill, cross: 'a', ope: 'b', institution: 'college of nowhere',
+                                    physical_city: 'Test', physical_state: 'CA',
+                                    physical_address_1: '123 test st', physical_zip: '99999', state: nil)
+      end
+    end
+
     trait :with_ipeds_hd_match do
       ipeds_hd { create(:ipeds_hd, cross: 'a', ope: 'b') }
     end
