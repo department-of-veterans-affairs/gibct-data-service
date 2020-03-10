@@ -6,6 +6,8 @@ require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
 
 RSpec.describe CalculatorConstantsController, type: :controller do
+  it_behaves_like 'an authenticating controller', :index, 'calculator_constants'
+
   describe 'GET #index' do
     login_user
 
@@ -27,7 +29,6 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     end
 
     it 'updated calculator constants' do
-      create :upload, :calculator_constant
       create :calculator_constant, :avg_dod_bah_constant
       post(:update, params: params)
       expect(CalculatorConstant.where(name: 'AVGDODBAH')[0].float_value).to eq(test_rate)

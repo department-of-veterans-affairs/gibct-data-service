@@ -1,20 +1,34 @@
 $(function() {
-    $(':input[type="number"]').each( function () {
-        //FISCALYEAR is the only non-dollar amount field
+    const formatFloatInputToCurrency = function (field) {
+        $(field).val(parseFloat($(field).val()).toFixed(2));
+    };
+
+    const floatInputOnChange = function (field) {
+        if (!$(field).val()) {
+            $(field).val(0);
+        }
+        formatFloatInputToCurrency(field);
+    };
+
+    const calculator_constant_fields  = $(':input[type="number"]');
+
+    calculator_constant_fields.each( function () {
         let field_id = $(this).attr("id");
         if (field_id === "FISCALYEAR") {
-            $(this).val(parseFloat($(this).val()).toFixed(0));
-            $(this).change(function() {
-                $(this).val(parseFloat($(this).val()).toFixed(0));
-            });
+            $(this).val(parseInt($(this).val()));
         } else {
-            $(this).val(parseFloat($(this).val()).toFixed(2));
-            $(this).change(function() {
-                if (!$(this).val()) {
-                    $(this).val(0);
-                }
-                $(this).val(parseFloat($(this).val()).toFixed(2));
-            });
+            formatFloatInputToCurrency(this);
         }
     });
+
+    calculator_constant_fields.change( function () {
+        let field_id = $(this).attr("id");
+        if (field_id === "FISCALYEAR") {
+            $(this).val(parseInt($(this).val()));
+        } else {
+            floatInputOnChange(this)
+        }
+        $("#submit-button").prop("disabled", false);
+    });
+
 });
