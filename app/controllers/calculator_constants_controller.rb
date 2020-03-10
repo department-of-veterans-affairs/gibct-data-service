@@ -9,12 +9,7 @@ class CalculatorConstantsController < ApplicationController
     updated_fields = []
     params.each do |key, value|
       next unless CalculatorConstant.exists?(name: key)
-
-      constant_field = CalculatorConstant.where(name: key).first
-      if constant_field.float_value != value.to_f
-        constant_field.update(float_value: value)
-        updated_fields.push(key)
-      end
+      update_calculator_constant(key, value, updated_fields)
     end
     unless updated_fields.empty?
       flash[:success] = {
@@ -23,4 +18,15 @@ class CalculatorConstantsController < ApplicationController
     end
     redirect_to action: :index
   end
+
+  private
+
+  def update_calculator_constant(name, value, updated_fields)
+    constant_field = CalculatorConstant.where(name: name).first
+    if constant_field.float_value != value.to_f
+      constant_field.update(float_value: value)
+      updated_fields.push(name)
+    end
+  end
+
 end
