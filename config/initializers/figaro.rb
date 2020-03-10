@@ -13,3 +13,7 @@ Figaro.require_keys(
   'GOVDELIVERY_STAGING_SERVICE',
   'DEPLOYMENT_ENV',
 )
+
+unless %w(vagov-dev vagov-staging vagov-prod).include?(ENV.fetch('DEPLOYMENT_ENV'))
+  raise ENV.fetch('DEPLOYMENT_ENV') + " is not a valid DEPLOYMENT_ENV value"
+end
