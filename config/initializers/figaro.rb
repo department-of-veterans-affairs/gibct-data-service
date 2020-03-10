@@ -15,5 +15,5 @@ Figaro.require_keys(
 )
 
 unless %w(vagov-dev vagov-staging vagov-prod).include?(ENV.fetch('DEPLOYMENT_ENV'))
-  raise ENV.fetch('DEPLOYMENT_ENV') + " is not a valid DEPLOYMENT_ENV value"
+  raise ENV.fetch('DEPLOYMENT_ENV') + " is not a valid DEPLOYMENT_ENV value. Expected vagov-dev, vagov-staging or vagov-prod"
 end
