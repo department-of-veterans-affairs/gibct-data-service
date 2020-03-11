@@ -252,3 +252,19 @@ table.crosswalk-issues thead.sub th {
 .current {
   background-color: #d9edf7;
 }
+
+.widget:after {
+  content: " ";
+  display: block;
+  clear: both;
+}
+
+#crosswalk-issues-dashboard .panel-heading {
+  font-size: 2rem;
+}
+
+#crosswalk-issues-dashboard button span.badge {
+  color: #2c882c;
+  background-color: #fff;
+  margin-left:1rem;
+}
