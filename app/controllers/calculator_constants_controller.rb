@@ -8,7 +8,6 @@ class CalculatorConstantsController < ApplicationController
   def update
     updated_fields = []
     params.each do |key, value|
-      next unless CalculatorConstant.exists?(name: key)
       update_calculator_constant(key, value, updated_fields)
     end
     unless updated_fields.empty?
@@ -22,11 +21,12 @@ class CalculatorConstantsController < ApplicationController
   private
 
   def update_calculator_constant(name, value, updated_fields)
-    constant_field = CalculatorConstant.where(name: name).first
-    if constant_field.float_value != value.to_f
-      constant_field.update(float_value: value)
-      updated_fields.push(name)
+    if CalculatorConstant.exists?(name: name)
+      constant_field = CalculatorConstant.where(name: name).first
+      if constant_field.float_value != value.to_f
+        constant_field.update(float_value: value)
+        updated_fields.push(name)
+      end
     end
   end
-
 end
