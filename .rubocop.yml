@@ -139,7 +139,7 @@ RSpec/FilePath:
 
 RSpec/DescribeClass:
   Exclude:
-    - "spec/config/initializers/csv_types_spec.rb"
+    - "spec/config/initializers/**/*"
     - "spec/models/archiver_spec.rb"
 
 RSpec/ExampleLength:
