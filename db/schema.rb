@@ -93,7 +93,6 @@ ActiveRecord::Schema.define(version: 2020_03_09_101010) do
     t.float "float_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
   end
 
