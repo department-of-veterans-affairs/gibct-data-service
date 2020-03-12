@@ -253,18 +253,33 @@ table.crosswalk-issues thead.sub th {
   background-color: #d9edf7;
 }
 
-.widget:after {
-  content: " ";
-  display: block;
-  clear: both;
+#crosswalk-issues-dashboard .panel {
+  height: 100%;
+  margin-bottom: 20px;
+}
+
+#crosswalk-issues-dashboard .panel-body {
+  padding-bottom: 30px;
 }
 
 #crosswalk-issues-dashboard .panel-heading {
   font-size: 2rem;
 }
 
+#crosswalk-issues-dashboard button {
+  margin-top: 15px;
+  position: absolute;
+  bottom: 15px;
+  left: 30px;
+}
+
 #crosswalk-issues-dashboard button span.badge {
   color: #2c882c;
   background-color: #fff;
   margin-left:1rem;
+}
+
+.equal {
+  flex-wrap: wrap;
+  display: flex;
 }
