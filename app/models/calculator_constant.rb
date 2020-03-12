@@ -5,8 +5,7 @@ class CalculatorConstant < ApplicationRecord
 
   CSV_CONVERTER_INFO = {
     'name' => { column: :name, converter: UpcaseConverter },
-    'value' => { column: :float_value, converter: NumberConverter },
-    'description' => { column: :description, converter: BaseConverter }
+    'value' => { column: :float_value, converter: NumberConverter }
   }.freeze
 
   default_scope { order('name') }

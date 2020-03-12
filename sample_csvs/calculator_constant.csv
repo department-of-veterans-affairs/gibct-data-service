@@ -1,29 +1,29 @@
-name,value,description
-TFCAP,22805.34,Maximum Tuition & Fee Reimbursement per Academic Year
-BSCAP,1000,Books/Supplies Stipend
-BSOJTMONTH,83,Books/Supplies Stipend for OJT and Apprintership
-FLTTFCAP,13031.61,Vocational Flight Schools
-CORRESPONDTFCAP,11076.86,Correspondence Schools
-MGIB3YRRATE,1857,Montgomery GI Bill - Active Duty (Ch. 30 of title 38 U.S.C.) 3 or More Years
-MGIB2YRRATE,1509,Montgomery GI Bill - Active Duty (Ch. 30 of title 38 U.S.C.) Less Than 3 Years
-SRRATE,369,Montgomery GI Bill - Selected Reserve (Ch. 1606 of Title 10, U.S.C.).
-DEARATEOJT,747,Apprenticeship and On-the-Job Training
-VRE0DEPRATE,605.44,Vocational Rehabilitation and Employment  0 Dependents
-VRE1DEPRATE,751,Vocational Rehabilitation and Employment  1 Dependents
-VRE2DEPRATE,885,Vocational Rehabilitation and Employment 2 Dependents
-VREINCRATE,64.5,Vocational Rehabilitation and Employment Each Additional after 2 Dependents
-VRE0DEPRATEOJT,529.36,Vocational Rehabilitation and Employment  Farm Cooperative, Apprenticeship or other On-Job Training Plus 1
-VRE1DEPRATEOJT,640.15,Vocational Rehabilitation and Employment Farm Cooperative, Apprenticeship or other On-Job Training
-VREINCRATEOJT,737.77,Vocational Rehabilitation and Employment Farm Cooperative, Apprenticeship or other On-Job Training FY Increase
-AVERETENTIONRATE,47.99,Average Retention Rate
-AVEGRADRATE,42.3,Average Graduation Rate
-AVESALARY,33400,Average Salary
-AVEREPAYMENTRATE,67.9,Average Payment Rate
-AVGVABAH,1681,Monthly Housing Allowance
-AVGDODBAH,1650,Average Monthly Housing Allowance
-DEARATEFULLTIME,1224,Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) Full Time
-DEARATETHREEQUARTERS,967,Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) 3/4
-DEARATEONEHALF,710,Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) 1/2
-DEARATEUPTOONEHALF,710,Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) Up to a Quarter
-DEARATEUPTOONEQUARTER,306,Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) 1 half
-FISCALYEAR,2019,Fiscal Year
+name,value
+TFCAP,22805.34
+BSCAP,1000.0
+BSOJTMONTH,83.0
+FLTTFCAP,13031.61
+CORRESPONDTFCAP,11076.86
+MGIB3YRRATE,1857.0
+MGIB2YRRATE,1509.0
+SRRATE,369.0
+DEARATEOJT,747.0
+VRE0DEPRATE,605.44
+VRE1DEPRATE,751.0
+VRE2DEPRATE,885.0
+VREINCRATE,64.5
+VRE0DEPRATEOJT,529.36
+VRE1DEPRATEOJT,640.15
+VREINCRATEOJT,737.77
+AVERETENTIONRATE,47.99
+AVEGRADRATE,42.3
+AVESALARY,33400.0
+AVEREPAYMENTRATE,67.9
+AVGVABAH,1681.0
+AVGDODBAH,1650.0
+DEARATEFULLTIME,1224.0
+DEARATETHREEQUARTERS,967.0
+DEARATEONEHALF,710.0
+DEARATEUPTOONEHALF,710.0
+DEARATEUPTOONEQUARTER,306.0
+FISCALYEAR,2019
