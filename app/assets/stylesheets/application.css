@@ -253,6 +253,11 @@ table.crosswalk-issues thead.sub th {
   background-color: #d9edf7;
 }
 
+#crosswalk-issues-dashboard {
+  padding-bottom: 20px;
+}
+
+
 #crosswalk-issues-dashboard .panel {
   height: 100%;
   margin-bottom: 20px;
