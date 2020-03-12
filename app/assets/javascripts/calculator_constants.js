@@ -23,7 +23,6 @@ $(function() {
 
     calculator_constant_fields.change( function () {
         formatInputFields(this);
-        $(':input[type="submit"]').prop("disabled", false);
     });
 
 });
