@@ -41,7 +41,9 @@
                     TBD
                   <% end %>
                 </td>
-                <td width="20%"> <%= number_field_tag constant.name,constant.value, class: "form-control", step: 0.01, required: true%></td>
+                <td width="20%">
+                  <input type="number" class="form-control" step="0.01" required="true" name="<%='calculator_constants[]'+constant.name%>" id="<%=constant.name %>" value="<%=constant.value %>">
+                </td>
               </tr>
             <% end %>
         </tbody>
