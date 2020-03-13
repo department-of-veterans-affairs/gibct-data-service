@@ -7,7 +7,7 @@ class CalculatorConstantsController < ApplicationController
 
   def update
     updated_fields = []
-    submitted_constants = params['calculator_constants'][0]
+    submitted_constants = params['calculator_constants']
     update_calculator_constant(submitted_constants, updated_fields)
     unless updated_fields.empty?
       flash[:success] = {

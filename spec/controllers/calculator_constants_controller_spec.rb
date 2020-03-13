@@ -24,10 +24,9 @@ RSpec.describe CalculatorConstantsController, type: :controller do
 
     let(:params) do
       {
-        calculator_constants:
-            [{
+        calculator_constants: {
               AVGDODBAH: test_rate
-            }]
+            }
       }
     end
 

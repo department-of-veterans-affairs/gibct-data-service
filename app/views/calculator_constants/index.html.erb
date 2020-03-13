@@ -42,7 +42,7 @@
                   <% end %>
                 </td>
                 <td width="20%">
-                  <input type="number" class="form-control" step="0.01" required="true" name="<%='calculator_constants[]'+constant.name%>" id="<%=constant.name %>" value="<%=constant.value %>">
+                  <input type="number" class="form-control" step="0.01" required="true" name="<%='calculator_constants['+constant.name+']'%>" id="<%=constant.name %>" value="<%=constant.value %>">
                 </td>
               </tr>
             <% end %>
