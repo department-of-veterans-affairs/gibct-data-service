@@ -98,9 +98,9 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
   end
 
   create_table "caution_flags", force: :cascade do |t|
-    t.string "facility_code"
+    t.integer "institution_id"
     t.integer "version_id"
-    t.string "type"
+    t.string "source"
     t.string "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1690,6 +1690,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
