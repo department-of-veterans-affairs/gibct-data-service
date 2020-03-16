@@ -277,31 +277,29 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      describe 'the caution_flag' do
-        it 'is set to true for any non-nil status' do
+      describe 'the accreditation_action caution_flags' do
+        it 'has flags for any non-nil status' do
           create :accreditation_action_probationary
           described_class.run(user)
 
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag.where({institution_id: institution.id, source: 'accreditation_action'}).count).to be > 0
         end
 
-        it 'is set falsey for any nil status' do
+        it 'has no flags for any nil status' do
           create :accreditation_action
           described_class.run(user)
 
-          expect(institution.caution_flag).to be_falsey
+          expect(CautionFlag.where({institution_id: institution.id, source: 'accreditation_action'}).count).to equal(0)
         end
-      end
 
-      describe 'the caution_flag_reason' do
         it 'concatenates `action_description` and `justification_description`' do
           aap = create :accreditation_action_probationary
 
           described_class.run(user)
 
-          expect(
-            institution.caution_flag_reason
-          ).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
+          caution_flag = CautionFlag.where({institution_id: institution.id, source: 'accreditation_action'}).first
+
+          expect(caution_flag.reason).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
         end
       end
     end
