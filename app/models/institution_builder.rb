@@ -186,7 +186,7 @@ module InstitutionBuilder
       end
     end
 
-    # Set the accreditation_status`, `caution_flag` and `caution_reason` by joining on
+    # Set the accreditation_status` and create `caution_flags` rows by joining on
     # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
     # have a unique `ope` provided.
     # We include only those accreditation that are institutional and currently active.
