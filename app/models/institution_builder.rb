@@ -158,16 +158,19 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  # Set the `accreditation_type`, `accreditation_status`, and create `caution_flags` rows
+  # by joining on
+  # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
+  # have a unique `ope` provided.
+  # Set the accreditation_type according to the hierarchy hybrid < national < regional
+  # We include only those accreditation that are institutional and currently active.
   def self.add_accreditation(version_id)
     accreditation_join_clauses = [
         'institutions.ope6 = accreditation_institute_campuses.ope6',
         'institutions.ope = accreditation_institute_campuses.ope'
     ]
-    # Set the `accreditation_type` by joining on
-    # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
-    # have a unique `ope` provided.
-    # Set the accreditation_type according to the hierarchy hybrid < national < regional
-    # We include only those accreditation that are institutional and currently active.
+
+    # Set the `accreditation_type`
     str = <<-SQL
       UPDATE institutions SET
         accreditation_type = accreditation_records.accreditation_type
@@ -186,10 +189,6 @@ module InstitutionBuilder
       end
     end
 
-    # Set the accreditation_status` and create `caution_flags` rows by joining on
-    # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
-    # have a unique `ope` provided.
-    # We include only those accreditation that are institutional and currently active.
     caution_flag_where_clause = <<-SQL
         WHERE {{JOIN_CLAUSE}}
         -- has received a probationary action
@@ -214,11 +213,10 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
+    # Set the `accreditation_status`
     str = <<-SQL
       UPDATE institutions
-      SET accreditation_status = aa.action_description,
-          caution_flag = TRUE,
-          caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
+      SET accreditation_status = aa.action_description
       FROM accreditation_institute_campuses, accreditation_actions aa
       #{caution_flag_where_clause}
     SQL
@@ -227,6 +225,7 @@ module InstitutionBuilder
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
 
+    # Create `caution_flags` rows
     str = <<-SQL
       INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
       SELECT institutions.id, 
