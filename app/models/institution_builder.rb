@@ -189,7 +189,7 @@ module InstitutionBuilder
       end
     end
 
-    caution_flag_where_clause = <<-SQL
+    where_clause = <<-SQL
         WHERE {{JOIN_CLAUSE}}
         -- has received a probationary action
         AND aa.id = (
@@ -218,7 +218,7 @@ module InstitutionBuilder
       UPDATE institutions
       SET accreditation_status = aa.action_description
       FROM accreditation_institute_campuses, accreditation_actions aa
-      #{caution_flag_where_clause}
+      #{where_clause}
     SQL
 
     accreditation_join_clauses.each do |join_clause|
@@ -226,22 +226,20 @@ module InstitutionBuilder
     end
 
     # Create `caution_flags` rows
-    str = <<-SQL
-      INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
-      SELECT institutions.id, 
-              #{version_id} as version_id, 
-              'accreditation_action' as source, 
-              concat(aa.action_description, ' (', aa.justification_description, ')') as reason,
-              #{timestamp} as created_at,
-              #{timestamp} as updated_at
-        FROM accreditation_institute_campuses, accreditation_actions aa, institutions
-        #{caution_flag_where_clause}
+    caution_flag_reason = <<-SQL
+      concat(aa.action_description, ' (', aa.justification_description, ')')
+    SQL
+
+    caution_flag_from_clause = <<-SQL
+      FROM accreditation_institute_campuses, accreditation_actions aa, institutions
     SQL
 
     accreditation_join_clauses.each do |join_clause|
-      CautionFlag.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
+      build_caution_flags(version_id, 'accreditation_action',
+                        caution_flag_reason,
+                        caution_flag_from_clause,
+                        where_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
-
   end
 
   def self.add_arf_gi_bill(version_id)
@@ -278,13 +276,10 @@ module InstitutionBuilder
   end
 
   def self.add_mou(version_id)
-    reason = 'DoD Probation For Military Tuition Assistance'
-
-    # Sets the caution flag for any approved school having a probation (status == true)
+    # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
     str = <<-SQL
       UPDATE institutions SET
-        dodmou = mous.dodmou,
-        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
+        dodmou = mous.dodmou
       FROM mous
       WHERE institutions.ope6 = mous.ope6
       AND institutions.version_id = #{version_id}
@@ -292,19 +287,21 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # Sets dodmou for any approved school having a probation or title IV non-compliance status.
     # The caution flag reason is only affected by a DoD type probation status
-    str = <<-SQL
-      UPDATE institutions SET
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
-      FROM (
-        SELECT distinct(ope6), '#{reason}' AS reason FROM mous
-        WHERE dod_status = TRUE) as reasons_list
-      WHERE institutions.ope6 = reasons_list.ope6
+    reason = <<-SQL
+      'DoD Probation For Military Tuition Assistance'
+    SQL
+    caution_flag_from_clause = <<-SQL
+      FROM institutions, mous
+    SQL
+    caution_flag_where_clause = <<-SQL
+      WHERE institutions.ope6 = mous.ope6
       AND institutions.version_id = #{version_id}
+      AND mous.dod_status = TRUE
     SQL
 
-    Institution.connection.update(str)
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, 'mou', reason, caution_flag_from_clause, caution_flag_where_clause)
   end
 
   def self.add_scorecard(version_id)
@@ -669,5 +666,21 @@ module InstitutionBuilder
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
     SchoolCertifyingOfficial.connection.execute(sql)
+  end
+
+
+  def self.build_caution_flags(version_id, source, reason, from, where)
+    str = <<-SQL
+      INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
+      SELECT institutions.id, 
+              #{version_id} as version_id, 
+              '#{CautionFlag::SOURCES[source.to_sym]}' as source, 
+              #{reason} as reason,
+              #{timestamp} as created_at,
+              #{timestamp} as updated_at
+        #{from}
+        #{where}
+    SQL
+    CautionFlag.connection.insert(str)
   end
 end

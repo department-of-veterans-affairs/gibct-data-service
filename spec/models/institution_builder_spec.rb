@@ -282,14 +282,14 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :accreditation_action_probationary
           described_class.run(user)
 
-          expect(CautionFlag.where({institution_id: institution.id, source: 'accreditation_action'}).count).to be > 0
+          expect(CautionFlag.where({institution_id: institution.id, source: CautionFlag::SOURCES[:accreditation_action]}).count).to be > 0
         end
 
         it 'has no flags for any nil status' do
           create :accreditation_action
           described_class.run(user)
 
-          expect(CautionFlag.where({institution_id: institution.id, source: 'accreditation_action'}).count).to equal(0)
+          expect(CautionFlag.where({institution_id: institution.id, source: CautionFlag::SOURCES[:accreditation_action]}).count).to equal(0)
         end
 
         it 'concatenates `action_description` and `justification_description`' do
@@ -297,7 +297,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           described_class.run(user)
 
-          caution_flag = CautionFlag.where({institution_id: institution.id, source: 'accreditation_action'}).first
+          caution_flag = CautionFlag.where({institution_id: institution.id, source: CautionFlag::SOURCES[:accreditation_action]}).first
 
           expect(caution_flag.reason).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
         end
