@@ -365,30 +365,43 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
+  # only approved public schools can be SEC 702 complaint
   def self.add_sec_702(version_id)
-    # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
-    # only approved public schools can be SEC 702 complaint
-    reason = 'Does Not Offer Required In-State Tuition Rates'
-
-    str = <<-SQL
-      UPDATE institutions SET
-        sec_702 = s702_list.sec_702,
-        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
-        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
-          THEN concat_ws(', ', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
-        END
-      FROM (
-        SELECT facility_code, sec702s.sec_702 FROM institutions
+    s702_list = <<-SQL
+    (SELECT facility_code, sec702s.sec_702 FROM institutions
           INNER JOIN sec702s ON sec702s.state = institutions.state
             EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
             UNION SELECT facility_code, sec_702 FROM sec702_schools
       ) AS s702_list
+    SQL
+    where_clause = <<-SQL
       WHERE institutions.facility_code = s702_list.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
     SQL
 
+    str = <<-SQL
+      UPDATE institutions SET sec_702 = s702_list.sec_702
+      FROM #{s702_list}
+      #{where_clause}
+    SQL
+
     Institution.connection.update(str)
+
+    reason = <<-SQL
+      'Does Not Offer Required In-State Tuition Rates'
+    SQL
+    caution_flag_from_clause = <<-SQL
+      FROM institutions, #{s702_list}
+    SQL
+    caution_flag_where_clause = <<-SQL
+      #{where_clause}
+      AND NOT s702_list.sec_702
+    SQL
+
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, 'sec_702', reason, caution_flag_from_clause, caution_flag_where_clause)
   end
 
   def self.add_settlement(version_id)
@@ -684,6 +697,6 @@ module InstitutionBuilder
         #{from_sql}
         #{where_sql}
     SQL
-    CautionFlag.connection.insert(str)
+    CautionFlag.connection.execute(str)
   end
 end

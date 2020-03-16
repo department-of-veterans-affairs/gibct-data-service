@@ -3,6 +3,7 @@
 class CautionFlag < ApplicationRecord
   SOURCES = {
     accreditation_action: 'accreditation_action',
-    mou: 'mou'
+    mou: 'mou',
+    sec_702: 'sec_702',
   }.freeze
 end

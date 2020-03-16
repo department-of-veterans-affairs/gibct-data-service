@@ -564,73 +564,35 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      describe 'the caution_flag' do
-        it 'is set from Section702 when sec_702 is false' do
+      describe 'the sec_702 caution_flag' do
+        it 'has flags from Section702 when sec_702 is false' do
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(institutions.first.caution_flag).not_to be_nil
-          expect(institutions.first.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                              version_id: Version.current_preview.id})
+                     .count).to be > 0
         end
 
-        it 'is set from Section702School when sec_702 is false' do
+        it 'has flags from Section702School when sec_702 is false' do
           create :sec702_school, :institution_builder
           described_class.run(user)
-          expect(institutions.first.caution_flag).not_to be_nil
-          expect(institutions.first.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                              version_id: Version.current_preview.id})
+                     .count).to be > 0
         end
 
-        it 'prefers Sec702School over Section702' do
-          sec702_school_institution = create :weam, :institution_builder, :private
+        it 'has flags when prefers Sec702School over Section702' do
+          create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag).to be_falsey
-        end
-      end
+          expect(CautionFlag
+                     .where({ source: CautionFlag::SOURCES[:mou],
+                              version_id: Version.current_preview.id})
+                     .count).to eq(0)
 
-      describe 'the caution_flag_reason' do
-        let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
-
-        it 'is set from Section702 when sec_702 is false' do
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).not_to be_nil
-          expect(institutions.first.caution_flag_reason).to eq(reason)
-        end
-
-        it 'is set from Section702School when sec_702 is false' do
-          create :sec702_school, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).not_to be_nil
-          expect(institutions.first.caution_flag_reason).to eq(reason)
-        end
-
-        it 'prefers Sec702School over Section702' do
-          sec702_school_institution = create :weam, :institution_builder, :private
-          create :sec702_school, :institution_builder, sec_702: true
-          create :sec702, :institution_builder
-          described_class.run(user)
-
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag_reason).to be_nil
-        end
-
-        it 'concatenates the sec_702 reason when sec_702 is false' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/).and match(/Tuition/)
-        end
-
-        it 'is left unaltered when sec_702 is true' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :sec702_school, :institution_builder, sec_702: true
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-          expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
         end
       end
     end
