@@ -166,8 +166,8 @@ module InstitutionBuilder
   # We include only those accreditation that are institutional and currently active.
   def self.add_accreditation(version_id)
     accreditation_join_clauses = [
-        'institutions.ope6 = accreditation_institute_campuses.ope6',
-        'institutions.ope = accreditation_institute_campuses.ope'
+      'institutions.ope6 = accreditation_institute_campuses.ope6',
+      'institutions.ope = accreditation_institute_campuses.ope'
     ]
 
     # Set the `accreditation_type`
@@ -236,9 +236,9 @@ module InstitutionBuilder
 
     accreditation_join_clauses.each do |join_clause|
       build_caution_flags(version_id, 'accreditation_action',
-                        caution_flag_reason,
-                        caution_flag_from_clause,
-                        where_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
+                          caution_flag_reason,
+                          caution_flag_from_clause,
+                          where_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
   end
 
@@ -668,15 +668,14 @@ module InstitutionBuilder
     SchoolCertifyingOfficial.connection.execute(sql)
   end
 
-
   # Creates caution flags
   # Expects `reason_sql`, `from_sql`, and `where_sql` to be a multiline SQL string
   def self.build_caution_flags(version_id, source, reason_sql, from_sql, where_sql)
     str = <<-SQL
       INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
-      SELECT institutions.id, 
-              #{version_id} as version_id, 
-              '#{CautionFlag::SOURCES[source.to_sym]}' as source, 
+      SELECT institutions.id,
+              #{version_id} as version_id,
+              '#{CautionFlag::SOURCES[source.to_sym]}' as source,
               #{reason_sql} as reason,
               #{timestamp} as created_at,
               #{timestamp} as updated_at
