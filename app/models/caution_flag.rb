@@ -1,2 +1,2 @@
-class CautionFlag
+class CautionFlag < ApplicationRecord
 end

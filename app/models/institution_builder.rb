@@ -6,14 +6,10 @@ module InstitutionBuilder
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
-  def self.add_vet_tec_provider(version_id)
-    str = <<-SQL
-    UPDATE institutions SET vet_tec_provider = TRUE
-      from versions
-      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
-      AND institutions.version_id = #{version_id}
-    SQL
-    Institution.connection.update(str)
+  def self.timestamp
+    ts = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+    conn.quote(ts)
   end
 
   def self.run_insertions(version)
@@ -82,15 +78,13 @@ module InstitutionBuilder
 
   def self.initialize_with_weams(version)
     columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
-    timestamp = Time.now.utc.to_s(:db)
-    conn = ApplicationRecord.connection
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
     str += Weam
            .select(columns)
            .select("#{version.number.to_i} as version")
-           .select("#{conn.quote(timestamp)} as created_at")
-           .select("#{conn.quote(timestamp)} as updated_at")
+           .select("#{timestamp} as created_at")
+           .select("#{timestamp} as updated_at")
            .select('v.id as version_id')
            .to_sql
     str += "INNER JOIN versions v ON v.number = #{version.number}"
@@ -169,7 +163,7 @@ module InstitutionBuilder
         'institutions.ope6 = accreditation_institute_campuses.ope6',
         'institutions.ope = accreditation_institute_campuses.ope'
     ]
-    # Set the `accreditation_type`, `accreditation_status`, `caution_flag` and `caution_reason` by joining on
+    # Set the `accreditation_type` by joining on
     # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
     # have a unique `ope` provided.
     # Set the accreditation_type according to the hierarchy hybrid < national < regional
@@ -192,13 +186,12 @@ module InstitutionBuilder
       end
     end
 
-    str = <<-SQL
-      UPDATE institutions
-      SET accreditation_status = aa.action_description,
-          caution_flag = TRUE,
-          caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
-      FROM accreditation_institute_campuses, accreditation_actions aa
-      WHERE {{JOIN_CLAUSE}}
+    # Set the accreditation_status`, `caution_flag` and `caution_reason` by joining on
+    # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
+    # have a unique `ope` provided.
+    # We include only those accreditation that are institutional and currently active.
+    caution_flag_where_clause = <<-SQL
+        WHERE {{JOIN_CLAUSE}}
         -- has received a probationary action
         AND aa.id = (
           SELECT id from accreditation_actions
@@ -221,9 +214,35 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
+    str = <<-SQL
+      UPDATE institutions
+      SET accreditation_status = aa.action_description,
+          caution_flag = TRUE,
+          caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
+      FROM accreditation_institute_campuses, accreditation_actions aa
+      #{caution_flag_where_clause}
+    SQL
+
     accreditation_join_clauses.each do |join_clause|
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
+
+    str = <<-SQL
+      INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
+      SELECT institutions.id, 
+              #{version_id} as version_id, 
+              'accreditation_action' as source, 
+              concat(aa.action_description, ' (', aa.justification_description, ')') as reason,
+              #{timestamp} as created_at,
+              #{timestamp} as updated_at
+        FROM accreditation_institute_campuses, accreditation_actions aa, institutions
+        #{caution_flag_where_clause}
+    SQL
+
+    accreditation_join_clauses.each do |join_clause|
+      CautionFlag.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
+    end
+
   end
 
   def self.add_arf_gi_bill(version_id)
@@ -495,10 +514,17 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.build_zip_code_rates_from_weams(version_number)
-    timestamp = Time.now.utc.to_s(:db)
-    conn = ApplicationRecord.connection
+  def self.add_vet_tec_provider(version_id)
+    str = <<-SQL
+    UPDATE institutions SET vet_tec_provider = TRUE
+      from versions
+      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
+      AND institutions.version_id = #{version_id}
+    SQL
+    Institution.connection.update(str)
+  end
 
+  def self.build_zip_code_rates_from_weams(version_number)
     str = <<-SQL
     INSERT INTO zipcode_rates (
       zip_code,
@@ -516,8 +542,8 @@ module InstitutionBuilder
       dod_bah,
       concat_ws(', ', physical_city, physical_state) as physical_location,
       v.number,
-      #{conn.quote(timestamp)},
-      #{conn.quote(timestamp)},
+      #{timestamp},
+      #{timestamp},
       v.id
       FROM weams INNER JOIN versions v ON v.number = ?
     WHERE country = 'USA'
