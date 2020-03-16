@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 module InstitutionBuilder
-  ACCREDITATION_JOIN_CLAUSES = [
-    'institutions.ope6 = accreditation_institute_campuses.ope6',
-    'institutions.ope = accreditation_institute_campuses.ope'
-  ].freeze
-
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
@@ -170,6 +165,10 @@ module InstitutionBuilder
   end
 
   def self.add_accreditation(version_id)
+    accreditation_join_clauses = [
+        'institutions.ope6 = accreditation_institute_campuses.ope6',
+        'institutions.ope = accreditation_institute_campuses.ope'
+    ]
     # Set the `accreditation_type`, `accreditation_status`, `caution_flag` and `caution_reason` by joining on
     # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
     # have a unique `ope` provided.
@@ -187,7 +186,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
         AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
-    ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
+    accreditation_join_clauses.each do |join_clause|
       %w[hybrid national regional].each do |acc_type|
         Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
       end
@@ -209,7 +208,7 @@ module InstitutionBuilder
           ORDER BY action_date DESC
           LIMIT 1
         )
-        -- has not received a restorative action after the probrationary action
+        -- has not received a restorative action after the probationary action
         AND (
           SELECT id from accreditation_actions
             WHERE action_description in (#{AccreditationAction::RESTORATIVE_STATUSES.join(', ')})
@@ -222,7 +221,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
-    ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
+    accreditation_join_clauses.each do |join_clause|
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
   end
@@ -263,7 +262,7 @@ module InstitutionBuilder
   def self.add_mou(version_id)
     reason = 'DoD Probation For Military Tuition Assistance'
 
-    # Sets the caution flag for any approved school having a probatiton (status == true)
+    # Sets the caution flag for any approved school having a probation (status == true)
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous.dodmou,
@@ -275,7 +274,7 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # Sets dodmou for any approved school having a probatiton or title IV non-compliance status.
+    # Sets dodmou for any approved school having a probation or title IV non-compliance status.
     # The caution flag reason is only affected by a DoD type probation status
     str = <<-SQL
       UPDATE institutions SET
@@ -376,7 +375,7 @@ module InstitutionBuilder
   end
 
   def self.add_settlement(version_id)
-    # Sets caution flags and caution flag reasons if the corresponing approved school (by IPEDs id)
+    # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
     # has an entry in the settlements table.
     str = <<-SQL
       UPDATE institutions SET
@@ -396,7 +395,7 @@ module InstitutionBuilder
   end
 
   def self.add_hcm(version_id)
-    # Sets caution flags and caution flag reasons if the corresponing approved school (by ope6)
+    # Sets caution flags and caution flag reasons if the corresponding approved school (by ope6)
     # has an entry in the hcms table.
     str = <<-SQL
       UPDATE institutions SET
