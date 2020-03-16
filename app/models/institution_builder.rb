@@ -669,17 +669,19 @@ module InstitutionBuilder
   end
 
 
-  def self.build_caution_flags(version_id, source, reason, from, where)
+  # Creates caution flags
+  # Expects `reason_sql`, `from_sql`, and `where_sql` to be a multiline SQL string
+  def self.build_caution_flags(version_id, source, reason_sql, from_sql, where_sql)
     str = <<-SQL
       INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
       SELECT institutions.id, 
               #{version_id} as version_id, 
               '#{CautionFlag::SOURCES[source.to_sym]}' as source, 
-              #{reason} as reason,
+              #{reason_sql} as reason,
               #{timestamp} as created_at,
               #{timestamp} as updated_at
-        #{from}
-        #{where}
+        #{from_sql}
+        #{where_sql}
     SQL
     CautionFlag.connection.insert(str)
   end
