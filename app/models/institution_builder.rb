@@ -292,12 +292,14 @@ module InstitutionBuilder
       'DoD Probation For Military Tuition Assistance'
     SQL
     caution_flag_from_clause = <<-SQL
-      FROM institutions, mous
+      FROM institutions, (
+        SELECT distinct(ope6) FROM mous
+        WHERE dod_status = TRUE
+      ) as reasons_list
     SQL
     caution_flag_where_clause = <<-SQL
-      WHERE institutions.ope6 = mous.ope6
+      WHERE institutions.ope6 = reasons_list.ope6
       AND institutions.version_id = #{version_id}
-      AND mous.dod_status = TRUE
     SQL
 
     # Create `caution_flags` rows

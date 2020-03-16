@@ -283,7 +283,9 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           expect(CautionFlag
-                     .where({ institution_id: institution.id, source: CautionFlag::SOURCES[:accreditation_action] })
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:accreditation_action],
+                              version_id: Version.current_preview.id})
                      .count).to be > 0
         end
 
@@ -292,8 +294,10 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           expect(CautionFlag
-                     .where({ institution_id: institution.id, source: CautionFlag::SOURCES[:accreditation_action] })
-                     .count).to equal(0)
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:accreditation_action],
+                              version_id: Version.current_preview.id})
+                     .count).to eq(0)
         end
 
         it 'concatenates `action_description` and `justification_description`' do
@@ -302,8 +306,8 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:accreditation_action] })
-                                    .first
+                                             source: CautionFlag::SOURCES[:accreditation_action],
+                                             version_id: Version.current_preview.id}).first
 
           expect(caution_flag.reason)
             .to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
@@ -375,17 +379,25 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(mou.dodmou).to eq(institution.dodmou)
       end
 
-      describe 'the caution_flag' do
-        it 'is sets when dod_status is true' do
+      describe 'the mou caution_flag' do
+        it 'has flags when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:mou],
+                              version_id: Version.current_preview.id})
+                     .count).to be > 0
         end
 
-        it 'is not set when dod_status is not true' do
+        it 'has no flags when dod_status is not true' do
           create :mou, :institution_builder, :by_title_iv
           described_class.run(user)
-          expect(institution.caution_flag).to be_falsey
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:mou],
+                              version_id: Version.current_preview.id})
+                     .count).to eq(0)
         end
       end
 
@@ -393,24 +405,11 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
-          expect(institution.caution_flag_reason).to eq(reason)
-        end
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:mou] ,
+                                           version_id: Version.current_preview.id}).first
 
-        it 'contentates the existing reasons' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :mou, :institution_builder, :by_dod
-          described_class.run(user)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)
-        end
-
-        it 'is unaltered when dod_status is not true' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :mou, :institution_builder, :by_title_iv
-          described_class.run(user)
-          expect(institution.caution_flag_reason).not_to match(/DoD/)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
+          expect(caution_flag.reason).to eq(reason)
         end
       end
     end
