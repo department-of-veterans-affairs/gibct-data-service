@@ -78,6 +78,10 @@
     </div>
 </div>
 
+<% if !production? %>
+<%= render partial: 'crosswalk_issues' %>
+<% end %>
+
 <h2>Latest Uploads
   <%= link_to 'View Upload History', uploads_path, class: "btn dashboard-btn-info btn-xs", role: "button" %>
 </h2>

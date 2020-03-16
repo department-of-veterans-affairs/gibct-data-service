@@ -1,0 +1,60 @@
+<div class="row row-space-6">
+  <div class="col-md-8">
+    <% if flash[:success].present? %>
+      <aside class="alert alert-success">
+        <div class="errors">
+          <p>The following calculator constants have been updated: </p>
+          <ul>
+            <% flash[:success][:updated_fields].each do |field| %>
+              <li><%=field %></li>
+            <% end %>
+          </ul>
+        </div>
+      </aside>
+    <% end %>
+  <%= form_with(url: calculator_constants_update_path, id: 'calculator_constants_update') do %>
+  <div class="row">
+      <div class="col-md-10">
+        <h3>Manage Calculator Constants</h3>
+        <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
+      </div>
+        <div align="right" class="col-md-2 top-table-button-div">
+          <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
+          <%= submit_tag("Save", class: 'btn dashboard-btn-success', id: "submit-button") %>
+        </div>
+    </div>
+    <div>
+    <table class="table table-hover table-condensed table-bordered table-responsive calculator-constants-table">
+        <thead class="sub">
+          <th>Name</th>
+          <th>Description</th>
+          <th>Value</th>
+        </thead>
+        <tbody>
+            <% @calculator_constants.each do |constant| %>
+              <tr>
+                <td width="20%"> <%= constant.name %></td>
+                <td>
+                  <% if constant.description && constant.description != '' %>
+                    <%= constant.description %>
+                  <% else %>
+                    TBD
+                  <% end %>
+                </td>
+                <td width="20%">
+                  <input type="number" class="form-control" step="0.01" required="true" name="<%='calculator_constants['+constant.name+']'%>" id="<%=constant.name %>" value="<%=constant.value %>">
+                </td>
+              </tr>
+            <% end %>
+        </tbody>
+      </table>
+      <div>
+        <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
+        <%= submit_tag("Save", class: 'btn dashboard-btn-success', id: "submit-button") %>
+      </div>
+    </div>
+  </div>
+    <% end %>
+  </div>
+
+
