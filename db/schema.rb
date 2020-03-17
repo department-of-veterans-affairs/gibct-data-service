@@ -1350,6 +1350,14 @@ ActiveRecord::Schema.define(version: 2020_03_16_123122) do
     t.index ["ope"], name: "index_scorecards_on_ope"
   end
 
+  create_table "sec103s", force: :cascade do |t|
+    t.string "name"
+    t.string "facility_code", null: false
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+  end
+
   create_table "sec109_closed_schools", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "school_name"
@@ -1372,14 +1380,6 @@ ActiveRecord::Schema.define(version: 2020_03_16_123122) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["state"], name: "index_sec702s_on_state", unique: true
-  end
-
-  create_table "sec_103s", force: :cascade do |t|
-    t.string "name"
-    t.string "facility_code", null: false
-    t.boolean "complies_with_sec_103"
-    t.boolean "solely_requires_coe"
-    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "sessions", id: :serial, force: :cascade do |t|

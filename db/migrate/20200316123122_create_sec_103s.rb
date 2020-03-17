@@ -1,6 +1,6 @@
 class CreateSec103s < ActiveRecord::Migration[5.2]
   def change
-    create_table :sec_103s do |t|
+    create_table :sec103s do |t|
       t.string "name"
       t.string "facility_code", null: false
       t.boolean "complies_with_sec_103"
