@@ -48,6 +48,7 @@ module InstitutionBuilder
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
+    add_sec103(version.id)
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
@@ -538,6 +539,17 @@ module InstitutionBuilder
         AND institutions.campus_type IS NULL
         AND institutions.version_id = #{version_id}
     SQL
+    Institution.connection.update(str)
+  end
+
+  def self.add_sec103(version_id)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(Sec103)}
+      FROM  sec103s
+      WHERE institutions.facility_code = sec103s.facility_code
+      AND institutions.version_id = #{version_id}
+    SQL
+
     Institution.connection.update(str)
   end
 
