@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_10_150010) do
+ActiveRecord::Schema.define(version: 2020_03_16_133022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -95,6 +95,15 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.datetime "updated_at", null: false
     t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
+  end
+
+  create_table "caution_flags", force: :cascade do |t|
+    t.integer "institution_id"
+    t.integer "version_id"
+    t.string "source"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
@@ -392,6 +401,9 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -535,6 +547,9 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1350,6 +1365,14 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.index ["ope"], name: "index_scorecards_on_ope"
   end
 
+  create_table "sec103s", force: :cascade do |t|
+    t.string "name"
+    t.string "facility_code", null: false
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+  end
+
   create_table "sec109_closed_schools", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "school_name"
@@ -1686,6 +1709,8 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flags", "institutions"
+  add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
