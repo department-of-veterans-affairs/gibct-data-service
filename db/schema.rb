@@ -97,6 +97,15 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.index ["name"], name: "index_calculator_constants_on_name"
   end
 
+  create_table "caution_flags", force: :cascade do |t|
+    t.integer "institution_id"
+    t.integer "version_id"
+    t.string "source"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "complaints", id: :serial, force: :cascade do |t|
     t.string "status"
     t.string "ope"
@@ -538,6 +547,9 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1697,6 +1709,8 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flags", "institutions"
+  add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
