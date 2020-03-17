@@ -226,15 +226,15 @@ module InstitutionBuilder
       concat(aa.action_description, ' (', aa.justification_description, ')')
     SQL
 
-    caution_flag_from_clause = <<-SQL
+    caution_flag_clause = <<-SQL
       FROM accreditation_institute_campuses, accreditation_actions aa, institutions
+      #{where_clause}
     SQL
 
     accreditation_join_clauses.each do |join_clause|
       build_caution_flags(version_id, CautionFlag::SOURCES[:accreditation_action],
                           caution_flag_reason,
-                          caution_flag_from_clause,
-                          where_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
+                          caution_flag_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
   end
 
@@ -287,20 +287,17 @@ module InstitutionBuilder
     reason = <<-SQL
       'DoD Probation For Military Tuition Assistance'
     SQL
-    caution_flag_from_clause = <<-SQL
+    caution_flag_clause = <<-SQL
       FROM institutions, (
         SELECT distinct(ope6) FROM mous
         WHERE dod_status = TRUE
       ) as reasons_list
-    SQL
-    caution_flag_where_clause = <<-SQL
       WHERE institutions.ope6 = reasons_list.ope6
       AND institutions.version_id = #{version_id}
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:mou],
-                        reason, caution_flag_from_clause, caution_flag_where_clause)
+    build_caution_flags(version_id, CautionFlag::SOURCES[:mou], reason, caution_flag_clause)
   end
 
   def self.add_scorecard(version_id)
@@ -389,17 +386,14 @@ module InstitutionBuilder
     reason = <<-SQL
       'Does Not Offer Required In-State Tuition Rates'
     SQL
-    caution_flag_from_clause = <<-SQL
+    caution_flag_clause = <<-SQL
       FROM institutions, #{s702_list}
-    SQL
-    caution_flag_where_clause = <<-SQL
       #{where_clause}
       AND NOT s702_list.sec_702
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:sec_702],
-                        reason, caution_flag_from_clause, caution_flag_where_clause)
+    build_caution_flags(version_id, CautionFlag::SOURCES[:sec_702], reason, caution_flag_clause)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
@@ -408,22 +402,19 @@ module InstitutionBuilder
     reason = <<-SQL
       settlement_list.descriptions
     SQL
-    caution_flag_from_clause = <<-SQL
+    caution_flag_clause = <<-SQL
       FROM institutions, (
         SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
         FROM settlements
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
       ) settlement_list
-    SQL
-    caution_flag_where_clause = <<-SQL
       WHERE institutions.cross = settlement_list.cross
       AND institutions.version_id = #{version_id}
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:settlement],
-                        reason, caution_flag_from_clause, caution_flag_where_clause)
+    build_caution_flags(version_id, CautionFlag::SOURCES[:settlement], reason, caution_flag_clause)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school (by ope6)
@@ -432,22 +423,19 @@ module InstitutionBuilder
     reason = <<-SQL
       hcm_list.reasons
     SQL
-    caution_flag_from_clause = <<-SQL
+    caution_flag_clause = <<-SQL
       FROM institutions, (
         SELECT "ope6",
           array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
         FROM hcms
         GROUP BY ope6
       ) hcm_list
-    SQL
-    caution_flag_where_clause = <<-SQL
       WHERE institutions.ope6 = hcm_list.ope6
       AND institutions.version_id = #{version_id}
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:hcm],
-                        reason, caution_flag_from_clause, caution_flag_where_clause)
+    build_caution_flags(version_id, CautionFlag::SOURCES[:hcm], reason, caution_flag_clause)
   end
 
   def self.add_complaint(version_id)
@@ -691,8 +679,8 @@ module InstitutionBuilder
   end
 
   # Creates caution flags
-  # Expects `reason_sql`, `from_sql`, and `where_sql` to be a multiline SQL string
-  def self.build_caution_flags(version_id, source, reason_sql, from_sql, where_sql)
+  # Expects `reason_sql` and `clause_sql` to be a multiline SQL string
+  def self.build_caution_flags(version_id, source, reason_sql, clause_sql)
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
@@ -704,8 +692,7 @@ module InstitutionBuilder
               #{reason_sql} as reason,
               #{conn.quote(timestamp)} as created_at,
               #{conn.quote(timestamp)} as updated_at
-        #{from_sql}
-        #{where_sql}
+        #{clause_sql}
     SQL
     sql = CautionFlag.send(:sanitize_sql, [str])
     CautionFlag.connection.execute(sql)
