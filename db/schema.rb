@@ -538,6 +538,9 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
