@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_16_120734) do
+ActiveRecord::Schema.define(version: 2020_03_16_133022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -401,6 +401,9 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -544,6 +547,9 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1357,6 +1363,14 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.datetime "updated_at", null: false
     t.index ["cross"], name: "index_scorecards_on_cross"
     t.index ["ope"], name: "index_scorecards_on_ope"
+  end
+
+  create_table "sec103s", force: :cascade do |t|
+    t.string "name"
+    t.string "facility_code", null: false
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "sec109_closed_schools", id: :serial, force: :cascade do |t|
