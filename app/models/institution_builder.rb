@@ -48,7 +48,8 @@ module InstitutionBuilder
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
-    add_sec103(version.id)
+    # prod flag for bah-6852
+    add_sec103(version.id) unless production?
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
