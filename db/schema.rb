@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_10_150010) do
+ActiveRecord::Schema.define(version: 2020_03_16_123122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1372,6 +1372,14 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["state"], name: "index_sec702s_on_state", unique: true
+  end
+
+  create_table "sec_103s", force: :cascade do |t|
+    t.string "name"
+    t.string "facility_code", null: false
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "sessions", id: :serial, force: :cascade do |t|
