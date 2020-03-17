@@ -541,7 +541,7 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.build_zip_code_rates_from_weams(version_number)
+  def self.build_zip_code_rates_from_weams(version_id)
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
