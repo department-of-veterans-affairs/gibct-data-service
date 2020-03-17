@@ -645,35 +645,38 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:hcm) { Hcm.first }
 
       describe 'the caution_flag' do
-        it 'is set for every heightened cash monitoring notice' do
+        it 'has flags for every heightened cash monitoring notice' do
           create :hcm, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:hcm],
+                              version_id: Version.current_preview.id})
+                     .count).to be > 0
         end
       end
 
       describe 'the caution_flag_reason' do
-        it 'is set to the hcm_reason' do
+        it 'has flag set to the hcm_reason' do
           create :hcm, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:hcm],
+                                             version_id: Version.current_preview.id}).first
+
+          expect(caution_flag.reason).to match(hcm.hcm_reason)
         end
 
-        it 'is set with multiple hcm_reason' do
+        it 'has flag with multiple hcm_reason' do
           create :hcm, :institution_builder
           create :hcm, :institution_builder, hcm_reason: 'another reason'
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
-            .and match(/another reason/)
-        end
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:hcm],
+                                             version_id: Version.current_preview.id}).first
 
-        it 'is concatenated with the hcm_reason' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :hcm, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-            .and match(Regexp.new(hcm.hcm_reason))
+          expect(caution_flag.reason).to match(Regexp.new(hcm.hcm_reason))
+            .and match(/another reason/)
         end
       end
     end

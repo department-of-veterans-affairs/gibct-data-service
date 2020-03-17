@@ -6,5 +6,6 @@ class CautionFlag < ApplicationRecord
     mou: 'mou',
     sec_702: 'sec_702',
     settlement: 'settlement',
+    hcm: 'hcm'
   }.freeze
 end
