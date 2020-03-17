@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ope"], name: "index_hcms_on_ope"
+    t.index ["ope6"], name: "index_hcms_on_ope6"
   end
 
   create_table "ignored_crosswalk_issues", force: :cascade do |t|
@@ -871,6 +872,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.integer "chg9ay3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cross"], name: "index_ipeds_ic_ays_on_cross"
   end
 
   create_table "ipeds_ic_pies", id: :serial, force: :cascade do |t|
@@ -1002,6 +1004,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.integer "mthcmp6"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cross"], name: "index_ipeds_ic_pies_on_cross"
   end
 
   create_table "ipeds_ics", id: :serial, force: :cascade do |t|
@@ -1210,6 +1213,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
+    t.index ["facility_code"], name: "index_school_certifying_officials_on_facility_code"
   end
 
   create_table "school_closures", id: :serial, force: :cascade do |t|
@@ -1359,6 +1363,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_120734) do
     t.string "facility_code"
     t.string "school_name"
     t.boolean "closure109"
+    t.index ["facility_code"], name: "index_sec109_closed_schools_on_facility_code"
   end
 
   create_table "sec702_schools", id: :serial, force: :cascade do |t|
