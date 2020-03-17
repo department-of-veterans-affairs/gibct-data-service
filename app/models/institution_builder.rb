@@ -6,12 +6,6 @@ module InstitutionBuilder
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
   end
 
-  def self.timestamp
-    ts = Time.now.utc.to_s(:db)
-    conn = ApplicationRecord.connection
-    conn.quote(ts)
-  end
-
   def self.run_insertions(version)
     initialize_with_weams(version)
     add_crosswalk(version.id)
@@ -78,13 +72,15 @@ module InstitutionBuilder
 
   def self.initialize_with_weams(version)
     columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
 
     str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
     str += Weam
            .select(columns)
            .select("#{version.number.to_i} as version")
-           .select("#{timestamp} as created_at")
-           .select("#{timestamp} as updated_at")
+           .select("#{conn.quote(timestamp)} as created_at")
+           .select("#{conn.quote(timestamp)} as updated_at")
            .select('v.id as version_id')
            .to_sql
     str += "INNER JOIN versions v ON v.number = #{version.number}"
@@ -452,7 +448,6 @@ module InstitutionBuilder
     # Create `caution_flags` rows
     build_caution_flags(version_id, CautionFlag::SOURCES[:hcm],
                         reason, caution_flag_from_clause, caution_flag_where_clause)
-
   end
 
   def self.add_complaint(version_id)
@@ -547,6 +542,9 @@ module InstitutionBuilder
   end
 
   def self.build_zip_code_rates_from_weams(version_number)
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+
     str = <<-SQL
     INSERT INTO zipcode_rates (
       zip_code,
@@ -564,8 +562,8 @@ module InstitutionBuilder
       dod_bah,
       concat_ws(', ', physical_city, physical_state) as physical_location,
       v.number,
-      #{timestamp},
-      #{timestamp},
+      #{conn.quote(timestamp)},
+      #{conn.quote(timestamp)},
       v.id
       FROM weams INNER JOIN versions v ON v.number = ?
     WHERE country = 'USA'
@@ -697,17 +695,21 @@ module InstitutionBuilder
   # Creates caution flags
   # Expects `reason_sql`, `from_sql`, and `where_sql` to be a multiline SQL string
   def self.build_caution_flags(version_id, source, reason_sql, from_sql, where_sql)
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+
     str = <<-SQL
       INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
       SELECT institutions.id,
               #{version_id} as version_id,
               '#{source}' as source,
               #{reason_sql} as reason,
-              #{timestamp} as created_at,
-              #{timestamp} as updated_at
+              #{conn.quote(timestamp)} as created_at,
+              #{conn.quote(timestamp)} as updated_at
         #{from_sql}
         #{where_sql}
     SQL
-    CautionFlag.connection.execute(str)
+    sql = CautionFlag.send(:sanitize_sql, [str])
+    CautionFlag.connection.execute(sql)
   end
 end

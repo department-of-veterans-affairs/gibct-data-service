@@ -272,11 +272,8 @@
             "accreditation_status": {
               "type": ["null", "string"]
             },
-            "caution_flag": {
-              "type": ["null", "boolean"]
-            },
-            "caution_flag_reason": {
-              "type": ["null", "string"]
+            "caution_flags": {
+              "type": ["null", "array"]
             },
             "school_closing": {
               "type": ["null", "boolean"]
@@ -540,8 +537,7 @@
             "accredited",
             "accreditation_type",
             "accreditation_status",
-            "caution_flag",
-            "caution_flag_reason",
+            "caution_flags",
             "complaints",
             "school_closing",
             "school_closing_on",
