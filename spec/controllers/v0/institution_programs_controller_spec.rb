@@ -49,6 +49,13 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(2)
     end
 
+    it 'returns collection of matches including similar' do
+      create_list(:institution_program, 2, :start_like_harv, :last_version)
+      create(:institution_program, :contains_harv, :last_version)
+      get(:autocomplete, params: { term: 'harv' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+    end
+
     it 'limits results to 6' do
       create_list(:institution_program, 7, :start_like_harv, :last_version)
       get(:autocomplete, params: { term: 'harv' })

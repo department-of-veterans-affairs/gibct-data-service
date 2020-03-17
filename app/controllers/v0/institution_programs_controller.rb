@@ -65,7 +65,12 @@ module V0
         .joins(institution: :version)
         .where(institutions: { version: version })
       )
-        .where('lower(description) LIKE (?)', "#{search_term}%")
+        .where(
+          '(SIMILARITY(description, ?) > .25 OR lower(description) LIKE ?)',
+          search_term,
+          "#{search_term}%"
+        )
+        .order(InstitutionProgram.sanitize_sql_for_conditions(['SIMILARITY(description, ?) DESC', search_term]))
         .limit(limit)
     end
 
