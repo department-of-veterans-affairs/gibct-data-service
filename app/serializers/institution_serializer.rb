@@ -18,6 +18,8 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :highest_degree
   attribute :locale_type
   attribute :gibill, key: :student_count
+  attribute :caution_flag
+  attribute :caution_flag_reason
   attribute :caution_flags
   attribute :created_at
   attribute :updated_at

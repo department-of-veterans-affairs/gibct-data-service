@@ -10,7 +10,9 @@ FactoryBot.define do
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name { 'PRIVATE' }
     school_closing { false }
-
+    caution_flag { false }
+    caution_flag_reason { '' }
+    caution_flags { [] }
     approved { true }
 
     trait :in_nyc do
