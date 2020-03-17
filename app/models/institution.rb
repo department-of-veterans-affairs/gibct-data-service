@@ -215,12 +215,7 @@ class Institution < ApplicationRecord
   #
   def self.autocomplete(search_term, limit = 6)
     select('institutions.id, facility_code as value, institution as label')
-      .where(
-        '(SIMILARITY(institution, ?) > .25 OR institution like ?)',
-        search_term,
-        "#{search_term.upcase}%"
-      )
-      .order(sanitize_sql_for_conditions(['SIMILARITY(institution, ?) DESC', search_term]))
+      .where('SIMILARITY(institution, ?) > .25', search_term)
       .limit(limit)
   end
 
