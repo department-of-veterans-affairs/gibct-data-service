@@ -12,7 +12,6 @@ FactoryBot.define do
     school_closing { false }
     caution_flag { false }
     caution_flag_reason { '' }
-    caution_flags { [] }
     approved { true }
 
     trait :in_nyc do
