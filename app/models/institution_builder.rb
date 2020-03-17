@@ -404,24 +404,27 @@ module InstitutionBuilder
     build_caution_flags(version_id, 'sec_702', reason, caution_flag_from_clause, caution_flag_where_clause)
   end
 
+  # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
+  # has an entry in the settlements table.
   def self.add_settlement(version_id)
-    # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
-    # has an entry in the settlements table.
-    str = <<-SQL
-      UPDATE institutions SET
-        caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, settlement_list.descriptions)
-      FROM (
+    reason = <<-SQL
+      settlement_list.descriptions
+    SQL
+    caution_flag_from_clause = <<-SQL
+      FROM institutions, (
         SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
         FROM settlements
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
       ) settlement_list
+    SQL
+    caution_flag_where_clause = <<-SQL
       WHERE institutions.cross = settlement_list.cross
       AND institutions.version_id = #{version_id}
     SQL
 
-    Institution.connection.update(str)
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, 'settlement', reason, caution_flag_from_clause, caution_flag_where_clause)
   end
 
   def self.add_hcm(version_id)

@@ -5,5 +5,6 @@ class CautionFlag < ApplicationRecord
     accreditation_action: 'accreditation_action',
     mou: 'mou',
     sec_702: 'sec_702',
+    settlement: 'settlement',
   }.freeze
 end

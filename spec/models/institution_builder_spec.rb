@@ -602,10 +602,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:settlement) { Settlement.first }
 
       describe 'the caution_flag' do
-        it 'is set for every settlement' do
+        it 'has flags for every settlement' do
           create :settlement, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:settlement],
+                              version_id: Version.current_preview.id})
+                     .count).to be > 0
         end
       end
 
@@ -613,24 +617,25 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set to the settlement_description' do
           create :settlement, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
+
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:settlement],
+                                             version_id: Version.current_preview.id}).first
+
+          expect(caution_flag.reason)
+              .to eq(settlement.settlement_description)
         end
 
         it 'is set with multiple descriptions' do
           create :settlement, :institution_builder
           create :settlement, :institution_builder, settlement_description: 'another description'
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(settlement.settlement_description)
-            .and match('another description')
-        end
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:settlement],
+                                             version_id: Version.current_preview.id}).first
 
-        it 'is concatenated with the settlement_description' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :settlement, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-            .and match(settlement.settlement_description)
+          expect(caution_flag.reason).to match(settlement.settlement_description)
+            .and match('another description')
         end
       end
     end
