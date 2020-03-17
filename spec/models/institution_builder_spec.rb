@@ -583,13 +583,13 @@ RSpec.describe InstitutionBuilder, type: :model do
                      .count).to be > 0
         end
 
-        it 'has flags when prefers Sec702School over Section702' do
+        it 'has no flags when prefers Sec702School over Section702' do
           create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
           expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:mou],
+                     .where({ source: CautionFlag::SOURCES[:sec702],
                               version_id: Version.current_preview.id })
                      .count).to eq(0)
         end
