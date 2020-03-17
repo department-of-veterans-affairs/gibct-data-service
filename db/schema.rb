@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_10_150010) do
+ActiveRecord::Schema.define(version: 2020_03_16_120734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -95,6 +95,15 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.datetime "updated_at", null: false
     t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
+  end
+
+  create_table "caution_flags", force: :cascade do |t|
+    t.integer "institution_id"
+    t.integer "version_id"
+    t.string "source"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
@@ -1686,6 +1695,8 @@ ActiveRecord::Schema.define(version: 2020_03_10_150010) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flags", "institutions"
+  add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
