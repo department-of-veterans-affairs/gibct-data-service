@@ -7,6 +7,12 @@ if ENV['CI'].blank?
   puts 'Deleting old uploads data'
   Upload.delete_all
 
+  puts 'Deleting old Versioned SCOs'
+  VersionedSchoolCertifyingOfficial.delete_all
+
+  puts 'Deleting old Caution Flags'
+  CautionFlag.delete_all
+
   puts 'Deleting old institutions'
   Institution.delete_all
 
@@ -15,9 +21,6 @@ if ENV['CI'].blank?
 
   puts 'Deleting old zipcode rates'
   ZipcodeRate.delete_all
-
-  puts 'Deleting old Versioned SCOs'
-  VersionedSchoolCertifyingOfficial.delete_all
 
   puts 'Deleting old constants'
   CalculatorConstant.delete_all
@@ -34,7 +37,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(Sec109ClosedSchool, user)
   SeedUtils.seed_table_with_upload(Weam, user)
   SeedUtils.seed_table_with_upload(Crosswalk, user)
-  SeedUtils.seed_table_with_upload(EightKey, user, skip_lines: 1)
+  SeedUtils.seed_table_with_upload(EightKey, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(AccreditationAction, user)
   SeedUtils.seed_table_with_upload(AccreditationRecord, user)
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
@@ -46,14 +49,14 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(Sva, user)
   SeedUtils.seed_table_with_upload(Sec702, user)
   SeedUtils.seed_table_with_upload(Sec702School, user)
-  SeedUtils.seed_table_with_upload(Mou, user, skip_lines: 1)
-  SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 2)
+  SeedUtils.seed_table_with_upload(Mou, user, skip_lines: 0)
+  SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(Settlement, user)
   SeedUtils.seed_table_with_upload(IpedsIc, user)
   SeedUtils.seed_table_with_upload(IpedsIcAy, user)
   SeedUtils.seed_table_with_upload(IpedsIcPy, user)
   SeedUtils.seed_table_with_upload(IpedsHd, user)
-  SeedUtils.seed_table_with_upload(Complaint, user, skip_lines: 7)
+  SeedUtils.seed_table_with_upload(Complaint, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(Outcome, user)
   SeedUtils.seed_table_with_upload(IpedsCipCode, user)
   SeedUtils.seed_table_with_upload(StemCipCode, user)
