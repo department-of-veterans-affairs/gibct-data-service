@@ -153,7 +153,7 @@ class Institution < ApplicationRecord
   }.freeze
 
   has_many :yellow_ribbon_programs, dependent: :destroy
-  has_many :caution_flags, inverse_of: :institution
+  has_many :caution_flags, dependent: :destroy, inverse_of: :institution
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
   has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
   belongs_to :version
