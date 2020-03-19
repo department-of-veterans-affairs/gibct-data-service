@@ -160,16 +160,6 @@ class Institution < ApplicationRecord
 
   self.per_page = 10
 
-  # method is to support frontend until has been switched over to using caution_flags attribute
-  def caution_flag
-    !caution_flags&.empty?
-  end
-
-  # method is to support frontend until has been switched over to using caution_flags attribute
-  def caution_flag_reason
-    caution_flags&.map(&:reason)&.join(', ')
-  end
-
   def scorecard_link
     return nil unless school? && cross.present?
 

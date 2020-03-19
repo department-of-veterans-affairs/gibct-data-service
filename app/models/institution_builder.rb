@@ -209,10 +209,19 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
+    caution_flag_reason = <<-SQL
+      concat(aa.action_description, ' (', aa.justification_description, ')')
+    SQL
+
     # Set the `accreditation_status`
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
     str = <<-SQL
       UPDATE institutions
-      SET accreditation_status = aa.action_description
+      SET accreditation_status = aa.action_description,
+          caution_flag = TRUE,
+          caution_flag_reason = #{caution_flag_reason}
       FROM accreditation_institute_campuses, accreditation_actions aa
       #{where_clause}
     SQL
@@ -222,10 +231,6 @@ module InstitutionBuilder
     end
 
     # Create `caution_flags` rows
-    caution_flag_reason = <<-SQL
-      concat(aa.action_description, ' (', aa.justification_description, ')')
-    SQL
-
     caution_flag_clause = <<-SQL
       FROM accreditation_institute_campuses, accreditation_actions aa, institutions
       #{where_clause}
@@ -273,9 +278,14 @@ module InstitutionBuilder
 
   def self.add_mou(version_id)
     # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
+    #
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - Remove setting caution_flag from sql statement
     str = <<-SQL
       UPDATE institutions SET
-        dodmou = mous.dodmou
+        dodmou = mous.dodmou,
+        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
       FROM mous
       WHERE institutions.ope6 = mous.ope6
       AND institutions.version_id = #{version_id}
@@ -283,10 +293,27 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - remove sql
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
+      FROM (
+        SELECT distinct(ope6), 'DoD Probation For Military Tuition Assistance' AS reason FROM mous
+        WHERE dod_status = TRUE) as reasons_list
+      WHERE institutions.ope6 = reasons_list.ope6
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    Institution.connection.update(str)
+    # End of BAH Caution Flag Cleanup
+
     # The caution flag reason is only affected by a DoD type probation status
     reason = <<-SQL
       'DoD Probation For Military Tuition Assistance'
     SQL
+
     caution_flag_clause = <<-SQL
       FROM institutions, (
         SELECT distinct(ope6) FROM mous
@@ -375,8 +402,16 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
     str = <<-SQL
-      UPDATE institutions SET sec_702 = s702_list.sec_702
+      UPDATE institutions SET
+        sec_702 = s702_list.sec_702,
+        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
+        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
+          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') ELSE caution_flag_reason
+        END
       FROM #{s702_list}
       #{where_clause}
     SQL
@@ -386,6 +421,7 @@ module InstitutionBuilder
     reason = <<-SQL
       'Does Not Offer Required In-State Tuition Rates'
     SQL
+
     caution_flag_clause = <<-SQL
       FROM institutions, #{s702_list}
       #{where_clause}
@@ -399,6 +435,26 @@ module InstitutionBuilder
   # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
   # has an entry in the settlements table.
   def self.add_settlement(version_id)
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - remove sql
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag = TRUE,
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, settlement_list.descriptions)
+      FROM (
+        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
+        FROM settlements
+        WHERE "cross" IS NOT NULL
+        GROUP BY "cross"
+      ) settlement_list
+      WHERE institutions.cross = settlement_list.cross
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    Institution.connection.update(str)
+    # End of BAH Caution Flag Cleanup
+
     reason = <<-SQL
       settlement_list.descriptions
     SQL
@@ -420,6 +476,26 @@ module InstitutionBuilder
   # Sets caution flags and caution flag reasons if the corresponding approved school (by ope6)
   # has an entry in the hcms table.
   def self.add_hcm(version_id)
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - remove sql
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag = TRUE,
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, hcm_list.reasons)
+      FROM (
+        SELECT "ope6",
+          array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
+        FROM hcms
+        GROUP BY ope6
+      ) hcm_list
+      WHERE institutions.ope6 = hcm_list.ope6
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    Institution.connection.update(str)
+    # End of BAH Caution Flag Cleanup
+
     reason = <<-SQL
       hcm_list.reasons
     SQL
