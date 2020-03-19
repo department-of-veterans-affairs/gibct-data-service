@@ -275,7 +275,6 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
-    rdoc (6.2.1)
     ref (2.0.0)
     responders (3.0.0)
       actionpack (>= 5.0)
@@ -336,8 +335,6 @@ GEM
     scss_lint (0.58.0)
       rake (>= 0.9, < 13)
       sass (~> 3.5, >= 3.5.5)
-    sdoc (1.1.0)
-      rdoc (>= 5.0)
     sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
     shellany (0.0.1)
@@ -434,7 +431,6 @@ DEPENDENCIES
   ruby-saml
   sass-rails (= 6.0)
   scss_lint
-  sdoc
   sentry-raven (~> 2.9.0)
   simplecov
   sitemap_generator
