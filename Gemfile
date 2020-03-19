@@ -53,8 +53,6 @@ gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', group: :doc
 gem 'sitemap_generator'
 gem 'strong_migrations'
 gem 'will_paginate'
