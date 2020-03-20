@@ -94,6 +94,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :facility_map
   attribute :programs
   attribute :versioned_school_certifying_officials
+  attribute :complies_with_sec_103
+  attribute :solely_requires_coe
+  attribute :requires_coe_and_criteria
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

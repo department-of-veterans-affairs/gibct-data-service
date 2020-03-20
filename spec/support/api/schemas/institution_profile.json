@@ -478,6 +478,15 @@
                 "type": "object"
               }
             },
+            "complies_with_sec_103": {
+              "type": ["null", "boolean"]
+            },
+            "solely_requires_coe": {
+              "type": ["null", "boolean"]
+            },
+            "requires_coe_and_criteria": {
+              "type": ["null", "boolean"]
+            },
             "created_at": {
               "type": "string"
             },

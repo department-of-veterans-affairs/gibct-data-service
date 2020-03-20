@@ -149,7 +149,10 @@ class Institution < ApplicationRecord
     },
     'complaints_other_by_ope_id_do_not_sum' => {
       column: :complaints_other_by_ope_id_do_not_sum, converter: NumberConverter
-    }
+    },
+    'complies_with_sec_103' => { column: :complies_with_sec_103, converter: BooleanConverter },
+    'solely_requires_coe' => { column: :solely_requires_coe, converter: BooleanConverter },
+    'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter }
   }.freeze
 
   has_many :yellow_ribbon_programs, dependent: :destroy
