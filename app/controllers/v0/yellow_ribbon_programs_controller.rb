@@ -20,8 +20,8 @@ module V0
         version: @version,
         count: search_results.count
       }
-      search_results.per_page = params[:per_page] if params[:per_page]
-      render json: search_results.page(params[:page]), meta: @meta
+      per_page = params[:per_page] || search_results.per_page
+      render json: search_results.page(params[:page]).per_page(per_page.to_i), meta: @meta
     end
 
     private
