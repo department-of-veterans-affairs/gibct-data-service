@@ -278,6 +278,9 @@
             "caution_flag_reason": {
               "type": ["null", "string"]
             },
+            "caution_flags": {
+              "type": ["null", "array"]
+            },
             "school_closing": {
               "type": ["null", "boolean"]
             },
@@ -551,6 +554,7 @@
             "accreditation_status",
             "caution_flag",
             "caution_flag_reason",
+            "caution_flags",
             "complaints",
             "school_closing",
             "school_closing_on",

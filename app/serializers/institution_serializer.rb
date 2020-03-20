@@ -20,6 +20,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :gibill, key: :student_count
   attribute :caution_flag
   attribute :caution_flag_reason
+  attribute :caution_flags
   attribute :created_at
   attribute :updated_at
   attribute :address_1

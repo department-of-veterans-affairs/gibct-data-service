@@ -277,31 +277,40 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      describe 'the caution_flag' do
-        it 'is set to true for any non-nil status' do
+      describe 'the accreditation_action caution_flags' do
+        it 'has flags for any non-nil status' do
           create :accreditation_action_probationary
           described_class.run(user)
 
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:accreditation_action],
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'is set falsey for any nil status' do
+        it 'has no flags for any nil status' do
           create :accreditation_action
           described_class.run(user)
 
-          expect(institution.caution_flag).to be_falsey
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:accreditation_action],
+                              version_id: Version.current_preview.id })
+                     .count).to eq(0)
         end
-      end
 
-      describe 'the caution_flag_reason' do
         it 'concatenates `action_description` and `justification_description`' do
           aap = create :accreditation_action_probationary
 
           described_class.run(user)
 
-          expect(
-            institution.caution_flag_reason
-          ).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:accreditation_action],
+                                             version_id: Version.current_preview.id }).first
+
+          expect(caution_flag.reason)
+            .to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
         end
       end
     end
@@ -370,17 +379,25 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(mou.dodmou).to eq(institution.dodmou)
       end
 
-      describe 'the caution_flag' do
-        it 'is sets when dod_status is true' do
+      describe 'the mou caution_flag' do
+        it 'has flags when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:mou],
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'is not set when dod_status is not true' do
+        it 'has no flags when dod_status is not true' do
           create :mou, :institution_builder, :by_title_iv
           described_class.run(user)
-          expect(institution.caution_flag).to be_falsey
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:mou],
+                              version_id: Version.current_preview.id })
+                     .count).to eq(0)
         end
       end
 
@@ -388,24 +405,11 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
-          expect(institution.caution_flag_reason).to eq(reason)
-        end
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:mou],
+                                             version_id: Version.current_preview.id }).first
 
-        it 'contentates the existing reasons' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :mou, :institution_builder, :by_dod
-          described_class.run(user)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)
-        end
-
-        it 'is unaltered when dod_status is not true' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :mou, :institution_builder, :by_title_iv
-          described_class.run(user)
-          expect(institution.caution_flag_reason).not_to match(/DoD/)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
+          expect(caution_flag.reason).to eq(reason)
         end
       end
     end
@@ -560,73 +564,34 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      describe 'the caution_flag' do
-        it 'is set from Section702 when sec_702 is false' do
+      describe 'the sec_702 caution_flag' do
+        it 'has flags from Section702 when sec_702 is false' do
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(institutions.first.caution_flag).not_to be_nil
-          expect(institutions.first.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'is set from Section702School when sec_702 is false' do
+        it 'has flags from Section702School when sec_702 is false' do
           create :sec702_school, :institution_builder
           described_class.run(user)
-          expect(institutions.first.caution_flag).not_to be_nil
-          expect(institutions.first.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'prefers Sec702School over Section702' do
-          sec702_school_institution = create :weam, :institution_builder, :private
+        it 'has no flags when prefers Sec702School over Section702' do
+          create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag).to be_falsey
-        end
-      end
-
-      describe 'the caution_flag_reason' do
-        let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
-
-        it 'is set from Section702 when sec_702 is false' do
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).not_to be_nil
-          expect(institutions.first.caution_flag_reason).to eq(reason)
-        end
-
-        it 'is set from Section702School when sec_702 is false' do
-          create :sec702_school, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).not_to be_nil
-          expect(institutions.first.caution_flag_reason).to eq(reason)
-        end
-
-        it 'prefers Sec702School over Section702' do
-          sec702_school_institution = create :weam, :institution_builder, :private
-          create :sec702_school, :institution_builder, sec_702: true
-          create :sec702, :institution_builder
-          described_class.run(user)
-
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag_reason).to be_nil
-        end
-
-        it 'concatenates the sec_702 reason when sec_702 is false' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/).and match(/Tuition/)
-        end
-
-        it 'is left unaltered when sec_702 is true' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :sec702_school, :institution_builder, sec_702: true
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-          expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
+          expect(CautionFlag
+                     .where({ source: CautionFlag::SOURCES[:sec702],
+                              version_id: Version.current_preview.id })
+                     .count).to eq(0)
         end
       end
     end
@@ -636,10 +601,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:settlement) { Settlement.first }
 
       describe 'the caution_flag' do
-        it 'is set for every settlement' do
+        it 'has flags for every settlement' do
           create :settlement, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:settlement],
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
       end
 
@@ -647,24 +616,25 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set to the settlement_description' do
           create :settlement, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
+
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:settlement],
+                                             version_id: Version.current_preview.id }).first
+
+          expect(caution_flag.reason)
+            .to eq(settlement.settlement_description)
         end
 
         it 'is set with multiple descriptions' do
           create :settlement, :institution_builder
           create :settlement, :institution_builder, settlement_description: 'another description'
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(settlement.settlement_description)
-            .and match('another description')
-        end
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:settlement],
+                                             version_id: Version.current_preview.id }).first
 
-        it 'is concatenated with the settlement_description' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :settlement, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-            .and match(settlement.settlement_description)
+          expect(caution_flag.reason).to match(settlement.settlement_description)
+            .and match('another description')
         end
       end
     end
@@ -674,35 +644,38 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:hcm) { Hcm.first }
 
       describe 'the caution_flag' do
-        it 'is set for every heightened cash monitoring notice' do
+        it 'has flags for every heightened cash monitoring notice' do
           create :hcm, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: CautionFlag::SOURCES[:hcm],
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
       end
 
       describe 'the caution_flag_reason' do
-        it 'is set to the hcm_reason' do
+        it 'has flag set to the hcm_reason' do
           create :hcm, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:hcm],
+                                             version_id: Version.current_preview.id }).first
+
+          expect(caution_flag.reason).to match(hcm.hcm_reason)
         end
 
-        it 'is set with multiple hcm_reason' do
+        it 'has flag with multiple hcm_reason' do
           create :hcm, :institution_builder
           create :hcm, :institution_builder, hcm_reason: 'another reason'
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
-            .and match(/another reason/)
-        end
+          caution_flag = CautionFlag.where({ institution_id: institution.id,
+                                             source: CautionFlag::SOURCES[:hcm],
+                                             version_id: Version.current_preview.id }).first
 
-        it 'is concatenated with the hcm_reason' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :hcm, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-            .and match(Regexp.new(hcm.hcm_reason))
+          expect(caution_flag.reason).to match(Regexp.new(hcm.hcm_reason))
+            .and match(/another reason/)
         end
       end
     end

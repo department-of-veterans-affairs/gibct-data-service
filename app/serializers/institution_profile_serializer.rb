@@ -66,6 +66,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :accreditation_status
   attribute :caution_flag
   attribute :caution_flag_reason
+  attribute :caution_flags
   attribute(:complaints) { object.complaints }
   attribute :school_closing
   attribute :school_closing_on
