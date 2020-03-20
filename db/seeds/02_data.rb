@@ -61,6 +61,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(SchoolClosure, user)
   SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
   SeedUtils.seed_table_with_upload(EduProgram, user)
+  SeedUtils.seed_table_with_upload(Sec103, user)
 
   puts 'Building Institutions'
   result = InstitutionBuilder.run(user)
