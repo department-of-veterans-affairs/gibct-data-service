@@ -1,24 +1,9 @@
 # frozen_string_literal: true
 
 module InstitutionBuilder
-  ACCREDITATION_JOIN_CLAUSES = [
-    'institutions.ope6 = accreditation_institute_campuses.ope6',
-    'institutions.ope = accreditation_institute_campuses.ope'
-  ].freeze
-
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize
     klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
-  end
-
-  def self.add_vet_tec_provider(version_id)
-    str = <<-SQL
-    UPDATE institutions SET vet_tec_provider = TRUE
-      from versions
-      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
-      AND institutions.version_id = #{version_id}
-    SQL
-    Institution.connection.update(str)
   end
 
   def self.run_insertions(version)
@@ -48,6 +33,8 @@ module InstitutionBuilder
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
+    # prod flag for bah-6852
+    add_sec103(version.id) unless production?
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
@@ -169,12 +156,19 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  # Set the `accreditation_type`, `accreditation_status`, and create `caution_flags` rows
+  # by joining on
+  # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
+  # have a unique `ope` provided.
+  # Set the accreditation_type according to the hierarchy hybrid < national < regional
+  # We include only those accreditation that are institutional and currently active.
   def self.add_accreditation(version_id)
-    # Set the `accreditation_type`, `accreditation_status`, `caution_flag` and `caution_reason` by joining on
-    # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
-    # have a unique `ope` provided.
-    # Set the accreditation_type according to the hierarchy hybrid < national < regional
-    # We include only those accreditation that are institutional and currently active.
+    accreditation_join_clauses = [
+      'institutions.ope6 = accreditation_institute_campuses.ope6',
+      'institutions.ope = accreditation_institute_campuses.ope'
+    ]
+
+    # Set the `accreditation_type`
     str = <<-SQL
       UPDATE institutions SET
         accreditation_type = accreditation_records.accreditation_type
@@ -187,19 +181,14 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
         AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
-    ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
+    accreditation_join_clauses.each do |join_clause|
       %w[hybrid national regional].each do |acc_type|
         Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
       end
     end
 
-    str = <<-SQL
-      UPDATE institutions
-      SET accreditation_status = aa.action_description,
-          caution_flag = TRUE,
-          caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
-      FROM accreditation_institute_campuses, accreditation_actions aa
-      WHERE {{JOIN_CLAUSE}}
+    where_clause = <<-SQL
+        WHERE {{JOIN_CLAUSE}}
         -- has received a probationary action
         AND aa.id = (
           SELECT id from accreditation_actions
@@ -209,7 +198,7 @@ module InstitutionBuilder
           ORDER BY action_date DESC
           LIMIT 1
         )
-        -- has not received a restorative action after the probrationary action
+        -- has not received a restorative action after the probationary action
         AND (
           SELECT id from accreditation_actions
             WHERE action_description in (#{AccreditationAction::RESTORATIVE_STATUSES.join(', ')})
@@ -222,8 +211,37 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
-    ACCREDITATION_JOIN_CLAUSES.each do |join_clause|
+    caution_flag_reason = <<-SQL
+      concat(aa.action_description, ' (', aa.justification_description, ')')
+    SQL
+
+    # Set the `accreditation_status`
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
+    str = <<-SQL
+      UPDATE institutions
+      SET accreditation_status = aa.action_description,
+          caution_flag = TRUE,
+          caution_flag_reason = #{caution_flag_reason}
+      FROM accreditation_institute_campuses, accreditation_actions aa
+      #{where_clause}
+    SQL
+
+    accreditation_join_clauses.each do |join_clause|
       Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
+    end
+
+    # Create `caution_flags` rows
+    caution_flag_clause = <<-SQL
+      FROM accreditation_institute_campuses, accreditation_actions aa, institutions
+      #{where_clause}
+    SQL
+
+    accreditation_join_clauses.each do |join_clause|
+      build_caution_flags(version_id, CautionFlag::SOURCES[:accreditation_action],
+                          caution_flag_reason,
+                          caution_flag_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
     end
   end
 
@@ -261,9 +279,11 @@ module InstitutionBuilder
   end
 
   def self.add_mou(version_id)
-    reason = 'DoD Probation For Military Tuition Assistance'
-
-    # Sets the caution flag for any approved school having a probatiton (status == true)
+    # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
+    #
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - Remove setting caution_flag from sql statement
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous.dodmou,
@@ -275,19 +295,38 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # Sets dodmou for any approved school having a probatiton or title IV non-compliance status.
-    # The caution flag reason is only affected by a DoD type probation status
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
       FROM (
-        SELECT distinct(ope6), '#{reason}' AS reason FROM mous
+        SELECT distinct(ope6), 'DoD Probation For Military Tuition Assistance' AS reason FROM mous
         WHERE dod_status = TRUE) as reasons_list
       WHERE institutions.ope6 = reasons_list.ope6
       AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
+    # End of BAH Caution Flag Cleanup
+
+    # The caution flag reason is only affected by a DoD type probation status
+    reason = <<-SQL
+      'DoD Probation For Military Tuition Assistance'
+    SQL
+
+    caution_flag_clause = <<-SQL
+      FROM institutions, (
+        SELECT distinct(ope6) FROM mous
+        WHERE dod_status = TRUE
+      ) as reasons_list
+      WHERE institutions.ope6 = reasons_list.ope6
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, CautionFlag::SOURCES[:mou], reason, caution_flag_clause)
   end
 
   def self.add_scorecard(version_id)
@@ -349,35 +388,58 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
+  # only approved public schools can be SEC 702 complaint
   def self.add_sec_702(version_id)
-    # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
-    # only approved public schools can be SEC 702 complaint
-    reason = 'Does Not Offer Required In-State Tuition Rates'
-
-    str = <<-SQL
-      UPDATE institutions SET
-        sec_702 = s702_list.sec_702,
-        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
-        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
-          THEN concat_ws(', ', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
-        END
-      FROM (
-        SELECT facility_code, sec702s.sec_702 FROM institutions
+    s702_list = <<-SQL
+    (SELECT facility_code, sec702s.sec_702 FROM institutions
           INNER JOIN sec702s ON sec702s.state = institutions.state
             EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
             UNION SELECT facility_code, sec_702 FROM sec702_schools
       ) AS s702_list
+    SQL
+    where_clause = <<-SQL
       WHERE institutions.facility_code = s702_list.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
     SQL
 
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
+    str = <<-SQL
+      UPDATE institutions SET
+        sec_702 = s702_list.sec_702,
+        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
+        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
+          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') ELSE caution_flag_reason
+        END
+      FROM #{s702_list}
+      #{where_clause}
+    SQL
+
     Institution.connection.update(str)
+
+    reason = <<-SQL
+      'Does Not Offer Required In-State Tuition Rates'
+    SQL
+
+    caution_flag_clause = <<-SQL
+      FROM institutions, #{s702_list}
+      #{where_clause}
+      AND NOT s702_list.sec_702
+    SQL
+
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, CautionFlag::SOURCES[:sec_702], reason, caution_flag_clause)
   end
 
+  # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
+  # has an entry in the settlements table.
   def self.add_settlement(version_id)
-    # Sets caution flags and caution flag reasons if the corresponing approved school (by IPEDs id)
-    # has an entry in the settlements table.
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
@@ -393,11 +455,32 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
+    # End of BAH Caution Flag Cleanup
+
+    reason = <<-SQL
+      settlement_list.descriptions
+    SQL
+    caution_flag_clause = <<-SQL
+      FROM institutions, (
+        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
+        FROM settlements
+        WHERE "cross" IS NOT NULL
+        GROUP BY "cross"
+      ) settlement_list
+      WHERE institutions.cross = settlement_list.cross
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, CautionFlag::SOURCES[:settlement], reason, caution_flag_clause)
   end
 
+  # Sets caution flags and caution flag reasons if the corresponding approved school (by ope6)
+  # has an entry in the hcms table.
   def self.add_hcm(version_id)
-    # Sets caution flags and caution flag reasons if the corresponing approved school (by ope6)
-    # has an entry in the hcms table.
+    # Leaving old way of setting caution_flag and caution_flag_reason
+    # to support frontend until has been switched over to using caution_flags attribute
+    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
@@ -413,6 +496,24 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
+    # End of BAH Caution Flag Cleanup
+
+    reason = <<-SQL
+      hcm_list.reasons
+    SQL
+    caution_flag_clause = <<-SQL
+      FROM institutions, (
+        SELECT "ope6",
+          array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
+        FROM hcms
+        GROUP BY ope6
+      ) hcm_list
+      WHERE institutions.ope6 = hcm_list.ope6
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    # Create `caution_flags` rows
+    build_caution_flags(version_id, CautionFlag::SOURCES[:hcm], reason, caution_flag_clause)
   end
 
   def self.add_complaint(version_id)
@@ -496,6 +597,16 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  def self.add_vet_tec_provider(version_id)
+    str = <<-SQL
+    UPDATE institutions SET vet_tec_provider = TRUE
+      from versions
+      WHERE substring(institutions.facility_code, 2 , 1) = 'V'
+      AND institutions.version_id = #{version_id}
+    SQL
+    Institution.connection.update(str)
+  end
+
   def self.build_zip_code_rates_from_weams(version_id)
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
@@ -538,6 +649,17 @@ module InstitutionBuilder
         AND institutions.campus_type IS NULL
         AND institutions.version_id = #{version_id}
     SQL
+    Institution.connection.update(str)
+  end
+
+  def self.add_sec103(version_id)
+    str = <<-SQL
+      UPDATE institutions SET #{columns_for_update(Sec103)}
+      FROM  sec103s
+      WHERE institutions.facility_code = sec103s.facility_code
+      AND institutions.version_id = #{version_id}
+    SQL
+
     Institution.connection.update(str)
   end
 
@@ -643,5 +765,25 @@ module InstitutionBuilder
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
     SchoolCertifyingOfficial.connection.execute(sql)
+  end
+
+  # Creates caution flags
+  # Expects `reason_sql` and `clause_sql` to be a multiline SQL string
+  def self.build_caution_flags(version_id, source, reason_sql, clause_sql)
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+
+    str = <<-SQL
+      INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
+      SELECT institutions.id,
+              #{version_id} as version_id,
+              '#{source}' as source,
+              #{reason_sql} as reason,
+              #{conn.quote(timestamp)} as created_at,
+              #{conn.quote(timestamp)} as updated_at
+        #{clause_sql}
+    SQL
+    sql = CautionFlag.send(:sanitize_sql, [str])
+    CautionFlag.connection.execute(sql)
   end
 end
