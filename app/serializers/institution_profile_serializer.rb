@@ -119,5 +119,11 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
       InstitutionProgramProfileSerializer.new(program)
     end
   end
+
+  def caution_flags
+    object.caution_flags.map do |flag|
+      CautionFlagSerializer.new(flag)
+    end
+  end
 end
 # rubocop:enable Metrics/ClassLength

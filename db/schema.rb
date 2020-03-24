@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_16_133022) do
+ActiveRecord::Schema.define(version: 2020_03_23_092001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -104,6 +104,10 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.string "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.string "description"
+    t.string "link_text"
+    t.string "link_url"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
@@ -407,12 +411,16 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
+    t.index ["approved"], name: "idx_2"
+    t.index ["campus_type"], name: "idx_1"
     t.index ["city"], name: "index_institutions_on_city", opclass: :gin_trgm_ops, using: :gin
     t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
     t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
+    t.index ["institution"], name: "trgm_idx", opclass: :gin_trgm_ops, using: :gin
+    t.index ["institution"], name: "trgm_idx_1", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
@@ -423,6 +431,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id"
     t.index ["version"], name: "index_institutions_on_version"
     t.index ["version_id"], name: "index_institutions_on_version_id"
+    t.index ["vet_tec_provider"], name: "idx_3"
   end
 
   create_table "institutions_archives", id: :integer, default: -> { "nextval('institutions_id_seq'::regclass)" }, force: :cascade do |t|
