@@ -163,17 +163,12 @@ module InstitutionBuilder
   # Set the accreditation_type according to the hierarchy hybrid < national < regional
   # We include only those accreditation that are institutional and currently active.
   def self.add_accreditation(version_id)
-    accreditation_join_clauses = [
-      'institutions.ope6 = accreditation_institute_campuses.ope6',
-      'institutions.ope = accreditation_institute_campuses.ope'
-    ]
-
     # Set the `accreditation_type`
     str = <<-SQL
       UPDATE institutions SET
         accreditation_type = accreditation_records.accreditation_type
       FROM accreditation_institute_campuses, accreditation_records
-      WHERE {{JOIN_CLAUSE}}
+      WHERE institutions.ope = accreditation_institute_campuses.ope
         AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
         AND institutions.ope IS NOT NULL
         AND accreditation_records.accreditation_end_date IS NULL
@@ -181,14 +176,13 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
         AND accreditation_records.accreditation_type = {{ACC_TYPE}};
     SQL
-    accreditation_join_clauses.each do |join_clause|
-      %w[hybrid national regional].each do |acc_type|
-        Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause).gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
-      end
+
+    %w[hybrid national regional].each do |acc_type|
+      Institution.connection.update(str.gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
     end
 
     where_clause = <<-SQL
-        WHERE {{JOIN_CLAUSE}}
+        WHERE institutions.ope = accreditation_institute_campuses.ope
         -- has received a probationary action
         AND aa.id = (
           SELECT id from accreditation_actions
@@ -228,9 +222,7 @@ module InstitutionBuilder
       #{where_clause}
     SQL
 
-    accreditation_join_clauses.each do |join_clause|
-      Institution.connection.update(str.gsub('{{JOIN_CLAUSE}}', join_clause))
-    end
+    Institution.connection.update(str)
 
     # Create `caution_flags` rows
     caution_flag_clause = <<-SQL
@@ -238,11 +230,9 @@ module InstitutionBuilder
       #{where_clause}
     SQL
 
-    accreditation_join_clauses.each do |join_clause|
-      build_caution_flags(version_id, CautionFlag::SOURCES[:accreditation_action],
-                          caution_flag_reason,
-                          caution_flag_clause.gsub('{{JOIN_CLAUSE}}', join_clause))
-    end
+    build_caution_flags(version_id, CautionFlag::SOURCES[:accreditation_action],
+                        caution_flag_reason,
+                        caution_flag_clause)
   end
 
   def self.add_arf_gi_bill(version_id)
@@ -289,7 +279,7 @@ module InstitutionBuilder
         dodmou = mous.dodmou,
         caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
       FROM mous
-      WHERE institutions.ope6 = mous.ope6
+      WHERE institutions.ope = mous.ope
       AND institutions.version_id = #{version_id}
     SQL
 
@@ -318,10 +308,10 @@ module InstitutionBuilder
 
     caution_flag_clause = <<-SQL
       FROM institutions, (
-        SELECT distinct(ope6) FROM mous
+        SELECT distinct(ope) FROM mous
         WHERE dod_status = TRUE
       ) as reasons_list
-      WHERE institutions.ope6 = reasons_list.ope6
+      WHERE institutions.ope = reasons_list.ope
       AND institutions.version_id = #{version_id}
     SQL
 
@@ -503,12 +493,12 @@ module InstitutionBuilder
     SQL
     caution_flag_clause = <<-SQL
       FROM institutions, (
-        SELECT "ope6",
+        SELECT ope,
           array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
         FROM hcms
-        GROUP BY ope6
+        GROUP BY ope
       ) hcm_list
-      WHERE institutions.ope6 = hcm_list.ope6
+      WHERE institutions.ope = hcm_list.ope
       AND institutions.version_id = #{version_id}
     SQL
 
