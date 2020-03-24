@@ -1,4 +1,4 @@
-FROM ruby:2.4.5-slim-stretch
+FROM ruby:2.4.5-slim-stretch AS base
 
 # Match the jenkins uid/gid on the host (504)
 RUN groupadd -r gibct && \
@@ -27,6 +27,7 @@ RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
 RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
 VOLUME /src/gibct
 WORKDIR /src/gibct
+
 
 ADD . /src/gibct
 RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
