@@ -8,7 +8,7 @@ RSpec.describe CautionFlagSerializer, type: :serializer do
   let(:caution_flag) { create :caution_flag, :accreditation_issue }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
-  
+
   it 'includes title' do
     expect(attributes['title']).to eq(caution_flag.title)
   end
@@ -24,5 +24,4 @@ RSpec.describe CautionFlagSerializer, type: :serializer do
   it 'includes link_url' do
     expect(attributes['link_url']).to eq(caution_flag.link_url)
   end
-
 end
