@@ -157,7 +157,7 @@ module InstitutionBuilder
   end
 
   # Set the `accreditation_type`, `accreditation_status`, and create `caution_flags` rows
-  # by joining on `ope` for a specific match because not all institutions
+  # by joining on `ope` for a specific match
   # Set the accreditation_type according to the hierarchy hybrid < national < regional
   # We include only those accreditation that are institutional and currently active.
   def self.add_accreditation(version_id)
