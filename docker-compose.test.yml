@@ -1,5 +1,5 @@
-# Compose stack to run vets-api
-version: '2.1'
+# Compose stack to run gi-bill-data-service
+version: '3.4'
 services:
   postgres:
     image: "postgres:11.5"
@@ -10,9 +10,11 @@ services:
   gibct:
     build:
       context: .
+      target: development
     image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
-      - ".:/src/gibct"
+      - ".:/srv/gi-bill-data-service/src:cached"
+      - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000
     environment:
@@ -33,10 +35,12 @@ services:
       GOVDELIVERY_TOKEN: 'abc123'
       GOVDELIVERY_STAGING_SERVICE: 'True'
       DEPLOYMENT_ENV: 'vagov-staging'
-      CI:
+      CI: ""
       RAILS_ENV: test
       CC_TEST_REPORTER_ID: 'b2bfddfeacb799e6c25db347d97406262860380eb1feb21884d5151f818165f5'
     depends_on:
       - postgres
     links:
       - postgres
+volumes:
+  dev_bundle:
