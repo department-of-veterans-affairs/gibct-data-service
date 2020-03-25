@@ -157,9 +157,7 @@ module InstitutionBuilder
   end
 
   # Set the `accreditation_type`, `accreditation_status`, and create `caution_flags` rows
-  # by joining on
-  # `ope6` for more broad match, then `ope` for a more specific match because not all institutions
-  # have a unique `ope` provided.
+  # by joining on `ope` for a specific match because not all institutions
   # Set the accreditation_type according to the hierarchy hybrid < national < regional
   # We include only those accreditation that are institutional and currently active.
   def self.add_accreditation(version_id)
@@ -465,7 +463,7 @@ module InstitutionBuilder
     build_caution_flags(version_id, CautionFlag::SOURCES[:settlement], reason, caution_flag_clause)
   end
 
-  # Sets caution flags and caution flag reasons if the corresponding approved school (by ope6)
+  # Sets caution flags and caution flag reasons if the corresponding approved school by ope
   # has an entry in the hcms table.
   def self.add_hcm(version_id)
     # Leaving old way of setting caution_flag and caution_flag_reason
