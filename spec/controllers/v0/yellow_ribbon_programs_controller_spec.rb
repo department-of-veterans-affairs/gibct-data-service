@@ -96,5 +96,11 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
+
+    it 'respects `per_page`' do
+      get(:index, params: { per_page: 2 })
+      data = JSON.parse(response.body)['data']
+      expect(data.count).to eq(2)
+    end
   end
 end

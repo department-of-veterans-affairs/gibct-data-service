@@ -4,8 +4,9 @@ module Archiver
   ARCHIVE_TYPES = [
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
-    { source: Institution, archive: InstitutionsArchive },
-    { source: ZipcodeRate, archive: ZipcodeRatesArchive }
+    { source: ZipcodeRate, archive: ZipcodeRatesArchive },
+    { source: CautionFlag, archive: nil },
+    { source: Institution, archive: InstitutionsArchive }
   ].freeze
 
   def self.archive_previous_versions
@@ -34,6 +35,8 @@ module Archiver
   end
 
   def self.create_archives(source, archive, previous_version, production_version)
+    return if archive.blank?
+
     str = <<~SQL
       INSERT INTO #{archive.table_name}
       SELECT s.* FROM #{source.table_name} s
