@@ -48,6 +48,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
 
   attribute :school_closing
+  attribute :school_closing_on
   attribute :closure109
   attribute :vet_tec_provider
   attribute :parent_facility_code_id
