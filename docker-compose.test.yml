@@ -15,26 +15,26 @@ services:
     ports:
       - 3000:3000
     environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_development}?pool=4"
-      POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
-      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
-      SECRET_KEY_BASE: 0ae77385a98d4d28886d792832fbbe036152efb4a112fae2d06261850a5b6728
-      LINK_HOST: https://www.example.com
-      GIBCT_URL: https://www.example.com
       ADMIN_EMAIL: 'something@example.gov'
       ADMIN_PW: 'something...'
-      SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
+      CC_TEST_REPORTER_ID: 'b2bfddfeacb799e6c25db347d97406262860380eb1feb21884d5151f818165f5'
+      CI: "true"
+      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_development}?pool=4"
+      DEPLOYMENT_ENV: 'vagov-staging'
+      GIBCT_URL: https://www.example.com
+      GOVDELIVERY_STAGING_SERVICE: 'True'
+      GOVDELIVERY_TOKEN: 'abc123'
+      GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
+      LINK_HOST: https://www.example.com
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
+      POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      RAILS_ENV: "test"
       SAML_CALLBACK_URL: https://www.example.com/saml/auth/callback
+      SAML_IDP_METADATA_FILE: .
       SAML_IDP_SSO_URL: https://www.example.com/idp/sso
       SAML_ISSUER: GIDS
-      GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
-      GOVDELIVERY_TOKEN: 'abc123'
-      GOVDELIVERY_STAGING_SERVICE: 'True'
-      DEPLOYMENT_ENV: 'vagov-staging'
-      CI: "true"
-      RAILS_ENV: "test"
-      CC_TEST_REPORTER_ID: 'b2bfddfeacb799e6c25db347d97406262860380eb1feb21884d5151f818165f5'
+      SECRET_KEY_BASE: 0ae77385a98d4d28886d792832fbbe036152efb4a112fae2d06261850a5b6728
     depends_on:
       - postgres
     links:
