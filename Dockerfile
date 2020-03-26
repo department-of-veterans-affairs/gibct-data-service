@@ -36,11 +36,23 @@ RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" && find ${BUNDLE_APP_CO
 ENV PATH "/usr/local/bundle/bin:${PATH}"
 
 ###
+# test
+###
+FROM base AS test
+
+ENV PATH "/usr/local/bundle/bin:${PATH}"
+COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
+COPY --from=builder --chown=gibct:gibct /srv/gi-bill-data-service/src ./
+RUN chown -R gibct:gibct .
+USER gibct
+
+###
 # production
 ###
 FROM base AS production
 
-ENV PATH "/usr/local/bundle/bin:${PATH}"
+ENV RAILS_ENV="production"
+ENV PATH="/usr/local/bundle/bin:${PATH}"
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gibct:gibct /srv/gi-bill-data-service/src ./
 COPY --from=builder --chown=gibct:gibct /var/lib/clamav /var/lib/clamav
