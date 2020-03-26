@@ -10,7 +10,7 @@ services:
   gibct:
     build:
       context: .
-      target: test
+      target: production
     image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
       - dev_bundle:/usr/local/bundle
