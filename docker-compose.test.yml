@@ -10,10 +10,9 @@ services:
   gibct:
     build:
       context: .
-      target: development
+      target: production
     image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
-      - ".:/srv/gi-bill-data-service/src:cached"
       - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000

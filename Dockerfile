@@ -40,7 +40,7 @@ ENV PATH "/usr/local/bundle/bin:${PATH}"
 ###
 FROM base AS production
 
-ENV RAILS_ENV=production
+ENV PATH "/usr/local/bundle/bin:${PATH}"
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gibct:gibct /srv/gi-bill-data-service/src ./
 COPY --from=builder --chown=gibct:gibct /var/lib/clamav /var/lib/clamav
