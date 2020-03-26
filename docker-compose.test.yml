@@ -12,8 +12,6 @@ services:
       context: .
       target: production
     image: "gibct:${DOCKER_IMAGE:-latest}"
-    volumes:
-      - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000
     environment:
@@ -41,5 +39,3 @@ services:
       - postgres
     links:
       - postgres
-volumes:
-  dev_bundle:
