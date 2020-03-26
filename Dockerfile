@@ -8,8 +8,8 @@ SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl clamav libpq-dev dumb-init
-RUN freshclam
+    build-essential git curl libpq-dev dumb-init
+
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
 WORKDIR /srv/gi-bill-data-service/src
@@ -45,7 +45,6 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
-COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /var/lib/clamav /var/lib/clamav
 RUN chown -R gi-bill-data-service:gi-bill-data-service .
 USER gi-bill-data-service
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
