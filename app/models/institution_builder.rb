@@ -38,6 +38,7 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
+    CautionFlagMapper.map(version.id)
   end
 
   def self.run(user)
