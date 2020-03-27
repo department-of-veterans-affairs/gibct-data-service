@@ -13,8 +13,6 @@ gem 'rails', '~> 5.2.4'
 
 # Gems with special version/repo needs
 
-gem 'foreman'
-
 # JSON API
 gem 'active_model_serializers', '~> 0.10.4'
 
