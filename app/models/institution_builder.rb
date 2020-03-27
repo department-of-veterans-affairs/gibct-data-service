@@ -502,7 +502,7 @@ module InstitutionBuilder
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id,  Hcm.name, reason, caution_flag_clause)
+    build_caution_flags(version_id, Hcm.name, reason, caution_flag_clause)
   end
 
   def self.add_complaint(version_id)

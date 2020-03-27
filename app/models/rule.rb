@@ -1,35 +1,36 @@
-class Rule < ApplicationRecord
+# frozen_string_literal: true
 
-  RULE_TABLES = [CautionFlag.table_name]
+class Rule < ApplicationRecord
+  RULE_TABLES = [CautionFlag.table_name].freeze
 
   MATCHERS = {
-      has: 'has'
+    has: 'has'
   }.freeze
 
   ACTIONS = {
-      update: 'update'
+    update: 'update'
   }.freeze
 
   validates :rule_table, :matcher, :action, presence: true
 
-  validates :action,inclusion: { in: ACTIONS.values }
-  validates :matcher,inclusion: { in: MATCHERS.values }
-  validates :rule_table,inclusion: { in: RULE_TABLES }
+  validates :action, inclusion: { in: ACTIONS.values }
+  validates :matcher, inclusion: { in: MATCHERS.values }
+  validates :rule_table, inclusion: { in: RULE_TABLES }
 
   def self.create_engine
     Wongi::Engine.create
   end
 
   def self.apply_rules(engine, table_name, cols_to_update)
-    Rules.where(rule_table: table_name).each do |rule|
+    Rules.where(rule_table: table_name).find_each do |rule|
       type_matcher = nil
 
       case rule.matcher
       when MATCHERS[:has]
-        type_matcher = has_matcher(engine, rule)
+        type_matcher = matcher?(engine, rule)
       end
 
-      next unless type_matcher.present?
+      next if type_matcher.blank?
 
       type_ids = []
       type_matcher.tokens.each do |token|
@@ -40,15 +41,14 @@ class Rule < ApplicationRecord
       when ACTIONS[:update]
         apply_update(rule, cols_to_update)
       end
-
     end
   end
 
-  def self.has_matcher(engine, rule)
+  def self.matcher?(engine, rule)
     engine.rule `type_rule_#{rule.id}` do
-      forall {
+      forall do
         has rule.subject || :_, rule.predicate || :_, rule.object || :_
-      }
+      end
     end
   end
 
