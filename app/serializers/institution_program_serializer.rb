@@ -15,5 +15,6 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
              :va_bah,
              :dod_bah,
              :school_closing,
-             :caution_flag
+             :school_closing_on,
+             :caution_flags
 end

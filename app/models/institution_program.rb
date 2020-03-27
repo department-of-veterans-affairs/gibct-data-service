@@ -38,7 +38,9 @@ class InstitutionProgram < ApplicationRecord
 
   delegate :school_closing, to: :institution
 
-  delegate :caution_flag, to: :institution
+  delegate :school_closing_on, to: :institution
+
+  delegate :caution_flags, to: :institution
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
