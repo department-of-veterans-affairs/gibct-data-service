@@ -7,28 +7,28 @@ if ENV['CI'].blank?
   Rule.delete_all
 
   values = [
-      Rule.new(rule_table: CautionFlag.table_name,
+      Rule.new(rule_name: CautionFlag.name,
        matcher: Rule::MATCHERS[:has],
        action: Rule::ACTIONS[:update],
        subject: AccreditationAction.name,
        object: nil,
        predicate: nil,
                ),
-      Rule.new(rule_table: CautionFlag.table_name,
+      Rule.new(rule_name: CautionFlag.name,
        matcher: Rule::MATCHERS[:has],
        action: Rule::ACTIONS[:update],
        subject: Hcm.name,
        object: nil,
        predicate: nil,
                ),
-      Rule.new(rule_table: CautionFlag.table_name,
+      Rule.new(rule_name: CautionFlag.name,
        matcher: Rule::MATCHERS[:has],
        action: Rule::ACTIONS[:update],
        subject: Mou.name,
        object: nil,
        predicate: nil,
                ),
-      Rule.new(rule_table: CautionFlag.table_name,
+      Rule.new(rule_name: CautionFlag.name,
        matcher: Rule::MATCHERS[:has],
        action: Rule::ACTIONS[:update],
        subject: Sec702.name,
@@ -148,8 +148,8 @@ if ENV['CI'].blank?
       # },
   ]
 
-  results = CautionFlagRule.import(values, validate: false)
-  puts "Created #{results.num_inserts} Caution Flag Rules"
+  CautionFlagRule.import(values, validate: false)
+  puts "Created Caution Flag Rules"
   puts "Done ... Woo Hoo!"
 
 end

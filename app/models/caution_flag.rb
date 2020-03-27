@@ -5,10 +5,9 @@ class CautionFlag < ApplicationRecord
 
   def self.map(version_id)
     engine = Rule.create_engine
-    cols_to_update = '(title, description, link_text, link_url)'
     where(version_id: version_id).find_each do |cf|
       engine << [cf.source, cf.reason, cf]
     end
-    Rule.apply_rules(engine, table_name, cols_to_update)
+    Rule.apply_rules(engine, name)
   end
 end

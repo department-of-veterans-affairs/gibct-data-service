@@ -1223,7 +1223,7 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
   end
 
   create_table "rules", force: :cascade do |t|
-    t.string "rule_table", null: false
+    t.string "rule_name", null: false
     t.string "matcher", null: false
     t.string "action", null: false
     t.string "subject"
