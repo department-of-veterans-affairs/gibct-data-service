@@ -16,50 +16,30 @@ class Rule < ApplicationRecord
     Wongi::Engine.create
   end
 
-  def self.apply_rules(engine, rule_name)
-    where(rule_name: rule_name).find_each do |rule|
-      rule_matcher = nil
+  def self.apply_rule(engine, rule)
+    rule_matcher = nil
 
-      case rule.matcher
-      when MATCHERS[:has]
-        rule_matcher = matcher?(engine, rule)
-      end
-
-      next if rule_matcher.blank?
-
-      rule_ids = []
-      rule_matcher.tokens.each do |token|
-        rule_ids << token.wme[:object].id
-      end
-
-      case rule.action
-      when ACTIONS[:update]
-        apply_update(rule, rule_ids)
-      end
+    case rule.matcher
+    when MATCHERS[:has]
+      rule_matcher = matcher_has(engine, rule)
     end
+
+    subjects = []
+    return subjects if rule_matcher.blank?
+
+    rule_matcher.tokens.each do |token|
+      subjects << token.wme[:subject]
+    end
+    subjects
   end
 
-  def self.matcher?(engine, rule)
+  def self.matcher_has(engine, rule)
     engine.rule "type_rule_#{rule.id}" do
       forall do
-        has rule.subject || :_, rule.predicate || :_, rule.object || :_
+        has rule.subject || :_, rule.predicate.to_sym || :_, rule.object || :_
       end
     end
   end
 
-  def self.apply_update(rule, rule_ids)
-    updated_table = rule.rule_name.underscore.pluralize
 
-    rule_klass = "#{rule.rule_name}Rule".constantize
-    cols_to_update = rule_klass::COLS_USED_IN_UPDATE.map(&:to_s).map { |col| %("#{col}" = #{rule_klass.table_name}.#{col}) }.join(', ')
-
-    str = <<-SQL
-          UPDATE #{updated_table} SET #{cols_to_update}
-          FROM #{rule_klass.table_name}
-          WHERE #{rule_klass.table_name}.rule_id = #{rule.id}
-          AND #{updated_table}.id in (#{rule_ids.join(',')})
-    SQL
-
-    rule_klass.connection.update(str)
-  end
 end

@@ -1,6 +1,7 @@
 class CreateCautionFlagRules < ActiveRecord::Migration[5.2]
   def up
     create_table :caution_flag_rules do |t|
+      t.string :source
       t.integer :rule_id
       t.string :title
       t.string :description

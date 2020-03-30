@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 class CautionFlagRule < ApplicationRecord
-  COLS_USED_IN_UPDATE = %i[
-    title description link_text link_url
+  SOURCES = [
+      AccreditationAction.name,
+      Settlement.name,
+      Hcm.name,
+      Mou.name,
+      Sec702.name
   ].freeze
 
-  has_one :rule, dependent: :nullify
-  validates :rule, presence: true
+  belongs_to :rule
+  validates :rule, :source, presence: true
+  validates :source, inclusion: { in: SOURCES }
 end
