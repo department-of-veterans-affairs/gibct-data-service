@@ -7,13 +7,8 @@ class Rule < ApplicationRecord
     has: 'has'
   }.freeze
 
-  ACTIONS = {
-    update: 'update'
-  }.freeze
+  validates :rule_name, :matcher, presence: true
 
-  validates :rule_name, :matcher, :action, presence: true
-
-  validates :action, inclusion: { in: ACTIONS.values }
   validates :matcher, inclusion: { in: MATCHERS.values }
   validates :rule_name, inclusion: { in: RULE_NAMES }
 

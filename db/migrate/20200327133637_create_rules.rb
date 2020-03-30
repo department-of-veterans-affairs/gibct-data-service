@@ -3,10 +3,9 @@ class CreateRules < ActiveRecord::Migration[5.2]
     create_table :rules do |t|
       t.string :rule_name, null: false
       t.string :matcher, null: false
-      t.string :action, null: false
       t.string :subject
-      t.string :object
       t.string :predicate
+      t.string :object
 
       t.timestamps
     end

@@ -1225,7 +1225,6 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
   create_table "rules", force: :cascade do |t|
     t.string "rule_name", null: false
     t.string "matcher", null: false
-    t.string "action", null: false
     t.string "subject"
     t.string "object"
     t.string "predicate"
