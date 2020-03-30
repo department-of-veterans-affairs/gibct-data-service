@@ -1,3 +1,7 @@
+def settlement_rule(rule_results, object)
+  rule_results.find{ |r| r[1] == Settlement.name && r[2] == object }[0]
+end
+
 if ENV['CI'].blank?
 
   puts 'Deleting old caution flag rules'
@@ -8,36 +12,38 @@ if ENV['CI'].blank?
 
   values = [
       Rule.new(rule_name: CautionFlag.name,
-       matcher: Rule::MATCHERS[:has],
-       action: Rule::ACTIONS[:update],
-       subject: AccreditationAction.name,
-       object: nil,
-       predicate: nil,
-               ),
+               matcher: Rule::MATCHERS[:has],
+               action: Rule::ACTIONS[:update],
+               subject: AccreditationAction.name,
+               predicate: nil,
+               object: nil),
       Rule.new(rule_name: CautionFlag.name,
-       matcher: Rule::MATCHERS[:has],
-       action: Rule::ACTIONS[:update],
-       subject: Hcm.name,
-       object: nil,
-       predicate: nil,
-               ),
+               matcher: Rule::MATCHERS[:has],
+               action: Rule::ACTIONS[:update],
+               subject: Hcm.name,
+               predicate: nil,
+               object: nil),
       Rule.new(rule_name: CautionFlag.name,
-       matcher: Rule::MATCHERS[:has],
-       action: Rule::ACTIONS[:update],
-       subject: Mou.name,
-       object: nil,
-       predicate: nil,
-               ),
+               matcher: Rule::MATCHERS[:has],
+               action: Rule::ACTIONS[:update],
+               subject: Mou.name,
+               predicate: nil,
+               object: nil),
       Rule.new(rule_name: CautionFlag.name,
-       matcher: Rule::MATCHERS[:has],
-       action: Rule::ACTIONS[:update],
-       subject: Sec702.name,
-       object: nil,
-       predicate: nil,
-               ),
+               matcher: Rule::MATCHERS[:has],
+               action: Rule::ACTIONS[:update],
+               subject: Sec702.name,
+               predicate: nil,
+               object: nil),
+      Rule.new(rule_name: CautionFlag.name,
+               matcher: Rule::MATCHERS[:has],
+               action: Rule::ACTIONS[:update],
+               subject: Settlement.name,
+               predicate: 'Upcoming Campus Closure (Details Posted on Institution\'s Website)',
+               object: nil),
   ]
 
-  results = Rule.import(values, returning: [:id, :subject, :object])
+  results = Rule.import(values, returning: [:id, :subject, :predicate])
   rule_results = results.results
 
   values = [
@@ -69,13 +75,13 @@ if ENV['CI'].blank?
        link_text: 'Learn more about Section 702 requirements',
        link_url: 'https://www.benefits.va.gov/gibill/docs/factsheets/section_702_factsheet.pdf'
       },
-      # #settlement
-      # {rule: CautionFlagRule::RULES[:like_reason],
-      #  title: '',
-      #  description: '',
-      #  link_text: '',
-      #  link_url: ''
-      # },
+      #settlement
+      {rule_id: settlement_rule(rule_results, 'Upcoming Campus Closure (Details Posted on Institution\'s Website)'),
+       title: '"Campus will be closing soon',
+       description: 'This campus will be closing soon.',
+       link_text: 'Visit the school\'s website to learn more',
+       link_url: 'SCHOOL_URL'
+      },
       # #settlement
       # {rule: CautionFlagRule::RULES[:like_reason],
       #  title: '',

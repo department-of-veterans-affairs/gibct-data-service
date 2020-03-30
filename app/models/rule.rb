@@ -65,6 +65,6 @@ class Rule < ApplicationRecord
           AND #{updated_table}.id in (#{rule_ids.join(',')})
     SQL
 
-    ApplicationRecord.connection.update(str)
+    rule_klass.connection.update(str)
   end
 end
