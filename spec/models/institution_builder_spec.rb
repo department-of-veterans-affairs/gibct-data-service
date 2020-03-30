@@ -284,7 +284,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:accreditation_action],
+                              source: AccreditationAction.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -295,7 +295,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:accreditation_action],
+                              source: AccreditationAction.name,
                               version_id: Version.current_preview.id })
                      .count).to eq(0)
         end
@@ -306,7 +306,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:accreditation_action],
+                                             source: AccreditationAction.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason)
@@ -385,7 +385,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:mou],
+                              source: Mou.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -395,7 +395,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:mou],
+                              source: Mou.name,
                               version_id: Version.current_preview.id })
                      .count).to eq(0)
         end
@@ -406,7 +406,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:mou],
+                                             source: Mou.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to eq(reason)
@@ -569,7 +569,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702, :institution_builder
           described_class.run(user)
           expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                     .where({ source: Sec702.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -578,7 +578,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702_school, :institution_builder
           described_class.run(user)
           expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                     .where({ source: Sec702.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -589,7 +589,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702, :institution_builder
           described_class.run(user)
           expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:sec702],
+                     .where({ source: Sec702.name,
                               version_id: Version.current_preview.id })
                      .count).to eq(0)
         end
@@ -606,7 +606,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:settlement],
+                              source: Settlement.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -618,7 +618,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:settlement],
+                                             source: Settlement.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason)
@@ -630,7 +630,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :settlement, :institution_builder, settlement_description: 'another description'
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:settlement],
+                                             source: Settlement.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(settlement.settlement_description)
@@ -649,7 +649,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:hcm],
+                              source: Hcm.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -660,7 +660,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :hcm, :institution_builder
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:hcm],
+                                             source: Hcm.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(hcm.hcm_reason)
@@ -671,7 +671,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :hcm, :institution_builder, hcm_reason: 'another reason'
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:hcm],
+                                             source: Hcm.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(Regexp.new(hcm.hcm_reason))

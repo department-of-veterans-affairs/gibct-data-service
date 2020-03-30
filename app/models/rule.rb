@@ -40,6 +40,4 @@ class Rule < ApplicationRecord
       end
     end
   end
-
-
 end

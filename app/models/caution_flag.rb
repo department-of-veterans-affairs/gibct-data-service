@@ -24,7 +24,7 @@ class CautionFlag < ApplicationRecord
 
   def self.apply_update(rule, ids)
     cols_to_update = COLS_MAP_UPDATE.map(&:to_s)
-                         .map { |col| %(#{col} = #{CautionFlagRule.table_name}.#{col}) }.join(', ')
+                                    .map { |col| %(#{col} = #{CautionFlagRule.table_name}.#{col}) }.join(', ')
 
     str = <<-SQL
           UPDATE #{table_name} SET #{cols_to_update}
