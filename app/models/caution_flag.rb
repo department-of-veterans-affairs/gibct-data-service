@@ -8,18 +8,23 @@ class CautionFlag < ApplicationRecord
   ].freeze
 
   def self.map(version_id)
+    puts "START #{Time.now}"
     engine = Rule.create_engine
 
-    CautionFlagRule.all.find_each do |cf_rule|
-      predicate = cf_rule.rule.predicate.to_sym
+    predicates = Rule.distinct.pluck(:predicate)
+    caution_flags = where(version_id: version_id)
 
-      where(version_id: version_id, source: cf_rule.source).find_each do |cf|
-        engine << [cf.id, predicate, cf[predicate]]
+    CautionFlagRule.all.find_each do |cf_rule|
+      caution_flags.each do |cf|
+        predicates.each do |predicate|
+          engine << [cf.id, predicate.to_sym, cf[predicate.to_sym]]
+        end
       end
 
       subjects = Rule.apply_rule(engine, cf_rule.rule)
       apply_update(cf_rule, subjects) unless subjects.empty?
     end
+    puts "END #{Time.now}"
   end
 
   def self.apply_update(rule, ids)

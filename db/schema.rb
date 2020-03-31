@@ -98,7 +98,6 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
   end
 
   create_table "caution_flag_rules", force: :cascade do |t|
-    t.string "source"
     t.integer "rule_id"
     t.string "title"
     t.string "description"
