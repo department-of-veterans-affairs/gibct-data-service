@@ -39,9 +39,10 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
+ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
-RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 ENV PATH "/usr/local/bundle/bin:${PATH}"
 
 ###
