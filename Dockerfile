@@ -1,5 +1,7 @@
 ###
 # base
+#
+# shared build/settings for all child images
 ###
 FROM ruby:2.4.5-slim-stretch AS base
 
@@ -16,6 +18,9 @@ WORKDIR /srv/gi-bill-data-service/src
 
 ###
 # development
+#
+# use --target=development to stop here
+# this stage is used for local development with docker-compose.yml
 ###
 FROM base AS development
 RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 && \
@@ -28,6 +33,9 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 
 ###
 # builder
+#
+# use --target=builder to stop here
+# this stage is copies in the app and is used for running tests/lints/stuff
 ###
 FROM development AS builder
 
@@ -38,6 +46,9 @@ ENV PATH "/usr/local/bundle/bin:${PATH}"
 
 ###
 # production
+#
+# default target
+# this stage is used in live environmnets
 ###
 FROM base AS production
 
