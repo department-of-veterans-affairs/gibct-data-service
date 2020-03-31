@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_16_133022) do
+ActiveRecord::Schema.define(version: 2020_03_23_092001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -104,6 +104,10 @@ ActiveRecord::Schema.define(version: 2020_03_16_133022) do
     t.string "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.string "description"
+    t.string "link_text"
+    t.string "link_url"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
