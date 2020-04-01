@@ -45,7 +45,7 @@ if ENV['CI'].blank?
                matcher: Rule::MATCHERS[:has],
                subject: nil,
                predicate: 'reason',
-               object: 'Federal Trade Commission Filed Suit for Deceptive Advertising'),
+               object: 'Federal Trade Commission Filed Suit for Deceptive Advertising; Settlement reached on May 26, 2015'),
       Rule.new(rule_name: CautionFlag.name,
                matcher: Rule::MATCHERS[:has],
                subject: nil,
@@ -95,7 +95,7 @@ if ENV['CI'].blank?
                matcher: Rule::MATCHERS[:has],
                subject: nil,
                predicate: 'reason',
-               object: 'Potential Suspension of VA Benefits to Five Schools for Deceptive Practices goes into effect on May 9, 2020.'),
+               object: 'Federal Trade Commission Filed Suit for Deceptive Advertising; Potential Suspension of VA Benefits to Five Schools for Deceptive Practices goes into effect on May 9, 2020.'),
   ]
 
   results = Rule.import(values, returning: [:id, :object])
@@ -145,7 +145,7 @@ if ENV['CI'].blank?
        link_url: nil,
       },
       #settlement
-      {rule_id: rule_id(rule_results, 'Federal Trade Commission Filed Suit for Deceptive Advertising'),
+      {rule_id: rule_id(rule_results, 'Federal Trade Commission Filed Suit for Deceptive Advertising; Settlement reached on May 26, 2015'),
        title: 'School is being sued for deceptive advertising',
        description: 'The Federal Trade Commission (FTC) has filed suit against this school for deceptive advertising. ',
        link_text: nil,
@@ -208,7 +208,7 @@ if ENV['CI'].blank?
        link_url: 'https://www.benefits.va.gov/gibill/comparison_tool/about_this_tool.asp#8515',
       },
       #settlement
-      {rule_id: rule_id(rule_results, 'Potential Suspension of VA Benefits to Five Schools for Deceptive Practices goes into effect on May 9, 2020.'),
+      {rule_id: rule_id(rule_results, 'Federal Trade Commission Filed Suit for Deceptive Advertising; Potential Suspension of VA Benefits to Five Schools for Deceptive Practices goes into effect on May 9, 2020.'),
        title: 'Potential suspension of VA benefits for deceptive practices',
        description: 'This school is one of 5 schools facing a potential suspension of VA benefits for deceptive practices.  The suspension is effective May 9, 2020.',
        link_text: nil,
