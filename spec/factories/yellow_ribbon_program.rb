@@ -5,16 +5,14 @@ FactoryBot.define do
     association :institution, factory: :institution
 
     city { 'Boulder' }
-    contribution_amount { 6_000 }
+    contribution_amount { '6_000' }
     degree_level { 'Undergraduate' }
     division_professional_school { 'Non-Traditional' }
     facility_code { generate :facility_code }
     number_of_students { 99_999 }
-    school_name_in_yr_database { 'University' }
     state { 'CO' }
     street_address { '1234 University Drive' }
     version { Version.current_production.id }
-    zip { '80303' }
 
     trait :institution_builder do
       facility_code { '1ZZZZZZZ' }
@@ -22,7 +20,6 @@ FactoryBot.define do
 
     trait :in_florence do
       city { 'Florence' }
-      school_name_in_yr_database { 'Future Tech University' }
       number_of_students { 1 }
       state { 'KY' }
       zip { '41042' }
