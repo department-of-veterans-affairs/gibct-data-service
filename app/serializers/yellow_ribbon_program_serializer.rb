@@ -12,6 +12,5 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :number_of_students,
              :name_of_institution,
              :state,
-             :street_address,
-             :zip
+             :street_address
 end
