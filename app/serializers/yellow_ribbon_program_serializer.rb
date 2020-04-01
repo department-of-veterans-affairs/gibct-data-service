@@ -10,8 +10,7 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :institution_id,
              :insturl,
              :number_of_students,
-             :school_name_in_yr_database,
+             :name_of_institution,
              :state,
-             :street_address,
-             :zip
+             :street_address
 end
