@@ -1226,8 +1226,9 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
     t.string "rule_name", null: false
     t.string "matcher", null: false
     t.string "subject"
-    t.string "object"
     t.string "predicate"
+    t.string "object"
+    t.integer "priority"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

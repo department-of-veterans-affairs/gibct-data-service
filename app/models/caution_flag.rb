@@ -16,16 +16,8 @@ class CautionFlag < ApplicationRecord
       end
     end
 
-    # Apply rules for rules that use source as a predicate as these are more general
-    CautionFlagRule.includes(:rule)
-                   .where('rules.predicate = ?', 'source').references(:rule).find_each do |cf_rule|
-      subjects = Rule.apply_rule(engine, cf_rule.rule)
-      apply_update(cf_rule, subjects) unless subjects.empty?
-    end
-
-    # Apply rules for rules that use reason as a predicate as these are more specific
-    CautionFlagRule.includes(:rule)
-                   .where('rules.predicate = ?', 'reason').references(:rule).find_each do |cf_rule|
+    # Apply rules. rule priority is :source rules first, then :reason rules
+    CautionFlagRule.includes(:rule).order('rules.priority ASC').references(:rule).find_each do |cf_rule|
       subjects = Rule.apply_rule(engine, cf_rule.rule)
       apply_update(cf_rule, subjects) unless subjects.empty?
     end

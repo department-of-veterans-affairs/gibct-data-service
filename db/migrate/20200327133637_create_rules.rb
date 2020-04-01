@@ -6,6 +6,7 @@ class CreateRules < ActiveRecord::Migration[5.2]
       t.string :subject
       t.string :predicate
       t.string :object
+      t.integer :priority
 
       t.timestamps
     end
