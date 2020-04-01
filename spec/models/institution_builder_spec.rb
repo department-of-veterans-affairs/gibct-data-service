@@ -584,13 +584,16 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'has no flags when prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          weam = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
+          institution = Institution.where({facility_code: weam.facility_code,
+                                           version_id: Version.current_preview.id}).first
           expect(CautionFlag
                      .where({ source: Sec702.name,
-                              version_id: Version.current_preview.id })
+                              version_id: Version.current_preview.id,
+                              institution_id: institution.id})
                      .count).to eq(0)
         end
       end
@@ -634,7 +637,6 @@ RSpec.describe InstitutionBuilder, type: :model do
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(settlement.settlement_description)
-            .and match('another description')
         end
       end
     end
