@@ -56,5 +56,4 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
   it 'street_address' do
     expect(attributes['street_address']).to eq(yellow_ribbon_program.street_address)
   end
-
 end
