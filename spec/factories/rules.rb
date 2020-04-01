@@ -5,6 +5,7 @@ FactoryBot.define do
     rule_name { CautionFlag.name }
     matcher { Rule::MATCHERS[:has] }
     subject { nil }
+
     object { 'test' }
     predicate { 'is' }
 
@@ -14,7 +15,6 @@ FactoryBot.define do
     end
 
     trait :settlement_reason do
-
       object { 'Settlement with U.S. Government' }
       predicate { 'reason' }
     end

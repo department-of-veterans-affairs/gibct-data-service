@@ -29,7 +29,7 @@ RSpec.describe Rule, type: :model do
 
   describe 'when applying rules' do
     let(:rule) { build :rule }
-    let(:engine) { Rule.create_engine }
+    let(:engine) { described_class.create_engine }
 
     before do
       engine << [1, :is, 'test']
@@ -37,7 +37,7 @@ RSpec.describe Rule, type: :model do
     end
 
     it 'returns subjects of matching facts' do
-      subjects = Rule.apply_rule(engine, rule)
+      subjects = described_class.apply_rule(engine, rule)
       expect(subjects).to include(1)
       expect(subjects).not_to include(2)
     end
