@@ -4,7 +4,6 @@ class CautionFlag < ApplicationRecord
   belongs_to :institution
 
   def self.map(version_id)
-    puts "START #{Time.zone.now}"
     engine = Rule.create_engine
 
     # Get distinct predicates
@@ -30,8 +29,6 @@ class CautionFlag < ApplicationRecord
       subjects = Rule.apply_rule(engine, cf_rule.rule)
       apply_update(cf_rule, subjects) unless subjects.empty?
     end
-
-    puts "END #{Time.zone.now}"
   end
 
   def self.apply_update(rule, ids)
