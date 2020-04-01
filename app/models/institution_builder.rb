@@ -447,16 +447,11 @@ module InstitutionBuilder
     # End of BAH Caution Flag Cleanup
 
     reason = <<-SQL
-      settlement_list.descriptions
+      settlements.settlement_description
     SQL
     caution_flag_clause = <<-SQL
-      FROM institutions, (
-        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
-        FROM settlements
-        WHERE "cross" IS NOT NULL
-        GROUP BY "cross"
-      ) settlement_list
-      WHERE institutions.cross = settlement_list.cross
+	    FROM institutions JOIN settlements on institutions.cross = settlements.cross
+      WHERE settlements.cross IS NOT NULL
       AND institutions.version_id = #{version_id}
     SQL
 
