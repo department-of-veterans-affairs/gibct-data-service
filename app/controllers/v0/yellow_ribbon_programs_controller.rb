@@ -13,7 +13,7 @@ module V0
     # &country=usa
     # &contribution_amount=unlimited
     # &number_of_students=unlimited
-    # &school_name_in_yr_database=university
+    # &name=university
     # &state=co
     def index
       @meta = {
@@ -42,8 +42,8 @@ module V0
         query[:number_of_students].try(:strip!)
         query[:number_of_students].try(:downcase!)
 
-        query[:school_name_in_yr_database].try(:strip!)
-        query[:school_name_in_yr_database].try(:downcase!)
+        query[:name].try(:strip!)
+        query[:name].try(:downcase!)
 
         query[:state].try(:strip!)
         query[:state].try(:downcase!)
@@ -72,7 +72,7 @@ module V0
     end
 
     def sanitized_sort_by
-      YellowRibbonProgram.new.attributes.include?(@query[:sort_by]) ? @query[:sort_by] : :school_name_in_yr_database
+      YellowRibbonProgram.new.attributes.include?(@query[:sort_by]) ? @query[:sort_by] : :institution
     end
 
     def sanitized_sort_direction
