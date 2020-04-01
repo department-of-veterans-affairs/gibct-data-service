@@ -588,13 +588,10 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          institution = Institution.where({facility_code: weam.facility_code,
-                                           version_id: Version.current_preview.id}).first
-          expect(CautionFlag
-                     .where({ source: Sec702.name,
-                              version_id: Version.current_preview.id,
-                              institution_id: institution.id})
-                     .count).to eq(0)
+          institution = Institution.where({ facility_code: weam.facility_code, version_id: Version.current_preview.id })
+                                   .first
+          expect(CautionFlag.where({ source: Sec702.name, version_id: Version.current_preview.id,
+                                     institution_id: institution.id }).count).to eq(0)
         end
       end
     end
