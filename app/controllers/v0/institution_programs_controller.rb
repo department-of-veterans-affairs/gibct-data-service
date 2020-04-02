@@ -48,12 +48,12 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-   
+
       relation = InstitutionProgram.joins(institution: :version)
                                    .where(institutions: { version: @version })
                                    .eager_load(:institution)
                                    .search(@query[:name])
-  
+
       filter_results(relation)
     end
 
@@ -70,7 +70,6 @@ module V0
     end
 
     def filter_results(relation)
-    
       @query ||= normalized_query_params
       [
         %i[program_type type],
@@ -79,13 +78,10 @@ module V0
         %w[institutions.physical_state state],
         %w[institutions.preferred_provider preferred_provider]
       ].each do |filter_args|
-        
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
 
-      if @query[:exclude_caution_flags]
-        relation = relation.where(institutions: {count_of_caution_flags: 0})
-      end
+      relation = relation.where(institutions: { count_of_caution_flags: 0 }) if @query[:exclude_caution_flags]
 
       relation
     end
