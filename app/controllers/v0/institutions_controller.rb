@@ -109,6 +109,10 @@ module V0
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
 
+      if @query[:exclude_caution_flags]
+        relation = relation.where(count_of_caution_flags: 0)
+       end
+
       relation
     end
     # rubocop:enable Metrics/MethodLength

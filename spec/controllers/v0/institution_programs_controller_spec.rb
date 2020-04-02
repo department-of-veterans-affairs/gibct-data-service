@@ -94,6 +94,16 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
+
+    # it 'filters by cautionary_warnings' do
+    #   program = create(:institution_program, :start_like_harv, :exclude_caution_flags)
+    #   create(:institution_program, :start_like_harv, :last_version)
+    #   get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true })
+    #   expect(JSON.parse(response.body)['data'].count).to eq(1)
+    #   expect(JSON.parse(response.body)['data'][0]['id']).to eq(program.id)
+    #   expect(response.content_type).to eq('application/json')
+    #   expect(response).to match_response_schema('autocomplete')
+    # end
   end
 
   context 'when searching' do
