@@ -13,39 +13,47 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
     create(:version, :production)
   end
 
-  it 'includes city' do
+  it 'city' do
     expect(attributes['city']).to eq(yellow_ribbon_program.city)
   end
 
-  it 'includes degree_level' do
+  it 'country' do
+    expect(attributes['country']).to eq(yellow_ribbon_program.country)
+  end
+
+  it 'degree_level' do
     expect(attributes['degree_level']).to eq(yellow_ribbon_program.degree_level)
   end
 
-  it 'includes division_professional_school' do
+  it 'division_professional_school' do
     expect(attributes['division_professional_school']).to eq(yellow_ribbon_program.division_professional_school)
   end
 
-  it 'includes facility_code' do
+  it 'facility_code' do
     expect(attributes['facility_code']).to eq(yellow_ribbon_program.facility_code)
   end
 
-  it 'includes number_of_students' do
+  it 'institution_id' do
+    expect(attributes['institution_id']).to eq(yellow_ribbon_program.institution_id)
+  end
+
+  it 'insturl' do
+    expect(attributes['insturl']).to eq(yellow_ribbon_program.insturl)
+  end
+
+  it 'number_of_students' do
     expect(attributes['number_of_students']).to eq(yellow_ribbon_program.number_of_students)
   end
 
-  it 'includes school_name_in_yr_database' do
-    expect(attributes['school_name_in_yr_database']).to eq(yellow_ribbon_program.school_name_in_yr_database)
+  it 'name_of_institution' do
+    expect(attributes['name_of_institution']).to eq(yellow_ribbon_program.name_of_institution)
   end
 
-  it 'includes state' do
+  it 'state' do
     expect(attributes['state']).to eq(yellow_ribbon_program.state)
   end
 
-  it 'includes street_address' do
+  it 'street_address' do
     expect(attributes['street_address']).to eq(yellow_ribbon_program.street_address)
-  end
-
-  it 'includes zip' do
-    expect(attributes['zip']).to eq(yellow_ribbon_program.zip)
   end
 end

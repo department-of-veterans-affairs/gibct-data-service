@@ -40,26 +40,26 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
-    it 'search returns results matching school_name_in_yr_database' do
-      get(:index, params: { school_name_in_yr_database: 'Future' })
+    it 'search returns results matching name' do
+      get(:index, params: { name: 'institution' })
       data = JSON.parse(response.body)['data']
-      expect(data.count).to eq(1)
+      expect(data.count).to eq(4)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
     it 'search returns case-insensitive results' do
-      get(:index, params: { school_name_in_yr_database: 'FUTURE' })
+      get(:index, params: { name: 'INSTITUTION ' })
       data = JSON.parse(response.body)['data']
-      expect(data.count).to eq(1)
+      expect(data.count).to eq(4)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
     it 'search with space returns results' do
-      get(:index, params: { school_name_in_yr_database: 'Future Tech' })
+      get(:index, params: { name: 'institution ' })
       data = JSON.parse(response.body)['data']
-      expect(data.count).to eq(1)
+      expect(data.count).to eq(4)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
@@ -92,7 +92,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { sort_by: 'asdf', sort_direction: 'asdf' })
       data = JSON.parse(response.body)['data']
       expect(data.count).to eq(4)
-      expect(data.first['attributes']['school_name_in_yr_database']).to eq('Future Tech University')
+      expect(data.first['attributes']['name_of_institution']).to include('institution ')
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
