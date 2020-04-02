@@ -4,6 +4,7 @@ class YellowRibbonProgram < ApplicationRecord
   belongs_to :institution
 
   delegate :country, :insturl, to: :institution
+  delegate :institution, to: :institution, prefix: :name_of
 
   validates :contribution_amount, numericality: true
   validates :degree_level, presence: true
@@ -23,9 +24,7 @@ class YellowRibbonProgram < ApplicationRecord
     clause.push('contribution_amount::int >= 99999') if query['contribution_amount'] == 'unlimited'
     clause.push('number_of_students::int >= 99999') if query['number_of_students'] == 'unlimited'
     clause.push('lower(yellow_ribbon_programs.state) LIKE (:state)') if query['state']
-    if query['school_name_in_yr_database']
-      clause.push('lower(yellow_ribbon_programs.school_name_in_yr_database) LIKE (:school_name_in_yr_database)')
-    end
+    clause.push('lower(institutions.institution) LIKE (:name)') if query['name']
 
     joins(:institution).where(
       sanitize_sql_for_conditions(
@@ -33,7 +32,7 @@ class YellowRibbonProgram < ApplicationRecord
           clause.join(' AND '),
           city: "%#{query['city']}%", # (includes)
           country: (query['country']).to_s, # (is equal)
-          school_name_in_yr_database: "%#{query['school_name_in_yr_database']}%", # (includes)
+          name: "%#{query['name']}%", # (includes)
           state: (query['state']).to_s # (is equal)
         ]
       )

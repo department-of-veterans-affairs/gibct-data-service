@@ -39,17 +39,17 @@
             "properties": {
               "city": { "type": ["null", "string"] },
               "contribution_amount": { "type": ["null", "string"] },
+              "country": { "type": ["null", "string"] },
               "degree_level": { "type": ["null", "string"] },
               "division_professional_school": { "type": ["null", "string"] },
+              "facility_code": { "type": ["null", "string"] },
+              "institution_id": { "type": ["null", "integer"] },
+              "insturl": { "type": ["null", "string"] },
+              "name_of_institution": { "type": ["null", "string"] },
               "number_of_students": { "type": ["null", "integer"] },
-              "school_name_in_yr_database": { "type": ["null", "string"] },
               "state": { "type": ["null", "string"] },
-              "street_address": { "type": ["null", "string"] },
-              "zip": { "type": ["null", "string"] }
-            },
-            "required": [
-              "school_name_in_yr_database"
-            ]
+              "street_address": { "type": ["null", "string"] }
+            }
           }
         },
         "required": ["id", "type", "attributes"]
