@@ -98,13 +98,14 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
   end
 
   create_table "caution_flag_rules", force: :cascade do |t|
-    t.integer "rule_id"
+    t.bigint "rule_id"
     t.string "title"
     t.string "description"
     t.string "link_text"
     t.string "link_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["rule_id"], name: "index_caution_flag_rules_on_rule_id"
   end
 
   create_table "caution_flags", force: :cascade do |t|
