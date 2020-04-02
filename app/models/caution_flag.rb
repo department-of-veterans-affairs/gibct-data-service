@@ -12,7 +12,8 @@ class CautionFlag < ApplicationRecord
     # Load all caution flag rows into engine for each predicate
     where(version_id: version_id).find_each do |cf|
       predicates.map(&:to_sym).each do |predicate|
-        engine << [cf.id, predicate, cf[predicate]]
+        object = cf[predicate]
+        engine << [cf.id, predicate, object.kind_of?(String) ? object.downcase : object]
       end
     end
 
