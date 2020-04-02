@@ -14,7 +14,5 @@ class CreateCautionFlagRules < ActiveRecord::Migration[5.2]
 
   def down
     drop_table :caution_flag_rules
-
-    remove_foreign_key :caution_flag_rules, :rules
   end
 end
