@@ -98,6 +98,14 @@ FactoryBot.define do
       vet_tec_provider { true }
     end
 
+    trait :count_of_caution_flags do
+      institution { 'COLLEGE OF VET TEC PROVIDER' }
+      city { 'CHARLESTON' }
+      state { 'SC' }
+      country { 'USA' }
+      count_of_caution_flags { 1 }
+    end
+
     trait :preferred_provider do
       city { 'CHARLESTON' }
       state { 'SC' }

@@ -80,7 +80,8 @@
               "priority_enrollment": { "type": ["null", "boolean"] },
               "vet_tec_provider": { "type": "boolean" },
               "parent_facility_code_id": { "type": ["null", "string"] },
-              "campus_type": { "type": ["null", "string"] }
+              "campus_type": { "type": ["null", "string"] },
+              "count_of_caution_flags": { "type": ["null", "number"] }
             },
             "required": [
               "name",
@@ -112,7 +113,8 @@
               "priority_enrollment",
               "vet_tec_provider",
               "parent_facility_code_id",
-              "campus_type"
+              "campus_type",
+              "count_of_caution_flags"
             ]
           },
           "links": {

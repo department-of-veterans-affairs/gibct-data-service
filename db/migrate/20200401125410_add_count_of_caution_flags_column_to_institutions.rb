@@ -4,5 +4,4 @@ class AddCountOfCautionFlagsColumnToInstitutions < ActiveRecord::Migration[5.2]
   def change
       add_column :institutions, :count_of_caution_flags, :integer, :default => 0
     end
-  
-  end
+end

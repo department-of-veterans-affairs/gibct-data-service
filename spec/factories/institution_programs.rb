@@ -46,6 +46,10 @@ FactoryBot.define do
       institution { create(:institution, preferred_provider: true, version_id: Version.last.id) }
     end
 
+    trait :exclude_caution_flags do
+      institution { create(:institution, exclude_caution_flags: true, version_id: Version.last.id) }
+    end
+
     trait :ca_employer do
       institution { create(:institution, :ca_employer, version_id: Version.last.id) }
     end

@@ -487,6 +487,9 @@
             "requires_coe_and_criteria": {
               "type": ["null", "boolean"]
             },
+            "count_of_caution_flags": {
+              "type": ["null", "number"]
+            },
             "created_at": {
               "type": "string"
             },
@@ -565,7 +568,8 @@
             "preferred_provider",
             "stem_indicator",
             "parent_facility_code_id",
-            "campus_type"
+            "campus_type",
+            "count_of_caution_flags"
           ]
         },
         "links": {

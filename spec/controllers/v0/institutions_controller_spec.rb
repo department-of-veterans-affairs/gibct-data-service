@@ -256,6 +256,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
+
+    it 'filter by caution flags' do
+      create(:institution, :count_of_caution_flags, :start_like_harv)
+      get(:autocomplete, params: { term: 'harv' })
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
   end
 
   context 'with search results' do
