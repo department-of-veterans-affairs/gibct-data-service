@@ -1,4 +1,6 @@
 if ENV['CI'].blank?
+  
+  user = User.first
 
   puts 'Building Institutions'
   result = InstitutionBuilder.run(user)
