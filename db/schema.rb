@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_101010) do
+ActiveRecord::Schema.define(version: 2020_03_27_142848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -95,6 +95,17 @@ ActiveRecord::Schema.define(version: 2020_04_02_101010) do
     t.datetime "updated_at", null: false
     t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
+  end
+
+  create_table "caution_flag_rules", force: :cascade do |t|
+    t.bigint "rule_id"
+    t.string "title"
+    t.string "description"
+    t.string "link_text"
+    t.string "link_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rule_id"], name: "index_caution_flag_rules_on_rule_id"
   end
 
   create_table "caution_flags", force: :cascade do |t|
@@ -1214,6 +1225,17 @@ ActiveRecord::Schema.define(version: 2020_04_02_101010) do
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
+  create_table "rules", force: :cascade do |t|
+    t.string "rule_name", null: false
+    t.string "matcher", null: false
+    t.string "subject"
+    t.string "predicate"
+    t.string "object"
+    t.integer "priority"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "school_certifying_officials", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "institution_name"
@@ -1715,6 +1737,7 @@ ActiveRecord::Schema.define(version: 2020_04_02_101010) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flag_rules", "rules"
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
