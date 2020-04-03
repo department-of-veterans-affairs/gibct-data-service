@@ -158,7 +158,7 @@ if ENV['CI'].blank?
        title: 'Campus will be closing soon',
        description: 'This campus will be closing soon.',
        link_text: 'Visit the school\'s website to learn more',
-       link_url: 'SCHOOL_URL'
+       link_url: CautionFlagRule::SCHOOL_URL
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Assigned receiver has motioned court for an emergency closure of campus. Imminent closure is a distinct possibility.'),
