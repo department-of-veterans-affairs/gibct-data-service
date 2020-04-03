@@ -13,7 +13,7 @@ class CautionFlag < ApplicationRecord
     where(version_id: version_id).find_each do |cf|
       predicates.map(&:to_sym).each do |predicate|
         object = cf[predicate]
-        engine << [cf.id, predicate, object.kind_of?(String) ? object.downcase : object]
+        engine << [cf.id, predicate, object.is_a?(String) ? object.downcase : object]
       end
     end
 

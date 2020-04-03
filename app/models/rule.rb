@@ -34,7 +34,7 @@ class Rule < ApplicationRecord
   end
 
   def self.matcher_has(engine, rule)
-    object = rule.object.kind_of?(String) ? rule.object.downcase : rule.object
+    object = rule.object.is_a?(String) ? rule.object.downcase : rule.object
 
     # Use rule's values or use wildcard character
     engine.rule "type_rule_#{rule.id}" do
