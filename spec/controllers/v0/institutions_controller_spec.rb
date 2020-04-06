@@ -264,7 +264,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
-   end
+  end
 
   context 'with search results' do
     # need to separate methods in order to pass metrics::AbcSize cop
