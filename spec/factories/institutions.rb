@@ -92,6 +92,10 @@ FactoryBot.define do
       vet_tec_provider { true }
     end
 
+    trait :exclude_caution_flags do
+      count_of_caution_flags { 1 }
+    end
+
     trait :preferred_provider do
       city { 'CHARLESTON' }
       state { 'SC' }
