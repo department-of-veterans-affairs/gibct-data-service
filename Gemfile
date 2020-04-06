@@ -30,6 +30,7 @@ gem 'sentry-raven', '~> 2.9.0'
 gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
+gem 'wongi-engine', '~> 0.3.5'
 
 # Mass importing of CSV data
 gem 'activerecord-import'
