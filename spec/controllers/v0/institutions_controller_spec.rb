@@ -107,6 +107,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('autocomplete')
     end
 
+    it 'excludes institutions with caution flags' do
+      create(:institution, :exclude_caution_flags, :start_like_harv)
+      get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
     it 'filters by type' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :start_like_harv, :production_version, institution_type_name: 'PUBLIC')
@@ -256,15 +264,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
-
-    it 'filter by caution flags' do
-      create(:institution, :count_of_caution_flags, :start_like_harv)
-      get(:autocomplete, params: { term: 'harv' })
-      expect(JSON.parse(response.body)['data'].count).to eq(0)
-      expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('autocomplete')
-    end
-  end
+   end
 
   context 'with search results' do
     # need to separate methods in order to pass metrics::AbcSize cop

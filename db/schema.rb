@@ -419,7 +419,6 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
     t.boolean "complies_with_sec_103"
     t.boolean "solely_requires_coe"
     t.boolean "requires_coe_and_criteria"
-    t.integer "count_of_caution_flags", default: 0
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -566,7 +565,6 @@ ActiveRecord::Schema.define(version: 2020_03_27_142848) do
     t.boolean "complies_with_sec_103"
     t.boolean "solely_requires_coe"
     t.boolean "requires_coe_and_criteria"
-    t.integer "count_of_caution_flags", default: 0
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|

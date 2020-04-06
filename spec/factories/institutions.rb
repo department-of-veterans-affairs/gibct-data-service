@@ -17,14 +17,12 @@ FactoryBot.define do
       city { 'NEW YORK' }
       state { 'NY' }
       country { 'USA' }
-      count_of_caution_flags { 0 }
     end
 
     trait :in_new_rochelle do
       city { 'NEW ROCHELLE' }
       state { 'NY' }
       country { 'USA' }
-      count_of_caution_flags { 0 }
     end
 
     trait :in_chicago do
@@ -32,7 +30,6 @@ FactoryBot.define do
       state { 'IL' }
       country { 'USA' }
       stem_offered { true }
-      count_of_caution_flags { 0 }
     end
 
     trait :uchicago do
@@ -40,7 +37,6 @@ FactoryBot.define do
       city { 'SOME OTHER CITY' }
       state { 'IL' }
       country { 'USA' }
-      count_of_caution_flags { 0 }
     end
 
     trait :independent_study do
@@ -49,7 +45,6 @@ FactoryBot.define do
       state { 'NM' }
       country { 'USA' }
       independent_study { true }
-      count_of_caution_flags { 0 }
     end
 
     trait :priority_enrollment do
@@ -58,7 +53,6 @@ FactoryBot.define do
       state { 'NM' }
       country { 'USA' }
       priority_enrollment { true }
-      count_of_caution_flags { 0 }
     end
 
     trait :start_like_harv do
@@ -98,11 +92,12 @@ FactoryBot.define do
       vet_tec_provider { true }
     end
 
-    trait :count_of_caution_flags do
+    trait :exclude_caution_flags do
       institution { 'COLLEGE OF VET TEC PROVIDER' }
       city { 'CHARLESTON' }
       state { 'SC' }
       country { 'USA' }
+      vet_tec_provider { false }
       count_of_caution_flags { 1 }
     end
 
@@ -123,13 +118,6 @@ FactoryBot.define do
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
       physical_country { 'USA' }
-    end
-
-    trait :count_of_caution_flags do
-      physical_city { 'ATLANTIS CITY' }
-      physical_state { 'SC' }
-      physical_country { 'USA' }
-      count_of_caution_flag { 1 }
     end
 
     trait :production_version do
