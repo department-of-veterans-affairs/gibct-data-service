@@ -108,9 +108,11 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'excludes institutions with caution flags' do
-      create(:institution, :exclude_caution_flags, :start_like_harv)
+      institution = create(:institution, :start_like_harv, :production_version)
+      institution2 = create(:institution, :exclude_caution_flags, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end

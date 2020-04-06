@@ -93,11 +93,6 @@ FactoryBot.define do
     end
 
     trait :exclude_caution_flags do
-      institution { 'COLLEGE OF VET TEC PROVIDER' }
-      city { 'CHARLESTON' }
-      state { 'SC' }
-      country { 'USA' }
-      vet_tec_provider { false }
       count_of_caution_flags { 1 }
     end
 
