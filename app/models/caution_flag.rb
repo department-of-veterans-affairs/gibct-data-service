@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CautionFlag < ApplicationRecord
-  belongs_to :institution
+  belongs_to :institution, counter_cache: :count_of_caution_flags
 
   def self.map(version_id)
     engine = Rule.create_engine
