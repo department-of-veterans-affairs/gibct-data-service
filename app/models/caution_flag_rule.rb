@@ -3,7 +3,7 @@
 class CautionFlagRule < ApplicationRecord
   belongs_to :rule
 
-  SCHOOL_URL = 'SCHOOL_URL'.freeze
+  SCHOOL_URL = 'SCHOOL_URL'
 
   validates :rule, presence: true
 end
