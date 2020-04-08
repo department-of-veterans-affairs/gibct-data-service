@@ -938,5 +938,16 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when setting count_of_caution_flags' do
+      it 'has count greater than zero' do
+        create :accreditation_institute_campus
+        create :accreditation_action_probationary
+
+        described_class.run(user)
+
+        expect(institutions.where('count_of_caution_flags > 0').count).to be > 0
+      end
+    end
   end
 end
