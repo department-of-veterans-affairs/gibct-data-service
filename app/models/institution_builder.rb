@@ -39,6 +39,7 @@ module InstitutionBuilder
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
     CautionFlag.map(version.id)
+    set_count_of_caution_flags(version.id)
   end
 
   def self.run(user)
@@ -769,5 +770,18 @@ module InstitutionBuilder
     SQL
     sql = CautionFlag.send(:sanitize_sql, [str])
     CautionFlag.connection.execute(sql)
+  end
+
+  def self.set_count_of_caution_flags(version_id)
+    str = <<-SQL
+      UPDATE institutions SET count_of_caution_flags = (
+        SELECT count(1)
+        FROM caution_flags
+        WHERE caution_flags.institution_id = institutions.id
+        AND institutions.version_id = #{version_id}
+    )
+    SQL
+
+    Institution.connection.update(str)
   end
 end
