@@ -38,6 +38,8 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
+    CautionFlag.map(version.id)
+    set_count_of_caution_flags(version.id)
   end
 
   def self.run(user)
@@ -228,7 +230,7 @@ module InstitutionBuilder
       #{where_clause}
     SQL
 
-    build_caution_flags(version_id, CautionFlag::SOURCES[:accreditation_action],
+    build_caution_flags(version_id, AccreditationAction.name,
                         caution_flag_reason,
                         caution_flag_clause)
   end
@@ -314,7 +316,7 @@ module InstitutionBuilder
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:mou], reason, caution_flag_clause)
+    build_caution_flags(version_id, Mou.name, reason, caution_flag_clause)
   end
 
   def self.add_scorecard(version_id)
@@ -419,7 +421,7 @@ module InstitutionBuilder
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:sec_702], reason, caution_flag_clause)
+    build_caution_flags(version_id, Sec702.name, reason, caution_flag_clause)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
@@ -446,21 +448,16 @@ module InstitutionBuilder
     # End of BAH Caution Flag Cleanup
 
     reason = <<-SQL
-      settlement_list.descriptions
+      settlements.settlement_description
     SQL
     caution_flag_clause = <<-SQL
-      FROM institutions, (
-        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
-        FROM settlements
-        WHERE "cross" IS NOT NULL
-        GROUP BY "cross"
-      ) settlement_list
-      WHERE institutions.cross = settlement_list.cross
+	    FROM institutions JOIN settlements on institutions.cross = settlements.cross
+      WHERE settlements.cross IS NOT NULL
       AND institutions.version_id = #{version_id}
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:settlement], reason, caution_flag_clause)
+    build_caution_flags(version_id, Settlement.name, reason, caution_flag_clause)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school by ope
@@ -501,7 +498,7 @@ module InstitutionBuilder
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, CautionFlag::SOURCES[:hcm], reason, caution_flag_clause)
+    build_caution_flags(version_id, Hcm.name, reason, caution_flag_clause)
   end
 
   def self.add_complaint(version_id)
@@ -773,5 +770,18 @@ module InstitutionBuilder
     SQL
     sql = CautionFlag.send(:sanitize_sql, [str])
     CautionFlag.connection.execute(sql)
+  end
+
+  def self.set_count_of_caution_flags(version_id)
+    str = <<-SQL
+      UPDATE institutions SET count_of_caution_flags = (
+        SELECT count(1)
+        FROM caution_flags
+        WHERE caution_flags.institution_id = institutions.id
+        AND institutions.version_id = #{version_id}
+    )
+    SQL
+
+    Institution.connection.update(str)
   end
 end

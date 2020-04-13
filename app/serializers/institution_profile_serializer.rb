@@ -97,6 +97,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :complies_with_sec_103
   attribute :solely_requires_coe
   attribute :requires_coe_and_criteria
+  attribute :count_of_caution_flags
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
@@ -117,6 +118,12 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   def programs
     object.institution_programs.map do |program|
       InstitutionProgramProfileSerializer.new(program)
+    end
+  end
+
+  def caution_flags
+    object.caution_flags.map do |flag|
+      CautionFlagSerializer.new(flag)
     end
   end
 end

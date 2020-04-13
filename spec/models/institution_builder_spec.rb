@@ -284,7 +284,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:accreditation_action],
+                              source: AccreditationAction.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -295,7 +295,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:accreditation_action],
+                              source: AccreditationAction.name,
                               version_id: Version.current_preview.id })
                      .count).to eq(0)
         end
@@ -306,7 +306,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:accreditation_action],
+                                             source: AccreditationAction.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason)
@@ -385,7 +385,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:mou],
+                              source: Mou.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -395,7 +395,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:mou],
+                              source: Mou.name,
                               version_id: Version.current_preview.id })
                      .count).to eq(0)
         end
@@ -406,7 +406,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:mou],
+                                             source: Mou.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to eq(reason)
@@ -569,7 +569,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702, :institution_builder
           described_class.run(user)
           expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                     .where({ source: Sec702.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -578,20 +578,20 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :sec702_school, :institution_builder
           described_class.run(user)
           expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:sec_702],
+                     .where({ source: Sec702.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
 
         it 'has no flags when prefers Sec702School over Section702' do
-          create :weam, :institution_builder, :private
+          weam = create :weam, :institution_builder, :private
           create :sec702_school, :institution_builder, sec_702: true
           create :sec702, :institution_builder
           described_class.run(user)
-          expect(CautionFlag
-                     .where({ source: CautionFlag::SOURCES[:sec702],
-                              version_id: Version.current_preview.id })
-                     .count).to eq(0)
+          institution = Institution.where({ facility_code: weam.facility_code, version_id: Version.current_preview.id })
+                                   .first
+          expect(CautionFlag.where({ source: Sec702.name, version_id: Version.current_preview.id,
+                                     institution_id: institution.id }).count).to eq(0)
         end
       end
     end
@@ -606,7 +606,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:settlement],
+                              source: Settlement.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -618,7 +618,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:settlement],
+                                             source: Settlement.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason)
@@ -630,11 +630,10 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :settlement, :institution_builder, settlement_description: 'another description'
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:settlement],
+                                             source: Settlement.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(settlement.settlement_description)
-            .and match('another description')
         end
       end
     end
@@ -649,7 +648,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: CautionFlag::SOURCES[:hcm],
+                              source: Hcm.name,
                               version_id: Version.current_preview.id })
                      .count).to be > 0
         end
@@ -660,7 +659,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :hcm, :institution_builder
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:hcm],
+                                             source: Hcm.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(hcm.hcm_reason)
@@ -671,7 +670,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :hcm, :institution_builder, hcm_reason: 'another reason'
           described_class.run(user)
           caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                             source: CautionFlag::SOURCES[:hcm],
+                                             source: Hcm.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(Regexp.new(hcm.hcm_reason))
@@ -937,6 +936,17 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
           expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
         end
+      end
+    end
+
+    describe 'when setting count_of_caution_flags' do
+      it 'has count greater than zero' do
+        create :accreditation_institute_campus
+        create :accreditation_action_probationary
+
+        described_class.run(user)
+
+        expect(institutions.where('count_of_caution_flags > 0').count).to be > 0
       end
     end
   end

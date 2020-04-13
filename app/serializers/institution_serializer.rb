@@ -55,6 +55,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :campus_type
 
   attribute :preferred_provider
+  attribute :count_of_caution_flags
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
