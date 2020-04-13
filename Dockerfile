@@ -35,7 +35,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 # builder
 #
 # use --target=builder to stop here
-# this stage copies in the app and is used for running tests/lints/stuff
+# this stage copies the app and is used for running tests/lints/stuff
 # usually run via the docker-compose.test.yml
 ###
 FROM development AS builder
@@ -45,12 +45,6 @@ COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 ENV PATH="/usr/local/bundle/bin:${PATH}"
-
-# required env vars to run precompile - these don't really affect the
-# output of the precompile step so we can run precompile at build time
-# instead of at deploy time
-ENV DEPLOYMENT_ENV="vagov-prod" GIBCT_URL="https://www.va.gov/gi-bill-comparison-tool" GOVDELIVERY_STAGING_SERVICE="" GOVDELIVERY_TOKEN="" GOVDELIVERY_URL="" LINK_HOST="" SAML_CALLBACK_URL="" SAML_IDP_METADATA_FILE="" SAML_IDP_SSO_URL="" SAML_ISSUER="" SECRET_KEY_BASE=""
-RUN bundle exec rake assets:precompile
 
 ###
 # production
