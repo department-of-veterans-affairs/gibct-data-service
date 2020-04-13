@@ -1,5 +1,5 @@
-# Compose stack to run vets-api
-version: '2.1'
+# Compose stack to run gi-bill-data-service
+version: '3.4'
 services:
   postgres:
     image: "postgres:11.5"
@@ -12,9 +12,11 @@ services:
   gibct:
     build:
       context: .
+      target: development
     image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
-      - ".:/src/gibct"
+      - ".:/srv/gi-bill-data-service/src/:cached"
+      - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000
     environment:
@@ -36,3 +38,5 @@ services:
     links:
       - postgres
     command: bash --login -c "bundle exec rails s"
+volumes:
+  dev_bundle:
