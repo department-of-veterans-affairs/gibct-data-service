@@ -35,7 +35,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 # builder
 #
 # use --target=builder to stop here
-# this stage copies in the app and is used for running tests/lints/stuff
+# this stage copies the app and is used for running tests/lints/stuff
 # usually run via the docker-compose.test.yml
 ###
 FROM development AS builder
