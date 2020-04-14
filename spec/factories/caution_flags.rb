@@ -18,5 +18,18 @@ FactoryBot.define do
       source { Settlement.name }
       reason { 'Settlement with U.S. Government' }
     end
+
+    trait :closing_settlement_pre_map do
+      source { Settlement.name }
+      reason { 'TEST' }
+    end
+
+    trait :institution_url_with_protocol do
+      institution { create(:institution, insturl: 'http://www.school-good.edu') }
+    end
+
+    trait :institution_url_without_protocol do
+      institution { create(:institution) }
+    end
   end
 end

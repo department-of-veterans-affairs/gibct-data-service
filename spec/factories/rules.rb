@@ -18,5 +18,10 @@ FactoryBot.define do
       object { 'Settlement with U.S. Government' }
       predicate { 'reason' }
     end
+
+    trait :closing_settlement_reason do
+      object { 'TEST' }
+      predicate { 'reason' }
+    end
   end
 end
