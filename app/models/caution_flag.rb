@@ -53,8 +53,7 @@ class CautionFlag < ApplicationRecord
       str = <<-SQL
             UPDATE #{table_name} SET #{cols_to_update(cols_map_update)}
             FROM #{CautionFlagRule.table_name}
-            WHERE #{CautionFlagRule.table_name}.id = #{rule.id}
-            AND #{table_name}.id in (#{ids.join(',')})
+            WHERE #{CautionFlagRule.table_name}.id = #{rule.id} AND #{table_name}.id in (#{ids.join(',')})
       SQL
     end
 
