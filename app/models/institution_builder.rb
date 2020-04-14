@@ -9,6 +9,13 @@ module InstitutionBuilder
   def self.run_insertions(version)
     initialize_with_weams(version)
     add_crosswalk(version.id)
+
+    # prod flag for bah-6852
+    if !production?
+      add_sec103(version.id)
+      override_approved_based_on_sec103(version.id)
+    end
+
     add_sva(version.id)
     add_vsoc(version.id)
     add_eight_key(version.id)
@@ -33,8 +40,6 @@ module InstitutionBuilder
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
-    # prod flag for bah-6852
-    add_sec103(version.id) unless production?
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
@@ -643,6 +648,16 @@ module InstitutionBuilder
       FROM  sec103s
       WHERE institutions.facility_code = sec103s.facility_code
       AND institutions.version_id = #{version_id}
+    SQL
+
+    Institution.connection.update(str)
+  end
+
+  def self.override_approved_based_on_sec103(version_id)
+    str = <<-SQL
+        UPDATE institutions SET approved = false
+        WHERE institutions.complies_with_sec_103 = false
+        AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
