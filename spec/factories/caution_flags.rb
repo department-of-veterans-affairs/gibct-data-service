@@ -21,7 +21,7 @@ FactoryBot.define do
 
     trait :closing_settlement_pre_map do
       source { Settlement.name }
-      reason { 'TEST' }
+      reason { 'closing reason' }
     end
 
     trait :institution_url_with_protocol do

@@ -20,7 +20,7 @@ FactoryBot.define do
     end
 
     trait :closing_settlement_reason do
-      object { 'TEST' }
+      object { 'closing reason' }
       predicate { 'reason' }
     end
   end
