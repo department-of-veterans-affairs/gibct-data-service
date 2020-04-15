@@ -651,14 +651,14 @@ module InstitutionBuilder
         #{columns_for_update(Sec103)},
         section_103_message = CASE
           WHEN sec103s.complies_with_sec_103 = true
-            AND sec103s.solely_requires_coe = false 
+            AND sec103s.solely_requires_coe = false
             AND (sec103s.requires_coe_and_criteria = true OR sec103s.requires_coe_and_criteria IS NULL) THEN
             'Requires Certificate of Eligibility (COE) and additional criteria'
           WHEN sec103s.complies_with_sec_103 = true
             AND sec103s.solely_requires_coe = true THEN
             'Requires Certificate of Eligibility (COE)'
           ELSE
-            'No information available at this time'  
+            'No information available at this time'
           END
       FROM  sec103s
       WHERE institutions.facility_code = sec103s.facility_code
@@ -670,7 +670,9 @@ module InstitutionBuilder
       AND institutions.version_id = #{version_id};
     SQL
 
-    Institution.connection.execute(str)
+    sql = InstitutionProgram.send(:sanitize_sql, [str])
+
+    Institution.connection.execute(sql)
   end
 
   # edu_programs.length_in_weeks is being used twice because
