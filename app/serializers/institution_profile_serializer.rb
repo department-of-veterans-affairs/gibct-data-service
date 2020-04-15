@@ -98,6 +98,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :solely_requires_coe
   attribute :requires_coe_and_criteria
   attribute :count_of_caution_flags
+  attribute :section_103_message
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
