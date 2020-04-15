@@ -642,20 +642,17 @@ module InstitutionBuilder
   def self.add_sec103(version_id)
     str = <<-SQL
       -- default message
-      UPDATE Institutions
-      SET section_103_message = 'No information available at this time'
+      UPDATE Institutions SET section_103_message = 'No information available at this time'
       WHERE version_id = #{version_id};
 
       -- set message based on sec103s
       UPDATE institutions SET
         #{columns_for_update(Sec103)},
         section_103_message = CASE
-          WHEN sec103s.complies_with_sec_103 = true
-            AND sec103s.solely_requires_coe = false
+          WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = false
             AND (sec103s.requires_coe_and_criteria = true OR sec103s.requires_coe_and_criteria IS NULL) THEN
             'Requires Certificate of Eligibility (COE) and additional criteria'
-          WHEN sec103s.complies_with_sec_103 = true
-            AND sec103s.solely_requires_coe = true THEN
+          WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = true THEN
             'Requires Certificate of Eligibility (COE)'
           ELSE
             'No information available at this time'
