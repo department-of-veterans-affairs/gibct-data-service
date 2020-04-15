@@ -27,5 +27,29 @@ RSpec.describe CautionFlag, type: :model do
       expect(described_class.select(:title)
                  .where(version_id: version.id).pluck(:title)).to all(be)
     end
+
+    it 'uses institution url' do
+      flag = create :caution_flag,
+                    :closing_settlement_pre_map,
+                    :institution_url_with_protocol,
+                    version_id: version.id
+      create :caution_flag_rule, :closing_settlement_rule
+
+      described_class.map(version.id)
+
+      expect(flag.reload['link_url']).to eq(flag.institution.insturl)
+    end
+
+    it 'adds protocol to school url' do
+      flag = create :caution_flag,
+                    :closing_settlement_pre_map,
+                    :institution_url_without_protocol,
+                    version_id: version.id
+      create :caution_flag_rule, :closing_settlement_rule
+
+      described_class.map(version.id)
+
+      expect(flag.reload['link_url']).to eq('http://' + flag.institution.insturl)
+    end
   end
 end
