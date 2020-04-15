@@ -37,7 +37,13 @@ class CautionFlag < ApplicationRecord
     if rule.link_url == CautionFlagRule::SCHOOL_URL
       cols_map_update.pop
       str = <<-SQL
-          UPDATE #{table_name} SET #{cols_to_update(cols_map_update)}, link_url = #{Institution.table_name}.insturl
+            UPDATE #{table_name} SET #{cols_to_update(cols_map_update)},
+            link_url = CASE
+              WHEN LEFT(LOWER(#{Institution.table_name}.insturl), 4) != 'http' THEN
+                'http://' || #{Institution.table_name}.insturl
+              ELSE
+                #{Institution.table_name}.insturl
+              END
           FROM #{CautionFlagRule.table_name}, #{Institution.table_name}
           WHERE #{CautionFlagRule.table_name}.id = #{rule.id}
           AND #{table_name}.id in (#{ids.join(',')})
@@ -47,8 +53,7 @@ class CautionFlag < ApplicationRecord
       str = <<-SQL
             UPDATE #{table_name} SET #{cols_to_update(cols_map_update)}
             FROM #{CautionFlagRule.table_name}
-            WHERE #{CautionFlagRule.table_name}.id = #{rule.id}
-            AND #{table_name}.id in (#{ids.join(',')})
+            WHERE #{CautionFlagRule.table_name}.id = #{rule.id} AND #{table_name}.id in (#{ids.join(',')})
       SQL
     end
 
