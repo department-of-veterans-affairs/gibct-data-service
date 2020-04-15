@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_14_145010) do
+ActiveRecord::Schema.define(version: 2020_04_15_150200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -568,6 +568,7 @@ ActiveRecord::Schema.define(version: 2020_04_14_145010) do
     t.boolean "solely_requires_coe"
     t.boolean "requires_coe_and_criteria"
     t.integer "count_of_caution_flags", default: 0
+    t.string "section_103_message"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
