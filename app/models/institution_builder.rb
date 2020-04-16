@@ -803,7 +803,8 @@ module InstitutionBuilder
         FROM caution_flags
         WHERE caution_flags.institution_id = institutions.id
         AND institutions.version_id = #{version_id}
-    )
+      )
+      WHERE institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
