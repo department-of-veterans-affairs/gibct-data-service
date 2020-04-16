@@ -641,10 +641,6 @@ module InstitutionBuilder
 
   def self.add_sec103(version_id)
     str = <<-SQL
-      -- default message
-      UPDATE Institutions SET section_103_message = 'No information available at this time'
-      WHERE version_id = #{version_id};
-
       -- set message based on sec103s
       UPDATE institutions SET
         #{columns_for_update(Sec103)},
