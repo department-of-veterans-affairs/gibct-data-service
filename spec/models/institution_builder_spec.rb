@@ -956,7 +956,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.all)
-            .to all(have_attributes('section_103_message' => 'No information available at this time'))
+          .to all(have_attributes('section_103_message' => 'No information available at this time'))
       end
 
       it 'sets certificate required message' do
@@ -966,7 +966,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-            .to eq('Requires Certificate of Eligibility (COE)')
+          .to eq('Requires Certificate of Eligibility (COE)')
       end
 
       it 'sets certificate required plus additional message' do
@@ -976,7 +976,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-            .to eq('Requires Certificate of Eligibility (COE) and additional criteria')
+          .to eq('Requires Certificate of Eligibility (COE) and additional criteria')
       end
 
       it 'institutions that explicitly do not comply with section 103 are not approved ' do
