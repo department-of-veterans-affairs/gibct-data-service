@@ -30,14 +30,18 @@ class CautionFlag < ApplicationRecord
   end
 
   def self.apply_update(rule, ids)
-    cols_map_update = %i[
-      title description link_text link_url
-    ]
-
     if rule.link_url == CautionFlagRule::SCHOOL_URL
-      cols_map_update.pop
+      cols_map_update = %i[
+        title description
+      ]
       str = <<-SQL
             UPDATE #{table_name} SET #{cols_to_update(cols_map_update)},
+            link_text = CASE
+              WHEN #{Institution.table_name}.insturl IS NULL THEN
+                #{CautionFlagRule.table_name}.link_text || '.'
+              ELSE
+                #{CautionFlagRule.table_name}.link_text
+              END,
             link_url = CASE
               WHEN LEFT(LOWER(#{Institution.table_name}.insturl), 4) != 'http' THEN
                 'http://' || #{Institution.table_name}.insturl
@@ -50,6 +54,9 @@ class CautionFlag < ApplicationRecord
           AND #{Institution.table_name}.id = #{table_name}.institution_id
       SQL
     else
+      cols_map_update = %i[
+        title description link_text link_url
+      ]
       str = <<-SQL
             UPDATE #{table_name} SET #{cols_to_update(cols_map_update)}
             FROM #{CautionFlagRule.table_name}
