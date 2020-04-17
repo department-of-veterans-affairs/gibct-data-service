@@ -218,8 +218,8 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Settlement with U.S. Government'),
-       title: 'School has settled its case with the U.S. Government',
-       description: 'The U.S. Government has reached a settlement with this institution. ',
+       title: 'School has settled its case with the U.S. government',
+       description: 'The U.S. government has reached a settlement with this institution.',
        link_text: nil,
        link_url: nil,
       },
