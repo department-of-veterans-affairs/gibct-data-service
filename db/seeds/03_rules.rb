@@ -128,7 +128,7 @@ if ENV['CI'].blank?
       # accreditation
       {rule_id: rule_id(rule_results, AccreditationAction.name),
        title: 'School has an accreditation issue',
-       description: 'This school\'s accreditation has been revoked and is under appeal, or the school has been placed on probation as it didn\'t meet acceptable levels of quality.',
+       description: 'This school\'s accreditation has been taken away and is under appeal, or the school has been placed on probation, because it didn\'t meet acceptable levels of quality.',
        link_text: 'Learn more about this school\'s accreditation',
        link_url: 'http://ope.ed.gov/accreditation/'
       },
