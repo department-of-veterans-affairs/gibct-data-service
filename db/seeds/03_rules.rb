@@ -142,8 +142,8 @@ if ENV['CI'].blank?
       # mou
       {rule_id: rule_id(rule_results, Mou.name),
        title: 'School is on Military Tuition Assistance probation',
-       description: 'This school is on Department of Defense (DoD) Probation for Military Tuition Assistance (TA).',
-       link_text: 'Learn about DoD probation',
+       description: 'This school is on Department of Defense (DOD) probation for Military Tuition Assistance (TA).',
+       link_text: 'Learn about DOD probation',
        link_url: 'https://www.dodmou.com/Home/Faq'
       },
       # sec702
