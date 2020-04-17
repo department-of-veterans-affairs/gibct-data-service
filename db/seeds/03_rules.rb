@@ -225,8 +225,8 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Settlement reached with States Attorney General'),
-       title: 'School has settled its case with the State Attorney General',
-       description: 'The State\'s Attorney General has reached a settlement with this school.',
+       title: 'School has settled its case with the state Attorney General',
+       description: 'The state\'s Attorney General has reached a settlement with this school. ',
        link_text: nil,
        link_url: nil,
       },
