@@ -176,14 +176,14 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Denial of Recertification Application to Participate in the Federal Student Financial Assistance Programs Issued by Department of Education'),
-       title: 'School denied recertification for Federal Student Financial Assistance Programs',
+       title: 'School denied recertification for federal student financial assistance programs',
        description: 'This school\'s recertification application to participate in the Federal Student Financial Assistance Programs issued by Department of Education has been denied. ',
        link_text: 'Learn more about denial of recertification',
        link_url: 'https://www.benefits.va.gov/gibill/comparison_tool/about_this_tool.asp#TitleIV',
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Denial of Recertification Application to Participate in the Federal Student Financial Assistance Program'),
-       title: 'School denied recertification for Federal Student Financial Assistance Programs',
+       title: 'School denied recertification for federal student financial assistance programs',
        description: 'This school\'s recertification application to participate in the Federal Student Financial Assistance Programs issued by Department of Education has been denied. ',
        link_text: 'Learn more about denial of recertification',
        link_url: 'https://www.benefits.va.gov/gibill/comparison_tool/about_this_tool.asp#TitleIV',
