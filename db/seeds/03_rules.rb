@@ -198,7 +198,7 @@ if ENV['CI'].blank?
       #settlement
       {rule_id: rule_id(rule_results, 'Post 9/11 GI Bill (CH33) not Approved at this location'),
        title: 'School isn\'t approved for Post-9/11 GI Bill benefits',
-       description: 'Post 9/11 GI Bill (CH33) benefits can\'t be used at this school as the school is not approved for them.',
+       description: 'Post 9/11 GI Bill (Chapter 33) benefits can\'t be used at this school as the school is not approved for them.',
        link_text: nil,
        link_url: nil,
       },
