@@ -134,8 +134,8 @@ if ENV['CI'].blank?
       },
       # hcm
       {rule_id: rule_id(rule_results, Hcm.name),
-       title: 'School is on heightened cash monitoring',
-       description: 'The Department of Education has placed this school on Heightened Cash Monitoring due to financial or federal compliance issues.',
+       title: 'School placed on Heightened Cash Monitoring',
+       description: 'The Department of Education has placed this school on Heightened Cash Monitoring because of financial or federal compliance issues.',
        link_text: 'Learn more about Heightened Cash Monitoring',
        link_url: 'https://studentaid.ed.gov/sa/about/data-center/school/hcm'
       },
