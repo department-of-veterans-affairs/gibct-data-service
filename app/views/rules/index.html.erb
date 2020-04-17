@@ -1,0 +1,65 @@
+<div class="row row-space-6">
+  <div class="col-md-8">
+  <%= form_with(url: rules_update_path, id: 'rules_update') do %>
+    <div class="row">
+      <div class="col-md-10">
+        <h3>Manage Caution Flag Rules</h3>
+      </div>
+    </div>
+    <div align="right" class="col-md-2 top-table-button-div">
+      <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
+      <%= submit_tag("Save", class: 'btn dashboard-btn-success', id: "submit-button") %>
+    </div>
+    <div>
+      <table class="table table-hover table-condensed table-bordered table-responsive">
+          <thead class="sub">
+            <th>rule_name</th>
+            <th>matcher</th>
+            <th>subject</th>
+            <th>predicate</th>
+            <th>object</th>
+            <th>priority</th>
+            <th>title</th>
+            <th>description</th>
+            <th>link_text</th>
+            <th>link_url</th>
+          </thead>
+          <tbody>
+              <% @caution_flag_rules.each do |caution_flag_rule| %>
+                <tr>
+                  <td> <%= caution_flag_rule.rule.rule_name %></td>
+                  <td> <%= caution_flag_rule.rule.matcher %></td>
+                  <td> <%= caution_flag_rule.rule.subject %></td>
+                  <td> <%= caution_flag_rule.rule.predicate %></td>
+                  <td> <%= caution_flag_rule.rule.object %></td>
+                  <td> <%= caution_flag_rule.rule.priority %></td>
+                  <td>
+                    <textarea rows="5" cols="33">
+                      <%= caution_flag_rule.title %>
+                    </textarea>
+                  </td>
+                  <td>
+                    <textarea rows="5" cols="33">
+                      <%= caution_flag_rule.description %>
+                    </textarea>
+                  </td>
+                  <td>
+                    <textarea rows="5" cols="33">
+                      <%= caution_flag_rule.link_text %>
+                    </textarea>
+                  </td>
+                  <td>
+                    <textarea rows="5" cols="33">
+                      <%= caution_flag_rule.link_url %>
+                    </textarea>
+                  </td>
+                </tr>
+              <% end %>
+          </tbody>
+        </table>
+      </div>
+  <% end %>
+  </div>
+</div>
+
+
