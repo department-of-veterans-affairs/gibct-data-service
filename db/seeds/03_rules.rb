@@ -149,7 +149,7 @@ if ENV['CI'].blank?
       # sec702
       {rule_id: rule_id(rule_results, Sec702.name),
        title: 'School isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits',
-       description: 'This school isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits because it doesn\'t comply with Section 702. This law requires public universities to offer recent Veterans and other covered individuals in-state tuition, regardless of their state residency.'
+       description: 'This school isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits because it doesn\'t comply with Section 702. This law requires public universities to offer recent Veterans and other covered individuals in-state tuition, regardless of their state residency.',
        link_text: 'Learn more about Section 702 requirements',
        link_url: 'https://www.benefits.va.gov/gibill/docs/factsheets/section_702_factsheet.pdf'
       },
