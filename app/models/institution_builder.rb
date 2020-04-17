@@ -9,6 +9,10 @@ module InstitutionBuilder
   def self.run_insertions(version)
     initialize_with_weams(version)
     add_crosswalk(version.id)
+
+    # prod flag for bah-6852
+    add_sec103(version.id) unless production?
+
     add_sva(version.id)
     add_vsoc(version.id)
     add_eight_key(version.id)
@@ -33,8 +37,6 @@ module InstitutionBuilder
     add_vet_tec_provider(version.id)
     add_extension_campus_type(version.id)
     add_sec109_closed_school(version.id)
-    # prod flag for bah-6852
-    add_sec103(version.id) unless production?
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
@@ -639,13 +641,31 @@ module InstitutionBuilder
 
   def self.add_sec103(version_id)
     str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(Sec103)}
+      -- set message based on sec103s
+      UPDATE institutions SET
+        #{columns_for_update(Sec103)},
+        section_103_message = CASE
+          WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = false
+            AND (sec103s.requires_coe_and_criteria = true OR sec103s.requires_coe_and_criteria IS NULL) THEN
+            'Requires Certificate of Eligibility (COE) and additional criteria'
+          WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = true THEN
+            'Requires Certificate of Eligibility (COE)'
+          ELSE
+            'No information available at this time'
+          END
       FROM  sec103s
       WHERE institutions.facility_code = sec103s.facility_code
-      AND institutions.version_id = #{version_id}
+      AND institutions.version_id = #{version_id};
+
+      -- override approved based on section 103 data
+      UPDATE institutions SET approved = false
+      WHERE institutions.complies_with_sec_103 = false
+      AND institutions.version_id = #{version_id};
     SQL
 
-    Institution.connection.update(str)
+    sql = InstitutionProgram.send(:sanitize_sql, [str])
+
+    Institution.connection.execute(sql)
   end
 
   # edu_programs.length_in_weeks is being used twice because
