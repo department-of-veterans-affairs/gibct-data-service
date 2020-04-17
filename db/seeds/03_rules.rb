@@ -163,7 +163,7 @@ if ENV['CI'].blank?
       #settlement
       {rule_id: rule_id(rule_results, 'Assigned receiver has motioned court for an emergency closure of campus. Imminent closure is a distinct possibility.'),
        title: 'Court-ordered emergency campus closure pending for this school',
-       description: 'An assigned receiver has motioned the court for an emergency closure of this campus. It may close soon.',
+       description: 'An individual or business placed in charge of this institution\'s finances has motioned the court for an emergency closure of this campus. It may close soon.',
        link_text: nil,
        link_url: nil,
       },
