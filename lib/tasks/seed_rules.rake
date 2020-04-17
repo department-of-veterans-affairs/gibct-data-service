@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'seed_utils'
-
 namespace :db do
   desc 'Seeds rules, caution_flag_rules from db/seeds/03_rules.rb'
   task :seed_rules, [:seed_filename] => [:environment] do |_task, args|
