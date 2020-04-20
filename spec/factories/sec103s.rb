@@ -7,5 +7,13 @@ FactoryBot.define do
     complies_with_sec_103 { true }
     solely_requires_coe { true }
     requires_coe_and_criteria { true }
+
+    trait :requires_additional do
+      solely_requires_coe { false }
+    end
+
+    trait :does_not_comply do
+      complies_with_sec_103 { false }
+    end
   end
 end

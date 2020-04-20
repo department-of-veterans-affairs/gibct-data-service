@@ -949,5 +949,44 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institutions.where('count_of_caution_flags > 0').count).to be > 0
       end
     end
+
+    describe 'when setting section 103 data' do
+      it 'sets default message' do
+        create :weam
+        described_class.run(user)
+
+        expect(institutions.all)
+          .to all(have_attributes('section_103_message' => 'No information available at this time'))
+      end
+
+      it 'sets certificate required message' do
+        weam = create :weam
+        create :sec103, facility_code: weam.facility_code
+
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
+          .to eq('Requires Certificate of Eligibility (COE)')
+      end
+
+      it 'sets certificate required plus additional message' do
+        weam = create :weam
+        create :sec103, :requires_additional, facility_code: weam.facility_code
+
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
+          .to eq('Requires Certificate of Eligibility (COE) and additional criteria')
+      end
+
+      it 'institutions that explicitly do not comply with section 103 are not approved ' do
+        weam = create :weam
+        create :sec103, :does_not_comply, facility_code: weam.facility_code
+
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['approved']).to eq(false)
+      end
+    end
   end
 end
