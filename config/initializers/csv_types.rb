@@ -30,9 +30,11 @@ CSV_TYPES_TABLES = [
   { klass: Sec109ClosedSchool, required?: true },
   { klass: Program, required?: false },
   { klass: SchoolCertifyingOfficial, required?: false},
-  { klass: EduProgram, required?: false }
+  { klass: EduProgram, required?: false },
+  { klass: Sec103, required?: false, not_prod_ready?: true}
 ].freeze
 
 CSV_TYPES_REQUIRED_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:required?] }.map { |table| table[:klass].name }
 CSV_TYPES_HAS_API_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }
 CSV_TYPES_ALL_TABLES = CSV_TYPES_TABLES.map { |table| table[:klass] }
+CSV_TYPES_NO_PROD_NAMES = CSV_TYPES_TABLES.select { |table| table[:not_prod_ready?] }.map { |table| table[:klass].name }

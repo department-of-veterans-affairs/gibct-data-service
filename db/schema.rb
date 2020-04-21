@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_12_206022) do
+ActiveRecord::Schema.define(version: 2020_04_15_150200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -93,7 +93,32 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.float "float_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
+  end
+
+  create_table "caution_flag_rules", force: :cascade do |t|
+    t.bigint "rule_id"
+    t.string "title"
+    t.string "description"
+    t.string "link_text"
+    t.string "link_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rule_id"], name: "index_caution_flag_rules_on_rule_id"
+  end
+
+  create_table "caution_flags", force: :cascade do |t|
+    t.integer "institution_id"
+    t.integer "version_id"
+    t.string "source"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title"
+    t.string "description"
+    t.string "link_text"
+    t.string "link_url"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
@@ -206,6 +231,15 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ope"], name: "index_hcms_on_ope"
+    t.index ["ope6"], name: "index_hcms_on_ope6"
+  end
+
+  create_table "ignored_crosswalk_issues", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "cross"
+    t.string "ope"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
@@ -382,6 +416,11 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+    t.integer "count_of_caution_flags", default: 0
+    t.string "section_103_message", default: "No information available at this time"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -395,6 +434,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
     t.index ["ope6"], name: "index_institutions_on_ope6"
+    t.index ["parent_facility_code_id"], name: "index_institutions_on_parent_facility_code_id"
     t.index ["state"], name: "index_institutions_on_state"
     t.index ["stem_offered"], name: "index_institutions_on_stem_offered"
     t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id"
@@ -524,6 +564,11 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.string "campus_type"
     t.string "parent_facility_code_id"
     t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+    t.integer "count_of_caution_flags", default: 0
+    t.string "section_103_message"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -852,6 +897,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.integer "chg9ay3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cross"], name: "index_ipeds_ic_ays_on_cross"
   end
 
   create_table "ipeds_ic_pies", id: :serial, force: :cascade do |t|
@@ -983,6 +1029,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.integer "mthcmp6"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cross"], name: "index_ipeds_ic_pies_on_cross"
   end
 
   create_table "ipeds_ics", id: :serial, force: :cascade do |t|
@@ -1180,6 +1227,17 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
+  create_table "rules", force: :cascade do |t|
+    t.string "rule_name", null: false
+    t.string "matcher", null: false
+    t.string "subject"
+    t.string "predicate"
+    t.string "object"
+    t.integer "priority"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "school_certifying_officials", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "institution_name"
@@ -1191,8 +1249,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
-    t.bigint "institution_id"
-    t.index ["institution_id"], name: "index_school_certifying_officials_on_institution_id"
+    t.index ["facility_code"], name: "index_school_certifying_officials_on_facility_code"
   end
 
   create_table "school_closures", id: :serial, force: :cascade do |t|
@@ -1338,10 +1395,19 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.index ["ope"], name: "index_scorecards_on_ope"
   end
 
+  create_table "sec103s", force: :cascade do |t|
+    t.string "name"
+    t.string "facility_code", null: false
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+  end
+
   create_table "sec109_closed_schools", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "school_name"
     t.boolean "closure109"
+    t.index ["facility_code"], name: "index_sec109_closed_schools_on_facility_code"
   end
 
   create_table "sec702_schools", id: :serial, force: :cascade do |t|
@@ -1611,6 +1677,37 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.decimal "contribution_amount", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "amendment_date"
+    t.string "campus"
+    t.string "city"
+    t.boolean "consolidated_agreement"
+    t.date "date_agreement_received"
+    t.date "date_confirmation_sent"
+    t.date "date_yr_signed_by_yr_official"
+    t.string "facility_code"
+    t.boolean "flight_school"
+    t.boolean "ineligible"
+    t.string "initials_yr_processor"
+    t.boolean "missed_deadline"
+    t.boolean "modified"
+    t.boolean "new_school"
+    t.text "notes"
+    t.boolean "open_ended_agreement"
+    t.string "public_private"
+    t.string "school_name_in_weams"
+    t.string "school_name_in_yr_database"
+    t.string "sco_email_address"
+    t.string "sco_name"
+    t.string "sco_telephone_number"
+    t.string "sfr_email_address"
+    t.string "sfr_name"
+    t.string "sfr_telephone_number"
+    t.string "state"
+    t.string "street_address"
+    t.boolean "updated_for_2011_2012"
+    t.boolean "withdrawn"
+    t.string "year_of_yr_participation"
+    t.string "zip"
     t.index ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id"
     t.index ["version"], name: "index_yellow_ribbon_programs_on_version"
   end
@@ -1642,11 +1739,13 @@ ActiveRecord::Schema.define(version: 2020_02_12_206022) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flag_rules", "rules"
+  add_foreign_key "caution_flags", "institutions"
+  add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institutions", "versions"
-  add_foreign_key "school_certifying_officials", "institutions"
   add_foreign_key "versioned_school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
 end

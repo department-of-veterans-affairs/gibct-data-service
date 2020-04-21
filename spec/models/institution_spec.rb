@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'models/shared_examples/shared_examples_for_exportable_by_version'
 
 RSpec.describe Institution, type: :model do
+  it_behaves_like 'an exportable model by version'
+
   describe 'when validating' do
     subject(:institution) { create :institution }
 

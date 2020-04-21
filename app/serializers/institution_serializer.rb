@@ -20,6 +20,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :gibill, key: :student_count
   attribute :caution_flag
   attribute :caution_flag_reason
+  attribute :caution_flags
   attribute :created_at
   attribute :updated_at
   attribute :address_1
@@ -47,12 +48,14 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
 
   attribute :school_closing
+  attribute :school_closing_on
   attribute :closure109
   attribute :vet_tec_provider
   attribute :parent_facility_code_id
   attribute :campus_type
 
   attribute :preferred_provider
+  attribute :count_of_caution_flags
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

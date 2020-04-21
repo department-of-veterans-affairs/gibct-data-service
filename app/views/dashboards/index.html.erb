@@ -9,7 +9,7 @@
   <div class="col-xs-12">
     <table class="table table-hover table-condensed table-bordered table-responsive">
       <thead>
-        <th width=7%>Version ID</td>
+        <th width=7%>Version Number</td>
         <th width=23%>Version UUID</th>
         <th width=20%>Published By</th>
         <th width=20%>Published Date</th>
@@ -65,7 +65,7 @@
     <div class="col-xs-12">
       <table class="table table-hover table-condensed table-bordered table-responsive">
         <thead>
-          <th width=7%>Version ID</td>
+          <th width=7%>Version Number</td>
           <th width=23%>Version UUID</th>
           <th width=20%>Created By</th>
           <th width=20%>Created Date</th>
@@ -77,6 +77,8 @@
       </table>
     </div>
 </div>
+
+<%= render partial: 'crosswalk_issues' %>
 
 <h2>Latest Uploads
   <%= link_to 'View Upload History', uploads_path, class: "btn dashboard-btn-info btn-xs", role: "button" %>

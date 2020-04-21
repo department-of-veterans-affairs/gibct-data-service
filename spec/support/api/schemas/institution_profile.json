@@ -278,6 +278,9 @@
             "caution_flag_reason": {
               "type": ["null", "string"]
             },
+            "caution_flags": {
+              "type": ["null", "array"]
+            },
             "school_closing": {
               "type": ["null", "boolean"]
             },
@@ -475,6 +478,12 @@
                 "type": "object"
               }
             },
+            "section_103_message": {
+              "type": ["null", "string"]
+            },
+            "count_of_caution_flags": {
+              "type": ["null", "number"]
+            },
             "created_at": {
               "type": "string"
             },
@@ -542,6 +551,7 @@
             "accreditation_status",
             "caution_flag",
             "caution_flag_reason",
+            "caution_flags",
             "complaints",
             "school_closing",
             "school_closing_on",
@@ -552,7 +562,8 @@
             "preferred_provider",
             "stem_indicator",
             "parent_facility_code_id",
-            "campus_type"
+            "campus_type",
+            "count_of_caution_flags"
           ]
         },
         "links": {

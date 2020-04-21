@@ -9,9 +9,9 @@ ruby '2.5.7'
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 3.12.4'
 
-gem 'rails', '5.2.3'
+gem 'rails', '~> 5.2.4'
 
 # Gems with special version/repo needs
 
@@ -25,17 +25,14 @@ gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
-gem 'newrelic_rpm'
+gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 gem 'sentry-raven', '~> 2.9.0'
-
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'sitemap_generator'
 gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
+gem 'wongi-engine', '~> 0.3.5'
 
 # Mass importing of CSV data
 gem 'activerecord-import'
@@ -50,6 +47,7 @@ gem 'figaro'
 gem 'font-awesome-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+gem 'newrelic_rpm'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 
 # CORS
@@ -58,7 +56,7 @@ gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
-
+gem 'sitemap_generator'
 gem 'strong_migrations'
 gem 'will_paginate'
 

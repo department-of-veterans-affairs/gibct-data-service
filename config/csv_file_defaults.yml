@@ -135,3 +135,7 @@ SchoolCertifyingOfficial:
 EduProgram:
   skip_lines: 0
   col_sep: ","
+
+Sec103:
+  skip_lines: 0
+  col_sep: ","

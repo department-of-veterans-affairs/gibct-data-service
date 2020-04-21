@@ -6,7 +6,7 @@ module CsvHelper
       generate(csv_headers)
     end
 
-    def export_institutions_by_version(number)
+    def export_by_version(number)
       generate_version(csv_headers, number)
     end
 
@@ -52,8 +52,10 @@ module CsvHelper
     def write_versioned_row(csv, csv_headers, number)
       raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
 
-      klass.where(version: number).find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
-        csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
+      klass.joins(:version)
+           .where('versions.number = ?', number)
+           .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
+        csv << csv_headers.keys.map { |k| record.respond_to?(k) == false ? nil : format(k, record.public_send(k)) }
       end
     end
 

@@ -52,17 +52,18 @@ The following environment variables need to be configured for **GIDS**:
 5. `GOVDELIVERY_STAGING_SERVICE`: This is 'True' or 'False' and a string since they are set by python.
 6. `GOVDELIVERY_TOKEN`: This is the token for govdelivery.com.
 7. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
+8. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
 
 The following are required, but related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
 
-8. `SAML_IDP_METADATA_FILE`: contains certificates and endpoint information provided by the SSOe team.
-9. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
-10. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
-11. `SAML_ISSUER`: shared between the GIDS and SSOe team.
+9. `SAML_IDP_METADATA_FILE`: contains certificates and endpoint information provided by the SSOe team.
+10. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
+11. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
+12. `SAML_ISSUER`: shared between the GIDS and SSOe team.
 
 The following is for use with Scorecard API.
 
-12. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
+13. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
 
 To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
 
@@ -79,6 +80,7 @@ SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
 SAML_IDP_SSO_URL: https://example.com/idp/sso
 SAML_ISSUER: GIDS
 SECRET_KEY_BASE: 'something ...'
+DEPLOYMENT_ENV: 'vagov-dev'
 ```
 
 You can create additional users by adding them to the `/db/seeds/01_users.rb` file:
@@ -142,7 +144,8 @@ If there are database migrations to be run
 ### Production
 Production releases are manually gated. 
 1. Find the git sha you wish to use from https://github.com/department-of-veterans-affairs/gibct-data-service/commits/master
-1. Navigate to http://jenkins.vfs.va.gov/job/releases/job/gi-bill-data-service/
+1. Navigate to http://jenkins.vfs.va.gov/job/builds/job/gi-bill-data-service/build?delay=0sec
+1. Check the "Release" box
 1. "Build with Parameters" with the git sha for the release and it will automatically deploy to production.
 
 If there are database migrations to be run 

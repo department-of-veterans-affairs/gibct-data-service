@@ -12,7 +12,12 @@ RSpec.describe ArchivesController, type: :controller do
     login_user
 
     before do
-      create_list :version, 3, :production
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
 
       get(:index)
     end
@@ -30,13 +35,18 @@ RSpec.describe ArchivesController, type: :controller do
     login_user
 
     before do
-      create_list :version, 3, :production
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
+      create :version, :production
+      create :version, :preview
     end
 
     it 'causes a CSV to be exported' do
-      allow(InstitutionsArchive).to receive(:export_institutions_by_version)
+      allow(InstitutionsArchive).to receive(:export_by_version)
       get(:export, params: { csv_type: InstitutionsArchive.name, number: 2, format: :csv })
-      expect(InstitutionsArchive).to have_received(:export_institutions_by_version)
+      expect(InstitutionsArchive).to have_received(:export_by_version)
     end
 
     it 'includes filename parameter in content-disposition header' do

@@ -9,6 +9,7 @@ FactoryBot.define do
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name { 'PRIVATE' }
+    school_closing { false }
 
     approved { true }
 
@@ -91,6 +92,10 @@ FactoryBot.define do
       vet_tec_provider { true }
     end
 
+    trait :exclude_caution_flags do
+      count_of_caution_flags { 1 }
+    end
+
     trait :preferred_provider do
       city { 'CHARLESTON' }
       state { 'SC' }
@@ -108,6 +113,10 @@ FactoryBot.define do
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
       physical_country { 'USA' }
+    end
+
+    trait :production_version do
+      version_id { Version.current_production.id }
     end
   end
 end

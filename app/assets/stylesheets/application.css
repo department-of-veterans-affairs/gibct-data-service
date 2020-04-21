@@ -248,3 +248,56 @@ table.crosswalk-issues thead.sub th {
 .weams_override {
     color: #d43f3a;
 }
+
+.current {
+  background-color: #d9edf7;
+}
+
+.calculator_constants_header {
+    padding-bottom: 9px;
+    margin: 10px 0 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.calculator-constants-table {
+    margin-top: 10px;
+}
+
+.top-table-button-div {
+    margin-top: 40px;
+}
+
+#crosswalk-issues-dashboard {
+  padding-bottom: 20px;
+}
+
+#crosswalk-issues-dashboard .panel {
+  height: 100%;
+  margin-bottom: 20px;
+}
+
+#crosswalk-issues-dashboard .panel-body {
+  padding-bottom: 30px;
+}
+
+#crosswalk-issues-dashboard .panel-heading {
+  font-size: 2rem;
+}
+
+#crosswalk-issues-dashboard button {
+  margin-top: 15px;
+  position: absolute;
+  bottom: 15px;
+  left: 30px;
+}
+
+#crosswalk-issues-dashboard button span.badge {
+  color: #2c882c;
+  background-color: #fff;
+  margin-left:1rem;
+}
+
+.equal {
+  flex-wrap: wrap;
+  display: flex;
+}

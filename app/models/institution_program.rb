@@ -38,18 +38,9 @@ class InstitutionProgram < ApplicationRecord
 
   delegate :school_closing, to: :institution
 
-  delegate :caution_flag, to: :institution
+  delegate :school_closing_on, to: :institution
 
-  # Given a search term representing a partial school name, returns all
-  # programs starting with the search term.
-  #
-  def self.autocomplete(search_term, version, limit = 6)
-    select(:id, 'institutions.facility_code as value', 'description as label')
-      .joins(institution: :version)
-      .where(institutions: { version: version })
-      .where('lower(description) LIKE (?)', "#{search_term}%")
-      .limit(limit)
-  end
+  delegate :caution_flags, to: :institution
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #

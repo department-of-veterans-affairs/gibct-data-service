@@ -26,13 +26,12 @@ Rails.application.routes.draw do
   get '/crosswalk_issues/partials/:id' => 'crosswalk_issues#show_partial', as: :crosswalk_issues_partials_show
   post '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial', as: :crosswalk_issues_resolve_partial
 
-  get '/crosswalk_issues/partials/find_matches/:id' => 'crosswalk_issues#find_matches', as: :crosswalk_issues_find_matches
-  post '/crosswalk_issues/match_ipeds_hd' => 'crosswalk_issues#match_ipeds_hd', as: :crosswalk_issues_match_ipeds_hd
-
   get '/crosswalk_issues/orphans' => 'crosswalk_issues#orphans', as: :crosswalk_issues_orphans
 
   get '/archives' => 'archives#index'
   get '/archives/export/:csv_type/:number' => 'archives#export', as: :archives_export, defaults: { format: 'csv' }
+  get '/calculator_constants' => 'calculator_constants#index'
+  post '/calculator_constants' => 'calculator_constants#update', as: :calculator_constants_update
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
@@ -49,6 +48,8 @@ Rails.application.routes.draw do
     resources :institution_programs, only: [:index] do
       get :autocomplete, on: :collection
     end
+
+    resources :yellow_ribbon_programs, only: :index
 
     resources :zipcode_rates, only: :show
   end
