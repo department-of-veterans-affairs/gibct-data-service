@@ -31,10 +31,26 @@ class CautionFlag < ApplicationRecord
 
   def self.apply_update(rule, ids)
     if rule.link_url == CautionFlagRule::SCHOOL_URL
+      str = update_for_school_url(rule, ids)
+    else
       cols_map_update = %i[
-        title description
+        title description link_text link_url
       ]
       str = <<-SQL
+            UPDATE #{table_name} SET #{cols_to_update(cols_map_update)}
+            FROM #{CautionFlagRule.table_name}
+            WHERE #{CautionFlagRule.table_name}.id = #{rule.id} AND #{table_name}.id in (#{ids.join(',')})
+      SQL
+    end
+
+    CautionFlag.connection.update(str)
+  end
+
+  def self.update_for_school_url(rule, ids)
+    cols_map_update = %i[
+      title description
+    ]
+    <<-SQL
             UPDATE #{table_name} SET #{cols_to_update(cols_map_update)},
             link_text = CASE
               WHEN #{Institution.table_name}.insturl IS NULL THEN
@@ -52,18 +68,6 @@ class CautionFlag < ApplicationRecord
           WHERE #{CautionFlagRule.table_name}.id = #{rule.id}
           AND #{table_name}.id in (#{ids.join(',')})
           AND #{Institution.table_name}.id = #{table_name}.institution_id
-      SQL
-    else
-      cols_map_update = %i[
-        title description link_text link_url
-      ]
-      str = <<-SQL
-            UPDATE #{table_name} SET #{cols_to_update(cols_map_update)}
-            FROM #{CautionFlagRule.table_name}
-            WHERE #{CautionFlagRule.table_name}.id = #{rule.id} AND #{table_name}.id in (#{ids.join(',')})
-      SQL
-    end
-
-    CautionFlag.connection.update(str)
+    SQL
   end
 end
