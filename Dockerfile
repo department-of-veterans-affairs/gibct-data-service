@@ -16,8 +16,8 @@ RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
 WORKDIR /srv/gi-bill-data-service/src
 
-ENV BUNDLER_VERSION='2.0.2'
-RUN gem install bundler --no-document -v '2.0.2'
+ENV BUNDLER_VERSION='2.1.4'
+RUN gem install bundler --no-document -v '2.1.4'
 
 ###
 # development
