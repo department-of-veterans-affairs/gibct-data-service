@@ -641,6 +641,13 @@ module InstitutionBuilder
 
   def self.add_sec103(version_id)
     str = <<-SQL
+      -- set default message for IHL institutions
+      UPDATE institutions SET section_103_message = 'No information available at this time'
+      FROM weams
+      WHERE weams.facility_code = institutions.facility_code
+        AND institution_of_higher_learning_indicator = true
+        AND institutions.version_id = #{version_id};
+
       -- set message based on sec103s
       UPDATE institutions SET
         #{columns_for_update(Sec103)},
@@ -651,15 +658,18 @@ module InstitutionBuilder
           WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = true THEN
             'Requires Certificate of Eligibility (COE)'
           ELSE
-            'No information available at this time'
+            institutions.section_103_message
+          END,
+        approved = CASE
+          WHEN institutions.complies_with_sec_103 = false THEN
+            FALSE
+          ELSE
+            institutions.approved
           END
       FROM  sec103s
+	      INNER JOIN weams ON weams.facility_code = sec103s.facility_code
+          AND weams.institution_of_higher_learning_indicator = true
       WHERE institutions.facility_code = sec103s.facility_code
-      AND institutions.version_id = #{version_id};
-
-      -- override approved based on section 103 data
-      UPDATE institutions SET approved = false
-      WHERE institutions.complies_with_sec_103 = false
       AND institutions.version_id = #{version_id};
     SQL
 

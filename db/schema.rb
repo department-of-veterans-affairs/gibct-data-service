@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_15_150200) do
+ActiveRecord::Schema.define(version: 2020_04_21_134500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -420,7 +420,7 @@ ActiveRecord::Schema.define(version: 2020_04_15_150200) do
     t.boolean "solely_requires_coe"
     t.boolean "requires_coe_and_criteria"
     t.integer "count_of_caution_flags", default: 0
-    t.string "section_103_message", default: "No information available at this time"
+    t.string "section_103_message"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
