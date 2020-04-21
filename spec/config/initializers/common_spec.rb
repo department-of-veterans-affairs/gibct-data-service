@@ -6,9 +6,9 @@ describe 'Common' do
   def change_deployment_env(deployment_env)
     ENV['DEPLOYMENT_ENV'] = deployment_env
     Settings.reload_from_files(
-      Rails.root.join('config', 'settings.yml').to_s,
-      Rails.root.join('config', 'settings', "#{Rails.env}.yml").to_s,
-      Rails.root.join('config', 'environments', "#{Rails.env}.yml").to_s
+      Rails.root.join('config/settings.yml').to_s,
+      Rails.root.join('config/settings', "#{Rails.env}.yml").to_s,
+      Rails.root.join('config/environments', "#{Rails.env}.yml").to_s
     )
   end
 

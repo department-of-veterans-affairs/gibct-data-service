@@ -134,6 +134,9 @@ Rails/HasManyOrHasOneDependent:
   Exclude:
     - "app/models/user.rb"
 
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
+
 RSpec/FilePath:
   Exclude:
     - "spec/fixtures/**/*"
