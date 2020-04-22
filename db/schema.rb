@@ -115,8 +115,8 @@ ActiveRecord::Schema.define(version: 2020_04_21_134500) do
     t.string "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "title"
-    t.string "description"
+    t.string "title", default: "School engaged in misleading, deceptive, or erroneous practices"
+    t.string "description", default: "VA has found that this school engaged in misleading, deceptive, or erroneous advertising, sales, or enrollment practices, and has taken action against it."
     t.string "link_text"
     t.string "link_url"
   end

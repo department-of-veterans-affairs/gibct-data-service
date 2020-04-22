@@ -31,5 +31,9 @@ FactoryBot.define do
     trait :institution_url_without_protocol do
       institution { create(:institution) }
     end
+
+    trait :institution_without_url do
+      institution { create(:institution, insturl: nil) }
+    end
   end
 end
