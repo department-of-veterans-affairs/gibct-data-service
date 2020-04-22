@@ -951,14 +951,6 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when setting section 103 data' do
-      it 'sets default message' do
-        create :weam
-        described_class.run(user)
-
-        expect(institutions.all)
-          .to all(have_attributes('section_103_message' => 'No information available at this time'))
-      end
-
       it 'sets certificate required message' do
         weam = create :weam
         create :sec103, facility_code: weam.facility_code
