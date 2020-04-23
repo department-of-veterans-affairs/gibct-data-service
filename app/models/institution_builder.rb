@@ -655,12 +655,10 @@ module InstitutionBuilder
             'Requires Certificate of Eligibility (COE) and additional criteria'
           WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = true THEN
             'Requires Certificate of Eligibility (COE)'
-          ELSE institutions.section_103_message
-          END,
+          ELSE institutions.section_103_message END,
         approved = CASE
           WHEN institutions.complies_with_sec_103 = false THEN FALSE
-          ELSE institutions.approved
-          END
+          ELSE institutions.approved END
       FROM  sec103s INNER JOIN weams ON weams.facility_code = sec103s.facility_code
           AND weams.institution_of_higher_learning_indicator = true
       WHERE institutions.facility_code = sec103s.facility_code AND institutions.version_id = #{version_id};
