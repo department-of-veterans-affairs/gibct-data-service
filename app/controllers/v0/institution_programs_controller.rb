@@ -81,7 +81,9 @@ module V0
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
 
-      relation = relation.where(institutions: { count_of_caution_flags: 0 }) if @query[:exclude_caution_flags]
+      if @query[:exclude_caution_and_school_closure_flags]
+        relation = relation.where('institutions.count_of_caution_flags = 0  AND institutions.school_closing IS FALSE')
+      end
 
       relation
     end
