@@ -794,12 +794,20 @@ module InstitutionBuilder
 
   def self.set_count_of_caution_flags(version_id)
     str = <<-SQL
-      UPDATE institutions SET count_of_caution_flags = (
+      UPDATE institutions SET count_of_caution_flags =
+       (
         SELECT count(1)
         FROM caution_flags
         WHERE caution_flags.institution_id = institutions.id
         AND institutions.version_id = #{version_id}
+      )+(
+        SELECT count(1)
+          FROM school_closures
+          WHERE school_closures.facility_code = institutions.facility_code
+          AND school_closures.school_closing = true
+          AND institutions.version_id = #{version_id}
       )
+
       WHERE institutions.version_id = #{version_id}
     SQL
 
