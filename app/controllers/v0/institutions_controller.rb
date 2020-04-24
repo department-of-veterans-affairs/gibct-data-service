@@ -109,7 +109,14 @@ module V0
         relation = relation.filter(filter_args[0], @query[filter_args[1]])
       end
 
-      relation = relation.where('count_of_caution_flags = 0 AND school_closing IS FALSE') if @query[:exclude_warnings]
+      if @query[:exclude_warnings]
+        # prod flag for bah-8187. Remove are approval.
+        relation = if production?
+                     relation.where(count_of_caution_flags: 0)
+                   else
+                     relation.where('count_of_caution_flags = 0 AND school_closing IS FALSE')
+                   end
+      end
 
       relation
     end
