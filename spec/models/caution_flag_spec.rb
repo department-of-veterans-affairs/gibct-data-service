@@ -13,6 +13,15 @@ RSpec.describe CautionFlag, type: :model do
     end
   end
 
+  describe 'when using scope distinct_flags' do
+
+    it 'has distinct caution flags' do
+      create_list :caution_flag, 3, :accreditation_issue
+
+      expect(CautionFlag.distinct_flags.to_a.size).to eq(1)
+    end
+  end
+
   describe 'when mapping' do
     let(:version) { create :version, :preview }
 
