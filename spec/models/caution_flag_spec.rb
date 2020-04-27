@@ -14,11 +14,10 @@ RSpec.describe CautionFlag, type: :model do
   end
 
   describe 'when using scope distinct_flags' do
-
     it 'has distinct caution flags' do
       create_list :caution_flag, 3, :accreditation_issue
 
-      expect(CautionFlag.distinct_flags.to_a.size).to eq(1)
+      expect(described_class.distinct_flags.to_a.size).to eq(1)
     end
   end
 
