@@ -2,6 +2,9 @@
 
 class CautionFlag < ApplicationRecord
   belongs_to :institution, counter_cache: :count_of_caution_flags
+  scope :unique_flag, -> {
+    select("DISTINCT title, description, link_text, link_url")
+  }
 
   def self.map(version_id)
     engine = Rule.create_engine
