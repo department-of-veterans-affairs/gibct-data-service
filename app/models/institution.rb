@@ -155,7 +155,7 @@ class Institution < ApplicationRecord
     'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter }
   }.freeze
 
-  has_many :caution_flags, inverse_of: :institution, dependent: :destroy
+  has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
   has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
   has_many :yellow_ribbon_programs, dependent: :destroy
