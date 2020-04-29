@@ -96,6 +96,10 @@ FactoryBot.define do
       count_of_caution_flags { 1 }
     end
 
+    trait :exclude_school_closing do
+      count_of_caution_flags { 1 }
+    end
+
     trait :preferred_provider do
       city { 'CHARLESTON' }
       state { 'SC' }
