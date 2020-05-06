@@ -645,7 +645,8 @@ module InstitutionBuilder
       UPDATE institutions SET section_103_message = 'No information available at this time'
       FROM weams
       WHERE weams.facility_code = institutions.facility_code
-        AND institution_of_higher_learning_indicator = true AND institutions.version_id = #{version_id};
+        AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
+        AND institutions.version_id = #{version_id};
 
       -- set message based on sec103s
       UPDATE institutions SET #{columns_for_update(Sec103)},
@@ -660,7 +661,7 @@ module InstitutionBuilder
           WHEN institutions.complies_with_sec_103 = false THEN FALSE
           ELSE institutions.approved END
       FROM  sec103s INNER JOIN weams ON weams.facility_code = sec103s.facility_code
-          AND weams.institution_of_higher_learning_indicator = true
+          AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
       WHERE institutions.facility_code = sec103s.facility_code AND institutions.version_id = #{version_id};
     SQL
 

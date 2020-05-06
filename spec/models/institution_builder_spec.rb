@@ -952,7 +952,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
     describe 'when setting section 103 data' do
       it 'sets default message for IHL institutions' do
-        weam = create :weam, :higher_learning
+        weam = create :weam, :ihl_facility_code
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
@@ -968,7 +968,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'sets certificate required message' do
-        weam = create :weam, :higher_learning
+        weam = create :weam, :ihl_facility_code
         create :sec103, facility_code: weam.facility_code
 
         described_class.run(user)
@@ -978,7 +978,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'sets certificate required plus additional message' do
-        weam = create :weam, :higher_learning
+        weam = create :weam, :ihl_facility_code
         create :sec103, :requires_additional, facility_code: weam.facility_code
 
         described_class.run(user)
@@ -988,7 +988,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'institutions that explicitly do not comply with section 103 are not approved ' do
-        weam = create :weam, :higher_learning
+        weam = create :weam, :ihl_facility_code
         create :sec103, :does_not_comply, facility_code: weam.facility_code
 
         described_class.run(user)
