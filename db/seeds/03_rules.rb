@@ -117,7 +117,7 @@ if ENV['CI'].blank?
                matcher: Rule::MATCHERS[:has],
                subject: nil,
                predicate: 'reason',
-               object: 'There may be a potential lapse in program approval for Ashford University. VA may be forced to stop making benefit payments unless Ashford continues to show a good faith effort to seek approval in California. The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending.',
+               object: 'The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending',
                priority: 2),
   ]
 
@@ -245,7 +245,7 @@ if ENV['CI'].blank?
        link_url: nil,
       },
       #settlement
-      {rule_id: rule_id(rule_results, 'There may be a potential lapse in program approval for Ashford University. VA may be forced to stop making benefit payments unless Ashford continues to show a good faith effort to seek approval in California. The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending.'),
+      {rule_id: rule_id(rule_results, 'The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending'),
        title: 'School is facing a potential loss of program approval',
        description: 'There may be a loss of program approval for this school.',
        link_text: nil,
