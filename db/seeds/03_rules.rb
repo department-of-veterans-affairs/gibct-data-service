@@ -246,10 +246,10 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending'),
-       title: 'School is facing a potential loss of program approval',
-       description: 'There may be a loss of program approval for this school.',
-       link_text: 'More information on Ashford University',
-       link_url: 'https://www.benefits.va.gov/gibill/comparison_tool/about_this_tool.asp#AshfordSAA',
+       title: 'State\'s Attorney General filed suit',
+       description: 'The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending',
+       link_text: nil,
+       link_url: nil,
       },
   ]
 
