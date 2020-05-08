@@ -641,26 +641,28 @@ module InstitutionBuilder
 
   def self.add_sec103(version_id)
     str = <<-SQL
+      -- set default message for IHL institutions
+      UPDATE institutions SET section_103_message = 'No information available at this time'
+      FROM weams
+      WHERE weams.facility_code = institutions.facility_code
+        AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
+        AND institutions.version_id = #{version_id};
+
       -- set message based on sec103s
-      UPDATE institutions SET
-        #{columns_for_update(Sec103)},
+      UPDATE institutions SET #{columns_for_update(Sec103)},
         section_103_message = CASE
           WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = false
             AND (sec103s.requires_coe_and_criteria = true OR sec103s.requires_coe_and_criteria IS NULL) THEN
             'Requires Certificate of Eligibility (COE) and additional criteria'
           WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = true THEN
             'Requires Certificate of Eligibility (COE)'
-          ELSE
-            'No information available at this time'
-          END
-      FROM  sec103s
-      WHERE institutions.facility_code = sec103s.facility_code
-      AND institutions.version_id = #{version_id};
-
-      -- override approved based on section 103 data
-      UPDATE institutions SET approved = false
-      WHERE institutions.complies_with_sec_103 = false
-      AND institutions.version_id = #{version_id};
+          ELSE institutions.section_103_message END,
+        approved = CASE
+          WHEN institutions.complies_with_sec_103 = false THEN FALSE
+          ELSE institutions.approved END
+      FROM  sec103s INNER JOIN weams ON weams.facility_code = sec103s.facility_code
+          AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
+      WHERE institutions.facility_code = sec103s.facility_code AND institutions.version_id = #{version_id};
     SQL
 
     sql = InstitutionProgram.send(:sanitize_sql, [str])
