@@ -76,6 +76,10 @@ FactoryBot.define do
       institution_of_higher_learning_indicator { true }
     end
 
+    trait :ihl_facility_code do
+      facility_code { '11000000' }
+    end
+
     trait :ncd do
       non_college_degree_indicator { true }
     end

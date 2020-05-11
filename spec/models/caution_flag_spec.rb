@@ -13,6 +13,14 @@ RSpec.describe CautionFlag, type: :model do
     end
   end
 
+  describe 'when using scope distinct_flags' do
+    it 'has distinct caution flags' do
+      create_list :caution_flag, 3, :accreditation_issue
+
+      expect(described_class.distinct_flags.to_a.size).to eq(1)
+    end
+  end
+
   describe 'when mapping' do
     let(:version) { create :version, :preview }
 
@@ -50,6 +58,18 @@ RSpec.describe CautionFlag, type: :model do
       described_class.map(version.id)
 
       expect(flag.reload['link_url']).to eq('http://' + flag.institution.insturl)
+    end
+
+    it 'adds period to link text' do
+      flag = create :caution_flag,
+                    :closing_settlement_pre_map,
+                    :institution_without_url,
+                    version_id: version.id
+      rule = create :caution_flag_rule, :closing_settlement_rule
+
+      described_class.map(version.id)
+
+      expect(flag.reload['link_text']).to eq(rule.link_text + '.')
     end
   end
 end

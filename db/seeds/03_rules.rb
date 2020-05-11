@@ -128,28 +128,28 @@ if ENV['CI'].blank?
       # accreditation
       {rule_id: rule_id(rule_results, AccreditationAction.name),
        title: 'School has an accreditation issue',
-       description: 'This school\'s accreditation has been revoked and is under appeal, or the school has been placed on probation as it didn\'t meet acceptable levels of quality.',
+       description: 'This school\'s accreditation has been taken away and is under appeal, or the school has been placed on probation, because it didn\'t meet acceptable levels of quality.',
        link_text: 'Learn more about this school\'s accreditation',
        link_url: 'http://ope.ed.gov/accreditation/'
       },
       # hcm
       {rule_id: rule_id(rule_results, Hcm.name),
-       title: 'School is on heightened cash monitoring',
-       description: 'The Department of Education has placed this school on Heightened Cash Monitoring due to financial or federal compliance issues.',
+       title: 'School placed on Heightened Cash Monitoring',
+       description: 'The Department of Education has placed this school on Heightened Cash Monitoring because of financial or federal compliance issues.',
        link_text: 'Learn more about Heightened Cash Monitoring',
        link_url: 'https://studentaid.ed.gov/sa/about/data-center/school/hcm'
       },
       # mou
       {rule_id: rule_id(rule_results, Mou.name),
        title: 'School is on Military Tuition Assistance probation',
-       description: 'This school is on Department of Defense (DoD) Probation for Military Tuition Assistance (TA).',
-       link_text: 'Learn about DoD probation',
+       description: 'This school is on Department of Defense (DOD) probation for Military Tuition Assistance (TA).',
+       link_text: 'Learn about DOD probation',
        link_url: 'https://www.dodmou.com/Home/Faq'
       },
       # sec702
       {rule_id: rule_id(rule_results, Sec702.name),
        title: 'School isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits',
-       description: 'This school isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits because it doesn\'t comply with Sec 702. Section 702 requires public universities to offer recent Veterans and other “covered individuals” in-state tuition, regardless of their state residency. ',
+       description: 'This school isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits because it doesn\'t comply with Section 702. This law requires public universities to offer recent Veterans and other covered individuals in-state tuition, regardless of their state residency.',
        link_text: 'Learn more about Section 702 requirements',
        link_url: 'https://www.benefits.va.gov/gibill/docs/factsheets/section_702_factsheet.pdf'
       },
@@ -163,7 +163,7 @@ if ENV['CI'].blank?
       #settlement
       {rule_id: rule_id(rule_results, 'Assigned receiver has motioned court for an emergency closure of campus. Imminent closure is a distinct possibility.'),
        title: 'Court-ordered emergency campus closure pending for this school',
-       description: 'An assigned receiver has motioned the court for an emergency closure of this campus. It may close soon.',
+       description: 'An individual or business placed in charge of this institution\'s finances has motioned the court for an emergency closure of this campus. It may close soon.',
        link_text: nil,
        link_url: nil,
       },
@@ -176,15 +176,15 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Denial of Recertification Application to Participate in the Federal Student Financial Assistance Programs Issued by Department of Education'),
-       title: 'School denied recertification for Federal Student Financial Assistance Programs',
-       description: 'This school\'s recertification application to participate in the Federal Student Financial Assistance Programs issued by Department of Education has been denied. ',
+       title: 'School denied recertification for federal student financial assistance programs',
+       description: 'This school\'s recertification application to participate in federal student financial assistance programs issued by Department of Education has been denied.',
        link_text: 'Learn more about denial of recertification',
        link_url: 'https://www.benefits.va.gov/gibill/comparison_tool/about_this_tool.asp#TitleIV',
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Denial of Recertification Application to Participate in the Federal Student Financial Assistance Program'),
-       title: 'School denied recertification for Federal Student Financial Assistance Programs',
-       description: 'This school\'s recertification application to participate in the Federal Student Financial Assistance Programs issued by Department of Education has been denied. ',
+       title: 'School denied recertification for federal student financial assistance programs',
+       description: 'This school\'s recertification application to participate in federal student financial assistance programs issued by Department of Education has been denied.',
        link_text: 'Learn more about denial of recertification',
        link_url: 'https://www.benefits.va.gov/gibill/comparison_tool/about_this_tool.asp#TitleIV',
       },
@@ -198,7 +198,7 @@ if ENV['CI'].blank?
       #settlement
       {rule_id: rule_id(rule_results, 'Post 9/11 GI Bill (CH33) not Approved at this location'),
        title: 'School isn\'t approved for Post-9/11 GI Bill benefits',
-       description: 'Post 9/11 GI Bill (CH33) benefits can\'t be used at this school as the school is not approved for them.',
+       description: 'Post 9/11 GI Bill (Chapter 33) benefits can\'t be used at this school as the school is not approved for them.',
        link_text: nil,
        link_url: nil,
       },
@@ -218,15 +218,15 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Settlement with U.S. Government'),
-       title: 'School has settled its case with the U.S. Government',
-       description: 'The U.S. Government has reached a settlement with this institution. ',
+       title: 'School has settled its case with the U.S. government',
+       description: 'The U.S. government has reached a settlement with this institution.',
        link_text: nil,
        link_url: nil,
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Settlement reached with States Attorney General'),
-       title: 'School has settled its case with the State Attorney General',
-       description: 'The State\'s Attorney General has reached a settlement with this school.',
+       title: 'School has settled its case with the state Attorney General',
+       description: 'The state\'s Attorney General has reached a settlement with this school. ',
        link_text: nil,
        link_url: nil,
       },
@@ -246,8 +246,8 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'There may be a potential lapse in program approval for Ashford University. VA may be forced to stop making benefit payments unless Ashford continues to show a good faith effort to seek approval in California. The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending.'),
-       title: 'School is facing a potential lapse in program approval',
-       description: 'There may be a potential lapse in program approval for this school.',
+       title: 'School is facing a potential loss of program approval',
+       description: 'There may be a loss of program approval for this school.',
        link_text: nil,
        link_url: nil,
       },
