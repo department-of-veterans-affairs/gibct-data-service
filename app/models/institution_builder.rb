@@ -740,6 +740,7 @@ module InstitutionBuilder
   end
 
   def self.build_versioned_school_certifying_official(version_id)
+    valid_priorities = VersionedSchoolCertifyingOfficial::VALID_PRIORITY_VALUES.map { |value| "'#{value}'" }.join(', ')
     str = <<-SQL
       INSERT INTO versioned_school_certifying_officials(
         facility_code,
@@ -767,7 +768,7 @@ module InstitutionBuilder
         i.id
       FROM school_certifying_officials s
       INNER JOIN institutions i ON i.facility_code = s.facility_code
-      WHERE i.version_id = #{version_id} AND LOWER(s.priority) IN('primary', 'secondary')
+      WHERE i.version_id = #{version_id} AND UPPER(s.priority) IN(#{valid_priorities})
     SQL
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
