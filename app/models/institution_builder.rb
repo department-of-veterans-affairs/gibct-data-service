@@ -767,7 +767,7 @@ module InstitutionBuilder
         i.id
       FROM school_certifying_officials s
       INNER JOIN institutions i ON i.facility_code = s.facility_code
-      WHERE i.version_id = #{version_id}
+      WHERE i.version_id = #{version_id} AND LOWER(s.priority) IN('primary', 'secondary')
     SQL
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
