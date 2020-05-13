@@ -5,6 +5,8 @@ class Institution < ApplicationRecord
 
   EMPLOYER = 'OJT'
 
+  DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
+
   LOCALE = {
     11 => 'city', 12 => 'city', 13 => 'city',
     21 => 'suburban', 22 => 'suburban', 23 => 'suburban',
