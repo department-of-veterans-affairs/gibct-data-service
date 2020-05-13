@@ -642,7 +642,7 @@ module InstitutionBuilder
   def self.add_sec103(version_id)
     str = <<-SQL
       -- set default message for IHL institutions
-      UPDATE institutions SET section_103_message = 'No information available at this time'
+      UPDATE institutions SET section_103_message = '#{Institution::DEFAULT_IHL_SECTION_103_MESSAGE}'
       FROM weams
       WHERE weams.facility_code = institutions.facility_code
         AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
