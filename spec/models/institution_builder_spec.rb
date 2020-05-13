@@ -964,7 +964,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-          .to eq('No information available at this time')
+          .to eq(Institution::DEFAULT_IHL_SECTION_103_MESSAGE)
       end
 
       it 'does not set default message for nonIHL institutions' do
