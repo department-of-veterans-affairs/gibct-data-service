@@ -939,6 +939,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
       end
 
+      it 'ignores priority casing' do
+        weam = create(:weam)
+        create :school_certifying_official, facility_code: weam.facility_code, priority: 'primarY'
+        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
+        expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
+      end
+
       it 'does not create VSCO for SCO with invalid priority value' do
         weam = create(:weam)
         create :school_certifying_official, :invalid_priority, facility_code: weam.facility_code
