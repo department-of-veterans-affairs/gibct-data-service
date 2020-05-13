@@ -929,13 +929,28 @@ RSpec.describe InstitutionBuilder, type: :model do
       it 'sets correctly for VET TEC institution' do
         expect(institutions.find_by(facility_code: '1VZZZZZZ').approved).to be_truthy
       end
+    end
 
-      describe 'when generating school certifying official table' do
-        it 'properly generates school certifying official with instituion_id' do
-          create :school_certifying_official, facility_code: '1ZZZZZZZ'
-          expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
-          expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
-        end
+    describe 'when creating versioned_school_certifying_officials' do
+      it 'properly generates school certifying official with instituion_id' do
+        weam = create(:weam)
+        create :school_certifying_official, facility_code: weam.facility_code
+        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
+        expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
+      end
+
+      it 'ignores priority casing' do
+        weam = create(:weam)
+        create :school_certifying_official, facility_code: weam.facility_code, priority: 'primarY'
+        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
+        expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
+      end
+
+      it 'does not create VSCO for SCO with invalid priority value' do
+        weam = create(:weam)
+        create :school_certifying_official, :invalid_priority, facility_code: weam.facility_code
+        described_class.run(user)
+        expect(VersionedSchoolCertifyingOfficial.count).to be_zero
       end
     end
 
