@@ -740,7 +740,7 @@ module InstitutionBuilder
   end
 
   def self.build_versioned_school_certifying_official(version_id)
-    valid_priorities = VersionedSchoolCertifyingOfficial::VALID_PRIORITY_VALUES.map { |value| "'#{value}'" }.join(', ')
+    valid_priorities = SchoolCertifyingOfficial::VALID_PRIORITY_VALUES.map { |value| "'#{value}'" }.join(', ')
     str = <<-SQL
       INSERT INTO versioned_school_certifying_officials(
         facility_code,
