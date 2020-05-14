@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe GibctSiteMapper, type: :model do
   let(:preview_version) { Version.current_preview }
   let(:production_version) { Version.current_production }
-  let(:sitemaps_path) { Rails.root.join('public/sitemap.xml.gz') }
+  let(:sitemaps_path) { Rails.root.join('public', 'sitemap.xml.gz') }
   let(:preview_institution_fc) { '00000001' }
   let(:production_institution_fc) { '00000002' }
 

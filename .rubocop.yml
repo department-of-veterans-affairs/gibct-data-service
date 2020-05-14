@@ -48,12 +48,15 @@ Style/ClassAndModuleChildren:
 Style/GuardClause:
   Enabled: false
 
+# Added in v0.81
 # https://rubocop.readthedocs.io/en/latest/cops_style/#stylehasheachmethods
 Style/HashEachMethods:
   Enabled: true
+# Added in v0.81
 # https://rubocop.readthedocs.io/en/latest/cops_style/#stylehashtransformkeys
 Style/HashTransformKeys:
   Enabled: true
+# Added in v0.81
 # https://rubocop.readthedocs.io/en/latest/cops_style/#stylehashtransformvalues
 Style/HashTransformValues:
   Enabled: true
@@ -134,6 +137,10 @@ Rails/HasManyOrHasOneDependent:
   Exclude:
     - "app/models/user.rb"
 
+# the default style recently changed, but it's not worth changing
+Rails/FilePath:
+  EnforcedStyle: arguments
+
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
@@ -162,3 +169,17 @@ RSpec/NestedGroups:
 # Determined to be too benign and/or numerous to justify changing
 RSpec/MultipleExpectations:
   Enabled: false
+
+# Added in v0.81
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+# Added in v0.82
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true
