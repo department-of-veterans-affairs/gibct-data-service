@@ -642,7 +642,7 @@ module InstitutionBuilder
   def self.add_sec103(version_id)
     str = <<-SQL
       -- set default message for IHL institutions
-      UPDATE institutions SET section_103_message = 'No information available at this time'
+      UPDATE institutions SET section_103_message = '#{Institution::DEFAULT_IHL_SECTION_103_MESSAGE}'
       FROM weams
       WHERE weams.facility_code = institutions.facility_code
         AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
@@ -740,6 +740,7 @@ module InstitutionBuilder
   end
 
   def self.build_versioned_school_certifying_official(version_id)
+    valid_priorities = VersionedSchoolCertifyingOfficial::VALID_PRIORITY_VALUES.map { |value| "'#{value}'" }.join(', ')
     str = <<-SQL
       INSERT INTO versioned_school_certifying_officials(
         facility_code,
@@ -767,7 +768,7 @@ module InstitutionBuilder
         i.id
       FROM school_certifying_officials s
       INNER JOIN institutions i ON i.facility_code = s.facility_code
-      WHERE i.version_id = #{version_id}
+      WHERE i.version_id = #{version_id} AND UPPER(s.priority) IN(#{valid_priorities})
     SQL
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
