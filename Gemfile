@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+ruby '2.5.7'
+
 # Anchored versions, do not change
 
 # Application server: Puma

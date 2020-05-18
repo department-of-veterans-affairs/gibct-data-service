@@ -8,7 +8,7 @@ module SeedUtils
     default_options = Rails.application.config.csv_defaults[klass.name] ||
                       Rails.application.config.csv_defaults['generic']
     # Merge with provided options
-    seed_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }.merge(options)
+    seed_options = default_options.transform_keys(&:to_sym).merge(options)
 
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.csv"
