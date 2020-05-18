@@ -640,12 +640,13 @@ module InstitutionBuilder
   end
 
   def self.add_sec103(version_id)
+    ihl_prefixes = Institution::IHL_FACILITY_CODE_PREFIXES.map { |prefix| "'#{prefix}'" }.join(', ')
     str = <<-SQL
       -- set default message for IHL institutions
       UPDATE institutions SET section_103_message = '#{Institution::DEFAULT_IHL_SECTION_103_MESSAGE}'
       FROM weams
       WHERE weams.facility_code = institutions.facility_code
-        AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
+        AND SUBSTRING(weams.facility_code, 1, 2) IN(#{ihl_prefixes})
         AND institutions.version_id = #{version_id};
 
       -- set message based on sec103s
@@ -658,16 +659,14 @@ module InstitutionBuilder
             'Requires Certificate of Eligibility (COE)'
           ELSE institutions.section_103_message END,
         approved = CASE
-          WHEN institutions.complies_with_sec_103 = false THEN FALSE
+          WHEN sec103s.complies_with_sec_103 = false THEN FALSE
           ELSE institutions.approved END
-      FROM  sec103s INNER JOIN weams ON weams.facility_code = sec103s.facility_code
-          AND SUBSTRING(weams.facility_code, 1, 2) IN('11', '12', '13', '21', '22', '23', '31', '32', '33')
+      FROM sec103s INNER JOIN weams ON weams.facility_code = sec103s.facility_code
+          AND SUBSTRING(weams.facility_code, 1, 2) IN(#{ihl_prefixes})
       WHERE institutions.facility_code = sec103s.facility_code AND institutions.version_id = #{version_id};
     SQL
 
-    sql = InstitutionProgram.send(:sanitize_sql, [str])
-
-    Institution.connection.execute(sql)
+    Institution.connection.execute(InstitutionProgram.send(:sanitize_sql, [str]))
   end
 
   # edu_programs.length_in_weeks is being used twice because
