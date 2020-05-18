@@ -3,6 +3,11 @@
 class SchoolCertifyingOfficial < ApplicationRecord
   include CsvHelper
 
+  VALID_PRIORITY_VALUES = %w[
+    PRIMARY
+    SECONDARY
+  ].freeze
+
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },
@@ -17,4 +22,5 @@ class SchoolCertifyingOfficial < ApplicationRecord
   }.freeze
 
   validates :facility_code, presence: true
+  validates_with SchoolCertifyingOfficialValidator, on: :after_import
 end
