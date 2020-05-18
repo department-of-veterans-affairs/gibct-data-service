@@ -19,7 +19,7 @@ RSpec.shared_examples 'a loadable model' do |options|
     default_options = Rails.application.config.csv_defaults[described_class.name] ||
                       Rails.application.config.csv_defaults['generic']
     # Merge with provided options
-    load_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }.merge(options)
+    load_options = default_options.transform_keys(&:to_sym).merge(options)
 
     context 'with an error-free csv file' do
       it 'deletes the old table content' do
