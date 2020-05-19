@@ -48,7 +48,7 @@ RSpec.describe InstitutionProgram, type: :model do
 
     context 'filter scope' do
       it 'raises an error if no arguments are provided' do
-        expect { described_class.filter }.to raise_error(ArgumentError)
+        expect { described_class.search }.to raise_error(ArgumentError)
       end
 
       it 'filters on field existing' do
