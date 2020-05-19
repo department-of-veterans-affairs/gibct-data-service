@@ -13,7 +13,7 @@ RSpec.shared_examples 'an exportable model' do |options|
     default_options = Rails.application.config.csv_defaults[described_class.name] ||
                       Rails.application.config.csv_defaults['generic']
     # Merge with provided options
-    load_options = default_options.each_with_object({}) { |(k, v), o| o[k.to_sym] = v; }.merge(options)
+    load_options = default_options.transform_keys(&:to_sym).merge(options)
 
     before do
       described_class.load(csv_file, load_options)

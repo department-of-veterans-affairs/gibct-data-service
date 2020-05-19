@@ -1003,7 +1003,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'institutions that explicitly do not comply with section 103 are not approved ' do
-        weam = create :weam, :ihl_facility_code
+        weam = create :weam, :ihl_facility_code, :approved_poo_and_law_code, :with_approved_indicators
         create :sec103, :does_not_comply, facility_code: weam.facility_code
 
         described_class.run(user)
