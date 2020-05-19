@@ -64,7 +64,7 @@ class InstitutionProgram < ApplicationRecord
     )
   }
 
-  scope :filter, lambda { |field, value|
+  scope :filter_result, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
 

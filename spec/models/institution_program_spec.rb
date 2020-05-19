@@ -52,12 +52,12 @@ RSpec.describe InstitutionProgram, type: :model do
       end
 
       it 'filters on field existing' do
-        expect(described_class.filter('description', 'true').to_sql)
+        expect(described_class.filter_result('description', 'true').to_sql)
           .to include("WHERE \"institution_programs\".\"description\" = 't'")
       end
 
       it 'filters on field not existing' do
-        expect(described_class.filter('description', 'false').to_sql)
+        expect(described_class.filter_result('description', 'false').to_sql)
           .to include("WHERE \"institution_programs\".\"description\" != 't'")
       end
     end
