@@ -106,7 +106,7 @@ module V0
         [:stem_indicator] # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
-        relation = relation.filter(filter_args[0], @query[filter_args[1]])
+        relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
       end
 
       relation = relation.where('count_of_caution_flags = 0 AND school_closing IS FALSE') if @query[:exclude_warnings]

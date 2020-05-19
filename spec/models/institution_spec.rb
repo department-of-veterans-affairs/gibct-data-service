@@ -157,12 +157,12 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'filters on field existing' do
-        expect(described_class.filter('institution', 'true').to_sql)
+        expect(described_class.filter_result('institution', 'true').to_sql)
           .to include("WHERE \"institutions\".\"institution\" = 't'")
       end
 
       it 'filters on field not existing' do
-        expect(described_class.filter('institution', 'false').to_sql)
+        expect(described_class.filter_result('institution', 'false').to_sql)
           .to include("WHERE \"institutions\".\"institution\" != 't'")
       end
     end
