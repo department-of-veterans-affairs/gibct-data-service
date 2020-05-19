@@ -7,6 +7,8 @@ class Institution < ApplicationRecord
 
   DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
 
+  IHL_FACILITY_CODE_PREFIXES = %w[11 12 13 21 22 23 31 32 33].freeze
+
   LOCALE = {
     11 => 'city', 12 => 'city', 13 => 'city',
     21 => 'suburban', 22 => 'suburban', 23 => 'suburban',
