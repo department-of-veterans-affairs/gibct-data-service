@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:2.5.7-slim-stretch AS base
+FROM ruby:2.6.6-slim-stretch AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
