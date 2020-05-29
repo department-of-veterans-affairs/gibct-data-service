@@ -243,7 +243,7 @@ GEM
     pry-nav (0.3.0)
       pry (>= 0.9.10, < 0.13.0)
     public_suffix (4.0.4)
-    puma (3.12.4)
+    puma (3.12.6)
     rack (2.2.2)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
@@ -427,7 +427,7 @@ DEPENDENCIES
   oj
   pg (~> 0.15)
   pry-nav
-  puma (~> 3.12.4)
+  puma (~> 3.12.6)
   rack-cors
   rails (~> 5.2.4)
   rails-controller-testing
