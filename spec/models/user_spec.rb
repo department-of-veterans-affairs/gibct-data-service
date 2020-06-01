@@ -44,5 +44,11 @@ RSpec.describe User, type: :model do
       expect(described_class.from_saml_callback(empty_attributes)).to be_nil
       expect(described_class.from_saml_callback(vaild_attributes)).not_to be_nil
     end
+
+    it 'sends password reset email' do
+      a_user = create(:user)
+
+      expect(a_user.send_reset_password_instructions).not_to be_nil
+    end
   end
 end
