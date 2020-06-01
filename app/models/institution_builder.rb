@@ -9,10 +9,7 @@ module InstitutionBuilder
   def self.run_insertions(version)
     initialize_with_weams(version)
     add_crosswalk(version.id)
-
-    # prod flag for bah-6852
-    add_sec103(version.id) unless production?
-
+    add_sec103(version.id)
     add_sva(version.id)
     add_vsoc(version.id)
     add_eight_key(version.id)
