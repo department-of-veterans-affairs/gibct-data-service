@@ -1,4 +1,3 @@
-<!--Prod flag for bah-6852. Remove if/else statement when approved.-->
 <% if production? && CSV_TYPES_NO_PROD_NAMES.include?(upload.csv_type) %>
 <%else %>
   <tr id="row_<%=upload.csv_type%>"
