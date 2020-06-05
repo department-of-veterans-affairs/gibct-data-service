@@ -123,7 +123,7 @@ if ENV['CI'].blank?
                matcher: Rule::MATCHERS[:has],
                subject: nil,
                predicate: 'reason',
-               object: 'Federal Trade Commission Filed Suit for Deceptive Action',
+               object: 'Federal Trade Commission (FTC) filed suit for deceptive action',
                priority: 2),
       Rule.new(rule_name: CautionFlag.name,
                matcher: Rule::MATCHERS[:has],
@@ -264,7 +264,7 @@ if ENV['CI'].blank?
        link_url: nil,
       },
       #settlement
-      {rule_id: rule_id(rule_results, 'Federal Trade Commission Filed Suit for Deceptive Action'),
+      {rule_id: rule_id(rule_results, 'Federal Trade Commission (FTC) filed suit for deceptive action'),
         title: 'Federal Trade Commission (FTC) filed suit for deceptive action',
         description: 'The FTC filed a suit against this school for deceptive action. VA may suspend benefits to this school.',
         link_text: nil,
