@@ -451,6 +451,7 @@ module InstitutionBuilder
     SQL
     caution_flag_clause = <<-SQL
 	    FROM institutions JOIN settlements on institutions.cross = settlements.cross
+        OR institutions.facility_code = settlements.cross
       WHERE settlements.cross IS NOT NULL
       AND institutions.version_id = #{version_id}
     SQL

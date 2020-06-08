@@ -597,27 +597,16 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Settlement data' do
-      let(:institution) { institutions.find_by(cross: settlement.cross) }
+      let(:institution_by_cross) { institutions.find_by(cross: settlement.cross) }
+      let(:institution_by_facility_code) { institutions.find_by(facility_code: settlement.cross) }
       let(:settlement) { Settlement.first }
-
-      describe 'the caution_flag' do
-        it 'has flags for every settlement' do
-          create :settlement, :institution_builder
-          described_class.run(user)
-          expect(CautionFlag
-                     .where({ institution_id: institution.id,
-                              source: Settlement.name,
-                              version_id: Version.current_preview.id })
-                     .count).to be > 0
-        end
-      end
 
       describe 'the caution_flag_reason' do
         it 'is set to the settlement_description' do
           create :settlement, :institution_builder
           described_class.run(user)
 
-          caution_flag = CautionFlag.where({ institution_id: institution.id,
+          caution_flag = CautionFlag.where({ institution_id: institution_by_cross.id,
                                              source: Settlement.name,
                                              version_id: Version.current_preview.id }).first
 
@@ -629,11 +618,35 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :settlement, :institution_builder
           create :settlement, :institution_builder, settlement_description: 'another description'
           described_class.run(user)
-          caution_flag = CautionFlag.where({ institution_id: institution.id,
+          caution_flag = CautionFlag.where({ institution_id: institution_by_cross.id,
                                              source: Settlement.name,
                                              version_id: Version.current_preview.id }).first
 
           expect(caution_flag.reason).to match(settlement.settlement_description)
+        end
+      end
+
+      describe 'related institutions' do
+        it 'found by facility code -> cross (IPEDS)' do
+          create :settlement, :matches_by_facility_code
+          described_class.run(user)
+
+          expect(CautionFlag
+                     .where({ institution_id: institution_by_facility_code.id,
+                              source: Settlement.name,
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
+        end
+
+        it 'found by cross (IPEDS)' do
+          create :settlement, :institution_builder
+
+          described_class.run(user)
+          expect(CautionFlag
+                     .where({ institution_id: institution_by_cross.id,
+                              source: Settlement.name,
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
       end
     end
