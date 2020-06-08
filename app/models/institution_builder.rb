@@ -439,7 +439,7 @@ module InstitutionBuilder
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
       ) settlement_list
-      WHERE institutions.cross = settlement_list.cross
+      WHERE institutions.cross = settlement_list.cross OR institutions.facility_code = settlement_list.cross
       AND institutions.version_id = #{version_id}
     SQL
 
