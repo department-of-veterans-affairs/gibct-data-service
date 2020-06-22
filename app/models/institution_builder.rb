@@ -9,10 +9,7 @@ module InstitutionBuilder
   def self.run_insertions(version)
     initialize_with_weams(version)
     add_crosswalk(version.id)
-
-    # prod flag for bah-6852
-    add_sec103(version.id) unless production?
-
+    add_sec103(version.id)
     add_sva(version.id)
     add_vsoc(version.id)
     add_eight_key(version.id)
@@ -442,7 +439,7 @@ module InstitutionBuilder
         WHERE "cross" IS NOT NULL
         GROUP BY "cross"
       ) settlement_list
-      WHERE institutions.cross = settlement_list.cross
+      WHERE institutions.cross = settlement_list.cross OR institutions.facility_code = settlement_list.cross
       AND institutions.version_id = #{version_id}
     SQL
 
@@ -454,6 +451,7 @@ module InstitutionBuilder
     SQL
     caution_flag_clause = <<-SQL
 	    FROM institutions JOIN settlements on institutions.cross = settlements.cross
+        OR institutions.facility_code = settlements.cross
       WHERE settlements.cross IS NOT NULL
       AND institutions.version_id = #{version_id}
     SQL
