@@ -28,6 +28,22 @@ Note that queries are PostgreSQL-specific.
 3. Install Bundler to manager dependencies: `gem install bundler -v 2.1.4` and `bundle install`
 4. `npm install -g phantomjs` is necessary for running certain tests.
 
+## Issues
+When running `bundle install` if this or a similar error occurs
+
+```
+An error occurred while installing libv8 (3.16.14.19), and Bundler cannot continue.
+Make sure that `gem install libv8 -v '3.16.14.19' --source 'https://rubygems.org/'` succeeds
+```
+
+Run the commands to resolve the issue
+
+```
+brew install v8@3.15
+bundle config --local build.libv8 --with-system-v8
+bundle config --local build.therubyracer --with-v8-dir=/usr/local/opt/v8@3.15
+```
+
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
 - `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!
