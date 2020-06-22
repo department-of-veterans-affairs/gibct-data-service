@@ -119,6 +119,18 @@ if ENV['CI'].blank?
                predicate: 'reason',
                object: 'There may be a potential lapse in program approval for Ashford University. VA may be forced to stop making benefit payments unless Ashford continues to show a good faith effort to seek approval in California. The State Attorney General filed a lawsuit against Ashford University for engaging in unlawful business practices, and litigation is pending.',
                priority: 2),
+      Rule.new(rule_name: CautionFlag.name,
+               matcher: Rule::MATCHERS[:has],
+               subject: nil,
+               predicate: 'reason',
+               object: 'Federal Trade Commission (FTC) filed suit for deceptive action',
+               priority: 2),
+      Rule.new(rule_name: CautionFlag.name,
+               matcher: Rule::MATCHERS[:has],
+               subject: nil,
+               predicate: 'reason',
+               object: 'States Attorney General Filed Suit for Deceptive Action',
+               priority: 2),
   ]
 
   results = Rule.import(values, returning: [:id, :object])
@@ -225,7 +237,7 @@ if ENV['CI'].blank?
       },
       #settlement
       {rule_id: rule_id(rule_results, 'Settlement reached with States Attorney General'),
-       title: 'School has settled its case with the state Attorney General',
+       title: 'Settlement reached with state\'s Attorney General',
        description: 'The state\'s Attorney General has reached a settlement with this school. ',
        link_text: nil,
        link_url: nil,
@@ -251,6 +263,20 @@ if ENV['CI'].blank?
        link_text: nil,
        link_url: nil,
       },
+      #settlement
+      {rule_id: rule_id(rule_results, 'Federal Trade Commission (FTC) filed suit for deceptive action'),
+        title: 'Federal Trade Commission (FTC) filed suit for deceptive action',
+        description: 'The FTC filed a suit against this school for deceptive action. VA may suspend benefits to this school.',
+        link_text: nil,
+        link_url: nil,
+       },
+       #settlement
+      {rule_id: rule_id(rule_results, 'States Attorney General Filed Suit for Deceptive Action'),
+        title: 'State\'s Attorney General filed suit for deceptive action',
+        description: 'The state\'s Attorney General filed suit against this school for deceptive action. VA may suspend benefits to this school.',
+        link_text: nil,
+        link_url: nil,
+       },
   ]
 
   CautionFlagRule.import(values, validate: false)
