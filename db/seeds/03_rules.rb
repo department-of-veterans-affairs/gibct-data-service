@@ -292,14 +292,14 @@ if ENV['CI'].blank?
        #settlement
       {rule_id: rule_id(rule_results, 'The Federal Trade Commission (FTC) has reached a settlement with this school'),
         title: 'Settlement reached with Federal Trade Commission (FTC)',
-        description: 'The FTC has reached a settlement with this school',
+        description: 'The FTC has reached a settlement with this school.',
         link_text: nil,
         link_url: nil,
        },
        #settlement
       {rule_id: rule_id(rule_results, 'The Federal Trade Commission (FTC) has reached a settlement with this school.'),
         title: 'Settlement reached with Federal Trade Commission (FTC)',
-        description: 'The FTC has reached a settlement with this school',
+        description: 'The FTC has reached a settlement with this school.',
         link_text: nil,
         link_url: nil,
        },
