@@ -156,7 +156,8 @@ class Institution < ApplicationRecord
     },
     'complies_with_sec_103' => { column: :complies_with_sec_103, converter: BooleanConverter },
     'solely_requires_coe' => { column: :solely_requires_coe, converter: BooleanConverter },
-    'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter }
+    'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter },
+    'poo status' => { column: :poo_status, converter: BaseConverter }
   }.freeze
 
   has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
