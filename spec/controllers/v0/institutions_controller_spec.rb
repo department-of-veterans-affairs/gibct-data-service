@@ -321,7 +321,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
-    
+
     it 'search returns results fuzzy-matching name' do
       create(:institution, :independent_study, version_id: Version.current_production.id)
       get(:index, params: { name: 'UNIVERSITY OF NDEPENDENT STUDY', fuzzy_search: true })
