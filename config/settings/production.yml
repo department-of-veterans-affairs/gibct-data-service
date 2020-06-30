@@ -1,3 +1,1 @@
 college_navigator_url: 'https://nces.ed.gov/collegenavigator'
-institution_name_similarity_threshold: .8
-institution_city_similarity_threshold: .8

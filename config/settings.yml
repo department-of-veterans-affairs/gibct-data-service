@@ -16,3 +16,7 @@ scorecard:
   api_key: <%= ENV['SCORECARD_API_KEY'] %>
 
 environment: <%= ENV['DEPLOYMENT_ENV'] %>
+
+institution_name_similarity_threshold: .7
+
+institution_city_similarity_threshold: .7
