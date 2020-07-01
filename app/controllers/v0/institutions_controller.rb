@@ -29,7 +29,16 @@ module V0
         facets: facets
       }
 
-      render json: search_results.order(:institution).page(params[:page]), meta: @meta
+      if @query.key?(:fuzzy_search)
+        order_by = <<-SQL
+          (SIMILARITY(institution, :search_term) + SIMILARITY(city, :search_term)) / 2 DESC,
+          institution ASC
+        SQL
+        sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by, search_term: (@query[:name]).to_s])
+        render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
+      else
+        render json: search_results.order(:institution).page(params[:page]), meta: @meta
+      end
     end
 
     # GET /v0/institutions/20005123
@@ -82,7 +91,9 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = approved_institutions.where(vet_tec_provider: false).search(@query[:name], @query[:include_address])
+      relation = approved_institutions
+                 .where(vet_tec_provider: false)
+                 .search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search))
       filter_results(relation)
     end
 

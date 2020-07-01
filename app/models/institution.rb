@@ -230,7 +230,7 @@ class Institution < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, include_address = false|
+  scope :search, lambda { |search_term, include_address = false, fuzzy_search = false|
     return if search_term.blank?
 
     clause = [
@@ -238,6 +238,11 @@ class Institution < ApplicationRecord
       'institution LIKE (:upper_search_term)',
       'city LIKE (:upper_search_term)'
     ]
+
+    if fuzzy_search
+      clause << "SIMILARITY(institution, :search_term) > #{Settings.institution_name_similarity_threshold}"
+      clause << "SIMILARITY(city, :search_term) > #{Settings.institution_city_similarity_threshold}"
+    end
 
     if include_address
       3.times do |i|
@@ -249,7 +254,8 @@ class Institution < ApplicationRecord
       sanitize_sql_for_conditions([clause.join(' OR '),
                                    facility_code: search_term.upcase,
                                    upper_search_term: "%#{search_term.upcase}%",
-                                   lower_search_term: "%#{search_term.downcase}%"])
+                                   lower_search_term: "%#{search_term.downcase}%",
+                                   search_term: search_term.to_s])
     )
   }
 
