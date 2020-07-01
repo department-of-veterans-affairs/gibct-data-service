@@ -234,15 +234,14 @@ class Institution < ApplicationRecord
     return if search_term.blank?
 
     clause = [
-      'facility_code = (:facility_code)'
+      'facility_code = (:facility_code)',
+      'institution LIKE (:upper_search_term)',
+      'city LIKE (:upper_search_term)'
     ]
 
     if fuzzy_search
       clause << "SIMILARITY(institution, :search_term) > #{Settings.institution_name_similarity_threshold}"
       clause << "SIMILARITY(city, :search_term) > #{Settings.institution_city_similarity_threshold}"
-    else
-      clause << 'institution LIKE (:upper_search_term)'
-      clause << 'city LIKE (:upper_search_term)'
     end
 
     if include_address
