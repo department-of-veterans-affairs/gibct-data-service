@@ -346,6 +346,23 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institutions')
     end
 
+    it 'search returns results zip' do
+     create(:institution, :independent_study, zip: '29461', version_id: Version.current_production.id)
+     get(:index, params: { name: '29461', fuzzy_search: true })
+     expect(JSON.parse(response.body)['data'].count).to eq(1)
+     expect(response.content_type).to eq('application/json')
+     expect(response).to match_response_schema('institutions')
+    end
+
+    it 'search returns results alias' do
+     create(:institution, :independent_study, ialias: 'UIS', version_id: Version.current_production.id)
+     get(:index, params: { name: 'uis', fuzzy_search: true })
+     expect(JSON.parse(response.body)['data'].count).to eq(1)
+     expect(response.content_type).to eq('application/json')
+     expect(response).to match_response_schema('institutions')
+    end
+
+
     it 'search returns case-insensitive results' do
       get(:index, params: { name: 'CHICAGO' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
