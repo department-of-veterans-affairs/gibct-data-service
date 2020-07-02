@@ -238,8 +238,8 @@ class Institution < ApplicationRecord
     if fuzzy_search
       clause << 'institution % :upper_search_term'
       clause << 'city % :upper_search_term'
-      clause << 'zip = (:search_term)'
-      clause << 'ialias LIKE (:upper_search_term)'
+      clause << 'zip = :search_term'
+      clause << 'ialias LIKE :upper_search_term'
     else
       clause << 'institution LIKE :upper_search_term'
       clause << 'city LIKE :upper_search_term'
