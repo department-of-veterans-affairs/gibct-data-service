@@ -236,9 +236,7 @@ class Institution < ApplicationRecord
     clause = [
       'facility_code = (:facility_code)',
       'institution LIKE (:upper_search_term)',
-      'city LIKE (:upper_search_term)',
-      'ialias = (:search_term)',
-      'ialias = (:facility_code)'
+      'city LIKE (:upper_search_term)'
      ]
 
     if fuzzy_search
