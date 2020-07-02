@@ -39,6 +39,7 @@ module InstitutionBuilder
     build_versioned_school_certifying_official(version.id)
     CautionFlag.map(version.id)
     set_count_of_caution_flags(version.id)
+    update_ialias_to_upper(version.id)
   end
 
   def self.run(user)
@@ -803,6 +804,13 @@ module InstitutionBuilder
       WHERE institutions.version_id = #{version_id}
     SQL
 
+    Institution.connection.update(str)
+  end
+
+  def self.update_ialias_to_upper(version_id)
+    str = <<-SQL
+        UPDATE institutions SET ialias = upper(ialias)
+    SQL
     Institution.connection.update(str)
   end
 end
