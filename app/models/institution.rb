@@ -227,31 +227,35 @@ class Institution < ApplicationRecord
       .where('institution LIKE (?)', "#{search_term.upcase}%")
       .limit(limit)
   end
+
   # Finds exact-matching facility_code or partial-matching school and city names
   #
   scope :search, lambda { |search_term, include_address = false, fuzzy_search = false|
     return if search_term.blank?
 
-    or_clauses = ['facility_code = :facility_code']
+    clause = ['facility_code = :facility_code']
 
     if fuzzy_search
-      or_clauses << 'institution % :upper_search_term'
-      or_clauses << 'city % :upper_search_term'
+      clause << 'institution % :upper_search_term'
+      clause << 'city % :upper_search_term'
+      clause << 'zip = (:search_term)'
+      clause << 'ialias LIKE (:upper_search_term)'
     else
-      or_clauses << 'institution LIKE :upper_search_term'
-      or_clauses << 'city LIKE :upper_search_term'
+      clause << 'institution LIKE :upper_search_term'
+      clause << 'city LIKE :upper_search_term'
     end
 
     if include_address
       3.times do |i|
-        or_clauses << "lower(address_#{i + 1}) LIKE :lower_search_term"
+        clause << "lower(address_#{i + 1}) LIKE :lower_search_term"
       end
     end
 
-    where(sanitize_sql_for_conditions(['(' + or_clauses.join(' OR ') + ')',
+    where(sanitize_sql_for_conditions(['(' + clause.join(' OR ') + ')',
                                        facility_code: search_term.upcase,
                                        upper_search_term: "%#{search_term.upcase}%",
-                                       lower_search_term: "%#{search_term.downcase}%"]))
+                                       lower_search_term: "%#{search_term.downcase}%",
+                                       search_term: search_term.to_s]))
   }
 
   scope :filter_result, lambda { |field, value|

@@ -50,7 +50,7 @@ class IpedsHd < ApplicationRecord
     'pseflag' => { column: :pseflag, converter: NumberConverter },
     'pset4flg' => { column: :pset4flg, converter: NumberConverter },
     'rptmth' => { column: :rptmth, converter: NumberConverter },
-    'ialias' => { column: :ialias, converter: BaseConverter },
+    'ialias' => { column: :ialias, converter: UpcaseConverter },
     'instcat' => { column: :instcat, converter: NumberConverter },
     'ccbasic' => { column: :ccbasic, converter: NumberConverter },
     'ccipug' => { column: :ccipug, converter: NumberConverter },
