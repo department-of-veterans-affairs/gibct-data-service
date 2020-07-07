@@ -233,32 +233,29 @@ class Institution < ApplicationRecord
   scope :search, lambda { |search_term, include_address = false, fuzzy_search = false|
     return if search_term.blank?
 
-    clause = [
-      'facility_code = (:facility_code)',
-      'institution LIKE (:upper_search_term)',
-      'city LIKE (:upper_search_term)'
-    ]
+    clause = ['facility_code = :facility_code']
 
     if fuzzy_search
-      clause << "SIMILARITY(institution, :search_term) > #{Settings.institution_name_similarity_threshold}"
-      clause << "SIMILARITY(city, :search_term) > #{Settings.institution_city_similarity_threshold}"
-      clause << 'zip = (:search_term)'
-      clause << 'ialias LIKE (:upper_search_term)'
+      clause << 'institution % :upper_search_term'
+      clause << 'city % :upper_search_term'
+      clause << 'zip = :search_term'
+      clause << 'ialias LIKE :upper_search_term'
+    else
+      clause << 'institution LIKE :upper_search_term'
+      clause << 'city LIKE :upper_search_term'
     end
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE (:lower_search_term)"
+        clause << "lower(address_#{i + 1}) LIKE :lower_search_term"
       end
     end
 
-    where(
-      sanitize_sql_for_conditions([clause.join(' OR '),
-                                   facility_code: search_term.upcase,
-                                   upper_search_term: "%#{search_term.upcase}%",
-                                   lower_search_term: "%#{search_term.downcase}%",
-                                   search_term: search_term.to_s])
-    )
+    where(sanitize_sql_for_conditions(['(' + clause.join(' OR ') + ')',
+                                       facility_code: search_term.upcase,
+                                       upper_search_term: "%#{search_term.upcase}%",
+                                       lower_search_term: "%#{search_term.downcase}%",
+                                       search_term: search_term.to_s]))
   }
 
   scope :filter_result, lambda { |field, value|
