@@ -278,14 +278,14 @@ if ENV['CI'].blank?
       #settlement
       {rule_id: rule_id(rule_results, 'Federal Trade Commission (FTC) filed suit for deceptive action'),
         title: 'Federal Trade Commission (FTC) filed suit for deceptive action',
-        description: 'The FTC filed a suit against this school for deceptive action. VA may suspend benefits to this school.',
+        description: 'The FTC filed a suit against this school for deceptive action.',
         link_text: nil,
         link_url: nil,
        },
        #settlement
       {rule_id: rule_id(rule_results, 'States Attorney General Filed Suit for Deceptive Action'),
         title: 'State\'s Attorney General filed suit for deceptive action',
-        description: 'The state\'s Attorney General filed suit against this school for deceptive action. VA may suspend benefits to this school.',
+        description: 'The state\'s Attorney General filed suit against this school for deceptive action.',
         link_text: nil,
         link_url: nil,
        },
