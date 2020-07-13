@@ -74,3 +74,4 @@ config/settings/*.local.yml
 config/environments/*.local.yml
 /.generators
 /.rakeTasks
+*.iml
