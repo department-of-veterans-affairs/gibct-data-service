@@ -51,7 +51,8 @@ class InstitutionProgram < ApplicationRecord
       'institution_programs.facility_code = (:facility_code)',
       'institutions.institution LIKE (:upper_search_term)',
       'lower(description) LIKE (:search_term)',
-      'lower(institutions.physical_city) LIKE (:search_term)'
+      'lower(institutions.physical_city) LIKE (:search_term)',
+      'institutions.physical_zip LIKE (:search_term)'
     ]
 
     where(
