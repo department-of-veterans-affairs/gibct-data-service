@@ -57,6 +57,13 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :count_of_caution_flags
 
+  attribute :hbcu
+  attribute :hcm2
+  attribute :menonly
+  attribute :pctfloan
+  attribute :relaffil
+  attribute :womenonly
+
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:self) { v0_institution_url(object.facility_code) }
