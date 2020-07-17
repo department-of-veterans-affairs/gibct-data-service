@@ -30,10 +30,7 @@ module V0
       }
 
       if @query.key?(:fuzzy_search)
-        order_by = <<-SQL
-          (SIMILARITY(institution, :search_term) + SIMILARITY(city, :search_term)) / 2 DESC,
-          institution ASC
-        SQL
+        order_by = 'SIMILARITY(institution, :search_term) * COALESCE(gibill, 0) DESC, institution'
         sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by, search_term: (@query[:name]).to_s])
         render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
       else
