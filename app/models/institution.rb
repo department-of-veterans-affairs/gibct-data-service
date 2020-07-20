@@ -236,8 +236,8 @@ class Institution < ApplicationRecord
     clause = ['facility_code = :facility_code']
 
     if fuzzy_search
-      clause << 'institution % :upper_search_term'
-      clause << 'city % :upper_search_term'
+      clause << "SIMILARITY(institution, :search_term) > #{Settings.institution_name_similarity_threshold}"
+      clause << "SIMILARITY(city, :search_term) > #{Settings.institution_city_similarity_threshold}"
       clause << 'zip = :search_term'
       clause << 'ialias LIKE :upper_search_term'
     else
