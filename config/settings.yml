@@ -17,6 +17,6 @@ scorecard:
 
 environment: <%= ENV['DEPLOYMENT_ENV'] %>
 
-institution_name_similarity_threshold: .7
+institution_name_similarity_threshold: .1
 
 institution_city_similarity_threshold: .7
