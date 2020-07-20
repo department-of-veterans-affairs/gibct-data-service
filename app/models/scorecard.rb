@@ -20,9 +20,8 @@ class Scorecard < ApplicationRecord
     insturl pred_degree_awarded locale undergrad_enrollment
     retention_all_students_ba retention_all_students_otb
     graduation_rate_all_students salary_all_students
-    repayment_rate_all_students avg_stu_loan_debt 
-    hbcu menonly womenonly relaffil hcm2
-    
+    repayment_rate_all_students avg_stu_loan_debt
+     hbcu menonly womenonly relaffil hcm2
   ].freeze
 
   CSV_CONVERTER_INFO = {
