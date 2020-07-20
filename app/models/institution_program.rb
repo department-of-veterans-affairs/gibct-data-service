@@ -53,8 +53,8 @@ class InstitutionProgram < ApplicationRecord
     ]
 
     if fuzzy_search
-      clause << 'institution % :upper_search_term'
-      clause << 'physical_city % :upper_search_term'
+      clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
+      clause << 'SIMILARITY(physical_city, :search_term) > :city_threshold'
       clause << 'institutions.physical_zip LIKE (:search_term)'
     else
       clause << 'institutions.institution LIKE (:upper_search_term)'
@@ -66,7 +66,9 @@ class InstitutionProgram < ApplicationRecord
         [clause.join(' OR '),
          facility_code: search_term.upcase,
          upper_search_term: "%#{search_term.upcase}%",
-         search_term: "%#{search_term}%"]
+         search_term: "%#{search_term}%",
+         name_threshold: Settings.institution_name_similarity_threshold,
+         city_threshold: Settings.institution_city_similarity_threshold]
       )
     )
   }

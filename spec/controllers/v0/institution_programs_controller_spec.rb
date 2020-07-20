@@ -250,9 +250,9 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search returns results fuzzy-matching physical city' do
-      create(:institution, version_id: Version.last.id, physical_city: 'augusta')
+      create(:institution, :independent_study, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: 'augusa', fuzzy_search: true })
+      get(:index, params: { name: 'VERY LONG CITY AME', fuzzy_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
@@ -271,9 +271,9 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search returns no results for fuzzy-matching physical city without search enhancements' do
-      create(:institution, version_id: Version.last.id, physical_city: 'augusta')
+      create(:institution, :independent_study, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: 'augusa' })
+      get(:index, params: { name: 'VERY LONG CITY AME'})
       expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
 
