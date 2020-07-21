@@ -161,7 +161,9 @@ module V0
     end
 
     def use_fuzzy_search
-      exact_match_found = approved_institutions.where({ vet_tec_provider: false, institution: @query[:name].upcase }).count.positive?
+      exact_match_found = approved_institutions
+                          .where(vet_tec_provider: false, institution: @query[:name]&.upcase)
+                          .count.positive?
       @query.key?(:fuzzy_search) && !exact_match_found
     end
   end
