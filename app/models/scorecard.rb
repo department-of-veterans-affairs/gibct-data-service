@@ -21,6 +21,7 @@ class Scorecard < ApplicationRecord
     retention_all_students_ba retention_all_students_otb
     graduation_rate_all_students salary_all_students
     repayment_rate_all_students avg_stu_loan_debt
+    hbcu menonly womenonly relaffil hcm2 pctfloan
   ].freeze
 
   CSV_CONVERTER_INFO = {

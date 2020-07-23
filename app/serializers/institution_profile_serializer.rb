@@ -96,6 +96,12 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :versioned_school_certifying_officials
   attribute :count_of_caution_flags
   attribute :section_103_message
+  attribute :hbcu
+  attribute :hcm2
+  attribute :menonly
+  attribute :pctfloan
+  attribute :relaffil
+  attribute :womenonly
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
