@@ -489,6 +489,24 @@
             },
             "updated_at": {
               "type": "string"
+            },
+            "hbcu":{
+              "type": ["null", "integer"]
+            },
+            "hcm2":{
+              "type": ["null", "integer"]
+            },
+            "menonly":{
+              "type": ["null", "integer"]
+            },
+            "pctfloan":{
+              "type": ["null", "number"]
+            },
+            "relaffil":{
+              "type": ["null", "integer"]
+            },
+            "womenonly":{
+              "type": ["null", "integer"]
             }
           },
           "required": [
@@ -563,7 +581,13 @@
             "stem_indicator",
             "parent_facility_code_id",
             "campus_type",
-            "count_of_caution_flags"
+            "count_of_caution_flags",
+            "hbcu",
+            "hcm2",
+            "menonly",
+            "pctfloan",
+            "relaffil",
+            "womenonly"
           ]
         },
         "links": {
