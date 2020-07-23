@@ -26,6 +26,7 @@ module V0
         count: search_results.count,
         facets: facets
       }
+
       render json: search_results
         .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
         .page(params[:page]), meta: @meta
@@ -52,7 +53,7 @@ module V0
       relation = InstitutionProgram.joins(institution: :version)
                                    .where(institutions: { version: @version })
                                    .eager_load(:institution)
-                                   .search(@query[:name])
+                                   .search(@query[:name], @query.key?(:fuzzy_search))
 
       filter_results(relation)
     end
