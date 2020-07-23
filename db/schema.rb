@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_17_153030) do
+ActiveRecord::Schema.define(version: 2020_07_18_131012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1529,6 +1529,19 @@ ActiveRecord::Schema.define(version: 2020_07_17_153030) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "va_caution_flags", id: :serial, force: :cascade do |t|
+    t.string "institution_id"
+    t.string "institution_name"
+    t.integer "school_system_code"
+    t.string "school_system_name"
+    t.string "settlement_title"
+    t.string "settlement_description"
+    t.date "settlement_date"
+    t.string "settlement_link"
+    t.date "school_closing_date"
+    t.boolean "sec_702"
   end
 
   create_table "versioned_school_certifying_officials", id: :serial, force: :cascade do |t|
