@@ -233,7 +233,7 @@ class Institution < ApplicationRecord
   scope :search, lambda { |search_term, include_address = false, fuzzy_search = false|
     return if search_term.blank?
 
-    clause = ['facility_code = :facility_code', 'ialias LIKE :upper_search_term']
+    clause = ['facility_code = :facility_code']
 
     if fuzzy_search
       clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
@@ -242,6 +242,7 @@ class Institution < ApplicationRecord
     else
       clause << 'institution LIKE :upper_search_term'
       clause << 'city LIKE :upper_search_term'
+      clause << 'ialias LIKE :upper_search_term'
     end
 
     if include_address
