@@ -1532,7 +1532,7 @@ ActiveRecord::Schema.define(version: 2020_07_18_131012) do
   end
 
   create_table "va_caution_flags", id: :serial, force: :cascade do |t|
-    t.string "institution_id"
+    t.string "facility_code", null: false
     t.string "institution_name"
     t.string "school_system_name"
     t.string "settlement_title"

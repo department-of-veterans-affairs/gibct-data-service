@@ -142,4 +142,4 @@ Sec103:
 
 VaCautionFlag:
   skip_lines: 0
-  col_sep: "|"
+  col_sep: ","
