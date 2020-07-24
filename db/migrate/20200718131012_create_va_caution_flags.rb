@@ -2,7 +2,7 @@
 class CreateVaCautionFlags < ActiveRecord::Migration[4.2]
     def change
       create_table :va_caution_flags do |t|
-        t.string :institution_id, null: false
+        t.string :facility_code, null: false
         t.string :institution_name
         t.string :school_system_name
         t.string :settlement_title
