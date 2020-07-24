@@ -243,6 +243,7 @@ class Institution < ApplicationRecord
     else
       clause << 'institution LIKE :upper_search_term'
       clause << 'city LIKE :upper_search_term'
+      clause << 'ialias LIKE :upper_search_term'
     end
 
     if include_address
