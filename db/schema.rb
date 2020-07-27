@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_18_131012) do
+ActiveRecord::Schema.define(version: 2020_07_27_113800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1537,9 +1537,9 @@ ActiveRecord::Schema.define(version: 2020_07_18_131012) do
     t.string "school_system_name"
     t.string "settlement_title"
     t.string "settlement_description"
-    t.date "settlement_date"
+    t.string "settlement_date"
     t.string "settlement_link"
-    t.date "school_closing_date"
+    t.string "school_closing_date"
     t.boolean "sec_702"
   end
 
