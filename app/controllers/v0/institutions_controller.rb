@@ -94,7 +94,6 @@ module V0
       filter_results(relation)
     end
 
-    # rubocop:disable Metrics/MethodLength
     def filter_results(relation)
       [
         %i[institution_type_name type],
@@ -126,7 +125,6 @@ module V0
 
       relation
     end
-    # rubocop:enable Metrics/MethodLength
 
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
