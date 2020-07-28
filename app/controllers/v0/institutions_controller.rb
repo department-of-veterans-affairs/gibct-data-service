@@ -155,7 +155,6 @@ module V0
         relaffil: search_results.filter_count(:relaffil)
       }
 
-
       add_active_search_facets(result)
     end
 
