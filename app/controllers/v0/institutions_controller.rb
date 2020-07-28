@@ -75,7 +75,7 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
-        %i[state country type].each do |k|
+        %i[state country type relaffil].each do |k|
           query[k].try(:upcase!)
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
@@ -111,7 +111,11 @@ module V0
         [:distance_learning],
         [:priority_enrollment], # boolean
         [:preferred_provider], # boolean
-        [:stem_indicator] # boolean
+        [:stem_indicator], # boolean
+        [:womenonly], # boolean
+        [:menonly], # boolean
+        [:hbcu], # boolean
+        [:relaffil]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
@@ -144,14 +148,21 @@ module V0
         independent_study: boolean_facet,
         online_only: boolean_facet,
         distance_learning: boolean_facet,
-        priority_enrollment: boolean_facet
+        priority_enrollment: boolean_facet,
+        menonly: boolean_facet,
+        womenonly: boolean_facet,
+        hbcu: boolean_facet,
+        relaffil: search_results.filter_count(:relaffil)
       }
+
+
       add_active_search_facets(result)
     end
 
     def add_active_search_facets(raw_facets)
       add_search_facet(raw_facets, :state)
       add_search_facet(raw_facets, :type)
+      add_search_facet(raw_facets, :relaffil)
       add_country_search_facet(raw_facets)
       raw_facets
     end
