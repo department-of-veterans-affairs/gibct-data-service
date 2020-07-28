@@ -75,7 +75,7 @@ module V0
       query.tap do
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
-        %i[state country type relaffil].each do |k|
+        %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
@@ -162,7 +162,7 @@ module V0
     def add_active_search_facets(raw_facets)
       add_search_facet(raw_facets, :state)
       add_search_facet(raw_facets, :type)
-      add_search_facet(raw_facets, :relaffil)
+      # add_search_facet(raw_facets, :relaffil)
       add_country_search_facet(raw_facets)
       raw_facets
     end
