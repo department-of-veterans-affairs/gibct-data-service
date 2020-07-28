@@ -183,7 +183,8 @@ RSpec.describe Institution, type: :model do
           .to include(
             "WHERE ((facility_code = 'CHICAGO'",
             "OR institution LIKE '%CHICAGO%'",
-            "OR city LIKE '%CHICAGO%'))"
+            "OR city LIKE '%CHICAGO%'",
+            "OR ialias LIKE '%CHICAGO%'))"
           )
       end
     end
