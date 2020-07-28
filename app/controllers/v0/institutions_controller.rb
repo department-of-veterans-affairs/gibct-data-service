@@ -162,7 +162,6 @@ module V0
     def add_active_search_facets(raw_facets)
       add_search_facet(raw_facets, :state)
       add_search_facet(raw_facets, :type)
-      # add_search_facet(raw_facets, :relaffil)
       add_country_search_facet(raw_facets)
       raw_facets
     end
