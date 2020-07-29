@@ -113,7 +113,6 @@ Metrics/ModuleLength:
     - "app/models/institution_builder.rb"
 
 Metrics/BlockLength:
-  Max: 40
   Exclude:
     - "spec/**/*"
     - "rakelib/**/*.rake"
