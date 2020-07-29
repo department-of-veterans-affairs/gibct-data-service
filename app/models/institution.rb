@@ -287,5 +287,30 @@ class Institution < ApplicationRecord
     group(field).where.not(field => nil).order(field).count
   }
 
+  # Returns count of institutions that have:
+  # a facility_code that equals search_term
+  # an institution that starts with search_term
+  # an institution that equals search_term
+  # a city that equals search_term
+  # an ialias that contains search_term
+  #
+  scope :search_count, lambda { |search_term|
+    return 0 if search_term.blank?
+
+    clause = [
+      'facility_code = :search_term',
+      'institution LIKE :starts_with_term',
+      'institution = :search_term',
+      'city = :search_term',
+      'ialias LIKE :contains_term'
+    ]
+
+    where(sanitize_sql_for_conditions([clause.join(' OR ') ,
+                                       search_term: search_term.upcase,
+                                       starts_with_term: "%#{search_term.upcase}",
+                                       contains_term: "%#{search_term.upcase}%"]))
+      .count
+  }
+
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 end

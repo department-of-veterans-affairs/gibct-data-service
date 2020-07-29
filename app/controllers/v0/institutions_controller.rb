@@ -11,7 +11,7 @@ module V0
       if params[:term].present?
         @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = filter_results(approved_institutions).where(vet_tec_provider: false).autocomplete(@search_term)
+        @data = filter_results(non_vet_tec_institutions).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -88,9 +88,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = approved_institutions
-                 .where(vet_tec_provider: false)
-                 .search(@query[:name], @query[:include_address], use_fuzzy_search)
+      relation = non_vet_tec_institutions.search(@query[:name], @query[:include_address], use_fuzzy_search)
       filter_results(relation)
     end
 
@@ -160,13 +158,12 @@ module V0
       Institution.joins(:version).no_extentions.where(approved: true, version: @version)
     end
 
-    # if institution starts with or is
-    # if ialias contains
+    def non_vet_tec_institutions
+      approved_institutions.where(vet_tec_provider: false)
+    end
+
     def use_fuzzy_search
-      exact_match_found = approved_institutions
-                          .where(vet_tec_provider: false, institution: @query[:name]&.upcase)
-                          .or(approved_institutions.where(vet_tec_provider: false, ialias: @query[:name]&.upcase))
-                          .count.positive?
+      exact_match_found = non_vet_tec_institutions.search_count(@query[:name]).positive?
       @query.key?(:fuzzy_search) && !exact_match_found
     end
   end
