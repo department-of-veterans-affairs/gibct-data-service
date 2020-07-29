@@ -31,8 +31,8 @@ class Institution < ApplicationRecord
       'institution LIKE :starts_with_term',
       'institution = :search_term',
       'city = :search_term',
-      'ialias LIKE :contains_term'
-  ]
+      'ialias LIKE :upper_contains_term'
+  ].freeze
 
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
@@ -250,7 +250,7 @@ class Institution < ApplicationRecord
         clause << 'SIMILARITY(city, :search_term) > :city_threshold'
         clause << 'zip = :search_term'
       else
-        clause + NON_FUZZY_SEARCH_CLAUSE
+        clause.push(*NON_FUZZY_SEARCH_CLAUSE)
       end
     else
       clause << 'institution LIKE :upper_contains_term'
@@ -311,12 +311,12 @@ class Institution < ApplicationRecord
     return 0 if search_term.blank?
 
     clause = ['facility_code = :search_term']
-    clause + NON_FUZZY_SEARCH_CLAUSE
+    clause.push(*NON_FUZZY_SEARCH_CLAUSE)
 
     where(sanitize_sql_for_conditions([clause.join(' OR ') ,
                                        search_term: search_term.upcase,
                                        starts_with_term: "%#{search_term.upcase}",
-                                       contains_term: "%#{search_term.upcase}%"]))
+                                       upper_contains_term: "%#{search_term.upcase}%"]))
       .count
   }
 
