@@ -181,10 +181,9 @@ RSpec.describe Institution, type: :model do
       it 'searches when attribute is provided' do
         expect(described_class.search('chicago').to_sql)
           .to include(
-            "WHERE ((facility_code = 'CHICAGO'",
+            "WHERE (facility_code = 'CHICAGO'",
             "OR institution LIKE '%CHICAGO%'",
-            "OR city LIKE '%CHICAGO%'",
-            "OR ialias LIKE '%CHICAGO%'))"
+            "OR city LIKE '%CHICAGO%')"
           )
       end
     end

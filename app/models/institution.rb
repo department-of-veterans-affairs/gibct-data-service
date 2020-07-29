@@ -28,10 +28,10 @@ class Institution < ApplicationRecord
   }.freeze
 
   NON_FUZZY_SEARCH_CLAUSE = [
-      'institution LIKE :starts_with_term',
-      'institution = :search_term',
-      'city = :search_term',
-      'ialias LIKE :upper_contains_term'
+    'institution LIKE :starts_with_term',
+    'institution = :search_term',
+    'city = :search_term',
+    'ialias LIKE :upper_contains_term'
   ].freeze
 
   CSV_CONVERTER_INFO = {
@@ -263,7 +263,7 @@ class Institution < ApplicationRecord
       end
     end
 
-    where(sanitize_sql_for_conditions(['(' + clause.join(' OR ') + ')',
+    where(sanitize_sql_for_conditions([clause.join(' OR '),
                                        upper_search_term: search_term.upcase,
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        lower_contains_term: "%#{search_term.downcase}%",
@@ -313,7 +313,7 @@ class Institution < ApplicationRecord
     clause = ['facility_code = :search_term']
     clause.push(*NON_FUZZY_SEARCH_CLAUSE)
 
-    where(sanitize_sql_for_conditions([clause.join(' OR ') ,
+    where(sanitize_sql_for_conditions([clause.join(' OR '),
                                        search_term: search_term.upcase,
                                        starts_with_term: "%#{search_term.upcase}",
                                        upper_contains_term: "%#{search_term.upcase}%"]))
