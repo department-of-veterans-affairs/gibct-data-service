@@ -27,6 +27,13 @@ class Institution < ApplicationRecord
     '4-year' => 4
   }.freeze
 
+  NON_FUZZY_SEARCH_CLAUSE = [
+      'institution LIKE :starts_with_term',
+      'institution = :search_term',
+      'city = :search_term',
+      'ialias LIKE :contains_term'
+  ]
+
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -230,23 +237,20 @@ class Institution < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, include_address = false, fuzzy_search = false,
-      exact_match = false
+  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false,
+      use_fuzzy_search = false
   |
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
-    if fuzzy_search
-      if exact_match
-        clause << 'institution LIKE :starts_with_term'
-        clause << 'institution = :upper_search_term'
-        clause << 'city = :upper_search_term'
-        clause << 'ialias LIKE :upper_contains_term'
-      else
+    if fuzzy_search_flag
+      if use_fuzzy_search
         clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
         clause << 'SIMILARITY(city, :search_term) > :city_threshold'
         clause << 'zip = :search_term'
+      else
+        clause + NON_FUZZY_SEARCH_CLAUSE
       end
     else
       clause << 'institution LIKE :upper_contains_term'
@@ -306,13 +310,8 @@ class Institution < ApplicationRecord
   scope :search_count, lambda { |search_term|
     return 0 if search_term.blank?
 
-    clause = [
-      'facility_code = :search_term',
-      'institution LIKE :starts_with_term',
-      'institution = :search_term',
-      'city = :search_term',
-      'ialias LIKE :contains_term'
-    ]
+    clause = ['facility_code = :search_term']
+    clause + NON_FUZZY_SEARCH_CLAUSE
 
     where(sanitize_sql_for_conditions([clause.join(' OR ') ,
                                        search_term: search_term.upcase,

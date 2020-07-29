@@ -29,7 +29,7 @@ module V0
         facets: facets
       }
 
-      if @query.key?(:fuzzy_search) && !exact_match_found?
+      if @query.key?(:fuzzy_search) && use_fuzzy_search?
         order_by = 'SIMILARITY(institution, :search_term) * COALESCE(gibill, 0) DESC, institution'
         sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by, search_term: (@query[:name]).to_s])
         render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
@@ -89,7 +89,7 @@ module V0
     def search_results
       @query ||= normalized_query_params
       relation = non_vet_tec_institutions.search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search),
-                                                 exact_match_found?)
+                                                 use_fuzzy_search?)
       filter_results(relation)
     end
 
@@ -163,8 +163,8 @@ module V0
       approved_institutions.where(vet_tec_provider: false)
     end
 
-    def exact_match_found?
-      non_vet_tec_institutions.search_count(@query[:name]).positive?
+    def use_fuzzy_search?
+      non_vet_tec_institutions.search_count(@query[:name]).zero?
     end
   end
   # rubocop:enable Metrics/ClassLength
