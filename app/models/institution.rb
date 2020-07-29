@@ -230,31 +230,40 @@ class Institution < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, include_address = false, fuzzy_search = false|
+  scope :search, lambda { |search_term, include_address = false, fuzzy_search = false,
+      exact_match = false
+  |
     return if search_term.blank?
 
-    clause = ['facility_code = :facility_code']
+    clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search
-      clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
-      clause << 'SIMILARITY(city, :search_term) > :city_threshold'
-      clause << 'zip = :search_term'
+      if exact_match
+        clause << 'institution LIKE :starts_with_term'
+        clause << 'institution = :upper_search_term'
+        clause << 'city = :upper_search_term'
+        clause << 'ialias LIKE :upper_contains_term'
+      else
+        clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
+        clause << 'SIMILARITY(city, :search_term) > :city_threshold'
+        clause << 'zip = :search_term'
+      end
     else
-      clause << 'institution LIKE :upper_search_term'
-      clause << 'city LIKE :upper_search_term'
-      clause << 'ialias LIKE :upper_search_term'
+      clause << 'institution LIKE :upper_contains_term'
+      clause << 'city LIKE :upper_contains_term'
     end
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE :lower_search_term"
+        clause << "lower(address_#{i + 1}) LIKE :lower_contains_term"
       end
     end
 
     where(sanitize_sql_for_conditions(['(' + clause.join(' OR ') + ')',
-                                       facility_code: search_term.upcase,
-                                       upper_search_term: "%#{search_term.upcase}%",
-                                       lower_search_term: "%#{search_term.downcase}%",
+                                       upper_search_term: search_term.upcase,
+                                       upper_contains_term: "%#{search_term.upcase}%",
+                                       lower_contains_term: "%#{search_term.downcase}%",
+                                       starts_with_term: "%#{search_term.upcase}",
                                        search_term: search_term.to_s,
                                        name_threshold: Settings.institution_name_similarity_threshold,
                                        city_threshold: Settings.institution_city_similarity_threshold]))
