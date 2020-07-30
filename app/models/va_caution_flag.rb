@@ -23,12 +23,12 @@ class VaCautionFlag < ApplicationRecord
     begin
       Date.strptime(settlement_date, '%m/%d/%y') if settlement_date
     rescue ArgumentError
-      errors.add(:settlement_date, 'must be m/d/yy')
+      errors.add(:settlement_date, 'must be mm/dd/yy')
     end
     begin
       Date.strptime(school_closing_date, '%m/%d/%y') if school_closing_date
     rescue ArgumentError
-      errors.add(:school_closing_date, 'must be m/d/yy')
+      errors.add(:school_closing_date, 'must be mm/dd/yy')
     end
   end
 end
