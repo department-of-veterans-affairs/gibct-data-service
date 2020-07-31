@@ -139,3 +139,7 @@ EduProgram:
 Sec103:
   skip_lines: 0
   col_sep: ","
+
+VaCautionFlag:
+  skip_lines: 0
+  col_sep: ","
