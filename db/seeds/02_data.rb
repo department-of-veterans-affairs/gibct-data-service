@@ -65,6 +65,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
   SeedUtils.seed_table_with_upload(EduProgram, user)
   SeedUtils.seed_table_with_upload(Sec103, user)
+  SeedUtils.seed_table_with_upload(VaCautionFlag, user)
 end
 
 
