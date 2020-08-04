@@ -70,7 +70,9 @@ class Upload < ApplicationRecord
   end
 
   def self.last_uploads
-    Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
+    Upload.select('DISTINCT ON("csv_type") *')
+        .where(ok: true, csv_type: CSV_TYPES_ALL_TABLES_NAMES)
+        .order(csv_type: :asc, updated_at: :desc)
   end
 
   def self.last_uploads_rows
