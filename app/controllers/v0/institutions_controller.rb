@@ -93,7 +93,6 @@ module V0
       filter_results(relation)
     end
 
-    # rubocop:disable Metrics/MethodLength
     def filter_results(relation)
       [
         %i[institution_type_name type],
@@ -110,7 +109,11 @@ module V0
         [:distance_learning],
         [:priority_enrollment], # boolean
         [:preferred_provider], # boolean
-        [:stem_indicator] # boolean
+        [:stem_indicator], # boolean
+        [:womenonly], # boolean
+        [:menonly], # boolean
+        [:hbcu], # boolean
+        [:relaffil]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
@@ -121,7 +124,6 @@ module V0
 
       relation
     end
-    # rubocop:enable Metrics/MethodLength
 
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
@@ -143,8 +145,13 @@ module V0
         independent_study: boolean_facet,
         online_only: boolean_facet,
         distance_learning: boolean_facet,
-        priority_enrollment: boolean_facet
+        priority_enrollment: boolean_facet,
+        menonly: boolean_facet,
+        womenonly: boolean_facet,
+        hbcu: boolean_facet,
+        relaffil: search_results.filter_count(:relaffil)
       }
+
       add_active_search_facets(result)
     end
 
