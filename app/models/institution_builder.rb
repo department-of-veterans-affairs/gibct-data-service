@@ -792,6 +792,19 @@ module InstitutionBuilder
     CautionFlag.connection.execute(sql)
   end
 
+  # Creates caution flags from VaCautionFlag
+  # institution.school_closing_on = school_closing_date
+  # institution.sec_702 = sec_702
+  # Need to update institution.caution_flag and institution.caution_flag_reason
+  #
+  # not sec702: use values from old mapping?
+  # school_closing_date: no caution flag just set institution.school_closing and institution.school_closing_on
+  # settlement: use title,link, and description as such in the caution flag
+  #
+  def self.add_caution_flags(version_id)
+
+  end
+
   def self.set_count_of_caution_flags(version_id)
     str = <<-SQL
       UPDATE institutions SET count_of_caution_flags = (
