@@ -13,15 +13,5 @@ FactoryBot.define do
       object { AccreditationAction.name }
       predicate { 'source' }
     end
-
-    trait :settlement_reason do
-      object { 'Settlement with U.S. Government' }
-      predicate { 'reason' }
-    end
-
-    trait :closing_settlement_reason do
-      object { 'closing reason' }
-      predicate { 'reason' }
-    end
   end
 end
