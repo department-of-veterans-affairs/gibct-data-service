@@ -211,7 +211,6 @@ module InstitutionBuilder
     # Set the `accreditation_status`
     # Leaving old way of setting caution_flag and caution_flag_reason
     # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
     str = <<-SQL
       UPDATE institutions
       SET accreditation_status = aa.action_description,
@@ -272,7 +271,6 @@ module InstitutionBuilder
     #
     # Leaving old way of setting caution_flag and caution_flag_reason
     # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - Remove setting caution_flag from sql statement
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous.dodmou,
@@ -286,7 +284,6 @@ module InstitutionBuilder
 
     # Leaving old way of setting caution_flag and caution_flag_reason
     # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
@@ -377,50 +374,43 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
-  # only approved public schools can be SEC 702 complaint
+  # Updates institution table as well as creates caution_flags
+  # for institutions that are not sec702
   def self.add_sec_702(version_id)
-    s702_list = <<-SQL
-    (SELECT facility_code, sec702s.sec_702 FROM institutions
-          INNER JOIN sec702s ON sec702s.state = institutions.state
-            EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
-            UNION SELECT facility_code, sec_702 FROM sec702_schools
-      ) AS s702_list
-    SQL
+    reason = 'Does Not Offer Required In-State Tuition Rates'
     where_clause = <<-SQL
-      WHERE institutions.facility_code = s702_list.facility_code
+      WHERE institutions.facility_code = va_caution_flags.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
     SQL
 
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
     str = <<-SQL
       UPDATE institutions SET
-        sec_702 = s702_list.sec_702,
-        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
-        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
-          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') ELSE caution_flag_reason
+        sec_702 = va_caution_flags.sec_702,
+        caution_flag = (NOT va_caution_flags.sec_702) OR caution_flag,
+        caution_flag_reason = CASE WHEN NOT va_caution_flags.sec_702
+          THEN concat_ws(', ', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
         END
-      FROM #{s702_list}
+      FROM va_caution_flags
       #{where_clause}
     SQL
 
     Institution.connection.update(str)
 
-    reason = <<-SQL
-      'Does Not Offer Required In-State Tuition Rates'
+    reason_sql = <<-SQL
+      '#{reason}'
     SQL
 
     caution_flag_clause = <<-SQL
-      FROM institutions, #{s702_list}
+      FROM institutions, va_caution_flags
       #{where_clause}
-      AND NOT s702_list.sec_702
+      AND NOT va_caution_flags.sec_702
     SQL
 
     # Create `caution_flags` rows
-    build_caution_flags(version_id, Sec702.name, reason, caution_flag_clause)
+    build_caution_flags(version_id, Sec702CautionFlag::NAME, reason_sql, caution_flag_clause,
+                        Sec702CautionFlag::TITLE, Sec702CautionFlag::DESCRIPTION,
+                        Sec702CautionFlag::LINK_TEXT, Sec702CautionFlag::LINK_URL)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
@@ -428,7 +418,6 @@ module InstitutionBuilder
   def self.add_settlement(version_id)
     # Leaving old way of setting caution_flag and caution_flag_reason
     # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
@@ -465,7 +454,6 @@ module InstitutionBuilder
   def self.add_hcm(version_id)
     # Leaving old way of setting caution_flag and caution_flag_reason
     # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
@@ -774,16 +762,22 @@ module InstitutionBuilder
 
   # Creates caution flags
   # Expects `reason_sql` and `clause_sql` to be a multiline SQL string
-  def self.build_caution_flags(version_id, source, reason_sql, clause_sql)
+  def self.build_caution_flags(version_id, source, reason_sql, clause_sql,
+                               title = '', description = '', link_text = '', link_url = '')
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
     str = <<-SQL
-      INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
+      INSERT INTO caution_flags (institution_id, version_id, source, reason, title, description, 
+              link_text, link_url, created_at, updated_at)
       SELECT institutions.id,
               #{version_id} as version_id,
               '#{source}' as source,
               #{reason_sql} as reason,
+              '#{title}' as title,
+              '#{description}' as description,
+              '#{link_text}' as link_text,
+              '#{link_url}' as link_url,
               #{conn.quote(timestamp)} as created_at,
               #{conn.quote(timestamp)} as updated_at
         #{clause_sql}
@@ -794,6 +788,7 @@ module InstitutionBuilder
 
   # Creates caution flags from VaCautionFlag
   # institution.school_closing_on = school_closing_date
+  # institution.school_closing = school_closing_date.present?
   # institution.sec_702 = sec_702
   # Need to update institution.caution_flag and institution.caution_flag_reason
   #
