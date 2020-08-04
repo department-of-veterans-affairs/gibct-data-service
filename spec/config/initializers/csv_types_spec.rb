@@ -36,7 +36,6 @@ NO_PROD_TABLES = [].freeze
 RSpec.describe 'CSV_TYPES' do
   describe 'all_tables' do
     it 'lengths should be equal' do
-      expect(CSV_TYPES_ALL_TABLES.length).to eq(CSV_TYPES_TABLES.length)
       expect(CSV_TYPES_ALL_TABLES_NAMES.length).to eq(CSV_TYPES_TABLES.length)
     end
   end

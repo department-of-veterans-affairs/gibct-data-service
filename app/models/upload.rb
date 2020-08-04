@@ -28,7 +28,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if CSV_TYPES_ALL_TABLES.map(&:name).push('Institution').include?(csv_type)
+    return true if CSV_TYPES_ALL_TABLES_NAMES.push('Institution').include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -80,11 +80,11 @@ class Upload < ApplicationRecord
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    CSV_TYPES_ALL_TABLES.each do |klass|
-      next if upload_csv_types.include?(klass.name)
+    CSV_TYPES_ALL_TABLES_NAMES.each do |klass_name|
+      next if upload_csv_types.include?(klass_name)
 
       missing_upload = Upload.new
-      missing_upload.csv_type = klass.name
+      missing_upload.csv_type = klass_name
       missing_upload.ok = false
       missing_upload.comment = 'No initial file uploaded!!!'
 
