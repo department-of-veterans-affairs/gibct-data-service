@@ -28,7 +28,8 @@ module ScorecardApi
       'latest.repayment.3_yr_repayment_suppressed.overall': :repayment_rate_all_students,
       'latest.student.retention_rate.four_year.full_time': :retention_all_students_ba,
       'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
-      'latest.student.size': :undergrad_enrollment
+      'latest.student.size': :undergrad_enrollment,
+      'school.alias': :alias
     }.freeze
 
     def self.populate

@@ -21,7 +21,7 @@ class Scorecard < ApplicationRecord
     retention_all_students_ba retention_all_students_otb
     graduation_rate_all_students salary_all_students
     repayment_rate_all_students avg_stu_loan_debt
-    hbcu menonly womenonly relaffil hcm2 pctfloan
+    hbcu menonly womenonly relaffil hcm2 pctfloan alias
   ].freeze
 
   CSV_CONVERTER_INFO = {
@@ -146,7 +146,8 @@ class Scorecard < ApplicationRecord
     'grad_debt_mdn10yr_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
-    'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter }
+    'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },
+    'alias' => { column: :alias, converter: BaseConverter }
   }.freeze
 
   after_initialize :derive_dependent_columns

@@ -31,7 +31,7 @@ class Institution < ApplicationRecord
     'institution LIKE :starts_with_term',
     'institution = :search_term',
     'city = :search_term',
-    'ialias LIKE :upper_contains_term'
+    'alias LIKE :upper_contains_term'
   ].freeze
 
   CSV_CONVERTER_INFO = {
@@ -51,7 +51,7 @@ class Institution < ApplicationRecord
     'ope6' => { column: :ope6, converter: Ope6Converter },
     'school_system_name' => { column: :f1sysnam, converter: BaseConverter },
     'school_system_code' => { column: :f1syscod, converter: NumberConverter },
-    'alias' => { column: :ialias, converter: BaseConverter },
+    'alias' => { column: :alias, converter: BaseConverter },
     'insturl' => { column: :insturl, converter: BaseConverter },
     'vet_tuition_policy_url' => { column: :vet_tuition_policy_url, converter: BaseConverter },
     'pred_degree_awarded' => { column: :pred_degree_awarded, converter: NumberConverter },
