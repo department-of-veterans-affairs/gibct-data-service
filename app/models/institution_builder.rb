@@ -376,22 +376,34 @@ module InstitutionBuilder
 
   # Updates institution table as well as creates caution_flags
   # for institutions that are not sec702
+  #
+  # if va_caution_flags contains the institutions facility_code
+  #     then set institution.sec702 to value from va_caution_flags
+  # else check the institution's state value in sec702s
+  #     then set institution.sec702 to value from sec702s
   def self.add_sec_702(version_id)
     reason = 'Does Not Offer Required In-State Tuition Rates'
+    s702_list = <<-SQL
+    (SELECT facility_code, sec702s.sec_702 FROM institutions	
+          INNER JOIN sec702s ON sec702s.state = institutions.state	
+            EXCEPT SELECT facility_code, sec_702 FROM sec702_schools	
+            UNION SELECT facility_code, sec_702 FROM sec702_schools	
+      ) AS s702_list
+    SQL
     where_clause = <<-SQL
-      WHERE institutions.facility_code = va_caution_flags.facility_code
+      WHERE institutions.facility_code = s702_list.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
     SQL
 
     str = <<-SQL
       UPDATE institutions SET
-        sec_702 = va_caution_flags.sec_702,
-        caution_flag = (NOT va_caution_flags.sec_702) OR caution_flag,
-        caution_flag_reason = CASE WHEN NOT va_caution_flags.sec_702
+        sec_702 = s702_list.sec_702,
+        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
+        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
           THEN concat_ws(', ', caution_flag_reason, '#{reason}') ELSE caution_flag_reason
         END
-      FROM va_caution_flags
+      FROM #{s702_list}
       #{where_clause}
     SQL
 
@@ -402,9 +414,9 @@ module InstitutionBuilder
     SQL
 
     caution_flag_clause = <<-SQL
-      FROM institutions, va_caution_flags
+      FROM institutions, #{s702_list}
       #{where_clause}
-      AND NOT va_caution_flags.sec_702
+      AND NOT #{s702_list}.sec_702
     SQL
 
     # Create `caution_flags` rows
