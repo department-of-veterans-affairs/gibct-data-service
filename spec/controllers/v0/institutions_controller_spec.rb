@@ -374,7 +374,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns results alias' do
-      create(:institution, :independent_study, alias: 'UIS', version_id: Version.current_production.id)
+      create(:institution, :independent_study, ialias: 'UIS', version_id: Version.current_production.id)
       get(:index, params: { name: 'uis', fuzzy_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
