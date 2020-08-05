@@ -28,7 +28,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if CSV_TYPES_ALL_TABLES_NAMES.push('Institution').include?(csv_type)
+    return true if [*CSV_TYPES_ALL_TABLES_NAMES, 'Institution'].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
