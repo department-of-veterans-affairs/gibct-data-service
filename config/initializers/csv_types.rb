@@ -16,6 +16,7 @@ CSV_TYPES_TABLES = [
   { klass: P911Tf, required?: true },
   { klass: P911Yr, required?: true },
   { klass: Scorecard, required?: true, has_api?: true },
+  { klass: Sec702, required?: true },
   { klass: Sva, required?: true },
   { klass: Vsoc, required?: true },
   { klass: Weam, required?: true },

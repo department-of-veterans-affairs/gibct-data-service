@@ -18,6 +18,7 @@ REQUIRED_TABLES = [
   P911Tf.name,
   P911Yr.name,
   Scorecard.name,
+  Sec702.name,
   Sva.name,
   Vsoc.name,
   Weam.name,

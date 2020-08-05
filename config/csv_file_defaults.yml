@@ -50,6 +50,10 @@ Sva:
   skip_lines: 0
   col_sep: ","
 
+Sec702:
+  skip_lines: 0
+  col_sep: ","
+
 Mou:
   skip_lines: 1
   col_sep: ","

@@ -47,6 +47,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(P911Yr, user)
   SeedUtils.seed_table_with_upload(Vsoc, user)
   SeedUtils.seed_table_with_upload(Sva, user)
+  SeedUtils.seed_table_with_upload(Sec702, user)
   SeedUtils.seed_table_with_upload(Mou, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(IpedsIc, user)
