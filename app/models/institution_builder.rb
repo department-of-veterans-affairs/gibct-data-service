@@ -161,6 +161,9 @@ module InstitutionBuilder
   # by joining on `ope` for a specific match
   # Set the accreditation_type according to the hierarchy hybrid < national < regional
   # We include only those accreditation that are institutional and currently active.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_accreditation(version_id)
     # Set the `accreditation_type`
     str = <<-SQL
@@ -209,8 +212,6 @@ module InstitutionBuilder
     SQL
 
     # Set the `accreditation_status`
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
     str = <<-SQL
       UPDATE institutions
       SET accreditation_status = aa.action_description,
@@ -266,11 +267,11 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_mou(version_id)
-    # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
-    #
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous.dodmou,
@@ -282,8 +283,6 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
     str = <<-SQL
       UPDATE institutions SET
         caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
@@ -295,7 +294,6 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
-    # End of BAH Caution Flag Cleanup
 
     # The caution flag reason is only affected by a DoD type probation status
     reason = <<-SQL
@@ -381,6 +379,9 @@ module InstitutionBuilder
   #     then set institution.sec702 to value from va_caution_flags
   # else check the institution's state value in sec702s
   #     then set institution.sec702 to value from sec702s
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_sec_702(version_id)
     reason = 'Does Not Offer Required In-State Tuition Rates'
     s702_list = <<-SQL
@@ -429,9 +430,10 @@ module InstitutionBuilder
 
   # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
   # has an entry in the settlements table.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_settlement(version_id)
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
@@ -465,9 +467,10 @@ module InstitutionBuilder
 
   # Sets caution flags and caution flag reasons if the corresponding approved school by ope
   # has an entry in the hcms table.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_hcm(version_id)
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
@@ -483,7 +486,6 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(str)
-    # End of BAH Caution Flag Cleanup
 
     reason = <<-SQL
       hcm_list.reasons
@@ -776,6 +778,17 @@ module InstitutionBuilder
 
   # Creates caution flags
   # Expects `reason_sql` and `clause_sql` to be a multiline SQL string
+  #
+  # Creates caution flags from VaCautionFlag
+  # institution.school_closing_on = school_closing_date
+  # institution.school_closing = school_closing_date.present?
+  # institution.sec_702 = sec_702
+  # Need to update institution.caution_flag and institution.caution_flag_reason
+  #
+  # not sec702: use values from old mapping?
+  # school_closing_date: no caution flag just set institution.school_closing and institution.school_closing_on
+  # settlement: use title,link, and description as such in the caution flag
+  #
   def self.build_caution_flags(version_id, source, reason_sql, clause_sql,
                                title = '', description = '', link_text = '', link_url = '', flag_date = '')
     timestamp = Time.now.utc.to_s(:db)
@@ -798,20 +811,6 @@ module InstitutionBuilder
     SQL
     sql = CautionFlag.send(:sanitize_sql, [str])
     CautionFlag.connection.execute(sql)
-  end
-
-  # Creates caution flags from VaCautionFlag
-  # institution.school_closing_on = school_closing_date
-  # institution.school_closing = school_closing_date.present?
-  # institution.sec_702 = sec_702
-  # Need to update institution.caution_flag and institution.caution_flag_reason
-  #
-  # not sec702: use values from old mapping?
-  # school_closing_date: no caution flag just set institution.school_closing and institution.school_closing_on
-  # settlement: use title,link, and description as such in the caution flag
-  #
-  def self.add_caution_flags(version_id)
-
   end
 
   def self.set_count_of_caution_flags(version_id)
