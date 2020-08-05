@@ -384,10 +384,12 @@ module InstitutionBuilder
   def self.add_sec_702(version_id)
     reason = 'Does Not Offer Required In-State Tuition Rates'
     s702_list = <<-SQL
-    (SELECT facility_code, sec702s.sec_702 FROM institutions	
-          INNER JOIN sec702s ON sec702s.state = institutions.state	
-            EXCEPT SELECT facility_code, sec_702 FROM sec702_schools	
-            UNION SELECT facility_code, sec_702 FROM sec702_schools	
+    (SELECT institutions.facility_code,
+      CASE WHEN va_caution_flags.sec_702 IS NULL THEN sec702s.sec_702 
+          ELSE va_caution_flags.sec_702 END AS sec702 
+      FROM institutions	
+        JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
+	      JOIN sec702s ON institutions.state = sec702s.state
       ) AS s702_list
     SQL
     where_clause = <<-SQL
