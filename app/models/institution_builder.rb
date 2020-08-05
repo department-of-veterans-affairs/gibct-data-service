@@ -777,13 +777,12 @@ module InstitutionBuilder
   # Creates caution flags
   # Expects `reason_sql` and `clause_sql` to be a multiline SQL string
   def self.build_caution_flags(version_id, source, reason_sql, clause_sql,
-                               title = '', description = '', link_text = '', link_url = '')
+                               title = '', description = '', link_text = '', link_url = '', flag_date = '')
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
 
     str = <<-SQL
-      INSERT INTO caution_flags (institution_id, version_id, source, reason, title, description, 
-              link_text, link_url, created_at, updated_at)
+      INSERT INTO caution_flags (#{CautionFlag::COLS_USED_IN_INSERT.join(' , ')})
       SELECT institutions.id,
               #{version_id} as version_id,
               '#{source}' as source,
@@ -792,6 +791,7 @@ module InstitutionBuilder
               '#{description}' as description,
               '#{link_text}' as link_text,
               '#{link_url}' as link_url,
+              '#{flag_date}' as flag_date,
               #{conn.quote(timestamp)} as created_at,
               #{conn.quote(timestamp)} as updated_at
         #{clause_sql}

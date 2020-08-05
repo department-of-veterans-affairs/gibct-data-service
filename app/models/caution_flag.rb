@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class CautionFlag < ApplicationRecord
+  COLS_USED_IN_INSERT = %i[
+    institution_id version_id source reason title description
+    link_text link_url flag_date created_at updated_at
+  ].freeze
+
   belongs_to :institution, counter_cache: :count_of_caution_flags
   scope :distinct_flags, lambda {
     select('title, description, link_text, link_url').distinct
