@@ -34,5 +34,4 @@ class SettlementCautionFlag < CautionFlag
       va_caution_flags.settlement_date
     SQL
   end
-
 end
