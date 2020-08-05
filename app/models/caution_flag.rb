@@ -6,6 +6,7 @@ class CautionFlag < ApplicationRecord
     link_text link_url flag_date created_at updated_at
   ].freeze
 
+  attr_accessor :reason_sql
   belongs_to :institution, counter_cache: :count_of_caution_flags
   scope :distinct_flags, lambda {
     select('title, description, link_text, link_url').distinct
