@@ -14,8 +14,8 @@ class Post911Stat < ApplicationRecord
   }.freeze
 
   validates :facility_code, presence: true
-  validates :tuition_and_fee_count, :numericality => {:allow_blank => true}
-  validates :tuition_and_fee_total_amount, :numericality => {:allow_blank => true}
-  validates :yellow_ribbon_count, :numericality => {:allow_blank => true}
-  validates :yellow_ribbon_total_amount, :numericality => {:allow_blank => true}
+  validates :tuition_and_fee_count, numericality: { allow_blank: true }
+  validates :tuition_and_fee_total_amount, numericality: { allow_blank: true }
+  validates :yellow_ribbon_count, numericality: { allow_blank: true }
+  validates :yellow_ribbon_total_amount, numericality: { allow_blank: true }
 end
