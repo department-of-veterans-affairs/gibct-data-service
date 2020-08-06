@@ -265,36 +265,26 @@ module InstitutionBuilder
   # Updating caution_flag and caution_flag_reason are needed for usage by the link
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_mou(version_id)
-    str = <<-SQL
-      UPDATE institutions SET
-        dodmou = mous.dodmou,
-        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
-      FROM mous
-      WHERE institutions.ope = mous.ope
+    mous_list = <<-SQL
+      (SELECT distinct(ope), dodmou FROM mous
+        WHERE dod_status = TRUE
+      ) as mous_list
+      WHERE institutions.ope = mous_list.ope
       AND institutions.version_id = #{version_id}
     SQL
 
-    Institution.connection.update(str)
-
     str = <<-SQL
       UPDATE institutions SET
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
-      FROM (
-        SELECT distinct(ope6), '#{MouCautionFlag::REASON}' AS reason FROM mous
-        WHERE dod_status = TRUE) as reasons_list
-      WHERE institutions.ope6 = reasons_list.ope6
-      AND institutions.version_id = #{version_id}
+        dodmou = mous_list.dodmou,
+        caution_flag = TRUE, 
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, '#{MouCautionFlag::REASON}') 
+      FROM #{mous_list}
     SQL
 
     Institution.connection.update(str)
 
     caution_flag_clause = <<-SQL
-      FROM institutions, (
-        SELECT distinct(ope) FROM mous
-        WHERE dod_status = TRUE
-      ) as reasons_list
-      WHERE institutions.ope = reasons_list.ope
-      AND institutions.version_id = #{version_id}
+      FROM institutions, #{mous_list}
     SQL
 
     CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
@@ -363,7 +353,7 @@ module InstitutionBuilder
   # for institutions that are not sec702
   #
   # if va_caution_flags contains the institutions facility_code
-  #     then set institution.sec702 to value from va_caution_flags
+  #     then set institution.sec702 to value from flipped value from va_caution_flags
   # else check the institution's state value in sec702s
   #     then set institution.sec702 to value from sec702s
   #
@@ -373,13 +363,11 @@ module InstitutionBuilder
     s702_list = <<-SQL
     (SELECT institutions.facility_code,
       CASE WHEN va_caution_flags.sec_702 IS NULL THEN sec702s.sec_702
-          ELSE va_caution_flags.sec_702 END AS sec702
+          ELSE NOT va_caution_flags.sec_702 END AS sec702_compliant
       FROM institutions
         JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
 	      JOIN sec702s ON institutions.state = sec702s.state
       ) AS s702_list
-    SQL
-    where_clause = <<-SQL
       WHERE institutions.facility_code = s702_list.facility_code
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
@@ -387,21 +375,19 @@ module InstitutionBuilder
 
     str = <<-SQL
       UPDATE institutions SET
-        sec_702 = s702_list.sec_702,
-        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
-        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
+        sec_702 = s702_list.sec702_compliant,
+        caution_flag = (NOT s702_list.sec702_compliant) OR caution_flag,
+        caution_flag_reason = CASE WHEN NOT s702_list.sec702_compliant
           THEN concat_ws(', ', caution_flag_reason, '#{Sec702CautionFlag::REASON}') ELSE caution_flag_reason
         END
       FROM #{s702_list}
-      #{where_clause}
     SQL
 
     Institution.connection.update(str)
 
     caution_flag_clause = <<-SQL
       FROM institutions, #{s702_list}
-      #{where_clause}
-      AND NOT s702_list.sec_702
+      AND NOT s702_list.sec702_compliant
     SQL
 
     CautionFlag.build(version_id, Sec702CautionFlag, caution_flag_clause)
@@ -413,23 +399,57 @@ module InstitutionBuilder
   # Updating caution_flag and caution_flag_reason are needed for usage by the link
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_settlement(version_id)
+    # add this in to where statement if column requires data -- AND va_caution_flags.settlement_title IS NOT NULL
+    where_clause = <<-SQL
+          institutions.version_id = #{version_id}
+      AND va_caution_flags.settlement_description IS NOT NULL
+    SQL
+
+    # Update institutions table for "Download Data on All Schools (Excel)"
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, settlement_list.descriptions)
-      FROM (
-        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
-        FROM settlements
-        WHERE "cross" IS NOT NULL
-        GROUP BY "cross"
-      ) settlement_list
-      WHERE institutions.cross = settlement_list.cross OR institutions.facility_code = settlement_list.cross
-      AND institutions.version_id = #{version_id}
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, va_caution_flags.settlement_description)
+      FROM va_caution_flags
+      WHERE institutions.facility_code = va_caution_flags.facility_code
+      AND #{where_clause}
     SQL
 
     Institution.connection.update(str)
 
-    SettlementCautionFlag.build(version_id)
+    # Create Caution Flags
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+    insert_columns = %i[
+      institution_id version_id source reason title description
+      link_url flag_date created_at updated_at
+    ]
+
+    flag_date_sql = <<-SQL
+      CASE WHEN va_caution_flags.settlement_date IS NOT NULL 
+        THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY') 
+        ELSE null END
+    SQL
+
+    <<-SQL
+          INSERT INTO caution_flags (#{insert_columns.join(' , ')})
+          SELECT institutions.id,
+              #{version_id} as version_id,
+              'Settlement' as source,
+              va_caution_flags.settlement_description as reason,
+              va_caution_flags.settlement_title as title,
+              va_caution_flags.settlement_description as description,
+              va_caution_flags.settlement_link as link_url,
+              #{flag_date_sql} as flag_date,
+              #{conn.quote(timestamp)} as created_at,
+              #{conn.quote(timestamp)} as updated_at
+	        FROM institutions JOIN va_caution_flags 
+            ON institutions.facility_code = va_caution_flags.facility_code
+          WHERE #{where_clause}
+    SQL
+
+    sql = CautionFlag.send(:sanitize_sql, [str])
+    CautionFlag.connection.execute(sql)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school by ope
@@ -451,7 +471,7 @@ module InstitutionBuilder
         caution_flag = TRUE,
         caution_flag_reason = concat_ws(', ', caution_flag_reason, #{HcmCautionFlag::REASON_SQL})
       FROM #{hcm_list}
-      WHERE institutions.ope6 = hcm_list.ope6
+      WHERE institutions.ope = hcm_list.ope
       AND institutions.version_id = #{version_id}
     SQL
 
