@@ -1,4 +1,3 @@
-
 class CreatePost911Stats < ActiveRecord::Migration[5.2]
   def change
     create_table :post911_stats do |t|
