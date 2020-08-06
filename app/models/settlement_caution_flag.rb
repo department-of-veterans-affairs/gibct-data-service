@@ -31,7 +31,7 @@ class SettlementCautionFlag < CautionFlag
 
   def flag_date
     <<-SQL
-      va_caution_flags.settlement_date
+      TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY')
     SQL
   end
 end
