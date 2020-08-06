@@ -15,8 +15,7 @@ module InstitutionBuilder
     add_eight_key(version.id)
     add_accreditation(version.id)
     add_arf_gi_bill(version.id)
-    add_p911_tf(version.id)
-    add_p911_yr(version.id)
+    add_post_911_stats(version.id)
     add_mou(version.id)
     add_scorecard(version.id)
     add_ipeds_ic(version.id)
@@ -245,22 +244,15 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.add_p911_tf(version_id)
+  def self.add_post_911_stats(version_id)
     str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(P911Tf)}
-      FROM p911_tfs
-      WHERE institutions.facility_code = p911_tfs.facility_code
-      AND institutions.version_id = #{version_id}
-    SQL
-
-    Institution.connection.update(str)
-  end
-
-  def self.add_p911_yr(version_id)
-    str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(P911Yr)}
-      FROM p911_yrs
-      WHERE institutions.facility_code = p911_yrs.facility_code
+      UPDATE institutions SET
+        p911_recipients = tuition_and_fee_count,
+        p911_tuition_fees = tuition_and_fee_total_amount,
+        p911_yr_recipients = yellow_ribbon_count,
+        p911_yellow_ribbon = yellow_ribbon_total_amount
+      FROM post911_stats
+      WHERE institutions.facility_code = post911_stats.facility_code
       AND institutions.version_id = #{version_id}
     SQL
 
