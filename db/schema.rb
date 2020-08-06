@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_113800) do
+ActiveRecord::Schema.define(version: 2020_08_05_074500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1226,6 +1226,17 @@ ActiveRecord::Schema.define(version: 2020_07_27_113800) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true
+  end
+
+  create_table "post911_stats", force: :cascade do |t|
+    t.string "facility_code", null: false
+    t.integer "tuition_and_fee_count"
+    t.integer "tuition_and_fee_payments"
+    t.float "tuition_and_fee_total_amount"
+    t.integer "yellow_ribbon_count"
+    t.integer "yellow_ribbon_payments"
+    t.integer "yellow_ribbon_total_amount"
+    t.index ["facility_code"], name: "index_post911_stats_on_facility_code"
   end
 
   create_table "programs", id: :serial, force: :cascade do |t|
