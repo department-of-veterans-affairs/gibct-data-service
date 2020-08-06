@@ -433,7 +433,7 @@ module InstitutionBuilder
         ELSE null END
     SQL
 
-    <<-SQL
+    str = <<-SQL
           INSERT INTO caution_flags (#{insert_columns.join(' , ')})
           SELECT institutions.id,
               #{version_id} as version_id,
