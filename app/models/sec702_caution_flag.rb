@@ -19,7 +19,7 @@ class Sec702CautionFlag < CautionFlag
 
   def link_text
     <<-SQL
-      "Learn more about Section 702 requirements"
+      'Learn more about Section 702 requirements'
     SQL
   end
 
