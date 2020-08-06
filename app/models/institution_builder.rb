@@ -561,7 +561,7 @@ module InstitutionBuilder
   def self.add_school_closure(version_id)
     str = <<-SQL
       UPDATE institutions SET 
-        school_closing = CASE WHEN va_caution_flags.school_closing_date IS NULL THEN false ELSE true END,
+        school_closing = va_caution_flags.school_closing_date IS NOT NULL,
         school_closing_on = TO_DATE(va_caution_flags.school_closing_date, 'MM/DD/YY')
       FROM va_caution_flags
       WHERE institutions.facility_code = va_caution_flags.facility_code
