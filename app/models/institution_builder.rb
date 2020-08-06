@@ -776,12 +776,6 @@ module InstitutionBuilder
   end
 
   # Creates caution flags
-  #
-  # institution.school_closing_on = school_closing_date
-  # institution.school_closing = school_closing_date.present?
-  #
-  # school_closing_date: no caution flag just set institution.school_closing and institution.school_closing_on
-  #
   def self.build_caution_flags(version_id, clause_sql, cf_template)
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
