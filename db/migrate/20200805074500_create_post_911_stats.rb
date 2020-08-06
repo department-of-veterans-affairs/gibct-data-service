@@ -7,7 +7,7 @@ class CreatePost911Stats < ActiveRecord::Migration[5.2]
       t.float :tuition_and_fee_total_amount
       t.integer :yellow_ribbon_count
       t.integer :yellow_ribbon_payments
-      t.integer :yellow_ribbon_total_amount
+      t.float :yellow_ribbon_total_amount
       t.index :facility_code
     end
   end

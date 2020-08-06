@@ -1235,7 +1235,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_074500) do
     t.float "tuition_and_fee_total_amount"
     t.integer "yellow_ribbon_count"
     t.integer "yellow_ribbon_payments"
-    t.integer "yellow_ribbon_total_amount"
+    t.float "yellow_ribbon_total_amount"
     t.index ["facility_code"], name: "index_post911_stats_on_facility_code"
   end
 
