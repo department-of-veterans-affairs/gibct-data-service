@@ -99,7 +99,7 @@ class DashboardsController < ApplicationController
   private
 
   def csv_model(csv_type)
-    model = CSV_TYPES_ALL_TABLES_NAMES.select { |klass_name| klass_name == csv_type }.first
+    model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
