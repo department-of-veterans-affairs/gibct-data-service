@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe CautionFlagTemplate do
+RSpec.describe "Caution Flag Templates" do
   describe 'as a parent class' do
-    CautionFlagTemplate.descendants.each do |template|
+    templates = [AccreditationCautionFlag, HcmCautionFlag, MouCautionFlag, Sec702CautionFlag]
+
+    templates.each do |template|
       it "requires #{template.name} subclass to define required constants" do
         expect(template::NAME).to be_present
         expect(template::REASON_SQL).to be_present

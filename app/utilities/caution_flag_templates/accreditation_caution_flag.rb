@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AccreditationCautionFlag < CautionFlagTemplate
+class AccreditationCautionFlag
   NAME = 'AccreditationAction'
   REASON_SQL = <<-SQL
       concat(aa.action_description, ' (', aa.justification_description, ')')

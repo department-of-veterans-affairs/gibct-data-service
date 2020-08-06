@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Sec702CautionFlag < CautionFlagTemplate
+class Sec702CautionFlag
   NAME = 'Sec702'
   REASON = 'Does Not Offer Required In-State Tuition Rates'
   REASON_SQL = <<-SQL
-      '#{reason}'
+      '#{REASON}'
   SQL
   TITLE = 'School isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits'
   DESCRIPTION = 'This school isn\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty'\

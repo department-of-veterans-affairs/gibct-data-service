@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HcmCautionFlag < CautionFlagTemplate
+class HcmCautionFlag
   NAME = 'Hcm'
   REASON_SQL = <<-SQL
      hcm_list.reasons

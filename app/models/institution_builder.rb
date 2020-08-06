@@ -353,9 +353,11 @@ module InstitutionBuilder
   # for institutions that are not sec702
   #
   # if va_caution_flags contains the institutions facility_code
-  #     then set institution.sec702 to value from flipped value from va_caution_flags
+  #     then set institution.sec702 to value from va_caution_flags
   # else check the institution's state value in sec702s
   #     then set institution.sec702 to value from sec702s
+  #
+  # A true value indicates institution is sec702 complaint
   #
   # Updating caution_flag and caution_flag_reason are needed for usage by the link
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
@@ -363,7 +365,7 @@ module InstitutionBuilder
     s702_list = <<-SQL
     (SELECT institutions.facility_code,
       CASE WHEN va_caution_flags.sec_702 IS NULL THEN sec702s.sec_702
-          ELSE NOT va_caution_flags.sec_702 END AS sec702_compliant
+          ELSE va_caution_flags.sec_702 END AS sec702_compliant
       FROM institutions
         JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
 	      JOIN sec702s ON institutions.state = sec702s.state
