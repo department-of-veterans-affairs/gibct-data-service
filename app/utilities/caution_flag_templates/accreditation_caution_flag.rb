@@ -2,9 +2,6 @@
 
 class AccreditationCautionFlag
   NAME = 'AccreditationAction'
-  REASON_SQL = <<-SQL
-      concat(aa.action_description, ' (', aa.justification_description, ')')
-  SQL
   TITLE = 'School has an accreditation issue'
   DESCRIPTION = 'This school\'\'s accreditation has been taken away and is under appeal, '\
                 'or the school has been placed on probation, because it didn\'\'t meet '\

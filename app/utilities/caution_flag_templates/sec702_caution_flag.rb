@@ -2,10 +2,6 @@
 
 class Sec702CautionFlag
   NAME = 'Sec702'
-  REASON = 'Does Not Offer Required In-State Tuition Rates'
-  REASON_SQL = <<-SQL
-      '#{REASON}'
-  SQL
   TITLE = 'School isn\'\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits'
   DESCRIPTION = 'This school isn\'\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty'\
                 'benefits because it doesn\'\'t comply with Section 702. This law requires public universities'\

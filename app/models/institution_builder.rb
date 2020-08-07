@@ -211,7 +211,7 @@ module InstitutionBuilder
       UPDATE institutions
       SET accreditation_status = aa.action_description,
           caution_flag = TRUE,
-          caution_flag_reason = #{AccreditationCautionFlag::REASON_SQL}
+          caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
       FROM accreditation_institute_campuses, accreditation_actions aa
       #{where_clause}
     SQL
@@ -277,7 +277,7 @@ module InstitutionBuilder
       UPDATE institutions SET
         dodmou = mous_list.dodmou,
         caution_flag = TRUE, 
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, '#{MouCautionFlag::REASON}') 
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, 'DoD Probation For Military Tuition Assistance') 
       FROM #{mous_list}
     SQL
 
@@ -380,7 +380,8 @@ module InstitutionBuilder
         sec_702 = s702_list.sec702_compliant,
         caution_flag = (NOT s702_list.sec702_compliant) OR caution_flag,
         caution_flag_reason = CASE WHEN NOT s702_list.sec702_compliant
-          THEN concat_ws(', ', caution_flag_reason, '#{Sec702CautionFlag::REASON}') ELSE caution_flag_reason
+          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') 
+          ELSE caution_flag_reason
         END
       FROM #{s702_list}
     SQL
@@ -423,10 +424,11 @@ module InstitutionBuilder
     timestamp = Time.now.utc.to_s(:db)
     conn = ApplicationRecord.connection
     insert_columns = %i[
-      institution_id version_id source reason title description
-      link_url flag_date created_at updated_at
+      institution_id version_id source title description
+      link_text link_url flag_date created_at updated_at
     ]
 
+    link_text = 'Learn more'
     flag_date_sql = <<-SQL
       CASE WHEN va_caution_flags.settlement_date IS NOT NULL 
         THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY') 
@@ -438,9 +440,9 @@ module InstitutionBuilder
           SELECT institutions.id,
               #{version_id} as version_id,
               'Settlement' as source,
-              va_caution_flags.settlement_description as reason,
               va_caution_flags.settlement_title as title,
               va_caution_flags.settlement_description as description,
+              '#{link_text}' as link_text,
               va_caution_flags.settlement_link as link_url,
               #{flag_date_sql} as flag_date,
               #{conn.quote(timestamp)} as created_at,
@@ -471,7 +473,7 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, #{HcmCautionFlag::REASON_SQL})
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, hcm_list.reasons)
       FROM #{hcm_list}
       WHERE institutions.ope = hcm_list.ope
       AND institutions.version_id = #{version_id}
