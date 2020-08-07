@@ -362,15 +362,7 @@ module InstitutionBuilder
   # Updating caution_flag and caution_flag_reason are needed for usage by the link
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_sec_702(version_id)
-    s702_list = <<-SQL
-    (SELECT institutions.facility_code,
-      CASE WHEN va_caution_flags.sec_702 IS NULL THEN sec702s.sec_702
-          ELSE va_caution_flags.sec_702 END AS sec702_compliant
-      FROM institutions
-        JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
-	      JOIN sec702s ON institutions.state = sec702s.state
-      ) AS s702_list
-      WHERE institutions.facility_code = s702_list.facility_code
+    where_conditions = <<-SQL
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
     SQL
@@ -383,14 +375,24 @@ module InstitutionBuilder
           THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') 
           ELSE caution_flag_reason
         END
-      FROM #{s702_list}
+      FROM (
+        SELECT institutions.facility_code,
+        CASE WHEN va_caution_flags.sec_702 IS NULL THEN sec702s.sec_702
+            ELSE va_caution_flags.sec_702 END AS sec702_compliant
+        FROM institutions
+          LEFT JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
+          LEFT JOIN sec702s ON institutions.state = sec702s.state
+      ) AS s702_list
+      WHERE institutions.facility_code = s702_list.facility_code
+      #{where_conditions}
     SQL
 
     Institution.connection.update(str)
 
     caution_flag_clause = <<-SQL
-      FROM institutions, #{s702_list}
-      AND NOT s702_list.sec702_compliant
+      FROM institutions
+      WHERE NOT institutions.sec_702
+      #{where_conditions}
     SQL
 
     CautionFlag.build(version_id, Sec702CautionFlag, caution_flag_clause)
