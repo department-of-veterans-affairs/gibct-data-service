@@ -428,7 +428,7 @@ module InstitutionBuilder
       link_text link_url flag_date created_at updated_at
     ]
 
-    link_text = 'Learn more'
+    link_text = 'Learn more about this cautionary warning'
     flag_date_sql = <<-SQL
       CASE WHEN va_caution_flags.settlement_date IS NOT NULL 
         THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY') 
