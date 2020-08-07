@@ -12,7 +12,7 @@ module CsvHelper
     def load(file, options = {})
       klass.transaction do
         delete_all
-        load_csv_file(file, options)
+        load_from_file(file, merge_options(options))
       end
     end
 
@@ -25,10 +25,23 @@ module CsvHelper
 
     private
 
-    def load_csv_file(file, options)
+    def load_excel_file(file, options)
+      records = []
+      records = load_excel(file, records, options)
+
+      load_records(records, options)
+    rescue EOFError
+      error_msg = "Bad data was found in a row. Please check ALL ROWS for a double quote (\")
+without a closing double quote (\"). "
+      raise(StandardError, error_msg)
+    end
+
+    def load_from_file(file, options)
       records = []
 
-      records = if [Program, Weam].include?(klass)
+      records = if file.path.split('.').last == 'xlsx'
+                  load_excel(file, records, options)
+                elsif [Program, Weam].include?(klass)
                   load_csv_with_row(file, records, options)
                 else
                   load_csv(file, records, options)
@@ -49,6 +62,24 @@ without a closing double quote (\"). "
       results
     end
 
+    def load_excel(file, records, options)
+      xlsx = Roo::Spreadsheet.open(file)
+      sheet = xlsx.sheet(0)
+
+      fields = {}
+      klass::CSV_CONVERTER_INFO.map do |k, v|
+        fields[v[:column]] = k
+      end
+
+      binding.pry
+
+      sheet.each(fields) do |hash|
+        records << hash
+      end
+
+      records
+    end
+
     def load_csv(file, records, options)
       SmarterCSV.process(file, merge_options(options)).each do |row|
         records << klass.new(row)
@@ -59,6 +90,7 @@ without a closing double quote (\"). "
 
     def load_csv_with_row(file, records, options)
       SmarterCSV.process(file, merge_options(options)).each_with_index do |row, index|
+        binding.pry
         records << klass.new(row.merge(csv_row: csv_row(index, options)))
       end
 

@@ -28,6 +28,7 @@ gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
+gem "roo"
 gem 'sentry-raven', '~> 2.9.0'
 gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
