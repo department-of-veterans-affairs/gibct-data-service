@@ -266,11 +266,11 @@ module InstitutionBuilder
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_mou(version_id)
     str = <<-SQL
-      UPDATE institutions SET	
-        dodmou = mous.dodmou,	
-        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END	
-      FROM mous	
-      WHERE institutions.ope = mous.ope	
+      UPDATE institutions SET
+        dodmou = mous.dodmou,
+        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END
+      FROM mous
+      WHERE institutions.ope = mous.ope
       AND institutions.version_id = #{version_id}
     SQL
 
@@ -420,7 +420,7 @@ module InstitutionBuilder
         caution_flag = TRUE,
         caution_flag_reason = concat_ws(', ', caution_flag_reason, vcf_list.titles)
       FROM (
-        SELECT facility_code, 
+        SELECT facility_code,
             array_to_string(array_agg(distinct(settlement_title)), ',') as titles
           FROM va_caution_flags
           WHERE settlement_title IS NOT NULL

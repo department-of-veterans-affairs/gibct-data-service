@@ -408,7 +408,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           expect(caution_flags).to be > 0
 
           expect(institutions.find(institution.id).caution_flag_reason)
-              .to include('DoD Probation For Military Tuition Assistance')
+            .to include('DoD Probation For Military Tuition Assistance')
         end
       end
     end
@@ -585,34 +585,30 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding Settlement data' do
-      it 'a caution_flag is set to the settlement_title and settlement_description' do
+      it 'a caution_flag is set with title and description' do
         weam_row = create :weam, :weam_builder
         va_caution_flag = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code
         described_class.run(user)
 
         institution = institutions.find_by(facility_code: weam_row.facility_code)
-        caution_flag = CautionFlag.where({ institution_id: institution.id,
-                                           source: 'Settlement',
+        caution_flag = CautionFlag.where({ institution_id: institution.id, source: 'Settlement',
                                            version_id: Version.current_preview.id }).first
 
         expect(caution_flag.title).to eq(va_caution_flag.settlement_title)
         expect(caution_flag.description).to eq(va_caution_flag.settlement_description)
       end
 
-      it 'caution_flag_reason is set with multiple descriptions' do
+      it 'caution_flag_reason has multiple descriptions' do
         weam_row = create :weam, :weam_builder
-        flag_1 = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code
-        flag_2 = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code,
-                        settlement_title: 'another title'
-
+        flag_a = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code
+        flag_b = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code,
+                                                       settlement_title: 'another title'
         described_class.run(user)
-
         institution = institutions.find_by(facility_code: weam_row.facility_code)
         caution_flags = CautionFlag.where({ institution_id: institution.id,
                                             source: 'Settlement', version_id: Version.current_preview.id }).count
-
         expect(caution_flags).to be > 1
-        expect(institution.caution_flag_reason).to include(flag_1.settlement_title, flag_2.settlement_title)
+        expect(institution.caution_flag_reason).to include(flag_a.settlement_title, flag_b.settlement_title)
       end
     end
 
@@ -790,7 +786,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       it 'sets school_closing_date' do
         expect(institution.school_closing_on)
-            .to eq(Date.strptime(va_caution_flag.school_closing_date, '%m/%d/%y'))
+          .to eq(Date.strptime(va_caution_flag.school_closing_date, '%m/%d/%y'))
       end
     end
 

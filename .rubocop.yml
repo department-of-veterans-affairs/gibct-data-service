@@ -161,6 +161,7 @@ RSpec/ExampleLength:
   Max: 8
   Exclude:
     - "spec/models/institution_program_spec.rb"
+    - "spec/models/institution_builder_spec.rb"
 
 # Determined to be too benign and/or numerous to justify changing
 RSpec/LeakyConstantDeclaration:
