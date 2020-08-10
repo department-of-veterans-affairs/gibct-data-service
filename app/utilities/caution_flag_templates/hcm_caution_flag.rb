@@ -3,7 +3,7 @@
 require_relative 'caution_flag_template'
 
 class HcmCautionFlag < CautionFlagTemplate
-  NAME = 'Hcm'
+  NAME = Hcm.name
   TITLE = 'School placed on Heightened Cash Monitoring'
   DESCRIPTION = 'The Department of Education has placed this '\
                 'school on Heightened Cash Monitoring because of financial or federal compliance issues.'

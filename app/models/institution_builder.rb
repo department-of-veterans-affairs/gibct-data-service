@@ -265,26 +265,36 @@ module InstitutionBuilder
   # Updating caution_flag and caution_flag_reason are needed for usage by the link
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_mou(version_id)
-    mous_list = <<-SQL
-      (SELECT distinct(ope), dodmou FROM mous
-        WHERE dod_status = TRUE
-      ) as mous_list
-      WHERE institutions.ope = mous_list.ope
+    str = <<-SQL
+      UPDATE institutions SET	
+        dodmou = mous.dodmou,	
+        caution_flag = CASE WHEN mous.dod_status = TRUE THEN TRUE ELSE caution_flag END	
+      FROM mous	
+      WHERE institutions.ope = mous.ope	
       AND institutions.version_id = #{version_id}
     SQL
 
+    Institution.connection.update(str)
+
     str = <<-SQL
       UPDATE institutions SET
-        dodmou = mous_list.dodmou,
-        caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, 'DoD Probation For Military Tuition Assistance')
-      FROM #{mous_list}
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
+      FROM (
+        SELECT distinct(ope), 'DoD Probation For Military Tuition Assistance' AS reason FROM mous
+        WHERE dod_status = TRUE) as reasons_list
+      WHERE institutions.ope = reasons_list.ope
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
 
     caution_flag_clause = <<-SQL
-      FROM institutions, #{mous_list}
+      FROM institutions, (
+        SELECT distinct(ope) FROM mous
+        WHERE dod_status = TRUE
+      ) as reasons_list
+      WHERE institutions.ope = reasons_list.ope
+      AND institutions.version_id = #{version_id}
     SQL
 
     CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
@@ -404,20 +414,21 @@ module InstitutionBuilder
   # Updating caution_flag and caution_flag_reason are needed for usage by the link
   # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_settlement(version_id)
-    # add this in to where statement if column requires data -- AND va_caution_flags.settlement_title IS NOT NULL
-    where_clause = <<-SQL
-          institutions.version_id = #{version_id}
-      AND va_caution_flags.settlement_description IS NOT NULL
-    SQL
-
     # Update institutions table for "Download Data on All Schools (Excel)"
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, va_caution_flags.settlement_description)
-      FROM va_caution_flags
-      WHERE institutions.facility_code = va_caution_flags.facility_code
-      AND #{where_clause}
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, vcf_list.titles)
+      FROM (
+        SELECT facility_code, 
+            array_to_string(array_agg(distinct(settlement_title)), ',') as titles
+          FROM va_caution_flags
+          WHERE settlement_title IS NOT NULL
+            AND settlement_description IS NOT NULL
+          GROUP BY facility_code
+      ) vcf_list
+      WHERE institutions.facility_code = vcf_list.facility_code
+      AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
@@ -456,7 +467,9 @@ module InstitutionBuilder
               #{conn.quote(timestamp)} as updated_at
 	        FROM institutions JOIN va_caution_flags
             ON institutions.facility_code = va_caution_flags.facility_code
-          WHERE #{where_clause}
+          WHERE institutions.version_id = #{version_id}
+            AND va_caution_flags.settlement_title IS NOT NULL
+            AND va_caution_flags.settlement_description IS NOT NULL
     SQL
 
     sql = CautionFlag.send(:sanitize_sql, [str])
@@ -570,10 +583,11 @@ module InstitutionBuilder
   def self.add_school_closure(version_id)
     str = <<-SQL
       UPDATE institutions SET
-        school_closing = va_caution_flags.school_closing_date IS NOT NULL,
-        school_closing_on = TO_DATE(va_caution_flags.school_closing_date, 'MM/DD/YY')
+        school_closing = TRUE,
+        school_closing_on = TO_DATE(va_caution_flags.school_closing_date, 'MM/DD/YYYY')
       FROM va_caution_flags
       WHERE institutions.facility_code = va_caution_flags.facility_code
+      AND va_caution_flags.school_closing_date IS NOT NULL
       AND institutions.version_id = #{version_id}
     SQL
 
