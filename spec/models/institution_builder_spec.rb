@@ -21,7 +21,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(described_class.run(user)[:success]).to be_truthy
       end
 
-      it 'returns the new preview version record if sucessful' do
+      it 'returns the new preview version record if successful' do
         create :version
         old_version = Version.current_preview
         version = described_class.run(user)[:version]
@@ -31,7 +31,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version).not_to be_generating
       end
 
-      it 'returns a nil error_msg if sucessful' do
+      it 'returns a nil error_msg if successful' do
         expect(described_class.run(user)[:error_msg]).to be_nil
       end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class MouCautionFlag
+require_relative 'caution_flag_template'
+
+class MouCautionFlag < CautionFlagTemplate
   NAME = 'Mou'
   TITLE = 'School is on Military Tuition Assistance probation'
   DESCRIPTION = 'This school is on Department of Defense (DOD) probation for Military Tuition Assistance (TA).'

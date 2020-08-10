@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class Sec702CautionFlag
+require_relative 'caution_flag_template'
+
+class Sec702CautionFlag < CautionFlagTemplate
   NAME = 'Sec702'
   TITLE = 'School isn\'\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty benefits'
   DESCRIPTION = 'This school isn\'\'t approved for Post-9/11 GI Bill or Montgomery GI Bill-Active Duty'\

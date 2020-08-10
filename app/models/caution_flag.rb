@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CautionFlag < ApplicationRecord
-
   belongs_to :institution, counter_cache: :count_of_caution_flags
   scope :distinct_flags, lambda {
     select('title, description, link_text, link_url').distinct

@@ -276,8 +276,8 @@ module InstitutionBuilder
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous_list.dodmou,
-        caution_flag = TRUE, 
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, 'DoD Probation For Military Tuition Assistance') 
+        caution_flag = TRUE,
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, 'DoD Probation For Military Tuition Assistance')
       FROM #{mous_list}
     SQL
 
@@ -372,7 +372,7 @@ module InstitutionBuilder
         sec_702 = s702_list.sec702_compliant,
         caution_flag = (NOT s702_list.sec702_compliant) OR caution_flag,
         caution_flag_reason = CASE WHEN NOT s702_list.sec702_compliant
-          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') 
+          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates')
           ELSE caution_flag_reason
         END
       FROM (
@@ -431,14 +431,14 @@ module InstitutionBuilder
     ]
 
     link_text = <<-SQL
-      CASE WHEN va_caution_flags.settlement_link IS NOT NULL 
+      CASE WHEN va_caution_flags.settlement_link IS NOT NULL
         THEN 'Learn more about this cautionary warning'
         ELSE null end
     SQL
 
     flag_date_sql = <<-SQL
-      CASE WHEN va_caution_flags.settlement_date IS NOT NULL 
-        THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY') 
+      CASE WHEN va_caution_flags.settlement_date IS NOT NULL
+        THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY')
         ELSE null END
     SQL
 
@@ -454,7 +454,7 @@ module InstitutionBuilder
               #{flag_date_sql} as flag_date,
               #{conn.quote(timestamp)} as created_at,
               #{conn.quote(timestamp)} as updated_at
-	        FROM institutions JOIN va_caution_flags 
+	        FROM institutions JOIN va_caution_flags
             ON institutions.facility_code = va_caution_flags.facility_code
           WHERE #{where_clause}
     SQL
@@ -569,7 +569,7 @@ module InstitutionBuilder
 
   def self.add_school_closure(version_id)
     str = <<-SQL
-      UPDATE institutions SET 
+      UPDATE institutions SET
         school_closing = va_caution_flags.school_closing_date IS NOT NULL,
         school_closing_on = TO_DATE(va_caution_flags.school_closing_date, 'MM/DD/YY')
       FROM va_caution_flags

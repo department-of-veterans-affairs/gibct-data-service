@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class AccreditationCautionFlag
+require_relative 'caution_flag_template'
+
+class AccreditationCautionFlag < CautionFlagTemplate
   NAME = 'AccreditationAction'
   TITLE = 'School has an accreditation issue'
   DESCRIPTION = 'This school\'\'s accreditation has been taken away and is under appeal, '\

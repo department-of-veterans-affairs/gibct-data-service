@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class HcmCautionFlag
+require_relative 'caution_flag_template'
+
+class HcmCautionFlag < CautionFlagTemplate
   NAME = 'Hcm'
   TITLE = 'School placed on Heightened Cash Monitoring'
   DESCRIPTION = 'The Department of Education has placed this '\
