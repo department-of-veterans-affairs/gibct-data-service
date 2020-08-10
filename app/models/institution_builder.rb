@@ -430,7 +430,12 @@ module InstitutionBuilder
       link_text link_url flag_date created_at updated_at
     ]
 
-    link_text = 'Learn more about this cautionary warning'
+    link_text = <<-SQL
+      CASE WHEN va_caution_flags.settlement_link IS NOT NULL 
+        THEN 'Learn more about this cautionary warning'
+        ELSE null end
+    SQL
+
     flag_date_sql = <<-SQL
       CASE WHEN va_caution_flags.settlement_date IS NOT NULL 
         THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY') 
@@ -444,7 +449,7 @@ module InstitutionBuilder
               'Settlement' as source,
               va_caution_flags.settlement_title as title,
               va_caution_flags.settlement_description as description,
-              '#{link_text}' as link_text,
+              #{link_text} as link_text,
               va_caution_flags.settlement_link as link_url,
               #{flag_date_sql} as flag_date,
               #{conn.quote(timestamp)} as created_at,
