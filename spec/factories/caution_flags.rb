@@ -9,9 +9,5 @@ FactoryBot.define do
       link_text { "Learn more about this school's accreditation" }
       link_url { 'http://ope.ed.gov/accreditation' }
     end
-
-    trait :accreditation_issue_pre_map do
-      source { AccreditationAction.name }
-    end
   end
 end
