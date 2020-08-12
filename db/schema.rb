@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_074500) do
+ActiveRecord::Schema.define(version: 2020_08_06_074500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_074500) do
     t.string "description", default: "VA has found that this school engaged in misleading, deceptive, or erroneous advertising, sales, or enrollment practices, and has taken action against it."
     t.string "link_text"
     t.string "link_url"
+    t.string "flag_date"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
