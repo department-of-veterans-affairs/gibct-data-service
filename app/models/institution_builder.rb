@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../../app/utilities/caution_flag_templates/accreditation_caution_flag'
+require_relative '../../app/utilities/caution_flag_templates/hcm_caution_flag'
+require_relative '../../app/utilities/caution_flag_templates/sec702_caution_flag'
+require_relative '../../app/utilities/caution_flag_templates/mou_caution_flag'
+
 module InstitutionBuilder
   def self.columns_for_update(klass)
     table_name = klass.name.underscore.pluralize

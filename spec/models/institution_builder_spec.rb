@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative '../../app/utilities/caution_flag_templates/caution_flag_template'
 require_relative '../../app/utilities/caution_flag_templates/accreditation_caution_flag'
 require_relative '../../app/utilities/caution_flag_templates/hcm_caution_flag'
 require_relative '../../app/utilities/caution_flag_templates/sec702_caution_flag'
