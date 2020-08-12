@@ -30,7 +30,7 @@ class Institution < ApplicationRecord
   NON_FUZZY_SEARCH_CLAUSE = [
     'institution LIKE :upper_contains_term',
     'institution = :search_term',
-    'city = :search_term',
+    'UPPER(city) LIKE :upper_contains_term',
     'ialias LIKE :upper_contains_term'
   ].freeze
 
