@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative '../../app/utilities/caution_flag_templates/accreditation_caution_flag'
-require_relative '../../app/utilities/caution_flag_templates/hcm_caution_flag'
-require_relative '../../app/utilities/caution_flag_templates/sec702_caution_flag'
-require_relative '../../app/utilities/caution_flag_templates/mou_caution_flag'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
