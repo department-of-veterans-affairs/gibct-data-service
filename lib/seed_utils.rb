@@ -38,4 +38,33 @@ module SeedUtils
   def seed_table(klass, path, options = {})
     klass.load(path, options)
   end
+
+  def seed_table_with_api(klass, user)
+    class_name = klass.name
+    csv = klass::API_SOURCE || "#{class_name} API"
+    begin
+      puts "Loading #{klass.name} API from #{csv} ... "
+
+      api_upload = Upload.new(csv_type: class_name, user: user, csv: csv,
+                              comment: "Seeding API Request")
+      fetch_api_data(api_upload) if api_upload.save!
+
+      puts 'Done!'
+    rescue StandardError => e
+      message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
+      api_upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+
+      Rails.logger.error e
+    end
+  end
+
+  private
+
+  def fetch_api_data(api_upload)
+    klass = api_upload.csv_type.constantize
+    populated = klass&.respond_to?(:populate) ? klass.populate : false
+    api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
+
+    populated
+  end
 end
