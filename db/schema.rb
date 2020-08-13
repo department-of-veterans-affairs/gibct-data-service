@@ -16,8 +16,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_074500) do
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
-  
-
   create_table "accreditation_actions", id: :serial, force: :cascade do |t|
     t.integer "dapip_id"
     t.integer "agency_id"
