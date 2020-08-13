@@ -28,9 +28,9 @@ class Institution < ApplicationRecord
   }.freeze
 
   NON_FUZZY_SEARCH_CLAUSE = [
-    'institution LIKE :starts_with_term',
+    'institution LIKE :upper_contains_term',
     'institution = :search_term',
-    'city = :search_term',
+    'UPPER(city) LIKE :upper_contains_term',
     'ialias LIKE :upper_contains_term'
   ].freeze
 
@@ -267,7 +267,6 @@ class Institution < ApplicationRecord
                                        upper_search_term: search_term.upcase,
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        lower_contains_term: "%#{search_term.downcase}%",
-                                       starts_with_term: "#{search_term.upcase}%",
                                        search_term: search_term.to_s,
                                        name_threshold: Settings.institution_name_similarity_threshold,
                                        city_threshold: Settings.institution_city_similarity_threshold]))
@@ -315,7 +314,6 @@ class Institution < ApplicationRecord
 
     where(sanitize_sql_for_conditions([clause.join(' OR '),
                                        search_term: search_term.upcase,
-                                       starts_with_term: "#{search_term.upcase}%",
                                        upper_contains_term: "%#{search_term.upcase}%"]))
       .count
   }

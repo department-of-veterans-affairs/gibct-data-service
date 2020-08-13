@@ -146,6 +146,14 @@ FactoryBot.define do
       institution_of_higher_learning_indicator { true }
     end
 
+    trait :weam_builder do
+      poo_status { 'aprvd' }
+      applicable_law_code { 'educational institution is approved for all chapters' }
+      state { 'NY' }
+
+      institution_of_higher_learning_indicator { true }
+    end
+
     trait :crosswalk_issue_matchable_by_cross do
       cross { '888888' }
     end
