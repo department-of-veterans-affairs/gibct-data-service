@@ -46,20 +46,12 @@ Sec702:
   skip_lines: 0
   col_sep: ","
 
-Sec702School:
-  skip_lines: 0
-  col_sep: ","
-
 Mou:
   skip_lines: 1
   col_sep: ","
 
 Hcm:
   skip_lines: 2
-  col_sep: ","
-
-Settlement:
-  skip_lines: 0
   col_sep: ","
 
 IpedsIc:
@@ -103,10 +95,6 @@ IpedsCipCode:
   col_sep: ","
 
 StemCipCode:
-  skip_lines: 0
-  col_sep: ","
-
-SchoolClosure:
   skip_lines: 0
   col_sep: ","
 

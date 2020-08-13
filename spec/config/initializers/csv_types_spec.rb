@@ -16,16 +16,13 @@ REQUIRED_TABLES = [
   Mou.name,
   Outcome.name,
   Scorecard.name,
-  Sec702School.name,
   Sec702.name,
-  Settlement.name,
   Sva.name,
   Vsoc.name,
   Weam.name,
   IpedsCipCode.name,
   StemCipCode.name,
   YellowRibbonProgramSource.name,
-  SchoolClosure.name,
   Sec109ClosedSchool.name
 ].freeze
 
