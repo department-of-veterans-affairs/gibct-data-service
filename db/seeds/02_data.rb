@@ -43,8 +43,6 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
   SeedUtils.seed_table_with_upload(ArfGiBill, user)
   SeedUtils.seed_table_with_upload(Scorecard, user)
-  SeedUtils.seed_table_with_upload(P911Tf, user)
-  SeedUtils.seed_table_with_upload(P911Yr, user)
   SeedUtils.seed_table_with_upload(Vsoc, user)
   SeedUtils.seed_table_with_upload(Sva, user)
   SeedUtils.seed_table_with_upload(Sec702, user)
@@ -66,6 +64,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(EduProgram, user)
   SeedUtils.seed_table_with_upload(Sec103, user)
   SeedUtils.seed_table_with_upload(VaCautionFlag, user)
+  SeedUtils.seed_table_with_upload(Post911Stat, user)
 end
 
 
