@@ -15,8 +15,7 @@ module InstitutionBuilder
     add_eight_key(version.id)
     add_accreditation(version.id)
     add_arf_gi_bill(version.id)
-    add_p911_tf(version.id)
-    add_p911_yr(version.id)
+    add_post_911_stats(version.id)
     add_mou(version.id)
     add_scorecard(version.id)
     add_ipeds_ic(version.id)
@@ -37,7 +36,6 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
-    CautionFlag.map(version.id)
     set_count_of_caution_flags(version.id)
   end
 
@@ -161,6 +159,9 @@ module InstitutionBuilder
   # by joining on `ope` for a specific match
   # Set the accreditation_type according to the hierarchy hybrid < national < regional
   # We include only those accreditation that are institutional and currently active.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_accreditation(version_id)
     # Set the `accreditation_type`
     str = <<-SQL
@@ -204,19 +205,12 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
     SQL
 
-    caution_flag_reason = <<-SQL
-      concat(aa.action_description, ' (', aa.justification_description, ')')
-    SQL
-
     # Set the `accreditation_status`
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
     str = <<-SQL
       UPDATE institutions
       SET accreditation_status = aa.action_description,
           caution_flag = TRUE,
-          caution_flag_reason = #{caution_flag_reason}
+          caution_flag_reason = concat(aa.action_description, ' (', aa.justification_description, ')')
       FROM accreditation_institute_campuses, accreditation_actions aa
       #{where_clause}
     SQL
@@ -229,9 +223,7 @@ module InstitutionBuilder
       #{where_clause}
     SQL
 
-    build_caution_flags(version_id, AccreditationAction.name,
-                        caution_flag_reason,
-                        caution_flag_clause)
+    CautionFlag.build(version_id, AccreditationCautionFlag, caution_flag_clause)
   end
 
   def self.add_arf_gi_bill(version_id)
@@ -245,34 +237,26 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  def self.add_p911_tf(version_id)
+  def self.add_post_911_stats(version_id)
     str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(P911Tf)}
-      FROM p911_tfs
-      WHERE institutions.facility_code = p911_tfs.facility_code
+      UPDATE institutions SET
+        p911_recipients = tuition_and_fee_count,
+        p911_tuition_fees = tuition_and_fee_total_amount,
+        p911_yr_recipients = yellow_ribbon_count,
+        p911_yellow_ribbon = yellow_ribbon_total_amount
+      FROM post911_stats
+      WHERE institutions.facility_code = post911_stats.facility_code
       AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
   end
 
-  def self.add_p911_yr(version_id)
-    str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(P911Yr)}
-      FROM p911_yrs
-      WHERE institutions.facility_code = p911_yrs.facility_code
-      AND institutions.version_id = #{version_id}
-    SQL
-
-    Institution.connection.update(str)
-  end
-
+  # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_mou(version_id)
-    # Sets the dodmou for any approved school having a probation or title IV non-compliance status.
-    #
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - Remove setting caution_flag from sql statement
     str = <<-SQL
       UPDATE institutions SET
         dodmou = mous.dodmou,
@@ -284,26 +268,17 @@ module InstitutionBuilder
 
     Institution.connection.update(str)
 
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - remove sql
     str = <<-SQL
       UPDATE institutions SET
         caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
       FROM (
-        SELECT distinct(ope6), 'DoD Probation For Military Tuition Assistance' AS reason FROM mous
+        SELECT distinct(ope), 'DoD Probation For Military Tuition Assistance' AS reason FROM mous
         WHERE dod_status = TRUE) as reasons_list
-      WHERE institutions.ope6 = reasons_list.ope6
+      WHERE institutions.ope = reasons_list.ope
       AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
-    # End of BAH Caution Flag Cleanup
-
-    # The caution flag reason is only affected by a DoD type probation status
-    reason = <<-SQL
-      'DoD Probation For Military Tuition Assistance'
-    SQL
 
     caution_flag_clause = <<-SQL
       FROM institutions, (
@@ -314,8 +289,7 @@ module InstitutionBuilder
       AND institutions.version_id = #{version_id}
     SQL
 
-    # Create `caution_flags` rows
-    build_caution_flags(version_id, Mou.name, reason, caution_flag_clause)
+    CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
   end
 
   def self.add_scorecard(version_id)
@@ -377,128 +351,155 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
-  # When overlapping, sec_702 data from sec702_schools has precedence over data from sec702_schools, and
-  # only approved public schools can be SEC 702 complaint
+  # Updates institution table as well as creates caution_flags
+  # for institutions that are not sec702
+  #
+  # if va_caution_flags contains the institutions facility_code
+  #     then set institution.sec702 to value from va_caution_flags
+  # else check the institution's state value in sec702s
+  #     then set institution.sec702 to value from sec702s
+  #
+  # A true value indicates institution is sec702 complaint
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_sec_702(version_id)
-    s702_list = <<-SQL
-    (SELECT facility_code, sec702s.sec_702 FROM institutions
-          INNER JOIN sec702s ON sec702s.state = institutions.state
-            EXCEPT SELECT facility_code, sec_702 FROM sec702_schools
-            UNION SELECT facility_code, sec_702 FROM sec702_schools
-      ) AS s702_list
-    SQL
-    where_clause = <<-SQL
-      WHERE institutions.facility_code = s702_list.facility_code
+    where_conditions = <<-SQL
         AND institutions.institution_type_name = 'PUBLIC'
         AND institutions.version_id = #{version_id}
     SQL
 
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - Remove setting caution_flag and caution_flag_reason from sql statement
     str = <<-SQL
       UPDATE institutions SET
-        sec_702 = s702_list.sec_702,
-        caution_flag = (NOT s702_list.sec_702) OR caution_flag,
-        caution_flag_reason = CASE WHEN NOT s702_list.sec_702
-          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates') ELSE caution_flag_reason
+        sec_702 = s702_list.sec702_compliant,
+        caution_flag = (NOT s702_list.sec702_compliant) OR caution_flag,
+        caution_flag_reason = CASE WHEN NOT s702_list.sec702_compliant
+          THEN concat_ws(', ', caution_flag_reason, 'Does Not Offer Required In-State Tuition Rates')
+          ELSE caution_flag_reason
         END
-      FROM #{s702_list}
-      #{where_clause}
+      FROM (
+        SELECT institutions.facility_code,
+        CASE WHEN va_caution_flags.sec_702 IS NULL THEN sec702s.sec_702
+            ELSE va_caution_flags.sec_702 END AS sec702_compliant
+        FROM institutions
+          LEFT JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
+          LEFT JOIN sec702s ON institutions.state = sec702s.state
+      ) AS s702_list
+      WHERE institutions.facility_code = s702_list.facility_code
+      #{where_conditions}
     SQL
 
     Institution.connection.update(str)
 
-    reason = <<-SQL
-      'Does Not Offer Required In-State Tuition Rates'
-    SQL
-
     caution_flag_clause = <<-SQL
-      FROM institutions, #{s702_list}
-      #{where_clause}
-      AND NOT s702_list.sec_702
+      FROM institutions
+      WHERE NOT institutions.sec_702
+      #{where_conditions}
     SQL
 
-    # Create `caution_flags` rows
-    build_caution_flags(version_id, Sec702.name, reason, caution_flag_clause)
+    CautionFlag.build(version_id, Sec702CautionFlag, caution_flag_clause)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
   # has an entry in the settlements table.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_settlement(version_id)
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - remove sql
+    # Update institutions table for "Download Data on All Schools (Excel)"
     str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, settlement_list.descriptions)
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, vcf_list.titles)
       FROM (
-        SELECT "cross", array_to_string(array_agg(distinct(settlement_description)), ', ') AS descriptions
-        FROM settlements
-        WHERE "cross" IS NOT NULL
-        GROUP BY "cross"
-      ) settlement_list
-      WHERE institutions.cross = settlement_list.cross OR institutions.facility_code = settlement_list.cross
+        SELECT facility_code,
+            array_to_string(array_agg(distinct(settlement_title)), ',') as titles
+          FROM va_caution_flags
+          WHERE settlement_title IS NOT NULL
+            AND settlement_description IS NOT NULL
+          GROUP BY facility_code
+      ) vcf_list
+      WHERE institutions.facility_code = vcf_list.facility_code
       AND institutions.version_id = #{version_id}
     SQL
 
     Institution.connection.update(str)
-    # End of BAH Caution Flag Cleanup
 
-    reason = <<-SQL
-      settlements.settlement_description
-    SQL
-    caution_flag_clause = <<-SQL
-	    FROM institutions JOIN settlements on institutions.cross = settlements.cross
-        OR institutions.facility_code = settlements.cross
-      WHERE settlements.cross IS NOT NULL
-      AND institutions.version_id = #{version_id}
+    # Create Caution Flags
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+    insert_columns = %i[
+      institution_id version_id source title description
+      link_text link_url flag_date created_at updated_at
+    ]
+
+    link_text = <<-SQL
+      CASE WHEN va_caution_flags.settlement_link IS NOT NULL
+        THEN 'Learn more about this cautionary warning'
+        ELSE null end
     SQL
 
-    # Create `caution_flags` rows
-    build_caution_flags(version_id, Settlement.name, reason, caution_flag_clause)
+    flag_date_sql = <<-SQL
+      CASE WHEN va_caution_flags.settlement_date IS NOT NULL
+        THEN TO_DATE(va_caution_flags.settlement_date, 'MM/DD/YY')
+        ELSE null END
+    SQL
+
+    str = <<-SQL
+          INSERT INTO caution_flags (#{insert_columns.join(' , ')})
+          SELECT institutions.id,
+              #{version_id} as version_id,
+              'Settlement' as source,
+              va_caution_flags.settlement_title as title,
+              va_caution_flags.settlement_description as description,
+              #{link_text} as link_text,
+              va_caution_flags.settlement_link as link_url,
+              #{flag_date_sql} as flag_date,
+              #{conn.quote(timestamp)} as created_at,
+              #{conn.quote(timestamp)} as updated_at
+	        FROM institutions JOIN va_caution_flags
+            ON institutions.facility_code = va_caution_flags.facility_code
+          WHERE institutions.version_id = #{version_id}
+            AND va_caution_flags.settlement_title IS NOT NULL
+            AND va_caution_flags.settlement_description IS NOT NULL
+    SQL
+
+    sql = CautionFlag.send(:sanitize_sql, [str])
+    CautionFlag.connection.execute(sql)
   end
 
   # Sets caution flags and caution flag reasons if the corresponding approved school by ope
   # has an entry in the hcms table.
+  #
+  # Updating caution_flag and caution_flag_reason are needed for usage by the link
+  # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
   def self.add_hcm(version_id)
-    # Leaving old way of setting caution_flag and caution_flag_reason
-    # to support frontend until has been switched over to using caution_flags attribute
-    # BAH Caution Flag Cleanup - remove sql
-    str = <<-SQL
-      UPDATE institutions SET
-        caution_flag = TRUE,
-        caution_flag_reason = concat_ws(', ', caution_flag_reason, hcm_list.reasons)
-      FROM (
-        SELECT "ope6",
-          array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
-        FROM hcms
-        GROUP BY ope6
-      ) hcm_list
-      WHERE institutions.ope6 = hcm_list.ope6
-      AND institutions.version_id = #{version_id}
-    SQL
-
-    Institution.connection.update(str)
-    # End of BAH Caution Flag Cleanup
-
-    reason = <<-SQL
-      hcm_list.reasons
-    SQL
-    caution_flag_clause = <<-SQL
-      FROM institutions, (
-        SELECT ope,
+    hcm_list = <<-SQL
+      (SELECT ope,
           array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
         FROM hcms
         GROUP BY ope
       ) hcm_list
+    SQL
+
+    str = <<-SQL
+      UPDATE institutions SET
+        caution_flag = TRUE,
+        caution_flag_reason = concat_ws(', ', caution_flag_reason, hcm_list.reasons)
+      FROM #{hcm_list}
       WHERE institutions.ope = hcm_list.ope
       AND institutions.version_id = #{version_id}
     SQL
 
-    # Create `caution_flags` rows
-    build_caution_flags(version_id, Hcm.name, reason, caution_flag_clause)
+    Institution.connection.update(str)
+
+    caution_flag_clause = <<-SQL
+      FROM institutions, #{hcm_list}
+      WHERE institutions.ope = hcm_list.ope
+      AND institutions.version_id = #{version_id}
+    SQL
+
+    CautionFlag.build(version_id, HcmCautionFlag, caution_flag_clause)
   end
 
   def self.add_complaint(version_id)
@@ -573,9 +574,12 @@ module InstitutionBuilder
 
   def self.add_school_closure(version_id)
     str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(SchoolClosure)}
-      FROM school_closures
-      WHERE institutions.facility_code = school_closures.facility_code
+      UPDATE institutions SET
+        school_closing = TRUE,
+        school_closing_on = TO_DATE(va_caution_flags.school_closing_date, 'MM/DD/YYYY')
+      FROM va_caution_flags
+      WHERE institutions.facility_code = va_caution_flags.facility_code
+      AND va_caution_flags.school_closing_date IS NOT NULL
       AND institutions.version_id = #{version_id}
     SQL
 
@@ -770,26 +774,6 @@ module InstitutionBuilder
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
     SchoolCertifyingOfficial.connection.execute(sql)
-  end
-
-  # Creates caution flags
-  # Expects `reason_sql` and `clause_sql` to be a multiline SQL string
-  def self.build_caution_flags(version_id, source, reason_sql, clause_sql)
-    timestamp = Time.now.utc.to_s(:db)
-    conn = ApplicationRecord.connection
-
-    str = <<-SQL
-      INSERT INTO caution_flags (institution_id, version_id, source, reason, created_at, updated_at)
-      SELECT institutions.id,
-              #{version_id} as version_id,
-              '#{source}' as source,
-              #{reason_sql} as reason,
-              #{conn.quote(timestamp)} as created_at,
-              #{conn.quote(timestamp)} as updated_at
-        #{clause_sql}
-    SQL
-    sql = CautionFlag.send(:sanitize_sql, [str])
-    CautionFlag.connection.execute(sql)
   end
 
   def self.set_count_of_caution_flags(version_id)

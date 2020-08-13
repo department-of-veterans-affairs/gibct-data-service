@@ -43,15 +43,11 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
   SeedUtils.seed_table_with_upload(ArfGiBill, user)
   SeedUtils.seed_table_with_upload(Scorecard, user)
-  SeedUtils.seed_table_with_upload(P911Tf, user)
-  SeedUtils.seed_table_with_upload(P911Yr, user)
   SeedUtils.seed_table_with_upload(Vsoc, user)
   SeedUtils.seed_table_with_upload(Sva, user)
   SeedUtils.seed_table_with_upload(Sec702, user)
-  SeedUtils.seed_table_with_upload(Sec702School, user)
   SeedUtils.seed_table_with_upload(Mou, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 0)
-  SeedUtils.seed_table_with_upload(Settlement, user)
   SeedUtils.seed_table_with_upload(IpedsIc, user)
   SeedUtils.seed_table_with_upload(IpedsIcAy, user)
   SeedUtils.seed_table_with_upload(IpedsIcPy, user)
@@ -61,11 +57,11 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(IpedsCipCode, user)
   SeedUtils.seed_table_with_upload(StemCipCode, user)
   SeedUtils.seed_table_with_upload(YellowRibbonProgramSource, user)
-  SeedUtils.seed_table_with_upload(SchoolClosure, user)
   SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
   SeedUtils.seed_table_with_upload(EduProgram, user)
   SeedUtils.seed_table_with_upload(Sec103, user)
   SeedUtils.seed_table_with_upload(VaCautionFlag, user)
+  SeedUtils.seed_table_with_upload(Post911Stat, user)
 end
 
 
