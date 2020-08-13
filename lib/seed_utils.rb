@@ -46,7 +46,7 @@ module SeedUtils
       puts "Loading #{klass.name} API from #{csv} ... "
 
       api_upload = Upload.new(csv_type: class_name, user: user, csv: csv,
-                              comment: "Seeding API Request")
+                              comment: 'Seeding API Request')
       fetch_api_data(api_upload) if api_upload.save!
 
       puts 'Done!'
