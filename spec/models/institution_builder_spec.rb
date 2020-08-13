@@ -329,35 +329,20 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when adding P911Tf data' do
-      let(:institution) { institutions.find_by(facility_code: p911_tf.facility_code) }
-      let(:p911_tf) { P911Tf.first }
+    describe 'when adding Post911Stat' do
+      let(:institution) { institutions.find_by(facility_code: post911_stat.facility_code) }
+      let(:post911_stat) { Post911Stat.first }
 
       before do
-        create :p911_tf, :institution_builder
+        create :post911_stat, :institution_builder
         described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
-        P911Tf::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(p911_tf[column]).to eq(institution[column])
-        end
-      end
-    end
-
-    describe 'when adding P911Yr data' do
-      let(:institution) { institutions.find_by(facility_code: p911_yr.facility_code) }
-      let(:p911_yr) { P911Yr.first }
-
-      before do
-        create :p911_yr, :institution_builder
-        described_class.run(user)
-      end
-
-      it 'copies columns used by institutions' do
-        P911Yr::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(p911_yr[column]).to eq(institution[column])
-        end
+        expect(post911_stat.tuition_and_fee_count).to eq(institution.p911_recipients)
+        expect(post911_stat.tuition_and_fee_total_amount).to eq(institution.p911_tuition_fees)
+        expect(post911_stat.yellow_ribbon_count).to eq(institution.p911_yr_recipients)
+        expect(post911_stat.yellow_ribbon_total_amount).to eq(institution.p911_yellow_ribbon)
       end
     end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_191336) do
+ActiveRecord::Schema.define(version: 2020_08_06_141200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1199,34 +1199,15 @@ ActiveRecord::Schema.define(version: 2020_08_05_191336) do
     t.index ["facility_code"], name: "index_outcomes_on_facility_code", unique: true
   end
 
-  create_table "p911_tfs", id: :serial, force: :cascade do |t|
+  create_table "post911_stats", force: :cascade do |t|
     t.string "facility_code", null: false
-    t.float "p911_tuition_fees", null: false
-    t.integer "p911_recipients", null: false
-    t.string "institution"
-    t.string "state"
-    t.string "country"
-    t.string "profit_status"
-    t.string "type_of_payment"
-    t.integer "number_of_payments"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_p911_tfs_on_facility_code", unique: true
-  end
-
-  create_table "p911_yrs", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.float "p911_yellow_ribbon", null: false
-    t.integer "p911_yr_recipients", null: false
-    t.string "institution"
-    t.string "state"
-    t.string "country"
-    t.string "profit_status"
-    t.string "type_of_payment"
-    t.integer "number_of_payments"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true
+    t.integer "tuition_and_fee_count"
+    t.integer "tuition_and_fee_payments"
+    t.float "tuition_and_fee_total_amount"
+    t.integer "yellow_ribbon_count"
+    t.integer "yellow_ribbon_payments"
+    t.float "yellow_ribbon_total_amount"
+    t.index ["facility_code"], name: "index_post911_stats_on_facility_code"
   end
 
   create_table "programs", id: :serial, force: :cascade do |t|

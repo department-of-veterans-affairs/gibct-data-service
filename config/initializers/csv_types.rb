@@ -13,8 +13,6 @@ CSV_TYPES_TABLES = [
   { klass: IpedsIc, required?: true },
   { klass: Mou, required?: true },
   { klass: Outcome, required?: true },
-  { klass: P911Tf, required?: true },
-  { klass: P911Yr, required?: true },
   { klass: Scorecard, required?: true, has_api?: true },
   { klass: Sec702, required?: true },
   { klass: Sva, required?: true },
@@ -29,7 +27,8 @@ CSV_TYPES_TABLES = [
   { klass: SchoolCertifyingOfficial, required?: false},
   { klass: EduProgram, required?: false },
   { klass: Sec103, required?: false },
-  {klass: VaCautionFlag, required?: false}
+  { klass: VaCautionFlag, required?: false },
+  { klass: Post911Stat, required?: false }
 ].freeze
 
 CSV_TYPES_REQUIRED_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:required?] }.map { |table| table[:klass].name }.freeze

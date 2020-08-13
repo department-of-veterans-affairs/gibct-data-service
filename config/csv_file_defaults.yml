@@ -34,14 +34,6 @@ Scorecard:
   skip_lines: 0
   col_sep: ","
 
-P911Tf:
-  skip_lines: 0
-  col_sep: ","
-
-P911Yr:
-  skip_lines: 0
-  col_sep: ","
-
 Vsoc:
   skip_lines: 0
   col_sep: ","
@@ -129,5 +121,9 @@ Sec103:
   col_sep: ","
 
 VaCautionFlag:
+  skip_lines: 0
+  col_sep: ","
+
+Post911Stat:
   skip_lines: 0
   col_sep: ","
