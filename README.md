@@ -70,14 +70,14 @@ The following environment variables need to be configured for **GIDS**:
 7. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
 8. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
 
-The following are required, but related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
+The following are required, these are related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
 
 9. `SAML_IDP_METADATA_FILE`: contains certificates and endpoint information provided by the SSOe team.
 10. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
 11. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
 12. `SAML_ISSUER`: shared between the GIDS and SSOe team.
 
-The following is for use with Scorecard API.
+The following is for use with Scorecard API, this is required.
 
 13. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
 
@@ -97,6 +97,7 @@ SAML_IDP_SSO_URL: https://example.com/idp/sso
 SAML_ISSUER: GIDS
 SECRET_KEY_BASE: 'something ...'
 DEPLOYMENT_ENV: 'vagov-dev'
+SCORECARD_API_KEY: 'api key'
 ```
 
 You can create additional users by adding them to the `/db/seeds/01_users.rb` file:

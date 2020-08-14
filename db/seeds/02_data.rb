@@ -42,7 +42,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(AccreditationRecord, user)
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
   SeedUtils.seed_table_with_upload(ArfGiBill, user)
-  SeedUtils.seed_table_with_upload(Scorecard, user)
+  SeedUtils.seed_table_with_api(Scorecard, user)
   SeedUtils.seed_table_with_upload(Vsoc, user)
   SeedUtils.seed_table_with_upload(Sva, user)
   SeedUtils.seed_table_with_upload(Sec702, user)
