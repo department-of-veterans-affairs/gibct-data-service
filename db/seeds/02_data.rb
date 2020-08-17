@@ -31,7 +31,7 @@ if ENV['CI'].blank?
   puts 'Deleting old versions'
   Version.delete_all
 
-  puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
+  puts 'Loading CSVs. Why not do some calf raises while you wait? ... '
   SeedUtils.seed_table_with_upload(CalculatorConstant, user)
   SeedUtils.seed_table_with_upload(Program, user)
   SeedUtils.seed_table_with_upload(Sec109ClosedSchool, user)
@@ -42,7 +42,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(AccreditationRecord, user)
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
   SeedUtils.seed_table_with_upload(ArfGiBill, user)
-  SeedUtils.seed_table_with_api(Scorecard, user)
+  SeedUtils.seed_table_with_upload(Scorecard, user)
   SeedUtils.seed_table_with_upload(Vsoc, user)
   SeedUtils.seed_table_with_upload(Sva, user)
   SeedUtils.seed_table_with_upload(Sec702, user)
