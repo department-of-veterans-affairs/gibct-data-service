@@ -47,7 +47,7 @@ module SeedUtils
 
       api_upload = Upload.new(csv_type: class_name, user: user, csv: csv,
                               comment: 'Seeding API Request')
-      fetch_api_data(api_upload) if api_upload.save!
+      SeedUtils.fetch_api_data(api_upload) if api_upload.save!
 
       puts 'Done!'
     rescue StandardError => e
@@ -55,10 +55,10 @@ module SeedUtils
       api_upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
 
       Rails.logger.error e
+      binding.pry
+      puts e
     end
   end
-
-  private
 
   def fetch_api_data(api_upload)
     klass = api_upload.csv_type.constantize

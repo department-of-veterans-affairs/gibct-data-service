@@ -31,7 +31,7 @@ if ENV['CI'].blank?
   puts 'Deleting old versions'
   Version.delete_all
 
-  puts 'Loading CSVs, why not go get a nice cup of coffee while you wait? ... '
+  puts 'Loading CSVs, fetching from APIs. Why not do some calf raises while you wait? ... '
   SeedUtils.seed_table_with_upload(CalculatorConstant, user)
   SeedUtils.seed_table_with_upload(Program, user)
   SeedUtils.seed_table_with_upload(Sec109ClosedSchool, user)
