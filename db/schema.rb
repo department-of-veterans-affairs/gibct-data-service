@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_141200) do
+ActiveRecord::Schema.define(version: 2020_08_14_183825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -95,17 +95,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_141200) do
     t.datetime "updated_at", null: false
     t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
-  end
-
-  create_table "caution_flag_rules", force: :cascade do |t|
-    t.bigint "rule_id"
-    t.string "title"
-    t.string "description"
-    t.string "link_text"
-    t.string "link_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["rule_id"], name: "index_caution_flag_rules_on_rule_id"
   end
 
   create_table "caution_flags", force: :cascade do |t|
@@ -1223,17 +1212,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_141200) do
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
-  create_table "rules", force: :cascade do |t|
-    t.string "rule_name", null: false
-    t.string "matcher", null: false
-    t.string "subject"
-    t.string "predicate"
-    t.string "object"
-    t.integer "priority"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "school_certifying_officials", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "institution_name"
@@ -1246,19 +1224,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_141200) do
     t.string "phone_extension"
     t.string "email"
     t.index ["facility_code"], name: "index_school_certifying_officials_on_facility_code"
-  end
-
-  create_table "school_closures", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.string "institution_name"
-    t.boolean "school_closing"
-    t.string "school_closing_date"
-    t.date "school_closing_on"
-    t.text "school_closing_message"
-    t.text "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_school_closures_on_facility_code", unique: true
   end
 
   create_table "scorecards", id: :serial, force: :cascade do |t|
@@ -1407,14 +1372,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_141200) do
     t.index ["facility_code"], name: "index_sec109_closed_schools_on_facility_code"
   end
 
-  create_table "sec702_schools", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.boolean "sec_702"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_sec702_schools_on_facility_code", unique: true
-  end
-
   create_table "sec702s", id: :serial, force: :cascade do |t|
     t.string "state", null: false
     t.boolean "sec_702"
@@ -1431,19 +1388,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_141200) do
     t.datetime "updated_at"
     t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
-  end
-
-  create_table "settlements", id: :serial, force: :cascade do |t|
-    t.string "cross", null: false
-    t.string "settlement_description", null: false
-    t.string "institution"
-    t.integer "school_system_code"
-    t.string "school_system_name"
-    t.string "settlement_date"
-    t.string "settlement_link"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cross"], name: "index_settlements_on_cross"
   end
 
   create_table "stem_cip_codes", id: :serial, force: :cascade do |t|
@@ -1748,7 +1692,6 @@ ActiveRecord::Schema.define(version: 2020_08_06_141200) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
-  add_foreign_key "caution_flag_rules", "rules"
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
