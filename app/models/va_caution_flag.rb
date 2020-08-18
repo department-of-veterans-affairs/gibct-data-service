@@ -36,7 +36,7 @@ class VaCautionFlag < ApplicationRecord
 
   def validate_settlement_data
     if (!settlement_title.nil? || !settlement_description.nil? || !settlement_link.nil? || !settlement_date.nil?)
-      if settlement_link.nil? && settlement_date.nil?
+      if settlement_title.nil? && settlement_description.nil?
         errors.add(:base, 'Both settlement title and settlement description are required fo the settlement caution flag to be displayed.')
       else
         errors.add(:base, 'The row has settlement data, but does not have a Title and Description.')
