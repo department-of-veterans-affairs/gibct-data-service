@@ -1352,6 +1352,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_183825) do
     t.float "grad_debt_mdn10yr_supp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "alias"
     t.index ["cross"], name: "index_scorecards_on_cross"
     t.index ["ope"], name: "index_scorecards_on_ope"
   end
