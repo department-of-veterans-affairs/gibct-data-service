@@ -16,8 +16,7 @@ class VaCautionFlag < ApplicationRecord
 
   validates :facility_code, presence: true
   validate :validate_date_fields
-  validate :validate_settlement_data
-  validate :validate_school_closing_sec702
+  validates_with VaCautionFlagValidator, on: :after_import
 
   private
 
@@ -31,22 +30,6 @@ class VaCautionFlag < ApplicationRecord
       Date.strptime(school_closing_date, '%m/%d/%y') if school_closing_date
     rescue ArgumentError
       errors.add(:school_closing_date, 'must be mm/dd/yy')
-    end
-  end
-
-  def validate_settlement_data
-    if (!settlement_title.nil? || !settlement_description.nil? || !settlement_link.nil? || !settlement_date.nil?)
-      if settlement_title.nil? && settlement_description.nil?
-        errors.add(:base, 'Both settlement title and settlement description are required fo the settlement caution flag to be displayed.')
-      elsif settlement_title.nil? ||settlement_description.nil?
-        errors.add(:base, 'The row has settlement data, but does not have a Title and Description.')
-      end
-    end
-  end
-
-  def validate_school_closing_sec702
-    if settlement_title.nil? && settlement_description.nil? && settlement_link.nil? && settlement_date.nil? && school_closing_date.nil? && sec_702.nil?
-      errors.add(:base, 'Missing all necessary fields')
     end
   end
 end
