@@ -20,6 +20,7 @@ module ScorecardApi
       'school.women_only': :womenonly,
       'school.religious_affiliation': :relaffil,
       'school.under_investigation': :hcm2,
+      'school.alias': :alias,
       'latest.aid.federal_loan_rate': :pctfloan,
       'latest.aid.median_debt_suppressed.completers.overall': :avg_stu_loan_debt,
       'latest.completion.rate_suppressed.four_year': :c150_4_pooled_supp,
