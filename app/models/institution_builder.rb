@@ -294,7 +294,7 @@ module InstitutionBuilder
 
   def self.add_scorecard(version_id)
     str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(Scorecard)}
+      UPDATE institutions SET #{columns_for_update(Scorecard)}, ialias = scorecards.alias
       FROM scorecards
       WHERE institutions.cross = scorecards.cross
       AND institutions.version_id = #{version_id}

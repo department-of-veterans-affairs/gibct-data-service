@@ -77,7 +77,7 @@ The following are required, these are related to a SAML login flow only availabl
 11. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
 12. `SAML_ISSUER`: shared between the GIDS and SSOe team.
 
-The following is for use with Scorecard API, this is required.
+The following is for use with Scorecard API.
 
 13. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
 

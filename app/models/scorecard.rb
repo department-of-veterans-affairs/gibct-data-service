@@ -146,7 +146,8 @@ class Scorecard < ApplicationRecord
     'grad_debt_mdn10yr_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
-    'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter }
+    'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },
+    'alias' => { column: :alias, converter: BaseConverter }
   }.freeze
 
   after_initialize :derive_dependent_columns
