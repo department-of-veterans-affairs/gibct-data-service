@@ -34,9 +34,10 @@ module V0
         max_gibill = non_vet_tec_institutions.maximum(:gibill)
 
         # All values should be between 0.0 and 1.0
-        # For ialias only exact matches are needed when sorting
+        # ialias gets additional weighting on exact matches
         # facility_code and zip are not included in order by because of their standard formats
-        weighted_order_by = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+        weighted_order_by = ['CASE WHEN UPPER(ialias) LIKE :upper_contains_term THEN 1 ELSE 0 END',
+                             'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                              'SIMILARITY(city, :search_term)',
                              'SIMILARITY(institution, :search_term)',
                              '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))']
@@ -44,6 +45,7 @@ module V0
         sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                       search_term: (@query[:name]).to_s,
                                                                       upper_search_term: (@query[:name]).to_s.upcase,
+                                                                      upper_contains_term: "%#{(@query[:name]).to_s.upcase}%",
                                                                       max_gibill: max_gibill])
         render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
       else
