@@ -238,7 +238,7 @@ class Institution < ApplicationRecord
     if fuzzy_search_flag
       clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
       clause << 'SIMILARITY(city, :search_term) > :city_threshold'
-      clause << 'SIMILARITY(ialias, :search_term) > :ialias_threshold'
+      clause << 'UPPER(ialias) = :upper_search_term'
       clause << 'zip = :search_term'
     else
       clause << 'institution LIKE :upper_contains_term'

@@ -30,13 +30,20 @@ module V0
       }
 
       if @query.key?(:fuzzy_search)
+        # For sorting by percentage instead whole number
         max_gibill = non_vet_tec_institutions.maximum(:gibill)
-        order_by = ['SIMILARITY(ialias, :search_term) DESC',
-                    'SIMILARITY(institution, :search_term) DESC',
-                    'SIMILARITY(ialias, :search_term) + SIMILARITY(institution, :search_term) * (COALESCE(gibill, 0)/:max_gibill) DESC',
-                    'institution']
-        sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(' , '),
+
+        # All values should be between 0.0 and 1.0
+        # For ialias only exact matches are needed when sorting
+        # facility_code and zip are not included in order by their standard formats
+        weighted_order_by = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                        'SIMILARITY(city, :search_term)',
+                        'SIMILARITY(institution, :search_term)',
+                        '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))']
+        order_by = "#{weighted_order_by.join(' + ')} DESC NULLS LAST, institution"
+        sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                       search_term: (@query[:name]).to_s,
+                                                                      upper_search_term: (@query[:name]).to_s.upcase,
                                                                       max_gibill: max_gibill])
         render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
       else
