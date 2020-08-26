@@ -27,13 +27,6 @@ class Institution < ApplicationRecord
     '4-year' => 4
   }.freeze
 
-  NON_FUZZY_SEARCH_CLAUSE = [
-    'institution LIKE :upper_contains_term',
-    'institution = :search_term',
-    'UPPER(city) LIKE :upper_contains_term',
-    'ialias LIKE :upper_contains_term'
-  ].freeze
-
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -237,21 +230,16 @@ class Institution < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false,
-      use_fuzzy_search = false
-  |
+  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search_flag
-      if use_fuzzy_search
-        clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
-        clause << 'SIMILARITY(city, :search_term) > :city_threshold'
-        clause << 'zip = :search_term'
-      else
-        clause.push(*NON_FUZZY_SEARCH_CLAUSE)
-      end
+      clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
+      clause << 'SIMILARITY(city, :search_term) > :city_threshold'
+      clause << 'SIMILARITY(ialias, :search_term) > :ialias_threshold'
+      clause << 'zip = :search_term'
     else
       clause << 'institution LIKE :upper_contains_term'
       clause << 'city LIKE :upper_contains_term'
@@ -269,7 +257,8 @@ class Institution < ApplicationRecord
                                        lower_contains_term: "%#{search_term.downcase}%",
                                        search_term: search_term.to_s,
                                        name_threshold: Settings.institution_name_similarity_threshold,
-                                       city_threshold: Settings.institution_city_similarity_threshold]))
+                                       city_threshold: Settings.institution_city_similarity_threshold,
+                                       ialias_threshold: Settings.institution_ialias_similarity_threshold]))
   }
 
   scope :filter_result, lambda { |field, value|
@@ -297,25 +286,6 @@ class Institution < ApplicationRecord
 
   scope :filter_count, lambda { |field|
     group(field).where.not(field => nil).order(field).count
-  }
-
-  # Returns count of institutions that have:
-  # a facility_code that equals search_term
-  # an institution that starts with search_term
-  # an institution that equals search_term
-  # a city that equals search_term
-  # an ialias that contains search_term
-  #
-  scope :search_count, lambda { |search_term|
-    return 0 if search_term.blank?
-
-    clause = ['facility_code = :search_term']
-    clause.push(*NON_FUZZY_SEARCH_CLAUSE)
-
-    where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%"]))
-      .count
   }
 
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
