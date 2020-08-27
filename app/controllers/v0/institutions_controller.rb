@@ -11,7 +11,7 @@ module V0
       if params[:term].present?
         @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = filter_results(non_vet_tec_institutions).autocomplete(@search_term)
+        @data = filter_results(Institution.non_vet_tec_institutions(@version)).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -31,23 +31,10 @@ module V0
 
       if @query.key?(:fuzzy_search)
         # For sorting by percentage instead whole number
-        max_gibill = non_vet_tec_institutions.maximum(:gibill)
+        max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill)
 
-        # All values should be between 0.0 and 1.0
-        # ialias gets additional weighting on exact matches
-        # facility_code and zip are not included in order by because of their standard formats
-        weighted_order_by = ['CASE WHEN UPPER(ialias) LIKE :upper_contains_term THEN 1 ELSE 0 END',
-                             'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                             'SIMILARITY(city, :search_term)',
-                             'SIMILARITY(institution, :search_term)',
-                             '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))']
-        order_by = "#{weighted_order_by.join(' + ')} DESC NULLS LAST, institution"
-        sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
-                                                                      search_term: (@query[:name]).to_s,
-                                                                      upper_search_term: (@query[:name]).to_s.upcase,
-                                                                      upper_contains_term: "%#{(@query[:name]).to_s.upcase}%",
-                                                                      max_gibill: max_gibill])
-        render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
+        render json: search_results.search_order((@query[:name]).to_s, max_gibill)
+                         .page(params[:page]), meta: @meta
       else
         render json: search_results.order(:institution).page(params[:page]), meta: @meta
       end
@@ -55,7 +42,7 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = approved_institutions.find_by(facility_code: params[:id])
+      resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -103,7 +90,8 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = non_vet_tec_institutions.search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search))
+      relation = Institution.non_vet_tec_institutions(@version)
+                     .search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search))
       filter_results(relation)
     end
 
@@ -174,14 +162,6 @@ module V0
       add_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
-    end
-
-    def approved_institutions
-      Institution.joins(:version).no_extentions.where(approved: true, version: @version)
-    end
-
-    def non_vet_tec_institutions
-      approved_institutions.where(vet_tec_provider: false)
     end
   end
   # rubocop:enable Metrics/ClassLength

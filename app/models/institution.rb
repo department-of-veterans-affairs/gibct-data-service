@@ -261,6 +261,27 @@ class Institution < ApplicationRecord
                                        ialias_threshold: Settings.institution_ialias_similarity_threshold]))
   }
 
+  # All values should be between 0.0 and 1.0
+  # ialias gets additional weighting on exact matches
+  # facility_code and zip are not included in order by because of their standard formats
+  scope :search_order, lambda { |search_term, max_gibill = 0|
+    weighted_order_by = ['CASE WHEN UPPER(ialias) LIKE :upper_contains_term THEN 1 ELSE 0 END',
+                         'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                         'SIMILARITY(city, :search_term)',
+                         'SIMILARITY(institution, :search_term)']
+
+    weighted_order_by << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
+
+    order_by = "#{weighted_order_by.join(' + ')} DESC NULLS LAST, institution"
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
+                                                                  search_term: search_term,
+                                                                  upper_search_term: search_term.upcase,
+                                                                  upper_contains_term: "%#{search_term.upcase}%",
+                                                                  max_gibill: max_gibill])
+
+    order(sanitized_order_by)
+  }
+
   scope :filter_result, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
@@ -289,4 +310,12 @@ class Institution < ApplicationRecord
   }
 
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
+
+  scope :approved_institutions, lambda { |version|
+    joins(:version).no_extentions.where(approved: true, version: version)
+  }
+
+  scope :non_vet_tec_institutions, lambda { |version|
+    approved_institutions(version).where(vet_tec_provider: false)
+  }
 end
