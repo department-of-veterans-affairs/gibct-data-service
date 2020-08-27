@@ -237,7 +237,7 @@ class Institution < ApplicationRecord
 
     if fuzzy_search_flag
       clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
-      clause << 'SIMILARITY(city, :search_term) > :city_threshold'
+      clause << 'UPPER(city) = :upper_search_term'
       clause << 'UPPER(ialias) LIKE :upper_contains_term'
       clause << 'zip = :search_term'
     else
@@ -264,10 +264,10 @@ class Institution < ApplicationRecord
   # ialias gets additional weighting on exact matches
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
-    weighted_sort = ['CASE WHEN UPPER(ialias) LIKE :upper_contains_term THEN 1 ELSE 0 END',
+    weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0)/2)',
                      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                     'SIMILARITY(city, :search_term)',
-                     'SIMILARITY(institution, :search_term)']
+                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
+                     '(COALESCE(SIMILARITY(institution, :search_term), 0)/2)']
 
     weighted_sort << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
 
@@ -275,7 +275,6 @@ class Institution < ApplicationRecord
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
-                                                                  upper_contains_term: "%#{search_term.upcase}%",
                                                                   max_gibill: max_gibill])
 
     order(Arel.sql(sanitized_order_by))
