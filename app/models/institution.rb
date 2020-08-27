@@ -279,7 +279,7 @@ class Institution < ApplicationRecord
                                                                   upper_contains_term: "%#{search_term.upcase}%",
                                                                   max_gibill: max_gibill])
 
-    order(sanitized_order_by)
+    order(Arel.sql(sanitized_order_by))
   }
 
   scope :filter_result, lambda { |field, value|
