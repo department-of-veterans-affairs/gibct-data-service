@@ -265,9 +265,9 @@ class Institution < ApplicationRecord
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
     weighted_sort = ['CASE WHEN UPPER(ialias) LIKE :upper_contains_term THEN 1 ELSE 0 END',
-                         'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                         'SIMILARITY(city, :search_term)',
-                         'SIMILARITY(institution, :search_term)']
+                     'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                     'SIMILARITY(city, :search_term)',
+                     'SIMILARITY(institution, :search_term)']
 
     weighted_sort << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
 
