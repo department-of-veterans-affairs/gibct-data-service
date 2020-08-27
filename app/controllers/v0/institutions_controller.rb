@@ -31,7 +31,7 @@ module V0
 
       if @query.key?(:fuzzy_search)
         # For sorting by percentage instead whole number
-        max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill)
+        max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
 
         render json: search_results.search_order((@query[:name]).to_s, max_gibill)
                          .page(params[:page]), meta: @meta

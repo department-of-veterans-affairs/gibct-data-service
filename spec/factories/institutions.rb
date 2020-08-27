@@ -122,5 +122,17 @@ FactoryBot.define do
     trait :production_version do
       version_id { Version.current_production.id }
     end
+
+    trait :mit do
+      ialias { 'MIT' }
+      institution { 'MUST INVESTIGATE TARANTULAS' }
+      city { 'ARACHNID' }
+      gibill { 100 }
+    end
+
+    trait :ku do
+      ialias { 'KU | KANSAS UNIVERSITY' }
+      institution { 'KANSAS UNIVERSITY NORTH' }
+    end
   end
 end
