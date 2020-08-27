@@ -16,6 +16,7 @@ class VaCautionFlag < ApplicationRecord
 
   validates :facility_code, presence: true
   validate :validate_date_fields
+  validates_with VaCautionFlagValidator, on: :after_import
 
   private
 
