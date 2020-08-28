@@ -267,7 +267,8 @@ class Institution < ApplicationRecord
     weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0)/2)',
                      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
-                     '(COALESCE(SIMILARITY(institution, :search_term), 0)/2)']
+                     'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
+                     '(COALESCE(SIMILARITY(institution, :search_term), 0))']
 
     weighted_sort << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
 
