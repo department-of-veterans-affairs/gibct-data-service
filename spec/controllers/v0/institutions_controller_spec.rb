@@ -332,17 +332,18 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns results fuzzy-matching with exact match name' do
-      create(:institution, :independent_study, version_id: Version.current_production.id)
+      first = create(:institution, :independent_study, version_id: Version.current_production.id)
       create(:institution, :uchicago, version_id: Version.current_production.id)
       get(:index, params: { name: 'UNIVERSITY OF INDEPENDENT STUDY', fuzzy_search: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'].count).to eq(2)
+      expect(JSON.parse(response.body)['data'][0]['attributes']['name']).to eq(first.institution)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
-    it 'search returns results fuzzy-matching city' do
+    it 'search returns results exact matching city' do
       create(:institution, :independent_study, city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
-      get(:index, params: { name: 'VERY LONG CITY AME', fuzzy_search: true })
+      get(:index, params: { name: 'VERY LONG CITY NAME', fuzzy_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')

@@ -11,7 +11,7 @@ module V0
       if params[:term].present?
         @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = filter_results(non_vet_tec_institutions).autocomplete(@search_term)
+        @data = filter_results(Institution.non_vet_tec_institutions(@version)).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -29,10 +29,12 @@ module V0
         facets: facets
       }
 
-      if @query.key?(:fuzzy_search) && use_fuzzy_search?
-        order_by = 'SIMILARITY(institution, :search_term) * COALESCE(gibill, 0) DESC, institution'
-        sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by, search_term: (@query[:name]).to_s])
-        render json: search_results.order(sanitized_order_by).page(params[:page]), meta: @meta
+      if @query.key?(:fuzzy_search)
+        # For sorting by percentage instead whole number
+        max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
+
+        render json: search_results.search_order((@query[:name]).to_s, max_gibill)
+                                   .page(params[:page]), meta: @meta
       else
         render json: search_results.order(:institution).page(params[:page]), meta: @meta
       end
@@ -40,7 +42,7 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = approved_institutions.find_by(facility_code: params[:id])
+      resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -88,8 +90,8 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = non_vet_tec_institutions.search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search),
-                                                 use_fuzzy_search?)
+      relation = Institution.non_vet_tec_institutions(@version)
+                            .search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search))
       filter_results(relation)
     end
 
@@ -160,18 +162,6 @@ module V0
       add_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
-    end
-
-    def approved_institutions
-      Institution.joins(:version).no_extentions.where(approved: true, version: @version)
-    end
-
-    def non_vet_tec_institutions
-      approved_institutions.where(vet_tec_provider: false)
-    end
-
-    def use_fuzzy_search?
-      non_vet_tec_institutions.search_count(@query[:name]).zero?
     end
   end
   # rubocop:enable Metrics/ClassLength

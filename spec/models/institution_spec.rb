@@ -187,5 +187,71 @@ RSpec.describe Institution, type: :model do
           )
       end
     end
+
+    context 'with search order sorts ' do
+      before do
+        create(:version, :production)
+        create_list(:institution, 2, :in_nyc, version_id: Version.current_production.id)
+        create(:institution, :in_chicago, online_only: true, version_id: Version.current_production.id)
+        create(:institution, :in_new_rochelle, distance_learning: true, version_id: Version.current_production.id)
+        # adding a non approved institutions row
+        create(:institution, :contains_harv, approved: false, version_id: Version.current_production.id)
+      end
+
+      it 'ialias exact match' do
+        institution = create(:institution, :mit)
+        search_term = institution.ialias
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].ialias).to eq(search_term)
+      end
+
+      it 'alias contains' do
+        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
+        search_term = 'KU'
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].ialias).to include(search_term)
+      end
+
+      it 'institution exact match' do
+        institution = create(:institution, :mit)
+        search_term = institution.institution
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].institution).to eq(search_term)
+      end
+
+      it 'city exact match' do
+        institution = create(:institution, :mit)
+        search_term = institution.city
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].city).to eq(search_term)
+      end
+
+      it 'gibill value' do
+        create(:institution, :mit, gibill: 1)
+        institution = create(:institution, :mit)
+        search_term = institution.ialias
+        max_gibill = described_class.maximum(:gibill)
+        results = described_class.search(search_term, false, true).search_order(search_term, max_gibill)
+        expect(results[0].gibill).to eq(max_gibill)
+      end
+    end
+
+    it 'approved institutions' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, approved: false, version_id: Version.current_production.id)
+      results = described_class.approved_institutions(Version.current_production)
+      expect(results.count).to eq(1)
+    end
+
+    it 'non vet tec institutions' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, approved: false, version_id: Version.current_production.id)
+      create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+
+      results = described_class.non_vet_tec_institutions(Version.current_production)
+      expect(results.count).to eq(1)
+    end
   end
 end

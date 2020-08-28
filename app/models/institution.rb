@@ -27,13 +27,6 @@ class Institution < ApplicationRecord
     '4-year' => 4
   }.freeze
 
-  NON_FUZZY_SEARCH_CLAUSE = [
-    'institution LIKE :upper_contains_term',
-    'institution = :search_term',
-    'UPPER(city) LIKE :upper_contains_term',
-    'ialias LIKE :upper_contains_term'
-  ].freeze
-
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -237,21 +230,16 @@ class Institution < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false,
-      use_fuzzy_search = false
-  |
+  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search_flag
-      if use_fuzzy_search
-        clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
-        clause << 'SIMILARITY(city, :search_term) > :city_threshold'
-        clause << 'zip = :search_term'
-      else
-        clause.push(*NON_FUZZY_SEARCH_CLAUSE)
-      end
+      clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
+      clause << 'UPPER(city) = :upper_search_term'
+      clause << 'UPPER(ialias) LIKE :upper_contains_term'
+      clause << 'zip = :search_term'
     else
       clause << 'institution LIKE :upper_contains_term'
       clause << 'city LIKE :upper_contains_term'
@@ -270,6 +258,26 @@ class Institution < ApplicationRecord
                                        search_term: search_term.to_s,
                                        name_threshold: Settings.institution_name_similarity_threshold,
                                        city_threshold: Settings.institution_city_similarity_threshold]))
+  }
+
+  # All values should be between 0.0 and 1.0
+  # ialias gets additional weighting on exact matches
+  # facility_code and zip are not included in order by because of their standard formats
+  scope :search_order, lambda { |search_term, max_gibill = 0|
+    weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0)/2)',
+                     'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
+                     '(COALESCE(SIMILARITY(institution, :search_term), 0)/2)']
+
+    weighted_sort << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
+
+    order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
+                                                                  search_term: search_term,
+                                                                  upper_search_term: search_term.upcase,
+                                                                  max_gibill: max_gibill])
+
+    order(Arel.sql(sanitized_order_by))
   }
 
   scope :filter_result, lambda { |field, value|
@@ -299,24 +307,13 @@ class Institution < ApplicationRecord
     group(field).where.not(field => nil).order(field).count
   }
 
-  # Returns count of institutions that have:
-  # a facility_code that equals search_term
-  # an institution that starts with search_term
-  # an institution that equals search_term
-  # a city that equals search_term
-  # an ialias that contains search_term
-  #
-  scope :search_count, lambda { |search_term|
-    return 0 if search_term.blank?
+  scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 
-    clause = ['facility_code = :search_term']
-    clause.push(*NON_FUZZY_SEARCH_CLAUSE)
-
-    where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%"]))
-      .count
+  scope :approved_institutions, lambda { |version|
+    joins(:version).no_extentions.where(approved: true, version: version)
   }
 
-  scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
+  scope :non_vet_tec_institutions, lambda { |version|
+    approved_institutions(version).where(vet_tec_provider: false)
+  }
 end
