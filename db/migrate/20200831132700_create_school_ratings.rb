@@ -10,7 +10,7 @@ class CreateSchoolRatings < ActiveRecord::Migration[5.2]
       t.integer :gi_bill_support
       t.integer :veteran_community
       t.integer :marketing_practices
-      t.datetime :facility_code, null: false
+      t.datetime :ranked_on, null: false
     end
   end
 end
