@@ -16,6 +16,5 @@ class SchoolRating < ApplicationRecord
     'ranked on' => { column: :ranked_on, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, :ranked_on, presence: true
-  validates_with SchoolCertifyingOfficialValidator, on: :after_import
+  validates :facility_code, :ranker_id, :ranked_on, presence: true
 end
