@@ -1236,7 +1236,7 @@ ActiveRecord::Schema.define(version: 2020_08_31_132700) do
     t.integer "gi_bill_support"
     t.integer "veteran_community"
     t.integer "marketing_practices"
-    t.datetime "rated_on", null: false
+    t.datetime "rated_at", null: false
   end
 
   create_table "scorecards", id: :serial, force: :cascade do |t|
