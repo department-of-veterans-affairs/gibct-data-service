@@ -24,5 +24,9 @@ RSpec.describe SchoolRating, type: :model do
     it 'requires rated_on' do
       expect(build(:school_rating, rated_on: nil)).not_to be_valid
     end
+
+    it 'accepts date without time for rated_on' do
+      expect(build(:school_rating, rated_on: '2001-10-10')).to be_valid
+    end
   end
 end
