@@ -17,12 +17,12 @@ RSpec.describe SchoolRating, type: :model do
       expect(build(:school_rating, facility_code: nil)).not_to be_valid
     end
 
-    it 'requires ranker_id' do
-      expect(build(:school_rating, ranker_id: nil)).not_to be_valid
+    it 'requires rater_id' do
+      expect(build(:school_rating, rater_id: nil)).not_to be_valid
     end
 
-    it 'requires ranked_on' do
-      expect(build(:school_rating, ranked_on: nil)).not_to be_valid
+    it 'requires rated_on' do
+      expect(build(:school_rating, rated_on: nil)).not_to be_valid
     end
   end
 end

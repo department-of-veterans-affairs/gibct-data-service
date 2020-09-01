@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RankingConverter < BaseConverter
+class SchoolRatingConverter < BaseConverter
   def self.convert(value)
     value = value.to_i
 

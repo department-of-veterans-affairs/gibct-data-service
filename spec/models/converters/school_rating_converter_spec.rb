@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe RankingConverter do
+RSpec.describe SchoolRatingConverter do
   subject { described_class }
 
   it 'returns nil if value is blank' do
