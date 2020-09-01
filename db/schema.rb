@@ -1227,7 +1227,7 @@ ActiveRecord::Schema.define(version: 2020_08_31_132700) do
   end
 
   create_table "school_ratings", force: :cascade do |t|
-    t.string "ranker_id", null: false
+    t.string "rater_id", null: false
     t.string "facility_code", null: false
     t.integer "overall_experience"
     t.integer "quality_of_classes"
@@ -1236,7 +1236,7 @@ ActiveRecord::Schema.define(version: 2020_08_31_132700) do
     t.integer "gi_bill_support"
     t.integer "veteran_community"
     t.integer "marketing_practices"
-    t.datetime "ranked_on", null: false
+    t.datetime "rated_on", null: false
   end
 
   create_table "scorecards", id: :serial, force: :cascade do |t|
