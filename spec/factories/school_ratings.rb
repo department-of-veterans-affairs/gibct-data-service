@@ -11,7 +11,7 @@ FactoryBot.define do
     gi_bill_support { 1 }
     veteran_community { 1 }
     marketing_practices { 1 }
-    rated_on { DateTime.parse('2020-01-01T12:05:02+08:00') }
+    rated_at { DateTime.parse('2020-01-01T12:05:02+08:00') }
 
     trait :institution_builder do
       facility_code { '1ZZZZZZZ' }
