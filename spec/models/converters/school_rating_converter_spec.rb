@@ -5,9 +5,12 @@ require 'rails_helper'
 RSpec.describe SchoolRatingConverter do
   subject { described_class }
 
-  it 'returns nil if value is blank' do
+  it 'returns nil if value is nil' do
     expect(described_class.convert(nil)).to be_nil
-    expect(described_class.convert('   ')).to be_nil
+  end
+
+  it 'returns string without converting it' do
+    expect(described_class.convert('hello')).to eq('hello')
   end
 
   it 'correctly parses value as int' do

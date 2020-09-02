@@ -17,4 +17,7 @@ class SchoolRating < ApplicationRecord
   }.freeze
 
   validates :facility_code, :rater_id, :rated_at, presence: true
+  validates :overall_experience, :quality_of_classes, :online_instruction, :job_preparation,
+            :gi_bill_support, :veteran_community, :marketing_practices,
+            numericality: true, allow_blank: true
 end
