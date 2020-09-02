@@ -21,7 +21,7 @@ search:
   institution_name_similarity_threshold: .3
   institution_city_similarity_threshold: .7
   weight_modifiers:
-    alias: .77
+    alias: 1
     gibill: .33
   common_word_list: 
     - "of"
