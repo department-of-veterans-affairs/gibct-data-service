@@ -10,7 +10,7 @@ class InstitutionSerializer < ActiveModel::Serializer
 
   attribute :institution, key: :name
   attribute :facility_code
-  attribute :ialias
+  attribute :ialias, key: 'alias'
   attribute :institution_type_name, key: :type
   attribute :city
   attribute :state
