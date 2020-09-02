@@ -20,6 +20,9 @@ environment: <%= ENV['DEPLOYMENT_ENV'] %>
 search:
   institution_name_similarity_threshold: .1
   institution_city_similarity_threshold: .7
+  weight_modifiers:
+    alias: .77
+    gibill: .33
   common_word_list: 
     - "of"
     - "school"

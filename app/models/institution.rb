@@ -235,6 +235,7 @@ class Institution < ApplicationRecord
     end
 
     return search_term.clone if processed_search_term.blank?
+
     processed_search_term.strip
   end
 
@@ -275,19 +276,23 @@ class Institution < ApplicationRecord
   # ialias, city, institution get additional weighting on exact matches
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
-    weighted_sort = ['COALESCE(SIMILARITY(ialias, :similarity_search_term), 0)',
+    weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0) * :alias_modifier)',
                      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
-                     '(COALESCE(SIMILARITY(institution, :similarity_search_term), 0))']
+                     '(COALESCE(SIMILARITY(institution, :search_term), 0))']
 
-    weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))/3)' if max_gibill.nonzero?
+    weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
     order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
+    alias_modifier = Settings.search.weight_modifiers.alias
+    gibill_modifier = Settings.search.weight_modifiers.gibill
+
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
-                                                                  similarity_search_term: similarity_search_term(search_term),
                                                                   upper_search_term: search_term.upcase,
+                                                                  alias_modifier: alias_modifier,
+                                                                  gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill])
 
     order(Arel.sql(sanitized_order_by))
