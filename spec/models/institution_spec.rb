@@ -253,5 +253,23 @@ RSpec.describe Institution, type: :model do
       results = described_class.non_vet_tec_institutions(Version.current_production)
       expect(results.count).to eq(1)
     end
+
+    context 'similarity_search_term' do
+      it 'removes common words' do
+        common_words = Settings.search.common_word_list.join(' ')
+        search_term = "search term #{common_words}"
+        processed_search_term = Institution.similarity_search_term(search_term)
+        expect(processed_search_term).to eq('search term')
+        expect(processed_search_term).not_to include(common_words)
+      end
+
+      it 'returns string if only contains common words' do
+        search_term = Settings.search.common_word_list.join(' ')
+        processed_search_term = Institution.similarity_search_term(search_term)
+        expect(processed_search_term).to eq(search_term)
+        expect(processed_search_term.present?).to be_truthy
+
+      end
+    end
   end
 end

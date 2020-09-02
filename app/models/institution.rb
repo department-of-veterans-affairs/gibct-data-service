@@ -228,6 +228,16 @@ class Institution < ApplicationRecord
       .limit(limit)
   end
 
+  def self.similarity_search_term(search_term)
+    processed_search_term = search_term.clone
+    Settings.search.common_word_list.each do |word|
+      processed_search_term = processed_search_term.gsub(Regexp.new(word, Regexp::IGNORECASE), '')
+    end
+
+    return search_term.clone if processed_search_term.blank?
+    processed_search_term.strip
+  end
+
   # Finds exact-matching facility_code or partial-matching school and city names
   #
   scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
@@ -236,7 +246,7 @@ class Institution < ApplicationRecord
     clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search_flag
-      clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
+      clause << 'SIMILARITY(institution, :similarity_search_term) > :name_threshold'
       clause << 'UPPER(city) = :upper_search_term'
       clause << 'UPPER(ialias) LIKE :upper_contains_term'
       clause << 'zip = :search_term'
@@ -256,25 +266,27 @@ class Institution < ApplicationRecord
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        lower_contains_term: "%#{search_term.downcase}%",
                                        search_term: search_term.to_s,
-                                       name_threshold: Settings.institution_name_similarity_threshold,
-                                       city_threshold: Settings.institution_city_similarity_threshold]))
+                                       similarity_search_term: similarity_search_term(search_term),
+                                       name_threshold: Settings.search.institution_name_similarity_threshold,
+                                       city_threshold: Settings.search.institution_city_similarity_threshold]))
   }
 
   # All values should be between 0.0 and 1.0
-  # ialias gets additional weighting on exact matches
+  # ialias, city, institution get additional weighting on exact matches
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
-    weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0)/2)',
+    weighted_sort = ['COALESCE(SIMILARITY(ialias, :similarity_search_term), 0)',
                      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
-                     '(COALESCE(SIMILARITY(institution, :search_term), 0))']
+                     '(COALESCE(SIMILARITY(institution, :similarity_search_term), 0))']
 
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))/3)' if max_gibill.nonzero?
 
     order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
+                                                                  similarity_search_term: similarity_search_term(search_term),
                                                                   upper_search_term: search_term.upcase,
                                                                   max_gibill: max_gibill])
 

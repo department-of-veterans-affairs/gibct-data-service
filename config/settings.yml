@@ -17,6 +17,29 @@ scorecard:
 
 environment: <%= ENV['DEPLOYMENT_ENV'] %>
 
-institution_name_similarity_threshold: .1
+search:
+  institution_name_similarity_threshold: .1
+  institution_city_similarity_threshold: .7
+  common_word_list: 
+    - "of"
+    - "school"
+    - "college"
+    - "department"
+    - "center"
+    - "inc"
+    - "university"
+    - "and"
+    - "police"
+    - "high"
+    - "county"
+    - "institute"
+    - "&"
+    - "-"
+    - "academy"
+    - "community"
+    - "training"
+    - "state"
+    - "campus"
+    - "city"
 
-institution_city_similarity_threshold: .7
+
