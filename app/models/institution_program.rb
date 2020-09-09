@@ -48,27 +48,27 @@ class InstitutionProgram < ApplicationRecord
     return if search_term.blank?
 
     clause = [
-      'institution_programs.facility_code = (:facility_code)',
-      'lower(description) LIKE (:search_term)'
+      'institution_programs.facility_code = (:upper_search_term)',
+      'lower(description) LIKE (:lower_contains_term)'
     ]
 
     if fuzzy_search
-      clause << 'SIMILARITY(institution, :search_term) > :name_threshold'
-      clause << 'SIMILARITY(physical_city, :search_term) > :city_threshold'
-      clause << 'institutions.physical_zip LIKE (:search_term)'
+      clause << 'institution % :contains_search_term'
+      clause << 'UPPER(physical_city) = :upper_search_term'
+      clause << 'institutions.physical_zip = :search_term'
     else
-      clause << 'institutions.institution LIKE (:upper_search_term)'
-      clause << 'lower(institutions.physical_city) LIKE (:search_term)'
+      clause << 'institutions.institution LIKE (:upper_contains_term)'
+      clause << 'lower(institutions.physical_city) LIKE (:lower_contains_term)'
     end
 
     where(
       sanitize_sql_for_conditions(
         [clause.join(' OR '),
-         facility_code: search_term.upcase,
-         upper_search_term: "%#{search_term.upcase}%",
-         search_term: "%#{search_term}%",
-         name_threshold: Settings.search.institution_name_similarity_threshold,
-         city_threshold: Settings.search.institution_city_similarity_threshold]
+         upper_search_term: search_term.upcase,
+         upper_contains_term: "%#{search_term.upcase}%",
+         lower_contains_term: "%#{search_term.downcase}%",
+         contains_search_term: "%#{search_term}%",
+         search_term: search_term.to_s]
       )
     )
   }

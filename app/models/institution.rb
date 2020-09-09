@@ -228,7 +228,7 @@ class Institution < ApplicationRecord
       .limit(limit)
   end
 
-  def self.similarity_search_term(search_term)
+  def self.institution_search_term(search_term)
     processed_search_term = search_term.clone
     Settings.search.common_word_list.each do |word|
       processed_search_term = processed_search_term.gsub(Regexp.new(word, Regexp::IGNORECASE), '')
@@ -247,7 +247,7 @@ class Institution < ApplicationRecord
     clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search_flag
-      clause << 'SIMILARITY(institution, :similarity_search_term) > :name_threshold'
+      clause << 'institution % :institution_search_term'
       clause << 'UPPER(city) = :upper_search_term'
       clause << 'UPPER(ialias) LIKE :upper_contains_term'
       clause << 'zip = :search_term'
@@ -267,9 +267,7 @@ class Institution < ApplicationRecord
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        lower_contains_term: "%#{search_term.downcase}%",
                                        search_term: search_term.to_s,
-                                       similarity_search_term: similarity_search_term(search_term),
-                                       name_threshold: Settings.search.institution_name_similarity_threshold,
-                                       city_threshold: Settings.search.institution_city_similarity_threshold]))
+                                       institution_search_term: "%#{institution_search_term(search_term)}%"]))
   }
 
   # All values should be between 0.0 and 1.0
