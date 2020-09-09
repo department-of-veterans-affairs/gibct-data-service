@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_14_183825) do
+ActiveRecord::Schema.define(version: 2020_08_31_132700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1224,6 +1224,19 @@ ActiveRecord::Schema.define(version: 2020_08_14_183825) do
     t.string "phone_extension"
     t.string "email"
     t.index ["facility_code"], name: "index_school_certifying_officials_on_facility_code"
+  end
+
+  create_table "school_ratings", force: :cascade do |t|
+    t.string "rater_id", null: false
+    t.string "facility_code", null: false
+    t.integer "overall_experience"
+    t.integer "quality_of_classes"
+    t.integer "online_instruction"
+    t.integer "job_preparation"
+    t.integer "gi_bill_support"
+    t.integer "veteran_community"
+    t.integer "marketing_practices"
+    t.datetime "rated_at", null: false
   end
 
   create_table "scorecards", id: :serial, force: :cascade do |t|
