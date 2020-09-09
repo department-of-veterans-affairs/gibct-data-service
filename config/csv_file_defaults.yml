@@ -127,3 +127,7 @@ VaCautionFlag:
 Post911Stat:
   skip_lines: 0
   col_sep: ","
+
+SchoolRating:
+  skip_lines: 0
+  col_sep: ","
