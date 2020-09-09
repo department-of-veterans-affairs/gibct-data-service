@@ -54,7 +54,7 @@ class InstitutionProgram < ApplicationRecord
 
     if fuzzy_search
       clause << 'institution % :contains_search_term'
-      clause << 'physical_city % :contains_search_term'
+      clause << 'UPPER(physical_zip) = :upper_search_term'
       clause << 'institutions.physical_zip = :search_term'
     else
       clause << 'institutions.institution LIKE (:upper_contains_term)'
