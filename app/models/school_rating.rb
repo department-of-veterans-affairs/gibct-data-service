@@ -13,7 +13,7 @@ class SchoolRating < ApplicationRecord
     'gi bill support' => { column: :gi_bill_support, converter: SchoolRatingConverter },
     'veteran community' => { column: :veteran_community, converter: SchoolRatingConverter },
     'marketing practices' => { column: :marketing_practices, converter: SchoolRatingConverter },
-    'rated date' => { column: :rated_at, converter: DateTimeConverter }
+    'rated date' => { column: :rated_at, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, :rater_id, :rated_at, presence: true
