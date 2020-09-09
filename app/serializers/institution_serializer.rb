@@ -2,7 +2,7 @@
 
 class InstitutionSerializer < ActiveModel::Serializer
   SELECT_FIELDS = %i[
-    id institution facility_code institution_type_name city state zip country
+    id institution facility_code ialias institution_type_name city state zip country
     locale gibill caution_flag caution_flag_reason created_at updated_at
     bah tuition_in_state tuition_out_of_state books insturl cross
     student_veteran yr poe eight_keys stem_offered independent_study priority_enrollment
@@ -10,6 +10,7 @@ class InstitutionSerializer < ActiveModel::Serializer
 
   attribute :institution, key: :name
   attribute :facility_code
+  attribute :ialias, key: 'alias'
   attribute :institution_type_name, key: :type
   attribute :city
   attribute :state
