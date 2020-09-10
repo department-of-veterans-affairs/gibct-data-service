@@ -90,7 +90,7 @@ group :development, :test do
 
   gem 'factory_bot_rails', '> 5'
 
-  gem 'capybara', '2.11.0'
+  gem 'capybara', '3.33.0'
   gem 'database_cleaner'
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'simplecov'
