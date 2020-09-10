@@ -231,7 +231,7 @@ class Institution < ApplicationRecord
   def self.institution_search_term(search_term)
     processed_search_term = search_term.clone
     Settings.search.common_word_list.each do |word|
-      processed_search_term = processed_search_term.gsub(Regexp.new(word, Regexp::IGNORECASE), '')
+      processed_search_term = processed_search_term.gsub(/\b#{Regexp.escape(word)}\b/i, '')
     end
 
     return search_term.clone if processed_search_term.blank?
