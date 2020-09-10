@@ -29,7 +29,7 @@ gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 gem 'sentry-raven', '~> 2.9.0'
-gem 'smarter_csv', '1.1.4'
+gem 'smarter_csv', '1.2.6'
 gem 'uglifier', '>= 1.3.0'
 gem 'virtus', '~> 1.0.5'
 gem 'wongi-engine', '~> 0.3.5'
