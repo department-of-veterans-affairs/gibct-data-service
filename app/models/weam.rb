@@ -26,7 +26,7 @@ class Weam < ApplicationRecord
     physical_address_1 physical_address_2 physical_address_3
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning approved preferred_provider stem_indicator
-    campus_type parent_facility_code_id
+    campus_type parent_facility_code_id institution_search
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -97,6 +97,7 @@ class Weam < ApplicationRecord
     self.correspondence = correspondence?
     self.approved = approved?
     self.ope6 = Ope6Converter.convert(ope)
+    self.institution_search = Institution.institution_search_term(institution)
   end
 
   # Is this instance an OJT institution?

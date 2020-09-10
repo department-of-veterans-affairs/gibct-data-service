@@ -247,7 +247,7 @@ class Institution < ApplicationRecord
     clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search_flag
-      clause << 'institution % :institution_search_term'
+      clause << 'institution_search % :institution_search_term'
       clause << 'UPPER(city) = :upper_search_term'
       clause << 'UPPER(ialias) LIKE :upper_contains_term'
       clause << 'zip = :search_term'
@@ -278,7 +278,9 @@ class Institution < ApplicationRecord
                      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
-                     '(COALESCE(SIMILARITY(institution, :search_term), 0))']
+                     'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
+                     '(COALESCE(SIMILARITY(institution, :search_term), 0))',
+                     '(COALESCE(SIMILARITY(institution_search, :institution_search_term), 0))']
 
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
@@ -289,9 +291,11 @@ class Institution < ApplicationRecord
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
+                                                                  upper_starts_with_term: `#{search_term.upcase}%`,
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
-                                                                  max_gibill: max_gibill])
+                                                                  max_gibill: max_gibill,
+                                                                  institution_search_term: "%#{institution_search_term(search_term)}%"])
 
     order(Arel.sql(sanitized_order_by))
   }

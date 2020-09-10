@@ -18,7 +18,7 @@ scorecard:
 environment: <%= ENV['DEPLOYMENT_ENV'] %>
 
 pg_trgm:
-  similarity_threshold: .25
+  similarity_threshold: .4
 
 search:
   weight_modifiers:
