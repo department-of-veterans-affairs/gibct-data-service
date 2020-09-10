@@ -276,6 +276,7 @@ class Institution < ApplicationRecord
   scope :search_order, lambda { |search_term, max_gibill = 0|
     weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0) * :alias_modifier)',
                      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL THEN 1 ELSE 0 END",
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
