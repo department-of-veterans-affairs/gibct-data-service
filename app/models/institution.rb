@@ -271,7 +271,11 @@ class Institution < ApplicationRecord
   }
 
   # All values should be between 0.0 and 1.0
-  # ialias, city, institution get additional weighting on exact matches
+  # The weight is a sum of the cases below
+  # ialias: similarity value, exact match, if contains the search term as a word
+  # city: exact match
+  # institution: exact match, if starts with search term, similarity
+  # institution_search: similarity
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
     weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0) * :alias_modifier)',
