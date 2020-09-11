@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_10_194017) do
+ActiveRecord::Schema.define(version: 2020_09_11_194017) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -574,6 +574,7 @@ ActiveRecord::Schema.define(version: 2020_09_10_194017) do
     t.float "pctfloan"
     t.integer "relaffil"
     t.integer "womenonly"
+    t.string "institution_search"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
