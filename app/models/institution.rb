@@ -234,13 +234,13 @@ class Institution < ApplicationRecord
   def self.institution_search_term(search_term)
     return if search_term.blank?
 
-    processed_search_term = search_term.clone
+    processed_search_term = search_term.dup
     Settings.search.common_word_list.each do |word|
-      processed_search_term = processed_search_term.gsub(/\b#{Regexp.escape(word)}\b/i, '') if word.match(/[a-z]/i)
-      processed_search_term = processed_search_term.gsub(/#{Regexp.escape(word)}/i, '')
+      processed_search_term.gsub!(/\b#{Regexp.escape(word)}\b/i, '') if word.match(/[a-z]/i)
+      processed_search_term.gsub!(/#{Regexp.escape(word)}/i, '')
     end
 
-    return search_term.clone if processed_search_term.blank?
+    return search_term.dup if processed_search_term.blank?
 
     processed_search_term.strip
   end
