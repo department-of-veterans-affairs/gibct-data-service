@@ -232,9 +232,12 @@ class Institution < ApplicationRecord
   # Idea is to have a processed version of the institution column available to compare with
   # the trigram % operator against the processed search term
   def self.institution_search_term(search_term)
+    return if search_term.blank?
+
     processed_search_term = search_term.clone
     Settings.search.common_word_list.each do |word|
-      processed_search_term = processed_search_term.gsub(/\b#{Regexp.escape(word)}\b/i, '')
+      processed_search_term = processed_search_term.gsub(/\b#{Regexp.escape(word)}\b/i, '') if word.match(/[a-z]/i)
+      processed_search_term = processed_search_term.gsub(/#{Regexp.escape(word)}/i, '')
     end
 
     return search_term.clone if processed_search_term.blank?

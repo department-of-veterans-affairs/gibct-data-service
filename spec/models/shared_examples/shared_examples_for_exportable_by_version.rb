@@ -23,10 +23,10 @@ RSpec.shared_examples 'an exportable model by version' do
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
 
-        csv_test_attributes = csv_record.attributes
-                                        .except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
-        test_attributes = record.attributes
-                                .except('id', 'version', 'created_at', 'updated_at', 'csv_row', 'version_id')
+        ignored_attributes = %w[id version created_at updated_at csv_row version_id institution_search]
+        csv_test_attributes = csv_record.attributes.except(*ignored_attributes)
+        test_attributes = record.attributes.except(*ignored_attributes)
+
         test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
 
         expect(csv_test_attributes).to eq(test_attributes)

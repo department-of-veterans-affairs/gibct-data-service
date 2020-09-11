@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :weam do
     institution { 'SOME SCHOOL' }
+    institution_search { 'SOME' }
     facility_code { generate :facility_code }
     ope { generate :ope }
 

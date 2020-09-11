@@ -38,6 +38,10 @@ RSpec.describe Weam, type: :model do
     it 'computes the ope6 from ope[1, 5]' do
       expect(weam.ope6).to eql(weam.ope[1, 5])
     end
+
+    it 'sets institution_search' do
+      expect(weam.institution_search).to be_present
+    end
   end
 
   describe 'ojt?' do
