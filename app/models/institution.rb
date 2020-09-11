@@ -228,6 +228,9 @@ class Institution < ApplicationRecord
       .limit(limit)
   end
 
+  # This is used both on Weams imports and in the search scope
+  # Idea is to have a processed version of the institution column available to compare with
+  # the trigram % operator against the a processed search term
   def self.institution_search_term(search_term)
     processed_search_term = search_term.clone
     Settings.search.common_word_list.each do |word|
@@ -240,7 +243,6 @@ class Institution < ApplicationRecord
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
-  #
   scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
     return if search_term.blank?
 
@@ -271,21 +273,27 @@ class Institution < ApplicationRecord
   }
 
   # All values should be between 0.0 and 1.0
+  # Exact matches should add 1.0 to weight
+  # Use or add modifiers that are set in Settings.search.weight_modifiers to tweak weights if needed
+  #
   # The weight is a sum of the cases below
-  # ialias: similarity value, exact match, if contains the search term as a word
+  # ialias^^: exact match, if contains the search term as a word
   # city: exact match
   # institution: exact match, if starts with search term, similarity
   # institution_search: similarity
+  # gibill^^: institution's value divided by provided max gibill value
+  #
+  # ^^ = Has a Settings.search.weight_modifiers setting
+  #
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
-    weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0) * :alias_modifier)',
-                     'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+    weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                      "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL THEN 1 ELSE 0 END",
-                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
+                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 * :alias_modifier ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
-                     '(COALESCE(SIMILARITY(institution, :search_term), 0))',
-                     '(COALESCE(SIMILARITY(institution_search, :institution_search_term), 0))']
+                     'COALESCE(SIMILARITY(institution, :search_term), 0)',
+                     'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)']
 
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 

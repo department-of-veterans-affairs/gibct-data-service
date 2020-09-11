@@ -22,7 +22,7 @@ pg_trgm:
 
 search:
   weight_modifiers:
-    alias: 1
+    alias: 1.4
     gibill: .33
   common_word_list: 
     - "of"
