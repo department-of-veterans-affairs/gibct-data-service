@@ -288,7 +288,8 @@ class Institution < ApplicationRecord
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
     weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL THEN 1 * :alias_modifier ELSE 0 END",
+                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL " \
+                       'THEN 1 * :alias_modifier ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
@@ -300,6 +301,7 @@ class Institution < ApplicationRecord
     order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
+    institution_search_term = "%#{institution_search_term(search_term)}%"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
@@ -308,7 +310,7 @@ class Institution < ApplicationRecord
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill,
-                                                                  institution_search_term: "%#{institution_search_term(search_term)}%"])
+                                                                  institution_search_term: institution_search_term])
 
     order(Arel.sql(sanitized_order_by))
   }
