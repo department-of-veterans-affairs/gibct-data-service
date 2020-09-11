@@ -230,7 +230,7 @@ class Institution < ApplicationRecord
 
   # This is used both on Weams imports and in the search scope
   # Idea is to have a processed version of the institution column available to compare with
-  # the trigram % operator against the a processed search term
+  # the trigram % operator against the processed search term
   def self.institution_search_term(search_term)
     processed_search_term = search_term.clone
     Settings.search.common_word_list.each do |word|
@@ -273,7 +273,7 @@ class Institution < ApplicationRecord
   }
 
   # All values should be between 0.0 and 1.0
-  # Exact matches should add 1.0 to weight
+  # Exact matches should add 1.0 to weight and not have a modifier
   # Use or add modifiers that are set in Settings.search.weight_modifiers to tweak weights if needed
   #
   # The weight is a sum of the cases below
@@ -288,8 +288,8 @@ class Institution < ApplicationRecord
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
     weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL THEN 1 ELSE 0 END",
-                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 * :alias_modifier ELSE 0 END',
+                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL THEN 1 * :alias_modifier ELSE 0 END",
+                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
                      'COALESCE(SIMILARITY(institution, :search_term), 0)',
@@ -304,7 +304,7 @@ class Institution < ApplicationRecord
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
-                                                                  upper_starts_with_term: `#{search_term.upcase}%`,
+                                                                  upper_starts_with_term: "#{search_term.upcase}%",
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill,
