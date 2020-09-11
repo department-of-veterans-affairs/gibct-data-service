@@ -228,26 +228,31 @@ class Institution < ApplicationRecord
       .limit(limit)
   end
 
+  # This is used both on Weams imports and in the search scope
+  # Idea is to have a processed version of the institution column available to compare with
+  # the trigram % operator against the processed search term
   def self.institution_search_term(search_term)
-    processed_search_term = search_term.clone
+    return if search_term.blank?
+
+    processed_search_term = search_term.dup
     Settings.search.common_word_list.each do |word|
-      processed_search_term = processed_search_term.gsub(Regexp.new(word, Regexp::IGNORECASE), '')
+      processed_search_term.gsub!(/\b#{Regexp.escape(word)}\b/i, '') if word.match(/[a-z]/i)
+      processed_search_term.gsub!(/#{Regexp.escape(word)}/i, '')
     end
 
-    return search_term.clone if processed_search_term.blank?
+    return search_term.dup if processed_search_term.blank?
 
     processed_search_term.strip
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
-  #
   scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
     if fuzzy_search_flag
-      clause << 'institution % :institution_search_term'
+      clause << 'institution_search % :institution_search_term'
       clause << 'UPPER(city) = :upper_search_term'
       clause << 'UPPER(ialias) LIKE :upper_contains_term'
       clause << 'zip = :search_term'
@@ -271,27 +276,44 @@ class Institution < ApplicationRecord
   }
 
   # All values should be between 0.0 and 1.0
-  # ialias, city, institution get additional weighting on exact matches
+  # Exact matches should add 1.0 to weight and not have a modifier
+  # Use or add modifiers that are set in Settings.search.weight_modifiers to tweak weights if needed
+  #
+  # The weight is a sum of the cases below
+  # ialias^^: exact match, if contains the search term as a word
+  # city: exact match
+  # institution: exact match, if starts with search term, similarity
+  # institution_search: similarity
+  # gibill^^: institution's value divided by provided max gibill value
+  #
+  # ^^ = Has a Settings.search.weight_modifiers setting
+  #
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |search_term, max_gibill = 0|
-    weighted_sort = ['(COALESCE(SIMILARITY(ialias, :search_term), 0) * :alias_modifier)',
-                     'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+    weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL " \
+                       'THEN 1 * :alias_modifier ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
-                     '(COALESCE(SIMILARITY(institution, :search_term), 0))']
+                     'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
+                     'COALESCE(SIMILARITY(institution, :search_term), 0)',
+                     'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)']
 
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
     order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
+    institution_search_term = "%#{institution_search_term(search_term)}%"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
+                                                                  upper_starts_with_term: "#{search_term.upcase}%",
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
-                                                                  max_gibill: max_gibill])
+                                                                  max_gibill: max_gibill,
+                                                                  institution_search_term: institution_search_term])
 
     order(Arel.sql(sanitized_order_by))
   }
