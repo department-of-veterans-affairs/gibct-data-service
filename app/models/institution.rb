@@ -236,8 +236,8 @@ class Institution < ApplicationRecord
 
     processed_search_term = search_term.dup
     Settings.search.common_word_list.each do |word|
-      #  word.match(/[a-z]/i) is for characters like "&" and "-",
-      # the word boundary regex does not work with these characters
+      # word.match(/[a-z]/i) check is because of characters like "&" and "-",
+      # the word boundary regex "\b" does not replace these characters
       if word.match(/[a-z]/i)
         processed_search_term.gsub!(/\b#{Regexp.escape(word)}\b/i, '')
       else
