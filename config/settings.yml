@@ -37,13 +37,15 @@ search:
     - "high"
     - "county"
     - "institute"
-    - "&"
-    - "-"
     - "academy"
     - "community"
     - "training"
     - "state"
     - "campus"
     - "city"
+  common_character_list:
+    - "&"
+    - "-"
+
 
 

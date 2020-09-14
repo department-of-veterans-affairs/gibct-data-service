@@ -254,20 +254,28 @@ RSpec.describe Institution, type: :model do
       expect(results.count).to eq(1)
     end
 
-    describe '#similarity_search_term' do
-      it 'removes common words' do
-        common_words = Settings.search.common_word_list.join(' ')
-        search_term = "search term #{common_words}"
+    describe '#institution_search_term' do
+      it 'removes common words and characters' do
+        common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
+        search_term = "search term #{common_words_characters}"
         processed_search_term = described_class.institution_search_term(search_term)
         expect(processed_search_term).to eq('search term')
-        expect(processed_search_term).not_to include(common_words)
+        expect(processed_search_term).not_to include(common_words_characters)
       end
 
       it 'returns string if only contains common words' do
-        search_term = Settings.search.common_word_list.join(' ')
+        search_term = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
         processed_search_term = described_class.institution_search_term(search_term)
         expect(processed_search_term).to eq(search_term)
         expect(processed_search_term).to be_present
+      end
+
+      it 'does not remove common words within words' do
+        common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
+        search_term = 'university of maryland & and land'
+        processed_search_term = described_class.institution_search_term(search_term)
+        expect(processed_search_term).not_to include(common_words_characters)
+        expect(processed_search_term).to eq('maryland   land')
       end
     end
   end

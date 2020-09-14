@@ -27,6 +27,14 @@ class Institution < ApplicationRecord
     '4-year' => 4
   }.freeze
 
+  COMMON_REMOVAL_REGEXP = Regexp.new(
+    (
+    Settings.search.common_character_list.map { |char| Regexp.escape(char) } +
+        Settings.search.common_word_list.map { |word| "\\b#{Regexp.escape(word)}\\b" }
+  ).join('|'),
+    'i'
+  )
+
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -234,11 +242,7 @@ class Institution < ApplicationRecord
   def self.institution_search_term(search_term)
     return if search_term.blank?
 
-    processed_search_term = search_term.dup
-    Settings.search.common_word_list.each do |word|
-      processed_search_term.gsub!(/\b#{Regexp.escape(word)}\b/i, '') if word.match(/[a-z]/i)
-      processed_search_term.gsub!(/#{Regexp.escape(word)}/i, '')
-    end
+    processed_search_term = search_term.gsub(COMMON_REMOVAL_REGEXP, '')
 
     return search_term.dup if processed_search_term.blank?
 
