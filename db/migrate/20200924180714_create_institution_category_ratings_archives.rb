@@ -9,7 +9,8 @@ class CreateInstitutionCategoryRatingsArchives < ActiveRecord::Migration[5.2]
       t.integer :rated2_count
       t.integer :rated1_count
       t.integer :na_count
-      t.integer :institution_id, null: false
+      t.bigint :institution_id, null: false
+      t.bigint :version_id, null: false
     end
   end
 end

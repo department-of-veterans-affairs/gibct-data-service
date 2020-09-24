@@ -241,7 +241,8 @@ ActiveRecord::Schema.define(version: 2020_09_24_180839) do
     t.integer "rated2_count"
     t.integer "rated1_count"
     t.integer "na_count"
-    t.integer "institution_id", null: false
+    t.bigint "institution_id", null: false
+    t.bigint "version_id", null: false
     t.index ["institution_id"], name: "index_institution_category_ratings_on_institution_id"
   end
 
@@ -254,7 +255,8 @@ ActiveRecord::Schema.define(version: 2020_09_24_180839) do
     t.integer "rated2_count"
     t.integer "rated1_count"
     t.integer "na_count"
-    t.integer "institution_id", null: false
+    t.bigint "institution_id", null: false
+    t.bigint "version_id", null: false
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
