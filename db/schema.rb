@@ -235,6 +235,7 @@ ActiveRecord::Schema.define(version: 2020_09_24_180839) do
   create_table "institution_category_ratings", force: :cascade do |t|
     t.string "category_name", null: false
     t.float "average_rating"
+    t.integer "total_count"
     t.integer "rated5_count"
     t.integer "rated4_count"
     t.integer "rated3_count"
@@ -249,6 +250,7 @@ ActiveRecord::Schema.define(version: 2020_09_24_180839) do
   create_table "institution_category_ratings_archives", force: :cascade do |t|
     t.string "category_name", null: false
     t.float "average_rating"
+    t.integer "total_count"
     t.integer "rated5_count"
     t.integer "rated4_count"
     t.integer "rated3_count"
