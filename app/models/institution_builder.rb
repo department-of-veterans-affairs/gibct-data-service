@@ -778,13 +778,13 @@ module InstitutionBuilder
   end
 
   def self.build_ratings(version_id)
-    InstitutionCategoryRating::build_for_category(version_id, 'overall_experience')
-    InstitutionCategoryRating::build_for_category(version_id, 'quality_of_classes')
-    InstitutionCategoryRating::build_for_category(version_id, 'online_instruction')
-    InstitutionCategoryRating::build_for_category(version_id, 'job_preparation')
-    InstitutionCategoryRating::build_for_category(version_id, 'gi_bill_support')
-    InstitutionCategoryRating::build_for_category(version_id, 'veteran_community')
-    InstitutionCategoryRating::build_for_category(version_id, 'marketing_practices')
+    InstitutionCategoryRating.build_for_category(version_id, 'overall_experience')
+    InstitutionCategoryRating.build_for_category(version_id, 'quality_of_classes')
+    InstitutionCategoryRating.build_for_category(version_id, 'online_instruction')
+    InstitutionCategoryRating.build_for_category(version_id, 'job_preparation')
+    InstitutionCategoryRating.build_for_category(version_id, 'gi_bill_support')
+    InstitutionCategoryRating.build_for_category(version_id, 'veteran_community')
+    InstitutionCategoryRating.build_for_category(version_id, 'marketing_practices')
 
     sql = <<-SQL
       UPDATE institutions
@@ -792,22 +792,12 @@ module InstitutionBuilder
       FROM(
         SELECT
           institution_id,
-          (SUM(rated5_count) * 5
-            + SUM(rated4_count) * 4
-            + SUM(rated3_count) * 3
-            + SUM(rated2_count) * 2
-            + SUM(rated1_count))
-          /
-            (SUM(rated5_count)
-            + SUM(rated4_count)
-            + SUM(rated3_count)
-            + SUM(rated2_count)
-            + SUM(rated1_count))::float average,
-          SUM(rated5_count)
-            + SUM(rated4_count)
-            + SUM(rated3_count)
-            + SUM(rated2_count)
-            + SUM(rated1_count) count
+          (SUM(rated5_count) * 5 + SUM(rated4_count) * 4 + SUM(rated3_count) * 3
+            + SUM(rated2_count) * 2 + SUM(rated1_count))
+            / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
+            + SUM(rated2_count) + SUM(rated1_count))::float average,
+          SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
+            + SUM(rated2_count) + SUM(rated1_count) count
         FROM institution_category_ratings
         WHERE version_id = #{version_id}
         group by institution_id
@@ -817,7 +807,6 @@ module InstitutionBuilder
     SQL
 
     Institution.connection.update(sql)
-
   end
 
   def self.set_count_of_caution_flags(version_id)

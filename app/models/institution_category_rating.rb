@@ -3,6 +3,7 @@
 class InstitutionCategoryRating < ApplicationRecord
   belongs_to :version
 
+  # rubocop:disable Metrics/MethodLength
   def self.build_for_category(version_id, category)
     sql = <<-SQL
       INSERT INTO institution_category_ratings (
@@ -35,9 +36,9 @@ class InstitutionCategoryRating < ApplicationRecord
          + SUM(CASE #{category} WHEN 5 THEN 5 ELSE 0 END)) / COUNT(institutions.id)::float,
         COUNT(#{category})
       FROM institutions
-        INNER JOIN 
+        INNER JOIN
         (
-          SELECT 
+          SELECT
             facility_code vote_facility_code,
             #{category},
             row_num
@@ -57,4 +58,5 @@ class InstitutionCategoryRating < ApplicationRecord
 
     connection.execute(send(:sanitize_sql_for_conditions, [sql]))
   end
+  # rubocop:enable Metrics/MethodLength
 end
