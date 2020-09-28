@@ -36,6 +36,7 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
+    build_ratings(version.id)
     set_count_of_caution_flags(version.id)
   end
 
@@ -774,6 +775,48 @@ module InstitutionBuilder
 
     sql = SchoolCertifyingOfficial.send(:sanitize_sql, [str])
     SchoolCertifyingOfficial.connection.execute(sql)
+  end
+
+  def self.build_ratings(version_id)
+    InstitutionCategoryRating::build_for_category(version_id, 'overall_experience')
+    InstitutionCategoryRating::build_for_category(version_id, 'quality_of_classes')
+    InstitutionCategoryRating::build_for_category(version_id, 'online_instruction')
+    InstitutionCategoryRating::build_for_category(version_id, 'job_preparation')
+    InstitutionCategoryRating::build_for_category(version_id, 'gi_bill_support')
+    InstitutionCategoryRating::build_for_category(version_id, 'veteran_community')
+    InstitutionCategoryRating::build_for_category(version_id, 'marketing_practices')
+
+    sql = <<-SQL
+      UPDATE institutions
+      SET rating_average = ratings.average, rating_count = ratings.count
+      FROM(
+        SELECT
+          institution_id,
+          (sum(rated5_count) * 5
+            + sum(rated4_count) * 4
+            + sum(rated3_count) * 3
+            + sum(rated2_count) * 2
+            + sum(rated1_count))
+          /
+            (sum(rated5_count)
+            + sum(rated4_count)
+            + sum(rated3_count)
+            + sum(rated2_count)
+            + sum(rated1_count))::float average,
+          sum(rated5_count)
+            + sum(rated4_count)
+            + sum(rated3_count)
+            + sum(rated2_count)
+            + sum(rated1_count) count
+        from institution_category_ratings
+        group by institution_id
+      ) ratings
+      WHERE id = ratings.institution_id
+      AND version_id = #{version_id}
+    SQL
+
+    Institution.connection.update(sql)
+
   end
 
   def self.set_count_of_caution_flags(version_id)

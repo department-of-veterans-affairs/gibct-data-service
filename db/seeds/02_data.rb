@@ -19,6 +19,9 @@ if ENV['CI'].blank?
   puts 'Deleting old institution programs'
   InstitutionProgram.delete_all
 
+  puts 'Deleting old institution category ratings'
+  InstitutionCategoryRating.delete_all
+
   puts 'Deleting old zipcode rates'
   ZipcodeRate.delete_all
 
