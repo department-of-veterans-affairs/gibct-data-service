@@ -15,7 +15,8 @@ class InstitutionCategoryRating < ApplicationRecord
         rated4_count,
         rated5_count,
         na_count,
-        average_rating
+        average_rating,
+        total_count
       )
       SELECT
         institutions.id,
@@ -31,7 +32,8 @@ class InstitutionCategoryRating < ApplicationRecord
          + SUM(CASE #{category} WHEN 2 THEN 2 ELSE 0 END)
          + SUM(CASE #{category} WHEN 3 THEN 3 ELSE 0 END)
          + SUM(CASE #{category} WHEN 4 THEN 4 ELSE 0 END)
-         + SUM(CASE #{category} WHEN 5 THEN 5 ELSE 0 END)) / count(institutions.id)::float
+         + SUM(CASE #{category} WHEN 5 THEN 5 ELSE 0 END)) / COUNT(institutions.id)::float,
+        COUNT(#{category})
       FROM institutions
         INNER JOIN 
         (

@@ -792,23 +792,24 @@ module InstitutionBuilder
       FROM(
         SELECT
           institution_id,
-          (sum(rated5_count) * 5
-            + sum(rated4_count) * 4
-            + sum(rated3_count) * 3
-            + sum(rated2_count) * 2
-            + sum(rated1_count))
+          (SUM(rated5_count) * 5
+            + SUM(rated4_count) * 4
+            + SUM(rated3_count) * 3
+            + SUM(rated2_count) * 2
+            + SUM(rated1_count))
           /
-            (sum(rated5_count)
-            + sum(rated4_count)
-            + sum(rated3_count)
-            + sum(rated2_count)
-            + sum(rated1_count))::float average,
-          sum(rated5_count)
-            + sum(rated4_count)
-            + sum(rated3_count)
-            + sum(rated2_count)
-            + sum(rated1_count) count
-        from institution_category_ratings
+            (SUM(rated5_count)
+            + SUM(rated4_count)
+            + SUM(rated3_count)
+            + SUM(rated2_count)
+            + SUM(rated1_count))::float average,
+          SUM(rated5_count)
+            + SUM(rated4_count)
+            + SUM(rated3_count)
+            + SUM(rated2_count)
+            + SUM(rated1_count) count
+        FROM institution_category_ratings
+        WHERE version_id = #{version_id}
         group by institution_id
       ) ratings
       WHERE id = ratings.institution_id
