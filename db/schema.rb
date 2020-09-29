@@ -448,7 +448,7 @@ ActiveRecord::Schema.define(version: 2020_09_24_180839) do
     t.integer "relaffil"
     t.integer "womenonly"
     t.string "institution_search"
-    t.integer "rating_count"
+    t.integer "rating_count", default: 0
     t.float "rating_average"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
