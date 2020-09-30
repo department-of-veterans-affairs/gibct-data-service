@@ -829,7 +829,7 @@ module InstitutionBuilder
       GROUP BY institutions.id
     SQL
 
-    connection.execute(send(:sanitize_sql_for_conditions, [sql]))
+    InstitutionCategoryRating.connection.execute(InstitutionCategoryRating.send(:sanitize_sql_for_conditions, [sql]))
   end
 
   def self.build_ratings(version_id)
@@ -851,10 +851,12 @@ module InstitutionBuilder
             + SUM(rated2_count) * 2 + SUM(rated1_count))
             / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
             + SUM(rated2_count) + SUM(rated1_count))::float average,
-          SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
-            + SUM(rated2_count) + SUM(rated1_count) count
+          COUNT(DISTINCT rater_id) count
         FROM institution_category_ratings
-        WHERE version_id = #{version_id}
+          INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
+            AND institutions.version_id = #{version_id}
+		      INNER JOIN school_ratings ON institutions.facility_code = school_ratings.facility_code
+        WHERE institution_category_ratings.version_id = #{version_id}
         group by institution_id
       ) ratings
       WHERE id = ratings.institution_id

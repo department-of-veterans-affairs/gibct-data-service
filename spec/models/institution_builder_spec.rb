@@ -969,5 +969,91 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['approved']).to eq(false)
       end
     end
+
+    describe 'when calculating category ratings' do
+      let(:institution) { institutions.find_by(facility_code: weam.facility_code) }
+      let(:weam) { Weam.find_by(facility_code: '11000000') }
+
+      before do
+        create :weam, :ihl_facility_code
+      end
+
+      it 'counts number of total institution ratings' do
+        create_list(:school_rating, 7, :ihl_facility_code, :all_threes)
+        create(:school_rating)
+
+        described_class.run(user)
+
+        expect(institution.rating_count).to eq(7)
+      end
+
+      it 'averages overall institution rating' do
+        create_list(:school_rating, 3, :ihl_facility_code, :all_threes)
+
+        described_class.run(user)
+
+        expect(institution.rating_average).to eq(3)
+      end
+
+      it 'creates a InstitutionCategoryRating for every category' do
+        create_list(:school_rating, 3, :ihl_facility_code, :online_instruction_only)
+
+        described_class.run(user)
+        expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(7)
+      end
+
+      it 'counts ratings correctly' do
+        create(:school_rating, :ihl_facility_code, online_instruction: 5)
+        create(:school_rating, :ihl_facility_code, online_instruction: 4)
+        create(:school_rating, :ihl_facility_code, online_instruction: 3)
+        create(:school_rating, :ihl_facility_code, online_instruction: 3, rater_id: 'test')
+        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 1, rater_id: 'test')
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(0)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(4)
+        expect(overall_experience.total_count).to eq(0)
+        expect(overall_experience.average_rating).to eq(0)
+
+        online_instruction = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'online_instruction')
+
+        expect(online_instruction.rated1_count).to eq(1)
+        expect(online_instruction.rated2_count).to eq(0)
+        expect(online_instruction.rated3_count).to eq(1)
+        expect(online_instruction.rated4_count).to eq(1)
+        expect(online_instruction.rated5_count).to eq(1)
+        expect(online_instruction.na_count).to eq(0)
+        expect(online_instruction.total_count).to eq(4)
+        expect(online_instruction.average_rating).to eq(3.25)
+      end
+
+      it 'only counts most recent rating by rater' do
+        create_list(:school_rating, 4, :ihl_facility_code, online_instruction: 2)
+        create(:school_rating, :ihl_facility_code, online_instruction: 2, rater_id: 'test')
+        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 5, rater_id: 'test')
+
+        described_class.run(user)
+
+        online_instruction = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'online_instruction')
+
+        expect(online_instruction.rated1_count).to eq(0)
+        expect(online_instruction.rated2_count).to eq(4)
+        expect(online_instruction.rated3_count).to eq(0)
+        expect(online_instruction.rated4_count).to eq(0)
+        expect(online_instruction.rated5_count).to eq(1)
+        expect(online_instruction.na_count).to eq(0)
+        expect(online_instruction.total_count).to eq(5)
+        expect(online_instruction.average_rating).to eq(2.6)
+      end
+    end
   end
 end
