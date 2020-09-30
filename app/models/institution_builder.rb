@@ -36,7 +36,7 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
-    build_ratings(version.id)
+    build_institution_category_ratings(version.id)
     set_count_of_caution_flags(version.id)
   end
 
@@ -832,7 +832,7 @@ module InstitutionBuilder
     InstitutionCategoryRating.connection.execute(InstitutionCategoryRating.send(:sanitize_sql_for_conditions, [sql]))
   end
 
-  def self.build_ratings(version_id)
+  def self.build_institution_category_ratings(version_id)
     build_institution_category_ratings_for_category(version_id, 'overall_experience')
     build_institution_category_ratings_for_category(version_id, 'quality_of_classes')
     build_institution_category_ratings_for_category(version_id, 'online_instruction')
