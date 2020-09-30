@@ -1006,8 +1006,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         create(:school_rating, :ihl_facility_code, online_instruction: 5)
         create(:school_rating, :ihl_facility_code, online_instruction: 4)
         create(:school_rating, :ihl_facility_code, online_instruction: 3)
-        create(:school_rating, :ihl_facility_code, online_instruction: 3, rater_id: 'test')
-        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 1, rater_id: 'test')
+        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 1)
 
         described_class.run(user)
 
