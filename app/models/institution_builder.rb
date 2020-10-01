@@ -831,13 +831,9 @@ module InstitutionBuilder
   end
 
   def self.build_institution_category_ratings(version_id)
-    build_institution_category_ratings_for_category(version_id, 'overall_experience')
-    build_institution_category_ratings_for_category(version_id, 'quality_of_classes')
-    build_institution_category_ratings_for_category(version_id, 'online_instruction')
-    build_institution_category_ratings_for_category(version_id, 'job_preparation')
-    build_institution_category_ratings_for_category(version_id, 'gi_bill_support')
-    build_institution_category_ratings_for_category(version_id, 'veteran_community')
-    build_institution_category_ratings_for_category(version_id, 'marketing_practices')
+    InstitutionCategoryRating::RATING_CATEGORY_COLUMNS.each do |category_column|
+      build_institution_category_ratings_for_category(version_id, category_column)
+    end
 
     sql = <<-SQL
       UPDATE institutions
