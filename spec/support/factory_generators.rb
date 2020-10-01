@@ -38,8 +38,4 @@ FactoryBot.define do
   end
 
   sequence(:csv_row)
-
-  sequence(:rater_id) do |n|
-    "rater_#{n}"
-  end
 end

@@ -2,8 +2,10 @@
 
 FactoryBot.define do
   factory :school_rating do
+    sequence(:rater_id) do |n|
+      "rater_#{n}"
+    end
     facility_code { generate :facility_code }
-    rater_id { generate :rater_id }
     rated_at { DateTime.parse('2020-01-01T12:05:02+08:00') }
 
     trait :ihl_facility_code do
