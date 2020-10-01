@@ -1045,6 +1045,7 @@ RSpec.describe InstitutionBuilder, type: :model do
                              .find_by(institution_id: institution.id, category_name: 'online_instruction')
 
         expect(online_instruction.rated1_count).to eq(0)
+        
         expect(online_instruction.rated2_count).to eq(4)
         expect(online_instruction.rated3_count).to eq(0)
         expect(online_instruction.rated4_count).to eq(0)
