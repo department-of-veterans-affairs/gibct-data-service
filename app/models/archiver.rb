@@ -2,12 +2,12 @@
 
 module Archiver
   ARCHIVE_TYPES = [
+    { source: InstitutionCategoryRating, archive: InstitutionCategoryRatingsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
     { source: CautionFlag, archive: nil },
-    { source: Institution, archive: InstitutionsArchive },
-    { source: InstitutionCategoryRating, archive: InstitutionCategoryRatingsArchive }
+    { source: Institution, archive: InstitutionsArchive }
   ].freeze
 
   def self.archive_previous_versions

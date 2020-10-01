@@ -781,7 +781,6 @@ module InstitutionBuilder
     sql = <<-SQL
       INSERT INTO institution_category_ratings (
         institution_id,
-        version_id,
         category_name,
         rated1_count,
         rated2_count,
@@ -794,7 +793,6 @@ module InstitutionBuilder
       )
       SELECT
         institutions.id,
-        #{version_id},
         '#{category}',
         SUM(CASE #{category} WHEN 1 THEN 1 ELSE 0 END),
         SUM(CASE #{category} WHEN 2 THEN 1 ELSE 0 END),
@@ -856,7 +854,6 @@ module InstitutionBuilder
           INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
             AND institutions.version_id = #{version_id}
 		      INNER JOIN school_ratings ON institutions.facility_code = school_ratings.facility_code
-        WHERE institution_category_ratings.version_id = #{version_id}
         group by institution_id
       ) ratings
       WHERE id = ratings.institution_id
