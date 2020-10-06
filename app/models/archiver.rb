@@ -2,6 +2,7 @@
 
 module Archiver
   ARCHIVE_TYPES = [
+    { source: InstitutionCategoryRating, archive: InstitutionCategoryRatingsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },

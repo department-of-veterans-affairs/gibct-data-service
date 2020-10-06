@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_11_194017) do
+ActiveRecord::Schema.define(version: 2020_09_30_081100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -232,6 +232,33 @@ ActiveRecord::Schema.define(version: 2020_09_11_194017) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "institution_category_ratings", force: :cascade do |t|
+    t.string "category_name", null: false
+    t.float "average_rating"
+    t.integer "total_count"
+    t.integer "rated5_count"
+    t.integer "rated4_count"
+    t.integer "rated3_count"
+    t.integer "rated2_count"
+    t.integer "rated1_count"
+    t.integer "na_count"
+    t.bigint "institution_id", null: false
+    t.index ["institution_id"], name: "index_institution_category_ratings_on_institution_id"
+  end
+
+  create_table "institution_category_ratings_archives", force: :cascade do |t|
+    t.string "category_name", null: false
+    t.float "average_rating"
+    t.integer "total_count"
+    t.integer "rated5_count"
+    t.integer "rated4_count"
+    t.integer "rated3_count"
+    t.integer "rated2_count"
+    t.integer "rated1_count"
+    t.integer "na_count"
+    t.bigint "institution_id", null: false
+  end
+
   create_table "institution_programs", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "program_type"
@@ -419,6 +446,8 @@ ActiveRecord::Schema.define(version: 2020_09_11_194017) do
     t.integer "relaffil"
     t.integer "womenonly"
     t.string "institution_search"
+    t.integer "rating_count", default: 0
+    t.float "rating_average"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -575,6 +604,8 @@ ActiveRecord::Schema.define(version: 2020_09_11_194017) do
     t.integer "relaffil"
     t.integer "womenonly"
     t.string "institution_search"
+    t.integer "rating_count"
+    t.float "rating_average"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|

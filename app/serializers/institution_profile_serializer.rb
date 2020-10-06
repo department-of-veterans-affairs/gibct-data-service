@@ -102,6 +102,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :pctfloan
   attribute :relaffil
   attribute :womenonly
+  attribute :institution_category_ratings
+  attribute :rating_average
+  attribute :rating_count
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
