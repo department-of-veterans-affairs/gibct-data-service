@@ -800,11 +800,15 @@ module InstitutionBuilder
         SUM(CASE #{category} WHEN 4 THEN 1 ELSE 0 END),
         SUM(CASE #{category} WHEN 5 THEN 1 ELSE 0 END),
         SUM(CASE WHEN #{category} IS NULL THEN 1 ELSE 0 END),
+        CASE
+          WHEN COUNT(#{category}) = 0 THEN NULL
+        ELSE
         (SUM(CASE #{category} WHEN 1 THEN 1 ELSE 0 END)
          + SUM(CASE #{category} WHEN 2 THEN 2 ELSE 0 END)
          + SUM(CASE #{category} WHEN 3 THEN 3 ELSE 0 END)
          + SUM(CASE #{category} WHEN 4 THEN 4 ELSE 0 END)
-         + SUM(CASE #{category} WHEN 5 THEN 5 ELSE 0 END)) / COUNT(institutions.id)::float,
+         + SUM(CASE #{category} WHEN 5 THEN 5 ELSE 0 END)) / COUNT(#{category})::float
+        END,
         COUNT(#{category})
       FROM institutions
         INNER JOIN
@@ -817,7 +821,11 @@ module InstitutionBuilder
             (
               SELECT
                 facility_code,
-                #{category},
+                CASE
+                  WHEN #{category} <= 0 THEN null
+                  WHEN #{category} > 5 THEN 5
+                  ELSE #{category}
+                END,
                 ROW_NUMBER() OVER (PARTITION BY rater_id ORDER BY rated_at DESC ) AS row_num
               FROM school_ratings
             ) top_votes
@@ -841,10 +849,15 @@ module InstitutionBuilder
       FROM(
         SELECT
           institution_id,
+          CASE
+            WHEN SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
+              + SUM(rated2_count) + SUM(rated1_count) = 0 THEN NULL::float
+          ELSE
           (SUM(rated5_count) * 5 + SUM(rated4_count) * 4 + SUM(rated3_count) * 3
             + SUM(rated2_count) * 2 + SUM(rated1_count))
             / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
-            + SUM(rated2_count) + SUM(rated1_count))::float average,
+            + SUM(rated2_count) + SUM(rated1_count))::float
+          END average,
           COUNT(DISTINCT rater_id) count
         FROM institution_category_ratings
           INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
