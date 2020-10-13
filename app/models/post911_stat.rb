@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Post911Stat < ApplicationRecord
-  include CsvHelper
-
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'distinct count of tuition and fee' => { column: :tuition_and_fee_count, converter: NumberConverter },

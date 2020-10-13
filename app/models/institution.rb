@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Institution < ApplicationRecord
-  include CsvHelper
-
   EMPLOYER = 'OJT'
 
   DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'

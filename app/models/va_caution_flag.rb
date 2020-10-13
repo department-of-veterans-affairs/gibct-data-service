@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class VaCautionFlag < ApplicationRecord
-  include CsvHelper
   CSV_CONVERTER_INFO = {
     'id' => { column: :facility_code, converter: FacilityCodeConverter },
     'instnm' => { column: :institution_name, converter: InstitutionConverter },

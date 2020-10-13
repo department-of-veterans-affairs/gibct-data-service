@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SchoolRating < ApplicationRecord
-  include CsvHelper
-
   CSV_CONVERTER_INFO = {
     'rater id' => { column: :rater_id, converter: BaseConverter },
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },

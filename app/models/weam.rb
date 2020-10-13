@@ -8,8 +8,6 @@
 # Quirks: protectorates are listed as states
 # rubocop:disable Metrics/ClassLength
 class Weam < ApplicationRecord
-  include CsvHelper
-
   REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'
 
   LAW_CODES_BLOCKING_APPROVED_STATUS = [
