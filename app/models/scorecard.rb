@@ -157,7 +157,7 @@ class Scorecard < ApplicationRecord
 
   def self.populate
     results = ScorecardApi::Service.populate
-    load_from_api(results) if results.any?
+    load(results) if results.any?
     results.any?
   end
 
