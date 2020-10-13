@@ -2,6 +2,7 @@
 
 class ImportableRecord < ApplicationRecord
   include CsvHelper
+  include ExcelHelper
 
   self.abstract_class = true
 
