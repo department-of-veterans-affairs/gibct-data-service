@@ -9,7 +9,7 @@ module ExcelHelper
   end
 
   EXTENSIONS = ['.xls, .xls'].freeze
-  MIME_TYPES= %w[
+  MIME_TYPES = %w[
     application/vnd.ms-excel
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   ].freeze

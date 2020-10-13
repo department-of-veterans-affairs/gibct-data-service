@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Common
   module Loader
-
     def load(results, options = {})
       klass.transaction do
         delete_all
@@ -53,7 +54,7 @@ module Common
     end
 
     def row_offset(options)
-      (options[:first_line] || 0)  + (options[:skip_lines] || 0)
+      (options[:first_line] || 0) + (options[:skip_lines] || 0)
     end
 
     # actual row in document for use by user

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SchoolCertifyingOfficial < ApplicationRecord
-
-
   VALID_PRIORITY_VALUES = %w[
     PRIMARY
     SECONDARY

@@ -23,7 +23,8 @@ RSpec.shared_examples 'a loadable model' do |options|
 
     context 'with an error-free csv file' do
       it 'deletes the old table content' do
-        expect { described_class.load_from_csv(csv_file, load_options) }.to change(described_class, :count).from(5).to(2)
+        expect { described_class.load_from_csv(csv_file, load_options) }
+          .to change(described_class, :count).from(5).to(2)
       end
 
       it 'loads the table' do

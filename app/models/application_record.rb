@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
-  include CsvHelper , ExcelHelper
+  include ExcelHelper
+  include CsvHelper
 
   self.abstract_class = true
 

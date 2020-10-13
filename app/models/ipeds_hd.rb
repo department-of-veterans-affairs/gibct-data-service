@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class IpedsHd < ApplicationRecord
-
-
   COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod].freeze
 
   CSV_CONVERTER_INFO = {

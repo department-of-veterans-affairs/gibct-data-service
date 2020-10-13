@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class YellowRibbonProgramSource < ApplicationRecord
-
-
   CSV_CONVERTER_INFO = {
     'city' => { column: :city },
     'contribution amount' => { column: :contribution_amount, converter: NumberConverter },

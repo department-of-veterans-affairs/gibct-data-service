@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class AccreditationRecord < ApplicationRecord
-
   belongs_to(:accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id,
                                               inverse_of: :accreditation_records)
 
