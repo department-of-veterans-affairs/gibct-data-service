@@ -8,10 +8,14 @@ archiver:
 
 upload:
   mime_types:
-    - "text/csv"
-    - "text/plain"
-    - "application/vnd.ms-excel"
-    - "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    - mime_type: "text/csv"
+      extension: '.txt'
+    - mime_type: "text/plain"
+      extension: '.txt'
+    - mime_type: "application/vnd.ms-excel"
+      extension: '.xls'
+    - mime_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      extension: '.xlsx'
 
 csv_upload:
   column_separators:

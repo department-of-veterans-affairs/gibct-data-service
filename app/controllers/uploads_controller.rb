@@ -7,6 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
+    @extensions = Settings.upload.mime_types.map(&:extension).uniq.join(', ')
+    @mime_types = Settings.upload.mime_types.map(&:mime_type).join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 

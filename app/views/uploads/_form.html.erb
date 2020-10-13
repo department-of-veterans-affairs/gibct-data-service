@@ -12,8 +12,8 @@
 
       <div class="form-group">
         <%= f.label(:upload_file) %>
-        <p class="help-block">Valid file formats include: .txt, .csv</p>
-        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: "text/csv, text/plain") %>
+        <p class="help-block">Valid file formats include: <%= @extensions %></p>
+        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @mime_types) %>
       </div>
 
       <div class="form-group">
