@@ -90,12 +90,12 @@ RSpec.describe Scorecard, type: :model do
 
     it 'causes populate to be called for a CSV' do
       allow(ScorecardApi::Service).to receive(:populate).and_return([scorecard])
-      allow(described_class).to receive(:load_from_api)
+      allow(described_class).to receive(:load)
       message = described_class.populate
 
       expect(message).to be_truthy
       expect(ScorecardApi::Service).to have_received(:populate)
-      expect(described_class).to have_received(:load_from_api)
+      expect(described_class).to have_received(:load)
     end
   end
 end

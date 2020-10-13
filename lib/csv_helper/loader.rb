@@ -20,6 +20,13 @@ module CsvHelper
       end
     end
 
+    def load(results, options = {})
+      klass.transaction do
+        delete_all
+        load_records(results, options)
+      end
+    end
+
     private
 
     def load_csv_file(file, options)

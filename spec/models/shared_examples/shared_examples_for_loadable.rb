@@ -55,7 +55,7 @@ RSpec.shared_examples 'a loadable model' do |options|
       it 'does roll back to the old table content if the upload loaded records are invalid' do
         allow(described_class).to receive(:load_records).and_raise(StandardError)
         before_count = described_class.count
-        expect { described_class.load_from_api([], load_options) }.to raise_error(StandardError)
+        expect { described_class.load([], load_options) }.to raise_error(StandardError)
         expect(before_count).to eq(described_class.count)
       end
     end
