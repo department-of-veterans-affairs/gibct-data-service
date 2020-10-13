@@ -99,7 +99,20 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    data = klass.load_from_csv(file, @upload.options)
+    ext = File.extname(file)
+
+    case ext
+    when CsvHelper::EXTENSIONS.includes(ext)
+      data = klass.load_from_csv(file, @upload.options)
+    when ExcelHelper::XLS_EXTENSION
+      data = klass.load_from_xls(file, @upload.options)
+    when ExcelHelper::XLSX_EXTENSION
+      data = klass.load_from_xlsx(file, @upload.options)
+    else
+      error_msg = "#{ext} is not a valid file type."
+      raise(StandardError, error_msg)
+    end
+
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
