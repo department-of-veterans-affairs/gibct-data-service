@@ -6,7 +6,7 @@ module CsvHelper
     base.extend Loader
     base.extend Exporter
   end
-  
+
   module Shared
     def klass
       name.constantize

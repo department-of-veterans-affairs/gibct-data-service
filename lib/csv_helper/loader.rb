@@ -9,14 +9,14 @@ module CsvHelper
       remove_empty_values: true, convert_values_to_numeric: false, remove_unmapped_keys: true
     }.freeze
 
-    def load(file, options = {})
+    def load_from_csv(file, options = {})
       klass.transaction do
         delete_all
         load_csv_file(file, options)
       end
     end
 
-    def load_from_api(results, options = {})
+    def load(results, options = {})
       klass.transaction do
         delete_all
         load_records(results, options)
