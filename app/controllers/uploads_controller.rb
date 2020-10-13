@@ -7,8 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = Settings.upload.mime_types.map(&:extension).uniq.join(', ')
-    @mime_types = Settings.upload.mime_types.map(&:mime_type).join(', ')
+    @extensions = extensions
+    @mime_types = mime_types
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -99,7 +99,7 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    data = klass.load(file, @upload.options)
+    data = klass.load_from_csv(file, @upload.options)
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
@@ -174,5 +174,20 @@ class UploadsController < ApplicationController
 
   def inclusion_requirement_message(validations)
     validations.options[:in].map(&:to_s)
+  end
+
+  def extensions
+    exts = []
+    binding.pry
+    exts << CsvHelper::EXTENSIONS if klass.is_a? CsvHelper::Loader
+    exts << ExcelHelper::EXTENSIONS if klass.is_a? ExcelHelper::Loader
+    exts.uniq.join(', ')
+  end
+
+  def mime_types
+    mts = []
+    mts << CsvHelper::MIME_TYPES if klass.is_a? CsvHelper::Loader
+    mts << ExcelHelper::MIME_TYPES if klass.is_a? ExcelHelper::Loader
+    mts.uniq.join(', ')
   end
 end
