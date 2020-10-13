@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Sva < ApplicationRecord
+class Sva < ImportableRecord
   CSV_CONVERTER_INFO = {
     'id' => { column: :csv_id, converter: NumberConverter },
     'school' => { column: :institution, converter: InstitutionConverter },

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Sec702 < ApplicationRecord
+class Sec702 < ImportableRecord
   CSV_CONVERTER_INFO = {
     'state' => { column: :state, converter: StateConverter },
     'state full name' => { column: :state_full_name, converter: BaseConverter },
