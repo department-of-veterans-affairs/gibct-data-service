@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IpedsCipCode < ApplicationRecord
+class IpedsCipCode < ImportableRecord
   CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
     'cipcode' => { column: :cipcode, converter: BaseConverter },

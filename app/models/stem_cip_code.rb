@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StemCipCode < ApplicationRecord
+class StemCipCode < ImportableRecord
   CSV_CONVERTER_INFO = {
     'two-digit series' => { column: :two_digit_series, converter: NumberConverter },
     '2010 cip code' => { column: :twentyten_cip_code, converter: BaseConverter },

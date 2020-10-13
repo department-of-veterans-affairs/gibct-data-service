@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Hcm < ApplicationRecord
+class Hcm < ImportableRecord
   CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },
     'institution name' => { column: :institution, converter: InstitutionConverter },

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EightKey < ApplicationRecord
+class EightKey < ImportableRecord
   CSV_CONVERTER_INFO = {
     'institution of higher education' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },

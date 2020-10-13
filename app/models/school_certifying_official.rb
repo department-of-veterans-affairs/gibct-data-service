@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolCertifyingOfficial < ApplicationRecord
+class SchoolCertifyingOfficial < ImportableRecord
   VALID_PRIORITY_VALUES = %w[
     PRIMARY
     SECONDARY
