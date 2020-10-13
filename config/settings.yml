@@ -15,7 +15,7 @@ upload:
     - mime_type: "application/vnd.ms-excel"
       extension: '.xls'
     - mime_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      extension: '.xls'
+      extension: '.xlsx'
 
 csv_upload:
   column_separators:
