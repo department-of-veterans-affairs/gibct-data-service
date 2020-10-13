@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IpedsIc < ApplicationRecord
-  include CsvHelper
+
 
   COLS_USED_IN_INSTITUTION = %i[
     credit_for_mil_training vet_poc student_vet_grp_ipeds

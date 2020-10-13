@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Sec103 < ApplicationRecord
-  include CsvHelper
+
   COLS_USED_IN_INSTITUTION = %i[complies_with_sec_103 solely_requires_coe requires_coe_and_criteria].freeze
 
   CSV_CONVERTER_INFO = {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Hcm < ApplicationRecord
-  include CsvHelper
+
 
   CSV_CONVERTER_INFO = {
     'ope id' => { column: :ope, converter: OpeConverter },

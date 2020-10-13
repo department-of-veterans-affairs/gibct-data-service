@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Sva < ApplicationRecord
-  include CsvHelper
+
 
   CSV_CONVERTER_INFO = {
     'id' => { column: :csv_id, converter: NumberConverter },

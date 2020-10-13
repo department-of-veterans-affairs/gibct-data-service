@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StemCipCode < ApplicationRecord
-  include CsvHelper
+
 
   CSV_CONVERTER_INFO = {
     'two-digit series' => { column: :two_digit_series, converter: NumberConverter },

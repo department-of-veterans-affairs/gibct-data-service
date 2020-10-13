@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class YellowRibbonProgramSource < ApplicationRecord
-  include CsvHelper
+
 
   CSV_CONVERTER_INFO = {
     'city' => { column: :city },

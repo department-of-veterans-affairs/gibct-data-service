@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IpedsCipCode < ApplicationRecord
-  include CsvHelper
+
 
   CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },

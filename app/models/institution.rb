@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Institution < ApplicationRecord
-  include CsvHelper
+
 
   EMPLOYER = 'OJT'
 

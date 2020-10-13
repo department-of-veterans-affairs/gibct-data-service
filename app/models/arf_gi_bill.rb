@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ArfGiBill < ApplicationRecord
-  include CsvHelper
 
   CSV_CONVERTER_INFO = {
     'facility no.' => { column: :facility_code, converter: FacilityCodeConverter },

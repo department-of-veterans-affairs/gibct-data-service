@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Sec702 < ApplicationRecord
-  include CsvHelper
+
 
   CSV_CONVERTER_INFO = {
     'state' => { column: :state, converter: StateConverter },

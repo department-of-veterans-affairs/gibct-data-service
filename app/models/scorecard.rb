@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Scorecard < ApplicationRecord
-  include CsvHelper
+
 
   validates :cross, presence: true
   validates :pred_degree_awarded, inclusion: { in: (0..4) }

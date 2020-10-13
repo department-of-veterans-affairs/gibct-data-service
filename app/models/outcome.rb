@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Outcome < ApplicationRecord
-  include CsvHelper
+
 
   COLS_USED_IN_INSTITUTION = %i[
     retention_rate_veteran_ba retention_rate_veteran_otb
