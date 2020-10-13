@@ -7,8 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = extensions
-    @mime_types = mime_types
+    @extensions = Settings.upload.mime_types.map(&:extension).uniq.join(', ')
+    @mime_types = Settings.upload.mime_types.map(&:mime_type).join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -174,20 +174,5 @@ class UploadsController < ApplicationController
 
   def inclusion_requirement_message(validations)
     validations.options[:in].map(&:to_s)
-  end
-
-  def extensions
-    exts = []
-    binding.pry
-    exts << CsvHelper::EXTENSIONS if klass.is_a? CsvHelper::Loader
-    exts << ExcelHelper::EXTENSIONS if klass.is_a? ExcelHelper::Loader
-    exts.uniq.join(', ')
-  end
-
-  def mime_types
-    mts = []
-    mts << CsvHelper::MIME_TYPES if klass.is_a? CsvHelper::Loader
-    mts << ExcelHelper::MIME_TYPES if klass.is_a? ExcelHelper::Loader
-    mts.uniq.join(', ')
   end
 end
