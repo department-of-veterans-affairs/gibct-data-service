@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class EduProgram < ApplicationRecord
-  include CsvHelper
-
+class EduProgram < ImportableRecord
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },

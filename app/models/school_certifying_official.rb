@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolCertifyingOfficial < ApplicationRecord
-  include CsvHelper
-
+class SchoolCertifyingOfficial < ImportableRecord
   VALID_PRIORITY_VALUES = %w[
     PRIMARY
     SECONDARY

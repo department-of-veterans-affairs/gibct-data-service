@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Scorecard < ApplicationRecord
-  include CsvHelper
-
+class Scorecard < ImportableRecord
   validates :cross, presence: true
   validates :pred_degree_awarded, inclusion: { in: (0..4) }
   validates :locale, inclusion: { in: [-3, 11, 12, 13, 21, 22, 23, 31, 32, 33, 41, 42, 43] }, allow_blank: true
@@ -157,7 +155,7 @@ class Scorecard < ApplicationRecord
 
   def self.populate
     results = ScorecardApi::Service.populate
-    load_from_api(results) if results.any?
+    load(results) if results.any?
     results.any?
   end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Vsoc < ApplicationRecord
-  include CsvHelper
-
+class Vsoc < ImportableRecord
   COLS_USED_IN_INSTITUTION = %i[vetsuccess_name vetsuccess_email].freeze
 
   CSV_CONVERTER_INFO = {
