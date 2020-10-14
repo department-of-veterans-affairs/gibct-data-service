@@ -15,9 +15,7 @@
 
 # frozen_string_literal: true
 
-class Complaint < ApplicationRecord
-  include CsvHelper
-
+class Complaint < ImportableRecord
   STATUSES = %w[active closed pending reserved].freeze
   CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
 

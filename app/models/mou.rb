@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Mou < ApplicationRecord
-  include CsvHelper
-
+class Mou < ImportableRecord
   STATUSES = /\A(probation - dod|title iv non-compliant)\z/i.freeze
 
   CSV_CONVERTER_INFO = {

@@ -97,7 +97,7 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    data = klass.load(file, @upload.options)
+    data = klass.load_from_csv(file, @upload.options)
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))

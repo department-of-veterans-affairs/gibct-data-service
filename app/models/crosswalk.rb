@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Crosswalk < ApplicationRecord
-  include CsvHelper
-
+class Crosswalk < ImportableRecord
   COLS_USED_IN_INSTITUTION = %i[ope cross ope6].freeze
 
   CSV_CONVERTER_INFO = {
