@@ -7,8 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = Settings.upload.mime_types.map(&:extension).uniq.join(', ')
-    @mime_types = Settings.upload.mime_types.map(&:mime_type).join(', ')
+    @extensions = extensions
+    @mime_types = mime_types
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -104,10 +104,8 @@ class UploadsController < ApplicationController
     case ext
     when CsvHelper::EXTENSIONS.includes(ext)
       data = klass.load_from_csv(file, @upload.options)
-    when ExcelHelper::XLS_EXTENSION
-      data = klass.load_from_xls(file, @upload.options)
-    when ExcelHelper::XLSX_EXTENSION
-      data = klass.load_from_xlsx(file, @upload.options)
+    when ExcelHelper::EXTENSIONS.includes(ext)
+      data = klass.load_from_excel(file, @upload.options)
     else
       error_msg = "#{ext} is not a valid file type."
       raise(StandardError, error_msg)
@@ -187,5 +185,13 @@ class UploadsController < ApplicationController
 
   def inclusion_requirement_message(validations)
     validations.options[:in].map(&:to_s)
+  end
+
+  def extensions
+    [*CsvHelper::EXTENSIONS, *ExcelHelper::EXTENSIONS].uniq.join(', ')
+  end
+
+  def mime_types
+    [*CsvHelper::MIME_TYPES, *ExcelHelper::MIME_TYPES].uniq.join(', ')
   end
 end

@@ -6,17 +6,6 @@ active_record:
 archiver:
   archive: true
 
-upload:
-  mime_types:
-    - mime_type: "text/csv"
-      extension: '.csv'
-    - mime_type: "text/plain"
-      extension: '.txt'
-    - mime_type: "application/vnd.ms-excel"
-      extension: '.xls'
-    - mime_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      extension: '.xlsx'
-
 csv_upload:
   column_separators:
     - "|"

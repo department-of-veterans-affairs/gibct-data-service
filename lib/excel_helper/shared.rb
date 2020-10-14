@@ -8,6 +8,9 @@ module ExcelHelper
     base.extend CsvHelper::Exporter
   end
 
-  XLS_EXTENSION = '.xls'
-  XLSX_EXTENSION = '.xlsx'
+  EXTENSIONS = ['.xls, .xlsx'].freeze
+  MIME_TYPES = %w[
+    application/vnd.ms-excel
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  ]
 end
