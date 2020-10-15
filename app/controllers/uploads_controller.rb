@@ -91,6 +91,7 @@ class UploadsController < ApplicationController
 
   def load_file
     return unless @upload.persisted?
+
     file = @upload.upload_file.tempfile
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)

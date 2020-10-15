@@ -29,8 +29,8 @@ module ExcelHelper
           end
 
           loaded_sheets << {
-              results: load_records(processed_sheet[:results], merged_options),
-              header_warnings: processed_sheet[:header_warnings],
+            results: load_records(processed_sheet[:results], merged_options),
+            header_warnings: processed_sheet[:header_warnings]
           }
         end
       end
@@ -44,14 +44,14 @@ module ExcelHelper
       results = []
       header_warnings = validate_headers(sheet_klass, sheet.row(1))
 
-      {header_warnings: header_warnings, results: results}
+      { header_warnings: header_warnings, results: results }
     end
 
     def validate_headers(sheet_klass, values)
       missing_headers = (sheet_klass::CSV_CONVERTER_INFO.keys - values)
-                            .map{|h| "#{h} is a missing header"}
+                        .map { |h| "#{h} is a missing header" }
       extra_headers = (values - sheet_klass::CSV_CONVERTER_INFO.keys)
-                          .map{|h| "#{h} is a extra header"}
+                      .map { |h| "#{h} is a extra header" }
 
       missing_headers + extra_headers
     end
@@ -68,12 +68,12 @@ module ExcelHelper
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
 
       rows = doc.xpath('/worksheet/sheetData/row').to_a
-      header_values = rows.shift.children.to_a.map{|c| c.content.downcase}
+      header_values = rows.shift.children.to_a.map { |c| c.content.downcase }
       header_warnings = validate_headers(sheet_klass, header_values)
 
       rows.each do |row|
         result = {}
-        values = row.children.to_a.map{|c| c.content}
+        values = row.children.to_a.map(&:content)
 
         header_values.each_with_index do |header, h_index|
           info = sheet_klass::CSV_CONVERTER_INFO[header]
@@ -82,12 +82,12 @@ module ExcelHelper
         results << sheet_klass.new(result)
       end
 
-      {header_warnings: header_warnings, results: results}
+      { header_warnings: header_warnings, results: results }
     end
 
     # Makes first_line value be 1 to ignore header in spreadsheet
     def merge_options(options)
-      {first_line: 1}.reverse_merge(options).reverse_merge(sheets: [name])
+      { first_line: 1 }.reverse_merge(options).reverse_merge(sheets: [name])
     end
   end
 end
