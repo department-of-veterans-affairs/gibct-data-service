@@ -24,8 +24,13 @@ module RooHelper
 
           begin
             processed_sheet = process_sheet(sheet_klass, sheet)
-          rescue NoMethodError
-            processed_sheet = custom_process(sheet_klass, sheet, index)
+          rescue NoMethodError => e
+            # yeah this is a hack to handle an issue with a file, needs to revisited
+            if %w[.xls .xlsx].include?(File.extname(file))
+              processed_sheet = excel_to_xml_process(sheet_klass, sheet, index)
+            else
+              raise e
+            end
           end
 
           loaded_sheets << {
@@ -42,7 +47,26 @@ module RooHelper
 
     def process_sheet(sheet_klass, sheet)
       results = []
-      header_warnings = validate_headers(sheet_klass, sheet.row(1))
+      headers = sheet.row(1)
+      header_warnings = validate_headers(sheet_klass, headers.map(&:downcase))
+
+      fields = {}
+
+      headers.each do |header|
+        info = sheet_klass::CSV_CONVERTER_INFO[header.downcase]
+        column = info.blank? ? header.to_sym : info[:column]
+        fields[column] = header
+      end
+
+      sheet.each(fields) do |hash|
+        result = {}
+        hash.each_pair do |key, value|
+          info = sheet_klass::CSV_CONVERTER_INFO[fields[key].downcase]
+          result[key] = info[:converter].convert(value) if info.present?
+        end
+
+        results << sheet_klass.new(result)
+      end
 
       { header_warnings: header_warnings, results: results }
     end
@@ -56,11 +80,16 @@ module RooHelper
       missing_headers + extra_headers
     end
 
+    # Makes first_line value be 1 to ignore header in spreadsheet
+    def merge_options(options)
+      { first_line: 1 }.reverse_merge(options).reverse_merge(sheets: [name])
+    end
+
     #
     # And here we enter the custom code to deal with issues that occurring from possible bad excel files
     # This uses Roo to get the sheet_file path and create a Nokogiri::XML:Document to be parsed
     #
-    def custom_process(sheet_klass, sheet, index)
+    def excel_to_xml_process(sheet_klass, sheet, index)
       results = []
       # Get Roo::*::Sheet object for us to convert to Nokogiri::XML::Document
       sheet_file = sheet.sheet_files[index]
@@ -83,11 +112,6 @@ module RooHelper
       end
 
       { header_warnings: header_warnings, results: results }
-    end
-
-    # Makes first_line value be 1 to ignore header in spreadsheet
-    def merge_options(options)
-      { first_line: 1 }.reverse_merge(options).reverse_merge(sheets: [name])
     end
   end
 end

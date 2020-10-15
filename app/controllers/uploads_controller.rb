@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+#
+# This should not have to be here but ruby is not loading this in config/initializers/roo_helper.rb
+Dir["#{Rails.application.config.root}/lib/roo_helper/**/*.rb"].each { |f| require(f) }
 
 class UploadsController < ApplicationController
   def index
@@ -104,7 +107,7 @@ class UploadsController < ApplicationController
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
+    error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
     raise(StandardError, error_msg) unless @upload.ok?
 
     data
