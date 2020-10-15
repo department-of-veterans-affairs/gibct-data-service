@@ -23,15 +23,10 @@ module RooHelper
         sheet_klass.transaction do
           delete_all
 
-          begin
+          if options[:parse_as_xml]
+            processed_sheet = process_as_xml(sheet_klass, sheet, index)
+          else
             processed_sheet = process_sheet(sheet_klass, sheet)
-          rescue NoMethodError => e
-            # yeah this is a hack to handle an issue with a file, needs to be revisited
-            if %w[.xls .xlsx].include?(File.extname(file))
-              processed_sheet = excel_to_xml_process(sheet_klass, sheet, index)
-            else
-              raise e
-            end
           end
 
           loaded_sheets << {
@@ -86,14 +81,14 @@ module RooHelper
 
     # Makes first_line value be 1 to ignore header in spreadsheet
     def merge_options(options)
-      { first_line: 1 }.reverse_merge(options).reverse_merge(sheets: [name])
+      { first_line: 1 }.reverse_merge(options).reverse_merge(sheets: [name], parse_as_xml: false)
     end
 
     #
     # And here we enter the custom code to deal with issues that occurring from possible bad excel files
     # This uses Roo to get the sheet_file path and create a Nokogiri::XML:Document to be parsed
     #
-    def excel_to_xml_process(sheet_klass, sheet, index)
+    def process_as_xml(sheet_klass, sheet, index)
       results = []
       # Get Roo::*::Sheet object for us to convert to Nokogiri::XML::Document
       sheet_file = sheet.sheet_files[index]
