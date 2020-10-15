@@ -19,7 +19,6 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-     # @upload.check_for_headers
      loaded_file = load_file
      alert_messages(loaded_file)
 
