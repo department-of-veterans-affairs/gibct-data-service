@@ -11,7 +11,7 @@ module RooHelper
   EXTENSIONS = %w[.txt .csv .xls .xlsx].freeze
   MIME_TYPES = %w[
     text/plain
-     text/csv
+    text/csv
     application/vnd.ms-excel
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   ].freeze

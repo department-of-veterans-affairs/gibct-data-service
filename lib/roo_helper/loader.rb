@@ -10,6 +10,7 @@ module RooHelper
     #   results: [],
     # }
     #
+    # rubocop:disable Metrics/MethodLength
     def load_with_roo(file, options = {})
       merged_options = merge_options(options)
       spreadsheet = Roo::Spreadsheet.open(file)
@@ -42,13 +43,13 @@ module RooHelper
 
       loaded_sheets
     end
+    # rubocop:enable Metrics/MethodLength
 
     private
 
     def process_sheet(sheet_klass, sheet)
       results = []
       headers = sheet.row(1)
-      header_warnings = validate_headers(sheet_klass, headers.map(&:downcase))
 
       fields = {}
 
@@ -68,10 +69,13 @@ module RooHelper
         results << sheet_klass.new(result)
       end
 
-      { header_warnings: header_warnings, results: results }
+      {
+        header_warnings: header_warnings(sheet_klass, headers.map(&:downcase)),
+        results: results
+      }
     end
 
-    def validate_headers(sheet_klass, values)
+    def header_warnings(sheet_klass, values)
       missing_headers = (sheet_klass::CSV_CONVERTER_INFO.keys - values)
                         .map { |h| "#{h} is a missing header" }
       extra_headers = (values - sheet_klass::CSV_CONVERTER_INFO.keys)
@@ -98,7 +102,6 @@ module RooHelper
 
       rows = doc.xpath('/worksheet/sheetData/row').to_a
       header_values = rows.shift.children.to_a.map { |c| c.content.downcase }
-      header_warnings = validate_headers(sheet_klass, header_values)
 
       rows.each do |row|
         result = {}
@@ -111,7 +114,7 @@ module RooHelper
         results << sheet_klass.new(result)
       end
 
-      { header_warnings: header_warnings, results: results }
+      { header_warnings: header_warnings(sheet_klass, header_values), results: results }
     end
   end
 end
