@@ -995,6 +995,12 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institution.rating_average).to eq(3)
       end
 
+      it 'institution rating is null without any ratings' do
+        described_class.run(user)
+
+        expect(institution.rating_average).to be_nil
+      end
+
       it 'creates a InstitutionCategoryRating for every category' do
         create_list(:school_rating, 3, :ihl_facility_code, :online_instruction_only)
 
@@ -1010,17 +1016,6 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         described_class.run(user)
 
-        overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
-        expect(overall_experience.rated1_count).to eq(0)
-        expect(overall_experience.rated2_count).to eq(0)
-        expect(overall_experience.rated3_count).to eq(0)
-        expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.rated5_count).to eq(0)
-        expect(overall_experience.na_count).to eq(4)
-        expect(overall_experience.total_count).to eq(0)
-        expect(overall_experience.average_rating).to eq(0)
-
         online_instruction = InstitutionCategoryRating
                              .find_by(institution_id: institution.id, category_name: 'online_instruction')
 
@@ -1032,6 +1027,25 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(online_instruction.na_count).to eq(0)
         expect(online_instruction.total_count).to eq(4)
         expect(online_instruction.average_rating).to eq(3.25)
+      end
+
+      it 'ignores "NA" votes when calculating category average' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(1)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(3)
       end
 
       it 'only counts most recent rating by rater' do
@@ -1052,6 +1066,62 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(online_instruction.na_count).to eq(0)
         expect(online_instruction.total_count).to eq(5)
         expect(online_instruction.average_rating).to eq(2.6)
+      end
+
+      it 'treats rating <= 0 as NA' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 0)
+        create(:school_rating, :ihl_facility_code, overall_experience: -1)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(2)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(3)
+      end
+
+      it 'treats rating > 5 as 5' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 6)
+        create(:school_rating, :ihl_facility_code, overall_experience: 6)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(0)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(2)
+        expect(overall_experience.na_count).to eq(0)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(5)
+      end
+
+      it 'calculates a null average for 0 votes' do
+        create(:school_rating, :ihl_facility_code)
+        create(:school_rating, :ihl_facility_code)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(0)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(2)
+        expect(overall_experience.total_count).to eq(0)
+        expect(overall_experience.average_rating).to be_nil
       end
     end
   end
