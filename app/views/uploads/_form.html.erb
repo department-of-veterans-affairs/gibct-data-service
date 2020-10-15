@@ -13,7 +13,7 @@
       <div class="form-group">
         <%= f.label(:upload_file) %>
         <p class="help-block">Valid file formats include: <%= @extensions %></p>
-        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @mime_types) %>
+        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
       </div>
 
       <div class="form-group">

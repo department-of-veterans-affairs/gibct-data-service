@@ -11,8 +11,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = RooHelper::EXTENSIONS.uniq.join(', ')
-    @mime_types = RooHelper::MIME_TYPES.uniq.join(', ')
+    @extensions = Settings.roo_upload.extensions.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
