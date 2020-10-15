@@ -25,7 +25,7 @@ module RooHelper
           begin
             processed_sheet = process_sheet(sheet_klass, sheet)
           rescue NoMethodError => e
-            # yeah this is a hack to handle an issue with a file, needs to revisited
+            # yeah this is a hack to handle an issue with a file, needs to be revisited
             if %w[.xls .xlsx].include?(File.extname(file))
               processed_sheet = excel_to_xml_process(sheet_klass, sheet, index)
             else
