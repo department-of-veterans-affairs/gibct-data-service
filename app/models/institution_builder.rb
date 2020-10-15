@@ -36,8 +36,11 @@ module InstitutionBuilder
     build_zip_code_rates_from_weams(version.id)
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
-    build_institution_category_ratings(version.id)
     set_count_of_caution_flags(version.id)
+  end
+
+  def self.build_ratings(version)
+    build_institution_category_ratings(version.id)
   end
 
   def self.run(user)
@@ -47,6 +50,10 @@ module InstitutionBuilder
     begin
       Institution.transaction do
         run_insertions(version)
+      end
+
+      Institution.transaction do
+        build_ratings(version)
       end
 
       version.update(completed_at: Time.now.utc.to_s(:db))
