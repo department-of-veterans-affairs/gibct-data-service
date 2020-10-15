@@ -55,7 +55,7 @@ without a closing double quote (\"). "
 
     def load_csv_with_row(file, records, options)
       SmarterCSV.process(file, merge_options(options)).each_with_index do |row, index|
-        records << klass.new(row.merge(csv_row: csv_row(index, options)))
+        records << klass.new(row.merge(csv_row: document_row(index, options)))
       end
 
       records

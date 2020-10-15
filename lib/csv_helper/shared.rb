@@ -8,6 +8,6 @@ module CsvHelper
     base.extend Exporter
   end
 
-  EXTENSIONS = ['.txt, .csv'].freeze
+  EXTENSIONS = ['.txt, .csv']
   MIME_TYPES = %w[text/plain text/csv]
 end

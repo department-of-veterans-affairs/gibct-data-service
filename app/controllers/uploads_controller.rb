@@ -19,9 +19,9 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-     @upload.check_for_headers
-     loaded_csv = load_csv
-     alert_messages(loaded_csv)
+     # @upload.check_for_headers
+     loaded_file = load_file
+     alert_messages(loaded_file)
 
      redirect_to @upload
     rescue StandardError => e
@@ -50,14 +50,16 @@ class UploadsController < ApplicationController
     @inclusion = validation_messages_inclusion
   end
 
-  def alert_messages(loaded_csv)
-    total_rows_count = loaded_csv.ids.length
-    failed_rows = loaded_csv.failed_instances
+  def alert_messages(loaded_file)
+    results = loaded_file[:results]
+
+    total_rows_count = results.ids.length
+    failed_rows = results.failed_instances
     failed_rows_count = failed_rows.length
     valid_rows = total_rows_count - failed_rows_count
     validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                      .map(&:display_errors_with_row)
-    header_warnings = @upload.all_warnings
+    header_warnings = loaded_file[:header_warnings]
 
     flash[:csv_success] = {
       total_rows_count: total_rows_count.to_s,
@@ -76,12 +78,6 @@ class UploadsController < ApplicationController
     flash[:danger] = message
   end
 
-  def load_csv
-    return unless @upload.persisted?
-
-    call_load
-  end
-
   def original_filename
     @original_filename ||= upload_params[:upload_file].try(:original_filename)
   end
@@ -94,26 +90,20 @@ class UploadsController < ApplicationController
     @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
   end
 
-  def call_load
+  def load_file
+    return unless @upload.persisted?
     file = @upload.upload_file.tempfile
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    ext = File.extname(file)
-
-    case ext
-    when CsvHelper::EXTENSIONS.includes(ext)
-      data = klass.load_from_csv(file, @upload.options)
-    when ExcelHelper::EXTENSIONS.includes(ext)
-      data = klass.load_from_excel(file, @upload.options)
-    else
-      error_msg = "#{ext} is not a valid file type."
-      raise(StandardError, error_msg)
-    end
+    # first is used because when called from standard upload process
+    # only a single set of results is returned
+    data = klass.load_from_excel(file, @upload.options).first
+    data_results = data[:results]
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
+    @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
     error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
     raise(StandardError, error_msg) unless @upload.ok?
 
