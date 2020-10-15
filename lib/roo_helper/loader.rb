@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ExcelHelper
+module RooHelper
   module Loader
     include Common::Loader
 
@@ -10,7 +10,7 @@ module ExcelHelper
     #   results: [],
     # }
     #
-    def load_from_excel(file, options = {})
+    def load_with_roo(file, options = {})
       merged_options = merge_options(options)
       spreadsheet = Roo::Spreadsheet.open(file)
       loaded_sheets = []

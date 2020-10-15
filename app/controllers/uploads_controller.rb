@@ -7,8 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = extensions
-    @mime_types = mime_types
+    @extensions = RooHelper::EXTENSIONS.uniq.join(', ')
+    @mime_types = RooHelper::MIME_TYPES.uniq.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -98,7 +98,7 @@ class UploadsController < ApplicationController
 
     # first is used because when called from standard upload process
     # only a single set of results is returned
-    data = klass.load_from_excel(file, @upload.options).first
+    data = klass.load_with_roo(file, @upload.options).first
     data_results = data[:results]
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
@@ -175,13 +175,5 @@ class UploadsController < ApplicationController
 
   def inclusion_requirement_message(validations)
     validations.options[:in].map(&:to_s)
-  end
-
-  def extensions
-    [*CsvHelper::EXTENSIONS, *ExcelHelper::EXTENSIONS].uniq.join(', ')
-  end
-
-  def mime_types
-    [*CsvHelper::MIME_TYPES, *ExcelHelper::MIME_TYPES].uniq.join(', ')
   end
 end

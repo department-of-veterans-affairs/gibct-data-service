@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ExcelHelper
+module RooHelper
   include Common
   def self.included(base)
     base.extend Common::Shared
@@ -8,8 +8,10 @@ module ExcelHelper
     base.extend CsvHelper::Exporter
   end
 
-  EXTENSIONS = %w[.xls .xlsx].freeze
+  EXTENSIONS = %w[.txt .csv .xls .xlsx].freeze
   MIME_TYPES = %w[
+    text/plain
+     text/csv
     application/vnd.ms-excel
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   ].freeze
