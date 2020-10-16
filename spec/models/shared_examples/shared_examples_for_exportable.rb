@@ -16,7 +16,7 @@ RSpec.shared_examples 'an exportable model' do |options|
     load_options = default_options.transform_keys(&:to_sym).merge(options)
 
     before do
-      described_class.load_from_csv(csv_file, load_options)
+      described_class.load_with_roo(csv_file, load_options)
     end
 
     def check_attributes_from_records(rows, header_row)

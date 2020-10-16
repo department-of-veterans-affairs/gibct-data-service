@@ -4,7 +4,6 @@ module CsvHelper
   include Common
   def self.included(base)
     base.extend Common::Shared
-    base.extend Loader
     base.extend Exporter
   end
 end

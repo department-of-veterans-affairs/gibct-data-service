@@ -118,7 +118,7 @@ class UploadsController < ApplicationController
   end
 
   def requirements_messages
-    [Upload.valid_col_seps]
+    [RooHelper.valid_col_seps]
       .push(*validation_messages_presence)
       .push(*validation_messages_numericality)
       .push(*validation_messages_uniqueness)

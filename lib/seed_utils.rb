@@ -36,6 +36,6 @@ module SeedUtils
   end
 
   def seed_table(klass, path, options = {})
-    klass.load_from_csv(path, options)
+    klass.load_with_roo(path, options)
   end
 end
