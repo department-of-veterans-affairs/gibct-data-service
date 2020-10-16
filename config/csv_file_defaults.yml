@@ -109,8 +109,7 @@ Program:
 SchoolCertifyingOfficial:
   skip_lines: 0
   col_sep: ","
-  force_simple_split: true
-  strip_chars_from_headers: /[\-"]/
+  header_converter_regex: /[\-"]/
 
 EduProgram:
   skip_lines: 0

@@ -14,7 +14,7 @@ RSpec.describe DashboardsController, type: :controller do
     csv_path = 'spec/fixtures'
 
     upload = create :upload, csv_type: csv_type, csv_name: csv_name, user: User.first
-    klass.load_from_csv("#{csv_path}/#{csv_name}", options)
+    klass.load_with_roo("#{csv_path}/#{csv_name}", options)
     upload.update(ok: true)
   end
 
@@ -49,8 +49,7 @@ RSpec.describe DashboardsController, type: :controller do
 
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+                   header_converter_regex: defaults[klass.name]['header_converter_regex'])
       end
     end
 

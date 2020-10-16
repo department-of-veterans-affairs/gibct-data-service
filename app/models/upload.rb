@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :col_sep, :upload_file
+  attr_accessor :skip_lines, :upload_file
 
   belongs_to :user, inverse_of: :versions
 
@@ -36,17 +36,11 @@ class Upload < ApplicationRecord
 
   def options
     { skip_lines: skip_lines.try(:to_i),
-      col_sep: col_sep,
-      force_simple_split: force_simple_split,
-      strip_chars_from_headers: strip_chars_from_headers }
+      header_converter_regex: header_converter_regex }
   end
 
-  def force_simple_split
-    self.class.default_options(csv_type)['force_simple_split']
-  end
-
-  def strip_chars_from_headers
-    self.class.default_options(csv_type)['strip_chars_from_headers']
+  def header_converter_regex
+    self.class.default_options(csv_type)['header_converter_regex']
   end
 
   def self.last_uploads
@@ -85,7 +79,6 @@ class Upload < ApplicationRecord
   def self.from_csv_type(csv_type)
     upload = Upload.new(csv_type: csv_type)
     upload.skip_lines = default_options(csv_type)['skip_lines']
-    upload.col_sep = default_options(csv_type)['col_sep']
 
     upload
   end
@@ -96,10 +89,5 @@ class Upload < ApplicationRecord
 
   def self.fetching_for?(csv_type)
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
-  end
-
-  def self.valid_col_seps
-    valid_col_seps = Settings.csv_upload.column_separators.each(&:to_s)
-    { value: valid_col_seps, message: 'Valid column separators are:' }
   end
 end
