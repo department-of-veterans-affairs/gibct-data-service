@@ -114,6 +114,7 @@ Metrics/AbcSize:
 Metrics/ModuleLength:
   Exclude:
     - "app/models/institution_builder.rb"
+    - "lib/roo_helper/loader.rb"
 
 Metrics/BlockLength:
   Max: 40

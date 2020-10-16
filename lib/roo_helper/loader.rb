@@ -24,7 +24,7 @@ module RooHelper
       merged_options = merge_options(options)
       ext = File.extname(file)
       ext = '.csv' if ext == '.txt'
-      spreadsheet_options = {extension: ext, csv_options: csv_options(file, options)}
+      spreadsheet_options = { extension: ext, csv_options: csv_options(file, options) }
 
       # This is the generic way to open a file Roo will return the correct class based on extension
       spreadsheet = Roo::Spreadsheet.open(file, spreadsheet_options)
@@ -36,11 +36,11 @@ module RooHelper
         sheet_klass.transaction do
           delete_all
 
-          if options[:parse_as_xml]
-            processed_sheet = process_as_xml(sheet_klass, sheet, index, merged_options)
-          else
-            processed_sheet = process_sheet(sheet_klass, sheet, merged_options)
-          end
+          processed_sheet = if options[:parse_as_xml]
+                              process_as_xml(sheet_klass, sheet, index, merged_options)
+                            else
+                              process_sheet(sheet_klass, sheet, merged_options)
+                            end
 
           loaded_sheets << {
             results: load_records(processed_sheet[:results], merged_options),
@@ -62,11 +62,11 @@ module RooHelper
     def parse_rows(sheet_klass, headers, rows, options)
       results = []
       rows.each_with_index do |row, r_index|
-        if block_given?
-          result = yield(row)
-        else
-          result = row.is_a? Hash ? row : Hash[headers.zip(row)]
-        end
+        result = if block_given?
+                   yield(row)
+                 else
+                   row.is_a? Hash ? row : Hash[headers.zip(row)]
+                 end
 
         csv_row = r_index + options[:first_line] + skip_lines(options)
         result[:csv_row] = csv_row if sheet_klass.column_names.include?('csv_row')
@@ -103,10 +103,7 @@ module RooHelper
         result
       end
 
-      {
-          header_warnings: header_warnings(sheet_klass, file_headers.map{|h| h.strip.downcase}),
-          results: results
-      }
+      { header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }), results: results }
     end
 
     def converter_info(sheet_klass, header)
@@ -135,7 +132,7 @@ module RooHelper
 
     def csv_options(file, options)
       csv_options = {
-          col_sep: csv_col_sep(file, options),
+        col_sep: csv_col_sep(file, options)
       }
       csv_options[:liberal_parsing] = options[:liberal_parsing]
       csv_options
@@ -147,7 +144,7 @@ module RooHelper
 
       first_line = csv.readline
       col_sep = Settings.csv_upload.column_separators
-                         .find { |column_separator| first_line.include?(column_separator) }
+                        .find { |column_separator| first_line.include?(column_separator) }
       valid_col_seps_msg = RooHelper.valid_col_seps[:value].map { |cs| "\"#{cs}\"" }.join(' and ')
       error_message = "Unable to determine column separators, valid separators equal #{valid_col_seps_msg}"
       raise(StandardError, error_message) if col_sep.blank?

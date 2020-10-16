@@ -49,7 +49,7 @@ RSpec.describe DashboardsController, type: :controller do
 
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
         load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                   header_converter_regex: defaults[klass.name]['header_converter_regex'])
+                          header_converter_regex: defaults[klass.name]['header_converter_regex'])
       end
     end
 
