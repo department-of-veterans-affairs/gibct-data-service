@@ -100,7 +100,7 @@ class UploadsController < ApplicationController
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     # first is used because when called from standard upload process
-    # only a single set of results is returned
+    # because only a single set of results is returned
     data = klass.load_with_roo(file, @upload.options).first
     data_results = data[:results]
 
