@@ -5,10 +5,19 @@ module SeedUtils
 
   def seed_table_with_upload(klass, user, options = {})
     # Pull the default CSV options to be used
-    default_options = Rails.application.config.csv_defaults[klass.name] ||
-                      Rails.application.config.csv_defaults['generic']
+    # If default CSV options exist overwrite generic defaults
+    generic_options = Rails.application.config.csv_defaults['generic']
+    klass_options = Rails.application.config.csv_defaults[klass.name]
+    default_options = if klass_options.present?
+                        generic_options.merge(klass_options)
+                      else
+                        generic_options
+                      end
+
     # Merge with provided options
     seed_options = default_options.transform_keys(&:to_sym).merge(options)
+    file_options = { liberal_parsing: seed_options[:liberal_parsing],
+                     sheets: [{ klass: klass, skip_lines: seed_options[:skip_lines].try(:to_i) }] }
 
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.csv"
@@ -24,7 +33,7 @@ module SeedUtils
     )
 
     upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-    seed_table(klass, "#{csv_path}/#{csv_name}", seed_options)
+    seed_table(klass, "#{csv_path}/#{csv_name}", file_options)
     upload.update(ok: true)
 
     puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "

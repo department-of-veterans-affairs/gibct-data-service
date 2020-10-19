@@ -25,12 +25,13 @@ module RooHelper
     # - :parse_as_xml If the uploaded xlsx or xls file fails to process normally pass in this option to
     #                 process as Nokogiri::XML object instead
     #
-    # rubocop:disable Metrics/MethodLength
     def load_with_roo(file, options = {})
       file_options = merge_options(options)
       ext = File.extname(file)
       ext = '.csv' if ext == '.txt'
-      spreadsheet_options = { extension: ext, csv_options: csv_options(file, file_options) }
+
+      spreadsheet_options = { extension: ext,
+                              csv_options: ext == '.csv' ? csv_options(file, file_options) : nil }
 
       # This is the generic way to open a file Roo will return the correct class based on extension
       spreadsheet = Roo::Spreadsheet.open(file, spreadsheet_options)
@@ -58,7 +59,6 @@ module RooHelper
 
       loaded_sheets
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
 
@@ -87,7 +87,7 @@ module RooHelper
     #
     # Uses file_options[:liberal_parsing] to strip quotes out
     def process_sheet(sheet_klass, sheet, sheet_options, file_options)
-      file_headers = sheet.row(1 + sheet_options[:skip_lines])
+      file_headers = sheet.row(1 + sheet_options[:skip_lines]).compact
       headers_mapping = {}
 
       # create array of csv column headers
@@ -110,7 +110,10 @@ module RooHelper
         row.each_pair do |key, value|
           file_header = file_options[:liberal_parsing] ? headers_mapping[key].gsub('"', '').strip : headers_mapping[key]
           info = converter_info(sheet_klass, file_header)
-          result[key] = info[:converter].convert(value) if info.present?
+          if info.present?
+            converter = info[:converter] || BaseConverter
+            result[key] = converter.convert(value)
+          end
         end
 
         result
@@ -199,7 +202,10 @@ module RooHelper
         # call converters for each field and ignore extra columns from the file
         headers.each_with_index do |header, h_index|
           info = converter_info(sheet_klass, header)
-          result[info[:column]] = info[:converter].convert(values[h_index]) if info.present?
+          if info.present?
+            converter = info[:converter] || BaseConverter
+            result[info[:column]] = converter.convert(values[h_index])
+          end
         end
         result
       end

@@ -94,6 +94,8 @@ Metrics/MethodLength:
     - "app/models/archiver.rb"
     - "app/models/caution_flag.rb"
     - "app/controllers/v0/institutions_controller.rb"
+    - "lib/roo_helper/loader.rb"
+    - "lib/seed_utils.rb"
 
 Metrics/ClassLength:
   Exclude:

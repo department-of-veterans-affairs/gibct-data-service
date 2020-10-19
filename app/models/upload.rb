@@ -73,13 +73,17 @@ class Upload < ApplicationRecord
 
   def self.from_csv_type(csv_type)
     upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = default_options(csv_type)['skip_lines']
+    upload.skip_lines = default_options(csv_type)['skip_lines'] || generic_options['skip_lines']
 
     upload
   end
 
   def self.default_options(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
+    Rails.application.config.csv_defaults[csv_type] || generic_options
+  end
+
+  def self.generic_options
+    Rails.application.config.csv_defaults['generic']
   end
 
   def self.fetching_for?(csv_type)
