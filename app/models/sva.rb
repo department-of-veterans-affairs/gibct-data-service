@@ -6,7 +6,7 @@ class Sva < ImportableRecord
     'school' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
-    'ipeds code' => { column: :ipeds_code, converter: BaseConverter },
+    'ipeds_code' => { column: :ipeds_code, converter: BaseConverter },
     'website' => { column: :student_veteran_link, converter: BaseConverter },
     'ipeds_6' => { column: :cross, converter: CrossConverter },
     'sva_yes' => { column: :sva_yes, converter: BaseConverter }
