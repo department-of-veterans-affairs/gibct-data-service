@@ -9,14 +9,13 @@ RSpec.shared_examples 'an exportable model' do |options|
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
   describe 'when exporting' do
-    # Pull the default CSV options to be used
-    default_options = Rails.application.config.csv_defaults[described_class.name] ||
-                      Rails.application.config.csv_defaults['generic']
-    # Merge with provided options
-    load_options = default_options.transform_keys(&:to_sym).merge(options)
+    load_options = Common::Shared.file_type_defaults(described_class.name, options)
+
+    file_options = { liberal_parsing: load_options[:liberal_parsing],
+                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i) }] }
 
     before do
-      described_class.load_with_roo(csv_file, load_options)
+      described_class.load_with_roo(csv_file, file_options)
     end
 
     def check_attributes_from_records(rows, header_row)
@@ -37,8 +36,9 @@ RSpec.shared_examples 'an exportable model' do |options|
 
     it 'creates a string representation of a csv_file' do
       rows = subject.split("\n")
-      header_row = rows.shift.split(load_options[:col_sep]).map(&:downcase)
-      rows = CSV.parse(rows.join("\n"), col_sep: load_options[:col_sep])
+      col_sep = Common::Shared.file_type_defaults(described_class.name, options)[:col_sep]
+      header_row = rows.shift.split(col_sep).map(&:downcase)
+      rows = CSV.parse(rows.join("\n"), col_sep: col_sep)
       check_attributes_from_records(rows, header_row)
     end
   end

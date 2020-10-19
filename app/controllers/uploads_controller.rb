@@ -22,8 +22,13 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-     loaded_file = load_file
-     alert_messages(loaded_file)
+     data = load_file
+     alert_messages(data)
+     data_results = data[:results]
+
+     @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+     error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
+     raise(StandardError, error_msg) unless @upload.ok?
 
      redirect_to @upload
     rescue StandardError => e
@@ -52,8 +57,8 @@ class UploadsController < ApplicationController
     @inclusion = validation_messages_inclusion
   end
 
-  def alert_messages(loaded_file)
-    results = loaded_file[:results]
+  def alert_messages(data)
+    results = data[:results]
 
     total_rows_count = results.ids.length
     failed_rows = results.failed_instances
@@ -61,13 +66,15 @@ class UploadsController < ApplicationController
     valid_rows = total_rows_count - failed_rows_count
     validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                      .map(&:display_errors_with_row)
-    header_warnings = loaded_file[:header_warnings]
+    header_warnings = data[:header_warnings]
 
-    flash[:csv_success] = {
-      total_rows_count: total_rows_count.to_s,
-      valid_rows: valid_rows.to_s,
-      failed_rows_count: failed_rows_count.to_s
-    }.compact
+    if valid_rows >= 0
+      flash[:csv_success] = {
+        total_rows_count: total_rows_count.to_s,
+        valid_rows: valid_rows.to_s,
+        failed_rows_count: failed_rows_count.to_s
+      }.compact
+    end
 
     flash[:warning] = {
       'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
@@ -104,13 +111,8 @@ class UploadsController < ApplicationController
     file_options = { liberal_parsing: @upload.liberal_parsing,
                      sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i) }] }
     data = klass.load_with_roo(file, file_options).first
-    data_results = data[:results]
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-    raise(StandardError, error_msg) unless @upload.ok?
 
     data
   end
