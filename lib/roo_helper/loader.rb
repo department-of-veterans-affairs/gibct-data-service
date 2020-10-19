@@ -4,19 +4,21 @@ module RooHelper
   module Loader
     include Common::Loader
 
-    # Returns an array of these objects for each sheet in options[:sheets] array
+    # Returns an array of these objects for each sheet_option object in options[:sheets] array
     # {
     #   header_warnings: [],
     #   results: [],
     # }
     #
-    # Options
+    # Sheet Option hashes
     # - :sheets An array of hashes whose order determines which sheet in a spreadsheet
     #           maps to which class, creates a transaction for each class
+    #
     #   - :klass The name of the ImportableRecord
     #   - :skip_lines Number of lines to skip before Header row, used for warning messages and finding headers
     #   - :first_line This is used for warning messages, default value is 2
     #
+    # File Options
     # - :liberal_parsing  Used when file is either .txt or .csv
     #                     When setting a true value, CSV will attempt to parse input not
     #                     conformant with RFC 4180, such as double quotes in unquoted fields.
@@ -81,30 +83,36 @@ module RooHelper
       results
     end
 
+    # Main way to convert data in a sheet to ImportableRecords
+    #
+    # Uses file_options[:liberal_parsing] to strip quotes out
     def process_sheet(sheet_klass, sheet, sheet_options, file_options)
       file_headers = sheet.row(1 + sheet_options[:skip_lines])
-      fields = {}
+      headers_mapping = {}
 
       # create array of csv column headers
-      # if there is an extra column in file use it's value
+      # if there is an extra column in file use it's value for headers_mapping
       file_headers.each do |header|
         file_header = header.strip
         key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
         info = converter_info(sheet_klass, key)
         column = info.blank? ? file_header.downcase.to_sym : info[:column]
-        fields[column] = file_header
+        headers_mapping[column] = file_header
       end
 
-      # do not need to account for sheet_options[:skip_lines] here because of passing in the headers hash
-      rows = sheet.parse(fields.merge(clean: true))
+      # do not need to account for sheet_options[:skip_lines] here because of passing in the headers_mapping
+      rows = sheet.parse(headers_mapping.merge(clean: true))
 
       results = parse_rows(sheet_klass, file_headers, rows, sheet_options) do |row|
         result = {}
+
+        # call converter on each column
         row.each_pair do |key, value|
-          file_header = file_options[:liberal_parsing] ? fields[key].gsub('"', '').strip : fields[key]
+          file_header = file_options[:liberal_parsing] ? headers_mapping[key].gsub('"', '').strip : headers_mapping[key]
           info = converter_info(sheet_klass, file_header)
           result[key] = info[:converter].convert(value) if info.present?
         end
+
         result
       end
 
@@ -115,6 +123,9 @@ module RooHelper
       sheet_klass::CSV_CONVERTER_INFO[header.downcase]
     end
 
+    # Determine missing and extra headers
+    #
+    # Returns array of warning messages
     def header_warnings(sheet_klass, values)
       missing_headers = (sheet_klass::CSV_CONVERTER_INFO.keys - values)
                         .map { |h| "#{h} is a missing header" }
@@ -132,14 +143,17 @@ module RooHelper
     # - :parse_as_xml  defaults to false
     def merge_options(file_options)
       file_options[:sheets] = if file_options[:sheets].present?
-                 file_options[:sheets].map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
-               else
-                 [{ klass: klass, skip_lines: 0, first_line: 2 }]
-               end
+                                file_options[:sheets]
+                                  .map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
+                              else
+                                [{ klass: klass, skip_lines: 0, first_line: 2 }]
+                              end
 
       file_options.reverse_merge(parse_as_xml: false)
     end
 
+    # Set CSV options
+    # See https://apidock.com/ruby/v2_5_5/CSV/new/class for more options
     def csv_options(file, file_options)
       csv_options = {
         col_sep: csv_col_sep(file, file_options)
@@ -148,6 +162,7 @@ module RooHelper
       csv_options
     end
 
+    # Attempt to determine for a CSV if the col_sep is a ',' or '|'
     def csv_col_sep(file, file_options)
       csv = File.open(file, encoding: 'ISO-8859-1')
       # CSV files only have 1 sheet so get skip_lines from first sheets element
