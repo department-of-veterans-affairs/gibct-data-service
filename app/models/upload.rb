@@ -34,11 +34,6 @@ class Upload < ApplicationRecord
     false
   end
 
-  def options
-    { skip_lines: skip_lines.try(:to_i),
-      liberal_parsing: liberal_parsing }
-  end
-
   def liberal_parsing
     self.class.default_options(csv_type)['liberal_parsing']
   end

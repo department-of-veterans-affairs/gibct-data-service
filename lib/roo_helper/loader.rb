@@ -11,39 +11,44 @@ module RooHelper
     # }
     #
     # Options
-    # - :sheets An array of classes whose order determines which sheet in a spreadsheet
+    # - :sheets An array of hashes whose order determines which sheet in a spreadsheet
     #           maps to which class, creates a transaction for each class
+    #   - :klass The name of the ImportableRecord
+    #   - :skip_lines Number of lines to skip before Header row, used for warning messages and finding headers
+    #   - :first_line This is used for warning messages, default value is 2
+    #
+    # - :liberal_parsing  Used when file is either .txt or .csv
+    #                     When setting a true value, CSV will attempt to parse input not
+    #                     conformant with RFC 4180, such as double quotes in unquoted fields.
     # - :parse_as_xml If the uploaded xlsx or xls file fails to process normally pass in this option to
     #                 process as Nokogiri::XML object instead
-    # - :skip_lines Number of lines to skip before Header row, used for warning messages and finding headers
-    # - :first_line This is used for warning messages, default value is 2
-    # - :liberal_parsing used when file is either .txt or .csv
     #
     # rubocop:disable Metrics/MethodLength
     def load_with_roo(file, options = {})
-      merged_options = merge_options(options)
+      file_options = merge_options(options)
       ext = File.extname(file)
       ext = '.csv' if ext == '.txt'
-      spreadsheet_options = { extension: ext, csv_options: csv_options(file, options) }
+      spreadsheet_options = { extension: ext, csv_options: csv_options(file, file_options) }
 
       # This is the generic way to open a file Roo will return the correct class based on extension
       spreadsheet = Roo::Spreadsheet.open(file, spreadsheet_options)
       loaded_sheets = []
 
-      merged_options[:sheets].each_with_index do |sheet_klass, index|
+      file_options[:sheets].each_with_index do |sheet_options, index|
         sheet = spreadsheet.sheet(index)
+        sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
           delete_all
 
-          processed_sheet = if options[:parse_as_xml]
-                              process_as_xml(sheet_klass, sheet, index, merged_options)
+          processed_sheet = if file_options[:parse_as_xml]
+                              process_as_xml(sheet_klass, sheet, index, sheet_options)
                             else
-                              process_sheet(sheet_klass, sheet, merged_options)
+                              process_sheet(sheet_klass, sheet, sheet_options, file_options)
                             end
 
           loaded_sheets << {
-            results: load_records(processed_sheet[:results], merged_options),
+            results: load_records(processed_sheet[:results], sheet_options),
             header_warnings: processed_sheet[:header_warnings]
           }
         end
@@ -59,7 +64,7 @@ module RooHelper
     # If a block is not provided and row is an array zips the headers and row together to create a Hash
     #
     # Provides location for common operations on a row object
-    def parse_rows(sheet_klass, headers, rows, options)
+    def parse_rows(sheet_klass, headers, rows, sheet_options)
       results = []
       rows.each_with_index do |row, r_index|
         result = if block_given?
@@ -68,7 +73,7 @@ module RooHelper
                    row.is_a? Hash ? row : Hash[headers.zip(row)]
                  end
 
-        csv_row = r_index + options[:first_line] + skip_lines(options)
+        csv_row = r_index + sheet_options[:first_line] + sheet_options[:skip_lines]
         result[:csv_row] = csv_row if sheet_klass.column_names.include?('csv_row')
 
         results << sheet_klass.new(result)
@@ -76,27 +81,27 @@ module RooHelper
       results
     end
 
-    def process_sheet(sheet_klass, sheet, options)
-      file_headers = sheet.row(1 + skip_lines(options))
+    def process_sheet(sheet_klass, sheet, sheet_options, file_options)
+      file_headers = sheet.row(1 + sheet_options[:skip_lines])
       fields = {}
 
       # create array of csv column headers
       # if there is an extra column in file use it's value
       file_headers.each do |header|
         file_header = header.strip
-        key = options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
+        key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
         info = converter_info(sheet_klass, key)
         column = info.blank? ? file_header.downcase.to_sym : info[:column]
         fields[column] = file_header
       end
 
-      # do not need to account for options[:skip_lines] here because of passing in the headers hash
+      # do not need to account for sheet_options[:skip_lines] here because of passing in the headers hash
       rows = sheet.parse(fields.merge(clean: true))
 
-      results = parse_rows(sheet_klass, file_headers, rows, options) do |row|
+      results = parse_rows(sheet_klass, file_headers, rows, sheet_options) do |row|
         result = {}
         row.each_pair do |key, value|
-          file_header = options[:liberal_parsing] ? fields[key].gsub('"', '').strip : fields[key]
+          file_header = file_options[:liberal_parsing] ? fields[key].gsub('"', '').strip : fields[key]
           info = converter_info(sheet_klass, file_header)
           result[key] = info[:converter].convert(value) if info.present?
         end
@@ -120,27 +125,33 @@ module RooHelper
     end
 
     # Set default options if not provided
-    # - :first_line Since row indexes start at 0 and spreadsheets on line 1,
-    #               add 1 for the difference in indexes and 1 for the header row itself.
     # - :sheets  Default sheets array is the class that called load_with_roo
+    #   - :first_line Since row indexes start at 0 and spreadsheets on line 1,
+    #                 add 1 for the difference in indexes and 1 for the header row itself.
+    #   - :skip_lines defaults to 0
     # - :parse_as_xml  defaults to false
-    # - :liberal_parsing When setting a true value, CSV will attempt to parse input not
-    #                    conformant with RFC 4180, such as double quotes in unquoted fields.
-    def merge_options(options)
-      options.reverse_merge(sheets: [klass], parse_as_xml: false, first_line: 2)
+    def merge_options(file_options)
+      file_options[:sheets] = if file_options[:sheets].present?
+                 file_options[:sheets].map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
+               else
+                 [{ klass: klass, skip_lines: 0, first_line: 2 }]
+               end
+
+      file_options.reverse_merge(parse_as_xml: false)
     end
 
-    def csv_options(file, options)
+    def csv_options(file, file_options)
       csv_options = {
-        col_sep: csv_col_sep(file, options)
+        col_sep: csv_col_sep(file, file_options)
       }
-      csv_options[:liberal_parsing] = options[:liberal_parsing]
+      csv_options[:liberal_parsing] = file_options[:liberal_parsing]
       csv_options
     end
 
-    def csv_col_sep(file, options)
+    def csv_col_sep(file, file_options)
       csv = File.open(file, encoding: 'ISO-8859-1')
-      options[:skip_lines].to_i.times { csv.readline }
+      # CSV files only have 1 sheet so get skip_lines from first sheets element
+      file_options[:sheets][0][:skip_lines].to_i.times { csv.readline }
 
       first_line = csv.readline
       col_sep = Settings.csv_upload.column_separators
@@ -157,16 +168,16 @@ module RooHelper
     # This is the custom code to deal with issues that occurring from malformed excel files
     # This uses Roo to get the sheet_file path and create a Nokogiri::XML:Document to be parsed
     #
-    def process_as_xml(sheet_klass, sheet, index, options)
+    def process_as_xml(sheet_klass, sheet, index, sheet_options)
       # Get Roo::*::Sheet object for us to convert to Nokogiri::XML::Document
       sheet_file = sheet.sheet_files[index]
       # Get Nokogiri::XML::Document
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
 
-      rows = doc.xpath('/worksheet/sheetData/row').to_a.drop(skip_lines(options))
+      rows = doc.xpath('/worksheet/sheetData/row').to_a.drop(sheet_options[:skip_lines])
       headers = rows.shift.children.to_a.map { |c| c.content.strip.downcase }
 
-      results = parse_rows(sheet_klass, headers, rows, options) do |row|
+      results = parse_rows(sheet_klass, headers, rows, sheet_options) do |row|
         result = {}
         values = row.children.to_a.map(&:content)
 
@@ -179,10 +190,6 @@ module RooHelper
       end
 
       { header_warnings: header_warnings(sheet_klass, headers), results: results }
-    end
-
-    def skip_lines(options)
-      options[:skip_lines] || 0
     end
   end
 end

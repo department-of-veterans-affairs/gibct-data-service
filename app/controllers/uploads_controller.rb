@@ -101,7 +101,9 @@ class UploadsController < ApplicationController
 
     # first is used because when called from standard upload process
     # because only a single set of results is returned
-    data = klass.load_with_roo(file, @upload.options).first
+    file_options = { liberal_parsing: @upload.liberal_parsing,
+                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i) }] }
+    data = klass.load_with_roo(file, file_options).first
     data_results = data[:results]
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
