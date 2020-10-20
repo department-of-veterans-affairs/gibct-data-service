@@ -12,8 +12,7 @@ RSpec.shared_examples 'an exportable model by version' do
 
   describe 'when exporting by version' do
     # Pull the default CSV options to be used
-    default_options = Rails.application.config.csv_defaults[described_class.name] ||
-                      Rails.application.config.csv_defaults['generic']
+    default_options = Common::Shared.file_type_defaults(described_class.name)
 
     def check_attributes_from_records(rows, header_row)
       described_class.find_each.with_index do |record, i|
@@ -35,8 +34,8 @@ RSpec.shared_examples 'an exportable model by version' do
 
     it 'creates a string representation of a csv_file' do
       rows = described_class.export_by_version(version.number).split("\n")
-      header_row = rows.shift.split(default_options['col_sep']).map(&:downcase)
-      rows = CSV.parse(rows.join("\n"), col_sep: default_options['col_sep'])
+      header_row = rows.shift.split(default_options[:col_sep]).map(&:downcase)
+      rows = CSV.parse(rows.join("\n"), col_sep: default_options[:col_sep])
       check_attributes_from_records(rows, header_row)
     end
   end
