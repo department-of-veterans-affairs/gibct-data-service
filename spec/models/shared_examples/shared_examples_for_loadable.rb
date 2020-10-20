@@ -16,7 +16,7 @@ RSpec.shared_examples 'a loadable model' do |options|
     let(:user) { User.first }
 
     load_options = Common::Shared.file_type_defaults(described_class.name, options)
-    
+
     context 'with an error-free csv file' do
       it 'deletes the old table content' do
         expect { described_class.load_from_csv(csv_file, load_options) }

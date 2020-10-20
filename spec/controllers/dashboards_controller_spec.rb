@@ -8,13 +8,13 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 RSpec.describe DashboardsController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'dashboards'
 
-  def load_table(klass, options)
+  def load_table(klass)
     csv_name = "#{klass.name.underscore}.csv"
     csv_type = klass.name
     csv_path = 'spec/fixtures'
 
     upload = create :upload, csv_type: csv_type, csv_name: csv_name, user: User.first
-    klass.load_from_csv("#{csv_path}/#{csv_name}", Common::Shared.file_type_defaults(klass.name, options))
+    klass.load_from_csv("#{csv_path}/#{csv_name}", Common::Shared.file_type_defaults(klass.name))
     upload.update(ok: true)
   end
 
@@ -45,12 +45,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+        load_table(klass)
       end
     end
 
@@ -74,12 +70,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+        load_table(klass)
       end
 
       post(:build)
@@ -106,12 +98,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+        load_table(klass)
       end
 
       post(:build)
