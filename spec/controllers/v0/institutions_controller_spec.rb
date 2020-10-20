@@ -414,6 +414,13 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institutions')
     end
 
+    it 'filter by uppercase state returns results' do
+      get(:index, params: { state: 'NY' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
+    end
+
     it 'filters by online_only schools' do
       get(:index, params: { online_only: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
@@ -436,6 +443,13 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :preferred_provider, version_id: Version.current_production.id)
       get(:index, params: { preferred_provider: true })
       expect(JSON.parse(response.body)['data'].map { |a| a['attributes']['preferred_provider'] }).to all(eq(true))
+    end
+
+    it 'filter by lowercase state returns results' do
+      get(:index, params: { state: 'ny' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institutions')
     end
 
     it 'has facet metadata' do
