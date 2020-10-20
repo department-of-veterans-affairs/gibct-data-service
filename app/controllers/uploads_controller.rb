@@ -56,7 +56,7 @@ class UploadsController < ApplicationController
                                      .map(&:display_errors_with_row)
     header_warnings = @upload.all_warnings
 
-    if valid_rows >= 0
+    if valid_rows > 0
       flash[:csv_success] = {
         total_rows_count: total_rows_count.to_s,
         valid_rows: valid_rows.to_s,
