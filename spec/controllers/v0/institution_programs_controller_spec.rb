@@ -150,6 +150,13 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(response).to match_response_schema('institution_programs')
     end
 
+    it 'filter by uppercase state returns results' do
+      get(:index, params: { state: 'NY' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
     it 'filter by uppercase country returns results' do
       get(:index, params: { name: 'chicago', country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
@@ -182,6 +189,13 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       create(:institution_program, :ca_employer)
       get(:index, params: { provider: 'acme inc' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.content_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
+    it 'filter by lowercase state returns results' do
+      get(:index, params: { state: 'ny' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
     end
