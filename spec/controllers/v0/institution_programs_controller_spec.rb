@@ -144,7 +144,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'search with space returns results' do
-      get(:index, params: { name: 'New Roch' })
+      get(:index, params: { name: 'New Rochelle' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -160,13 +160,6 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     it 'filter by lowercase country returns results' do
       get(:index, params: { name: 'chicago', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institution_programs')
-    end
-
-    it 'filter by uppercase state returns results' do
-      get(:index, params: { name: 'new', state: 'NY' })
-      expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
     end
@@ -189,13 +182,6 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       create(:institution_program, :ca_employer)
       get(:index, params: { provider: 'acme inc' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institution_programs')
-    end
-
-    it 'filter by lowercase state returns results' do
-      get(:index, params: { name: 'new', state: 'ny' })
-      expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
     end
@@ -245,43 +231,22 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     it 'search returns results matching physical zip code' do
       create(:institution, version_id: Version.last.id, physical_zip: '80808')
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: '80808', fuzzy_search: true })
+      get(:index, params: { name: '80808' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'search returns results exact match physical city' do
       create(:institution, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: 'VERY LONG CITY NAME', fuzzy_search: true })
+      get(:index, params: { name: 'VERY LONG CITY NAME' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
     it 'search returns results fuzzy-matching physical institution name' do
       create(:institution, :vet_tec_provider, version_id: Version.last.id)
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: 'cllge f vet tc provider', fuzzy_search: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-    end
-
-    it 'search returns no results matching physical zip code without search enhancements' do
-      create(:institution, version_id: Version.last.id, physical_zip: '80808')
-      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: '80808' })
-      expect(JSON.parse(response.body)['data'].count).to eq(0)
-    end
-
-    it 'search returns no results for fuzzy-matching physical city without search enhancements' do
-      create(:institution, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
-      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
-      get(:index, params: { name: 'VERY LONG CITY AME' })
-      expect(JSON.parse(response.body)['data'].count).to eq(0)
-    end
-
-    it 'search returns no results for fuzzy-matching physical institution name without search enhancements' do
-      create(:institution, :vet_tec_provider, version_id: Version.last.id)
-      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
       get(:index, params: { name: 'cllge f vet tc provider' })
-      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
   end
 end
