@@ -21,7 +21,7 @@ module CsvHelper
 
       klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
         key = info[:column]
-        csv_headers[key] = csv_column.split(/\s/).map(&:downcase).join(' ')
+        csv_headers[key] = csv_column.gsub(/_+/, ' ')
       end
 
       csv_headers
