@@ -158,7 +158,7 @@ class UploadsController < ApplicationController
                 value: inclusion_requirement_message(validations) }
       inclusion.push(array)
     end
-    [inclusion] unless inclusion.empty?
+    inclusion unless inclusion.empty?
   end
 
   def affected_attributes(validations)
