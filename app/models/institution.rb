@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-class Institution < ApplicationRecord
-  include CsvHelper
-
+class Institution < ImportableRecord
   EMPLOYER = 'OJT'
+
+  DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
+
+  IHL_FACILITY_CODE_PREFIXES = %w[11 12 13 21 22 23 31 32 33].freeze
 
   LOCALE = {
     11 => 'city', 12 => 'city', 13 => 'city',
@@ -23,7 +25,13 @@ class Institution < ApplicationRecord
     '4-year' => 4
   }.freeze
 
-  TYPES = ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE', 'FLIGHT', 'FOR PROFIT', 'PUBLIC'].freeze
+  COMMON_REMOVAL_REGEXP = Regexp.new(
+    (
+    Settings.search.common_character_list.map { |char| Regexp.escape(char) } +
+        Settings.search.common_word_list.map { |word| "\\b#{Regexp.escape(word)}\\b" }
+  ).join('|'),
+    'i'
+  )
 
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
@@ -151,15 +159,19 @@ class Institution < ApplicationRecord
     },
     'complaints_other_by_ope_id_do_not_sum' => {
       column: :complaints_other_by_ope_id_do_not_sum, converter: NumberConverter
-    }
+    },
+    'complies_with_sec_103' => { column: :complies_with_sec_103, converter: BooleanConverter },
+    'solely_requires_coe' => { column: :solely_requires_coe, converter: BooleanConverter },
+    'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter },
+    'poo status' => { column: :poo_status, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, uniqueness: true, presence: true
-  validates :version, :institution, :country, presence: true
-  validates :institution_type_name, inclusion: { in: TYPES }
-
-  has_many :yellow_ribbon_programs, dependent: :destroy
+  has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
+  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
+  has_many :yellow_ribbon_programs, dependent: :destroy
+  has_many :institution_category_ratings, dependent: :destroy
+  belongs_to :version
 
   self.per_page = 10
 
@@ -214,45 +226,102 @@ class Institution < ApplicationRecord
     institution_type_name != 'OJT'
   end
 
-  def versioned_school_certifying_officials
-    VersionedSchoolCertifyingOfficial.where('facility_code = ? AND version = ?',
-                                            facility_code, version).order(:last_name)
-  end
-
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
   def self.autocomplete(search_term, limit = 6)
-    select('id, facility_code as value, institution as label')
-      .where('lower(institution) LIKE (?)', "#{search_term}%")
+    select('institutions.id, facility_code as value, institution as label')
+      .where('institution LIKE (?)', "#{search_term.upcase}%")
       .limit(limit)
   end
 
-  # Finds exact-matching facility_code or partial-matching school and city names
-  #
-  scope :search, lambda { |search_term, include_address = false|
+  # This is used both on Weams imports and in the search scope
+  # Idea is to have a processed version of the institution column available to compare with
+  # the trigram % operator against the processed search term
+  def self.institution_search_term(search_term)
     return if search_term.blank?
 
-    clause = [
-      'facility_code = (:facility_code)',
-      'lower(institution) LIKE (:search_term)',
-      'lower(city) LIKE (:search_term)'
-    ]
+    processed_search_term = search_term.gsub(COMMON_REMOVAL_REGEXP, '')
+
+    return search_term.dup if processed_search_term.blank?
+
+    processed_search_term.strip
+  end
+
+  # Finds exact-matching facility_code or partial-matching school and city names
+  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
+    return if search_term.blank?
+
+    clause = ['facility_code = :upper_search_term']
+
+    if fuzzy_search_flag
+      clause << 'institution_search % :institution_search_term'
+      clause << 'UPPER(city) = :upper_search_term'
+      clause << 'UPPER(ialias) LIKE :upper_contains_term'
+      clause << 'zip = :search_term'
+    else
+      clause << 'institution LIKE :upper_contains_term'
+      clause << 'city LIKE :upper_contains_term'
+    end
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE (:search_term)"
+        clause << "lower(address_#{i + 1}) LIKE :lower_contains_term"
       end
     end
 
-    where(
-      sanitize_sql_for_conditions([clause.join(' OR '),
-                                   facility_code: search_term.upcase,
-                                   search_term: "%#{search_term}%"])
-    )
+    where(sanitize_sql_for_conditions([clause.join(' OR '),
+                                       upper_search_term: search_term.upcase,
+                                       upper_contains_term: "%#{search_term.upcase}%",
+                                       lower_contains_term: "%#{search_term.downcase}%",
+                                       search_term: search_term.to_s,
+                                       institution_search_term: "%#{institution_search_term(search_term)}%"]))
   }
 
-  scope :filter, lambda { |field, value|
+  # All values should be between 0.0 and 1.0
+  # Exact matches should add 1.0 to weight and not have a modifier
+  # Use or add modifiers that are set in Settings.search.weight_modifiers to tweak weights if needed
+  #
+  # The weight is a sum of the cases below
+  # ialias^^: exact match, if contains the search term as a word
+  # city: exact match
+  # institution: exact match, if starts with search term, similarity
+  # institution_search: similarity
+  # gibill^^: institution's value divided by provided max gibill value
+  #
+  # ^^ = Has a Settings.search.weight_modifiers setting
+  #
+  # facility_code and zip are not included in order by because of their standard formats
+  scope :search_order, lambda { |search_term, max_gibill = 0|
+    weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL " \
+                       'THEN 1 * :alias_modifier ELSE 0 END',
+                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
+                     'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
+                     'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
+                     'COALESCE(SIMILARITY(institution, :search_term), 0)',
+                     'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)']
+
+    weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
+
+    order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
+    alias_modifier = Settings.search.weight_modifiers.alias
+    gibill_modifier = Settings.search.weight_modifiers.gibill
+    institution_search_term = "%#{institution_search_term(search_term)}%"
+
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
+                                                                  search_term: search_term,
+                                                                  upper_search_term: search_term.upcase,
+                                                                  upper_starts_with_term: "#{search_term.upcase}%",
+                                                                  alias_modifier: alias_modifier,
+                                                                  gibill_modifier: gibill_modifier,
+                                                                  max_gibill: max_gibill,
+                                                                  institution_search_term: institution_search_term])
+
+    order(Arel.sql(sanitized_order_by))
+  }
+
+  scope :filter_result, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
 
@@ -279,7 +348,13 @@ class Institution < ApplicationRecord
     group(field).where.not(field => nil).order(field).count
   }
 
-  scope :version, ->(n) { where(version: n) }
-
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
+
+  scope :approved_institutions, lambda { |version|
+    joins(:version).no_extentions.where(approved: true, version: version)
+  }
+
+  scope :non_vet_tec_institutions, lambda { |version|
+    approved_institutions(version).where(vet_tec_provider: false)
+  }
 end

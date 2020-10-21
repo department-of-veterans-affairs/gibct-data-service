@@ -7,9 +7,7 @@
 # Col Separator: normally ',' but can be '|'
 # Quirks: protectorates are listed as states
 # rubocop:disable Metrics/ClassLength
-class Weam < ApplicationRecord
-  include CsvHelper
-
+class Weam < ImportableRecord
   REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'
 
   LAW_CODES_BLOCKING_APPROVED_STATUS = [
@@ -20,13 +18,13 @@ class Weam < ApplicationRecord
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
     address_1 address_2 address_3
-    country accredited bah poe yr
+    country accredited bah poe yr poo_status
     institution_type_name va_highest_degree_offered flight correspondence
     independent_study priority_enrollment
     physical_address_1 physical_address_2 physical_address_3
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning approved preferred_provider stem_indicator
-    campus_type parent_facility_code_id
+    campus_type parent_facility_code_id institution_search
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -73,10 +71,20 @@ class Weam < ApplicationRecord
     'parent facility code' => { column: :parent_facility_code_id, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, :institution, :institution_type_name, presence: true
+  has_many :crosswalk_issue, dependent: :delete_all
+  validates :facility_code, :institution, :country, presence: true
+  validate :institution_type
   validates :bah, numericality: true, allow_blank: true
+  has_one(:arf_gi_bill, foreign_key: 'facility_code', primary_key: :facility_code,
+                        inverse_of: :weam, dependent: :delete)
 
   after_initialize :derive_dependent_columns
+
+  def institution_type
+    msg = 'Unable to determine institution type'
+    errors.add(:institution_type, msg) unless ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE',
+                                               'FLIGHT', 'FOR PROFIT', 'PUBLIC'].include?(institution_type_name)
+  end
 
   # Computes all fields that are dependent on other fields. Called in validation because
   # activerecord-import does not engage callbacks when saving
@@ -87,6 +95,7 @@ class Weam < ApplicationRecord
     self.correspondence = correspondence?
     self.approved = approved?
     self.ope6 = Ope6Converter.convert(ope)
+    self.institution_search = Institution.institution_search_term(institution)
   end
 
   # Is this instance an OJT institution?
@@ -171,6 +180,22 @@ class Weam < ApplicationRecord
     return false if invalid_law_code?
 
     flags_for_approved?
+  end
+
+  def address_values
+    [address_1, address_2, address_3, city, state, zip].compact
+  end
+
+  def physical_address_values
+    [physical_address_1, physical_address_2, physical_address_3, physical_city, physical_state, physical_zip].compact
+  end
+
+  def address_values_for_match
+    [city, zip, address_1].compact
+  end
+
+  def physical_address_values_for_match
+    [physical_city, physical_zip, physical_address_1].compact
   end
 
   private

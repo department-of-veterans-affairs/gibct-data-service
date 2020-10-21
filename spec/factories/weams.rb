@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :weam do
     institution { 'SOME SCHOOL' }
+    institution_search { 'SOME' }
     facility_code { generate :facility_code }
     ope { generate :ope }
 
@@ -16,6 +17,7 @@ FactoryBot.define do
     poo_status { nil }
     applicable_law_code { nil }
     ojt_indicator { false }
+    csv_row { generate :csv_row }
 
     # Facility_code second digit is 0
     trait :ojt do
@@ -67,8 +69,16 @@ FactoryBot.define do
       facility_code { '10X00000' }
     end
 
+    trait :extension_campus_type do
+      campus_type { 'E' }
+    end
+
     trait :higher_learning do
       institution_of_higher_learning_indicator { true }
+    end
+
+    trait :ihl_facility_code do
+      facility_code { '11000000' }
     end
 
     trait :ncd do
@@ -135,6 +145,32 @@ FactoryBot.define do
       state { 'NY' }
 
       institution_of_higher_learning_indicator { true }
+    end
+
+    trait :weam_builder do
+      poo_status { 'aprvd' }
+      applicable_law_code { 'educational institution is approved for all chapters' }
+      state { 'NY' }
+
+      institution_of_higher_learning_indicator { true }
+    end
+
+    trait :crosswalk_issue_matchable_by_cross do
+      cross { '888888' }
+    end
+
+    trait :crosswalk_issue_matchable_by_ope do
+      ope { '88888888' }
+    end
+
+    trait :crosswalk_issue_matchable_by_facility_code do
+      facility_code { '99Z99999' }
+    end
+
+    trait :arf_gi_bill do
+      arf_gi_bill { create(:arf_gi_bill, facility_code: facility_code) }
+      city { 'Test' }
+      state { 'TN' }
     end
 
     initialize_with do

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ApplicationRecord
-  validates :version, :institution, :description, presence: true
-
   PROGRAM_TYPES = %w[
     IHL
     NCD
@@ -15,6 +13,8 @@ class InstitutionProgram < ApplicationRecord
   delegate :dod_bah, to: :institution
   delegate :preferred_provider, to: :institution
   delegate :facility_code, to: :institution
+
+  self.per_page = 10
 
   def institution_name
     institution.institution
@@ -36,41 +36,44 @@ class InstitutionProgram < ApplicationRecord
     institution.bah
   end
 
-  # Given a search term representing a partial school name, returns all
-  # programs starting with the search term.
-  #
-  def self.autocomplete(search_term, limit = 6)
-    joins(:institution).select('institution_programs.id, institutions.facility_code as value, description as label')
-                       .where(
-                         'lower(description) LIKE (?)',
-                         "#{search_term}%"
-                       )
-                       .group('institution_programs.id, institutions.facility_code, description')
-                       .limit(limit)
-  end
+  delegate :school_closing, to: :institution
+
+  delegate :school_closing_on, to: :institution
+
+  delegate :caution_flags, to: :institution
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term|
+  scope :search, lambda { |search_term, fuzzy_search = false|
     return if search_term.blank?
 
     clause = [
-      'institution_programs.facility_code = (:facility_code)',
-      'lower(institutions.institution) LIKE (:search_term)',
-      'lower(description) LIKE (:search_term)',
-      'lower(institutions.physical_city) LIKE (:search_term)'
+      'institution_programs.facility_code = (:upper_search_term)',
+      'lower(description) LIKE (:lower_contains_term)'
     ]
+
+    if fuzzy_search
+      clause << 'institution % :contains_search_term'
+      clause << 'UPPER(physical_city) = :upper_search_term'
+      clause << 'institutions.physical_zip = :search_term'
+    else
+      clause << 'institutions.institution LIKE (:upper_contains_term)'
+      clause << 'lower(institutions.physical_city) LIKE (:lower_contains_term)'
+    end
 
     where(
       sanitize_sql_for_conditions(
         [clause.join(' OR '),
-         facility_code: search_term.upcase,
-         search_term: "%#{search_term}%"]
+         upper_search_term: search_term.upcase,
+         upper_contains_term: "%#{search_term.upcase}%",
+         lower_contains_term: "%#{search_term.downcase}%",
+         contains_search_term: "%#{search_term}%",
+         search_term: search_term.to_s]
       )
     )
   }
 
-  scope :filter, lambda { |field, value|
+  scope :filter_result, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
 
@@ -85,4 +88,8 @@ class InstitutionProgram < ApplicationRecord
   }
 
   scope :version, ->(n) { where(version: n) }
+
+  scope :filter_count, lambda { |field|
+    group(field).where.not(field => nil).order(field).count
+  }
 end

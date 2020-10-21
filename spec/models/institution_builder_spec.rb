@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
-  let(:institutions) { Institution.version(Version.current_preview.number) }
+  let(:institutions) { Institution.where(version: Version.current_preview) }
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
@@ -21,7 +21,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(described_class.run(user)[:success]).to be_truthy
       end
 
-      it 'returns the new preview version record if sucessful' do
+      it 'returns the new preview version record if successful' do
         create :version
         old_version = Version.current_preview
         version = described_class.run(user)[:version]
@@ -31,7 +31,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version).not_to be_generating
       end
 
-      it 'returns a nil error_msg if sucessful' do
+      it 'returns a nil error_msg if successful' do
         expect(described_class.run(user)[:error_msg]).to be_nil
       end
 
@@ -96,6 +96,15 @@ RSpec.describe InstitutionBuilder, type: :model do
         Weam::COLS_USED_IN_INSTITUTION.each do |column|
           expect(weam[column]).to eq(institution[column])
         end
+      end
+    end
+
+    describe 'when preventing duplicates' do
+      it 'duplicates in WEAMs are not present in institutions' do
+        create :weam, facility_code: '18181818', institution: 'REAL SCHOOL'
+        create :weam, facility_code: '18181818', institution: 'FAKE SCHOOL'
+        described_class.run(user)
+        expect(institutions.where(facility_code: '18181818').count).to eq(1)
       end
     end
 
@@ -242,15 +251,13 @@ RSpec.describe InstitutionBuilder, type: :model do
           end
         end
 
-        context "with a more recent 'restorative' action for the institution" do
-          AccreditationAction::RESTORATIVE_STATUSES.each do |status|
-            it 'does not set the `accreditation_status`' do
-              create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
-                                            action_date: '2019-01-06'
-              create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
-              described_class.run(user)
-              expect(institution.accreditation_status).to be_nil
-            end
+        AccreditationAction::RESTORATIVE_STATUSES.each do |status|
+          it "with a more recent 'restorative' action for the institution does not set the `accreditation_status" do
+            create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
+                                          action_date: '2019-01-06'
+            create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
+            described_class.run(user)
+            expect(institution.accreditation_status).to be_nil
           end
         end
 
@@ -270,31 +277,40 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
 
-      describe 'the caution_flag' do
-        it 'is set to true for any non-nil status' do
+      describe 'the accreditation_action caution_flags' do
+        it 'has flags for any non-nil status' do
           create :accreditation_action_probationary
           described_class.run(user)
 
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: AccreditationCautionFlag::NAME,
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'is set falsey for any nil status' do
+        it 'has no flags for any nil status' do
           create :accreditation_action
           described_class.run(user)
 
-          expect(institution.caution_flag).to be_falsey
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: AccreditationCautionFlag::NAME,
+                              version_id: Version.current_preview.id })
+                     .count).to eq(0)
         end
-      end
 
-      describe 'the caution_flag_reason' do
         it 'concatenates `action_description` and `justification_description`' do
           aap = create :accreditation_action_probationary
 
           described_class.run(user)
 
-          expect(
-            institution.caution_flag_reason
-          ).to match(/#{aap.action_description}/i).and match(/#{aap.justification_description}/i)
+          caution_flags = CautionFlag.where({ institution_id: institution.id,
+                                              source: AccreditationCautionFlag::NAME,
+                                              version_id: Version.current_preview.id }).count
+          expect(caution_flags).to be > 0
+          expect(institutions.find(institution.id).caution_flag_reason)
+            .to include(aap.action_description, aap.justification_description)
         end
       end
     end
@@ -313,49 +329,26 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when adding P911Tf data' do
-      let(:institution) { institutions.find_by(facility_code: p911_tf.facility_code) }
-      let(:p911_tf) { P911Tf.first }
+    describe 'when adding Post911Stat' do
+      let(:institution) { institutions.find_by(facility_code: post911_stat.facility_code) }
+      let(:post911_stat) { Post911Stat.first }
 
       before do
-        create :p911_tf, :institution_builder
+        create :post911_stat, :institution_builder
         described_class.run(user)
       end
 
       it 'copies columns used by institutions' do
-        P911Tf::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(p911_tf[column]).to eq(institution[column])
-        end
-      end
-    end
-
-    describe 'when adding P911Yr data' do
-      let(:institution) { institutions.find_by(facility_code: p911_yr.facility_code) }
-      let(:p911_yr) { P911Yr.first }
-
-      before do
-        create :p911_yr, :institution_builder
-        described_class.run(user)
-      end
-
-      it 'copies columns used by institutions' do
-        P911Yr::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(p911_yr[column]).to eq(institution[column])
-        end
+        expect(post911_stat.tuition_and_fee_count).to eq(institution.p911_recipients)
+        expect(post911_stat.tuition_and_fee_total_amount).to eq(institution.p911_tuition_fees)
+        expect(post911_stat.yellow_ribbon_count).to eq(institution.p911_yr_recipients)
+        expect(post911_stat.yellow_ribbon_total_amount).to eq(institution.p911_yellow_ribbon)
       end
     end
 
     describe 'when adding Mou data' do
-      let(:institution) { institutions.find_by(ope6: mou.ope6) }
-      let(:reason) { 'DoD Probation For Military Tuition Assistance' }
+      let(:institution) { institutions.find_by(ope: mou.ope) }
       let(:mou) { Mou.first }
-
-      ['PRoBATIon Dod', 'title IV NON-comPliant'].each do |status|
-        it "sets dodmou TRUE for status '#{status}'" do
-          create :mou, :institution_builder, status: status
-          described_class.run(user)
-        end
-      end
 
       it 'copies columns used by institutions' do
         create :mou, :institution_builder
@@ -363,17 +356,25 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(mou.dodmou).to eq(institution.dodmou)
       end
 
-      describe 'the caution_flag' do
-        it 'is sets when dod_status is true' do
+      describe 'the mou caution_flag' do
+        it 'has flags when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: MouCautionFlag::NAME,
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'is not set when dod_status is not true' do
+        it 'has no flags when dod_status is not true' do
           create :mou, :institution_builder, :by_title_iv
           described_class.run(user)
-          expect(institution.caution_flag).to be_falsey
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: MouCautionFlag::NAME,
+                              version_id: Version.current_preview.id })
+                     .count).to eq(0)
         end
       end
 
@@ -381,24 +382,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'is set when dod_status is true' do
           create :mou, :institution_builder, :by_dod
           described_class.run(user)
-          expect(institution.caution_flag_reason).to eq(reason)
-        end
+          caution_flags = CautionFlag.where({ institution_id: institution.id,
+                                              source: MouCautionFlag::NAME,
+                                              version_id: Version.current_preview.id }).count
+          expect(caution_flags).to be > 0
 
-        it 'contentates the existing reasons' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :mou, :institution_builder, :by_dod
-          described_class.run(user)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/).and match(/DoD Probation/)
-        end
-
-        it 'is unaltered when dod_status is not true' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :mou, :institution_builder, :by_title_iv
-          described_class.run(user)
-          expect(institution.caution_flag_reason).not_to match(/DoD/)
-          expect(institution.caution_flag_reason).to match(/Probation or Equivalent/)
+          expect(institutions.find(institution.id).caution_flag_reason)
+            .to include('DoD Probation For Military Tuition Assistance')
         end
       end
     end
@@ -507,160 +497,98 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when adding Sec702 and Sec702School data' do
-      let(:sec702) { Sec702.first }
-      let(:sec702_school) { Sec702School.first }
-
+    describe 'when adding Sec702 and VA Caution Flag Sec702 data' do
       context 'when the school is non-public' do
-        it 'the institution is unaffected by Sec702School' do
-          Weam.delete_all
-          create :weam, :institution_builder, :private
-          create :sec702_school, :institution_builder
+        let(:weam_row) { create :weam, :private, state: 'NY' }
+
+        it 'the institution is unaffected by VA Caution Flag values' do
+          create :va_caution_flag, :not_sec_702, facility_code: weam_row.facility_code
+          create :sec702, state: weam_row.state
+
           described_class.run(user)
-          expect(institutions.first.sec_702).to be_nil
+          expect(institutions.find_by(facility_code: weam_row.facility_code).sec_702).to be_nil
         end
 
         it 'the institution is unaffected by Sec702' do
-          Weam.delete_all
-          create :weam, :institution_builder, :private
-          create :sec702, :institution_builder
+          create :sec702, state: weam_row.state
+
           described_class.run(user)
-          expect(institutions.first.sec_702).to be_nil
+          expect(institutions.find_by(facility_code: weam_row.facility_code).sec_702).to be_nil
         end
       end
 
-      context 'when the school is public' do
-        describe 'sec_702' do
-          it 'is set from Section702' do
-            create :sec702, :institution_builder
-            described_class.run(user)
-            expect(institutions.first.sec_702).not_to be_nil
-            expect(institutions.first.sec_702).to be_falsy
-          end
+      describe 'when the school is public' do
+        let(:weam_row) { create :weam, :public, state: 'NY' }
 
-          it 'is set from Section702School' do
-            sec702_school = create :sec702_school, :institution_builder
-            described_class.run(user)
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).not_to be_nil
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_falsey
-          end
+        it 'is set from Section702' do
+          create :sec702, state: weam_row.state
+          described_class.run(user)
+          expect(institutions.find_by(facility_code: weam_row.facility_code).sec_702).not_to be_nil
+          expect(institutions.find_by(facility_code: weam_row.facility_code).sec_702).to be_falsy
+        end
 
-          it 'prefers Sec702School over Section702' do
-            create :weam, :institution_builder, :private
-            sec702_school = create :sec702_school, :institution_builder, sec_702: true
-            create :sec702, :institution_builder
-            described_class.run(user)
-            expect(institutions.find_by(facility_code: sec702_school.facility_code).sec_702).to be_truthy
-          end
+        it 'is set from VA Caution Flags when a row exists' do
+          create :va_caution_flag, :not_sec_702, facility_code: weam_row.facility_code
+          create :sec702, state: weam_row.state, sec_702: true
+          described_class.run(user)
+          expect(institutions.find_by(facility_code: weam_row.facility_code).sec_702).not_to be_nil
+          expect(institutions.find_by(facility_code: weam_row.facility_code).sec_702).to be_falsey
         end
       end
 
-      describe 'the caution_flag' do
-        it 'is set from Section702 when sec_702 is false' do
-          create :sec702, :institution_builder
+      describe 'the sec_702 caution_flag' do
+        let(:weam_row) { create :weam, :public, state: 'NY' }
+
+        it 'has flags from Section702 when sec_702 is false' do
+          create :sec702, state: weam_row.state
           described_class.run(user)
-          expect(institutions.first.caution_flag).not_to be_nil
-          expect(institutions.first.caution_flag).to be_truthy
+
+          institution = institutions.find_by(facility_code: weam_row.facility_code)
+          expect(CautionFlag
+                     .where({ source: Sec702CautionFlag::NAME,
+                              institution_id: institution.id,
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
 
-        it 'is set from Section702School when sec_702 is false' do
-          create :sec702_school, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag).not_to be_nil
-          expect(institutions.first.caution_flag).to be_truthy
-        end
+        it 'has flags from VA Caution Flags when sec_702 is false' do
+          create :va_caution_flag, :not_sec_702, facility_code: weam_row.facility_code
+          create :sec702, state: weam_row.state, sec_702: true
 
-        it 'prefers Sec702School over Section702' do
-          sec702_school_institution = create :weam, :institution_builder, :private
-          create :sec702_school, :institution_builder, sec_702: true
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag).to be_falsey
-        end
-      end
-
-      describe 'the caution_flag_reason' do
-        let(:reason) { 'Does Not Offer Required In-State Tuition Rates' }
-
-        it 'is set from Section702 when sec_702 is false' do
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).not_to be_nil
-          expect(institutions.first.caution_flag_reason).to eq(reason)
-        end
-
-        it 'is set from Section702School when sec_702 is false' do
-          create :sec702_school, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).not_to be_nil
-          expect(institutions.first.caution_flag_reason).to eq(reason)
-        end
-
-        it 'prefers Sec702School over Section702' do
-          sec702_school_institution = create :weam, :institution_builder, :private
-          create :sec702_school, :institution_builder, sec_702: true
-          create :sec702, :institution_builder
           described_class.run(user)
 
-          expect(institutions.find_by(facility_code: sec702_school_institution.facility_code)
-                     .caution_flag_reason).to be_nil
-        end
-
-        it 'concatenates the sec_702 reason when sec_702 is false' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :sec702, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/).and match(/Tuition/)
-        end
-
-        it 'is left unaltered when sec_702 is true' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :sec702_school, :institution_builder, sec_702: true
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-          expect(institutions.first.caution_flag_reason).not_to match(/Tuition/)
+          institution = institutions.find_by(facility_code: weam_row.facility_code)
+          expect(CautionFlag.where({ source: Sec702CautionFlag::NAME, institution_id: institution.id,
+                                     version_id: Version.current_preview.id }).count).to be > 0
         end
       end
     end
 
     describe 'when adding Settlement data' do
-      let(:institution) { institutions.find_by(cross: settlement.cross) }
-      let(:settlement) { Settlement.first }
+      it 'a caution_flag is set with title and description' do
+        weam_row = create :weam, :weam_builder
+        va_caution_flag = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code
+        described_class.run(user)
 
-      describe 'the caution_flag' do
-        it 'is set for every settlement' do
-          create :settlement, :institution_builder
-          described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
-        end
+        institution = institutions.find_by(facility_code: weam_row.facility_code)
+        caution_flag = CautionFlag.where({ institution_id: institution.id, source: 'Settlement',
+                                           version_id: Version.current_preview.id }).first
+
+        expect(caution_flag.title).to eq(va_caution_flag.settlement_title)
+        expect(caution_flag.description).to eq(va_caution_flag.settlement_description)
       end
 
-      describe 'the caution_flag_reason' do
-        it 'is set to the settlement_description' do
-          create :settlement, :institution_builder
-          described_class.run(user)
-          expect(institution.caution_flag_reason).to eq(settlement.settlement_description)
-        end
-
-        it 'is set with multiple descriptions' do
-          create :settlement, :institution_builder
-          create :settlement, :institution_builder, settlement_description: 'another description'
-          described_class.run(user)
-          expect(institution.caution_flag_reason).to match(settlement.settlement_description)
-            .and match('another description')
-        end
-
-        it 'is concatenated with the settlement_description' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :settlement, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-            .and match(settlement.settlement_description)
-        end
+      it 'caution_flag_reason has multiple descriptions' do
+        weam_row = create :weam, :weam_builder
+        flag_a = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code
+        flag_b = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code,
+                                                       settlement_title: 'another title'
+        described_class.run(user)
+        institution = institutions.find_by(facility_code: weam_row.facility_code)
+        caution_flags = CautionFlag.where({ institution_id: institution.id,
+                                            source: 'Settlement', version_id: Version.current_preview.id }).count
+        expect(caution_flags).to be > 1
+        expect(institution.caution_flag_reason).to include(flag_a.settlement_title, flag_b.settlement_title)
       end
     end
 
@@ -669,35 +597,39 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:hcm) { Hcm.first }
 
       describe 'the caution_flag' do
-        it 'is set for every heightened cash monitoring notice' do
+        it 'has flags for every heightened cash monitoring notice' do
           create :hcm, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag).to be_truthy
+          expect(CautionFlag
+                     .where({ institution_id: institution.id,
+                              source: HcmCautionFlag::NAME,
+                              version_id: Version.current_preview.id })
+                     .count).to be > 0
         end
       end
 
       describe 'the caution_flag_reason' do
-        it 'is set to the hcm_reason' do
+        it 'has flag set to the hcm_reason' do
           create :hcm, :institution_builder
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(hcm.hcm_reason)
+          caution_flags = CautionFlag.where({ institution_id: institution.id,
+                                              source: HcmCautionFlag::NAME,
+                                              version_id: Version.current_preview.id }).count
+
+          expect(caution_flags).to be > 0
+          expect(institutions.find(institution.id).caution_flag_reason)
+            .to include(hcm.hcm_reason)
         end
 
-        it 'is set with multiple hcm_reason' do
+        it 'has flag with multiple hcm_reason' do
           create :hcm, :institution_builder
           create :hcm, :institution_builder, hcm_reason: 'another reason'
           described_class.run(user)
-          expect(institution.caution_flag_reason).to match(Regexp.new(hcm.hcm_reason))
-            .and match(/another reason/)
-        end
-
-        it 'is concatenated with the hcm_reason' do
-          create :accreditation_institute_campus
-          create :accreditation_action_probationary
-          create :hcm, :institution_builder
-          described_class.run(user)
-          expect(institutions.first.caution_flag_reason).to match(/Probation or Equivalent/)
-            .and match(Regexp.new(hcm.hcm_reason))
+          caution_flags = CautionFlag.where({ institution_id: institution.id, source: HcmCautionFlag::NAME,
+                                              version_id: Version.current_preview.id }).count
+          expect(caution_flags).to be > 0
+          expect(institutions.find(institution.id).caution_flag_reason)
+            .to include(hcm.hcm_reason, 'another reason')
         end
       end
     end
@@ -820,18 +752,21 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when adding School Closure data' do
-      let(:institution) { institutions.find_by(facility_code: school_closure.facility_code) }
-      let(:school_closure) { SchoolClosure.first }
+      let(:institution) { institutions.find_by(facility_code: va_caution_flag.facility_code) }
+      let(:va_caution_flag) { VaCautionFlag.first }
 
       before do
-        create :school_closure, :institution_builder
+        create :va_caution_flag, :school_closing, facility_code: Weam.first.facility_code
         described_class.run(user)
       end
 
-      it 'copies columns used by institutions' do
-        SchoolClosure::COLS_USED_IN_INSTITUTION.each do |column|
-          expect(school_closure[column]).to eq(institution[column])
-        end
+      it 'sets school_closing' do
+        expect(institution.school_closing).to be_truthy
+      end
+
+      it 'sets school_closing_date' do
+        expect(institution.school_closing_on)
+          .to eq(Date.strptime(va_caution_flag.school_closing_date, '%m/%d/%y'))
       end
     end
 
@@ -862,7 +797,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(zipcode_rate.zip_code).to eq(institution.zip)
         expect(zipcode_rate.mha_rate).to eq(1000)
         expect(zipcode_rate.mha_rate_grandfathered).to eq(1100)
-        expect(zipcode_rate.version).to eq(Version.current_preview.number)
+        expect(zipcode_rate.version.id).to eq(Version.current_preview.id)
       end
     end
 
@@ -872,10 +807,52 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :edu_program, facility_code: '1ZZZZZZZ'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
-        expect(InstitutionProgram.first.version).to eq(Version.current_preview.number)
+        expect(InstitutionProgram.first.institution_id).to eq(Institution.first.id)
+        expect(Institution.first.version_id).to eq(Version.current_preview.id)
       end
 
-      it 'does not generate instition programs without matching programs and edu_programs' do
+      it 'does not generate duplicate institution programs for duplicate edu-programs' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+      end
+
+      it 'does not generate duplicate institution programs for duplicate edu-programs with differently cased names' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ', vet_tec_program: 'computer science'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+      end
+
+      it 'does not generate duplicate institution programs for duplicate programs' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+      end
+
+      it 'does not generate duplicate institution programs for duplicate programs with differently cased names' do
+        create :program, facility_code: '1ZZZZZZZ', description: 'computer science'
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+      end
+
+      it 'defaults deduped InstitutionProgram length_in_weeks to 0' do
+        create :program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+        create :edu_program, facility_code: '1ZZZZZZZ'
+
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+        expect(InstitutionProgram.first.length_in_weeks).to eq(0)
+      end
+
+      it 'does not generate institution programs without matching programs and edu_programs' do
         create :program, facility_code: '1ZZZZZZZ'
         create :edu_program, facility_code: '0001'
         described_class.run(user)
@@ -912,11 +889,239 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when generating versioned school certifying official table' do
-      it 'properly generates versioned school certifying official from school certifying official' do
-        create :school_certifying_official, facility_code: '2V000105'
+    describe 'when creating versioned_school_certifying_officials' do
+      it 'properly generates school certifying official with instituion_id' do
+        weam = create(:weam)
+        create :school_certifying_official, facility_code: weam.facility_code
         expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
-        expect(VersionedSchoolCertifyingOfficial.first.version).to eq(Version.current_preview.number)
+        expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
+      end
+
+      it 'ignores priority casing' do
+        weam = create(:weam)
+        create :school_certifying_official, facility_code: weam.facility_code, priority: 'primarY'
+        expect { described_class.run(user) }.to change(VersionedSchoolCertifyingOfficial, :count).from(0).to(1)
+        expect(VersionedSchoolCertifyingOfficial.last.institution_id).to be_present
+      end
+
+      it 'does not create VSCO for SCO with invalid priority value' do
+        weam = create(:weam)
+        create :school_certifying_official, :invalid_priority, facility_code: weam.facility_code
+        described_class.run(user)
+        expect(VersionedSchoolCertifyingOfficial.count).to be_zero
+      end
+    end
+
+    describe 'when setting count_of_caution_flags' do
+      it 'has count greater than zero' do
+        create :accreditation_institute_campus
+        create :accreditation_action_probationary
+
+        described_class.run(user)
+
+        expect(institutions.where('count_of_caution_flags > 0').count).to be > 0
+      end
+    end
+
+    describe 'when setting section 103 data' do
+      it 'sets default message for IHL institutions' do
+        weam = create :weam, :ihl_facility_code
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
+          .to eq(Institution::DEFAULT_IHL_SECTION_103_MESSAGE)
+      end
+
+      it 'does not set default message for nonIHL institutions' do
+        weam = create :weam
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
+          .to be_nil
+      end
+
+      it 'sets certificate required message' do
+        weam = create :weam, :ihl_facility_code
+        create :sec103, facility_code: weam.facility_code
+
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
+          .to eq('Requires Certificate of Eligibility (COE)')
+      end
+
+      it 'sets certificate required plus additional message' do
+        weam = create :weam, :ihl_facility_code
+        create :sec103, :requires_additional, facility_code: weam.facility_code
+
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
+          .to eq('Requires Certificate of Eligibility (COE) and additional criteria')
+      end
+
+      it 'institutions that explicitly do not comply with section 103 are not approved ' do
+        weam = create :weam, :ihl_facility_code, :approved_poo_and_law_code, :with_approved_indicators
+        create :sec103, :does_not_comply, facility_code: weam.facility_code
+
+        described_class.run(user)
+
+        expect(institutions.where("facility_code = '#{weam.facility_code}'").first['approved']).to eq(false)
+      end
+    end
+
+    describe 'when calculating category ratings' do
+      let(:institution) { institutions.find_by(facility_code: weam.facility_code) }
+      let(:weam) { Weam.find_by(facility_code: '11000000') }
+
+      before do
+        create :weam, :ihl_facility_code
+      end
+
+      it 'counts number of total institution ratings' do
+        create_list(:school_rating, 7, :ihl_facility_code, :all_threes)
+        create(:school_rating)
+
+        described_class.run(user)
+
+        expect(institution.rating_count).to eq(7)
+      end
+
+      it 'averages overall institution rating' do
+        create_list(:school_rating, 3, :ihl_facility_code, :all_threes)
+
+        described_class.run(user)
+
+        expect(institution.rating_average).to eq(3)
+      end
+
+      it 'institution rating is null without any ratings' do
+        described_class.run(user)
+
+        expect(institution.rating_average).to be_nil
+      end
+
+      it 'creates a InstitutionCategoryRating for every category' do
+        create_list(:school_rating, 3, :ihl_facility_code, :online_instruction_only)
+
+        described_class.run(user)
+        expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(7)
+      end
+
+      it 'counts ratings correctly' do
+        create(:school_rating, :ihl_facility_code, online_instruction: 5)
+        create(:school_rating, :ihl_facility_code, online_instruction: 4)
+        create(:school_rating, :ihl_facility_code, online_instruction: 3)
+        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 1)
+
+        described_class.run(user)
+
+        online_instruction = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'online_instruction')
+
+        expect(online_instruction.rated1_count).to eq(1)
+        expect(online_instruction.rated2_count).to eq(0)
+        expect(online_instruction.rated3_count).to eq(1)
+        expect(online_instruction.rated4_count).to eq(1)
+        expect(online_instruction.rated5_count).to eq(1)
+        expect(online_instruction.na_count).to eq(0)
+        expect(online_instruction.total_count).to eq(4)
+        expect(online_instruction.average_rating).to eq(3.25)
+      end
+
+      it 'ignores "NA" votes when calculating category average' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(1)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(3)
+      end
+
+      it 'only counts most recent rating by rater' do
+        create_list(:school_rating, 4, :ihl_facility_code, online_instruction: 2)
+        create(:school_rating, :ihl_facility_code, online_instruction: 2, rater_id: 'test')
+        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 5, rater_id: 'test')
+
+        described_class.run(user)
+
+        online_instruction = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'online_instruction')
+
+        expect(online_instruction.rated1_count).to eq(0)
+        expect(online_instruction.rated2_count).to eq(4)
+        expect(online_instruction.rated3_count).to eq(0)
+        expect(online_instruction.rated4_count).to eq(0)
+        expect(online_instruction.rated5_count).to eq(1)
+        expect(online_instruction.na_count).to eq(0)
+        expect(online_instruction.total_count).to eq(5)
+        expect(online_instruction.average_rating).to eq(2.6)
+      end
+
+      it 'treats rating <= 0 as NA' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 0)
+        create(:school_rating, :ihl_facility_code, overall_experience: -1)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(2)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(3)
+      end
+
+      it 'treats rating > 5 as 5' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 6)
+        create(:school_rating, :ihl_facility_code, overall_experience: 6)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(0)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(2)
+        expect(overall_experience.na_count).to eq(0)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(5)
+      end
+
+      it 'calculates a null average for 0 votes' do
+        create(:school_rating, :ihl_facility_code)
+        create(:school_rating, :ihl_facility_code)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(0)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.rated5_count).to eq(0)
+        expect(overall_experience.na_count).to eq(2)
+        expect(overall_experience.total_count).to eq(0)
+        expect(overall_experience.average_rating).to be_nil
       end
     end
   end

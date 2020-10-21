@@ -38,7 +38,7 @@ class DashboardsController < ApplicationController
   def export_version
     respond_to do |format|
       format.csv do
-        send_data Institution.export_institutions_by_version(params[:number]),
+        send_data Institution.export_by_version(params[:number]),
                   type: 'text/csv',
                   filename: "institutions_version_#{params[:number]}.csv"
       end
@@ -54,22 +54,43 @@ class DashboardsController < ApplicationController
     if version.blank?
       flash.alert = 'No preview version available'
     else
-      production_version = Version.create(number: version.number, production: true, user: current_user)
+      version.update(production: true)
 
-      if production_version.persisted?
-        flash.notice = 'Production data updated'
+      flash.notice = 'Production data updated'
 
-        # Build Sitemap and notify search engines in production only
-        ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
-        GibctSiteMapper.new(ping: ping)
+      # Build Sitemap and notify search engines in production only
+      ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
+      GibctSiteMapper.new(ping: ping)
 
-        if Settings.archiver.archive
-          # Archive previous versions of generated data
-          Archiver.archive_previous_versions
-        end
-      else
-        flash.alert = 'Production data not updated, remains at previous production version'
+      if Settings.archiver.archive
+        # Archive previous versions of generated data
+        Archiver.archive_previous_versions
       end
+    end
+
+    redirect_to dashboards_path
+  end
+
+  def api_fetch
+    class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
+
+    if Upload.fetching_for?(params[:csv_type])
+      flash.alert = "#{params[:csv_type]} is already being fetched by another user"
+    elsif class_name.present?
+      csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
+      begin
+        api_upload = Upload.new(csv_type: class_name, user: current_user, csv: csv,
+                                comment: "#{class_name} API Request")
+        flash.notice = fetch_api_data(api_upload) if api_upload.save!
+      rescue StandardError => e
+        message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
+        api_upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+
+        Rails.logger.error e
+        flash.alert = message
+      end
+    else
+      flash.alert = "#{params[:csv_type]} is not configured to fetch data from an api"
     end
 
     redirect_to dashboards_path
@@ -78,9 +99,23 @@ class DashboardsController < ApplicationController
   private
 
   def csv_model(csv_type)
-    model = CSV_TYPES_ALL_TABLES.select { |klass| klass.name == csv_type }.first
+    model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
+  end
+
+  def fetch_api_data(api_upload)
+    klass = api_upload.csv_type.constantize
+    populated = klass&.respond_to?(:populate) ? klass.populate : false
+    api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
+
+    if populated
+
+      message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
+      return message if message.present?
+
+      "#{klass.name} finished fetching data from it's api"
+    end
   end
 end

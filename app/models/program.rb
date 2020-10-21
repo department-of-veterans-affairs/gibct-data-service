@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Program < ApplicationRecord
-  include CsvHelper
-
+class Program < ImportableRecord
   CSV_CONVERTER_INFO = {
     'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution name' => { column: :institution_name, converter: InstitutionConverter },
@@ -14,7 +12,6 @@ class Program < ApplicationRecord
     'length' => { column: :length, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, presence: true
+  validates :facility_code, :description, presence: true
   validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
-  validates_with ProgramValidator, on: :after_import
 end

@@ -2,10 +2,12 @@
 
 module Archiver
   ARCHIVE_TYPES = [
-    { source: Institution, archive: InstitutionsArchive },
+    { source: InstitutionCategoryRating, archive: InstitutionCategoryRatingsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
+    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
-    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive }
+    { source: CautionFlag, archive: nil },
+    { source: Institution, archive: InstitutionsArchive }
   ].freeze
 
   def self.archive_previous_versions
@@ -16,7 +18,12 @@ module Archiver
       ApplicationRecord.transaction do
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
-          archivable[:source].where('version >= ? and version < ?', previous_version, production_version).delete_all
+          source = if archivable[:source].has_attribute?(:institution_id)
+                     archivable[:source].joins(institution: :version)
+                   else
+                     archivable[:source].joins(:version)
+                   end
+          source.where('number >= ? AND number <?', previous_version, production_version).delete_all
         end
       end
     rescue ActiveRecord::StatementInvalid => e
@@ -29,13 +36,14 @@ module Archiver
   end
 
   def self.create_archives(source, archive, previous_version, production_version)
-    str = <<-SQL
-      INSERT INTO #{archive.table_name}
-        SELECT *
-          FROM #{source.table_name}
-          WHERE version >= ? and version < ? ;
-    SQL
+    return if archive.blank?
 
+    str = <<~SQL
+      INSERT INTO #{archive.table_name}
+      SELECT s.* FROM #{source.table_name} s
+    SQL
+    str += source.has_attribute?(:institution_id) ? 'JOIN institutions i ON s.institution_id = i.id JOIN versions v ON i.version_id = v.id' : 'JOIN versions v ON s.version_id = v.id'
+    str += ' WHERE v.number >= ? AND v.number < ?;'
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
     ApplicationRecord.connection.execute(sql)
   end

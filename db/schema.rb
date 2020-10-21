@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_04_095800) do
+ActiveRecord::Schema.define(version: 2020_09_30_081100) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "accreditation_actions", id: :serial, force: :cascade do |t|
@@ -92,7 +93,22 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.float "float_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
+  end
+
+  create_table "caution_flags", force: :cascade do |t|
+    t.integer "institution_id"
+    t.integer "version_id"
+    t.string "source"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title", default: "School engaged in misleading, deceptive, or erroneous practices"
+    t.string "description", default: "VA has found that this school engaged in misleading, deceptive, or erroneous advertising, sales, or enrollment practices, and has taken action against it."
+    t.string "link_text"
+    t.string "link_url"
+    t.string "flag_date"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
@@ -130,6 +146,16 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.index ["ope6"], name: "index_complaints_on_ope6"
   end
 
+  create_table "crosswalk_issues", force: :cascade do |t|
+    t.bigint "weam_id"
+    t.bigint "crosswalk_id"
+    t.bigint "ipeds_hd_id"
+    t.string "issue_type"
+    t.index ["crosswalk_id"], name: "index_crosswalk_issues_on_crosswalk_id"
+    t.index ["ipeds_hd_id"], name: "index_crosswalk_issues_on_ipeds_hd_id"
+    t.index ["weam_id"], name: "index_crosswalk_issues_on_weam_id"
+  end
+
   create_table "crosswalks", id: :serial, force: :cascade do |t|
     t.string "facility_code", null: false
     t.string "cross"
@@ -149,20 +175,20 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
   end
 
   create_table "edu_programs", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.string "institution_name", null: false
-    t.string "school_locale", null: false
-    t.string "provider_website", null: false
-    t.string "provider_email_address", null: false
-    t.string "phone_area_code", null: false
-    t.string "phone_number", null: false
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "school_locale"
+    t.string "provider_website"
+    t.string "provider_email_address"
+    t.string "phone_area_code"
+    t.string "phone_number"
     t.string "student_vet_group"
     t.string "student_vet_group_website"
-    t.string "vet_success_name", null: false
+    t.string "vet_success_name"
     t.string "vet_success_email"
     t.string "vet_tec_program"
-    t.integer "tuition_amount", null: false
-    t.integer "length_in_weeks", null: false
+    t.integer "tuition_amount"
+    t.integer "length_in_weeks"
     t.index ["facility_code", "vet_tec_program"], name: "index_edu_programs_on_facility_code_and_vet_tec_program"
   end
 
@@ -195,6 +221,42 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ope"], name: "index_hcms_on_ope"
+    t.index ["ope6"], name: "index_hcms_on_ope6"
+  end
+
+  create_table "ignored_crosswalk_issues", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "cross"
+    t.string "ope"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "institution_category_ratings", force: :cascade do |t|
+    t.string "category_name", null: false
+    t.float "average_rating"
+    t.integer "total_count"
+    t.integer "rated5_count"
+    t.integer "rated4_count"
+    t.integer "rated3_count"
+    t.integer "rated2_count"
+    t.integer "rated1_count"
+    t.integer "na_count"
+    t.bigint "institution_id", null: false
+    t.index ["institution_id"], name: "index_institution_category_ratings_on_institution_id"
+  end
+
+  create_table "institution_category_ratings_archives", force: :cascade do |t|
+    t.string "category_name", null: false
+    t.float "average_rating"
+    t.integer "total_count"
+    t.integer "rated5_count"
+    t.integer "rated4_count"
+    t.integer "rated3_count"
+    t.integer "rated2_count"
+    t.integer "rated1_count"
+    t.integer "na_count"
+    t.bigint "institution_id", null: false
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
@@ -250,7 +312,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
   end
 
   create_table "institutions", id: :serial, force: :cascade do |t|
-    t.integer "version", null: false
+    t.integer "version"
     t.string "institution_type_name"
     t.string "facility_code"
     t.string "institution"
@@ -370,27 +432,45 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
-    t.index "lower((institution)::text) text_pattern_ops", name: "index_institutions_institution_lprefix"
-    t.index ["address_1"], name: "index_institutions_on_address_1"
-    t.index ["address_2"], name: "index_institutions_on_address_2"
-    t.index ["address_3"], name: "index_institutions_on_address_3"
-    t.index ["city"], name: "index_institutions_on_city"
+    t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+    t.integer "count_of_caution_flags", default: 0
+    t.string "section_103_message"
+    t.string "poo_status"
+    t.integer "hbcu"
+    t.integer "hcm2"
+    t.integer "menonly"
+    t.float "pctfloan"
+    t.integer "relaffil"
+    t.integer "womenonly"
+    t.string "institution_search"
+    t.integer "rating_count", default: 0
+    t.float "rating_average"
+    t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
+    t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
+    t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
+    t.index ["city"], name: "index_institutions_on_city", opclass: :gin_trgm_ops, using: :gin
+    t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
-    t.index ["institution"], name: "index_institutions_on_institution"
+    t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
     t.index ["ope6"], name: "index_institutions_on_ope6"
+    t.index ["parent_facility_code_id"], name: "index_institutions_on_parent_facility_code_id"
     t.index ["state"], name: "index_institutions_on_state"
     t.index ["stem_offered"], name: "index_institutions_on_stem_offered"
     t.index ["version", "parent_facility_code_id"], name: "index_institutions_on_version_and_parent_facility_code_id"
     t.index ["version"], name: "index_institutions_on_version"
+    t.index ["version_id"], name: "index_institutions_on_version_id"
   end
 
   create_table "institutions_archives", id: :integer, default: -> { "nextval('institutions_id_seq'::regclass)" }, force: :cascade do |t|
-    t.integer "version", null: false
+    t.integer "version"
     t.string "institution_type_name"
     t.string "facility_code"
     t.string "institution"
@@ -510,22 +590,22 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
-    t.index "lower((institution)::text) text_pattern_ops", name: "institutions_archives_lower_idx"
-    t.index ["address_1"], name: "institutions_archives_address_1_idx"
-    t.index ["address_2"], name: "institutions_archives_address_2_idx"
-    t.index ["address_3"], name: "institutions_archives_address_3_idx"
-    t.index ["city"], name: "institutions_archives_city_idx"
-    t.index ["cross"], name: "institutions_archives_cross_idx"
-    t.index ["distance_learning"], name: "institutions_archives_distance_learning_idx"
-    t.index ["facility_code"], name: "institutions_archives_facility_code_idx"
-    t.index ["institution"], name: "institutions_archives_institution_idx"
-    t.index ["institution_type_name"], name: "institutions_archives_institution_type_name_idx"
-    t.index ["online_only"], name: "institutions_archives_online_only_idx"
-    t.index ["ope"], name: "institutions_archives_ope_idx"
-    t.index ["ope6"], name: "institutions_archives_ope6_idx"
-    t.index ["state"], name: "institutions_archives_state_idx"
-    t.index ["stem_offered"], name: "institutions_archives_stem_offered_idx"
-    t.index ["version"], name: "institutions_archives_version_idx"
+    t.bigint "version_id"
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
+    t.integer "count_of_caution_flags", default: 0
+    t.string "section_103_message"
+    t.string "poo_status"
+    t.integer "hbcu"
+    t.integer "hcm2"
+    t.integer "menonly"
+    t.float "pctfloan"
+    t.integer "relaffil"
+    t.integer "womenonly"
+    t.string "institution_search"
+    t.integer "rating_count"
+    t.float "rating_average"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -612,6 +692,8 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cross"], name: "index_ipeds_hds_on_cross"
+    t.index ["institution"], name: "index_ipeds_hds_on_institution"
+    t.index ["ope"], name: "index_ipeds_hds_on_ope"
   end
 
   create_table "ipeds_ic_ays", id: :serial, force: :cascade do |t|
@@ -852,6 +934,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.integer "chg9ay3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cross"], name: "index_ipeds_ic_ays_on_cross"
   end
 
   create_table "ipeds_ic_pies", id: :serial, force: :cascade do |t|
@@ -983,6 +1066,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.integer "mthcmp6"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cross"], name: "index_ipeds_ic_pies_on_cross"
   end
 
   create_table "ipeds_ics", id: :serial, force: :cascade do |t|
@@ -1137,34 +1221,15 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.index ["facility_code"], name: "index_outcomes_on_facility_code", unique: true
   end
 
-  create_table "p911_tfs", id: :serial, force: :cascade do |t|
+  create_table "post911_stats", force: :cascade do |t|
     t.string "facility_code", null: false
-    t.float "p911_tuition_fees", null: false
-    t.integer "p911_recipients", null: false
-    t.string "institution"
-    t.string "state"
-    t.string "country"
-    t.string "profit_status"
-    t.string "type_of_payment"
-    t.integer "number_of_payments"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_p911_tfs_on_facility_code", unique: true
-  end
-
-  create_table "p911_yrs", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.float "p911_yellow_ribbon", null: false
-    t.integer "p911_yr_recipients", null: false
-    t.string "institution"
-    t.string "state"
-    t.string "country"
-    t.string "profit_status"
-    t.string "type_of_payment"
-    t.integer "number_of_payments"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_p911_yrs_on_facility_code", unique: true
+    t.integer "tuition_and_fee_count"
+    t.integer "tuition_and_fee_payments"
+    t.float "tuition_and_fee_total_amount"
+    t.integer "yellow_ribbon_count"
+    t.integer "yellow_ribbon_payments"
+    t.float "yellow_ribbon_total_amount"
+    t.index ["facility_code"], name: "index_post911_stats_on_facility_code"
   end
 
   create_table "programs", id: :serial, force: :cascade do |t|
@@ -1176,6 +1241,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.string "graduate", limit: 15
     t.string "full_time_modifier", limit: 1
     t.string "length", limit: 7
+    t.integer "csv_row"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
@@ -1190,19 +1256,20 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.string "phone_number"
     t.string "phone_extension"
     t.string "email"
+    t.index ["facility_code"], name: "index_school_certifying_officials_on_facility_code"
   end
 
-  create_table "school_closures", id: :serial, force: :cascade do |t|
+  create_table "school_ratings", force: :cascade do |t|
+    t.string "rater_id", null: false
     t.string "facility_code", null: false
-    t.string "institution_name"
-    t.boolean "school_closing"
-    t.string "school_closing_date"
-    t.date "school_closing_on"
-    t.text "school_closing_message"
-    t.text "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_school_closures_on_facility_code", unique: true
+    t.integer "overall_experience"
+    t.integer "quality_of_classes"
+    t.integer "online_instruction"
+    t.integer "job_preparation"
+    t.integer "gi_bill_support"
+    t.integer "veteran_community"
+    t.integer "marketing_practices"
+    t.datetime "rated_at", null: false
   end
 
   create_table "scorecards", id: :serial, force: :cascade do |t|
@@ -1331,22 +1398,24 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.float "grad_debt_mdn10yr_supp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "alias"
     t.index ["cross"], name: "index_scorecards_on_cross"
     t.index ["ope"], name: "index_scorecards_on_ope"
+  end
+
+  create_table "sec103s", force: :cascade do |t|
+    t.string "name"
+    t.string "facility_code", null: false
+    t.boolean "complies_with_sec_103"
+    t.boolean "solely_requires_coe"
+    t.boolean "requires_coe_and_criteria"
   end
 
   create_table "sec109_closed_schools", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "school_name"
     t.boolean "closure109"
-  end
-
-  create_table "sec702_schools", id: :serial, force: :cascade do |t|
-    t.string "facility_code", null: false
-    t.boolean "sec_702"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["facility_code"], name: "index_sec702_schools_on_facility_code", unique: true
+    t.index ["facility_code"], name: "index_sec109_closed_schools_on_facility_code"
   end
 
   create_table "sec702s", id: :serial, force: :cascade do |t|
@@ -1365,19 +1434,6 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.datetime "updated_at"
     t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
-  end
-
-  create_table "settlements", id: :serial, force: :cascade do |t|
-    t.string "cross", null: false
-    t.string "settlement_description", null: false
-    t.string "institution"
-    t.integer "school_system_code"
-    t.string "school_system_name"
-    t.string "settlement_date"
-    t.string "settlement_link"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cross"], name: "index_settlements_on_cross"
   end
 
   create_table "stem_cip_codes", id: :serial, force: :cascade do |t|
@@ -1425,6 +1481,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.boolean "ok", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "completed_at"
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"
@@ -1447,6 +1504,18 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "va_caution_flags", id: :serial, force: :cascade do |t|
+    t.string "facility_code", null: false
+    t.string "institution_name"
+    t.string "school_system_name"
+    t.string "settlement_title"
+    t.string "settlement_description"
+    t.string "settlement_date"
+    t.string "settlement_link"
+    t.string "school_closing_date"
+    t.boolean "sec_702"
+  end
+
   create_table "versioned_school_certifying_officials", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "institution_name"
@@ -1459,6 +1528,8 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.string "phone_extension"
     t.string "email"
     t.integer "version"
+    t.bigint "institution_id"
+    t.index ["institution_id"], name: "index_versioned_school_certifying_officials_on_institution_id"
   end
 
   create_table "versioned_school_certifying_officials_archives", id: :integer, default: -> { "nextval('versioned_school_certifying_officials_id_seq'::regclass)" }, force: :cascade do |t|
@@ -1473,6 +1544,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.string "phone_extension"
     t.string "email"
     t.integer "version"
+    t.bigint "institution_id"
   end
 
   create_table "versions", id: :serial, force: :cascade do |t|
@@ -1546,8 +1618,12 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.boolean "stem_indicator", default: false
     t.string "campus_type"
     t.string "parent_facility_code_id"
-    t.index ["facility_code"], name: "index_weams_on_facility_code", unique: true
+    t.integer "csv_row"
+    t.string "institution_search"
+    t.index ["cross"], name: "index_weams_on_cross"
+    t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
+    t.index ["ope"], name: "index_weams_on_ope"
     t.index ["state"], name: "index_weams_on_state"
   end
 
@@ -1601,6 +1677,37 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.decimal "contribution_amount", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "amendment_date"
+    t.string "campus"
+    t.string "city"
+    t.boolean "consolidated_agreement"
+    t.date "date_agreement_received"
+    t.date "date_confirmation_sent"
+    t.date "date_yr_signed_by_yr_official"
+    t.string "facility_code"
+    t.boolean "flight_school"
+    t.boolean "ineligible"
+    t.string "initials_yr_processor"
+    t.boolean "missed_deadline"
+    t.boolean "modified"
+    t.boolean "new_school"
+    t.text "notes"
+    t.boolean "open_ended_agreement"
+    t.string "public_private"
+    t.string "school_name_in_weams"
+    t.string "school_name_in_yr_database"
+    t.string "sco_email_address"
+    t.string "sco_name"
+    t.string "sco_telephone_number"
+    t.string "sfr_email_address"
+    t.string "sfr_name"
+    t.string "sfr_telephone_number"
+    t.string "state"
+    t.string "street_address"
+    t.boolean "updated_for_2011_2012"
+    t.boolean "withdrawn"
+    t.string "year_of_yr_participation"
+    t.string "zip"
     t.index ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id"
     t.index ["version"], name: "index_yellow_ribbon_programs_on_version"
   end
@@ -1614,7 +1721,9 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
+    t.bigint "version_id"
     t.index ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code"
+    t.index ["version_id"], name: "index_zipcode_rates_on_version_id"
   end
 
   create_table "zipcode_rates_archives", id: :integer, default: -> { "nextval('zipcode_rates_id_seq'::regclass)" }, force: :cascade do |t|
@@ -1626,7 +1735,16 @@ ActiveRecord::Schema.define(version: 2019_11_04_095800) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "version"
+    t.bigint "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "caution_flags", "institutions"
+  add_foreign_key "caution_flags", "versions"
+  add_foreign_key "crosswalk_issues", "crosswalks"
+  add_foreign_key "crosswalk_issues", "ipeds_hds"
+  add_foreign_key "crosswalk_issues", "weams"
+  add_foreign_key "institutions", "versions"
+  add_foreign_key "versioned_school_certifying_officials", "institutions"
+  add_foreign_key "zipcode_rates", "versions"
 end

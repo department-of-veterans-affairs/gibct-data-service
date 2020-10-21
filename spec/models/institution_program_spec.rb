@@ -11,67 +11,53 @@ RSpec.describe InstitutionProgram, type: :model do
     it 'has a valid factory' do
       expect(institution_program).to be_valid
     end
-
-    it 'requires a version' do
-      expect(build(:institution_program, institution: institution, version: nil)).not_to be_valid
-    end
-
-    it 'requires an institution' do
-      expect(build(:institution_program, institution: nil)).not_to be_valid
-    end
-
-    it 'requires a description' do
-      expect(build(:institution_program, institution: institution, description: nil)).not_to be_valid
-    end
   end
 
-  describe 'autocomplete' do
-    context 'when search term is program name' do
-      it 'returns collection of programs with program name matches' do
-        create(:institution_program)
-        create_list(:institution_program, 2, :start_like_harv)
-        expect(described_class.autocomplete('harv').length).to eq(2)
-      end
-
-      it 'limits results' do
-        create_list(:institution_program, 2, :start_like_harv)
-        expect(described_class.autocomplete('harv', 1).length).to eq(1)
-      end
-    end
-  end
-
-  describe 'class methods and scopes' do
-    context 'version' do
-      let(:institution) { create :institution, :physical_address }
-
+  describe 'class methods' do
+    context 'versioning' do
       it 'retrieves institutions by a specific version number' do
-        i = create_list :institution_program, 2, version: 1, institution: institution
-        j = create_list :institution_program, 2, version: 2, institution: institution
+        create :version, :production
+        create :institution, :physical_address, version_id: Version.last.id
+        i = create_list :institution_program, 2, institution: Institution.last
 
-        expect(described_class.version(i.first.version)).to match_array(i.to_a)
-        expect(described_class.version(j.first.version)).to match_array(j.to_a)
+        create :version, :production
+        create :institution, :physical_address, version_id: Version.last.id
+        j = create_list :institution_program, 2, institution: Institution.last
+
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = 1')).to match_array(i.to_a)
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = 2')).to match_array(j.to_a)
       end
 
-      it 'returns blank if a nil or non-existent version number is supplied' do
-        create :institution_program, institution: institution
+      it 'returns blank if a non-existent or null version_id is supplied' do
+        create :version, :production
+        create :institution, :physical_address, version_id: Version.last.id
+        create :institution_program, institution: Institution.last
 
-        expect(described_class.version(-1)).to eq([])
-        expect(described_class.version(nil)).to eq([])
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = -1')).to eq([])
+        expect(described_class.joins(:institution)
+                              .joins('INNER JOIN versions v ON v.id = institutions.version_id')
+                              .where('v.number = ?', nil)).to eq([])
       end
     end
 
     context 'filter scope' do
       it 'raises an error if no arguments are provided' do
-        expect { described_class.filter }.to raise_error(ArgumentError)
+        expect { described_class.filter_result }.to raise_error(ArgumentError)
       end
 
       it 'filters on field existing' do
-        expect(described_class.filter('description', 'true').to_sql)
+        expect(described_class.filter_result('description', 'true').to_sql)
           .to include("WHERE \"institution_programs\".\"description\" = 't'")
       end
 
       it 'filters on field not existing' do
-        expect(described_class.filter('description', 'false').to_sql)
+        expect(described_class.filter_result('description', 'false').to_sql)
           .to include("WHERE \"institution_programs\".\"description\" != 't'")
       end
     end

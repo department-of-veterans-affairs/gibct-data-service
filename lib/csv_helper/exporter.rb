@@ -6,11 +6,15 @@ module CsvHelper
       generate(csv_headers)
     end
 
-    def export_institutions_by_version(number)
+    def export_by_version(number)
       generate_version(csv_headers, number)
     end
 
     private
+
+    def defaults
+      Rails.application.config.csv_defaults[klass.name] || Rails.application.config.csv_defaults['generic']
+    end
 
     def csv_headers
       csv_headers = {}
@@ -24,7 +28,7 @@ module CsvHelper
     end
 
     def generate(csv_headers)
-      CSV.generate do |csv|
+      CSV.generate(col_sep: defaults['col_sep']) do |csv|
         csv << csv_headers.values
 
         klass == write_row(csv, csv_headers)
@@ -32,22 +36,26 @@ module CsvHelper
     end
 
     def generate_version(csv_headers, number)
-      CSV.generate do |csv|
+      CSV.generate(col_sep: defaults['col_sep']) do |csv|
         csv << csv_headers.values
 
-        klass == write_institution_row(csv, csv_headers, number)
+        klass == write_versioned_row(csv, csv_headers, number)
       end
     end
 
     def write_row(csv, csv_headers)
-      klass.find_each(batch_size: Settings.active_record.batch_size) do |record|
+      klass.find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| format(k, record.public_send(k)) }
       end
     end
 
-    def write_institution_row(csv, csv_headers, number)
-      Institution.where(version: number).find_each(batch_size: Settings.active_record.batch_size) do |record|
-        csv << csv_headers.keys.map { |k| record.public_send(k) == false ? nil : format(k, record.public_send(k)) }
+    def write_versioned_row(csv, csv_headers, number)
+      raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
+
+      klass.joins(:version)
+           .where('versions.number = ?', number)
+           .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
+        csv << csv_headers.keys.map { |k| record.respond_to?(k) == false ? nil : format(k, record.public_send(k)) }
       end
     end
 

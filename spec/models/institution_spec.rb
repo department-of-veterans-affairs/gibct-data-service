@@ -1,47 +1,16 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'models/shared_examples/shared_examples_for_loadable'
-require 'models/shared_examples/shared_examples_for_exportable'
+require 'models/shared_examples/shared_examples_for_exportable_by_version'
 
 RSpec.describe Institution, type: :model do
-  describe 'when importing or exporting' do
-    before { create :version, production: false }
-
-    it_behaves_like 'a loadable model', skip_lines: 0
-    it_behaves_like 'an exportable model', skip_lines: 0
-  end
+  it_behaves_like 'an exportable model by version'
 
   describe 'when validating' do
     subject(:institution) { create :institution }
 
     it 'has a valid factory' do
       expect(institution).to be_valid
-    end
-
-    it 'requires a valid and unique facility_code' do
-      expect(build(:institution, facility_code: nil)).not_to be_valid
-
-      duplicate_facility = build :institution, facility_code: institution.facility_code
-      expect(duplicate_facility).not_to be_valid
-      expect(duplicate_facility.errors.messages).to eq(facility_code: ['has already been taken'])
-    end
-
-    it 'requires a version' do
-      expect(build(:institution, version: nil)).not_to be_valid
-    end
-
-    it 'requires an institution (name)' do
-      expect(build(:institution, institution: nil)).not_to be_valid
-    end
-
-    it 'requires a country' do
-      expect(build(:institution, country: nil)).not_to be_valid
-    end
-
-    it 'requires a valid institution_type_name' do
-      expect(build(:institution, institution_type_name: nil)).not_to be_valid
-      expect(build(:institution, institution_type_name: 'blah-blah')).not_to be_valid
     end
   end
 
@@ -182,35 +151,18 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'class methods and scopes' do
-    context 'with version' do
-      it 'retrieves institutions by a specific version number' do
-        i = create_list :institution, 2, version: 1
-        j = create_list :institution, 2, version: 2
-
-        expect(described_class.version(i.first.version)).to match_array(i.to_a)
-        expect(described_class.version(j.first.version)).to match_array(j.to_a)
-      end
-
-      it 'returns blank if a nil or non-existent version number is supplied' do
-        create :institution
-
-        expect(described_class.version(-1)).to eq([])
-        expect(described_class.version(nil)).to eq([])
-      end
-    end
-
     context 'with filter scope' do
       it 'raises an error if no arguments are provided' do
-        expect { described_class.filter }.to raise_error(ArgumentError)
+        expect { described_class.filter_result }.to raise_error(ArgumentError)
       end
 
       it 'filters on field existing' do
-        expect(described_class.filter('institution', 'true').to_sql)
+        expect(described_class.filter_result('institution', 'true').to_sql)
           .to include("WHERE \"institutions\".\"institution\" = 't'")
       end
 
       it 'filters on field not existing' do
-        expect(described_class.filter('institution', 'false').to_sql)
+        expect(described_class.filter_result('institution', 'false').to_sql)
           .to include("WHERE \"institutions\".\"institution\" != 't'")
       end
     end
@@ -229,10 +181,101 @@ RSpec.describe Institution, type: :model do
       it 'searches when attribute is provided' do
         expect(described_class.search('chicago').to_sql)
           .to include(
-            "WHERE (facility_code = ('CHICAGO')",
-            "OR lower(institution) LIKE ('%chicago%')",
-            "OR lower(city) LIKE ('%chicago%'))"
+            "WHERE (facility_code = 'CHICAGO'",
+            "OR institution LIKE '%CHICAGO%'",
+            "OR city LIKE '%CHICAGO%')"
           )
+      end
+    end
+
+    context 'with search order sorts ' do
+      before do
+        create(:version, :production)
+        create_list(:institution, 2, :in_nyc, version_id: Version.current_production.id)
+        create(:institution, :in_chicago, online_only: true, version_id: Version.current_production.id)
+        create(:institution, :in_new_rochelle, distance_learning: true, version_id: Version.current_production.id)
+        # adding a non approved institutions row
+        create(:institution, :contains_harv, approved: false, version_id: Version.current_production.id)
+      end
+
+      it 'ialias exact match' do
+        institution = create(:institution, :mit)
+        search_term = institution.ialias
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].ialias).to eq(search_term)
+      end
+
+      it 'alias contains' do
+        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
+        search_term = 'KU'
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].ialias).to include(search_term)
+      end
+
+      it 'institution exact match' do
+        institution = create(:institution, :mit)
+        search_term = institution.institution
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].institution).to eq(search_term)
+      end
+
+      it 'city exact match' do
+        institution = create(:institution, :mit)
+        search_term = institution.city
+        results = described_class.search(search_term, false, true).search_order(search_term)
+        expect(results[0].city).to eq(search_term)
+      end
+
+      it 'gibill value' do
+        create(:institution, :mit, gibill: 1)
+        institution = create(:institution, :mit)
+        search_term = institution.ialias
+        max_gibill = described_class.maximum(:gibill)
+        results = described_class.search(search_term, false, true).search_order(search_term, max_gibill)
+        expect(results[0].gibill).to eq(max_gibill)
+      end
+    end
+
+    it 'approved institutions' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, approved: false, version_id: Version.current_production.id)
+      results = described_class.approved_institutions(Version.current_production)
+      expect(results.count).to eq(1)
+    end
+
+    it 'non vet tec institutions' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, approved: false, version_id: Version.current_production.id)
+      create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+
+      results = described_class.non_vet_tec_institutions(Version.current_production)
+      expect(results.count).to eq(1)
+    end
+
+    describe '#institution_search_term' do
+      it 'removes common words and characters' do
+        common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
+        search_term = "search term #{common_words_characters}"
+        processed_search_term = described_class.institution_search_term(search_term)
+        expect(processed_search_term).to eq('search term')
+        expect(processed_search_term).not_to include(common_words_characters)
+      end
+
+      it 'returns string if only contains common words' do
+        search_term = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
+        processed_search_term = described_class.institution_search_term(search_term)
+        expect(processed_search_term).to eq(search_term)
+        expect(processed_search_term).to be_present
+      end
+
+      it 'does not remove common words within words' do
+        common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
+        search_term = 'university of maryland & and land'
+        processed_search_term = described_class.institution_search_term(search_term)
+        expect(processed_search_term).not_to include(common_words_characters)
+        expect(processed_search_term).to eq('maryland   land')
       end
     end
   end

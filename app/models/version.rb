@@ -3,6 +3,8 @@
 require 'securerandom'
 
 class Version < ApplicationRecord
+  has_many :institutions, dependent: :nullify
+  has_many :zipcode_rates, dependent: :nullify
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 
@@ -28,11 +30,19 @@ class Version < ApplicationRecord
   end
 
   def self.current_preview
-    Version.preview.newest.first
+    cp = preview.newest
+    cp = cp.where('created_at > ?', current_production.created_at) if current_production
+    cp.first
   end
 
   def self.previews_exist?
     Version.newest.first.preview?
+  end
+
+  def self.archived
+    Version.select('distinct on (number) *')
+           .where('number < ? and production = true', Version.current_production&.number)
+           .order(number: :desc)
   end
 
   # public instance methods
@@ -61,6 +71,14 @@ class Version < ApplicationRecord
   def gibct_link
     version_info = production? ? '' : "?version=#{uuid}"
     "#{ENV['GIBCT_URL']}#{version_info}"
+  end
+
+  def as_json(_options = nil)
+    {
+      number: number,
+      created_at: created_at,
+      preview: preview?
+    }
   end
 
   # private instance methods

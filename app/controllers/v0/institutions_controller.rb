@@ -8,9 +8,10 @@ module V0
     # GET /v0/institutions/autocomplete?term=harv
     def autocomplete
       @data = []
-      if params[:term]
+      if params[:term].present?
+        @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = approved_institutions.autocomplete(@search_term)
+        @data = filter_results(Institution.non_vet_tec_institutions(@version)).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -28,8 +29,11 @@ module V0
         facets: facets
       }
 
-      if params[:vet_tec_provider] == 'true'
-        render json: search_results.order('preferred_provider DESC NULLS LAST, institution')
+      if @query.key?(:fuzzy_search)
+        # For sorting by percentage instead whole number
+        max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
+
+        render json: search_results.search_order((@query[:name]).to_s, max_gibill)
                                    .page(params[:page]), meta: @meta
       else
         render json: search_results.order(:institution).page(params[:page]), meta: @meta
@@ -38,7 +42,7 @@ module V0
 
     # GET /v0/institutions/20005123
     def show
-      resource = approved_institutions.find_by(facility_code: params[:id])
+      resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
       raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
@@ -47,9 +51,10 @@ module V0
              meta: { version: @version }, links: @links
     end
 
-    # GET /v0/institituons/20005123/children
+    # GET /v0/institutions/20005123/children
     def children
-      children = Institution.version(@version[:number])
+      children = Institution.joins(:version)
+                            .where(version: @version)
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
                             .page(params[:page])
@@ -77,16 +82,20 @@ module V0
         end
         %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning vet_tec_provider].each do |k|
+           online_only distance_learning].each do |k|
           query[k].try(:downcase!)
         end
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
     def search_results
       @query ||= normalized_query_params
-      relation = approved_institutions.search(@query[:name], @query[:include_address])
+      relation = Institution.non_vet_tec_institutions(@version)
+                            .search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search))
+      filter_results(relation)
+    end
+
+    def filter_results(relation)
       [
         %i[institution_type_name type],
         [:category],
@@ -101,17 +110,22 @@ module V0
         [:online_only],
         [:distance_learning],
         [:priority_enrollment], # boolean
-        [:vet_tec_provider], # boolean
         [:preferred_provider], # boolean
-        [:stem_indicator] # boolean
+        [:stem_indicator], # boolean
+        [:womenonly], # boolean
+        [:menonly], # boolean
+        [:hbcu], # boolean
+        [:relaffil]
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
-        relation = relation.filter(filter_args[0], @query[filter_args[1]])
+        relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
       end
+
+      relation = relation.where('count_of_caution_flags = 0 AND school_closing IS FALSE') if @query[:exclude_warnings]
+      relation = relation.where(count_of_caution_flags: 0) if @query[:exclude_caution_flags]
 
       relation
     end
-    # rubocop:enable Metrics/MethodLength
 
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
@@ -133,8 +147,13 @@ module V0
         independent_study: boolean_facet,
         online_only: boolean_facet,
         distance_learning: boolean_facet,
-        priority_enrollment: boolean_facet
+        priority_enrollment: boolean_facet,
+        menonly: boolean_facet,
+        womenonly: boolean_facet,
+        hbcu: boolean_facet,
+        relaffil: search_results.filter_count(:relaffil)
       }
+
       add_active_search_facets(result)
     end
 
@@ -143,10 +162,6 @@ module V0
       add_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
-    end
-
-    def approved_institutions
-      Institution.version(@version[:number]).no_extentions.where(approved: true)
     end
   end
   # rubocop:enable Metrics/ClassLength

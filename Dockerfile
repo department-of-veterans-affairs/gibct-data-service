@@ -1,42 +1,88 @@
-FROM ruby:2.4.5-slim-stretch
+###
+# base
+#
+# shared build/settings for all child images
+###
+FROM ruby:2.6.6-slim-stretch AS base
 
-# Match the jenkins uid/gid on the host (504)
-RUN groupadd -r gibct && \
-    useradd -r -g gibct gibct && \
-    apt-get update -qq && \
-    apt-get install -y build-essential \
-    git \
-    curl \
-    clamav \
-    libpq-dev && \
-    freshclam
+ARG userid=309
+SHELL ["/bin/bash", "-c"]
+RUN groupadd -g $userid -r gi-bill-data-service && \
+    useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
+RUN apt-get update -qq && apt-get install -y \
+    build-essential git curl libpq-dev dumb-init
 
-# install phantomjs
-RUN apt-get install -y libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev libstdc++ && \
-  curl -LO https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-  mkdir -p /opt/phantomjs && \
-  tar -xjvf ./phantomjs-2.1.1-linux-x86_64.tar.bz2 --strip-components 1 -C /opt/phantomjs/ && \
-  ln -s /opt/phantomjs/bin/phantomjs /usr/bin/phantomjs
+RUN mkdir -p /srv/gi-bill-data-service/src && \
+    chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
+WORKDIR /srv/gi-bill-data-service/src
 
-RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /cc-test-reporter
-RUN chmod +x /cc-test-reporter
+###
+# development
+#
+# use --target=development to stop here
+# this stage is used for local development with docker-compose.yml
+###
+FROM base AS development
+RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 && \
+    chmod +x /usr/local/bin/cc-test-reporter && \
+    cc-test-reporter --version
 
-ENV YARN_VERSION 1.12.3
-ENV NODEJS_VERSION 10.15.3
+COPY --chown=gi-bill-data-service:gi-bill-data-service docker-entrypoint.sh ./
+USER gi-bill-data-service
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
-RUN npm install -g yarn@$YARN_VERSION
+###
+# builder
+#
+# use --target=builder to stop here
+# this stage copies the app and is used for running tests/lints/stuff
+# usually run via the docker-compose.test.yml
+###
+FROM development AS builder
 
-RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
+ENV BUNDLER_VERSION='2.1.4'
 
-# Configure gibct application
-RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
-VOLUME /src/gibct
-WORKDIR /src/gibct
+ARG bundler_opts
+COPY --chown=gi-bill-data-service:gi-bill-data-service . .
+USER gi-bill-data-service
+RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
+RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-ADD . /src/gibct
-RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-RUN yarn install --force --non-interactive
+###
+# production
+#
+# default target
+# this stage is used in live environmnets
+###
+FROM base AS production
+
+ENV RAILS_ENV="production"
+ENV PATH="/usr/local/bundle/bin:${PATH}"
+COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
+COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
+USER gi-bill-data-service
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
+
+
+# old docker react stuff
+#ENV YARN_VERSION 1.12.3
+#ENV NODEJS_VERSION 10.15.3
+#
+#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+#ENV NVM_DIR=/root/.nvm
+#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
+#ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
+#RUN npm install -g yarn@$YARN_VERSION
+#
+#RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
+#
+## Configure gibct application
+#RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
+#VOLUME /src/gibct
+#WORKDIR /src/gibct
+#
+#ADD . /src/gibct
+#RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
+#RUN yarn install --force --non-interactive

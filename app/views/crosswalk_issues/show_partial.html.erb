@@ -1,0 +1,190 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12 ">
+
+    <div class="row row-space-12">
+      <div class="col-xs-12">
+        <h2>Weams</h2>
+        <table class="table table-hover table-condensed table-bordered table-responsive">
+          <thead>
+            <th>Name</th>
+            <th>Facility Code</th>
+            <th>Full Address</th>
+            <th>Full Physical Address</th>
+            <th>IPEDS</th>
+            <th>OPE</th>
+            <th>Action</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= @issue.weam.institution %></td>
+              <td>
+                <%= link_to @issue.weam.facility_code,
+                            "#{Version.current_production.gibct_link}/profile/#{@issue.weam.facility_code}",
+                            target: :_blank
+                %>
+              </td>
+              <td><%= @issue.weam.address_values.join(", ") %></td>
+              <td><%= @issue.weam.physical_address_values.join(", ") %></td>
+              <td><%= @issue.weam.cross %></td>
+              <td><%= @issue.weam.ope %></td>
+              <td>
+                <input
+                  type="button"
+                  class="btn dashboard-btn-success crosswalk_update"
+                  value="Match"
+                  cross="<%= @issue.weam.cross %>"
+                  ope="<%= @issue.weam.ope %>"
+                  />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row row-space-12">
+      <div class="col-xs-12">
+        <h2>IPEDS HD</h2>
+        <% if @possible_ipeds_matches.any? %>
+          <table class="table table-hover table-condensed table-bordered table-responsive">
+            <thead>
+              <th>Match %</th>
+              <th>Name</th>
+              <th>Full Address</th>
+              <th>IPEDS</th>
+              <th>OPE</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+            <% if @issue.ipeds_hd.present? %>
+              <tr class="current">
+                <td>Current</td>
+                <td><%= @issue.ipeds_hd&.institution %></td>
+                <td><%= [@issue.ipeds_hd&.addr, @issue.ipeds_hd&.state, @issue.ipeds_hd&.city, @issue.ipeds_hd&.zip].compact.join(", ") %></td>
+                <td>
+                  <%= link_to @issue.ipeds_hd&.cross,
+                              "#{Settings.college_navigator_url}/?id=#{@issue.ipeds_hd&.cross}",
+                              target: :_blank
+                  %>
+                <td><%= @issue.ipeds_hd&.ope %></td>
+                <td/>
+              </tr>
+            <% end %>
+            <% @possible_ipeds_matches.each do |iped| %>
+              <tr>
+                <td><%= (iped["match_score"].to_f * 100).round(3) %>%</td>
+                <td><%= iped["institution"] %></td>
+                <td><%= [iped["addr"], iped["state"], iped["city"], iped["zip"]].compact.join(", ") %></td>
+                <td>
+                  <%= link_to iped["cross"],
+                              "#{Settings.college_navigator_url}/?id=#{iped["cross"]}",
+                              target: :_blank
+                  %>
+                </td>
+                <td><%= iped["ope"] %></td>
+                <td>
+                  <input
+                    type="button"
+                    class="btn dashboard-btn-success crosswalk_update"
+                    value="Match"
+                    cross="<%= iped["cross"] %>"
+                    ope="<%=iped["ope"] %>"
+                    />
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p>No matches found.</p>
+        <% end %>
+      </div>
+    </div>
+    <div class="row row-space-12">
+      <div class="col-xs-12">
+        <h2>Crosswalk</h2>
+      </div>
+    </div>
+    <div class="row row-space-12">
+      <div class="col-xs-12">
+        <%= form_with(url: crosswalk_issues_resolve_partial_path, id: 'resolve-partial-form') do %>
+          <input type="hidden" name="id" value="<%= @issue.id %>" />
+          <table class="table table-hover table-condensed table-bordered table-responsive">
+            <thead>
+              <th>Status</th>
+              <th>Name</th>
+              <th>Facility Code</th>
+              <th>City</th>
+              <th>State</th>
+              <th><%= label_tag('cross', 'IPEDS') %></th>
+              <th><%= label_tag('ope', 'OPE') %></th>
+              <th><%= label_tag('notes', 'Notes') %></th>
+              <th><%= label_tag('action', 'Action') %></th>
+            </thead>
+            <tbody>
+              <% if @issue.crosswalk.present? %>
+                <tr class="current">
+                  <td>Current</td>
+                  <td>
+                    <%= @issue.crosswalk&.institution %>
+                  </td>
+                  <td>
+                    <%= @issue.crosswalk&.facility_code %>
+                  </td>
+                  <td>
+                    <%= @issue.crosswalk&.city %>
+                  </td>
+                  <td>
+                    <%= @issue.crosswalk&.state %>
+                  </td>
+                  <td>
+                    <%= @issue.crosswalk&.cross %>
+                  </td>
+                  <td>
+                    <%= @issue.crosswalk&.ope %>
+                  </td>
+                  <td>
+                    <%= @issue.crosswalk&.notes %>
+                  </td>
+                  <td></td>
+                </tr>
+              <% end %>
+              <tr>
+                <td>Update</td>
+                <td>
+                  <%= @issue.weam.institution %>
+                </td>
+                <td>
+                  <%= @issue.weam.facility_code %>
+                </td>
+                <td>
+                  <%= @issue.weam.city %>
+                </td>
+                <td>
+                  <%= @issue.weam.state %>
+                </td>
+                <td>
+                  <%= text_field_tag(:cross, @issue.crosswalk&.cross) %>
+                </td>
+                <td>
+                  <%= text_field_tag(:ope, @issue.crosswalk&.ope) %>
+                </td>
+                <td>
+                  <%= text_field_tag(:notes, @issue.crosswalk&.notes) %>
+                </td>
+                <td>
+                  <input type="button" id="clear_ipeds_ope" class="btn dashboard-btn-success" value="Clear IPEDS/OPE" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <%= check_box_tag "ignore" %>
+            <label for="ignore">Mark crosswalk issue as resolved</label>
+          </div>
+          <%= link_to 'Cancel', crosswalk_issues_partials_path, class: "btn dashboard-btn-danger" %>
+          <%= submit_tag("Save", class: 'btn dashboard-btn-success') %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

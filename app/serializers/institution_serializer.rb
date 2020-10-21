@@ -2,7 +2,7 @@
 
 class InstitutionSerializer < ActiveModel::Serializer
   SELECT_FIELDS = %i[
-    id institution facility_code institution_type_name city state zip country
+    id institution facility_code ialias institution_type_name city state zip country
     locale gibill caution_flag caution_flag_reason created_at updated_at
     bah tuition_in_state tuition_out_of_state books insturl cross
     student_veteran yr poe eight_keys stem_offered independent_study priority_enrollment
@@ -10,6 +10,7 @@ class InstitutionSerializer < ActiveModel::Serializer
 
   attribute :institution, key: :name
   attribute :facility_code
+  attribute :ialias, key: 'alias'
   attribute :institution_type_name, key: :type
   attribute :city
   attribute :state
@@ -20,6 +21,7 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :gibill, key: :student_count
   attribute :caution_flag
   attribute :caution_flag_reason
+  attribute :caution_flags
   attribute :created_at
   attribute :updated_at
   attribute :address_1
@@ -47,12 +49,23 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :priority_enrollment
 
   attribute :school_closing
+  attribute :school_closing_on
   attribute :closure109
   attribute :vet_tec_provider
   attribute :parent_facility_code_id
   attribute :campus_type
 
   attribute :preferred_provider
+  attribute :count_of_caution_flags
+
+  attribute :hbcu
+  attribute :hcm2
+  attribute :menonly
+  attribute :pctfloan
+  attribute :relaffil
+  attribute :womenonly
+  attribute :rating_count
+  attribute :rating_average
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

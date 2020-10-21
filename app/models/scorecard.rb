@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Scorecard < ApplicationRecord
-  include CsvHelper
-
+class Scorecard < ImportableRecord
   validates :cross, presence: true
   validates :pred_degree_awarded, inclusion: { in: (0..4) }
   validates :locale, inclusion: { in: [-3, 11, 12, 13, 21, 22, 23, 31, 32, 33, 41, 42, 43] }, allow_blank: true
@@ -21,6 +19,7 @@ class Scorecard < ApplicationRecord
     retention_all_students_ba retention_all_students_otb
     graduation_rate_all_students salary_all_students
     repayment_rate_all_students avg_stu_loan_debt
+    hbcu menonly womenonly relaffil hcm2 pctfloan
   ].freeze
 
   CSV_CONVERTER_INFO = {
@@ -145,10 +144,20 @@ class Scorecard < ApplicationRecord
     'grad_debt_mdn10yr_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
-    'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter }
+    'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },
+    'alias' => { column: :alias, converter: BaseConverter }
   }.freeze
 
   after_initialize :derive_dependent_columns
+
+  POPULATE_SUCCESS_MESSAGE = 'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/'
+  API_SOURCE = 'https://collegescorecard.ed.gov/data/'
+
+  def self.populate
+    results = ScorecardApi::Service.populate
+    load(results) if results.any?
+    results.any?
+  end
 
   def derive_dependent_columns
     self.graduation_rate_all_students = to_graduation_rate_all_students

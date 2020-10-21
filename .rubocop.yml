@@ -6,20 +6,20 @@ require:
 
 AllCops:
   Include:
-    - '**/Gemfile'
-    - '**/config.ru'
-    - '**/Rakefile'
-    - '**/*.rake'
-    - '**/*.rb'
+    - "**/Gemfile"
+    - "**/config.ru"
+    - "**/Rakefile"
+    - "**/*.rake"
+    - "**/*.rb"
   Exclude:
-    - 'db/**/*'
-    - 'script/**/*'
-    - 'vendor/**/*'
-    - 'config/**/*'
-    - 'bin/**/*'
-    - 'log/**/*'
-    - 'javascript/**/*'
-    - 'node_modules/**/*'
+    - "db/**/*"
+    - "script/**/*"
+    - "vendor/**/*"
+    - "config/**/*"
+    - "bin/**/*"
+    - "log/**/*"
+    - "javascript/**/*"
+    - "node_modules/**/*"
 
 # This is the rubocop default but putting it here explicitly
 # strong benefit for code readability and speed in reviewing PRs for code review
@@ -33,41 +33,104 @@ Style/Documentation:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-Metrics/LineLength:
+# This cop forces you to put a return at the beginning of a block of code rather than having an if statement
+# whose body carries to the end of the function. For example:
+#
+# def foo
+#   ...
+#   if test
+#     ...
+#   end
+# end
+#
+# would be considered bad, and the cop would force you to put a `return if !test` before that block and
+# then remove the if. The problem is that this hides intent, since the if test does have a purpose in
+# readability, and it could also be easier for future changes to miss the return statement and add code
+# after it expecting it to be executed.
+Style/GuardClause:
+  Enabled: false
+
+# Added in v0.81
+# https://rubocop.readthedocs.io/en/latest/cops_style/#stylehasheachmethods
+Style/HashEachMethods:
+  Enabled: true
+# Added in v0.81
+# https://rubocop.readthedocs.io/en/latest/cops_style/#stylehashtransformkeys
+Style/HashTransformKeys:
+  Enabled: true
+# Added in v0.81
+# https://rubocop.readthedocs.io/en/latest/cops_style/#stylehashtransformvalues
+Style/HashTransformValues:
+  Enabled: true
+
+Layout/LineLength:
   Max: 120
+  Exclude:
+    - "app/controllers/v0/institutions_controller.rb"
+    - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
+    - "app/models/gibct_site_mapper.rb"
+    - "app/models/archiver.rb"
+    - "app/models/institution_tree.rb"
+    - "app/validators/va_caution_flag_validator.rb"
+    - "spec/models/institution_tree_spec.rb"
+    - "spec/controllers/v0/institutions_controller_spec.rb"
+    - "spec/models/institution_spec.rb"
+    - "spec/factories/institution_programs.rb"
+
+
+# removing rule because get_session implies HTTP GET, and informs method
+Naming/AccessorMethodName:
+  Enabled: false
 
 Rails:
   Enabled: true
 
 Rails/Output:
   Exclude:
-    - 'lib/**/*.rb'
+    - "lib/**/*.rb"
 
 Metrics/MethodLength:
   Max: 20
   Exclude:
-    - 'app/models/institution_builder.rb'
+    - "app/models/institution_builder.rb"
+    - "app/models/archiver.rb"
+    - "app/models/caution_flag.rb"
+    - "app/controllers/v0/institutions_controller.rb"
 
 Metrics/ClassLength:
   Exclude:
-    - 'app/models/scorecard.rb'
-    - 'app/models/ipeds_ic.rb'
-    - 'app/models/ipeds_ic_ay.rb'
-    - 'app/models/ipeds_ic_py.rb'
-    - 'app/models/institution.rb'
+    - "app/models/scorecard.rb"
+    - "app/models/ipeds_ic.rb"
+    - "app/models/ipeds_ic_ay.rb"
+    - "app/models/ipeds_ic_py.rb"
+    - "app/models/institution.rb"
+    - "app/controllers/uploads_controller.rb"
+    - "app/models/upload.rb"
 
 Metrics/AbcSize:
   Max: 40
+  Exclude:
+    - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
+    - "app/models/institution_builder.rb"
 
 Metrics/ModuleLength:
   Exclude:
-    - 'app/models/institution_builder.rb'
+    - "app/models/institution_builder.rb"
 
 Metrics/BlockLength:
+  Max: 40
   Exclude:
-    - 'spec/**/*'
-    - 'rakelib/**/*.rake'
-    - 'config/**/*.rb'
+    - "spec/**/*"
+    - "rakelib/**/*.rake"
+    - "config/**/*.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "app/validators/va_caution_flag_validator.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "app/validators/va_caution_flag_validator.rb"
 
 # Don't worry about ambiguous blocks in RSpec
 # Official recommendation from rubocop team is to disable this rule for specs.
@@ -79,23 +142,61 @@ Lint/AmbiguousBlockAssociation:
 
 Naming/FileName:
   Exclude:
-    - 'Guardfile'
+    - "Guardfile"
 
 Lint/BooleanSymbol:
   Exclude:
-    - 'app/controllers/v0/institutions_controller.rb'
+    - "app/controllers/v0/institutions_controller.rb"
 
 Rails/HasManyOrHasOneDependent:
   Exclude:
-    - 'app/models/user.rb'
+    - "app/models/user.rb"
+
+# the default style recently changed, but it's not worth changing
+Rails/FilePath:
+  EnforcedStyle: arguments
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
 
 RSpec/FilePath:
   Exclude:
-    - 'spec/fixtures/**/*'
+    - "spec/fixtures/**/*"
 
 RSpec/DescribeClass:
   Exclude:
-    - 'spec/config/initializers/csv_types_spec.rb'
+    - "spec/config/initializers/csv_types_spec.rb"
+    - "spec/config/initializers/common_spec.rb"
+    - "spec/models/archiver_spec.rb"
+    - "spec/utilities/caution_flags/caution_flag_template_spec.rb"
 
 RSpec/ExampleLength:
   Max: 8
+  Exclude:
+    - "spec/models/institution_program_spec.rb"
+    - "spec/models/institution_builder_spec.rb"
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 4
+
+# Determined to be too benign and/or numerous to justify changing
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# Added in v0.81
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+# Added in v0.82
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true

@@ -1,5 +1,51 @@
 active_record:
-  batch_size: 5000
+  batch_size:
+    find_each: 5000
+    import: 50000
 
 archiver:
   archive: true
+
+csv_upload:
+  column_separators:
+    - "|"
+    - ","
+
+scorecard:
+  url: "https://api.data.gov/ed/collegescorecard/v1"
+  api_key: <%= ENV['SCORECARD_API_KEY'] %>
+
+environment: <%= ENV['DEPLOYMENT_ENV'] %>
+
+pg_trgm:
+  similarity_threshold: .4
+
+search:
+  weight_modifiers:
+    alias: 1.4
+    gibill: .33
+  common_word_list: 
+    - "of"
+    - "school"
+    - "college"
+    - "department"
+    - "center"
+    - "inc"
+    - "university"
+    - "and"
+    - "police"
+    - "high"
+    - "county"
+    - "institute"
+    - "academy"
+    - "community"
+    - "training"
+    - "state"
+    - "campus"
+    - "city"
+  common_character_list:
+    - "&"
+    - "-"
+
+
+

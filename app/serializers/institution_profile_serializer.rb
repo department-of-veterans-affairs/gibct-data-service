@@ -66,6 +66,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :accreditation_status
   attribute :caution_flag
   attribute :caution_flag_reason
+  attribute :caution_flags
   attribute(:complaints) { object.complaints }
   attribute :school_closing
   attribute :school_closing_on
@@ -93,6 +94,17 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :facility_map
   attribute :programs
   attribute :versioned_school_certifying_officials
+  attribute :count_of_caution_flags
+  attribute :section_103_message
+  attribute :hbcu
+  attribute :hcm2
+  attribute :menonly
+  attribute :pctfloan
+  attribute :relaffil
+  attribute :womenonly
+  attribute :institution_category_ratings
+  attribute :rating_average
+  attribute :rating_count
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
@@ -105,7 +117,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   end
 
   def versioned_school_certifying_officials
-    object.versioned_school_certifying_officials.map do |sco|
+    object.versioned_school_certifying_officials.select do |sco|
       VersionedSchoolCertifyingOfficialSerializer.new(sco)
     end
   end
@@ -113,6 +125,12 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   def programs
     object.institution_programs.map do |program|
       InstitutionProgramProfileSerializer.new(program)
+    end
+  end
+
+  def caution_flags
+    object.caution_flags.map do |flag|
+      CautionFlagSerializer.new(flag)
     end
   end
 end

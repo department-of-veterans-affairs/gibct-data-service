@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class IpedsHd < ApplicationRecord
-  include CsvHelper
-
-  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod ialias].freeze
+class IpedsHd < ImportableRecord
+  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod].freeze
 
   CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
@@ -50,7 +48,7 @@ class IpedsHd < ApplicationRecord
     'pseflag' => { column: :pseflag, converter: NumberConverter },
     'pset4flg' => { column: :pset4flg, converter: NumberConverter },
     'rptmth' => { column: :rptmth, converter: NumberConverter },
-    'ialias' => { column: :ialias, converter: BaseConverter },
+    'ialias' => { column: :ialias, converter: UpcaseConverter },
     'instcat' => { column: :instcat, converter: NumberConverter },
     'ccbasic' => { column: :ccbasic, converter: NumberConverter },
     'ccipug' => { column: :ccipug, converter: NumberConverter },
@@ -77,5 +75,10 @@ class IpedsHd < ApplicationRecord
     'dfrcuscg' => { column: :dfrcuscg, converter: BaseConverter }
   }.freeze
 
+  has_many :crosswalk_issue, dependent: :delete_all
   validates :cross, presence: true
+
+  def full_address
+    [addr, city, state, zip].compact
+  end
 end

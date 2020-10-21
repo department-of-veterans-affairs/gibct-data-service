@@ -15,8 +15,13 @@ RSpec.describe Version, type: :model do
     end
 
     it 'has gibct_link based on configuration' do
-      version.save
       expect(version.gibct_link).to eq(ENV['GIBCT_URL'])
+    end
+
+    describe '#as_json' do
+      it 'returns attributes appropriate for API responses' do
+        expect(version.as_json.keys).to eq(%i[number created_at preview])
+      end
     end
   end
 
@@ -116,6 +121,16 @@ RSpec.describe Version, type: :model do
         expect(version).to be_latest_preview
         expect(version).to be_publishable
       end
+    end
+  end
+
+  describe '#archived' do
+    it 'has correct number of archived versions' do
+      create :version, :production
+      create :version, :production
+      create :version, :production
+
+      expect(described_class.archived.to_a.size).to eq(2)
     end
   end
 end

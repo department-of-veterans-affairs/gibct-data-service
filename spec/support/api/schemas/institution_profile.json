@@ -278,6 +278,9 @@
             "caution_flag_reason": {
               "type": ["null", "string"]
             },
+            "caution_flags": {
+              "type": ["null", "array"]
+            },
             "school_closing": {
               "type": ["null", "boolean"]
             },
@@ -475,11 +478,50 @@
                 "type": "object"
               }
             },
+            "section_103_message": {
+              "type": ["null", "string"]
+            },
+            "count_of_caution_flags": {
+              "type": ["null", "number"]
+            },
             "created_at": {
               "type": "string"
             },
             "updated_at": {
               "type": "string"
+            },
+            "hbcu":{
+              "type": ["null", "integer"]
+            },
+            "hcm2":{
+              "type": ["null", "integer"]
+            },
+            "menonly":{
+              "type": ["null", "integer"]
+            },
+            "pctfloan":{
+              "type": ["null", "number"]
+            },
+            "relaffil":{
+              "type": ["null", "integer"]
+            },
+            "womenonly":{
+              "type": ["null", "integer"]
+            },
+            "rating_average":{
+              "type": ["null", "integer"]
+            },
+            "rating_count":{
+              "type": ["integer"]
+            },
+            "rating_average":{
+              "type": ["null", "number"]
+            },
+            "institution_category_ratings": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
             }
           },
           "required": [
@@ -542,6 +584,7 @@
             "accreditation_status",
             "caution_flag",
             "caution_flag_reason",
+            "caution_flags",
             "complaints",
             "school_closing",
             "school_closing_on",
@@ -552,7 +595,14 @@
             "preferred_provider",
             "stem_indicator",
             "parent_facility_code_id",
-            "campus_type"
+            "campus_type",
+            "count_of_caution_flags",
+            "hbcu",
+            "hcm2",
+            "menonly",
+            "pctfloan",
+            "relaffil",
+            "womenonly"
           ]
         },
         "links": {

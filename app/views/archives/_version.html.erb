@@ -1,0 +1,10 @@
+<tr class="<%= cycle('even', 'odd') -%>">
+  <td><%= version.number %></td>
+  <td><%= version.uuid %></td>
+  <td><%= version.user&.email %></td>
+  <td><%= version.created_at&.to_formatted_s(:long_ordinal) %></td>
+  <td>
+      <%= link_to 'Download Institution CSV', archives_export_path(InstitutionsArchive.name, version.number),
+                  class: "btn dashboard-btn-warning btn-xs", role: "button" %>
+  </td>
+</tr>

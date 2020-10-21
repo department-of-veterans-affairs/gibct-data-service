@@ -147,4 +147,36 @@ RSpec.describe Upload, type: :model do
       expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
     end
   end
+
+  describe 'from_csv_type' do
+    it 'returns upload object with of CSV type' do
+      upload = described_class.from_csv_type(Weam.name)
+      expect(upload.csv_type).to eq(Weam.name)
+      expect(upload.skip_lines).to eq(0)
+      expect(upload.col_sep).to eq(',')
+    end
+  end
+
+  describe 'set_col_sep' do
+    it 'sets col_sep to comma when csv first line' do
+      first_line = 'a,b,c'
+      upload = build :upload
+      upload.send(:set_col_sep, first_line)
+      expect(upload.col_sep).to eq(',')
+    end
+
+    it 'sets col_sep to pipe when pipe delimited first line and contains a comma in a column' do
+      first_line = 'a|,b|c'
+      upload = create :upload
+      upload.send(:set_col_sep, first_line)
+      expect(upload.col_sep).to eq('|')
+    end
+
+    it 'raises error when neither comma or pipe are found' do
+      first_line = 'a/b\c'
+      upload = create :upload
+      error_message = 'Unable to determine column separators, valid separators equal "|" and ","'
+      expect { upload.send(:set_col_sep, first_line) }.to raise_error(StandardError, error_message)
+    end
+  end
 end

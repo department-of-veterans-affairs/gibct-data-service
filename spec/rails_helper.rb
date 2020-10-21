@@ -9,6 +9,9 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'support/serializer_spec_helper'
 require 'support/site_mapper_helper'
+require 'support/fix_all'
+require './spec/support/default_configuration_helper'
+require 'common/exceptions'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -40,6 +43,7 @@ RSpec.configure do |config|
 
   # Adding capybara DSL to rspec
   config.include Capybara::DSL
+  config.include FixAll
 
   # Serializer specs
   config.include SerializerSpecHelper, type: :serializer

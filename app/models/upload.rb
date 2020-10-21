@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file, :missing_headers, :extra_headers
+  attr_accessor :skip_lines, :col_sep, :upload_file, :missing_headers, :extra_headers
 
   belongs_to :user, inverse_of: :versions
 
@@ -16,7 +16,7 @@ class Upload < ApplicationRecord
   after_initialize :derive_dependent_columns, unless: :persisted?
 
   def derive_dependent_columns
-    self.csv = upload_file.try(:original_filename)
+    self.csv ||= upload_file.try(:original_filename)
   end
 
   def ok?
@@ -28,7 +28,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if CSV_TYPES_ALL_TABLES.map(&:name).push('Institution').include?(csv_type)
+    return true if [*CSV_TYPES_ALL_TABLES_NAMES, 'Institution'].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -39,8 +39,12 @@ class Upload < ApplicationRecord
     false
   end
 
+  def required_headers?
+    upload_file && csv_type && skip_lines
+  end
+
   def check_for_headers
-    return unless upload_file && csv_type && skip_lines
+    return unless required_headers?
 
     missing_headers.clear
     extra_headers.clear
@@ -50,8 +54,25 @@ class Upload < ApplicationRecord
     headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
   end
 
+  def options
+    { skip_lines: skip_lines.try(:to_i),
+      col_sep: col_sep,
+      force_simple_split: force_simple_split,
+      strip_chars_from_headers: strip_chars_from_headers }
+  end
+
+  def force_simple_split
+    self.class.default_options(csv_type)['force_simple_split']
+  end
+
+  def strip_chars_from_headers
+    self.class.default_options(csv_type)['strip_chars_from_headers']
+  end
+
   def self.last_uploads
-    Upload.select('DISTINCT ON("csv_type") *').where(ok: true).order(csv_type: :asc).order(updated_at: :desc)
+    Upload.select('DISTINCT ON("csv_type") *')
+          .where(ok: true, csv_type: CSV_TYPES_ALL_TABLES_NAMES)
+          .order(csv_type: :asc, updated_at: :desc)
   end
 
   def self.last_uploads_rows
@@ -59,11 +80,11 @@ class Upload < ApplicationRecord
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    CSV_TYPES_ALL_TABLES.each do |klass|
-      next if upload_csv_types.include?(klass.name)
+    CSV_TYPES_ALL_TABLES_NAMES.each do |klass_name|
+      next if upload_csv_types.include?(klass_name)
 
       missing_upload = Upload.new
-      missing_upload.csv_type = klass.name
+      missing_upload.csv_type = klass_name
       missing_upload.ok = false
       missing_upload.comment = 'No initial file uploaded!!!'
 
@@ -74,10 +95,32 @@ class Upload < ApplicationRecord
   end
 
   def self.since_last_preview_version
-    preview = Version.current_preview
-    return Upload.last_uploads if preview.blank?
+    last_preview = Version.current_preview || Version.current_production
 
-    Upload.last_uploads.where('updated_at > ?', preview.created_at)
+    return Upload.last_uploads if last_preview.blank?
+
+    Upload.last_uploads.where('updated_at > ?', last_preview.updated_at)
+  end
+
+  def self.from_csv_type(csv_type)
+    upload = Upload.new(csv_type: csv_type)
+    upload.skip_lines = default_options(csv_type)['skip_lines']
+    upload.col_sep = default_options(csv_type)['col_sep']
+
+    upload
+  end
+
+  def self.default_options(csv_type)
+    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
+  end
+
+  def self.fetching_for?(csv_type)
+    Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
+  end
+
+  def self.valid_col_seps
+    valid_col_seps = Settings.csv_upload.column_separators.each(&:to_s)
+    { value: valid_col_seps, message: 'Valid column separators are:' }
   end
 
   private
@@ -95,9 +138,20 @@ class Upload < ApplicationRecord
   end
 
   def csv_file_headers
-    csv = CSV.open(upload_file.tempfile, return_headers: true, encoding: 'ISO-8859-1')
+    csv = File.open(upload_file.tempfile, encoding: 'ISO-8859-1')
     skip_lines.to_i.times { csv.readline }
 
-    (csv.readline || []).select(&:present?).map { |header| header.downcase.strip }
+    first_line = csv.readline
+    set_col_sep(first_line)
+
+    first_line.split(col_sep).select(&:present?).map { |header| header.downcase.strip }
+  end
+
+  def set_col_sep(first_line)
+    self.col_sep = Settings.csv_upload.column_separators
+                           .find { |column_separator| first_line.include?(column_separator) }
+    valid_col_seps = Upload.valid_col_seps[:value].map { |cs| "\"#{cs}\"" }.join(' and ')
+    error_message = "Unable to determine column separators, valid separators equal #{valid_col_seps}"
+    raise(StandardError, error_message) if col_sep.blank?
   end
 end

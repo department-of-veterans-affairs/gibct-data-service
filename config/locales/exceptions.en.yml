@@ -94,24 +94,34 @@ en:
         title: Internal server error
         code: 500
         status: 500
-      service_outage:
+      gateway_timeout: &gateway_timeout
         <<: *defaults
-        title: Service unavailable
-        detail: "An outage has been reported on the %{service} since %{since}"
-        code: 503
-        status: 503
+        title: Gateway timeout
+        detail: "Did not receive a timely response from an upstream server"
+        code: 504
+        status: 504
+      sentry_ignored_gateway_timeout:
+        <<: *gateway_timeout
 # EXTERNAL EXCEPTIONS
-    # This is a Generic Error corresponding to backend services
-      client_error: &external_defaults
+      # This is a Generic Error corresponding to backend services
+      backend_service_exception: &external_defaults
         <<: *defaults
         title: 'Operation failed' # To be used when no external minor code is mappable
         code: 'VA900'
         status: 400
-    # All error codes below this line, use the same exception class bad_request
-    # need to be mapped properly using specific codes described below
-    # Below this line just define the minor code as key to be used by client error
-    # RX122:
-    #   <<: *external_defaults
-    #   code: 'RX122'
-    #   detail: 'Prescription could not be filled'
-    #   status: bad_request
+      # All error codes below this line, use the same exception class bad_request
+      # need to be mapped properly using specific codes described below
+      # Below this line just define the minor code as key to be used by client error
+      VA900:
+        <<: *external_defaults
+      SCORECARDAPI_KEY_MISSING:
+        <<: *external_defaults
+        code: 'SCORECARD_403'
+        detail: 'Missing API Key'
+        status: 403
+      SCORECARD_503:
+        <<: *external_defaults
+        title: Service unavailable
+        detail: "Scorecard service is currently unavailable"
+        code: 'SCORECARD_503'
+        status: 503

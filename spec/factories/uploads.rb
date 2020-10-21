@@ -10,8 +10,10 @@ FactoryBot.define do
     end
 
     user
+    col_sep { ',' }
 
     csv_type { Weam.name }
+    completed_at { Time.now.utc.to_s(:db) }
     sequence :comment do |n|
       "Upload test #{n}"
     end
@@ -43,6 +45,19 @@ FactoryBot.define do
     trait :missing_upload do
       csv_type { Program.name }
       ok { false }
+    end
+
+    trait :scorecard_in_progress do
+      csv_type { Scorecard.name }
+      csv { Scorecard.name }
+      ok { false }
+      completed_at { nil }
+    end
+
+    trait :scorecard_finished do
+      csv_type { Scorecard.name }
+      csv { Scorecard.name }
+      ok { true }
     end
   end
 end

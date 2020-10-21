@@ -12,5 +12,9 @@ FactoryBot.define do
     phone_number { '1337852' }
     phone_extension { '1234' }
     email { 'dsample@cfu.edu' }
+
+    trait :invalid_priority do
+      priority { 'OTHER' }
+    end
   end
 end

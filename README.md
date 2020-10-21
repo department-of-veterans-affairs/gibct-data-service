@@ -1,4 +1,4 @@
-# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=department-of-veterans-affairs/gibct-data-service/master)](http://jenkins.vetsgov-internal/job/department-of-veterans-affairs/job/gibct-data-service/job/master/)
+# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=testing/gibct-data-service/master)](http://jenkins.vfs.va.gov/job/builds/job/gi-bill-data-service/)[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/department-of-veterans-affairs/gibct-data-service)[![Maintainability](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/maintainability)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/test_coverage)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/test_coverage) [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](LICENSE.md)
 
 ## Introduction
 The GIBCT Data Service (**GIDS**) compiles data from a variety of federal CSV-formatted sources into a set of
@@ -15,27 +15,46 @@ data retrieved via the API has not yet been approved by the VA Education Stakeho
 the actual data pushed to **GIBCT** for public consumption.
 
 ### Primary User Flow
-Institution profile data is synthesized from 21 separate CSVs maintained by various federal sources. Once the CSVs are
+Institution profile data is synthesized from separate CSVs maintained by various federal sources. Once the CSVs are
 uploaded, a `preview` version can be compiled. The data for the `preview` version can then be viewed by using the GIBCT
-in the link provided on the **GIDS** dashboard. Once the new preview version is "approved" it can then be pushed to
+in the link provided on the **GIDS** dashboard. Once the new preview version is "approved" it can then be published to
 `production`.
 
 ## Developer Setup
 Note that queries are PostgreSQL-specific.
 
 1. Install the latest applicable version of **Postgres** on your dev box.
-2. Install Ruby 2.4.5. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.4.5](https://github.com/rbenv/rbenv#installing-ruby-versions)).
-3. Install Bundler to manager dependencies: `gem install bundler -v 1.17.3` and `bundle install`
+2. Install Ruby 2.6.6. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.6.6](https://github.com/rbenv/rbenv#installing-ruby-versions)).
+3. Install Bundler to manager dependencies: `gem install bundler -v 2.1.4` and `bundle install`
 4. `npm install -g phantomjs` is necessary for running certain tests.
 5. `yarn install`
+
+## Issues
+When running `bundle install` if this or a similar error occurs
+
+```
+An error occurred while installing libv8 (3.16.14.19), and Bundler cannot continue.
+Make sure that `gem install libv8 -v '3.16.14.19' --source 'https://rubygems.org/'` succeeds
+```
+
+Run the commands to resolve the issue
+
+```
+brew install v8@3.15
+bundle config --local build.libv8 --with-system-v8
+bundle config --local build.therubyracer --with-v8-dir=/usr/local/opt/v8@3.15
+```
 
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
 - `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!
 - `bundle exec rake security` - Run the suite of security scanners on the codebase.
-- `bundle exec rake ci` - Run all build steps performed in Travis CI.
+- `bundle exec rake ci` - Runs the continuous integration scripts which includes linters, security scanners, tests, and code coverage
+- `bundle exec rspec spec/path/to/spec` - Run a specific spec
 
 ## Pre-Setup Configuration
+
+### Environment Variables
 The following environment variables need to be configured for **GIDS**:
 
 1. `GIBCT_URL`: this a link to the **GIBCT** that is used for looking at the data served by **GIDS**, and should
@@ -47,27 +66,39 @@ The following environment variables need to be configured for **GIDS**:
 2. `ADMIN_EMAIL`: This is the email you will use to sign onto **GIDS**.
 3. `ADMIN_PW`: This is the password for the email (above) you will use.
 4. `LINK_HOST`: This will be `http://localhost:3000`
+5. `GOVDELIVERY_STAGING_SERVICE`: This is 'True' or 'False' and a string since they are set by python.
+6. `GOVDELIVERY_TOKEN`: This is the token for govdelivery.com.
+7. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
+8. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
 
-The following are required, but related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
+The following are required, these are related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
 
-5. `SAML_IDP_METADATA_FILE`: contains certificates and endpoint information provided by the SSOe team.
-6. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
-7. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
-8. `SAML_ISSUER`: shared between the GIDS and SSOe team.
+9. `SAML_IDP_METADATA_FILE`: contains certificates and endpoint information provided by the SSOe team.
+10. `SAML_CALLBACK_URL`: URL that will receive the identity provider's identity assertion
+11. `SAML_IDP_SSO_URL`: URL where the user should be directed to authenticate to the IdP
+12. `SAML_ISSUER`: shared between the GIDS and SSOe team.
+
+The following is for use with Scorecard API.
+
+13. `SCORECARD_API_KEY`: api_key for accessing Scorecard API see https://collegescorecard.ed.gov/data/documentation/ for how to obtain an api_key
 
 To create these variables, you will need to create an `application.yml` file under /config. An example is posted below:
 
 ```
-ADMIN_EMAIL: 'something...'
+ADMIN_EMAIL: 'something@example.gov'
 ADMIN_PW: 'something...'
-SECRET_KEY_BASE: 'something ...'
-LINK_HOST: 'http://localhost:3000'
-GIBCT_URL: 'http://localhost:3002/gi-bill-comparison-tool'
-
-SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
+GIBCT_URL: 'http://localhost:3001/gi-bill-comparison-tool'
+GOVDELIVERY_STAGING_SERVICE: 'True'
+GOVDELIVERY_TOKEN: 'abc123'
+GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
+LINK_HOST: 'http://localhost:3000' # https://api.va.gov
 SAML_CALLBACK_URL: http://localhost:3000/saml/auth/callback
+SAML_IDP_METADATA_FILE: /path/to/config/saml/metadata.xml
 SAML_IDP_SSO_URL: https://example.com/idp/sso
 SAML_ISSUER: GIDS
+SECRET_KEY_BASE: 'something ...'
+DEPLOYMENT_ENV: 'vagov-dev'
+SCORECARD_API_KEY: 'api key'
 ```
 
 You can create additional users by adding them to the `/db/seeds/01_users.rb` file:
@@ -76,7 +107,7 @@ You can create additional users by adding them to the `/db/seeds/01_users.rb` fi
 User.create(email: 'xxxxxx', password: 'xxxxxx')
 ```
 
-## Deployment Instructions
+## Development Instructions
 1. Run `bundle install` to set up the application.
 2. Create the DS database by running `bundle exec rake db:create`.
 3. Setup the DS database by running `bundle exec rake db:migrate`.
@@ -110,7 +141,8 @@ To work on your code submission, follow [GitHub Flow](https://guides.github.com/
 
 1. Branch or Fork
 1. Commit changes
-1. Submit Pull Request
+1. Create draft Pull Request
+1. Mark as "Ready to review" once all checks have passed
 1. Discuss via Pull Request
 1. Pull Request gets approved or denied by core team member
 
@@ -118,9 +150,31 @@ If you're from the community, it may take one to two weeks to review your pull r
 
 ## Deployment
 
-Deployment is handled the same way as `vets-api`, commits to master are tested by Jenkins and a deploy is kicked off (to change the branches, edit the Jenkinsfile) to dev and staging. Production releases are manually gated. Navigate to http://jenkins.vetsgov-internal/job/releases/job/gi-bill-data-service/ and kick off a release job with the git sha for the release and it will automatically deploy to production.
+### Dev, Staging
+Deployment is handled the same way as `vets-api`, commits to master are tested by Jenkins and a deploy is kicked off (to change the branches, edit the Jenkinsfile) to dev and staging.
 
-The `production` branch is kept around for references to older deployments, but is no longer in use by the deployment systems.
+If there are database migrations to be run 
+1. Check that the relevant [dev](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-dev/) or [staging](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-staging/) deploy is finished
+1. Navigate to either [dev](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-dev-post-deploy/) or [staging](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-staging-post-deploy/) post deploy actions
+1. Run a "Build with Parameters" job
+1. Check console output of run to ensure the migration ran correctly
+
+### Production
+Production releases are manually gated. 
+1. Find the git sha you wish to use from https://github.com/department-of-veterans-affairs/gibct-data-service/commits/master
+1. Navigate to http://jenkins.vfs.va.gov/job/builds/job/gi-bill-data-service/build?delay=0sec
+1. Check the "Release" box
+1. "Build with Parameters" with the git sha for the release and it will automatically deploy to production.
+
+If there are database migrations to be run 
+1. Check that the [prod](http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod/) deploy is finished
+1. Navigate to http://jenkins.vfs.va.gov/job/deploys/job/gi-bill-data-service-vagov-prod-post-deploy/
+1. Run a "Build with Parameters" job
+1. Check console output of run to ensure the migration ran correctly
+
+### Notes
+- If you do not have permission to run "Build with Parameters" jobs, contact your DSVA product owner
+- The `production` branch is kept around for references to older deployments, but is no longer in use by the deployment systems.
 
 ## Contact
 

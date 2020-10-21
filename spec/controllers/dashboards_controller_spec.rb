@@ -14,7 +14,7 @@ RSpec.describe DashboardsController, type: :controller do
     csv_path = 'spec/fixtures'
 
     upload = create :upload, csv_type: csv_type, csv_name: csv_name, user: User.first
-    klass.load("#{csv_path}/#{csv_name}", options)
+    klass.load_from_csv("#{csv_path}/#{csv_name}", options)
     upload.update(ok: true)
   end
 
@@ -33,7 +33,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(CSV_TYPES_ALL_TABLES.length)
+      expect(assigns(:uploads).length).to eq(CSV_TYPES_ALL_TABLES_CLASSES.length)
     end
 
     it 'returns http success' do
@@ -47,8 +47,10 @@ RSpec.describe DashboardsController, type: :controller do
     before do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+      CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
+                          force_simple_split: defaults[klass.name]['force_simple_split'],
+                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
       end
     end
 
@@ -74,8 +76,10 @@ RSpec.describe DashboardsController, type: :controller do
     before do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+      CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
+                          force_simple_split: defaults[klass.name]['force_simple_split'],
+                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
       end
 
       post(:build)
@@ -104,17 +108,19 @@ RSpec.describe DashboardsController, type: :controller do
     before do
       defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
 
-      CSV_TYPES_ALL_TABLES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'])
+      CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
+        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
+                          force_simple_split: defaults[klass.name]['force_simple_split'],
+                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
       end
 
       post(:build)
     end
 
     it 'causes a CSV to be exported' do
-      allow(Institution).to receive(:export_institutions_by_version)
+      allow(Institution).to receive(:export_by_version)
       get(:export_version, params: { format: :csv, number: 1 })
-      expect(Institution).to have_received(:export_institutions_by_version)
+      expect(Institution).to have_received(:export_by_version)
     end
 
     it 'includes filename parameter in content-disposition header' do
@@ -148,21 +154,14 @@ RSpec.describe DashboardsController, type: :controller do
       end
 
       context 'when successful' do
-        before do
-        end
-
-        it 'adds a new version record' do
+        it 'sets the new production version' do
           SiteMapperHelper.silence do
-            expect { post(:push) }.to change(Version, :count).by(1)
-          end
-        end
-
-        it 'sets the new production version number to the preview number' do
-          SiteMapperHelper.silence do
+            current_preview = Version.current_preview
+            expect(Version.current_production).to eq(nil)
             post(:push)
+            expect(Version.current_production.production).to eq(true)
+            expect(Version.current_production).to eq(current_preview)
           end
-
-          expect(Version.current_production.number).to eq(Version.current_preview.number)
         end
 
         it 'updates production data' do
@@ -171,22 +170,44 @@ RSpec.describe DashboardsController, type: :controller do
           end
           expect(flash.notice).to eq('Production data updated')
         end
-
-        context 'when is not successful' do
-          before do
-            allow(Version).to receive(:create).and_return(Version.new)
-          end
-
-          it 'does not add a new version' do
-            expect { post(:push) }.to change(Version, :count).by(0)
-          end
-
-          it 'returns an error message' do
-            post(:push)
-            expect(flash.alert).to eq('Production data not updated, remains at previous production version')
-          end
-        end
       end
+    end
+  end
+
+  describe 'GET api_fetch' do
+    login_user
+
+    it 'causes populate to be called for a CSV' do
+      allow(Scorecard).to receive(:populate)
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(Scorecard).to have_received(:populate)
+    end
+
+    it 'displays no populate message for a CSV without it' do
+      get(:api_fetch, params: { csv_type: CalculatorConstant.name })
+      expect(flash.alert).to eq("#{CalculatorConstant.name} is not configured to fetch data from an api")
+    end
+
+    it 'displays default populate message for a CSV without POPULATE_SUCCESS_MESSAGE' do
+      allow(Scorecard).to receive(:populate).and_return(true)
+      stub_const('Scorecard::POPULATE_SUCCESS_MESSAGE', nil)
+
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.notice).to eq("#{Scorecard.name} finished fetching data from it's api")
+    end
+
+    it 'displays error message' do
+      message = 'displays error message'
+      allow(Scorecard).to receive(:populate).and_raise(StandardError, message)
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.alert).to include(message)
+    end
+
+    it 'displays already fetching alert' do
+      message = "#{Scorecard.name} is already being fetched by another user"
+      create :upload, :scorecard_in_progress
+      get(:api_fetch, params: { csv_type: Scorecard.name })
+      expect(flash.alert).to include(message)
     end
   end
 end

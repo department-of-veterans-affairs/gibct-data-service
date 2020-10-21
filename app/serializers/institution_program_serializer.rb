@@ -13,5 +13,8 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
              :country,
              :preferred_provider,
              :va_bah,
-             :dod_bah
+             :dod_bah,
+             :school_closing,
+             :school_closing_on,
+             :caution_flags
 end

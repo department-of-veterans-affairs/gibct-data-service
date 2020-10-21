@@ -6,8 +6,9 @@ class UploadsController < ApplicationController
   end
 
   def new
-    @upload = new_upload(params[:csv_type])
-    return if @upload.csv_type_check?
+    @upload = Upload.from_csv_type(params[:csv_type])
+
+    return csv_requirements if @upload.csv_type_check?
 
     alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
@@ -15,30 +16,24 @@ class UploadsController < ApplicationController
 
   def create
     @upload = Upload.create(merged_params)
-
     begin
-      failed = load_csv.failed_instances
-      @upload.check_for_headers
+     @upload.check_for_headers
+     loaded_csv = load_csv
+     alert_messages(loaded_csv)
 
-      validation_warnings = failed.map(&:display_errors_with_row).sort
-      header_warnings = @upload.all_warnings
-
-      flash.alert = { 'The upload succeeded: ' => @upload.csv_type }
-
-      flash.alert['The following rows should be checked: '] = validation_warnings unless validation_warnings.empty?
-      flash.alert['The following headers should be checked: '] = header_warnings unless header_warnings.empty?
-
-      redirect_to @upload
+     redirect_to @upload
     rescue StandardError => e
-      @upload = new_upload(merged_params[:csv_type])
-
+      @upload = Upload.from_csv_type(merged_params[:csv_type])
+      csv_requirements if @upload.csv_type_check?
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
-    end
+   end
   end
 
   def show
     @upload = Upload.find_by(id: params[:id])
+
+    csv_requirements if @upload.present?
     return if @upload.present?
 
     alert_and_log("Upload with id: '#{params[:id]}' not found")
@@ -47,16 +42,36 @@ class UploadsController < ApplicationController
 
   private
 
-  def alert_and_log(message, error = nil)
-    Rails.logger.error message + (error&.backtrace).to_s
-    flash.alert = message
+  def csv_requirements
+    @requirements = requirements_messages
+    @custom_batch_validator = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    @inclusion = validation_messages_inclusion
   end
 
-  def new_upload(csv_type)
-    upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = defaults(csv_type)['skip_lines']
+  def alert_messages(loaded_csv)
+    total_rows_count = loaded_csv.ids.length
+    failed_rows = loaded_csv.failed_instances
+    failed_rows_count = failed_rows.length
+    valid_rows = total_rows_count - failed_rows_count
+    validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
+                                     .map(&:display_errors_with_row)
+    header_warnings = @upload.all_warnings
 
-    upload
+    flash[:csv_success] = {
+      total_rows_count: total_rows_count.to_s,
+      valid_rows: valid_rows.to_s,
+      failed_rows_count: failed_rows_count.to_s
+    }.compact
+
+    flash[:warning] = {
+      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
+      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
+    }.compact
+  end
+
+  def alert_and_log(message, error = nil)
+    Rails.logger.error message + error&.backtrace.to_s
+    flash[:danger] = message
   end
 
   def load_csv
@@ -69,10 +84,6 @@ class UploadsController < ApplicationController
     @original_filename ||= upload_params[:upload_file].try(:original_filename)
   end
 
-  def defaults(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
-  end
-
   def merged_params
     upload_params.merge(csv: original_filename, user: current_user)
   end
@@ -83,16 +94,83 @@ class UploadsController < ApplicationController
 
   def call_load
     file = @upload.upload_file.tempfile
-    skip_lines = @upload.skip_lines.try(:to_i)
-    data = klass.load(file, skip_lines: skip_lines)
 
-    @upload.update(ok: data.present? && data.ids.present?)
-    raise(StandardError, "There was no saved #{klass} data") unless @upload.ok?
+    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
+
+    data = klass.load_from_csv(file, @upload.options)
+    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
+
+    @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
+    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
+    raise(StandardError, error_msg) unless @upload.ok?
 
     data
   end
 
   def klass
     @upload.csv_type.constantize
+  end
+
+  def requirements_messages
+    [Upload.valid_col_seps]
+      .push(*validation_messages_presence)
+      .push(*validation_messages_numericality)
+      .push(*validation_messages_uniqueness)
+  end
+
+  def klass_validator(validation_class)
+    klass.validators.map do |validations|
+      affected_attributes(validations) if validation_class == validations.class
+    end.flatten.compact
+  end
+
+  def validation_messages_presence
+    presence = { message: 'These columns must have a value: ', value: [] }
+
+    presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
+    [presence] unless presence[:value].empty?
+  end
+
+  def validation_messages_numericality
+    numericality = { message: 'These columns can only contain numeric values: ', value: [] }
+
+    numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator)
+
+    [numericality] unless numericality[:value].empty?
+  end
+
+  def validation_messages_uniqueness
+    uniqueness = { message: 'These columns should contain unique values: ', value: [] }
+
+    uniqueness[:value] = klass_validator(ActiveRecord::Validations::UniquenessValidator)
+
+    [uniqueness] unless uniqueness[:value].empty?
+  end
+
+  def validation_messages_inclusion
+    inclusion = []
+
+    klass.validators.map do |validations|
+      next unless validations.class == ActiveModel::Validations::InclusionValidator
+
+      array = { message: affected_attributes(validations).join(', '),
+                value: inclusion_requirement_message(validations) }
+      inclusion.push(array)
+    end
+    [inclusion] unless inclusion.empty?
+  end
+
+  def affected_attributes(validations)
+    validations.attributes
+               .map { |column| csv_column_name(column).to_s }
+               .select(&:present?) # derive_dependent_columns or columns not in CSV_CONVERTER_INFO will be blank
+  end
+
+  def csv_column_name(column)
+    klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+  end
+
+  def inclusion_requirement_message(validations)
+    validations.options[:in].map(&:to_s)
   end
 end

@@ -1,25 +1,25 @@
 <tr class="<%= 'success' if version.production? %>">
   <td><%= version.number %></td>
   <td><%= version.uuid %></td>
-  <td><%= version.user.email %></td>
-  <td><%= version.created_at.to_formatted_s(:long_ordinal) %></td>
+  <td><%= version.user&.email %></td>
+  <td><%= version.created_at&.to_formatted_s(:long_ordinal) %></td>
   <td>
     <% if version.generating? %>
         <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
         Reload page to refresh preview version status
     <% else %>
       <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank", rel: "noopener noreferrer",
-          class: "btn btn-success btn-xs", role: "button" %>
+          class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <%= link_to 'Download Export CSV', dashboard_export_version_path(version.number),
-          class: "btn btn-warning btn-xs", role: "button" %>
+          class: "btn dashboard-btn-warning btn-xs", role: "button" %>
       <% if version.publishable? %>
         <%= link_to 'Publish to Production', dashboard_push_path, method: :post,
             data: { confirm: "Are you sure you wish to publish preview version #{version.number} to production?" },
-            class: "btn btn-danger btn-xs",
+            class: "btn dashboard-btn-danger btn-xs",
             role: "button",
             id: "version_publish" %>
       <% elsif version.preview? %>
-          <a class="btn btn-danger btn-xs" disabled role="button">Publish to Production</a>
+          <a class="btn dashboard-btn-danger btn-xs" disabled role="button">Publish to Production</a>
       <% end %>
     <% end %>
   </td>

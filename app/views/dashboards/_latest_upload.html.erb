@@ -1,21 +1,34 @@
-<tr class="<%= latest_upload_class(upload) %>" title="<%= latest_upload_title(upload) %>">
-  <td><%= upload.csv_type %></td>
-  <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
-  <td><%= upload.csv.blank? ? '-' : upload.csv %></td>
-  <td><%= upload.created_at.blank? ? '-' : upload.created_at.to_formatted_s(:long_ordinal) %></td>
-  <td><%= upload.user.blank? ? '-' : upload.user.email %></td>
-  <td><%= upload.comment.blank? ? '-' : upload.comment %></td>
-  <td>
-    <%= link_to 'Upload', new_upload_path(upload.csv_type),
-        class: "btn btn-success btn-xs", role: "button" %>
+<% if production? && CSV_TYPES_NO_PROD_NAMES.include?(upload.csv_type) %>
+<%else %>
+  <tr id="row_<%=upload.csv_type%>"
+      class="<%= latest_upload_class(upload) %>"
+      title="<%= latest_upload_title(upload) %>">
+    <td><%= upload.csv_type %></td>
+    <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
+    <td><%= upload.csv.blank? ? '-' : upload.csv %></td>
+    <td><%= upload.created_at.blank? ? '-' : upload.created_at.to_formatted_s(:long_ordinal) %></td>
+    <td><%= upload.user.blank? ? '-' : upload.user.email %></td>
+    <td><%= upload.comment.blank? ? '-' : upload.comment %></td>
+    <td class="text-center">
+      <% if CSV_TYPES_HAS_API_TABLE_NAMES.include?(upload.csv_type) %>
+        <%= link_to 'Fetch', dashboard_api_fetch_path(upload.csv_type),
+                    class: "btn dashboard-btn-success btn-xs",
+                    role: "button",
+                    id: "api_fetch_" + upload.csv_type,
+                    disabled: cannot_fetch_api(upload.csv_type) %>
+      <% end %>
 
-    <% if upload.ok? %>
-      <%= link_to 'Export', dashboard_export_path(upload.csv_type),
-        class: "btn btn-success btn-xs", role: "button" %>
-    <% else %>
-      <a disabled="disabled" class="btn btn-warning btn-xs", role="button" >
-        Export
-      </a>
-    <% end %>
-  </td>
-</tr>
+      <%= link_to 'Upload', new_upload_path(upload.csv_type),
+                  class: "btn dashboard-btn-success btn-xs", role: "button" %>
+
+      <% if upload.ok? %>
+        <%= link_to 'Export', dashboard_export_path(upload.csv_type),
+                    class: "btn dashboard-btn-success btn-xs", role: "button" %>
+      <% else %>
+        <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
+          Export
+        </a>
+      <% end %>
+    </td>
+  </tr>
+<%end %>

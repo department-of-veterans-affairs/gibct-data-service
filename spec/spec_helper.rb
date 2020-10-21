@@ -3,6 +3,8 @@
 require 'simplecov'
 SimpleCov.start do
   SimpleCov.minimum_coverage_by_file 90
+
+  add_filter '/spec/support/'
 end
 
 # Loading of common sequences for factories (eg facility_code, ope)

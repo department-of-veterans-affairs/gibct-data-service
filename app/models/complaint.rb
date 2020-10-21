@@ -15,9 +15,7 @@
 
 # frozen_string_literal: true
 
-class Complaint < ApplicationRecord
-  include CsvHelper
-
+class Complaint < ImportableRecord
   STATUSES = %w[active closed pending reserved].freeze
   CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
 
@@ -100,7 +98,7 @@ class Complaint < ApplicationRecord
     COMPLAINT_COLUMNS.each_pair { |complaint, issue_regex| self[complaint] = issues&.match?(issue_regex) ? 1 : 0 }
   end
 
-  def self.rollup_sums(on_column, version_number)
+  def self.rollup_sums(on_column, version_id)
     rollup_sums = on_column == :facility_code ? FAC_CODE_ROLL_UP_SUMS : OPE6_ROLL_UP_SUMS
 
     set_clause = []
@@ -116,7 +114,7 @@ class Complaint < ApplicationRecord
       FROM
         (SELECT "#{on_column}", #{sum_clause.join(', ')} FROM complaints GROUP BY #{on_column}) AS sums
         WHERE institutions.#{on_column} = sums.#{on_column} AND
-          institutions.version = #{version_number} AND institutions.#{on_column} IS NOT NULL
+          institutions.version_id = #{version_id} AND institutions.#{on_column} IS NOT NULL
     SQL
 
     Complaint.connection.update(str)
