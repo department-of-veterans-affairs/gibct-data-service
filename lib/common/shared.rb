@@ -15,5 +15,9 @@ module Common
     def self.convert_csv_header(header)
       header.gsub(/\s+|-+/, '_').gsub(/_+/, '_')
     end
+
+    def self.export_csv_header(header)
+      header.gsub(/_+/, ' ')
+    end
   end
 end
