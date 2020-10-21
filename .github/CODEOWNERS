@@ -5,3 +5,15 @@
 
 *       @department-of-veterans-affairs/backend-review-group
 
+# React
+app/javascript @department-of-veterans-affairs/bah-gibct
+babel.config.js @department-of-veterans-affairs/bah-gibct
+bin/webpack @department-of-veterans-affairs/bah-gibct
+bin/webpack-dev-server @department-of-veterans-affairs/bah-gibct
+bin/yarn @department-of-veterans-affairs/bah-gibct
+config/initializers/content_security_policy.rb @department-of-veterans-affairs/bah-gibct
+config/webpack @department-of-veterans-affairs/bah-gibct
+config/webpacker.yml @department-of-veterans-affairs/bah-gibct
+package.json @department-of-veterans-affairs/bah-gibct
+postcss.config.js @department-of-veterans-affairs/bah-gibct
+yarn.lock @department-of-veterans-affairs/bah-gibct
