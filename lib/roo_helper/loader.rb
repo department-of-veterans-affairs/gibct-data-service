@@ -122,22 +122,16 @@ module RooHelper
       { header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }), results: results }
     end
 
-    # replace all spaces and dashes with underscores
-    # then reduce duplicate underscores in a row to a single underscore
-    def convert_csv_header(header)
-      header.gsub(/\s+|-+/, '_').gsub(/_+/, '_')
-    end
-
     # Allows for `col_header`, `col-header`, or `col header` in file to return correct info object
     def converter_info(sheet_klass, header)
-      sheet_klass::CSV_CONVERTER_INFO[convert_csv_header(header).downcase]
+      sheet_klass::CSV_CONVERTER_INFO[Common::Shared.convert_csv_header(header).downcase]
     end
 
     # Determine missing and extra headers
     #
     # Returns array of warning messages
     def header_warnings(sheet_klass, values)
-      headers = values.dup.map { |h| convert_csv_header(h) }
+      headers = values.dup.map { |h| Common::Shared.convert_csv_header(h) }
       missing_headers = (sheet_klass::CSV_CONVERTER_INFO.keys - headers)
                         .map { |h| "#{h.tr('_', ' ').capitalize} is a missing header" }
       extra_headers = (headers - sheet_klass::CSV_CONVERTER_INFO.keys)
