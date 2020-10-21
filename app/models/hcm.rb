@@ -2,14 +2,14 @@
 
 class Hcm < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'ope id' => { column: :ope, converter: OpeConverter },
-    'institution name' => { column: :institution, converter: InstitutionConverter },
+    'ope_id' => { column: :ope, converter: OpeConverter },
+    'institution_name' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
     'country' => { column: :country, converter: BaseConverter },
-    'institution type' => { column: :institution_type, converter: BaseConverter },
-    'stop pay/monitor method' => { column: :hcm_type, converter: BaseConverter },
-    'method reason desc' => { column: :hcm_reason, converter: BaseConverter }
+    'institution_type' => { column: :institution_type, converter: BaseConverter },
+    'stop_pay/monitor_method' => { column: :hcm_type, converter: BaseConverter },
+    'method_reason_desc' => { column: :hcm_reason, converter: BaseConverter }
   }.freeze
 
   validates :ope, :hcm_type, :hcm_reason, presence: true
