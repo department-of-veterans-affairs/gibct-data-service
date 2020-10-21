@@ -113,9 +113,10 @@ class UploadsController < ApplicationController
 
   def requirements_messages
     [Upload.valid_col_seps]
-      .push(*validation_messages_presence)
-      .push(*validation_messages_numericality)
-      .push(*validation_messages_uniqueness)
+      .push(validation_messages_presence)
+      .push(validation_messages_numericality)
+      .push(validation_messages_uniqueness)
+        .compact
   end
 
   def klass_validator(validation_class)
@@ -128,7 +129,7 @@ class UploadsController < ApplicationController
     presence = { message: 'These columns must have a value: ', value: [] }
 
     presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
-    [presence] unless presence[:value].empty?
+    presence unless presence[:value].empty?
   end
 
   def validation_messages_numericality
@@ -136,7 +137,7 @@ class UploadsController < ApplicationController
 
     numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator)
 
-    [numericality] unless numericality[:value].empty?
+    numericality unless numericality[:value].empty?
   end
 
   def validation_messages_uniqueness
@@ -144,7 +145,7 @@ class UploadsController < ApplicationController
 
     uniqueness[:value] = klass_validator(ActiveRecord::Validations::UniquenessValidator)
 
-    [uniqueness] unless uniqueness[:value].empty?
+    uniqueness unless uniqueness[:value].empty?
   end
 
   def validation_messages_inclusion
