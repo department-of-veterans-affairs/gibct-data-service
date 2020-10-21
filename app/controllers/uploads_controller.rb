@@ -167,7 +167,8 @@ class UploadsController < ApplicationController
   end
 
   def csv_column_name(column)
-    klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+    name = klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+    Common::Shared.display_csv_header(name)
   end
 
   def inclusion_requirement_message(validations)

@@ -51,10 +51,10 @@ class Upload < ApplicationRecord
 
     headers = diffed_headers
     headers[:missing_headers].each do |header|
-      missing_headers.add(Common::Shared.export_csv_header(header).to_sym, 'is a missing header')
+      missing_headers.add(Common::Shared.display_csv_header(header).to_sym, 'is a missing header')
     end
     headers[:extra_headers].each do |header|
-      extra_headers.add(Common::Shared.export_csv_header(header).to_sym, 'is an extra header')
+      extra_headers.add(Common::Shared.display_csv_header(header).to_sym, 'is an extra header')
     end
   end
 
