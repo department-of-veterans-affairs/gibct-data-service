@@ -45,6 +45,17 @@ ENV BUNDLER_VERSION='2.1.4'
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
+
+# old docker react stuff
+#ENV YARN_VERSION 1.12.3
+#ENV NODEJS_VERSION 10.15.3
+#
+#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+#ENV NVM_DIR=/root/.nvm
+#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
+#ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
+#RUN npm install -g yarn@$YARN_VERSION
+
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 ENV PATH="/usr/local/bundle/bin:${PATH}"
@@ -64,25 +75,3 @@ COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bi
 USER gi-bill-data-service
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
-
-
-# old docker react stuff
-#ENV YARN_VERSION 1.12.3
-#ENV NODEJS_VERSION 10.15.3
-#
-#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-#ENV NVM_DIR=/root/.nvm
-#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
-#ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
-#RUN npm install -g yarn@$YARN_VERSION
-#
-#RUN ["/bin/bash", "--login", "-c", "gem install --no-doc bundler"]
-#
-## Configure gibct application
-#RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
-#VOLUME /src/gibct
-#WORKDIR /src/gibct
-#
-#ADD . /src/gibct
-#RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-#RUN yarn install --force --non-interactive
