@@ -1,3 +1,15 @@
+<% if flash[:danger].present? %>
+  <aside class="alert alert-danger">
+    <% if flash[:danger].is_a? Hash %>
+      <% flash[:danger].each_pair do |label, dangers| %>
+        <%= pretty_error(dangers, label) %>
+      <% end %>
+    <% else %>
+      <%= flash[:danger].html_safe %>
+    <% end %>
+  </aside>
+<% end %>
+
 <% if flash[:csv_success].present? %>
   <aside class="alert alert-success">
     <div class="errors">
@@ -29,14 +41,3 @@
   </aside>
 <% end %>
 
-<% if flash[:danger].present? %>
-  <aside class="alert alert-danger">
-    <% if flash[:danger].is_a? Hash %>
-      <% flash[:danger].each_pair do |label, dangers| %>
-        <%= pretty_error(dangers, label) %>
-      <% end %>
-    <% else %>
-      <%= flash[:danger].html_safe %>
-    <% end %>
-  </aside>
-<% end %>
