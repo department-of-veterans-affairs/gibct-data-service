@@ -14,12 +14,7 @@ RSpec.describe DashboardsController, type: :controller do
     csv_path = 'spec/fixtures'
 
     upload = create :upload, csv_type: csv_type, csv_name: csv_name, user: User.first
-    load_options = Common::Shared.file_type_defaults(klass.name)
-
-    roo_options = { liberal_parsing: load_options[:liberal_parsing],
-                    sheets: [{ klass: klass, skip_lines: load_options[:skip_lines].try(:to_i) }] }
-
-    klass.load_with_roo("#{csv_path}/#{csv_name}", roo_options)
+    klass.load_from_csv("#{csv_path}/#{csv_name}", Common::Shared.file_type_defaults(klass.name))
     upload.update(ok: true)
   end
 

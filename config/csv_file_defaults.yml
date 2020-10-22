@@ -1,21 +1,21 @@
 generic:
   skip_lines: 0
-  col_sep: ','
+  col_sep: ","
 
 EightKey:
   skip_lines: 1
 
 Mou:
   skip_lines: 1
-  
+
 Hcm:
   skip_lines: 2
-  
+
 Complaint:
   skip_lines: 7
 
 Program:
-  col_sep: '|'
+  col_sep: "|"
 
 SchoolCertifyingOfficial:
   liberal_parsing: true
