@@ -5,10 +5,7 @@ module SeedUtils
 
   def seed_table_with_upload(klass, user, options = {})
     # Pull the default CSV options to be used
-    default_options = Rails.application.config.csv_defaults[klass.name] ||
-                      Rails.application.config.csv_defaults['generic']
-    # Merge with provided options
-    seed_options = default_options.transform_keys(&:to_sym).merge(options)
+    seed_options = Common::Shared.file_type_defaults(klass.name, options)
 
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.csv"
