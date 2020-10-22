@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class AccreditationInstituteCampus < ApplicationRecord
+class AccreditationInstituteCampus < ImportableRecord
   self.table_name = 'accreditation_institute_campuses'
-
-  include CsvHelper
 
   has_many(:accreditation_records, primary_key: :dapip_id, foreign_key: 'dapip_id',
                                    inverse_of: :accreditation_institute_campus,

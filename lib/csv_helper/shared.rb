@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
 module CsvHelper
+  include Common
   def self.included(base)
-    base.extend Shared
+    base.extend Common::Shared
     base.extend Loader
     base.extend Exporter
-  end
-
-  module Shared
-    def klass
-      name.constantize
-    end
   end
 end
