@@ -3,6 +3,26 @@
 require 'rails_helper'
 
 describe RooHelper::Loader do
+  let(:subject) { EduProgram }
+
+  context 'converter_info' do
+    let(:key) { 'facility_code'}
+    it 'returns correct info object for a header with underscores' do
+      info = subject.send(:converter_info, subject, key)
+      expect(info).to eq(subject::CSV_CONVERTER_INFO[key])
+    end
+    it 'returns correct info object for a header with spaces' do
+      file_header = 'facility code'
+      info = subject.send(:converter_info, subject, file_header)
+      expect(info).to eq(subject::CSV_CONVERTER_INFO[key])
+
+    end
+    it 'returns correct info object for a header with dashes' do
+      file_header = 'facility-code'
+      info = subject.send(:converter_info, subject, file_header)
+      expect(info).to eq(subject::CSV_CONVERTER_INFO[key])
+    end
+  end
 
   # describe 'header checking' do
   #   it 'has no missing or extra headers for a normal csv' do
