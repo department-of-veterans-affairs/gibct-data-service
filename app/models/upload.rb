@@ -66,11 +66,11 @@ class Upload < ApplicationRecord
   end
 
   def force_simple_split
-    self.class.default_options(csv_type)['force_simple_split']
+    Common::Shared.file_type_defaults(csv_type)[:force_simple_split]
   end
 
   def strip_chars_from_headers
-    self.class.default_options(csv_type)['strip_chars_from_headers']
+    Common::Shared.file_type_defaults(csv_type)[:strip_chars_from_headers]
   end
 
   def self.last_uploads
@@ -108,14 +108,10 @@ class Upload < ApplicationRecord
 
   def self.from_csv_type(csv_type)
     upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = default_options(csv_type)['skip_lines']
-    upload.col_sep = default_options(csv_type)['col_sep']
+    upload.skip_lines = Common::Shared.file_type_defaults(csv_type)[:skip_lines]
+    upload.col_sep = Common::Shared.file_type_defaults(csv_type)[:col_sep]
 
     upload
-  end
-
-  def self.default_options(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
   end
 
   def self.fetching_for?(csv_type)
