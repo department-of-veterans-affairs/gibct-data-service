@@ -14,7 +14,7 @@ module RooHelper
     # - :sheets An array of hashes whose order determines which sheet in a spreadsheet
     #           maps to which class, creates a transaction for each class
     #
-    #   - :klass The name of the ImportableRecord
+    #   - :klass The ImportableRecord class
     #   - :skip_lines Number of lines to skip before Header row, used for warning messages and finding headers
     #   - :first_line This is used for warning messages, default value is 2
     #
@@ -122,7 +122,6 @@ module RooHelper
       { header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }), results: results }
     end
 
-    # Allows for `col_header`, `col-header`, or `col header` in file to return correct info object
     def converter_info(sheet_klass, header)
       sheet_klass::CSV_CONVERTER_INFO[Common::Shared.convert_csv_header(header).downcase]
     end
@@ -141,7 +140,7 @@ module RooHelper
     end
 
     # Set default options if not provided
-    # - :sheets  Default sheets array is the class that called load_with_roo
+    # - :sheets  Default sheets array uses the class that called load_with_roo
     #   - :first_line Since row indexes start at 0 and spreadsheets on line 1,
     #                 add 1 for the difference in indexes and 1 for the header row itself.
     #   - :skip_lines defaults to 0
@@ -185,7 +184,9 @@ module RooHelper
 
     # This is called if options[:parse_as_xml] is true
     #
-    # This is the custom code to deal with issues that occurring from malformed excel files
+    # This is the custom code to deal with issues that occur from malformed excel files
+    # ex: No "r" attribute on the cell elements, this indicates "A1" or "D32"
+    #
     # This uses Roo to get the sheet_file path and create a Nokogiri::XML:Document to be parsed
     #
     def process_as_xml(sheet_klass, sheet, index, sheet_options)
@@ -194,6 +195,7 @@ module RooHelper
       # Get Nokogiri::XML::Document
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
 
+      # path to the rows within the sheet
       rows = doc.xpath('/worksheet/sheetData/row').to_a.drop(sheet_options[:skip_lines])
       headers = rows.shift.children.to_a.map { |c| c.content.strip.downcase }
 

@@ -9,7 +9,7 @@ describe Common::Shared do
     end
   end
 
-  describe 'file_type_default' do
+  describe 'file_type_defaults' do
     it 'returns generic options' do
       generic_options = Rails.application.config.csv_defaults['generic'].transform_keys(&:to_sym)
       expect(described_class.file_type_defaults(CalculatorConstant.name))
@@ -37,6 +37,13 @@ describe Common::Shared do
     it 'replaces spaces with underscores' do
       header = 'a header to  &  test'
       expect(described_class.convert_csv_header(header)).to eq('a_header_to_&_test')
+    end
+  end
+
+  describe 'display_csv_header' do
+    it 'replaces underscores with spaces' do
+      header = 'a_header_to_&_test'
+      expect(described_class.display_csv_header(header)).to eq('a header to & test')
     end
   end
 end
