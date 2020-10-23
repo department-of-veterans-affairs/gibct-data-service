@@ -126,6 +126,7 @@ class UploadsController < ApplicationController
       .push(validation_messages_presence)
       .push(validation_messages_numericality)
       .push(validation_messages_uniqueness)
+      .compact
   end
 
   def klass_validator(validation_class)
