@@ -123,9 +123,9 @@ class UploadsController < ApplicationController
 
   def requirements_messages
     [RooHelper.valid_col_seps]
-      .push(*validation_messages_presence)
-      .push(*validation_messages_numericality)
-      .push(*validation_messages_uniqueness)
+      .push(validation_messages_presence)
+      .push(validation_messages_numericality)
+      .push(validation_messages_uniqueness)
   end
 
   def klass_validator(validation_class)
@@ -138,7 +138,7 @@ class UploadsController < ApplicationController
     presence = { message: 'These columns must have a value: ', value: [] }
 
     presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
-    [presence] unless presence[:value].empty?
+    presence unless presence[:value].empty?
   end
 
   def validation_messages_numericality
@@ -146,7 +146,7 @@ class UploadsController < ApplicationController
 
     numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator)
 
-    [numericality] unless numericality[:value].empty?
+    numericality unless numericality[:value].empty?
   end
 
   def validation_messages_uniqueness
@@ -154,7 +154,7 @@ class UploadsController < ApplicationController
 
     uniqueness[:value] = klass_validator(ActiveRecord::Validations::UniquenessValidator)
 
-    [uniqueness] unless uniqueness[:value].empty?
+    uniqueness unless uniqueness[:value].empty?
   end
 
   def validation_messages_inclusion
@@ -167,7 +167,7 @@ class UploadsController < ApplicationController
                 value: inclusion_requirement_message(validations) }
       inclusion.push(array)
     end
-    [inclusion] unless inclusion.empty?
+    inclusion unless inclusion.empty?
   end
 
   def affected_attributes(validations)
@@ -177,7 +177,8 @@ class UploadsController < ApplicationController
   end
 
   def csv_column_name(column)
-    klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+    name = klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+    Common::Shared.display_csv_header(name)
   end
 
   def inclusion_requirement_message(validations)

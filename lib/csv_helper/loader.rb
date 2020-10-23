@@ -60,7 +60,7 @@ without a closing double quote (\"). "
 
       klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
         value_converters[info[:column]] = info[:converter]
-        key_mapping[csv_column.tr(' -', '_').to_sym] = info[:column]
+        key_mapping[csv_column.to_sym] = info[:column]
       end
 
       options.reverse_merge(key_mapping: key_mapping, value_converters: value_converters)
