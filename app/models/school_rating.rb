@@ -2,16 +2,16 @@
 
 class SchoolRating < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'rater id' => { column: :rater_id, converter: BaseConverter },
-    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'overall experience' => { column: :overall_experience, converter: SchoolRatingConverter },
-    'quality of classes' => { column: :quality_of_classes, converter: SchoolRatingConverter },
-    'online instruction' => { column: :online_instruction, converter: SchoolRatingConverter },
-    'job preparation' => { column: :job_preparation, converter: SchoolRatingConverter },
-    'gi bill support' => { column: :gi_bill_support, converter: SchoolRatingConverter },
-    'veteran community' => { column: :veteran_community, converter: SchoolRatingConverter },
-    'marketing practices' => { column: :marketing_practices, converter: SchoolRatingConverter },
-    'rated date' => { column: :rated_at, converter: BaseConverter }
+    'rater_id' => { column: :rater_id, converter: BaseConverter },
+    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'overall_experience' => { column: :overall_experience, converter: SchoolRatingConverter },
+    'quality_of_classes' => { column: :quality_of_classes, converter: SchoolRatingConverter },
+    'online_instruction' => { column: :online_instruction, converter: SchoolRatingConverter },
+    'job_preparation' => { column: :job_preparation, converter: SchoolRatingConverter },
+    'gi_bill_support' => { column: :gi_bill_support, converter: SchoolRatingConverter },
+    'veteran_community' => { column: :veteran_community, converter: SchoolRatingConverter },
+    'marketing_practices' => { column: :marketing_practices, converter: SchoolRatingConverter },
+    'rated_date' => { column: :rated_at, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, :rater_id, :rated_at, presence: true

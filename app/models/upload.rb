@@ -50,8 +50,12 @@ class Upload < ApplicationRecord
     extra_headers.clear
 
     headers = diffed_headers
-    headers[:missing_headers].each { |header| missing_headers.add(header.to_sym, 'is a missing header') }
-    headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
+    headers[:missing_headers].each do |header|
+      missing_headers.add(Common::Shared.display_csv_header(header).to_sym, 'is a missing header')
+    end
+    headers[:extra_headers].each do |header|
+      extra_headers.add(Common::Shared.display_csv_header(header).to_sym, 'is an extra header')
+    end
   end
 
   def options
@@ -140,7 +144,9 @@ class Upload < ApplicationRecord
     first_line = csv.readline
     set_col_sep(first_line)
 
-    first_line.split(col_sep).select(&:present?).map { |header| header.downcase.strip }
+    first_line.split(col_sep).select(&:present?).map do |header|
+      Common::Shared.convert_csv_header(header.downcase.strip)
+    end
   end
 
   def set_col_sep(first_line)

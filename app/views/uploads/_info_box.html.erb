@@ -13,17 +13,15 @@
   <%end%>
 
   <% if @inclusion&.any? %>
-    <% @inclusion.map do |columns | %>
-      <%columns.each do |col| %>
-        <li>
-          The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
-            <ul>
-              <%col[:value].each do |attributes|%>
-              <li><%=attributes%></li>
-              <%end%>
-            </ul>
-        </li>
-      <%end%>
+    <% @inclusion.map do |col | %>
+      <li>
+        The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
+          <ul>
+            <%col[:value].each do |attributes|%>
+            <li><%=attributes%></li>
+            <%end%>
+          </ul>
+      </li>
     <% end %>
   <% end %>
 

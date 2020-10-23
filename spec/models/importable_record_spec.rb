@@ -12,6 +12,8 @@ RSpec.describe ImportableRecord do
       it "requires #{record.name} CSV_CONVERTER_INFO to use underscores in keys" do
         record::CSV_CONVERTER_INFO.each_key do |key|
           expect(key).to be_a(String)
+          expect(key).not_to include(' ')
+          expect(key).not_to include('-')
         end
       end
     end
