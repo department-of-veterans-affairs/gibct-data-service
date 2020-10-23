@@ -44,7 +44,7 @@ class InstitutionProgram < ApplicationRecord
 
   # Finds exact-matching facility_code or partial-matching school and city names
   #
-  scope :search, lambda { |search_term, fuzzy_search = false|
+  scope :search, lambda { |search_term|
     return if search_term.blank?
 
     clause = [
@@ -52,14 +52,9 @@ class InstitutionProgram < ApplicationRecord
       'lower(description) LIKE (:lower_contains_term)'
     ]
 
-    if fuzzy_search
-      clause << 'institution % :contains_search_term'
-      clause << 'UPPER(physical_city) = :upper_search_term'
-      clause << 'institutions.physical_zip = :search_term'
-    else
-      clause << 'institutions.institution LIKE (:upper_contains_term)'
-      clause << 'lower(institutions.physical_city) LIKE (:lower_contains_term)'
-    end
+    clause << 'institution % :contains_search_term'
+    clause << 'UPPER(physical_city) = :upper_search_term'
+    clause << 'institutions.physical_zip = :search_term'
 
     where(
       sanitize_sql_for_conditions(
