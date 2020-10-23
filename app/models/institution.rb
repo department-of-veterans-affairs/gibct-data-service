@@ -249,20 +249,15 @@ class Institution < ImportableRecord
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
-  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
+  scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
-    if fuzzy_search_flag
-      clause << 'institution_search % :institution_search_term'
-      clause << 'UPPER(city) = :upper_search_term'
-      clause << 'UPPER(ialias) LIKE :upper_contains_term'
-      clause << 'zip = :search_term'
-    else
-      clause << 'institution LIKE :upper_contains_term'
-      clause << 'city LIKE :upper_contains_term'
-    end
+    clause << 'institution_search % :institution_search_term'
+    clause << 'UPPER(city) = :upper_search_term'
+    clause << 'UPPER(ialias) LIKE :upper_contains_term'
+    clause << 'zip = :search_term'
 
     if include_address
       3.times do |i|
