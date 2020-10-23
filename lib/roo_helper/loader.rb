@@ -133,9 +133,9 @@ module RooHelper
     def header_warnings(sheet_klass, values)
       headers = values.dup.map { |h| Common::Shared.convert_csv_header(h) }
       missing_headers = (sheet_klass::CSV_CONVERTER_INFO.keys - headers)
-                        .map { |h| "#{h.gsub('_', ' ').capitalize} is a missing header" }
+                        .map { |h| "#{Common::Shared.display_csv_header(h).capitalize} is a missing header" }
       extra_headers = (headers - sheet_klass::CSV_CONVERTER_INFO.keys)
-                      .map { |h| "#{h.gsub('_', ' ').capitalize} is an extra header" }
+                      .map { |h| "#{Common::Shared.display_csv_header(h).capitalize} is an extra header" }
 
       missing_headers + extra_headers
     end
