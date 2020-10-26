@@ -1,5 +1,6 @@
 UPLOAD_TYPES = [
-    *CSV_TYPES_TABLES
+    *CSV_TYPES_TABLES,
+    *GROUP_FILE_TYPES
 ].freeze
 
 def klass_name(klass)
