@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file
+  attr_accessor :skip_lines, :upload_file, :sheet_type
 
   belongs_to :user, inverse_of: :versions
 
@@ -76,10 +76,6 @@ class Upload < ApplicationRecord
     upload.skip_lines = Common::Shared.file_type_defaults(csv_type)[:skip_lines]
 
     upload
-  end
-
-  def self.from_group_type(group_type)
-    Upload.new(csv_type: group_type)
   end
 
   def self.fetching_for?(csv_type)

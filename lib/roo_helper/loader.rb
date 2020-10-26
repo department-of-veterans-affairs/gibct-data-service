@@ -8,6 +8,7 @@ module RooHelper
     # {
     #   header_warnings: [],
     #   results: [],
+    #   klass: ImportableRecord,
     # }
     #
     # Sheet Option hashes
@@ -119,7 +120,11 @@ module RooHelper
         result
       end
 
-      { header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }), results: results }
+      {
+          header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }),
+          results: results,
+          klass: sheet_klass
+      }
     end
 
     def converter_info(sheet_klass, header)
@@ -214,7 +219,7 @@ module RooHelper
         result
       end
 
-      { header_warnings: header_warnings(sheet_klass, headers), results: results }
+      { header_warnings: header_warnings(sheet_klass, headers), results: results, klass: sheet_klass }
     end
   end
 end

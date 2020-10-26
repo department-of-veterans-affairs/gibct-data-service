@@ -6,41 +6,36 @@ Dir["#{Rails.application.config.root}/lib/roo_helper/**/*.rb"].sort.each { |f| r
 
 class GroupsController < ApplicationController
   def new
-    @upload = Upload.from_group_type(params[:group_type])
-    @extensions = Settings.roo_upload.extensions.group.join(', ')
-    @requirements = requirements
+    return if setup(params[:group_type])
 
-    return if @upload.csv_type_check?
-
-    alert_and_log(@upload.errors.full_messages.join(', '))
+    alert_and_log(@group.errors.full_messages.join(', '))
     redirect_to dashboards_path
   end
 
   def create
-    @upload = Upload.create(merged_params)
+    @group = Group.create(merged_params)
+
     begin
-     data = load_file
-     alert_messages(data)
-     data_results = data[:results]
+      data = load_file
+      alert_messages(data)
+      data_results = data[:results]
 
-     @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
-     error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-     raise(StandardError, error_msg) unless @upload.ok?
+      @group.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+      error_msg = "There was no saved #{data[:klass]} data. Please check the file or selected options."
+      raise(StandardError, error_msg) unless @group.ok?
 
-     redirect_to @upload
+      redirect_to @group
     rescue StandardError => e
-      @upload = Upload.from_csv_type(merged_params[:group_type])
-      requirements if @upload.csv_type_check?
+      setup(merged_params[:csv_type])
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
-   end
+    end
   end
 
   def show
-    @upload = Upload.find_by(id: params[:id])
+    @group = Group.find_by(id: params[:id])
 
-    requirements if @upload.present?
-    return if @upload.present?
+    return requirements if @group.present?
 
     alert_and_log("Upload with id: '#{params[:id]}' not found")
     redirect_to uploads_path
@@ -48,12 +43,21 @@ class GroupsController < ApplicationController
 
   private
 
+  def setup(group_type)
+    @group = Group.from_group_type(group_type)
+    @extensions = Settings.roo_upload.extensions.group.join(', ')
+    @sheets = @group.group_config[:types].map(&:name)
+    requirements if @group.csv_type_check?
+
+    @group.csv_type_check?
+  end
+
+  # Build array of requirements information based on what types are in the group
   def requirements
-    type_requirements = []
-    group_klass[:types].each do |type|
-      type_requirements << upload_requirements(type)
+    @requirements = []
+    @group.group_config[:types].each do |type|
+      @requirements << upload_requirements(type)
     end
-    type_requirements if @upload.csv_type_check?
   end
 
   def upload_requirements(type)
@@ -75,7 +79,7 @@ class GroupsController < ApplicationController
     header_warnings = data[:header_warnings]
 
     if valid_rows.positive?
-      flash[:csv_success] = {
+      flash[:group_success] = {
         total_rows_count: total_rows_count.to_s,
         valid_rows: valid_rows.to_s,
         failed_rows_count: failed_rows_count.to_s
@@ -89,41 +93,49 @@ class GroupsController < ApplicationController
   end
 
   def original_filename
-    @original_filename ||= upload_params[:upload_file].try(:original_filename)
+    @original_filename ||= group_params[:upload_file].try(:original_filename)
   end
 
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user)
+    group_params.merge(csv: original_filename, user: current_user)
   end
 
-  def upload_params
-    @upload_params ||= params.require(:upload).permit(:group_type, :skip_lines, :upload_file, :comment)
+  def group_params
+    @group_params ||= params.require(:group).permit(:csv_type, :upload_file, :comment,
+                                                    sheet_type_list: [], skip_lines: [])
   end
 
   def load_file
-    return unless @upload.persisted?
+    return unless @group.persisted?
 
-    file = @upload.upload_file.tempfile
+    file = @group.upload_file.tempfile
 
-    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
+    CrosswalkIssue.delete_all if crosswalk_action?
 
-    # first is used because when called from standard upload process
-    # because only a single set of results is returned
-    file_options = { liberal_parsing: @upload.liberal_parsing,
-                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i) }] }
-    data = klass.load_with_roo(file, file_options).first
+    data = Group.load_with_roo(file, file_options).first
 
-    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
+    CrosswalkIssue.rebuild if crosswalk_action?
 
     data
   end
 
-  def klass
-    @upload.csv_type.constantize
+  # Set options for using RooHelper::Loader
+  def file_options
+    sheets = []
+    @group.sheet_type_list.each_with_index do |sheet_type, index|
+      sheets << {
+        klass: sheet_type.constantize,
+        skip_lines: @group.skip_lines[index].to_i
+      }
+    end
+    { parse_as_xml: @group.parse_as_xml,
+      sheets: sheets }
   end
 
-  def group_klass
-    GROUP_FILE_TYPES.select { |g| g[:klass] == @upload.csv_type }.first
+  # delete and rebuild if the intersection of selected File Types array and
+  # [Crosswalk, IpedsHd, Weam]
+  def crosswalk_action?
+    ([Crosswalk, IpedsHd, Weam] & @group.sheet_type_list.map(&:constantize)).any?
   end
 
   def requirements_messages(type)

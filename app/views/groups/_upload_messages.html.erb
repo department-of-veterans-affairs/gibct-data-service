@@ -1,24 +1,12 @@
-<% if flash[:danger].present? %>
-  <aside class="alert alert-danger">
-    <% if flash[:danger].is_a? Hash %>
-      <% flash[:danger].each_pair do |label, dangers| %>
-        <%= pretty_error(dangers, label) %>
-      <% end %>
-    <% else %>
-      <%= flash[:danger].html_safe %>
-    <% end %>
-  </aside>
-<% end %>
-
-<% if flash[:csv_success].present? %>
+<% if flash[:group_success].present? %>
   <aside class="alert alert-success">
     <div class="errors">
       <p>The upload succeeded: </p>
       <ul>
-        <li><%= @upload.csv_type %>.csv</li>
-        <li>Total data rows: <%= flash[:csv_success][:total_rows_count] %></li>
-        <li>Valid data rows: <%= flash[:csv_success][:valid_rows] %></li>
-        <li>Invalid data rows <strong style="color:red;">*</strong> : <%= flash[:csv_success][:failed_rows_count] %></li>
+        <li><%= @group.csv_type %>.csv</li>
+        <li>Total data rows: <%= flash[:group_success][:total_rows_count] %></li>
+        <li>Valid data rows: <%= flash[:group_success][:valid_rows] %></li>
+        <li>Invalid data rows <strong style="color:red;">*</strong> : <%= flash[:group_success][:failed_rows_count] %></li>
         <ul>
           <li>
             Invalid Data Rows are not included in new version generation.
