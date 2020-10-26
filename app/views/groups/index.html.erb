@@ -1,0 +1,31 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <%= render partial: 'introduction' %>
+  </div>
+</div>
+
+<div class="row row-space-6" style="padding-top: 20px">
+  <div class="col-xs-12">
+    <table class="table table-hover table-condensed table-bordered table-responsive">
+      <thead>
+        <th>CSV Type</th>
+        <th>Status</th>
+        <th>File Name</th>
+        <th>Upload Date</th>
+        <th>Uploaded By</th>
+        <th>Comments</th>
+      </thead>
+      <tbody>
+        <%= render partial: 'upload', collection: @uploads, as: :upload %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row row-space-6">
+  <div class="col-xs-offset-2 col-xs-10">
+    <div class="digg_pagination">
+      <%= will_paginate @uploads %>
+    </div>
+  </div>
+</div>

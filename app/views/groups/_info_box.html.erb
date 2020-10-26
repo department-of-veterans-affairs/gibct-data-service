@@ -1,0 +1,40 @@
+<ol>
+  <% if info[:requirements]&.any? %>
+    <% info[:requirements].map do |requirement | %>
+      <li>
+        <%= requirement[:message] %>
+          <ul>
+            <% requirement[:value].each do |value|  %>
+              <li><%= value.humanize.downcase %></li>
+            <% end %>
+          </ul>
+      </li>
+    <% end %>
+  <%end%>
+
+  <% if info[:inclusion]&.any? %>
+    <% info[:inclusion].map do |col | %>
+      <li>
+        The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
+          <ul>
+            <%col[:value].each do |attributes|%>
+            <li><%=attributes%></li>
+            <%end%>
+          </ul>
+      </li>
+    <% end %>
+  <% end %>
+
+
+  <% if info[:custom_batch_validator]&.any? %>
+      <li>
+        Requirement Description:
+        <ul>
+          <%  info[:custom_batch_validator].map do |batch| %>
+            <li><%=batch%></li>
+          <%end%>
+        </ul>
+      </li>
+  <% end %>
+
+</ol>

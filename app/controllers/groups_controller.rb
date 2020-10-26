@@ -126,7 +126,7 @@ class GroupsController < ApplicationController
   end
 
   def group_klass
-    GROUP_FILE_TYPES.select{|g| g[:klass] == @upload.csv_type}
+    GROUP_FILE_TYPES.select{|g| g[:klass] == @upload.csv_type}.first
   end
 
   def requirements_messages(type)
@@ -137,7 +137,7 @@ class GroupsController < ApplicationController
   end
 
   def klass_validator(validation_class, type)
-    klass.validators.map do |validations|
+    type.validators.map do |validations|
       affected_attributes(validations, type) if validation_class == validations.class
     end.flatten.compact
   end
