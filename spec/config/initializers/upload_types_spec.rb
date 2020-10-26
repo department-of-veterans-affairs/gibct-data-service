@@ -46,4 +46,26 @@ RSpec.describe 'UPLOAD_TYPES' do
       expect(UPLOAD_TYPES_NO_PROD_NAMES).to eq(NO_PROD_TABLES)
     end
   end
+
+  describe 'fields checks' do
+    UPLOAD_TYPES.each do |upload|
+      it "#{klass_name(upload)} upload type config has field klass" do
+        expect(upload[:klass]).to be_a(String).or be < ImportableRecord
+      end
+    end
+
+    UPLOAD_TYPES.each do |upload|
+      it "#{klass_name(upload)} upload type config has field required?" do
+        expect(upload[:required?]).to be_in([true, false])
+      end
+    end
+
+    UPLOAD_TYPES.each do |upload|
+      it "#{klass_name(upload)} upload type config not_prod_ready? is a boolean" do
+        if upload[:not_prod_ready?].present?
+          expect(upload[:not_prod_ready?]).to be_in([true, false])
+        end
+      end
+    end
+  end
 end
