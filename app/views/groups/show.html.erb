@@ -72,8 +72,8 @@
     <div class="col-xs-8"></div>
      <div class="col-xs-4">  
       <div class="alert alert-info" style="margin-top: -10em;" role="alert">
-      <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Data Requirements</h4><br />   
-        <div><%= render 'info_box'%></div>
+      <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Data Requirements</h4><br />
+        <div><%= render partial: 'info_box', collection: @requirements, as: :info %></div>
       </div>
     </div>
   </div>

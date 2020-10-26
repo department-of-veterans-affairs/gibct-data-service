@@ -1,4 +1,5 @@
-<ol>
+<h5><%= info[:type] %></h5>
+<ol style="list-style-type: none;">
   <% if info[:requirements]&.any? %>
     <% info[:requirements].map do |requirement | %>
       <li>

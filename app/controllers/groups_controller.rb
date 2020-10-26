@@ -5,13 +5,9 @@
 Dir["#{Rails.application.config.root}/lib/roo_helper/**/*.rb"].sort.each { |f| require(f) }
 
 class GroupsController < ApplicationController
-  def index
-    @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
-  end
-
   def new
     @upload = Upload.from_group_type(params[:group_type])
-    @extensions = Settings.roo_upload.extensions.single.join(', ')
+    @extensions = Settings.roo_upload.extensions.group.join(', ')
     @requirements = requirements
 
     return if @upload.csv_type_check?
@@ -55,15 +51,16 @@ class GroupsController < ApplicationController
   def requirements
     type_requirements = []
     group_klass[:types].each do |type|
-      type_requirements << upload_requirements(type[:klass])
+      type_requirements << upload_requirements(type)
     end
     type_requirements if @upload.csv_type_check?
   end
 
   def upload_requirements(type)
-    {requirements: requirements_messages(type),
-    custom_batch_validator: "#{type.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize,
-    inclusion: validation_messages_inclusion(type)}
+    { type: type.name,
+      requirements: requirements_messages(type),
+      custom_batch_validator: "#{type.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize,
+      inclusion: validation_messages_inclusion(type) }
   end
 
   def alert_messages(data)
@@ -126,13 +123,13 @@ class GroupsController < ApplicationController
   end
 
   def group_klass
-    GROUP_FILE_TYPES.select{|g| g[:klass] == @upload.csv_type}.first
+    GROUP_FILE_TYPES.select { |g| g[:klass] == @upload.csv_type }.first
   end
 
   def requirements_messages(type)
     [validation_messages_presence(type),
      validation_messages_numericality(type),
-      validation_messages_uniqueness(type)]
+     validation_messages_uniqueness(type)]
       .compact
   end
 

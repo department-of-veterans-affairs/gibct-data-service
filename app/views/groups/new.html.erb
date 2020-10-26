@@ -7,11 +7,11 @@
 <div class="container" style="float: left;">
   <div class="row">
     <div class="col-xs-8">
-      test
+      <%= render 'form' %>
     </div>
     <div class="col-xs-4">
       <div class="alert alert-info" role="alert">
-        <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Data Requirements</h4><br />
+        <h4 class="alert-heading"><%= @upload.csv_type.titleize %> File Group Data Requirements</h4><br />
         <div><%= render partial: 'info_box', collection: @requirements, as: :info %></div>
       </div>
     </div>

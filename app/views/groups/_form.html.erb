@@ -1,9 +1,9 @@
     <%= form_for(@upload, multipart: true) do |f| %>
-      <% if @upload.csv_type.nil? %>
-        <%= render partial: 'csv_type_select', locals: { f: f } %>
-      <% else %>
-        <%= render partial: 'csv_type_static', locals: { upload: @upload, f: f } %>
-      <% end %>
+      <div class="form-group">
+        <%= f.label(:csv_file_type, for: 'csv_type_display') %><br />
+        <%= f.text_field(:csv_type, disabled: true, name: "csv_type_display", id: "csv_type_display") %>
+        <%= f.hidden_field(:csv_type) %>
+      </div>
 
       <div class="form-group">
         <%= f.label(:skip_lines_before_header, for: "upload_skip_lines") %><br />

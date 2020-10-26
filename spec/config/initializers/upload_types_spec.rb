@@ -62,9 +62,7 @@ RSpec.describe 'UPLOAD_TYPES' do
 
     UPLOAD_TYPES.each do |upload|
       it "#{klass_name(upload)} upload type config not_prod_ready? is a boolean" do
-        if upload[:not_prod_ready?].present?
-          expect(upload[:not_prod_ready?]).to be_in([true, false])
-        end
+        expect(upload[:not_prod_ready?]).to be_in([true, false]) if upload[:not_prod_ready?].present?
       end
     end
   end

@@ -4,18 +4,9 @@ GROUP_FILE_TYPES = [
         required?: true,
         not_prod_ready?: true,
         types: [
-            {
-                label: 'InstituteCampus',
-                klass: AccreditationInstituteCampus
-            },
-            {
-                label: 'AccreditationRecords',
-                klass: AccreditationRecord
-            },
-            {
-                label: 'AccreditationActions',
-                klass: AccreditationAction
-            },
+          AccreditationInstituteCampus,
+          AccreditationRecord,
+          AccreditationAction,
         ]
     },
 ].freeze

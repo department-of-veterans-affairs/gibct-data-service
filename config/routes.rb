@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
 
+  get '/groups', to: redirect('/uploads')
   resources :groups, except: [:new, :destroy, :edit, :update] do
     get '(:group_type)' => 'groups#new', on: :new, as: ''
   end
