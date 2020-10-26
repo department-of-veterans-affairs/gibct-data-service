@@ -4,6 +4,8 @@
 # if you make major alteration here, please check that usage as well
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
+npm install yarn -g
+
 ## Configure gibct application
 #RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
 #VOLUME /src/gibct
