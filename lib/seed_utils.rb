@@ -4,8 +4,9 @@ module SeedUtils
   module_function
 
   def seed_table_with_upload(klass, user, options = {})
-    # Pull the default CSV options to be used
     seed_options = Common::Shared.file_type_defaults(klass.name, options)
+    file_options = { liberal_parsing: seed_options[:liberal_parsing],
+                     sheets: [{ klass: klass, skip_lines: seed_options[:skip_lines].try(:to_i) }] }
 
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.csv"
@@ -21,7 +22,7 @@ module SeedUtils
     )
 
     upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-    seed_table(klass, "#{csv_path}/#{csv_name}", seed_options)
+    seed_table(klass, "#{csv_path}/#{csv_name}", file_options)
     upload.update(ok: true)
 
     puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
@@ -33,6 +34,6 @@ module SeedUtils
   end
 
   def seed_table(klass, path, options = {})
-    klass.load_from_csv(path, options)
+    klass.load_with_roo(path, options)
   end
 end
