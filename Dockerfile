@@ -9,8 +9,6 @@ ARG userid=309
 SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
-RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl libpq-dev dumb-init nodejs
 
 RUN apt-get install -y curl \
   && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
@@ -52,14 +50,14 @@ COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 
 # old docker react stuff
-#ENV YARN_VERSION 1.12.3
-#ENV NODEJS_VERSION 10.15.3
-#
-#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-#ENV NVM_DIR=/root/.nvm
-#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
-#ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
-#RUN npm install -g yarn@$YARN_VERSION
+ENV YARN_VERSION 1.12.3
+ENV NODEJS_VERSION 10.15.3
+
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
+RUN npm install -g yarn@$YARN_VERSION
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete

@@ -10,13 +10,13 @@ bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 #npm install yarn -g
 
 # Configure gibct application
-RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
-VOLUME /src/gibct
-WORKDIR /src/gibct
-
-ADD . /src/gibct
-RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
-RUN yarn install --force --non-interactive
+#RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
+#VOLUME /src/gibct
+#WORKDIR /src/gibct
+#
+#ADD . /src/gibct
+#RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
+#RUN yarn install --force --non-interactive
 #yarn install --force --non-interactive
 
 exec "$@"
