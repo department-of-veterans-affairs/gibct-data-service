@@ -1,0 +1,4 @@
+UPLOAD_TYPES = [
+    *CSV_TYPES_TABLES,
+    *GROUP_FILE_TYPES_NAMES,
+].freeze
