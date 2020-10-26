@@ -19,7 +19,7 @@
       <% end %>
 
       <% if GROUP_FILE_TYPES.include?(upload.csv_type) %>
-        <%= link_to 'Upload', upload_group_path(upload.csv_type),
+        <%= link_to 'Upload', new_group_path(upload.csv_type),
                     class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <% else %>
         <%= link_to 'Upload', new_upload_path(upload.csv_type),

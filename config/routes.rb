@@ -20,7 +20,10 @@ Rails.application.routes.draw do
 
   resources :uploads, except: [:new, :destroy, :edit, :update] do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
-    get '/group/(:file_type)' => 'uploads#group', as: :group
+  end
+
+  resources :groups, except: [:new, :destroy, :edit, :update] do
+    get '(:csv_type)' => 'groups#new', on: :new, as: ''
   end
 
   get '/crosswalk_issues/partials' => 'crosswalk_issues#partials', as: :crosswalk_issues_partials
