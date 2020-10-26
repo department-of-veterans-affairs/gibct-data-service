@@ -1,4 +1,4 @@
-<% if production? && CSV_TYPES_NO_PROD_NAMES.include?(upload.csv_type) %>
+<% if production? && UPLOAD_TYPES_NO_PROD_NAMES.include?(upload.csv_type) %>
 <%else %>
   <tr id="row_<%=upload.csv_type%>"
       class="<%= latest_upload_class(upload) %>"
