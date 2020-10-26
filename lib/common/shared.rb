@@ -25,6 +25,8 @@ module Common
       default_options.transform_keys(&:to_sym).merge(options)
     end
 
+    # Allows for `col_header`, `col-header`, or `col header` in file to return correct info object
+    #
     # replace all spaces and dashes with underscores
     # then reduce duplicate underscores in a row to a single underscore
     def self.convert_csv_header(header)

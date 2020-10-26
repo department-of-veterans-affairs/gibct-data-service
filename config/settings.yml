@@ -11,6 +11,13 @@ csv_upload:
     - "|"
     - ","
 
+roo_upload:
+  extensions:
+    - '.txt'
+    - '.csv'
+    - '.xls'
+    - '.xlsx'
+
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"
   api_key: <%= ENV['SCORECARD_API_KEY'] %>

@@ -10,7 +10,6 @@ FactoryBot.define do
     end
 
     user
-    col_sep { ',' }
 
     csv_type { Weam.name }
     completed_at { Time.now.utc.to_s(:db) }

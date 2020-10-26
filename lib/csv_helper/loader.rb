@@ -2,6 +2,10 @@
 
 module CsvHelper
   module Loader
+    include Common::Loader
+
+    # Since row indexes start at 0 and spreadsheets on line 1,
+    # add 1 for the difference in indexes and 1 for the header row itself.
     CSV_FIRST_LINE = 2
 
     SMARTER_CSV_OPTIONS = {
@@ -16,13 +20,6 @@ module CsvHelper
       end
     end
 
-    def load(results, options = {})
-      klass.transaction do
-        delete_all
-        load_records(results, options)
-      end
-    end
-
     private
 
     def load_csv_file(file, options)
@@ -34,19 +31,11 @@ module CsvHelper
                   load_csv(file, records, options)
                 end
 
-      load_records(records, options)
+      load_records(records, options.reverse_merge(first_line: CSV_FIRST_LINE))
     rescue EOFError
       error_msg = "Bad data was found in a row. Please check ALL ROWS for a double quote (\")
 without a closing double quote (\"). "
       raise(StandardError, error_msg)
-    end
-
-    def load_records(records, options)
-      results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
-
-      after_import_validations(records, results.failed_instances, options)
-
-      results
     end
 
     def load_csv(file, records, options)
@@ -59,7 +48,7 @@ without a closing double quote (\"). "
 
     def load_csv_with_row(file, records, options)
       SmarterCSV.process(file, merge_options(options)).each_with_index do |row, index|
-        records << klass.new(row.merge(csv_row: csv_row(index, options)))
+        records << klass.new(row.merge(csv_row: document_row(index, options)))
       end
 
       records
@@ -76,47 +65,6 @@ without a closing double quote (\"). "
 
       options.reverse_merge(key_mapping: key_mapping, value_converters: value_converters)
              .reverse_merge(SMARTER_CSV_OPTIONS)
-    end
-
-    # Default validations are run during import, which prevent bad data from being persisted to the database.
-    # This method manually runs validations that were declared with a specific validation context (:after_import).
-    # Or runs "#{klass.name}Validator" method after_import_batch_validations for large import CSVs
-    # The result is warnings are generated for the end user while the data is allowed to persist to the database.
-    def after_import_validations(records, failed_instances, options)
-      return if run_after_import_batch_validations?(failed_instances)
-
-      records.each_with_index do |record, index|
-        next if record.valid?(:after_import)
-
-        csv_row_number = csv_row(index, options)
-        record.errors.add(:row, csv_row_number)
-        failed_instances << record if record.persisted?
-      end
-    end
-
-    def run_after_import_batch_validations?(failed_instances)
-      # this is a call to custom batch validation checks for large import CSVs
-      validator_klass = "#{klass.name}Validator".safe_constantize
-      run_validations = validator_klass.present? && defined? validator_klass.after_import_batch_validations
-
-      if run_validations
-        failed_instances.each do |record|
-          record.errors.add(:row, record.csv_row)
-        end
-        validator_klass.after_import_batch_validations(failed_instances)
-      end
-      run_validations
-    end
-
-    # Since row indexes start at 0 and spreadsheets on line 1,
-    # add 1 for the difference in indexes and 1 for the header row itself.
-    def row_offset(options)
-      CSV_FIRST_LINE + (options[:skip_lines] || 0)
-    end
-
-    # actual row in CSV for use by user
-    def csv_row(index, options)
-      index + row_offset(options)
     end
   end
 end
