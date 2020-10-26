@@ -102,7 +102,7 @@ class DashboardsController < ApplicationController
     model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
-    raise(ArgumentError, "#{csv_type} is not a valid CSV type") if model.blank?
+    raise(ArgumentError, "#{csv_type} is not a valid exportable CSV type") if model.blank?
   end
 
   def fetch_api_data(api_upload)
