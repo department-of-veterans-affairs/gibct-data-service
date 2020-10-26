@@ -16,4 +16,14 @@ RSpec.describe 'CSV_TYPES' do
       expect(CSV_TYPES_HAS_API_TABLE_NAMES).to eq(API_TABLES)
     end
   end
+
+  describe 'fields checks' do
+    CSV_TYPES_TABLES.each do |upload|
+      it "#{klass_name(upload)} csv type config has_api? is a boolean" do
+        if upload.respond_to?(:has_api?)
+          expect(upload[:has_api?]).to be_in([true, false])
+        end
+      end
+    end
+  end
 end
