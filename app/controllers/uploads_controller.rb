@@ -12,8 +12,8 @@ class UploadsController < ApplicationController
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
     @extensions = Settings.roo_upload.extensions.single.join(', ')
-    @requirements = csv_requirements
-    return if @upload.csv_type_check?
+
+    return csv_requirements if @upload.csv_type_check?
 
     alert_and_log(@upload.errors.full_messages.join(', '))
     redirect_to dashboards_path
@@ -52,9 +52,9 @@ class UploadsController < ApplicationController
   private
 
   def csv_requirements
-    {requirements: requirements_messages,
-    custom_batch_validator: "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize,
-    inclusion: validation_messages_inclusion}
+    @requirements = requirements_messages
+    @custom_batch_validator = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    @inclusion = validation_messages_inclusion
   end
 
   def alert_messages(data)

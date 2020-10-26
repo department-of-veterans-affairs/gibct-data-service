@@ -1,6 +1,6 @@
 <ol>
-  <% if info[:requirements]&.any? %>
-    <% info[:requirements].map do |requirement | %>
+  <% if @requirements&.any? %>
+    <% @requirements.map do |requirement | %>
       <li>
         <%= requirement[:message] %>
           <ul>
@@ -12,8 +12,8 @@
     <% end %>
   <%end%>
 
-  <% if info[:inclusion]&.any? %>
-    <% info[:inclusion].map do |col | %>
+  <% if @inclusion&.any? %>
+    <% @inclusion.map do |col | %>
       <li>
         The <strong><%="\""+col[:message].humanize.downcase+"\""%></strong> column data must be one of these values:
           <ul>
@@ -26,11 +26,11 @@
   <% end %>
 
 
-  <% if info[:custom_batch_validator]&.any? %>
+  <% if @custom_batch_validator&.any? %>
       <li>
         Requirement Description:
         <ul>
-          <%  info[:custom_batch_validator].map do |batch| %>
+          <%  @custom_batch_validator.map do |batch| %>
             <li><%=batch%></li>
           <%end%>
         </ul>
