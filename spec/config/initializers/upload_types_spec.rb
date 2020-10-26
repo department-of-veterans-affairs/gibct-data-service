@@ -28,7 +28,7 @@ REQUIRED_TABLES = [
 
 NO_PROD_TABLES = [].freeze
 
-RSpec.describe 'CSV_TYPES' do
+RSpec.describe 'UPLOAD_TYPES' do
   describe 'all_tables' do
     it 'lengths should be equal' do
       expect(UPLOAD_TYPES_ALL_NAMES.length).to eq(UPLOAD_TYPES.length)
