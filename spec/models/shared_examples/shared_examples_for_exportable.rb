@@ -9,11 +9,7 @@ RSpec.shared_examples 'an exportable model' do |options|
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
   describe 'when exporting' do
-    # Pull the default CSV options to be used
-    default_options = Rails.application.config.csv_defaults[described_class.name] ||
-                      Rails.application.config.csv_defaults['generic']
-    # Merge with provided options
-    load_options = default_options.transform_keys(&:to_sym).merge(options)
+    load_options = Common::Shared.file_type_defaults(described_class.name, options)
 
     before do
       described_class.load_from_csv(csv_file, load_options)
@@ -23,7 +19,10 @@ RSpec.shared_examples 'an exportable model' do |options|
       described_class.find_each.with_index do |record, i|
         attributes = {}
 
-        rows[i].each.with_index { |value, j| attributes[mapping[header_row[j]][:column]] = value }
+        rows[i].each.with_index do |value, j|
+          header = Common::Shared.convert_csv_header(header_row[j])
+          attributes[mapping[header][:column]] = value
+        end
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
 
@@ -37,8 +36,9 @@ RSpec.shared_examples 'an exportable model' do |options|
 
     it 'creates a string representation of a csv_file' do
       rows = subject.split("\n")
-      header_row = rows.shift.split(load_options[:col_sep]).map(&:downcase)
-      rows = CSV.parse(rows.join("\n"), col_sep: load_options[:col_sep])
+      col_sep = Common::Shared.file_type_defaults(described_class.name, options)[:col_sep]
+      header_row = rows.shift.split(col_sep).map(&:downcase)
+      rows = CSV.parse(rows.join("\n"), col_sep: col_sep)
       check_attributes_from_records(rows, header_row)
     end
   end

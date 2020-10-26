@@ -2,9 +2,9 @@
 
 class StemCipCode < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'two-digit series' => { column: :two_digit_series, converter: NumberConverter },
-    '2010 cip code' => { column: :twentyten_cip_code, converter: BaseConverter },
-    'cip code title' => { column: :cip_code_title, converter: BaseConverter }
+    'two_digit_series' => { column: :two_digit_series, converter: NumberConverter },
+    '2010_cip_code' => { column: :twentyten_cip_code, converter: BaseConverter },
+    'cip_code_title' => { column: :cip_code_title, converter: BaseConverter }
   }.freeze
 
   validates :two_digit_series, presence: true

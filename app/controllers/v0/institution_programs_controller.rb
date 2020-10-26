@@ -53,7 +53,7 @@ module V0
       relation = InstitutionProgram.joins(institution: :version)
                                    .where(institutions: { version: @version })
                                    .eager_load(:institution)
-                                   .search(@query[:name], @query.key?(:fuzzy_search))
+                                   .search(@query[:name])
 
       filter_results(relation)
     end

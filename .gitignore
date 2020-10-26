@@ -76,6 +76,8 @@ config/environments/*.local.yml
 /.rakeTasks
 *.iml
 
+~$*.xlsx
+
 /public/packs
 /public/packs-test
 /node_modules

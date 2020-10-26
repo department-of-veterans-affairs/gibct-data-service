@@ -29,15 +29,11 @@ module V0
         facets: facets
       }
 
-      if @query.key?(:fuzzy_search)
-        # For sorting by percentage instead whole number
-        max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
+      # For sorting by percentage instead whole number
+      max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
 
-        render json: search_results.search_order((@query[:name]).to_s, max_gibill)
-                                   .page(params[:page]), meta: @meta
-      else
-        render json: search_results.order(:institution).page(params[:page]), meta: @meta
-      end
+      render json: search_results.search_order((@query[:name]).to_s, max_gibill)
+                                 .page(params[:page]), meta: @meta
     end
 
     # GET /v0/institutions/20005123
@@ -91,7 +87,7 @@ module V0
     def search_results
       @query ||= normalized_query_params
       relation = Institution.non_vet_tec_institutions(@version)
-                            .search(@query[:name], @query[:include_address], @query.key?(:fuzzy_search))
+                            .search(@query[:name], @query[:include_address])
       filter_results(relation)
     end
 

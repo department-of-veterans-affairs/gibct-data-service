@@ -4,13 +4,13 @@ class VaCautionFlag < ImportableRecord
   CSV_CONVERTER_INFO = {
     'id' => { column: :facility_code, converter: FacilityCodeConverter },
     'instnm' => { column: :institution_name, converter: InstitutionConverter },
-    'school system name' => { column: :school_system_name, converter: BaseConverter },
-    'settlement title' => { column: :settlement_title, converter: BaseConverter },
-    'settlement description' => { column: :settlement_description, converter: BaseConverter },
-    'settlement date' => { column: :settlement_date, converter: BaseConverter },
-    'settlement link' => { column: :settlement_link, converter: BaseConverter },
-    'school closing date' => { column: :school_closing_date, converter: BaseConverter },
-    'sec 702' => { column: :sec_702, converter: BooleanConverter }
+    'school_system_name' => { column: :school_system_name, converter: BaseConverter },
+    'settlement_title' => { column: :settlement_title, converter: BaseConverter },
+    'settlement_description' => { column: :settlement_description, converter: BaseConverter },
+    'settlement_date' => { column: :settlement_date, converter: BaseConverter },
+    'settlement_link' => { column: :settlement_link, converter: BaseConverter },
+    'school_closing_date' => { column: :school_closing_date, converter: BaseConverter },
+    'sec_702' => { column: :sec_702, converter: BooleanConverter }
   }.freeze
 
   validates :facility_code, presence: true
