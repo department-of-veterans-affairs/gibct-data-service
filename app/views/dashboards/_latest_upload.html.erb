@@ -18,17 +18,22 @@
                     disabled: cannot_fetch_api(upload.csv_type) %>
       <% end %>
 
-      <%= link_to 'Upload', new_upload_path(upload.csv_type),
-                  class: "btn dashboard-btn-success btn-xs", role: "button" %>
-
-      <% if upload.ok? %>
-        <%= link_to 'Export', dashboard_export_path(upload.csv_type),
+      <% if GROUP_FILE_TYPES.include?(upload.csv_type) %>
+        <%= link_to 'Upload', upload_group_path(upload.csv_type),
                     class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <% else %>
-        <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
-          Export
-        </a>
-      <% end %>
+        <%= link_to 'Upload', new_upload_path(upload.csv_type),
+                    class: "btn dashboard-btn-success btn-xs", role: "button" %>
+
+        <% if upload.ok? %>
+          <%= link_to 'Export', dashboard_export_path(upload.csv_type),
+                      class: "btn dashboard-btn-success btn-xs", role: "button" %>
+        <% else %>
+          <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
+            Export
+          </a>
+        <% end %>
+    <% end %>
     </td>
   </tr>
 <%end %>

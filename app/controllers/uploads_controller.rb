@@ -19,6 +19,16 @@ class UploadsController < ApplicationController
     redirect_to dashboards_path
   end
 
+  def group
+    @upload = Upload.from_csv_type(params[:csv_type])
+    @extensions = Settings.roo_upload.extensions.join(', ')
+
+    return csv_requirements if @upload.csv_type_check?
+
+    alert_and_log(@upload.errors.full_messages.join(', '))
+    redirect_to dashboards_path
+  end
+
   def create
     @upload = Upload.create(merged_params)
     begin
