@@ -163,7 +163,7 @@ class Institution < ImportableRecord
     'complies_with_sec_103' => { column: :complies_with_sec_103, converter: BooleanConverter },
     'solely_requires_coe' => { column: :solely_requires_coe, converter: BooleanConverter },
     'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter },
-    'poo status' => { column: :poo_status, converter: BaseConverter }
+    'poo_status' => { column: :poo_status, converter: BaseConverter }
   }.freeze
 
   has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
@@ -249,20 +249,15 @@ class Institution < ImportableRecord
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
-  scope :search, lambda { |search_term, include_address = false, fuzzy_search_flag = false|
+  scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
-    if fuzzy_search_flag
-      clause << 'institution_search % :institution_search_term'
-      clause << 'UPPER(city) = :upper_search_term'
-      clause << 'UPPER(ialias) LIKE :upper_contains_term'
-      clause << 'zip = :search_term'
-    else
-      clause << 'institution LIKE :upper_contains_term'
-      clause << 'city LIKE :upper_contains_term'
-    end
+    clause << 'institution_search % :institution_search_term'
+    clause << 'UPPER(city) = :upper_search_term'
+    clause << 'UPPER(ialias) LIKE :upper_contains_term'
+    clause << 'zip = :search_term'
 
     if include_address
       3.times do |i|

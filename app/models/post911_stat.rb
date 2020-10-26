@@ -2,13 +2,13 @@
 
 class Post911Stat < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'distinct count of tuition and fee' => { column: :tuition_and_fee_count, converter: NumberConverter },
-    'tuition and fee payments' => { column: :tuition_and_fee_payments, converter: NumberConverter },
-    'tuition and fee total amount' => { column: :tuition_and_fee_total_amount, converter: NumberConverter },
-    'distinct count of yellow ribbon' => { column: :yellow_ribbon_count, converter: NumberConverter },
-    'yellow ribbon payments' => { column: :yellow_ribbon_payments, converter: NumberConverter },
-    'yellow ribbon total amount' => { column: :yellow_ribbon_total_amount, converter: NumberConverter }
+    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'distinct_count_of_tuition_and_fee' => { column: :tuition_and_fee_count, converter: NumberConverter },
+    'tuition_and_fee_payments' => { column: :tuition_and_fee_payments, converter: NumberConverter },
+    'tuition_and_fee_total_amount' => { column: :tuition_and_fee_total_amount, converter: NumberConverter },
+    'distinct_count_of_yellow_ribbon' => { column: :yellow_ribbon_count, converter: NumberConverter },
+    'yellow_ribbon_payments' => { column: :yellow_ribbon_payments, converter: NumberConverter },
+    'yellow_ribbon_total_amount' => { column: :yellow_ribbon_total_amount, converter: NumberConverter }
   }.freeze
 
   validates :facility_code, presence: true

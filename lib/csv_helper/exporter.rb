@@ -13,7 +13,7 @@ module CsvHelper
     private
 
     def defaults
-      Rails.application.config.csv_defaults[klass.name] || Rails.application.config.csv_defaults['generic']
+      Common::Shared.file_type_defaults(klass.name)
     end
 
     def csv_headers
@@ -21,14 +21,14 @@ module CsvHelper
 
       klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
         key = info[:column]
-        csv_headers[key] = csv_column.split(/\s/).map(&:downcase).join(' ')
+        csv_headers[key] = Common::Shared.display_csv_header(csv_column)
       end
 
       csv_headers
     end
 
     def generate(csv_headers)
-      CSV.generate(col_sep: defaults['col_sep']) do |csv|
+      CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         csv << csv_headers.values
 
         klass == write_row(csv, csv_headers)
@@ -36,7 +36,7 @@ module CsvHelper
     end
 
     def generate_version(csv_headers, number)
-      CSV.generate(col_sep: defaults['col_sep']) do |csv|
+      CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         csv << csv_headers.values
 
         klass == write_versioned_row(csv, csv_headers, number)

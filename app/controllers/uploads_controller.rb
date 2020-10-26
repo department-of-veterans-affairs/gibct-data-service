@@ -18,8 +18,7 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
     begin
      @upload.check_for_headers
-     loaded_csv = load_csv
-     alert_messages(loaded_csv)
+     load_csv
 
      redirect_to @upload
     rescue StandardError => e
@@ -57,11 +56,13 @@ class UploadsController < ApplicationController
                                      .map(&:display_errors_with_row)
     header_warnings = @upload.all_warnings
 
-    flash[:csv_success] = {
-      total_rows_count: total_rows_count.to_s,
-      valid_rows: valid_rows.to_s,
-      failed_rows_count: failed_rows_count.to_s
-    }.compact
+    if valid_rows.positive?
+      flash[:csv_success] = {
+        total_rows_count: total_rows_count.to_s,
+        valid_rows: valid_rows.to_s,
+        failed_rows_count: failed_rows_count.to_s
+      }.compact
+    end
 
     flash[:warning] = {
       'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
@@ -77,7 +78,20 @@ class UploadsController < ApplicationController
   def load_csv
     return unless @upload.persisted?
 
-    call_load
+    file = @upload.upload_file.tempfile
+
+    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
+
+    data = klass.load_from_csv(file, @upload.options)
+
+    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
+
+    # Set these up here in case the error below occurs so that warning messages are still displayed
+    alert_messages(data)
+
+    @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
+    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
+    raise(StandardError, error_msg) unless @upload.ok?
   end
 
   def original_filename
@@ -92,30 +106,16 @@ class UploadsController < ApplicationController
     @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
   end
 
-  def call_load
-    file = @upload.upload_file.tempfile
-
-    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    data = klass.load_from_csv(file, @upload.options)
-    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
-    raise(StandardError, error_msg) unless @upload.ok?
-
-    data
-  end
-
   def klass
     @upload.csv_type.constantize
   end
 
   def requirements_messages
     [Upload.valid_col_seps]
-      .push(*validation_messages_presence)
-      .push(*validation_messages_numericality)
-      .push(*validation_messages_uniqueness)
+      .push(validation_messages_presence)
+      .push(validation_messages_numericality)
+      .push(validation_messages_uniqueness)
+      .compact
   end
 
   def klass_validator(validation_class)
@@ -128,7 +128,7 @@ class UploadsController < ApplicationController
     presence = { message: 'These columns must have a value: ', value: [] }
 
     presence[:value] = klass_validator(ActiveRecord::Validations::PresenceValidator)
-    [presence] unless presence[:value].empty?
+    presence unless presence[:value].empty?
   end
 
   def validation_messages_numericality
@@ -136,7 +136,7 @@ class UploadsController < ApplicationController
 
     numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator)
 
-    [numericality] unless numericality[:value].empty?
+    numericality unless numericality[:value].empty?
   end
 
   def validation_messages_uniqueness
@@ -144,7 +144,7 @@ class UploadsController < ApplicationController
 
     uniqueness[:value] = klass_validator(ActiveRecord::Validations::UniquenessValidator)
 
-    [uniqueness] unless uniqueness[:value].empty?
+    uniqueness unless uniqueness[:value].empty?
   end
 
   def validation_messages_inclusion
@@ -157,7 +157,7 @@ class UploadsController < ApplicationController
                 value: inclusion_requirement_message(validations) }
       inclusion.push(array)
     end
-    [inclusion] unless inclusion.empty?
+    inclusion unless inclusion.empty?
   end
 
   def affected_attributes(validations)
@@ -167,7 +167,8 @@ class UploadsController < ApplicationController
   end
 
   def csv_column_name(column)
-    klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+    name = klass::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ')
+    Common::Shared.display_csv_header(name)
   end
 
   def inclusion_requirement_message(validations)

@@ -50,8 +50,12 @@ class Upload < ApplicationRecord
     extra_headers.clear
 
     headers = diffed_headers
-    headers[:missing_headers].each { |header| missing_headers.add(header.to_sym, 'is a missing header') }
-    headers[:extra_headers].each { |header| extra_headers.add(header.to_sym, 'is an extra header') }
+    headers[:missing_headers].each do |header|
+      missing_headers.add(Common::Shared.display_csv_header(header).to_sym, 'is a missing header')
+    end
+    headers[:extra_headers].each do |header|
+      extra_headers.add(Common::Shared.display_csv_header(header).to_sym, 'is an extra header')
+    end
   end
 
   def options
@@ -62,11 +66,11 @@ class Upload < ApplicationRecord
   end
 
   def force_simple_split
-    self.class.default_options(csv_type)['force_simple_split']
+    Common::Shared.file_type_defaults(csv_type)[:force_simple_split]
   end
 
   def strip_chars_from_headers
-    self.class.default_options(csv_type)['strip_chars_from_headers']
+    Common::Shared.file_type_defaults(csv_type)[:strip_chars_from_headers]
   end
 
   def self.last_uploads
@@ -104,14 +108,10 @@ class Upload < ApplicationRecord
 
   def self.from_csv_type(csv_type)
     upload = Upload.new(csv_type: csv_type)
-    upload.skip_lines = default_options(csv_type)['skip_lines']
-    upload.col_sep = default_options(csv_type)['col_sep']
+    upload.skip_lines = Common::Shared.file_type_defaults(csv_type)[:skip_lines]
+    upload.col_sep = Common::Shared.file_type_defaults(csv_type)[:col_sep]
 
     upload
-  end
-
-  def self.default_options(csv_type)
-    Rails.application.config.csv_defaults[csv_type] || Rails.application.config.csv_defaults['generic']
   end
 
   def self.fetching_for?(csv_type)
@@ -144,7 +144,9 @@ class Upload < ApplicationRecord
     first_line = csv.readline
     set_col_sep(first_line)
 
-    first_line.split(col_sep).select(&:present?).map { |header| header.downcase.strip }
+    first_line.split(col_sep).select(&:present?).map do |header|
+      Common::Shared.convert_csv_header(header.downcase.strip)
+    end
   end
 
   def set_col_sep(first_line)
