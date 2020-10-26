@@ -12,6 +12,14 @@ class Program < ImportableRecord
     'length' => { column: :length, converter: BaseConverter }
   }.freeze
 
+  PROGRAM_TYPES = %w[
+    IHL
+    NCD
+    OJT
+    FLGT
+    CORR
+  ].freeze
+
   validates :facility_code, :description, presence: true
-  validates :program_type, inclusion: { in: InstitutionProgram::PROGRAM_TYPES }
+  validates :program_type, inclusion: { in: PROGRAM_TYPES }
 end
