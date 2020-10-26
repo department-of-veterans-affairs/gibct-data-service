@@ -11,8 +11,11 @@ RSpec.shared_examples 'an exportable model' do |options|
   describe 'when exporting' do
     load_options = Common::Shared.file_type_defaults(described_class.name, options)
 
+    file_options = { liberal_parsing: load_options[:liberal_parsing],
+                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i) }] }
+
     before do
-      described_class.load_from_csv(csv_file, load_options)
+      described_class.load_with_roo(csv_file, file_options)
     end
 
     def check_attributes_from_records(rows, header_row)

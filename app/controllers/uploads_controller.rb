@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+#
+# This should not have to be here but ruby is not loading this in config/initializers/roo_helper.rb
+Dir["#{Rails.application.config.root}/lib/roo_helper/**/*.rb"].sort.each { |f| require(f) }
+
 class UploadsController < ApplicationController
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
@@ -7,6 +11,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
+    @extensions = Settings.roo_upload.extensions.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -17,8 +22,13 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-     @upload.check_for_headers
-     load_csv
+     data = load_file
+     alert_messages(data)
+     data_results = data[:results]
+
+     @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+     error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
+     raise(StandardError, error_msg) unless @upload.ok?
 
      redirect_to @upload
     rescue StandardError => e
@@ -47,14 +57,16 @@ class UploadsController < ApplicationController
     @inclusion = validation_messages_inclusion
   end
 
-  def alert_messages(loaded_csv)
-    total_rows_count = loaded_csv.ids.length
-    failed_rows = loaded_csv.failed_instances
+  def alert_messages(data)
+    results = data[:results]
+
+    total_rows_count = results.ids.length
+    failed_rows = results.failed_instances
     failed_rows_count = failed_rows.length
     valid_rows = total_rows_count - failed_rows_count
     validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                      .map(&:display_errors_with_row)
-    header_warnings = @upload.all_warnings
+    header_warnings = data[:header_warnings]
 
     if valid_rows.positive?
       flash[:csv_success] = {
@@ -75,25 +87,6 @@ class UploadsController < ApplicationController
     flash[:danger] = message
   end
 
-  def load_csv
-    return unless @upload.persisted?
-
-    file = @upload.upload_file.tempfile
-
-    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    data = klass.load_from_csv(file, @upload.options)
-
-    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    # Set these up here in case the error below occurs so that warning messages are still displayed
-    alert_messages(data)
-
-    @upload.update(ok: data.present? && data.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{klass} data. Please check \"Skip lines before header\"."
-    raise(StandardError, error_msg) unless @upload.ok?
-  end
-
   def original_filename
     @original_filename ||= upload_params[:upload_file].try(:original_filename)
   end
@@ -106,12 +99,30 @@ class UploadsController < ApplicationController
     @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
   end
 
+  def load_file
+    return unless @upload.persisted?
+
+    file = @upload.upload_file.tempfile
+
+    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
+
+    # first is used because when called from standard upload process
+    # because only a single set of results is returned
+    file_options = { liberal_parsing: @upload.liberal_parsing,
+                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i) }] }
+    data = klass.load_with_roo(file, file_options).first
+
+    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
+
+    data
+  end
+
   def klass
     @upload.csv_type.constantize
   end
 
   def requirements_messages
-    [Upload.valid_col_seps]
+    [RooHelper.valid_col_seps]
       .push(validation_messages_presence)
       .push(validation_messages_numericality)
       .push(validation_messages_uniqueness)
