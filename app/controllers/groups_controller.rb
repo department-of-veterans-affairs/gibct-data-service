@@ -10,7 +10,7 @@ class GroupsController < ApplicationController
   end
 
   def new
-    @upload = Upload.from_csv_type(params[:csv_type])
+    @upload = Upload.from_group_type(params[:csv_type])
     @extensions = Settings.roo_upload.extensions.single.join(', ')
 
     return csv_requirements if @upload.csv_type_check?

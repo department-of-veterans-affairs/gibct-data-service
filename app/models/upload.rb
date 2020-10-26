@@ -78,6 +78,10 @@ class Upload < ApplicationRecord
     upload
   end
 
+  def self.from_group_type(group_type)
+    Upload.new(csv_type: group_type)
+  end
+
   def self.fetching_for?(csv_type)
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
