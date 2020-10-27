@@ -9,16 +9,7 @@ class Group < Upload
     super(attributes)
     self.group_config = Group.group_config_options(csv_type)
   end
-
-  def self.from_group_type(group_type)
-    group_config = group_config_options(group_type)
-
-    group = Group.new(csv_type: group_type)
-    group.group_config = group_config
-
-    group
-  end
-
+  
   def self.group_config_options(group_type)
     GROUP_FILE_TYPES.select { |g| g[:klass] == group_type }.first
   end
