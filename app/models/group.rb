@@ -5,10 +5,15 @@ class Group < Upload
 
   attr_accessor :sheet_type_list, :group_config
 
+  def initialize(attributes = nil)
+    super(attributes)
+    self.group_config = Group.group_config_options(csv_type)
+  end
+
   def self.from_group_type(group_type)
     group_config = group_config_options(group_type)
 
-    group = Group.new(csv_type: group_config[:klass])
+    group = Group.new(csv_type: group_type)
     group.group_config = group_config
 
     group

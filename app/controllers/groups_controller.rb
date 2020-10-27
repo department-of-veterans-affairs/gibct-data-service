@@ -46,7 +46,7 @@ class GroupsController < ApplicationController
   private
 
   def setup(group_type)
-    @group = Group.from_group_type(group_type)
+    @group = Group.new(csv_type: group_type)
     @extensions = Settings.roo_upload.extensions.group.join(', ')
     @sheets = @group.sheet_names
     requirements if @group.csv_type_check?
