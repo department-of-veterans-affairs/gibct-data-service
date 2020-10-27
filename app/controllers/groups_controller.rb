@@ -18,12 +18,7 @@ class GroupsController < ApplicationController
     begin
       data = load_file
       alert_messages(data)
-      data_results = data[:results]
-
-      binding.pry
-      @group.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
-      error_msg = "There was no saved #{data[:klass]} data. Please check the file or selected options."
-      raise(StandardError, error_msg) unless @group.ok?
+      validate(data.first)
 
       redirect_to @group
     rescue StandardError => e
@@ -69,29 +64,49 @@ class GroupsController < ApplicationController
       inclusion: validation_messages_inclusion(type) }
   end
 
-  def alert_messages(data)
-    results = data[:results]
+  def alert_messages(data_list)
+    flash[:group_success] = {}
+    flash[:warning] = {}
 
-    total_rows_count = results.ids.length
-    failed_rows = results.failed_instances
-    failed_rows_count = failed_rows.length
-    valid_rows = total_rows_count - failed_rows_count
-    validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
-                                     .map(&:display_errors_with_row)
-    header_warnings = data[:header_warnings]
+    data_list.each do |data|
+      results = data[:results]
+      data_klass = data[:klass].name
+      header_warnings = data[:header_warnings]
 
-    if valid_rows.positive?
-      flash[:group_success] = {
-        total_rows_count: total_rows_count.to_s,
-        valid_rows: valid_rows.to_s,
-        failed_rows_count: failed_rows_count.to_s
-      }.compact
+      total_rows_count = results.ids.length
+      failed_rows = results.failed_instances
+      failed_rows_count = failed_rows.length
+      valid_rows = total_rows_count - failed_rows_count
+
+
+      validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
+                                .map(&:display_errors_with_row)
+
+      if valid_rows.positive?
+        flash[:group_success][data_klass] = {
+            total_rows_count: total_rows_count.to_s,
+            valid_rows: valid_rows.to_s,
+            failed_rows_count: failed_rows_count.to_s
+        }.compact
+      end
+
+      if header_warnings.any? or validation_warnings.any?
+        flash[:warning][data_klass] = {
+            'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
+            'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
+        }.compact
+      end
     end
+    flash[:group_success].compact
+    flash[:warning].compact
+  end
 
-    flash[:warning] = {
-      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
-      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
-    }.compact
+  def validate(data)
+    data_results = data[:results]
+
+    @group.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+    error_msg = "There was no saved #{data[:klass]} data. Please check the file or selected options."
+    raise(StandardError, error_msg) unless @group.ok?
   end
 
   def original_filename
@@ -114,7 +129,7 @@ class GroupsController < ApplicationController
 
     CrosswalkIssue.delete_all if crosswalk_action?
 
-    data = Group.load_with_roo(file, file_options).first
+    data = Group.load_with_roo(file, file_options)
 
     CrosswalkIssue.rebuild if crosswalk_action?
 

@@ -16,9 +16,16 @@
       <p>The upload succeeded: </p>
       <ul>
         <li><%= @group.csv_type %>.csv</li>
-        <li>Total data rows: <%= flash[:group_success][:total_rows_count] %></li>
-        <li>Valid data rows: <%= flash[:group_success][:valid_rows] %></li>
-        <li>Invalid data rows <strong style="color:red;">*</strong> : <%= flash[:group_success][:failed_rows_count] %></li>
+        <ul>
+        <% flash[:group_success].each_pair do |key, value| %>
+          <li>Sheet: <%= key %></li>
+          <ul>
+            <li>Total data rows: <%= value[:total_rows_count] %></li>
+            <li>Valid data rows: <%= value[:valid_rows] %></li>
+            <li>Invalid data rows <strong style="color:red;">*</strong> : <%= value[:failed_rows_count] %></li>
+          </ul>
+        <% end %>
+        </ul>
         <ul>
           <li>
             Invalid Data Rows are not included in new version generation.
@@ -31,13 +38,19 @@
 
 <% if flash[:warning].present? %>
   <aside class="alert alert-warning">
-    <% if flash[:warning].is_a? Hash %>
-      <% flash[:warning].each_pair do |label, dangers| %>
-        <%= pretty_error(dangers, label) %>
-      <% end %>
-    <% else %>
-      <%= flash[:warning].html_safe %>
+    <p>Warning messages: </p>
+    <ul>
+    <% flash[:warning].each_pair do |key, value| %>
+      <li>Sheet: <%= key %></li>
+      <ul>
+        <li>
+        <% value.each_pair do |label, dangers| %>
+          <%= pretty_error(dangers, label) %>
+        <% end %>
+        </li>
+      </ul>
     <% end %>
+    </ul>
   </aside>
 <% end %>
 

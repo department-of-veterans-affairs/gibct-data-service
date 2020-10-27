@@ -53,7 +53,8 @@ module RooHelper
 
           loaded_sheets << {
             results: sheet_klass.load_records(processed_sheet[:results], sheet_options),
-            header_warnings: processed_sheet[:header_warnings]
+            header_warnings: processed_sheet[:header_warnings],
+            klass: sheet_klass,
           }
         end
       end
@@ -120,11 +121,7 @@ module RooHelper
         result
       end
 
-      {
-          header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }),
-          results: results,
-          klass: sheet_klass
-      }
+      { header_warnings: header_warnings(sheet_klass, file_headers.map { |h| h.strip.downcase }),results: results }
     end
 
     def converter_info(sheet_klass, header)
@@ -219,7 +216,7 @@ module RooHelper
         result
       end
 
-      { header_warnings: header_warnings(sheet_klass, headers), results: results, klass: sheet_klass }
+      { header_warnings: header_warnings(sheet_klass, headers), results: results }
     end
   end
 end
