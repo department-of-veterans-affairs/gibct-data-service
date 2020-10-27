@@ -34,5 +34,4 @@ class Group < Upload
   def sheets
     @sheets ||= group_config[:types]
   end
-
 end

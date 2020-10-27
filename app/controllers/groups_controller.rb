@@ -28,7 +28,6 @@ class GroupsController < ApplicationController
       redirect_to @group
     rescue StandardError => e
       setup(merged_params[:csv_type])
-      binding.pry
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
     end
@@ -36,6 +35,7 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.find_by(id: params[:id])
+    @group.group_config = Group.group_config_options(@group.csv_type)
 
     return requirements if @group.present?
 
