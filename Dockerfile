@@ -12,6 +12,8 @@ RUN groupadd -g $userid -r gi-bill-data-service && \
 
 RUN apt-get update -qq && apt-get install -y \
     build-essential git curl libpq-dev dumb-init
+
+RUN apt-get update -qq && apt-get install -y build-essential git curl libpq-dev dumb-init
   && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
   && apt-get install -y nodejs \
   && curl -L https://www.npmjs.com/install.sh | sh
