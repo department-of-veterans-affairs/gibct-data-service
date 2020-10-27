@@ -65,7 +65,7 @@ RUN npm config delete prefix
 # Install nvm with node and npm
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
     && source $NVM_DIR/nvm.sh \
-    && nvm install $NODEJS_VERSION || true \
+    && nvm install $NODEJS_VERSION \
     && nvm use --delete-prefix $NODE_VERSION \
     && nvm alias default $NODEJS_VERSION
 
