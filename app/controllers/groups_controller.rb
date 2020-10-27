@@ -20,6 +20,7 @@ class GroupsController < ApplicationController
       alert_messages(data)
       data_results = data[:results]
 
+      binding.pry
       @group.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
       error_msg = "There was no saved #{data[:klass]} data. Please check the file or selected options."
       raise(StandardError, error_msg) unless @group.ok?
@@ -27,6 +28,7 @@ class GroupsController < ApplicationController
       redirect_to @group
     rescue StandardError => e
       setup(merged_params[:csv_type])
+      binding.pry
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
     end
@@ -46,7 +48,7 @@ class GroupsController < ApplicationController
   def setup(group_type)
     @group = Group.from_group_type(group_type)
     @extensions = Settings.roo_upload.extensions.group.join(', ')
-    @sheets = @group.group_config[:types].map(&:name)
+    @sheets = @group.sheet_names
     requirements if @group.csv_type_check?
 
     @group.csv_type_check?
@@ -55,7 +57,7 @@ class GroupsController < ApplicationController
   # Build array of requirements information based on what types are in the group
   def requirements
     @requirements = []
-    @group.group_config[:types].each do |type|
+    @group.sheets.each do |type|
       @requirements << upload_requirements(type)
     end
   end

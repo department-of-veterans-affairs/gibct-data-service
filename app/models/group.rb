@@ -19,6 +19,15 @@ class Group < Upload
   end
 
   def parse_as_xml
-    @parse_as_xml ||= Group.group_config_options(csv_type)[:parse_as_xml?]
+    @parse_as_xml ||= group_config[:parse_as_xml?]
   end
+
+  def sheet_names
+    @sheet_names ||= group_config[:types].map(&:name)
+  end
+
+  def sheets
+    @sheets ||= group_config[:types]
+  end
+
 end
