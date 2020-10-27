@@ -16,9 +16,9 @@ class GroupsController < ApplicationController
     @group = Group.create(merged_params)
 
     begin
-      data = load_file
-      alert_messages(data)
-      validate(data.first)
+      loaded_data = load_file
+      alert_messages(loaded_data)
+      validate(loaded_data)
 
       redirect_to @group
     rescue StandardError => e
@@ -64,17 +64,17 @@ class GroupsController < ApplicationController
       inclusion: validation_messages_inclusion(type) }
   end
 
-  def alert_messages(data_list)
+  def alert_messages(loaded_data)
     flash[:group_success] = {}
     flash[:warning] = {}
 
-    data_list.each do |data|
-      results = data[:results]
+    loaded_data.each do |data|
+      loaded_data = data[:results]
       data_klass = data[:klass].name
       header_warnings = data[:header_warnings]
 
-      total_rows_count = results.ids.length
-      failed_rows = results.failed_instances
+      total_rows_count = loaded_data.ids.length
+      failed_rows = loaded_data.failed_instances
       failed_rows_count = failed_rows.length
       valid_rows = total_rows_count - failed_rows_count
 
@@ -101,12 +101,17 @@ class GroupsController < ApplicationController
     flash[:warning].compact
   end
 
-  def validate(data)
-    data_results = data[:results]
+  # if any sheet uploads successfully then consider upload a success
+  # For sheets that failed to upload append to the upload's comment that they failed and raise an error
+  def validate(loaded_data)
+    ok = loaded_data.any? { |data| data[:results].present? && data[:results].ids.present? }
+    no_saved_data = loaded_data.select { |data| data[:results].blank? || data[:results].ids.blank? }
+                        .map{ |data| data[:klass].name}
+    error_msg = @group.comment + " There was no saved #{no_saved_data.join(', or ')} data."
 
-    @group.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
-    error_msg = "There was no saved #{data[:klass]} data. Please check the file or selected options."
-    raise(StandardError, error_msg) unless @group.ok?
+    @group.update(ok: ok, completed_at: Time.now.utc.to_s(:db), comment: (error_msg unless no_saved_data.none?))
+
+    raise(StandardError, error_msg + " Please check the file or selected options.") unless no_saved_data.none?
   end
 
   def original_filename
