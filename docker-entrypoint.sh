@@ -6,7 +6,7 @@ bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh
 #ENV NVM_DIR=/root/.nvm
-source $NVM_DIR/nvm.sh
+source nvm.sh
 nvm install ${NODEJS_VERSION}
 
 #apt-get update
