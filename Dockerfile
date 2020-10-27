@@ -56,8 +56,8 @@ RUN touch ~/.bashrc
 # Install nvm with node and npm
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
     && source $NVM_DIR/nvm.sh \
-    && nvm use --delete-prefix \
-    && nvm install $NODEJS_VERSION || true
+    && nvm install $NODEJS_VERSION || true \
+    && nvm use default
 
 #ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
 
