@@ -5,6 +5,7 @@
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
 #ENV NVM_DIR=/root/.nvm
+npm config delete prefix
 curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 source $NVM_DIR/nvm.sh
 nvm install $NODEJS_VERSION || true
