@@ -9,7 +9,7 @@ bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
 
 #source nvm.sh
-nvm install ${NODEJS_VERSION}
+#nvm install ${NODEJS_VERSION}
 
 #apt-get update
 #apt-get install nodejs
