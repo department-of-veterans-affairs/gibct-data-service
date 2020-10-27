@@ -57,8 +57,8 @@ USER gi-bill-data-service
 # old docker react stuff
 ENV YARN_VERSION 1.12.3
 ENV NODEJS_VERSION 10.15.3
-ENV NVM_DIR=/root/.nvm
-RUN sudo mkdir -p $NVM_DIR
+ENV NVM_DIR=~/.nvm
+RUN mkdir -p $NVM_DIR
 # Install nvm with node and npm
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
     && source $NVM_DIR/nvm.sh \
