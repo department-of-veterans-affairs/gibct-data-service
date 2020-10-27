@@ -54,18 +54,14 @@ RUN mkdir -p $NVM_DIR
 RUN touch ~/.bashrc
 
 # Install nvm with node and npm
-#RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
-#    && source $NVM_DIR/nvm.sh \
-#    && nvm install $NODEJS_VERSION || true \
-#    && nvm use --delete-prefix
+RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
+    && source $NVM_DIR/nvm.sh \
+    && nvm use --delete-prefix
+    && nvm install $NODEJS_VERSION || true \
 
-#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-#ENV NVM_DIR=/root/.nvm
-#RUN source $NVM_DIR/nvm.sh
-#RUN nvm install ${NODEJS_VERSION}
-#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
 #ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
-#RUN npm install -g yarn@$YARN_VERSION
+
+RUN npm install -g yarn@$YARN_VERSION
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
