@@ -5,19 +5,14 @@
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
 #ENV NVM_DIR=/root/.nvm
-npm config delete prefix
 curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 source $NVM_DIR/nvm.sh
 nvm install $NODEJS_VERSION || true
 nvm use --delete-prefix $NODEJS_VERSION
 
 #source nvm.sh
-#nvm install ${NODEJS_VERSION}
-
-#apt-get update
-#apt-get install nodejs
-#apt-get install npm
-#npm install yarn -g
+nvm install ${NODEJS_VERSION}
+npm install yarn -g
 
 # Configure gibct application
 #RUN mkdir -p /src/gibct && chown gibct:gibct /src/gibct
