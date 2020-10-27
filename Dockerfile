@@ -10,13 +10,10 @@ SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 
-RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl libpq-dev dumb-init
-
 RUN apt-get update -qq && apt-get install -y build-essential git curl libpq-dev dumb-init
-  && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
-  && apt-get install -y nodejs \
-  && curl -L https://www.npmjs.com/install.sh | sh
+
+RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
+  && apt-get install -y nodejs && curl -L https://www.npmjs.com/install.sh | sh
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
