@@ -25,9 +25,12 @@ ENV NVM_DIR=~/.nvm
 RUN mkdir -p $NVM_DIR
 RUN touch ~/.bashrc
 
-WORKDIR $NVM_DIR
+#WORKDIR $NVM_DIR
 # Install nvm with node and npm
-RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh
+
+RUN . install.sh
+
 RUN source ~/.bashrc
 RUN source ~/.nvm/nvm.sh
 RUN source ~/.nvm/bash_completion
