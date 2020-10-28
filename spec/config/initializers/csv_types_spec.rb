@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-API_TABLES = [
-  Scorecard.name
-].freeze
-
 def klass_name(upload)
   klass = upload[:klass]
   return klass if klass.is_a? String
@@ -20,7 +16,13 @@ RSpec.describe 'CSV_TYPES' do
 
   describe 'has_api_table_names' do
     it 'contains tables' do
-      expect(CSV_TYPES_HAS_API_TABLE_NAMES).to eq(API_TABLES)
+      CSV_TYPES_TABLES.each do |upload_type|
+        if upload_type[:has_api?]
+          expect(CSV_TYPES_HAS_API_TABLE_NAMES).to include(klass_name(upload_type))
+        else
+          expect(CSV_TYPES_HAS_API_TABLE_NAMES).not_to include(klass_name(upload_type))
+        end
+      end
     end
   end
 
