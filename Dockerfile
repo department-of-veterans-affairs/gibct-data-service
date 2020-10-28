@@ -54,9 +54,9 @@ RUN mkdir -p $NVM_DIR
 RUN touch ~/.bashrc
 
 # Install nvm with node and npm
-RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
-    && source $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION
+RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+RUN source $NVM_DIR/nvm.sh \
+RUN nvm install $NODE_VERSION
 
 RUN printf "Node version: "
 RUN node --version
