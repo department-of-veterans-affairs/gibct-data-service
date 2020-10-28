@@ -14,7 +14,6 @@ RUN apt-get update -qq && apt-get install -y \
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
-WORKDIR /srv/gi-bill-data-service/src
 
 ENV YARN_VERSION 1.12.3
 ENV NODEJS_VERSION 10.15.3
@@ -34,6 +33,10 @@ ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
+
+
+WORKDIR /srv/gi-bill-data-service/src
+
 
 ###
 # development

@@ -4,6 +4,7 @@
 # if you make major alteration here, please check that usage as well
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
+yarn
 #ENV NVM_DIR=/root/.nvm
 #curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 #source $NVM_DIR/nvm.sh
