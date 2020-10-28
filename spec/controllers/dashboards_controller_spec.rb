@@ -38,7 +38,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(CSV_TYPES_ALL_TABLES_CLASSES.length)
+      expect(assigns(:uploads).length).to eq(UPLOAD_TYPES.length)
     end
 
     it 'returns http success' do
