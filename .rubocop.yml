@@ -169,6 +169,7 @@ RSpec/FilePath:
 RSpec/DescribeClass:
   Exclude:
     - "spec/config/initializers/csv_types_spec.rb"
+    - "spec/config/initializers/upload_types_spec.rb"
     - "spec/config/initializers/common_spec.rb"
     - "spec/models/archiver_spec.rb"
     - "spec/utilities/caution_flags/caution_flag_template_spec.rb"
