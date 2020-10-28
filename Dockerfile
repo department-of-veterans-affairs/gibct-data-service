@@ -27,13 +27,11 @@ RUN touch ~/.bashrc
 
 # Install nvm with node and npm
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-RUN source $NVM_DIR/nvm.sh
-RUN source $NVM_DIR/bash_completion
-#RUN source ~/.bashrc
+RUN source ~/.bashrc
+RUN source ~/.nvm/nvm.sh
+RUN source ~/.nvm/bash_completion
 
-
-RUN printf "NVM installed"
-RUN command -v nvm
+#RUN command -v nvm
 RUN nvm install $NODEJS_VERSION
 
 RUN printf "Node version: "
