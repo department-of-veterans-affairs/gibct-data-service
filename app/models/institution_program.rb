@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 class InstitutionProgram < ApplicationRecord
-  PROGRAM_TYPES = %w[
-    IHL
-    NCD
-    OJT
-    FLGT
-    CORR
-  ].freeze
-
   belongs_to :institution
   delegate :dod_bah, to: :institution
   delegate :preferred_provider, to: :institution
