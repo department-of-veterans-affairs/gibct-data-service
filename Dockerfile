@@ -16,45 +16,24 @@ RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
 WORKDIR /srv/gi-bill-data-service/src
 
-
-
-# old docker react stuff
 ENV YARN_VERSION 1.12.3
 ENV NODEJS_VERSION 10.15.3
-ENV NVM_DIR=~/.nvm
+ENV NVM_DIR=/root/.nvm
 RUN mkdir -p $NVM_DIR
-RUN touch ~/.bashrc
 
-#WORKDIR $NVM_DIR
-# Install nvm with node and npm
-RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 
-RUN . install.sh
+# install node and npm
+RUN source $NVM_DIR/nvm.sh \
+    && nvm install $NODEJS_VERSION \
+    && nvm alias default $NODEJS_VERSION \
+    && nvm use default
 
-RUN source ~/.bashrc
-RUN source ~/.nvm/nvm.sh
-RUN source ~/.nvm/bash_completion
-
-#RUN command -v nvm
-RUN nvm install $NODEJS_VERSION
-
-RUN printf "Node version: "
-RUN node --version
-
-RUN printf "NPM version: "
-RUN npm version
+# add node and npm to path so the commands are available
+ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
-
-
-
-
-
-
-
-
-
-
 
 ###
 # development
