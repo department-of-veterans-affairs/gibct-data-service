@@ -16,6 +16,42 @@ RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
 WORKDIR /srv/gi-bill-data-service/src
 
+
+
+# old docker react stuff
+ENV YARN_VERSION 1.12.3
+ENV NODEJS_VERSION 10.15.3
+ENV NVM_DIR=~/.nvm
+RUN mkdir -p $NVM_DIR
+RUN touch ~/.bashrc
+
+# Install nvm with node and npm
+RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+RUN source $NVM_DIR/nvm.sh \
+RUN source ~/.bashrc
+
+RUN printf "NVM installed"
+RUN command -v nvm
+RUN nvm install $NODEJS_VERSION
+
+RUN printf "Node version: "
+RUN node --version
+
+RUN printf "NPM version: "
+RUN npm version
+
+RUN npm install -g yarn@$YARN_VERSION
+
+
+
+
+
+
+
+
+
+
+
 ###
 # development
 #
@@ -46,28 +82,6 @@ ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 
-# old docker react stuff
-ENV YARN_VERSION 1.12.3
-ENV NODEJS_VERSION 10.15.3
-ENV NVM_DIR=~/.nvm
-RUN mkdir -p $NVM_DIR
-RUN touch ~/.bashrc
-
-# Install nvm with node and npm
-RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-RUN source $NVM_DIR/nvm.sh \
-RUN source ~/.bashrc
-
-RUN printf "NVM installed"
-RUN nvm install 10.15.3
-
-RUN printf "Node version: "
-RUN node --version
-
-RUN printf "NPM version: "
-RUN npm version
-
-RUN npm install -g yarn@$YARN_VERSION
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
