@@ -4,6 +4,13 @@ API_TABLES = [
   Scorecard.name
 ].freeze
 
+def klass_name(upload)
+  klass = upload[:klass]
+  return klass if klass.is_a? String
+
+  klass.name
+end
+
 RSpec.describe 'CSV_TYPES' do
   describe 'all_tables' do
     it 'lengths should be equal' do
@@ -20,9 +27,7 @@ RSpec.describe 'CSV_TYPES' do
   describe 'fields checks' do
     CSV_TYPES_TABLES.each do |upload|
       it "#{klass_name(upload)} csv type config has_api? is a boolean" do
-        if upload.respond_to?(:has_api?)
-          expect(upload[:has_api?]).to be_in([true, false])
-        end
+        expect(upload[:has_api?]).to be_in([true, false]) if upload.respond_to?(:has_api?)
       end
     end
   end

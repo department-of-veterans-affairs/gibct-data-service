@@ -28,6 +28,13 @@ REQUIRED_TABLES = [
 
 NO_PROD_TABLES = [].freeze
 
+def klass_name(upload)
+  klass = upload[:klass]
+  return klass if klass.is_a? String
+
+  klass.name
+end
+
 RSpec.describe 'UPLOAD_TYPES' do
   describe 'all_tables' do
     it 'lengths should be equal' do
@@ -62,9 +69,7 @@ RSpec.describe 'UPLOAD_TYPES' do
 
     UPLOAD_TYPES.each do |upload|
       it "#{klass_name(upload)} upload type config not_prod_ready? is a boolean" do
-        if upload[:not_prod_ready?].present?
-          expect(upload[:not_prod_ready?]).to be_in([true, false])
-        end
+        expect(upload[:not_prod_ready?]).to be_in([true, false]) if upload[:not_prod_ready?].present?
       end
     end
   end
