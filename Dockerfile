@@ -61,8 +61,8 @@ RUN nvm install $NODE_VERSION
 RUN printf "Node version: "
 RUN node --version
 
-
-#ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
+RUN printf "NPM version: "
+RUN npm version
 
 RUN npm install -g yarn@$YARN_VERSION
 
