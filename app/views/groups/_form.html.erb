@@ -16,6 +16,14 @@
     <%= f.text_field(:comment, style: 'width: 100%') %>
   </div>
 
+  <% if flash[:danger].present? %>
+    <div class="form-group danger">
+      <%= f.check_box(:parse_as_xml) %>
+      <%= f.label(:parse_as_xml) %>
+      <p class="help-block">If there is an error below change this and upload again</p>
+    </div>
+  <% end %>
+
   <h4>Sheet options</h4>
   <p class="help-block">This is the order sheets in the uploaded file will be processed</p>
   <ol>
