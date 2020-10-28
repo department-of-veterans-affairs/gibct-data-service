@@ -19,6 +19,7 @@ ENV YARN_VERSION 1.12.3
 ENV NODEJS_VERSION 10.15.3
 ENV NVM_DIR=/root/.nvm
 RUN mkdir -p $NVM_DIR
+RUN chmod -R 777 $NVM_DIR;
 
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 
@@ -33,7 +34,7 @@ ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
-
+RUN yarn --version
 
 WORKDIR /srv/gi-bill-data-service/src
 
