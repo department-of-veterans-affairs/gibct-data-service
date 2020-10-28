@@ -13,7 +13,7 @@ module Common
     # Checks if there are any current transactions wrapping this method call
     # If not calls this classes default load with the provided Array of ImportableRecords
     def load_records(records, options)
-      load(records, options) if klass.connection.open_transactions.zero?
+      return load(records, options) if klass.connection.open_transactions.zero?
 
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 

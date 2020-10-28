@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file, :sheet_type
+  attr_accessor :skip_lines, :upload_file
 
   belongs_to :user, inverse_of: :versions
 
