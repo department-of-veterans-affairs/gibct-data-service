@@ -104,6 +104,7 @@ Metrics/ClassLength:
     - "app/models/ipeds_ic_ay.rb"
     - "app/models/ipeds_ic_py.rb"
     - "app/models/institution.rb"
+    - "app/controllers/groups_controller.rb"
     - "app/controllers/uploads_controller.rb"
     - "app/models/upload.rb"
 
@@ -166,6 +167,7 @@ RSpec/FilePath:
 RSpec/DescribeClass:
   Exclude:
     - "spec/config/initializers/csv_types_spec.rb"
+    - "spec/config/initializers/group_types_spec.rb"
     - "spec/config/initializers/upload_types_spec.rb"
     - "spec/config/initializers/common_spec.rb"
     - "spec/models/archiver_spec.rb"

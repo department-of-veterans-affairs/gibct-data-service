@@ -13,10 +13,14 @@ csv_upload:
 
 roo_upload:
   extensions:
-    - '.txt'
-    - '.csv'
-    - '.xls'
-    - '.xlsx'
+    single:
+      - '.txt'
+      - '.csv'
+      - '.xls'
+      - '.xlsx'
+    group:
+      - '.xls'
+      - '.xlsx'
 
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"
