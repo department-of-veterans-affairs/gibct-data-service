@@ -6,24 +6,27 @@ require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
 
 RSpec.describe GroupsController, type: :controller do
-  it_behaves_like 'an authenticating controller', :index, 'groups'
+  it_behaves_like 'an authenticating controller', :show, 'groups'
 
-  describe 'GET index' do
-    login_user
+  before do
 
-    before do
-      create :upload
-      get :index
-    end
-
-    it 'populates an array of uploads' do
-      expect(assigns(:uploads)).to include(Upload.first)
-    end
-
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
-    end
   end
+  # describe 'GET index' do
+  #   login_user
+  #
+  #   before do
+  #     create :group
+  #     get :index
+  #   end
+  #
+  #   it 'populates an array of uploads' do
+  #     expect(assigns(:uploads)).to include(Upload.first)
+  #   end
+  #
+  #   it 'returns http success' do
+  #     expect(response).to have_http_status(:success)
+  #   end
+  # end
 
   # describe 'GET new' do
   #   login_user
@@ -231,21 +234,21 @@ RSpec.describe GroupsController, type: :controller do
   #   end
   # end
 
-  describe 'GET show' do
-    login_user
-    let(:upload) { create :upload }
-
-    context 'with a valid id' do
-      it 'gets the upload instance' do
-        get :show, params: { id: upload.id }
-        expect(assigns(:upload)).to eq(upload)
-      end
-    end
-
-    context 'with a invalid id' do
-      it 'renders the index view' do
-        expect(get(:show, params: { id: 0 })).to redirect_to(action: :index)
-      end
-    end
-  end
+  # describe 'GET show' do
+  #   login_user
+  #   let(:upload) { create :group }
+  #
+  #   context 'with a valid id' do
+  #     it 'gets the upload instance' do
+  #       get :show, params: { id: upload.id }
+  #       expect(assigns(:upload)).to eq(upload)
+  #     end
+  #   end
+  #
+  #   context 'with a invalid id' do
+  #     it 'renders the index view' do
+  #       expect(get(:show, params: { id: 0 })).to redirect_to(action: :index)
+  #     end
+  #   end
+  # end
 end
