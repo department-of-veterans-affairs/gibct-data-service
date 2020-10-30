@@ -17,11 +17,16 @@
   </div>
 
   <% if flash[:danger].present? %>
-    <div class="form-group danger">
+    <div class="form-group alert-danger">
       <%= f.check_box(:parse_as_xml) %>
       <%= f.label(:parse_as_xml) %>
-      <p class="help-block">If there is an error below change this and upload again</p>
+      <p class="help-block">This upload process was designed for the Excel data file downloaded from
+        <a href="https://ope.ed.gov/dapip/#/download-data-files">DAPIP</a>.<br/>
+        If there is an error below uncheck this and upload again.
+      </p>
     </div>
+  <% else %>
+    <%= f.hidden_field(:parse_as_xml) %>
   <% end %>
 
   <h4>Sheet options</h4>
