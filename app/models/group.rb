@@ -27,4 +27,8 @@ class Group < Upload
   def sheets
     @sheets ||= group_config[:types]
   end
+
+  def xml_error_help
+    @xml_error_help ||= group_config[:xml_error_help]
+  end
 end
