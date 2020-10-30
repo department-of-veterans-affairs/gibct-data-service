@@ -67,8 +67,7 @@ ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 
-RUN source $NVM_DIR/nvm.sh \
-    && nvm install $NODEJS_VERSION
+RUN yarn --version
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
