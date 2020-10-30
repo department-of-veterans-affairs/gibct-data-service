@@ -85,7 +85,7 @@ ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
 
-RUN rm package-lock.json
+#RUN rm package-lock.json
 RUN bundle exec rails webpacker:install
 RUN bundle exec rails webpacker:install:react
 RUN bundle exec rails generate react:install

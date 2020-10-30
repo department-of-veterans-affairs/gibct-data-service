@@ -78,7 +78,6 @@ config/environments/*.local.yml
 
 ~$*.xlsx
 
-bin/
 /public/packs
 /public/packs-test
 /node_modules
