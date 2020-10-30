@@ -17,6 +17,23 @@ RUN mkdir -p /srv/gi-bill-data-service/src && \
 
 WORKDIR /srv/gi-bill-data-service/src
 
+ENV YARN_VERSION 1.12.3
+ENV NODEJS_VERSION 10.17.0
+ENV NVM_DIR=/srv/root/.nvm
+RUN mkdir -p $NVM_DIR && chmod -R 777 $NVM_DIR;
+RUN touch /srv/gi-bill-data-service/.bashrc
+
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
+    && source $NVM_DIR/nvm.sh \
+    && nvm install $NODEJS_VERSION \
+    && nvm alias default $NODEJS_VERSION \
+    && nvm use default
+
+# add node and npm to path so the commands are available
+ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
+
+RUN npm install -g yarn@$YARN_VERSION
 
 ###
 # development
@@ -50,6 +67,10 @@ USER gi-bill-data-service
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN bundle exec rails webpacker:install
+RUN bundle exec rails webpacker:install:react
+RUN bundle exec rails generate react:install
+
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
@@ -67,27 +88,5 @@ COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bi
 
 USER gi-bill-data-service
 
-ENV YARN_VERSION 1.12.3
-ENV NODEJS_VERSION 10.17.0
-ENV NVM_DIR=/srv/gi-bill-data-service/.nvm
-RUN mkdir -p $NVM_DIR && chmod -R 777 $NVM_DIR;
-RUN touch /srv/gi-bill-data-service/.bashrc
-
-RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
-    && source $NVM_DIR/nvm.sh \
-    && nvm install $NODEJS_VERSION \
-    && nvm alias default $NODEJS_VERSION \
-    && nvm use default
-
-# add node and npm to path so the commands are available
-ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
-
-RUN npm install -g yarn@$YARN_VERSION
-
-#RUN rm package-lock.json
-RUN bundle exec rails webpacker:install
-RUN bundle exec rails webpacker:install:react
-RUN bundle exec rails generate react:install
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
