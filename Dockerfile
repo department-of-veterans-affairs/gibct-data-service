@@ -34,6 +34,7 @@ ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
+RUN yarn --version
 
 ###
 # development
@@ -47,6 +48,7 @@ RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads
     cc-test-reporter --version
 
 COPY --chown=gi-bill-data-service:gi-bill-data-service docker-entrypoint.sh ./
+RUN yarn --version
 USER gi-bill-data-service
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 
@@ -67,9 +69,9 @@ USER gi-bill-data-service
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
-#RUN bundle exec rails webpacker:install
-#RUN bundle exec rails webpacker:install:react
-#RUN bundle exec rails generate react:install
+RUN bundle exec rails webpacker:install
+RUN bundle exec rails webpacker:install:react
+RUN bundle exec rails generate react:install
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
