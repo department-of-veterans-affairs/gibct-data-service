@@ -45,7 +45,7 @@ module RooHelper
         sheet_klass.transaction do
           sheet_klass.delete_all
 
-          processed_sheet = if file_options[:parse_as_xml]
+          processed_sheet = if parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options, file_options)
                             else
                               process_sheet(sheet_klass, sheet, sheet_options, file_options)
@@ -63,6 +63,17 @@ module RooHelper
     end
 
     private
+
+    # Check for the presence of the missing attribute which requires custom processing if not present
+    def parse_as_xml?(sheet, index)
+      # Get Roo::*::Sheet object for us to convert to Nokogiri::XML::Document
+      sheet_file = sheet.sheet_files[index]
+      # Get Nokogiri::XML::Document
+      doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
+
+      xml_rows = doc.xpath('/worksheet/sheetData/row')
+      xml_rows.to_a[0].children[0][:r].blank?
+    end
 
     # By providing a block the row object can be modified or set as needed
     # If a block is not provided and row is an array zips the headers and row together to create a Hash
@@ -196,14 +207,9 @@ module RooHelper
       sheet_file = sheet.sheet_files[index]
       # Get Nokogiri::XML::Document
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
-
-      xml_rows = doc.xpath('/worksheet/sheetData/row')
-      if xml_rows.to_a[0].children[0][:r].present?
-        return process_sheet(sheet_klass, sheet, sheet_options, file_options)
-      end
-
+      
       # path to the rows within the sheet
-      rows = xml_rows.to_a.drop(sheet_options[:skip_lines])
+      rows = doc.xpath('/worksheet/sheetData/row').to_a.drop(sheet_options[:skip_lines])
       headers = rows.shift.children.to_a.map { |c| c.content.strip.downcase }
 
       results = parse_rows(sheet_klass, headers, rows, sheet_options) do |row|
