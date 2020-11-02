@@ -46,7 +46,7 @@ module RooHelper
           sheet_klass.delete_all
 
           processed_sheet = if file_options[:parse_as_xml]
-                              process_as_xml(sheet_klass, sheet, index, sheet_options)
+                              process_as_xml(sheet_klass, sheet, index, sheet_options, file_options)
                             else
                               process_sheet(sheet_klass, sheet, sheet_options, file_options)
                             end
@@ -191,14 +191,19 @@ module RooHelper
     #
     # This uses Roo to get the sheet_file path and create a Nokogiri::XML:Document to be parsed
     #
-    def process_as_xml(sheet_klass, sheet, index, sheet_options)
+    def process_as_xml(sheet_klass, sheet, index, sheet_options, file_options)
       # Get Roo::*::Sheet object for us to convert to Nokogiri::XML::Document
       sheet_file = sheet.sheet_files[index]
       # Get Nokogiri::XML::Document
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
 
+      xml_rows = doc.xpath('/worksheet/sheetData/row')
+      if xml_rows.to_a[0].children[0][:r].present?
+        return process_sheet(sheet_klass, sheet, sheet_options, file_options)
+      end
+
       # path to the rows within the sheet
-      rows = doc.xpath('/worksheet/sheetData/row').to_a.drop(sheet_options[:skip_lines])
+      rows = xml_rows.to_a.drop(sheet_options[:skip_lines])
       headers = rows.shift.children.to_a.map { |c| c.content.strip.downcase }
 
       results = parse_rows(sheet_klass, headers, rows, sheet_options) do |row|
