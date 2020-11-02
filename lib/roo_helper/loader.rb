@@ -45,7 +45,7 @@ module RooHelper
         sheet_klass.transaction do
           sheet_klass.delete_all
 
-          processed_sheet = if parse_as_xml?(sheet, index)
+          processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options, file_options)
                             else
                               process_sheet(sheet_klass, sheet, sheet_options, file_options)
