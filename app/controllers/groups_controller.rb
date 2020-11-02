@@ -29,8 +29,8 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.find_by(id: params[:id])
-    @group.group_config = Group.group_config_options(@group.csv_type)
 
+    @group.group_config = Group.group_config_options(@group.csv_type) if @group.present?
     return requirements if @group.present?
 
     alert_and_log("Upload with id: '#{params[:id]}' not found")

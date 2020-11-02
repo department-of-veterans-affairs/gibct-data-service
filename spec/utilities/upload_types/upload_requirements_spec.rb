@@ -1,16 +1,17 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe UploadRequirements do
-
   def validations(csv_class, requirement_class)
     csv_class.validators
-        .find { |requirements| requirements.class == requirement_class }
+             .find { |requirements| requirements.class == requirement_class }
   end
 
   def map_attributes(csv_class, requirement_class)
     validations(csv_class, requirement_class)
-        .attributes
-        .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
+      .attributes
+      .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
   end
 
   describe 'requirements_messages' do

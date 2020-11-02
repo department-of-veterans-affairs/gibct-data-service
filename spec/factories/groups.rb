@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :group do
     transient do
       fixture_path { 'spec/fixtures' }
-      csv_name { 'weam.csv' }
+      csv_name { 'accreditation.xlsx' }
       no_upload { false }
       skip_lines { 0 }
     end
@@ -30,7 +30,7 @@ FactoryBot.define do
     end
 
     initialize_with do
-      new(csv_type: csv_type, upload_file: upload_file, comment: comment, user: user, skip_lines: skip_lines)
+      new(csv_type: csv_type, upload_file: upload_file, comment: comment, user: user, skip_lines: [skip_lines])
     end
 
     trait :valid_upload do
