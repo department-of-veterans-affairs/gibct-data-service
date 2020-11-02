@@ -72,6 +72,9 @@ module RooHelper
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
 
       xml_rows = doc.xpath('/worksheet/sheetData/row')
+      # check for the r attribute of one of columns in a row
+      # the r attribute will have a value of A1 or N37 which is used in the Roo gem but causes
+      # errors if not present
       xml_rows.to_a[0].children[0][:r].blank?
     end
 
