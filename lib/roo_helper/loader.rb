@@ -207,6 +207,7 @@ module RooHelper
       sheet_file = sheet.sheet_files[index]
       # Get Nokogiri::XML::Document
       doc = Roo::Utils.load_xml(sheet_file).remove_namespaces!
+      
       # path to the rows within the sheet
       rows = doc.xpath('/worksheet/sheetData/row').to_a.drop(sheet_options[:skip_lines])
       headers = rows.shift.children.to_a.map { |c| c.content.strip.downcase }
