@@ -33,7 +33,6 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | b
 ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
-USER gi-bill-data-service
 RUN npm install -g yarn@$YARN_VERSION
 RUN yarn --version
 
@@ -76,11 +75,8 @@ RUN yarn --version
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN yarn install --force --non-interactive
 ENV PATH="/usr/local/bundle/bin:${PATH}"
-
-#RUN bundle exec rails webpacker:install
-#RUN bundle exec rails webpacker:install:react
-#RUN bundle exec rails generate react:install
 
 ###
 # production

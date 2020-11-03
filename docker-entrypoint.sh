@@ -21,6 +21,6 @@ bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 #ADD . /src/gibct
 #RUN ["/bin/bash", "--login", "-c", "bundle install -j4"]
 #RUN yarn install --force --non-interactive
-yarn install --force --non-interactive
+#yarn install --force --non-interactive
 
 exec "$@"
