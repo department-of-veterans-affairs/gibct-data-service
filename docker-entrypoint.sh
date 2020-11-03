@@ -9,7 +9,7 @@ nvm install $NODEJS_VERSION
 
 
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
-
+yarn install --force --non-interactive
 
 #yarn
 

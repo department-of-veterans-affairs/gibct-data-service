@@ -32,6 +32,7 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | b
 # add node and npm to path so the commands are available
 ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
+ENV PATH /usr/local/lib/node_modules/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
 RUN yarn --version
