@@ -10,13 +10,15 @@ class UploadRequirements
     end
 
     def validation_messages_inclusion(type)
-      inclusion = type.validators.map do |validations|
+      inclusion = []
+
+      type.validators.each do |validations|
         next unless validations.class == ActiveModel::Validations::InclusionValidator
 
-        { message: affected_attributes(validations, type).join(', '),
-          value: inclusion_requirement_message(validations) }
+        inclusion.push({ message: affected_attributes(validations, type).join(', '),
+                         value: inclusion_requirement_message(validations) })
       end
-      inclusion unless inclusion.empty?
+      inclusion.presence
     end
 
     private
