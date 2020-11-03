@@ -4,8 +4,8 @@
 # if you make major alteration here, please check that usage as well
 
 
-source $NVM_DIR/nvm.sh
-nvm install $NODEJS_VERSION
+#source $NVM_DIR/nvm.sh
+#nvm install $NODEJS_VERSION
 
 
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"

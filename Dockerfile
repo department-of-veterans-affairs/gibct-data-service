@@ -32,7 +32,6 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | b
 # add node and npm to path so the commands are available
 ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
-ENV PATH /usr/local/lib/node_modules/bin:$PATH
 
 RUN npm install -g yarn@$YARN_VERSION
 RUN yarn --version
@@ -51,9 +50,6 @@ RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads
 COPY --chown=gi-bill-data-service:gi-bill-data-service docker-entrypoint.sh ./
 USER gi-bill-data-service
 
-RUN source $NVM_DIR/nvm.sh && nvm --version
-RUN yarn --version
-
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 
 ###
@@ -71,13 +67,12 @@ ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 
-RUN source $NVM_DIR/nvm.sh && nvm --version
-RUN yarn --version
-
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 RUN yarn install --force --non-interactive
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+ENV PATH /usr/local/lib/node/bin:$PATH
+ENV PATH /usr/local/lib/node_modules/bin:$PATH
 
 ###
 # production
@@ -89,12 +84,11 @@ FROM base AS production
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+ENV PATH /usr/local/lib/node/bin:$PATH
+ENV PATH /usr/local/lib/node_modules/bin:$PATH
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 
 USER gi-bill-data-service
-
-RUN source $NVM_DIR/nvm.sh && nvm --version
-RUN yarn --version
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
