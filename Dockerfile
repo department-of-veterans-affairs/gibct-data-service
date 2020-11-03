@@ -36,6 +36,8 @@ ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 RUN npm install -g yarn@$YARN_VERSION
 RUN yarn --version
 
+RUN echo $PATH
+
 ###
 # development
 #

@@ -15,7 +15,7 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "bin/rails db:setup db:migrate assets:precompile ci"
+	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
 
 .PHONY: console
 console:
