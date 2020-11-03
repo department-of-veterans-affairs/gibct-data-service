@@ -33,6 +33,7 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | b
 ENV NODE_PATH $NVM_DIR/v$NODEJS_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODEJS_VERSION/bin:$PATH
 
+USER gi-bill-data-service
 RUN npm install -g yarn@$YARN_VERSION
 RUN yarn --version
 
