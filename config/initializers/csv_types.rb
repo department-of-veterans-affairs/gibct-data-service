@@ -32,8 +32,5 @@ CSV_TYPES_TABLES = [
   { klass: SchoolRating, required?: false },
 ].freeze
 
-CSV_TYPES_REQUIRED_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:required?] }.map { |table| table[:klass].name }.freeze
 CSV_TYPES_HAS_API_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }.freeze
 CSV_TYPES_ALL_TABLES_CLASSES = CSV_TYPES_TABLES.map { |table| table[:klass] }.freeze
-CSV_TYPES_ALL_TABLES_NAMES = CSV_TYPES_TABLES.map { |table| table[:klass].name }.freeze
-CSV_TYPES_NO_PROD_NAMES = CSV_TYPES_TABLES.select { |table| table[:not_prod_ready?] }.map { |table| table[:klass].name }.freeze

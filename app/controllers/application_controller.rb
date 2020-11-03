@@ -35,4 +35,9 @@ class ApplicationController < ActionController::Base
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = 1.year.ago.to_s
   end
+
+  def alert_and_log(message, error = nil)
+    Rails.logger.error message + error&.backtrace.to_s
+    flash[:danger] = message
+  end
 end

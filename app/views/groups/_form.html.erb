@@ -1,0 +1,43 @@
+<%= form_for(@group, multipart: true, :url => groups_path(@group)) do |f| %>
+  <div class="form-group">
+    <%= f.label(:file_group, for: 'csv_type_display') %><br />
+    <%= f.text_field(:csv_type, disabled: true, name: "csv_type_display", id: "csv_type_display") %>
+    <%= f.hidden_field(:csv_type) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:upload_file) %>
+    <p class="help-block">Valid file formats include: <%= @extensions %></p>
+    <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label(:file_group_comment) %><br />
+    <%= f.text_field(:comment, style: 'width: 100%') %>
+  </div>
+
+  <% if flash[:danger].present? %>
+    <div class="form-group alert-danger">
+      <%= f.check_box(:parse_as_xml) %>
+      <%= f.label(:parse_as_xml) %>
+      <p class="help-block">This upload process was designed for the Excel data file downloaded from
+        <a href="https://ope.ed.gov/dapip/#/download-data-files">DAPIP</a>.<br/>
+        If there is an error below uncheck this and upload again.
+      </p>
+    </div>
+  <% else %>
+    <%= f.hidden_field(:parse_as_xml) %>
+  <% end %>
+
+  <h4>Sheet options</h4>
+  <p class="help-block">This is the order sheets in the uploaded file will be processed</p>
+  <ol>
+    <%= render partial: 'sheet_options', collection: @sheets, as: :sheet, locals: { f: f } %>
+  </ol>
+
+  <div class="actions">
+    <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
+    <%= f.submit "Upload", class: "btn btn-primary" %>
+  </div>
+<% end %>
+

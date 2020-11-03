@@ -2,6 +2,7 @@
 
 module Common
   module Loader
+    # Results is an Array of ImportableRecords
     def load(results, options = {})
       klass.transaction do
         delete_all
@@ -9,15 +10,19 @@ module Common
       end
     end
 
-    private
-
+    # Checks if there are any current transactions wrapping this method call
+    # If not calls this classes default load with the provided Array of ImportableRecords
     def load_records(records, options)
+      return load(records, options) if klass.connection.open_transactions.zero?
+
       results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
 
       after_import_validations(records, results.failed_instances, options)
 
       results
     end
+
+    private
 
     # Default validations are run during import, which prevent bad data from being persisted to the database.
     # This method manually runs validations that were declared with a specific validation context (:after_import).

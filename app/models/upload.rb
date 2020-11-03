@@ -23,7 +23,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if [*CSV_TYPES_ALL_TABLES_NAMES, 'Institution'].include?(csv_type)
+    return true if [*UPLOAD_TYPES_ALL_NAMES, 'Institution'].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -40,7 +40,7 @@ class Upload < ApplicationRecord
 
   def self.last_uploads
     Upload.select('DISTINCT ON("csv_type") *')
-          .where(ok: true, csv_type: CSV_TYPES_ALL_TABLES_NAMES)
+          .where(ok: true, csv_type: UPLOAD_TYPES_ALL_NAMES)
           .order(csv_type: :asc, updated_at: :desc)
   end
 
@@ -49,7 +49,7 @@ class Upload < ApplicationRecord
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    CSV_TYPES_ALL_TABLES_NAMES.each do |klass_name|
+    UPLOAD_TYPES_ALL_NAMES.each do |klass_name|
       next if upload_csv_types.include?(klass_name)
 
       missing_upload = Upload.new

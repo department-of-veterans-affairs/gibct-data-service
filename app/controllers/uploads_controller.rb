@@ -11,7 +11,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = Settings.roo_upload.extensions.join(', ')
+    @extensions = Settings.roo_upload.extensions.single.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -80,11 +80,6 @@ class UploadsController < ApplicationController
       'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
       'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
     }.compact
-  end
-
-  def alert_and_log(message, error = nil)
-    Rails.logger.error message + error&.backtrace.to_s
-    flash[:danger] = message
   end
 
   def original_filename
