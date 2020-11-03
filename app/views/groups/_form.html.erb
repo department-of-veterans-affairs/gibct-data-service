@@ -16,13 +16,12 @@
     <%= f.text_field(:comment, style: 'width: 100%') %>
   </div>
 
-  <% if flash[:danger].present? %>
+  <% if flash[:danger].present? && GROUP_PARSE_AS_XML.include?(@group.csv_type) %>
     <div class="form-group alert-danger">
       <%= f.check_box(:parse_as_xml) %>
       <%= f.label(:parse_as_xml) %>
-      <p class="help-block">This upload process was designed for the Excel data file downloaded from
-        <a href="https://ope.ed.gov/dapip/#/download-data-files">DAPIP</a>.<br/>
-        If there is an error below uncheck this and upload again.
+      <p class="help-block"><%= sanitize @group.xml_error_help %><br/>
+        If there is an error below try unchecking this and uploading again.
       </p>
     </div>
   <% else %>

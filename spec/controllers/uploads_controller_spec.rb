@@ -40,6 +40,10 @@ RSpec.describe UploadsController, type: :controller do
       it 'returns http success' do
         expect(response).to have_http_status(:success)
       end
+
+      it 'assigns extensions' do
+        expect(assigns(:extensions)).to include('.xls', '.xlsx', '.csv', '.txt')
+      end
     end
 
     context 'when specifying an invalid csv_type' do

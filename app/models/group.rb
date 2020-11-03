@@ -7,7 +7,7 @@ class Group < Upload
 
   def initialize(attributes = nil)
     super(attributes)
-    self.group_config = Group.group_config_options(csv_type)
+    self.group_config = Group.group_config_options(csv_type) || {}
   end
 
   def self.create_from_group_type(group_type)
@@ -21,10 +21,14 @@ class Group < Upload
   end
 
   def sheet_names
-    @sheet_names ||= group_config[:types].map(&:name)
+    @sheet_names ||= group_config[:types]&.map(&:name)
   end
 
   def sheets
     @sheets ||= group_config[:types]
+  end
+
+  def xml_error_help
+    @xml_error_help ||= group_config[:xml_error_help]
   end
 end

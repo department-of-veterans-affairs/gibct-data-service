@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'an authenticating controller' do |action, destination|
+RSpec.shared_examples 'an authenticating controller' do |action, destination, params = nil|
   describe 'when being visited' do
     context 'when not authenticated' do
       it 'redirects the user to login page' do
-        get action
+        get action, params: params
 
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to(new_user_session_url)
@@ -30,7 +30,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination|
       login_user
 
       it "sends that user to the #{destination}/#{action}" do
-        expect(get(action)).to render_template("#{destination}/#{action}")
+        expect(get(action, params: params)).to render_template("#{destination}/#{action}")
       end
 
       it 'has a current user' do
