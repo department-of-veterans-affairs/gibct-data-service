@@ -8,6 +8,7 @@ module RooHelper
     # {
     #   header_warnings: [],
     #   results: [],
+    #   klass: ImportableRecord,
     # }
     #
     # Sheet Option hashes
@@ -42,7 +43,7 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
-          delete_all
+          sheet_klass.delete_all
 
           processed_sheet = if file_options[:parse_as_xml]
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
@@ -51,8 +52,9 @@ module RooHelper
                             end
 
           loaded_sheets << {
-            results: load_records(processed_sheet[:results], sheet_options),
-            header_warnings: processed_sheet[:header_warnings]
+            results: sheet_klass.load_records(processed_sheet[:results], sheet_options),
+            header_warnings: processed_sheet[:header_warnings],
+            klass: sheet_klass
           }
         end
       end

@@ -1,0 +1,21 @@
+<li>
+  <div class="form-group">
+    <%= f.label(:sheet_file_type) %>
+    <select name="group[sheet_type_list][]" id="group_sheet_type">
+      <% @sheets.each do |sheet_option| %>
+        <% if sheet_option == sheet %>
+          <option value="<%= sheet_option %>" selected>
+        <% else %>
+          <option value="<%= sheet_option %>">
+        <% end %>
+            <%= sheet_option %>
+          </option>
+      <% end %>
+    </select>
+  </div>
+  <div class="form-group">
+    <%= f.label(:skip_lines_before_header, for: "upload_skip_lines") %>
+    <%= f.text_field(:skip_lines, multiple: true, :value => '0') %>
+  </div>
+  <br/>
+</li>
