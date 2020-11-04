@@ -79,6 +79,8 @@ RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
+RUN yarn install
+
 #RUN bundle exec rails webpacker:install
 #RUN bundle exec rails webpacker:install:react
 #RUN bundle exec rails generate react:install
