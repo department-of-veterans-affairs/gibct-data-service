@@ -14,8 +14,7 @@ bash:
 
 .PHONY: ci
 ci:
-    @$(BASH_TEST) "bundle exec rails webpacker:install"
-    @$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails assets:precompile db:setup db:migrate"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bundle exec rails webpacker:install"
 
 .PHONY: console
 console:
