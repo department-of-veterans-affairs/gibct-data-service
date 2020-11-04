@@ -14,8 +14,14 @@ bash:
 
 .PHONY: ci
 ci:
-	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails webpacker:install webpacker:install:react generate react:install"
-	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails assets:precompile;bin/rails db:setup db:migrate ci"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails yarn:install"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails webpacker:install"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails webpacker:install:react"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails generate react:install"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails webpacker:info"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails webpacker:verify_install"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails assets:precompile"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails bin/rails db:setup db:migrate ci"
 	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
 	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
 
