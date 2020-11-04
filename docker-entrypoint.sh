@@ -4,4 +4,6 @@
 # if you make major alteration here, please check that usage as well
 bundle check || bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin"
 
+bundle exec rails generate react:install
+
 exec "$@"
