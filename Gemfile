@@ -56,10 +56,13 @@ gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefe
 gem 'rack-cors', require: 'rack/cors'
 gem 'rainbow'
 
+gem 'react-rails'
+
 # Use ActiveModel has_secure_password
 gem 'ruby-saml'
 gem 'sitemap_generator'
 gem 'strong_migrations'
+gem 'webpacker'
 gem 'will_paginate'
 
 group :production do
