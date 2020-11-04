@@ -82,7 +82,7 @@ ENV PATH="/usr/local/bundle/bin:${PATH}"
 #RUN yarn install
 #RUN bundle exec rails webpacker:install
 #RUN bundle exec rails webpacker:install:react
-RUN bundle exec rails generate react:install
+#RUN bundle exec rails generate react:install
 
 ###
 # production
