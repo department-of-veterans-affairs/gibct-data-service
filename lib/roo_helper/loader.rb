@@ -23,8 +23,6 @@ module RooHelper
     # - :liberal_parsing  Used when file is either .txt or .csv
     #                     When setting a true value, CSV will attempt to parse input not
     #                     conformant with RFC 4180, such as double quotes in unquoted fields.
-    # - :parse_as_xml If the uploaded xlsx or xls file fails to process normally pass in this option to
-    #                 process as Nokogiri::XML object instead
     #
     def load_with_roo(file, options = {})
       file_options = merge_options(options)
@@ -46,7 +44,7 @@ module RooHelper
           sheet_klass.delete_all
 
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
-                              process_as_xml(sheet_klass, sheet, index, sheet_options, file_options)
+                              process_as_xml(sheet_klass, sheet, index, sheet_options)
                             else
                               process_sheet(sheet_klass, sheet, sheet_options, file_options)
                             end
@@ -160,7 +158,6 @@ module RooHelper
     #   - :first_line Since row indexes start at 0 and spreadsheets on line 1,
     #                 add 1 for the difference in indexes and 1 for the header row itself.
     #   - :skip_lines defaults to 0
-    # - :parse_as_xml  defaults to false
     def merge_options(file_options)
       file_options[:sheets] = if file_options[:sheets].present?
                                 file_options[:sheets]
@@ -169,7 +166,7 @@ module RooHelper
                                 [{ klass: klass, skip_lines: 0, first_line: 2 }]
                               end
 
-      file_options.reverse_merge(parse_as_xml: false)
+      file_options
     end
 
     # Set CSV options
@@ -198,7 +195,7 @@ module RooHelper
       col_sep
     end
 
-    # This is called if options[:parse_as_xml] is true
+    # This is called if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index) is true
     #
     # This is the custom code to deal with issues that occur from malformed excel files
     # ex: No "r" attribute on the cell elements, this indicates "A1" or "D32"

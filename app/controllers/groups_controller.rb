@@ -40,7 +40,7 @@ class GroupsController < ApplicationController
   private
 
   def setup(group_type)
-    @group = Group.create_from_group_type(csv_type: group_type)
+    @group = Group.new(csv_type: group_type)
     @extensions = Settings.roo_upload.extensions.group.join(', ')
     @sheets = @group.sheet_names
     requirements if @group.csv_type_check?
@@ -127,12 +127,11 @@ class GroupsController < ApplicationController
   end
 
   def merged_params
-    group_params[:parse_as_xml] = BooleanConverter.convert(group_params[:parse_as_xml])
     group_params.merge(csv: original_filename, user: current_user)
   end
 
   def group_params
-    @group_params ||= params.require(:group).permit(:csv_type, :upload_file, :comment, :parse_as_xml,
+    @group_params ||= params.require(:group).permit(:csv_type, :upload_file, :comment,
                                                     sheet_type_list: [], skip_lines: [])
   end
 
@@ -159,8 +158,7 @@ class GroupsController < ApplicationController
         skip_lines: @group.skip_lines[index].to_i
       }
     end
-    { parse_as_xml: @group.parse_as_xml,
-      sheets: sheets }
+    { sheets: sheets }
   end
 
   # delete and rebuild if the intersection of selected File Types array and
