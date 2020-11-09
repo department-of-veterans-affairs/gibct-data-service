@@ -94,7 +94,7 @@ RSpec.describe GroupsController, type: :controller do
     context 'with having valid form input' do
       it 'Uploads a xlsx file' do
         expect do
-          post :create, params: { group: { upload_file: upload_file, skip_lines: ['0'], parse_as_xml: '0',
+          post :create, params: { group: { upload_file: upload_file, skip_lines: ['0'],
                                            comment: 'Test', csv_type: 'Accreditation', sheet_type_list: sheets } }
         end.to change(AccreditationInstituteCampus, :count)
           .by(4).and change(AccreditationRecord, :count)
@@ -105,7 +105,7 @@ RSpec.describe GroupsController, type: :controller do
         expect(
           post(:create,
                params: {
-                 group: { upload_file: upload_file, skip_lines: ['0'], parse_as_xml: '0',
+                 group: { upload_file: upload_file, skip_lines: ['0'],
                           comment: 'Test', csv_type: 'Accreditation', sheet_type_list: sheets }
                })
         ).to redirect_to(action: :show, id: assigns(:group).id)
@@ -118,7 +118,7 @@ RSpec.describe GroupsController, type: :controller do
           expect(
             post(:create,
                  params: {
-                   group: { upload_file: upload_file, skip_lines: ['0'], parse_as_xml: '0',
+                   group: { upload_file: upload_file, skip_lines: ['0'],
                             comment: 'Test', csv_type: 'Blah', sheet_type_list: sheets  }
                  })
           ).to render_template(:new)
@@ -130,7 +130,7 @@ RSpec.describe GroupsController, type: :controller do
           expect(
             post(:create,
                  params: {
-                   group: { upload_file: nil, skip_lines: ['0'], parse_as_xml: '0',
+                   group: { upload_file: nil, skip_lines: ['0'],
                             comment: 'Test', csv_type: 'Blah', sheet_type_list: sheets  }
                  })
           ).to render_template(:new)
@@ -143,7 +143,7 @@ RSpec.describe GroupsController, type: :controller do
         expect(
           post(:create,
                params: {
-                 group: { upload_file: upload_file, skip_lines: ['0'], parse_as_xml: '0',
+                 group: { upload_file: upload_file, skip_lines: ['0'],
                           comment: 'Test', csv_type: 'Accreditation', sheet_type_list: sheets }
                })
         ).to redirect_to(action: :show, id: assigns(:group).id)
@@ -151,7 +151,7 @@ RSpec.describe GroupsController, type: :controller do
 
       it 'formats a notice message in the flash' do
         post(:create,
-             params: { group: { upload_file: upload_file, skip_lines: ['0'], parse_as_xml: '0',
+             params: { group: { upload_file: upload_file, skip_lines: ['0'],
                                 comment: 'Test', csv_type: 'Accreditation', sheet_type_list: sheets } })
 
         message = flash[:warning][AccreditationInstituteCampus.name][:'The following headers should be checked: ']
