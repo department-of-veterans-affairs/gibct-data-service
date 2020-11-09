@@ -88,7 +88,7 @@ RSpec.describe DashboardsController, type: :controller do
       expect(Weam).to have_received(:export)
     end
 
-    it 'causes a CSV to be exported' do
+    it 'causes a Group to be exported' do
       allow(AccreditationInstituteCampus).to receive(:export)
       allow(AccreditationRecord).to receive(:export)
       allow(AccreditationAction).to receive(:export)
