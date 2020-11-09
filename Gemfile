@@ -30,7 +30,7 @@ gem 'json', '>= 2.3.0'
 gem 'pg', '~> 0.15'
 gem 'roo', '~> 2.8'
 gem 'roo-xls', '~> 1.2'
-gem "rubyzip", "~> 2.3"
+gem 'rubyzip', '~> 2.3'
 gem 'sentry-raven', '~> 2.9.0'
 gem 'smarter_csv', '1.1.4'
 gem 'uglifier', '>= 1.3.0'
@@ -111,4 +111,3 @@ group :development do
   # POSIX systems should have this already, so we're not going to bring it in on other platforms
   gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 end
-
