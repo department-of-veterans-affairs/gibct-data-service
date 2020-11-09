@@ -24,7 +24,7 @@ class Group < Upload
 
   # For each type in the config create a CSV file within the Zip::OutputStream
   # Returns the binary data for the zip file
-  def self.export_to_data(group_type)
+  def self.export_as_zip(group_type)
     Zip::OutputStream.write_buffer do |zio|
       group_config_options(group_type)[:types].each do |type|
         zio.put_next_entry("#{type}.csv")

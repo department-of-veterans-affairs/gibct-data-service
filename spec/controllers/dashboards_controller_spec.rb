@@ -88,6 +88,18 @@ RSpec.describe DashboardsController, type: :controller do
       expect(Weam).to have_received(:export)
     end
 
+    it 'causes a CSV to be exported' do
+      allow(AccreditationInstituteCampus).to receive(:export)
+      allow(AccreditationRecord).to receive(:export)
+      allow(AccreditationAction).to receive(:export)
+
+      get(:export, params: { csv_type: 'Accreditation', format: :csv })
+
+      expect(AccreditationInstituteCampus).to have_received(:export)
+      expect(AccreditationRecord).to have_received(:export)
+      expect(AccreditationAction).to have_received(:export)
+    end
+
     it 'includes filename parameter in content-disposition header' do
       get(:export, params: { csv_type: 'Sva', format: :csv })
       expect(response.headers['Content-Disposition']).to include('filename="Sva.csv"')

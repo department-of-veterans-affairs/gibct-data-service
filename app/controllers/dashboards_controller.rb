@@ -27,8 +27,7 @@ class DashboardsController < ApplicationController
   def export
     file_type = params[:csv_type]
     if GROUP_FILE_TYPES_NAMES.include?(file_type)
-      filename = "#{file_type}.zip"
-      send_data Group.export_to_data(file_type), type: 'application/zip', filename: filename
+      send_data Group.export_as_zip(file_type), type: 'application/zip', filename: "#{file_type}.zip"
     else
       klass = csv_model(file_type)
 
