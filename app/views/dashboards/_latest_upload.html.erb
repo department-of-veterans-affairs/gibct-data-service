@@ -24,16 +24,16 @@
       <% else %>
         <%= link_to 'Upload', new_upload_path(upload.csv_type),
                     class: "btn dashboard-btn-success btn-xs", role: "button" %>
+      <% end %>
 
-        <% if upload.ok? %>
-          <%= link_to 'Export', dashboard_export_path(upload.csv_type),
-                      class: "btn dashboard-btn-success btn-xs", role: "button" %>
-        <% else %>
-          <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
-            Export
-          </a>
-        <% end %>
-    <% end %>
+      <% if upload.ok? %>
+        <%= link_to 'Export', dashboard_export_path(upload.csv_type),
+                    class: "btn dashboard-btn-success btn-xs", role: "button" %>
+      <% else %>
+        <a disabled="disabled" class="btn dashboard-btn-warning btn-xs", role="button" >
+          Export
+        </a>
+      <% end %>
     </td>
   </tr>
 <%end %>
