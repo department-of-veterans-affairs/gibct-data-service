@@ -34,7 +34,8 @@ if ENV['CI'].blank?
   puts 'Deleting old versions'
   Version.delete_all
 
-  puts 'Loading CSVs. Why not do some calf raises while you wait? ... '
+  puts 'Loading CSVs. Why not do some calf raises while you wait? ...'+"\u{1f9b5} "
+ SeedUtils.seed_tables_with_group('Accreditation', user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(CalculatorConstant, user)
   SeedUtils.seed_table_with_upload(Program, user)
   SeedUtils.seed_table_with_upload(Sec109ClosedSchool, user)
