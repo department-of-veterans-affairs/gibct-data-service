@@ -175,7 +175,7 @@ module RooHelper
     def csv_options(file, file_options)
       csv_options = {
         col_sep: csv_col_sep(file, file_options),
-        encoding: 'ISO-8859-1',
+        encoding: 'ISO-8859-1'
       }
       csv_options[:liberal_parsing] = file_options[:liberal_parsing]
       csv_options
