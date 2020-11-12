@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CsvHelper
+module Common
   module Exporter
     def export
       generate(csv_headers)

@@ -5,7 +5,7 @@ module RooHelper
   def self.included(base)
     base.extend Common::Shared
     base.extend Loader
-    base.extend CsvHelper::Exporter
+    base.extend Common::Exporter
   end
 
   def self.valid_col_seps
