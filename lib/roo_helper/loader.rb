@@ -171,9 +171,11 @@ module RooHelper
 
     # Set CSV options
     # See https://apidock.com/ruby/v2_5_5/CSV/new/class for more options
+    # Forces encoding to be utf-8
     def csv_options(file, file_options)
       csv_options = {
-        col_sep: csv_col_sep(file, file_options)
+        col_sep: csv_col_sep(file, file_options),
+        encoding: 'ISO-8859-1'
       }
       csv_options[:liberal_parsing] = file_options[:liberal_parsing]
       csv_options
