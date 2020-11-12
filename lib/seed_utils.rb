@@ -14,28 +14,11 @@ module SeedUtils
     end
 
     file_options = { sheets: sheets }
-    csv_name = "#{group}.xlsx"
-    csv_path = 'sample_csvs'
+    xlxs_type = group
+    xlxs_name = "#{group}.xlsx"
+    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-    load_table(Group, user, file_options.reverse_merge(options), csv_name)
-
-    uf = ActionDispatch::Http::UploadedFile.new(
-      tempfile: File.new(Rails.root.join(csv_path, csv_name)),
-      # dup required until upgrade: https://github.com/rails/rails/commit/bfbbb1207930e7ebe56d4a99abd53b2aa66e0b6e
-      filename: csv_name.dup,
-      content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-
-    upload = Group.create(upload_file: uf, csv_type: group, comment: 'Seeding', user: user)
-    seed_table(Group, "#{csv_path}/#{csv_name}", file_options)
-    upload.update(ok: true)
-
-    puts "Loading #{Group} storage from #{csv_path}/#{csv_name} ... "
-    uf.rewind
-
-    Storage.create(upload_file: uf, csv_type: group, comment: 'Seeding', user: user)
-
-    puts 'Done!'
+    load_table(Group, user, file_options.reverse_merge(options), xlxs_name, xlxs_type, content_type)
   end
 
   def seed_table_with_upload(klass, user, options = {})
@@ -45,32 +28,34 @@ module SeedUtils
 
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.csv"
-    csv_path = 'sample_csvs'
+    content_type = 'text/csv'
 
-    load_table(klass, user, file_options, csv_name)
+    load_table(klass, user, file_options, csv_name, csv_type, content_type)
 
-    uf = ActionDispatch::Http::UploadedFile.new(
-      tempfile: File.new(Rails.root.join(csv_path, csv_name)),
-      # dup required until upgrade: https://github.com/rails/rails/commit/bfbbb1207930e7ebe56d4a99abd53b2aa66e0b6e
-      filename: csv_name.dup,
-      content_type: 'text/csv'
-    )
 
-    upload = Upload.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-    seed_table(klass, "#{csv_path}/#{csv_name}", file_options)
-    upload.update(ok: true)
-
-    puts "Loading #{klass.name} storage from #{csv_path}/#{csv_name} ... "
-    uf.rewind
-
-    Storage.create(upload_file: uf, csv_type: csv_type, comment: 'Seeding', user: user)
-
-    puts 'Done!'
   end
 
-  def load_table(klass, _user, _file_options, csv_name)
-    csv_path = 'sample_csvs'
-    puts "Loading #{klass.name} from #{csv_path}/#{csv_name} ... "
+  def load_table(klass, user, file_options, file_name, file_type, content_type)
+    file_path = 'sample_csvs'
+    puts "Loading #{klass.name} from #{file_path}/#{file_name} ... "
+
+    uf = ActionDispatch::Http::UploadedFile.new(
+      tempfile: File.new(Rails.root.join(file_path, file_name)),
+      # dup required until upgrade: https://github.com/rails/rails/commit/bfbbb1207930e7ebe56d4a99abd53b2aa66e0b6e
+      filename: file_name.dup,
+      content_type: content_type
+    )
+
+    upload = Group.create(upload_file: uf, csv_type: file_type, comment: 'Seeding', user: user)
+    seed_table(klass, "#{file_path}/#{file_name}", file_options)
+    upload.update(ok: true)
+
+    puts "Loading #{klass.name} storage from #{file_path}/#{file_name} ... "
+    uf.rewind
+
+    Storage.create(upload_file: uf, csv_type: file_type, comment: 'Seeding', user: user)
+
+    puts 'Done!'
   end
 
   def seed_table(klass, path, options = {})
