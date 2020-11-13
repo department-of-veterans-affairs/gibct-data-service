@@ -38,9 +38,7 @@ module SeedUtils
 
     puts "Loading #{klass.name} from #{file_path}/#{file_name} ... "
 
-    csv_check = file_name.last(3).to_s
-
-    content_type = csv_check == 'csv' ? csv_content_type : xlsx_content_type
+    content_type = file_type == klass.name ? csv_content_type : xlsx_content_type
 
     uf = ActionDispatch::Http::UploadedFile.new(
       tempfile: File.new(Rails.root.join(file_path, file_name)),
