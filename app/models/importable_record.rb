@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'roo_helper/shared'
+
 class ImportableRecord < ApplicationRecord
   include RooHelper
 
