@@ -1,4 +1,7 @@
 require 'common/exceptions'
+require 'common/exporter'
+require 'common/loader'
+require 'common/shared'
 
 Rails.application.config.after_initialize do
   deployment_env = ENV.fetch('DEPLOYMENT_ENV')
