@@ -25,14 +25,18 @@ class DashboardsController < ApplicationController
   end
 
   def export
-    klass = csv_model(params[:csv_type])
+    file_type = params[:csv_type]
+    if GROUP_FILE_TYPES_NAMES.include?(file_type)
+      send_data Group.export_as_zip(file_type), type: 'application/zip', filename: "#{file_type}.zip"
+    else
+      klass = csv_model(file_type)
 
-    respond_to do |format|
-      format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
+      respond_to do |format|
+        format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
+      end
     end
   rescue ArgumentError, ActionController::UnknownFormat => e
-    Rails.logger.error e.message
-    redirect_to dashboards_path, alert: e.message
+    log_error(e)
   end
 
   def export_version
@@ -44,8 +48,7 @@ class DashboardsController < ApplicationController
       end
     end
   rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
-    Rails.logger.error e.message
-    redirect_to dashboards_path, alert: e.message
+    log_error(e)
   end
 
   def push
@@ -97,6 +100,11 @@ class DashboardsController < ApplicationController
   end
 
   private
+
+  def log_error(error)
+    Rails.logger.error error.message + error&.backtrace.to_s
+    redirect_to dashboards_path, alert: "#{error.message}\n#{error.backtrace[0]}"
+  end
 
   def csv_model(csv_type)
     model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
