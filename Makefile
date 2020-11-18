@@ -22,7 +22,11 @@ bash:
 
 .PHONY: ci
 ci:
+ifeq ($(ENV_ARG), dev)
+	@$(BASH_DEV) "bin/rails db:setup db:migrate ci"
+else
 	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
+endif
 
 .PHONY: console
 console:
@@ -46,7 +50,11 @@ security: db
 
 .PHONY: spec
 spec: db
+ifeq ($(ENV_ARG), dev)
+	@$(BASH_DEV) "bin/rails spec"
+else
 	@$(BASH_TEST) "bin/rails spec"
+endif
 
 .PHONY: up
 up: db
@@ -74,5 +82,10 @@ endif
 .PHONY: clean
 clean:
 	rm -r data || true
+ifeq ($(ENV_ARG), dev)
+	$(COMPOSE_DEV) run gibct rm -r coverage log/* tmp || true
+	$(COMPOSE_DEV) down
+else
 	$(COMPOSE_TEST) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_TEST) down
+endif
