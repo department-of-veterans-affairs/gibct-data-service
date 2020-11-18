@@ -82,10 +82,5 @@ endif
 .PHONY: clean
 clean:
 	rm -r data || true
-ifeq ($(ENV_ARG), dev)
-	$(COMPOSE_DEV) run gibct rm -r coverage log/* tmp || true
-	$(COMPOSE_DEV) down
-else
 	$(COMPOSE_TEST) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_TEST) down
-endif

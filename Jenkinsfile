@@ -53,7 +53,7 @@ pipeline {
 
   post {
     always {
-      sh 'env=$RAILS_ENV make clean'
+      sh 'make clean'
       deleteDir()
     }
   }
