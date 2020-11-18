@@ -16,7 +16,7 @@ pipeline {
 
     stage('Run tests') {
       steps {
-        sh 'make ci'
+        sh 'env=$RAILS_ENV make ci'
       }
     }
 
@@ -53,7 +53,7 @@ pipeline {
 
   post {
     always {
-      sh 'make clean'
+      sh 'env=$RAILS_ENV make clean'
       deleteDir()
     }
   }
