@@ -1,6 +1,6 @@
 require 'seed_utils'
 
-if ENV['CI'].blank?
+if ENV['SEED'] == 'true'
 
   user = User.first
 

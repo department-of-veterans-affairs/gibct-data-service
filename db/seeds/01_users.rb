@@ -1,4 +1,4 @@
-if ENV['CI'].blank?
+if ENV['SEED'] == 'true'
   puts 'Destroy previous users ... '
   User.destroy_all
 
