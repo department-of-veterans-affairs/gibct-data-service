@@ -3,7 +3,7 @@ $stdout.sync = true
 ifdef env
     ENV_ARG  := $(env)
 else
-    ENV_ARG	 := dev
+    ENV_ARG	 := test
 endif
 
 COMPOSE_DEV  := docker-compose
@@ -21,7 +21,7 @@ bash:
 	@$(COMPOSE_DEV) $(BASH)
 
 .PHONY: ci
-ci: ## requires build to be run first, can do "env=test make ci" to run with docker-compose.test.yml
+ci: ## requires build to be run first, can do "env=dev make ci" to run with docker-compose.yml
 ifeq ($(ENV_ARG), dev)
 	@$(BASH_DEV) "bin/rails db:setup db:migrate ci"
 else
@@ -82,5 +82,10 @@ endif
 .PHONY: clean
 clean:
 	rm -r data || true
+ifeq ($(ENV_ARG), dev)
+	$(COMPOSE_DEV) run gibct rm -r coverage log/* tmp || true
+	$(COMPOSE_DEV) down
+else
 	$(COMPOSE_TEST) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_TEST) down
+endif
