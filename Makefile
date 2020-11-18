@@ -21,7 +21,7 @@ bash:
 	@$(COMPOSE_DEV) $(BASH)
 
 .PHONY: ci
-ci:
+ci: ## requires build to be run first, can do "env=test make ci" to run with docker-compose.test.yml
 ifeq ($(ENV_ARG), dev)
 	@$(BASH_DEV) "bin/rails db:setup db:migrate ci"
 else
