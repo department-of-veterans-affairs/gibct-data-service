@@ -2,132 +2,20 @@ generic:
   skip_lines: 0
   col_sep: ","
 
-Weam:
-  skip_lines: 0
-  col_sep: ","
-
-Crosswalk:
-  skip_lines: 0
-  col_sep: ","
-
 EightKey:
   skip_lines: 1
-  col_sep: ","
-
-AccreditationInstituteCampus:
-  skip_lines: 0
-  col_sep: ","
-
-AccreditationRecord:
-  skip_lines: 0
-  col_sep: ","
-
-AccreditationAction:
-  skip_lines: 0
-  col_sep: ","
-
-ArfGiBill:
-  skip_lines: 0
-  col_sep: ","
-
-Scorecard:
-  skip_lines: 0
-  col_sep: ","
-
-Vsoc:
-  skip_lines: 0
-  col_sep: ","
-
-Sva:
-  skip_lines: 0
-  col_sep: ","
-
-Sec702:
-  skip_lines: 0
-  col_sep: ","
 
 Mou:
   skip_lines: 1
-  col_sep: ","
 
 Hcm:
   skip_lines: 2
-  col_sep: ","
-
-IpedsIc:
-  skip_lines: 0
-  col_sep: ","
-
-IpedsHd:
-  skip_lines: 0
-  col_sep: ","
-
-IpedsIcAy:
-  skip_lines: 0
-  col_sep: ","
-
-IpedsIcPy:
-  skip_lines: 0
-  col_sep: ","
 
 Complaint:
   skip_lines: 7
-  col_sep: ","
-
-Outcome:
-  skip_lines: 0
-  col_sep: ","
-
-Institution:
-  skip_lines: 0
-  col_sep: ","
-
-CalculatorConstant:
-  skip_lines: 0
-  col_sep: ","
-
-YellowRibbonProgramSource:
-  skip_lines: 0
-  col_sep: ","
-
-IpedsCipCode:
-  skip_lines: 0
-  col_sep: ","
-
-StemCipCode:
-  skip_lines: 0
-  col_sep: ","
-
-Sec109ClosedSchool:
-  skip_lines: 0
-  col_sep: ","
 
 Program:
-  skip_lines: 0
   col_sep: "|"
 
 SchoolCertifyingOfficial:
-  skip_lines: 0
-  col_sep: ","
-  force_simple_split: true
-  strip_chars_from_headers: /[\-"]/
-
-EduProgram:
-  skip_lines: 0
-  col_sep: ","
-
-Sec103:
-  skip_lines: 0
-  col_sep: ","
-
-VaCautionFlag:
-  skip_lines: 0
-  col_sep: ","
-
-Post911Stat:
-  skip_lines: 0
-  col_sep: ","
-
-SchoolRating:
-  skip_lines: 0
-  col_sep: ","
+  liberal_parsing: true

@@ -96,6 +96,8 @@ Metrics/MethodLength:
     - "app/models/archiver.rb"
     - "app/models/caution_flag.rb"
     - "app/controllers/v0/institutions_controller.rb"
+    - "lib/roo_helper/loader.rb"
+    - "lib/seed_utils.rb"
 
 Metrics/ClassLength:
   Exclude:
@@ -104,6 +106,7 @@ Metrics/ClassLength:
     - "app/models/ipeds_ic_ay.rb"
     - "app/models/ipeds_ic_py.rb"
     - "app/models/institution.rb"
+    - "app/controllers/groups_controller.rb"
     - "app/controllers/uploads_controller.rb"
     - "app/models/upload.rb"
 
@@ -116,6 +119,7 @@ Metrics/AbcSize:
 Metrics/ModuleLength:
   Exclude:
     - "app/models/institution_builder.rb"
+    - "lib/roo_helper/loader.rb"
 
 Metrics/BlockLength:
   Max: 40
@@ -166,6 +170,8 @@ RSpec/FilePath:
 RSpec/DescribeClass:
   Exclude:
     - "spec/config/initializers/csv_types_spec.rb"
+    - "spec/config/initializers/group_types_spec.rb"
+    - "spec/config/initializers/upload_types_spec.rb"
     - "spec/config/initializers/common_spec.rb"
     - "spec/models/archiver_spec.rb"
     - "spec/utilities/caution_flags/caution_flag_template_spec.rb"

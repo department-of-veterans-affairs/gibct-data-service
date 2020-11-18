@@ -1,0 +1,24 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <%= render partial: 'introduction' %>
+  </div>
+</div>
+
+<div class="container" style="float: left;">
+  <div class="row">
+    <div class="col-xs-8">
+      <%= render 'form' %>
+    </div>
+    <div class="col-xs-4">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading"><%= @group.csv_type.titleize %> File Group Data Requirements</h4><br />
+        <div><%= render partial: 'info_box', collection: @requirements, as: :info %></div>
+      </div>
+    </div>
+  </div>
+  <div class="row row-space-6">
+    <div class="col-lg-12">
+      <%= render 'upload_messages' %>
+    </div>
+  </div>
+</div>

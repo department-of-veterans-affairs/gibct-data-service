@@ -8,13 +8,18 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 RSpec.describe DashboardsController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'dashboards'
 
-  def load_table(klass, options)
+  def load_table(klass)
     csv_name = "#{klass.name.underscore}.csv"
     csv_type = klass.name
     csv_path = 'spec/fixtures'
 
     upload = create :upload, csv_type: csv_type, csv_name: csv_name, user: User.first
-    klass.load_from_csv("#{csv_path}/#{csv_name}", options)
+    load_options = Common::Shared.file_type_defaults(klass.name)
+
+    roo_options = { liberal_parsing: load_options[:liberal_parsing],
+                    sheets: [{ klass: klass, skip_lines: load_options[:skip_lines].try(:to_i) }] }
+
+    klass.load_with_roo("#{csv_path}/#{csv_name}", roo_options)
     upload.update(ok: true)
   end
 
@@ -33,7 +38,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(CSV_TYPES_ALL_TABLES_CLASSES.length)
+      expect(assigns(:uploads).length).to eq(UPLOAD_TYPES.length)
     end
 
     it 'returns http success' do
@@ -45,12 +50,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+        load_table(klass)
       end
     end
 
@@ -74,12 +75,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+        load_table(klass)
       end
 
       post(:build)
@@ -89,6 +86,18 @@ RSpec.describe DashboardsController, type: :controller do
       allow(Weam).to receive(:export)
       get(:export, params: { csv_type: 'Weam', format: :csv })
       expect(Weam).to have_received(:export)
+    end
+
+    it 'causes a Group to be exported' do
+      allow(AccreditationInstituteCampus).to receive(:export)
+      allow(AccreditationRecord).to receive(:export)
+      allow(AccreditationAction).to receive(:export)
+
+      get(:export, params: { csv_type: 'Accreditation', format: :csv })
+
+      expect(AccreditationInstituteCampus).to have_received(:export)
+      expect(AccreditationRecord).to have_received(:export)
+      expect(AccreditationAction).to have_received(:export)
     end
 
     it 'includes filename parameter in content-disposition header' do
@@ -106,12 +115,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
-
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
-        load_table(klass, skip_lines: defaults[klass.name]['skip_lines'],
-                          force_simple_split: defaults[klass.name]['force_simple_split'],
-                          strip_chars_from_headers: defaults[klass.name]['strip_chars_from_headers'])
+        load_table(klass)
       end
 
       post(:build)

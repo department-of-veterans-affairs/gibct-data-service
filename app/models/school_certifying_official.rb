@@ -7,15 +7,15 @@ class SchoolCertifyingOfficial < ImportableRecord
   ].freeze
 
   CSV_CONVERTER_INFO = {
-    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution name' => { column: :institution_name, converter: InstitutionConverter },
+    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'institution_name' => { column: :institution_name, converter: InstitutionConverter },
     'priority' => { column: :priority, converter: BaseConverter },
-    'first name' => { column: :first_name, converter: BaseConverter },
-    'last name' => { column: :last_name, converter: BaseConverter },
+    'first_name' => { column: :first_name, converter: BaseConverter },
+    'last_name' => { column: :last_name, converter: BaseConverter },
     'title' => { column: :title, converter: BaseConverter },
-    'phone - area code' => { column: :phone_area_code, converter: BaseConverter },
-    'phone - number' => { column: :phone_number, converter: BaseConverter },
-    'phone - extension' => { column: :phone_extension, converter: BaseConverter },
+    'phone_area_code' => { column: :phone_area_code, converter: BaseConverter },
+    'phone_number' => { column: :phone_number, converter: BaseConverter },
+    'phone_extension' => { column: :phone_extension, converter: BaseConverter },
     'email' => { column: :email, converter: BaseConverter }
   }.freeze
 

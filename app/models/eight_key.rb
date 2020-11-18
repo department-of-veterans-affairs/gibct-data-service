@@ -2,11 +2,11 @@
 
 class EightKey < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'institution of higher education' => { column: :institution, converter: InstitutionConverter },
+    'institution_of_higher_education' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
-    'ipeds id' => { column: :cross, converter: CrossConverter },
+    'ipeds_id' => { column: :cross, converter: CrossConverter },
     'notes' => { column: :notes, converter: BaseConverter }
   }.freeze
 

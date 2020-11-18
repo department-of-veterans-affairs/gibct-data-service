@@ -63,20 +63,20 @@ class Complaint < ImportableRecord
   }.freeze
 
   CSV_CONVERTER_INFO = {
-    'case id' => { column: :case_id, converter: BaseConverter },
+    'case_id' => { column: :case_id, converter: BaseConverter },
     'level' => { column: :level, converter: BaseConverter },
     'status' => { column: :status, converter: DowncaseConverter },
-    'case owner' => { column: :case_owner, converter: BaseConverter },
+    'case_owner' => { column: :case_owner, converter: BaseConverter },
     'school' => { column: :institution, converter: InstitutionConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
-    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'school city' => { column: :city, converter: BaseConverter },
-    'school state' => { column: :state, converter: BaseConverter },
+    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'school_city' => { column: :city, converter: BaseConverter },
+    'school_state' => { column: :state, converter: BaseConverter },
     'submitted' => { column: :submitted, converter: BaseConverter },
     'closed' => { column: :closed, converter: BaseConverter },
-    'closed reason' => { column: :closed_reason, converter: DowncaseConverter },
+    'closed_reason' => { column: :closed_reason, converter: DowncaseConverter },
     'issues' => { column: :issues, converter: BaseConverter },
-    'education benefits' => { column: :education_benefits, converter: BaseConverter }
+    'education_benefits' => { column: :education_benefits, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, presence: true

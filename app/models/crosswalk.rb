@@ -4,8 +4,8 @@ class Crosswalk < ImportableRecord
   COLS_USED_IN_INSTITUTION = %i[ope cross ope6].freeze
 
   CSV_CONVERTER_INFO = {
-    'facility code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution name' => { column: :institution, converter: InstitutionConverter },
+    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
+    'institution_name' => { column: :institution, converter: InstitutionConverter },
     'city' => { column: :city, converter: BaseConverter },
     'state' => { column: :state, converter: BaseConverter },
     'ipeds' => { column: :cross, converter: CrossConverter },

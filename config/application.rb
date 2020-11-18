@@ -37,8 +37,7 @@ module GibctDataService
     # Bootstrap support.
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
-    # SmarterCsv converter support
-    config.autoload_paths += %W(#{config.root}/app/models/converters)
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths += Dir["#{config.root}/app/utilities/**/"]
 

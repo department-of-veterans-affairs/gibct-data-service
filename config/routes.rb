@@ -22,6 +22,11 @@ Rails.application.routes.draw do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
 
+  get '/groups', to: redirect('/uploads')
+  resources :groups, except: [:new, :destroy, :edit, :update] do
+    get '(:group_type)' => 'groups#new', on: :new, as: ''
+  end
+
   get '/crosswalk_issues/partials' => 'crosswalk_issues#partials', as: :crosswalk_issues_partials
   get '/crosswalk_issues/partials/:id' => 'crosswalk_issues#show_partial', as: :crosswalk_issues_partials_show
   post '/crosswalk_issues/partials' => 'crosswalk_issues#resolve_partial', as: :crosswalk_issues_resolve_partial

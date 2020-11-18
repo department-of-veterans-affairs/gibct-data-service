@@ -1,0 +1,28 @@
+<div class="row row-space-6">
+  <div class="col-xs-9">
+    <p class="lead">
+      As the Excel file is uploaded, a validation on every row in each tab will ensure
+      that there are no issues with the data. If successful, the uploaded data
+      can be used to generate a new preview version. If there are any issues, error
+      messages detailing the row(s) and tab(s) in the file causing those errors will be output.
+    </p>
+  </div>
+
+  <div class="col-xs-3">
+    <% if action_name == 'new' or action_name == 'show' %>
+    <div class="row row-space-6">
+      <div class="col-xs-12">
+        <%= link_to 'View All Uploads', uploads_path,
+            class: "btn dashboard-btn-info btn-xs", role: "button", style: 'width: 70%' %>
+      </div>
+    </div>
+    <% end %>
+
+    <div class="row row-space-6">
+      <div class="col-xs-12">
+        <%= link_to 'View Dashboard', dashboards_path,
+            class: "btn dashboard-btn-info btn-xs", style: 'width: 70%' %>
+      </div>
+    </div>
+  </div>
+</div>
