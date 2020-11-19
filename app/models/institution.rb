@@ -239,7 +239,7 @@ class Institution < ImportableRecord
   # Idea is to have a processed version of the institution column available to compare with
   # the trigram % operator against the processed search term
   def self.institution_search_term(search_term)
-    return if search_term.blank?
+    return {} if search_term.blank?
 
     processed_search_term = search_term.gsub(COMMON_REMOVAL_REGEXP, '')
 
@@ -258,11 +258,11 @@ class Institution < ImportableRecord
     processed_search_term = processed[:search_term]
     excluded_only = processed[:excluded_only]
 
-    if excluded_only
-      clause << 'institution % :institution_search_term'
-    else
-      clause << 'institution_search % :institution_search_term'
-    end
+    clause << if excluded_only
+                'institution % :institution_search_term'
+              else
+                'institution_search % :institution_search_term'
+              end
 
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
