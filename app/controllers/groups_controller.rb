@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-#
-# This should not have to be here but ruby is not loading this in config/initializers/roo_helper.rb
-Dir["#{Rails.application.config.root}/lib/roo_helper/**/*.rb"].sort.each { |f| require(f) }
-
 class GroupsController < ApplicationController
   def new
     return if setup(params[:group_type])
