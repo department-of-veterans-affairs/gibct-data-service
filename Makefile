@@ -3,7 +3,7 @@ $stdout.sync = true
 ifdef env
     ENV_ARG  := $(env)
 else
-    ENV_ARG	 := test
+    ENV_ARG  := test
 endif
 
 COMPOSE_DEV  := docker-compose
