@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IpedsHd < ImportableRecord
-  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod].freeze
+  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod latitude longitud].freeze
 
   CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
