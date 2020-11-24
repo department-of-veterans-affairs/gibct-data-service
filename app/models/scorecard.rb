@@ -145,7 +145,9 @@ class Scorecard < ImportableRecord
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
     'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },
-    'alias' => { column: :alias, converter: BaseConverter }
+    'alias' => { column: :alias, converter: BaseConverter },
+    'latitude' => { column: :latitude, converter: NumberConverter },
+    'longitude' => { column: :longitude, converter: NumberConverter }
   }.freeze
 
   after_initialize :derive_dependent_columns
