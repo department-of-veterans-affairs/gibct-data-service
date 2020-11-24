@@ -239,13 +239,13 @@ class Institution < ImportableRecord
   # Idea is to have a processed version of the institution column available to compare with
   # the trigram % operator against the processed search term
   def self.institution_search_term(search_term)
-    return if search_term.blank?
+    return {} if search_term.blank?
 
     processed_search_term = search_term.gsub(COMMON_REMOVAL_REGEXP, '')
 
-    return search_term.dup if processed_search_term.blank?
+    return { search_term: search_term.dup, excluded_only: true } if processed_search_term.blank?
 
-    processed_search_term.strip
+    { search_term: processed_search_term.strip }
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
@@ -254,7 +254,16 @@ class Institution < ImportableRecord
 
     clause = ['facility_code = :upper_search_term']
 
-    clause << 'institution_search % :institution_search_term'
+    processed = institution_search_term(search_term)
+    processed_search_term = processed[:search_term]
+    excluded_only = processed[:excluded_only]
+
+    clause << if excluded_only
+                'institution % :institution_search_term'
+              else
+                'institution_search % :institution_search_term'
+              end
+
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << 'zip = :search_term'
@@ -270,7 +279,7 @@ class Institution < ImportableRecord
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        lower_contains_term: "%#{search_term.downcase}%",
                                        search_term: search_term.to_s,
-                                       institution_search_term: "%#{institution_search_term(search_term)}%"]))
+                                       institution_search_term: "%#{processed_search_term}%"]))
   }
 
   # All values should be between 0.0 and 1.0
@@ -294,15 +303,19 @@ class Institution < ImportableRecord
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
-                     'COALESCE(SIMILARITY(institution, :search_term), 0)',
-                     'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)']
+                     'COALESCE(SIMILARITY(institution, :search_term), 0)']
 
+    processed = institution_search_term(search_term)
+    processed_search_term = processed[:search_term]
+    excluded_only = processed[:excluded_only]
+
+    weighted_sort << 'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)' if excluded_only.blank?
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
     order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
-    institution_search_term = "%#{institution_search_term(search_term)}%"
+    institution_search_term = "%#{processed_search_term}%"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
                                                                   search_term: search_term,

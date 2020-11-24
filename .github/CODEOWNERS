@@ -7,3 +7,6 @@
 
 # Sample CSVs
 sample_csvs @department-of-veterans-affairs/bah-gibct
+
+# Github config
+.github/PULL_REQUEST_TEMPLATE.md @department-of-veterans-affairs/bah-gibct
