@@ -95,7 +95,7 @@ class Weam < ImportableRecord
     self.correspondence = correspondence?
     self.approved = approved?
     self.ope6 = Ope6Converter.convert(ope)
-    self.institution_search = Institution.institution_search_term(institution)
+    self.institution_search = Institution.institution_search_term(institution)[:search_term]
   end
 
   # Is this instance an OJT institution?

@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-#
-# This should not have to be here but ruby is not loading this in config/initializers/roo_helper.rb
-Dir["#{Rails.application.config.root}/lib/roo_helper/**/*.rb"].sort.each { |f| require(f) }
-
 class UploadsController < ApplicationController
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
@@ -33,6 +29,7 @@ class UploadsController < ApplicationController
      redirect_to @upload
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
+      @extensions = Settings.roo_upload.extensions.single.join(', ')
       csv_requirements if @upload.csv_type_check?
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new

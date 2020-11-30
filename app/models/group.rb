@@ -3,21 +3,11 @@
 class Group < Upload
   include RooHelper
 
-  attr_accessor :sheet_type_list, :group_config, :parse_as_xml
+  attr_accessor :sheet_type_list, :group_config
 
   def initialize(attributes = nil)
     super(attributes)
     self.group_config = Group.group_config_options(csv_type) || {}
-  end
-
-  def self.create_from_group_type(group_type)
-    group = Group.new(group_type)
-    group.parse_as_xml = group.group_config[:parse_as_xml?]
-    group
-  end
-
-  def self.group_config_options(group_type)
-    GROUP_FILE_TYPES.select { |g| g[:klass] == group_type }.first
   end
 
   def sheet_names
@@ -28,7 +18,18 @@ class Group < Upload
     @sheets ||= group_config[:types]
   end
 
-  def xml_error_help
-    @xml_error_help ||= group_config[:xml_error_help]
+  def self.group_config_options(group_type)
+    GROUP_FILE_TYPES.select { |g| g[:klass] == group_type }.first
+  end
+
+  # For each type in the config create a CSV file within the Zip::OutputStream
+  # Returns the binary data for the zip file
+  def self.export_as_zip(group_type)
+    Zip::OutputStream.write_buffer do |zio|
+      group_config_options(group_type)[:types].each do |type|
+        zio.put_next_entry("#{type}.csv")
+        zio.write type.export
+      end
+    end.string
   end
 end

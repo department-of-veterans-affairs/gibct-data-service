@@ -16,18 +16,6 @@
     <%= f.text_field(:comment, style: 'width: 100%') %>
   </div>
 
-  <% if flash[:danger].present? && GROUP_PARSE_AS_XML.include?(@group.csv_type) %>
-    <div class="form-group alert-danger">
-      <%= f.check_box(:parse_as_xml) %>
-      <%= f.label(:parse_as_xml) %>
-      <p class="help-block"><%= sanitize @group.xml_error_help %><br/>
-        If there is an error below try unchecking this and uploading again.
-      </p>
-    </div>
-  <% else %>
-    <%= f.hidden_field(:parse_as_xml) %>
-  <% end %>
-
   <h4>Sheet options</h4>
   <p class="help-block">This is the order sheets in the uploaded file will be processed</p>
   <ol>
