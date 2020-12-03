@@ -37,6 +37,7 @@ module InstitutionBuilder
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
     set_count_of_caution_flags(version.id)
+    update_lat_lon_from_scorecard(version.id)
   end
 
   def self.build_ratings(version)
@@ -311,6 +312,18 @@ module InstitutionBuilder
     Institution.connection.update(str)
   end
 
+  def self.update_lat_lon_from_scorecard(version_id)
+    str = <<-SQL
+      UPDATE institutions SET latitude = scorecards.latitude, longitude = scorecards.longitude
+      FROM scorecards
+      WHERE institutions.cross = scorecards.cross
+      AND institutions.version_id = #{version_id}
+      AND institutions.latitude is NULL
+    SQL
+
+    Institution.connection.update(str)
+  end
+
   def self.add_ipeds_ic(version_id)
     str = <<-SQL
       UPDATE institutions SET #{columns_for_update(IpedsIc)}
@@ -324,7 +337,7 @@ module InstitutionBuilder
 
   def self.add_ipeds_hd(version_id)
     str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(IpedsHd)}
+      UPDATE institutions SET #{columns_for_update(IpedsHd)}, longitude = ipeds_hds.longitud
       FROM ipeds_hds
       WHERE institutions.cross = ipeds_hds.cross
       AND institutions.version_id = #{version_id}
