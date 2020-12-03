@@ -249,24 +249,33 @@ RSpec.describe Institution, type: :model do
       it 'removes common words and characters' do
         common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
         search_term = "search term #{common_words_characters}"
-        processed_search_term = described_class.institution_search_term(search_term)
+        processed = described_class.institution_search_term(search_term)
+        processed_search_term = processed[:search_term]
+        excluded_only = processed[:excluded_only]
         expect(processed_search_term).to eq('search term')
         expect(processed_search_term).not_to include(common_words_characters)
+        expect(excluded_only).to be_falsey
       end
 
       it 'returns string if only contains common words' do
         search_term = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
-        processed_search_term = described_class.institution_search_term(search_term)
+        processed = described_class.institution_search_term(search_term)
+        processed_search_term = processed[:search_term]
+        excluded_only = processed[:excluded_only]
         expect(processed_search_term).to eq(search_term)
         expect(processed_search_term).to be_present
+        expect(excluded_only).to be_truthy
       end
 
       it 'does not remove common words within words' do
         common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
         search_term = 'university of maryland & and land'
-        processed_search_term = described_class.institution_search_term(search_term)
+        processed = described_class.institution_search_term(search_term)
+        processed_search_term = processed[:search_term]
+        excluded_only = processed[:excluded_only]
         expect(processed_search_term).not_to include(common_words_characters)
         expect(processed_search_term).to eq('maryland   land')
+        expect(excluded_only).to be_falsey
       end
     end
   end
