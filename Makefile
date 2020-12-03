@@ -23,9 +23,9 @@ bash:
 .PHONY: ci
 ci: ## requires build to be run first, can do "env=dev make ci" to run with docker-compose.yml
 ifeq ($(ENV_ARG), dev)
-	@$(BASH_DEV) "bin/rails db:setup db:migrate ci"
+	@$(BASH_DEV) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails db:setup db:migrate assets:precompile ci"
 else
-	@$(BASH_TEST) "bin/rails db:setup db:migrate ci"
+	@$(BASH_TEST) "PATH=/usr/local/bundle/bin:/srv/root/.nvm/versions/node/v10.17.0/bin:/usr/local/bundle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bin/rails db:setup db:migrate assets:precompile ci"
 endif
 
 .PHONY: console
