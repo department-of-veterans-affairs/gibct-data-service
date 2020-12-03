@@ -258,11 +258,12 @@ class Institution < ImportableRecord
     processed_search_term = processed[:search_term]
     excluded_only = processed[:excluded_only]
 
-    clause << if excluded_only
-                'institution % :institution_search_term'
-              else
-                'institution_search % :institution_search_term'
-              end
+    if excluded_only
+      clause <<  'institution % :institution_search_term'
+    else
+      clause <<  'institution_search % :institution_search_term'
+      clause <<  'institution_search LIKE UPPER(:institution_search_term)'
+    end
 
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
