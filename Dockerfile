@@ -16,6 +16,17 @@ RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
 WORKDIR /srv/gi-bill-data-service/src
 
+ENV YARN_VERSION 1.12.3
+ENV NODEJS_VERSION 10.17.0
+
+RUN mkdir /usr/local/.nvm
+ENV NVM_DIR=/usr/local/.nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
+ENV PATH="${NVM_DIR}/versions/node/v${NODEJS_VERSION}/bin:${PATH}"
+RUN npm install -g yarn@$YARN_VERSION
+RUN ln -s "${NVM_DIR}/versions/node/v${NODEJS_VERSION}/bin/yarn" "/usr/local/bin"
+
 ###
 # development
 #
@@ -50,14 +61,7 @@ USER gi-bill-data-service
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
-
-RUN touch ~/.bashrc
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-ENV NVM_DIR="/srv/gi-bill-data-service/.nvm"
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
-ENV PATH="${NVM_DIR}/versions/node/v${NODEJS_VERSION}/bin:${PATH}"
-RUN npm install -g yarn@$YARN_VERSION
-RUN yarn install
+RUN yarn install --force --non-interactive
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
