@@ -41,23 +41,24 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 FROM development AS builder
 
 ENV BUNDLER_VERSION='2.1.4'
+ENV YARN_VERSION 1.12.3
+ENV NODEJS_VERSION 10.17.0
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 
-# old docker react stuff
-#ENV YARN_VERSION 1.12.3
-#ENV NODEJS_VERSION 10.15.3
-#
-#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-#ENV NVM_DIR=/root/.nvm
-#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
-#ENV PATH="/root/.nvm/versions/node/v${NODEJS_VERSION}/bin/:${PATH}"
-#RUN npm install -g yarn@$YARN_VERSION
-
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+
+RUN touch ~/.bashrc
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+ENV NVM_DIR="/srv/gi-bill-data-service/.nvm"
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODEJS_VERSION}
+ENV PATH="${NVM_DIR}/versions/node/v${NODEJS_VERSION}/bin:${PATH}"
+RUN npm install -g yarn@$YARN_VERSION
+RUN yarn install
+
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
