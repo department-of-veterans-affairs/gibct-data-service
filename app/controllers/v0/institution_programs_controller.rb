@@ -49,7 +49,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      @abbr_state_list = VetsJsonSchema::CONSTANTS["usaStates"].map(&:downcase)
+      @abbr_state_list = VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase)
       if @query.key?(:state_search)
         if @abbr_state_list.include?(@query[:name])
           relation = InstitutionProgram.joins(institution: :version)
