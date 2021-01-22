@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'vets_json_schema'
 
 module V0
   # rubocop:disable Metrics/ClassLength
@@ -86,7 +87,7 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      @abbr_state_list = %w[ak al ar az ca co ct dc de fl ga hi ia id il in ks ky la ma md me mi mn mo ms mt nc nd ne nh nj nm nv ny oh ok or pa ri sc sd tn tx ut va vt wa wi wv wy]
+      @abbr_state_list = VetsJsonSchema::CONSTANTS["usaStates"].map(&:downcase)
       if @query.key?(:state_search)
         if @abbr_state_list.include?(@query[:name])
           relation = Institution.non_vet_tec_institutions(@version)
@@ -95,8 +96,7 @@ module V0
               @abbr_state_list.include?(@query[:name].scan(/[^, ]*$/).first.to_s)
           terms = @query[:name].upcase.split(',').map(&:strip)
           relation = Institution.non_vet_tec_institutions(@version)
-                                .where(city: terms[0])
-                                .where(state: terms[1])
+          .where(institutions: { city: terms[0].upcase, state: terms[1].upcase })
         else
           relation = Institution.non_vet_tec_institutions(@version)
                                 .search(@query[:name], @query[:include_address])
