@@ -488,7 +488,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       check_boolean_facets(facets)
     end
 
-    it 'search returns results with a valid state abbreviation uppercased search term', focus: true do
+    it 'search returns results with a valid state abbreviation uppercased search term' do
       create(:institution,  state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'AK', state_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
@@ -504,7 +504,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institutions')
     end
 
-    it 'search returns results with a valid state abbreviation uppercased search term' do
+    it 'search returns results with a valid city, state abbreviation uppercased search term' do
       create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'TESTVILLE, AK', state_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
@@ -512,7 +512,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institutions')
     end
 
-    it 'search returns results with a valid state abbreviation lowercased search term' do
+    it 'search returns results with a valid city, state abbreviation lowercased search term' do
       create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'testville, ak', state_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
