@@ -86,8 +86,25 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      relation = Institution.non_vet_tec_institutions(@version)
-                            .search(@query[:name], @query[:include_address])
+      @abbr_state_list = ["ak", "al", "ar", "az", "ca", "co", "ct", "dc", "de", "fl", "ga", "hi", "ia", "id", "il", "in", "ks", "ky", "la", "ma", "md", "me", "mi", "mn", "mo", "ms", "mt", "nc", "nd", "ne", "nh", "nj", "nm", "nv", "ny", "oh", "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "va", "vt", "wa", "wi", "wv", "wy"]
+      if @query.key?(:state_search)
+        if @abbr_state_list.include?(@query[:name])
+          relation = Institution.non_vet_tec_institutions(@version)
+          .where(state: @query[:name].upcase)
+        elsif /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(@query[:name]) &&
+          @abbr_state_list.include?(@query[:name].scan(/[^, ]*$/).first.to_s)
+          terms = @query[:name].upcase.split(",").map(&:strip)
+          relation = Institution.non_vet_tec_institutions(@version)
+          .where(city: terms[0])
+          .where(state: terms[1])
+        else
+          relation = Institution.non_vet_tec_institutions(@version)
+          .search(@query[:name], @query[:include_address])
+        end
+      else
+        relation = Institution.non_vet_tec_institutions(@version)
+        .search(@query[:name], @query[:include_address])
+      end
       filter_results(relation)
     end
 

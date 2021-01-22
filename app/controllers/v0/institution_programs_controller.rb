@@ -49,11 +49,34 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
+      @abbr_state_list = ["ak", "al", "ar", "az", "ca", "co", "ct", "dc", "de", "fl", "ga", "hi", "ia", "id", "il", "in", "ks", "ky", "la", "ma", "md", "me", "mi", "mn", "mo", "ms", "mt", "nc", "nd", "ne", "nh", "nj", "nm", "nv", "ny", "oh", "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "va", "vt", "wa", "wi", "wv", "wy"]
 
-      relation = InstitutionProgram.joins(institution: :version)
-                                   .where(institutions: { version: @version })
-                                   .eager_load(:institution)
-                                   .search(@query[:name])
+      if @query.key?(:state_search)
+        if @abbr_state_list.include?(@query[:name])
+          relation = InstitutionProgram.joins(institution: :version)
+          .where(institutions: { version: @version })
+          .eager_load(:institution)
+          .where(institutions: { state: @query[:name].upcase })
+        elsif /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(@query[:name]) && 
+          @abbr_state_list.include?(@query[:name].scan(/[^, ]*$/).first.to_s)
+          terms = @query[:name].split(",").map(&:strip)
+          relation = InstitutionProgram.joins(institution: :version)
+          .where(institutions: { version: @version })
+          .eager_load(:institution)
+          .where(institutions: { city: terms[0].upcase})
+          .where(institutions: { state: terms[1].upcase})
+        else
+          relation = InstitutionProgram.joins(institution: :version)
+          .where(institutions: { version: @version })
+          .eager_load(:institution)
+          .search(@query[:name])
+        end
+      else
+        relation = InstitutionProgram.joins(institution: :version)
+        .where(institutions: { version: @version })
+        .eager_load(:institution)
+        .search(@query[:name])
+      end
 
       filter_results(relation)
     end
