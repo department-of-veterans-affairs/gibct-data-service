@@ -263,7 +263,6 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
-    # sdfkajdslfjadj
     it 'search returns results with a valid state abbreviation uppercased search term' do
       create(:institution, state: 'AK', version_id: Version.current_production.id)
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
@@ -298,6 +297,5 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       get(:index, params: { name: 'VERY LONG CITY NAME', state_search: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
-    # sdfkajdslfjadj
   end
 end
