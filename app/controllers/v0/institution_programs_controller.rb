@@ -50,13 +50,12 @@ module V0
     def search_results
       @query ||= normalized_query_params
       @abbr_state_list = VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase)
-      if @query.key?(:state_search)
-        if @abbr_state_list.include?(@query[:name])
+        if @query.key?(:state_search) && @abbr_state_list.include?(@query[:name])
           relation = InstitutionProgram.joins(institution: :version)
                                        .where(institutions: { version: @version })
                                        .eager_load(:institution)
                                        .where(institutions: { state: @query[:name].upcase })
-        elsif /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(@query[:name]) &&
+        elsif @query.key?(:state_search) && /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(@query[:name]) &&
               @abbr_state_list.include?(@query[:name].scan(/[^, ]*$/).first.to_s)
           terms = @query[:name].split(',').map(&:strip)
           relation = InstitutionProgram.joins(institution: :version)
@@ -69,13 +68,6 @@ module V0
                                        .eager_load(:institution)
                                        .search(@query[:name])
         end
-      else
-        relation = InstitutionProgram.joins(institution: :version)
-                                     .where(institutions: { version: @version })
-                                     .eager_load(:institution)
-                                     .search(@query[:name])
-      end
-
       filter_results(relation)
     end
 
