@@ -88,16 +88,16 @@ module V0
       @query ||= normalized_query_params
       @abbr_state_list = VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase)
       if @query.key?(:state_search) && @abbr_state_list.include?(@query[:name])
-          relation = Institution.non_vet_tec_institutions(@version)
-                                .where(state: @query[:name].upcase)
+        relation = Institution.non_vet_tec_institutions(@version)
+                              .where(state: @query[:name].upcase)
       elsif @query.key?(:state_search) && /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(@query[:name]) &&
-              @abbr_state_list.include?(@query[:name].scan(/[^, ]*$/).first.to_s)
-          terms = @query[:name].upcase.split(',').map(&:strip)
-          relation = Institution.non_vet_tec_institutions(@version)
-                                .where(institutions: { city: terms[0].upcase, state: terms[1].upcase })
+            @abbr_state_list.include?(@query[:name].scan(/[^, ]*$/).first.to_s)
+        terms = @query[:name].upcase.split(',').map(&:strip)
+        relation = Institution.non_vet_tec_institutions(@version)
+                              .where(institutions: { city: terms[0].upcase, state: terms[1].upcase })
       else
-          relation = Institution.non_vet_tec_institutions(@version)
-                                .search(@query[:name], @query[:include_address])
+        relation = Institution.non_vet_tec_institutions(@version)
+                              .search(@query[:name], @query[:include_address])
       end
       filter_results(relation)
     end

@@ -96,7 +96,7 @@ Metrics/MethodLength:
     - "app/controllers/v0/institutions_controller.rb"
     - "lib/roo_helper/loader.rb"
     - "lib/seed_utils.rb"
-
+    - "app/controllers/v0/institution_programs_controller.rb"
 Metrics/ClassLength:
   Exclude:
     - "app/models/scorecard.rb"
@@ -107,6 +107,7 @@ Metrics/ClassLength:
     - "app/controllers/groups_controller.rb"
     - "app/controllers/uploads_controller.rb"
     - "app/models/upload.rb"
+    - "app/controllers/v0/institution_programs_controller.rb"
 
 Metrics/AbcSize:
   Max: 40
