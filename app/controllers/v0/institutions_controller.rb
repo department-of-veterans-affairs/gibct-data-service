@@ -86,12 +86,10 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      @abbr_state_list = VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase)
       if @query.key?(:state_search) && VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(@query[:name])
         relation = Institution.non_vet_tec_institutions(@version)
                               .where(state: @query[:name].upcase)
-      elsif @query.key?(:state_search) && /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(@query[:name]) &&
-            VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(@query[:name].scan(/[^, ]*$/).first.to_s)
+      elsif Institution.has_city_state?(@query.key?(:state_search), @query[:name])
         terms = @query[:name].upcase.split(',').map(&:strip)
         relation = Institution.non_vet_tec_institutions(@version)
                               .where(institutions: { city: terms[0].upcase, state: terms[1].upcase })
