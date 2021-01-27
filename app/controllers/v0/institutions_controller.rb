@@ -89,7 +89,7 @@ module V0
       if @query.key?(:state_search) && VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(@query[:name])
         relation = Institution.non_vet_tec_institutions(@version)
                               .where(state: @query[:name].upcase)
-      elsif Institution.has_city_state?(@query.key?(:state_search), @query[:name])
+      elsif Institution.city_state?(@query.key?(:state_search), @query[:name])
         terms = @query[:name].upcase.split(',').map(&:strip)
         relation = Institution.non_vet_tec_institutions(@version)
                               .where(institutions: { city: terms[0].upcase, state: terms[1].upcase })

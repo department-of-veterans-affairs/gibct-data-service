@@ -54,7 +54,7 @@ module V0
                                      .where(institutions: { version: @version })
                                      .eager_load(:institution)
                                      .where(institutions: { state: @query[:name].upcase })
-      elsif Institution.has_city_state?(@query.key?(:state_search), @query[:name])
+      elsif Institution.city_state?(@query.key?(:state_search), @query[:name])
         terms = @query[:name].split(',').map(&:strip)
         relation = InstitutionProgram.joins(institution: :version)
                                      .where(institutions: { version: @version })
