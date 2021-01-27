@@ -97,6 +97,7 @@ group :development, :test do
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'simplecov'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
+  gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 end
 
 group :development do
