@@ -250,6 +250,11 @@ class Institution < ImportableRecord
     { search_term: processed_search_term.strip }
   end
 
+  def self.city_state?(flag_enabled, search_term)
+    flag_enabled && /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
+      VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(search_term.scan(/[^, ]*$/).first.to_s)
+  end
+
   # Finds exact-matching facility_code or partial-matching school and city names
   scope :search, lambda { |search_term, include_address = false|
     return if search_term.blank?

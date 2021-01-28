@@ -262,5 +262,40 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       get(:index, params: { name: 'cllge f vet tc provider' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
+
+    it 'search returns results with a valid state abbreviation uppercased search term' do
+      create(:institution, state: 'AK', version_id: Version.current_production.id)
+      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
+      get(:index, params: { name: 'AK', state_search: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
+
+    it 'search returns results with a valid state abbreviation lowercase search term' do
+      create(:institution, state: 'AK', version_id: Version.current_production.id)
+      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
+      get(:index, params: { name: 'ak', state_search: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
+
+    it 'search returns results with a valid city, state uppercased search term' do
+      create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
+      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
+      get(:index, params: { name: 'TESTVILLE, AK', state_search: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
+
+    it 'search returns results with a valid city, state lowercased search term' do
+      create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
+      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
+      get(:index, params: { name: 'testville, ak', state_search: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
+
+    it 'search returns results with flag enabled for institution names' do
+      create(:institution, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
+      create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
+      get(:index, params: { name: 'VERY LONG CITY NAME', state_search: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
   end
 end
