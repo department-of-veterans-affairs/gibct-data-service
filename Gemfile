@@ -33,6 +33,7 @@ gem 'roo-xls', '~> 1.2'
 gem 'rubyzip', '~> 2.3'
 gem 'sentry-raven', '~> 2.9.0'
 gem 'uglifier', '>= 1.3.0'
+gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 1.0.5'
 gem 'wongi-engine', '~> 0.3.5'
 
@@ -97,7 +98,6 @@ group :development, :test do
   gem 'faker', '~> 1.6', '>= 1.6.2'
   gem 'simplecov'
   gem 'vcr', '~> 3.0', '>= 3.0.1'
-  gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 end
 
 group :development do
