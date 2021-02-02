@@ -488,6 +488,7 @@ module InstitutionBuilder
         ELSE null END
     SQL
 
+    # Update all institutions without an IPEDs value
     str = <<-SQL
           INSERT INTO caution_flags (#{insert_columns.join(' , ')})
           SELECT institutions.id,
@@ -505,6 +506,39 @@ module InstitutionBuilder
           WHERE institutions.version_id = #{version_id}
             AND va_caution_flags.settlement_title IS NOT NULL
             AND va_caution_flags.settlement_description IS NOT NULL
+            AND institutions.cross IS NULL
+    SQL
+
+    sql = CautionFlag.send(:sanitize_sql, [str])
+    CautionFlag.connection.execute(sql)
+
+    # Update all institutions with an IPEDs value
+    str = <<-SQL
+          INSERT INTO caution_flags (#{insert_columns.join(' , ')})
+          SELECT institutions.id,
+              #{version_id} as version_id,
+              'Settlement' as source,
+              va_caution_flags.settlement_title as title,
+              va_caution_flags.settlement_description as description,
+              #{link_text} as link_text,
+              va_caution_flags.settlement_link as link_url,
+              #{flag_date_sql} as flag_date,
+              #{conn.quote(timestamp)} as created_at,
+              #{conn.quote(timestamp)} as updated_at
+	        FROM institutions JOIN (
+            SELECT "cross" as ipeds, settlement_title, settlement_description, settlement_date, settlement_link
+            FROM institutions JOIN va_caution_flags ON institutions.facility_code = va_caution_flags.facility_code
+            WHERE settlement_title IS NOT NULL
+              AND settlement_description IS NOT NULL
+              AND "cross" IS NOT NULL
+              AND "cross" = '180814'
+            GROUP BY "cross", settlement_title, settlement_description, settlement_date, settlement_link
+          ) va_caution_flags
+            ON institutions.cross = va_caution_flags.ipeds
+          WHERE institutions.version_id = #{version_id}
+            AND va_caution_flags.settlement_title IS NOT NULL
+            AND va_caution_flags.settlement_description IS NOT NULL
+            AND institutions.cross IS NOT NULL
     SQL
 
     sql = CautionFlag.send(:sanitize_sql, [str])
