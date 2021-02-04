@@ -589,9 +589,9 @@ RSpec.describe InstitutionBuilder, type: :model do
         institution1 = institutions.find_by(facility_code: weam_row1.facility_code)
         institution2 = institutions.find_by(facility_code: weam_row2.facility_code)
         caution_flag1 = CautionFlag.where({ institution_id: institution1.id, source: 'Settlement',
-                                           version_id: Version.current_preview.id }).first
+                                            version_id: Version.current_preview.id }).first
         caution_flag2 = CautionFlag.where({ institution_id: institution2.id, source: 'Settlement',
-                                           version_id: Version.current_preview.id }).first
+                                            version_id: Version.current_preview.id }).first
 
         expect(caution_flag1.title).to eq(va_caution_flag.settlement_title)
         expect(caution_flag1.description).to eq(va_caution_flag.settlement_description)
