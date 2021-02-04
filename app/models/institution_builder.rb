@@ -531,7 +531,6 @@ module InstitutionBuilder
             WHERE settlement_title IS NOT NULL
               AND settlement_description IS NOT NULL
               AND "cross" IS NOT NULL
-              AND "cross" = '180814'
             GROUP BY "cross", settlement_title, settlement_description, settlement_date, settlement_link
           ) va_caution_flags
             ON institutions.cross = va_caution_flags.ipeds
