@@ -261,8 +261,16 @@ class Institution < ImportableRecord
     VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase)
   end
 
+  def self.country_search_term?(search_term)
+    VetsJsonSchema::CONSTANTS['countries'].map { |country| country['label'].upcase }.include?(search_term.upcase)
+  end
+
   # Finds exact-matching facility_code or partial-matching school and city names
-  scope :search, lambda { |search_term, include_address = false|
+  scope :search, lambda { |query|
+    search_term = query[:name]
+    include_address = query[:include_address] || false
+    state_search = query[:state_search] || false
+
     return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
@@ -281,6 +289,7 @@ class Institution < ImportableRecord
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << 'zip = :search_term'
+    clause << 'country = :upper_search_term' if state_search && country_search_term?(search_term)
 
     if include_address
       3.times do |i|
@@ -306,11 +315,15 @@ class Institution < ImportableRecord
   # institution: exact match, if starts with search term, similarity
   # institution_search: similarity
   # gibill^^: institution's value divided by provided max gibill value
+  # country: exact match
   #
   # ^^ = Has a Settings.search.weight_modifiers setting
   #
   # facility_code and zip are not included in order by because of their standard formats
-  scope :search_order, lambda { |search_term, max_gibill = 0|
+  scope :search_order, lambda { |query, max_gibill = 0|
+    search_term = query[:name]
+    state_search = query[:state_search] || false
+
     weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
                      "CASE WHEN REGEXP_MATCH(ialias, '\\y#{search_term}\\y', 'i') IS NOT NULL " \
                        'THEN 1 * :alias_modifier ELSE 0 END',
@@ -326,12 +339,18 @@ class Institution < ImportableRecord
     weighted_sort << 'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)' if excluded_only.blank?
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
-    order_by = "#{weighted_sort.join(' + ')} DESC NULLS LAST, institution"
+    order_by = ["#{weighted_sort.join(' + ')} DESC NULLS LAST", 'institution']
+
+    if state_search
+      order_by.unshift('CASE WHEN UPPER(country) = :upper_search_term THEN 1 ELSE 0 END DESC') if
+          country_search_term?(search_term)
+    end
+
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"
 
-    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by,
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
                                                                   upper_starts_with_term: "#{search_term.upcase}%",
@@ -352,7 +371,6 @@ class Institution < ImportableRecord
                                                                   max_gibill: max_gibill])
 
     order(Arel.sql(sanitized_order_by))
-
   }
 
   scope :filter_result, lambda { |field, value|

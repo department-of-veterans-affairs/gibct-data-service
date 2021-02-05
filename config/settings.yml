@@ -35,7 +35,7 @@ search:
   weight_modifiers:
     alias: 1.5
     gibill: .33
-  common_word_list: 
+  common_word_list:
     - "of"
     - "school"
     - "college"

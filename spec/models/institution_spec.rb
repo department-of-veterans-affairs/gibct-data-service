@@ -174,8 +174,8 @@ RSpec.describe Institution, type: :model do
 
       it 'includes the address fields if include_address is set' do
         institution = create(:institution, address_1: 'address_1')
-        expect(described_class.search('address_1', true).take).to eq(institution)
-        expect(described_class.search('address_1').count).to eq(0)
+        expect(described_class.search({ name: 'address_1', include_address: true }).take).to eq(institution)
+        expect(described_class.search({ name: 'address_1' }).count).to eq(0)
       end
     end
 
@@ -192,28 +192,32 @@ RSpec.describe Institution, type: :model do
       it 'ialias exact match' do
         institution = create(:institution, :mit)
         search_term = institution.ialias
-        results = described_class.search(search_term, false).search_order(search_term)
+        query = { name: search_term }
+        results = described_class.search(query).search_order(query)
         expect(results[0].ialias).to eq(search_term)
       end
 
       it 'alias contains' do
         create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
         search_term = 'KU'
-        results = described_class.search(search_term, false).search_order(search_term)
+        query = { name: search_term }
+        results = described_class.search(query).search_order(query)
         expect(results[0].ialias).to include(search_term)
       end
 
       it 'institution exact match' do
         institution = create(:institution, :mit)
         search_term = institution.institution
-        results = described_class.search(search_term, false).search_order(search_term)
+        query = { name: search_term }
+        results = described_class.search(query).search_order(query)
         expect(results[0].institution).to eq(search_term)
       end
 
       it 'city exact match' do
         institution = create(:institution, :mit)
         search_term = institution.city
-        results = described_class.search(search_term, false).search_order(search_term)
+        query = { name: search_term }
+        results = described_class.search(query).search_order(query)
         expect(results[0].city).to eq(search_term)
       end
 
@@ -222,7 +226,8 @@ RSpec.describe Institution, type: :model do
         institution = create(:institution, :mit)
         search_term = institution.ialias
         max_gibill = described_class.maximum(:gibill)
-        results = described_class.search(search_term, false).search_order(search_term, max_gibill)
+        query = { name: search_term }
+        results = described_class.search(query).search_order(query)
         expect(results[0].gibill).to eq(max_gibill)
       end
     end
