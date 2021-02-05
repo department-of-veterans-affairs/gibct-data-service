@@ -252,42 +252,51 @@ class Institution < ImportableRecord
 
   def self.city_state?(flag_enabled, search_term)
     flag_enabled && /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
-      VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(search_term.scan(/[^, ]*$/).first.to_s)
+      VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.scan(/[^, ]*$/).first.to_s)
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
-  scope :search, lambda { |search_term, include_address = false|
+  scope :search, lambda { |search_term, include_address = false, state_search = false|
     return if search_term.blank?
 
-    clause = ['facility_code = :upper_search_term']
-
-    processed = institution_search_term(search_term)
-    processed_search_term = processed[:search_term]
-    excluded_only = processed[:excluded_only]
-
-    if excluded_only
-      clause <<  'institution % :institution_search_term'
+    if state_search && VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase)
+      where_clause = { state: search_term.upcase }
+    elsif city_state?(state_search, search_term.upcase)
+      terms = search_term.upcase.split(',').map(&:strip)
+      where_clause = { city: terms[0].upcase, state: terms[1].upcase }
     else
-      clause <<  'institution_search % :institution_search_term'
-      clause <<  'institution_search LIKE UPPER(:institution_search_term)'
-    end
 
-    clause << 'UPPER(city) = :upper_search_term'
-    clause << 'UPPER(ialias) LIKE :upper_contains_term'
-    clause << 'zip = :search_term'
+      clause = ['facility_code = :upper_search_term']
 
-    if include_address
-      3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE :lower_contains_term"
+      processed = institution_search_term(search_term)
+      processed_search_term = processed[:search_term]
+      excluded_only = processed[:excluded_only]
+
+      if excluded_only
+        clause <<  'institution % :institution_search_term'
+      else
+        clause <<  'institution_search % :institution_search_term'
+        clause <<  'institution_search LIKE UPPER(:institution_search_term)'
       end
-    end
 
-    where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       upper_search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%",
-                                       lower_contains_term: "%#{search_term.downcase}%",
-                                       search_term: search_term.to_s,
-                                       institution_search_term: "%#{processed_search_term}%"]))
+      clause << 'UPPER(city) = :upper_search_term'
+      clause << 'UPPER(ialias) LIKE :upper_contains_term'
+      clause << 'zip = :search_term'
+
+      if include_address
+        3.times do |i|
+          clause << "lower(address_#{i + 1}) LIKE :lower_contains_term"
+        end
+      end
+
+      where_clause = sanitize_sql_for_conditions([clause.join(' OR '),
+                                         upper_search_term: search_term.upcase,
+                                         upper_contains_term: "%#{search_term.upcase}%",
+                                         lower_contains_term: "%#{search_term.downcase}%",
+                                         search_term: search_term.to_s,
+                                         institution_search_term: "%#{processed_search_term}%"])
+    end
+    where(where_clause)
   }
 
   # All values should be between 0.0 and 1.0
