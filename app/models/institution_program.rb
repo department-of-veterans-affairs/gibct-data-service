@@ -34,9 +34,11 @@ class InstitutionProgram < ApplicationRecord
 
   delegate :caution_flags, to: :institution
 
-  # Finds exact-matching facility_code or partial-matching school and city names
-  #
-  scope :search, lambda { |search_term|
+  # Depending on feature flags determines where clause for search
+  scope :search, lambda { |query|
+    search_term = query[:name]
+    state_search = query[:state_search]
+
     return if search_term.blank?
 
     clause = [
@@ -47,6 +49,7 @@ class InstitutionProgram < ApplicationRecord
     clause << 'institution % :contains_search_term'
     clause << 'UPPER(physical_city) = :upper_search_term'
     clause << 'institutions.physical_zip = :search_term'
+    clause << 'country = :upper_search_term' if state_search
 
     where(
       sanitize_sql_for_conditions(
@@ -58,6 +61,19 @@ class InstitutionProgram < ApplicationRecord
          search_term: search_term.to_s]
       )
     )
+  }
+
+  scope :search_order, lamda { |query|
+    state_search = query[:state_search]
+    search_term = query[:name]
+
+    order_by = ['institutions.preferred_provider DESC NULLS LAST','institutions.institution']
+    order_by.unshift('CASE WHEN UPPER(country) = :upper_search_term THEN 1 ELSE 0 END DESC') if state_search
+
+    sanitized_order_by = InstitutionProgram.sanitize_sql_for_conditions([order_by.join(','),
+                                                                         upper_search_term: search_term.upcase])
+
+    order(Arel.sql(sanitized_order_by))
   }
 
   scope :filter_result, lambda { |field, value|

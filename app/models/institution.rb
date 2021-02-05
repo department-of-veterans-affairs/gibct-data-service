@@ -254,18 +254,15 @@ class Institution < ImportableRecord
   # i.e. Charleston, SC
   def self.city_state_search_term?(search_term)
     /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
-      VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s)
+      VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s) if
+        search_term.present?
   end
 
   def self.state_search_term?(search_term)
-    VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase)
+    VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase) if search_term.present?
   end
 
-  def self.country_search_term?(search_term)
-    VetsJsonSchema::CONSTANTS['countries'].map { |country| country['label'].upcase }.include?(search_term.upcase)
-  end
-
-  # Finds exact-matching facility_code or partial-matching school and city names
+  # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
     search_term = query[:name]
     include_address = query[:include_address] || false
@@ -289,7 +286,7 @@ class Institution < ImportableRecord
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << 'zip = :search_term'
-    clause << 'country = :upper_search_term' if state_search && country_search_term?(search_term)
+    clause << 'country = :upper_search_term' if state_search
 
     if include_address
       3.times do |i|
@@ -305,6 +302,12 @@ class Institution < ImportableRecord
                                        institution_search_term: "%#{processed_search_term}%"]))
   }
 
+  # Orders institutions by
+  # - exact match to country
+  # - weighted sort
+  # - institution name
+  #
+  # WEIGHTED SORT:
   # All values should be between 0.0 and 1.0
   # Exact matches should add 1.0 to weight and not have a modifier
   # Use or add modifiers that are set in Settings.search.weight_modifiers to tweak weights if needed
@@ -315,7 +318,6 @@ class Institution < ImportableRecord
   # institution: exact match, if starts with search term, similarity
   # institution_search: similarity
   # gibill^^: institution's value divided by provided max gibill value
-  # country: exact match
   #
   # ^^ = Has a Settings.search.weight_modifiers setting
   #
@@ -341,10 +343,8 @@ class Institution < ImportableRecord
 
     order_by = ["#{weighted_sort.join(' + ')} DESC NULLS LAST", 'institution']
 
-    if state_search
-      order_by.unshift('CASE WHEN UPPER(country) = :upper_search_term THEN 1 ELSE 0 END DESC') if
-          country_search_term?(search_term)
-    end
+    # not included in weighted_sort as weight value would have to be at least 4.0 to affect order
+    order_by.unshift('CASE WHEN UPPER(country) = :upper_search_term THEN 1 ELSE 0 END DESC') if state_search
 
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
