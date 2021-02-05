@@ -31,7 +31,7 @@ module V0
 
       # For sorting by percentage instead whole number
       max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
-      search_term = (@query[:name]).to_s
+      search_term = @query[:name]
 
       # Weighted sort is not needed when not using Institution scope search
       if @query[:state_search] &&

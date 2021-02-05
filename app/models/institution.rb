@@ -287,7 +287,7 @@ class Institution < ImportableRecord
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << 'zip = :search_term'
-    clause << 'country = :upper_search_term' if state_search
+    clause << 'country LIKE :upper_contains_term' if state_search
 
     if include_address
       3.times do |i|
@@ -345,7 +345,7 @@ class Institution < ImportableRecord
     order_by = ["#{weighted_sort.join(' + ')} DESC NULLS LAST", 'institution']
 
     # not included in weighted_sort as weight value would have to be at least 4.0 to affect order
-    order_by.unshift('CASE WHEN UPPER(country) = :upper_search_term THEN 1 ELSE 0 END DESC') if state_search
+    order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
 
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
@@ -355,6 +355,7 @@ class Institution < ImportableRecord
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
                                                                   upper_starts_with_term: "#{search_term.upcase}%",
+                                                                  upper_contains_term: "%#{search_term.upcase}%",
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill,

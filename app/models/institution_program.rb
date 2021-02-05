@@ -49,7 +49,7 @@ class InstitutionProgram < ApplicationRecord
       'institutions.physical_zip = :search_term'
     ]
 
-    clause << 'country = :upper_search_term' if state_search
+    clause << 'country LIKE :upper_contains_term' if state_search
 
     where(
       sanitize_sql_for_conditions(
@@ -70,11 +70,11 @@ class InstitutionProgram < ApplicationRecord
     order_by = ['institutions.preferred_provider DESC NULLS LAST', 'institutions.institution']
 
     if search_term.present?
-      order_by.unshift('CASE WHEN UPPER(country) = :upper_search_term THEN 1 ELSE 0 END DESC') if state_search
+      order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
     end
 
-    sanitized_order_by = InstitutionProgram.sanitize_sql_for_conditions([order_by.join(','),
-                                                                         upper_search_term: search_term&.upcase])
+    sanitized_order_by = sanitize_sql_for_conditions([order_by.join(','),
+                                                      upper_contains_term: "%#{search_term.upcase}%"])
 
     order(Arel.sql(sanitized_order_by))
   }
