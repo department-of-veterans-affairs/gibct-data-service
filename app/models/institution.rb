@@ -250,9 +250,15 @@ class Institution < ImportableRecord
     { search_term: processed_search_term.strip }
   end
 
-  def self.city_state?(flag_enabled, search_term)
-    flag_enabled && /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
-      VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(search_term.scan(/[^, ]*$/).first.to_s)
+  # Use regex to determine if search_term matches the format of word(s), state Abbreviation
+  # i.e. Charleston, SC
+  def self.city_state_search_term?(search_term)
+    /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
+      VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s)
+  end
+
+  def self.state_search_term?(search_term)
+    VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase)
   end
 
   # Finds exact-matching facility_code or partial-matching school and city names
@@ -335,6 +341,18 @@ class Institution < ImportableRecord
                                                                   institution_search_term: institution_search_term])
 
     order(Arel.sql(sanitized_order_by))
+  }
+
+  scope :city_state_search_order, lambda { |max_gibill = 0|
+    order_by = [ 'city',
+                 'institution',
+                 '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))']
+
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
+                                                                  max_gibill: max_gibill])
+
+    order(Arel.sql(sanitized_order_by))
+
   }
 
   scope :filter_result, lambda { |field, value|
