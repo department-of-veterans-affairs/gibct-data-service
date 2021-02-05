@@ -253,9 +253,10 @@ class Institution < ImportableRecord
   # Use regex to determine if search_term matches the format of word(s), state Abbreviation
   # i.e. Charleston, SC
   def self.city_state_search_term?(search_term)
-    /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
-      VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s) if
-        search_term.present?
+    if search_term.present?
+      /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
+        VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s)
+    end
   end
 
   def self.state_search_term?(search_term)

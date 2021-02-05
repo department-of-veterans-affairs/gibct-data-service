@@ -28,7 +28,7 @@ module V0
       }
 
       render json: search_results
-        .order('institutions.preferred_provider DESC NULLS LAST, institutions.institution')
+        .search_order(@query)
         .page(params[:page]), meta: @meta
     end
 
@@ -57,7 +57,8 @@ module V0
         terms = @query[:name].split(',').map(&:strip)
         relation = InstitutionProgram.joins(institution: :version)
                                      .eager_load(:institution)
-                                     .where(institutions: { version: @version, city: terms[0].upcase, state: terms[1].upcase })
+                                     .where(institutions: { version: @version, city: terms[0].upcase,
+                                                            state: terms[1].upcase })
       else
         relation = InstitutionProgram.joins(institution: :version)
                                      .where(institutions: { version: @version })
