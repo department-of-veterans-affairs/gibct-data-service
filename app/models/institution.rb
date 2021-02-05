@@ -344,9 +344,9 @@ class Institution < ImportableRecord
   }
 
   scope :city_state_search_order, lambda { |max_gibill = 0|
-    order_by = [ 'city',
-                 'institution',
-                 '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))']
+    order_by = %w[city institution]
+
+    order_by << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
                                                                   max_gibill: max_gibill])
