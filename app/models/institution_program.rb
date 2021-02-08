@@ -36,10 +36,10 @@ class InstitutionProgram < ApplicationRecord
 
   # Depending on feature flags determines where clause for search
   scope :search, lambda { |query|
+    return if query.blank? || query[:name].blank?
+
     search_term = query[:name]
     state_search = query[:state_search]
-
-    return if search_term.blank?
 
     clause = [
       'institution_programs.facility_code = (:upper_search_term)',

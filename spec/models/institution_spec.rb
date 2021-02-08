@@ -228,6 +228,7 @@ RSpec.describe Institution, type: :model do
         max_gibill = described_class.maximum(:gibill)
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
+        binding.pry
         expect(results[0].gibill).to eq(max_gibill)
       end
     end

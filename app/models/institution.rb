@@ -265,11 +265,11 @@ class Institution < ImportableRecord
 
   # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
+    return if query.blank? || query[:name].blank?
+
     search_term = query[:name]
     include_address = query[:include_address] || false
     state_search = query[:state_search] || false
-
-    return if search_term.blank?
 
     clause = ['facility_code = :upper_search_term']
 
@@ -346,7 +346,7 @@ class Institution < ImportableRecord
 
     # not included in weighted_sort as weight value would have to be at least 4.0 to affect order
     order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
-
+    binding.pry
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"

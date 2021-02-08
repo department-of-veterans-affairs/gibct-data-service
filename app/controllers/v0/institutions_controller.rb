@@ -23,6 +23,7 @@ module V0
 
     # GET /v0/institutions?name=duluth&x=y
     def index
+      @query ||= normalized_query_params
       @meta = {
         version: @version,
         count: search_results.count,
