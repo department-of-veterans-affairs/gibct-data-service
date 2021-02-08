@@ -224,11 +224,9 @@ RSpec.describe Institution, type: :model do
       it 'gibill value' do
         create(:institution, :mit, gibill: 1)
         institution = create(:institution, :mit)
-        search_term = institution.ialias
         max_gibill = described_class.maximum(:gibill)
-        query = { name: search_term }
-        results = described_class.search(query).search_order(query)
-        binding.pry
+        query = { name: institution.institution }
+        results = described_class.search(query).search_order(query, max_gibill)
         expect(results[0].gibill).to eq(max_gibill)
       end
     end

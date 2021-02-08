@@ -557,7 +557,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filters by school type' do
-      get(:index, params: { type: 'private', name: 'in' })
+      get(:index, params: { type: 'private', name: 'institution' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')

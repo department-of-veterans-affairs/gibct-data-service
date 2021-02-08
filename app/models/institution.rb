@@ -324,6 +324,8 @@ class Institution < ImportableRecord
   #
   # facility_code and zip are not included in order by because of their standard formats
   scope :search_order, lambda { |query, max_gibill = 0|
+    return order('institution') if query.blank? || query[:name].blank?
+
     search_term = query[:name]
     state_search = query[:state_search] || false
 
@@ -346,7 +348,7 @@ class Institution < ImportableRecord
 
     # not included in weighted_sort as weight value would have to be at least 4.0 to affect order
     order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
-    binding.pry
+
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"

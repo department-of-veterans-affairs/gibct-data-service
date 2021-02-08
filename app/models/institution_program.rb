@@ -64,17 +64,21 @@ class InstitutionProgram < ApplicationRecord
   }
 
   scope :search_order, lambda { |query|
-    state_search = query[:state_search]
-    search_term = query[:name]
-
     order_by = ['institutions.preferred_provider DESC NULLS LAST', 'institutions.institution']
+    conditions = [order_by.join(',')]
 
-    if search_term.present?
-      order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
+    if query.present?
+      state_search = query[:state_search]
+      search_term = query[:name]
+
+      if search_term.present?
+        order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
+
+        conditions = [order_by.join(','), upper_contains_term: "%#{search_term.upcase}%"]
+      end
     end
 
-    sanitized_order_by = sanitize_sql_for_conditions([order_by.join(','),
-                                                      upper_contains_term: "%#{search_term.upcase}%"])
+    sanitized_order_by = sanitize_sql_for_conditions(conditions)
 
     order(Arel.sql(sanitized_order_by))
   }
