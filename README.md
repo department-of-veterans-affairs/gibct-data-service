@@ -108,10 +108,9 @@ User.create(email: 'xxxxxx', password: 'xxxxxx')
 
 ## Development Instructions
 1. Run `bundle install` to set up the application.
-2. Create the DS database by running `bundle exec rake db:create`.
-3. Setup the DS database by running `bundle exec rake db:migrate`.
-5. Load test users and sample data: `bundle exec rake db:seed`
-5. Start the application: `bundle exec rails s`
+2. Setup the DS database by running `bundle exec rake db:setup`.
+3. Run any pending migrations by running `bundle exec rake db:migrate`.
+4. Start the application: `bundle exec rails s`
 
 ## How to Contribute
 
