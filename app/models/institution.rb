@@ -304,7 +304,7 @@ class Institution < ImportableRecord
   }
 
   # Orders institutions by
-  # - exact match to country
+  # - if country contains the search term or not
   # - weighted sort
   # - institution name
   #
