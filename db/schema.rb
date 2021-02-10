@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_23_162846) do
+ActiveRecord::Schema.define(version: 2021_02_10_111423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -109,6 +109,17 @@ ActiveRecord::Schema.define(version: 2020_11_23_162846) do
     t.string "link_text"
     t.string "link_url"
     t.string "flag_date"
+  end
+
+  create_table "cip_codes", force: :cascade do |t|
+    t.string "cip_family"
+    t.string "cip_code"
+    t.string "action"
+    t.boolean "text_change"
+    t.string "cip_title"
+    t.string "cip_definition"
+    t.string "cross_references"
+    t.string "examples"
   end
 
   create_table "complaints", id: :serial, force: :cascade do |t|
