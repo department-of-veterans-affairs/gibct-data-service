@@ -3,7 +3,7 @@ CSV_TYPES_TABLES = [
   { klass: AccreditationInstituteCampus, required?: true },
   { klass: AccreditationRecord, required?: true },
   { klass: ArfGiBill, required?: true },
-  { klass: CipCode, required?: true },
+  { klass: CipCode, required?: false },
   { klass: Complaint, required?: true },
   { klass: Crosswalk, required?: true },
   { klass: EightKey, required?: true },
