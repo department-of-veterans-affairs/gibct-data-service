@@ -2,13 +2,13 @@
 
 class CipCode < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'cip_family' => { column: :cip_family, converter: BaseConverter },
-    'cip_code' => { column: :cip_code, converter: BaseConverter },
+    'cipfamily' => { column: :cip_family, converter: BaseConverter },
+    'cipcode' => { column: :cip_code, converter: BaseConverter },
     'action' => { column: :action, converter: BaseConverter },
-    'text_change' => { column: :text_change, converter: BooleanConverter },
-    'cip_title' => { column: :cip_title, converter: BaseConverter },
-    'cip_definition' => { column: :cip_definition, converter: BaseConverter },
-    'cross_references' => { column: :cross_references, converter: BaseConverter },
+    'textchange' => { column: :text_change, converter: BooleanConverter },
+    'ciptitle' => { column: :cip_title, converter: BaseConverter },
+    'cipdefinition' => { column: :cip_definition, converter: BaseConverter },
+    'crossreferences' => { column: :cross_references, converter: BaseConverter },
     'examples' => { column: :examples, converter: BaseConverter }
   }.freeze
 end
