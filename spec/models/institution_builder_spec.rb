@@ -578,6 +578,27 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(caution_flag.description).to eq(va_caution_flag.settlement_description)
       end
 
+      it 'a caution_flag is set with title and description for all with same IPEDs' do
+        crosswalk1 = create :crosswalk
+        crosswalk2 = create :crosswalk, cross: crosswalk1.cross
+        weam_row1 = create :weam, :weam_builder, facility_code: crosswalk1.facility_code
+        weam_row2 = create :weam, :weam_builder, facility_code: crosswalk2.facility_code
+        va_caution_flag = create :va_caution_flag, :settlement, facility_code: crosswalk1.facility_code
+        described_class.run(user)
+
+        institution1 = institutions.find_by(facility_code: weam_row1.facility_code)
+        institution2 = institutions.find_by(facility_code: weam_row2.facility_code)
+        caution_flag1 = CautionFlag.where({ institution_id: institution1.id, source: 'Settlement',
+                                            version_id: Version.current_preview.id }).first
+        caution_flag2 = CautionFlag.where({ institution_id: institution2.id, source: 'Settlement',
+                                            version_id: Version.current_preview.id }).first
+
+        expect(caution_flag1.title).to eq(va_caution_flag.settlement_title)
+        expect(caution_flag1.description).to eq(va_caution_flag.settlement_description)
+        expect(caution_flag2.title).to eq(va_caution_flag.settlement_title)
+        expect(caution_flag2.description).to eq(va_caution_flag.settlement_description)
+      end
+
       it 'caution_flag_reason has multiple descriptions' do
         weam_row = create :weam, :weam_builder
         flag_a = create :va_caution_flag, :settlement, facility_code: weam_row.facility_code
