@@ -23,6 +23,7 @@ module V0
 
     # GET /v0/institutions?name=duluth&x=y
     def index
+      @query ||= normalized_query_params
       @meta = {
         version: @version,
         count: search_results.count,
@@ -31,9 +32,18 @@ module V0
 
       # For sorting by percentage instead whole number
       max_gibill = Institution.non_vet_tec_institutions(@version).maximum(:gibill) || 0
+      search_term = @query[:name]
 
-      render json: search_results.search_order((@query[:name]).to_s, max_gibill)
-                                 .page(params[:page]), meta: @meta
+      # Weighted sort is not needed when not using Institution scope search
+      if @query[:state_search] &&
+         (Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term))
+
+        render json: search_results.city_state_search_order(max_gibill)
+                                   .page(params[:page]), meta: @meta
+      else
+        render json: search_results.search_order(@query, max_gibill)
+                                   .page(params[:page]), meta: @meta
+      end
     end
 
     # GET /v0/institutions/20005123
@@ -86,16 +96,16 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      if @query.key?(:state_search) && VetsJsonSchema::CONSTANTS['usaStates'].map(&:downcase).include?(@query[:name])
+      if @query[:state_search] && Institution.state_search_term?(@query[:name])
         relation = Institution.non_vet_tec_institutions(@version)
                               .where(state: @query[:name].upcase)
-      elsif Institution.city_state?(@query.key?(:state_search), @query[:name])
+      elsif @query[:state_search] && Institution.city_state_search_term?(@query[:name])
         terms = @query[:name].upcase.split(',').map(&:strip)
         relation = Institution.non_vet_tec_institutions(@version)
-                              .where(institutions: { city: terms[0].upcase, state: terms[1].upcase })
+                              .where({ city: terms[0].upcase, state: terms[1].upcase })
       else
         relation = Institution.non_vet_tec_institutions(@version)
-                              .search(@query[:name], @query[:include_address])
+                              .search(@query)
       end
       filter_results(relation)
     end

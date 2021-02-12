@@ -536,28 +536,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filters by employer category' do
-      get(:index, params: { category: 'employer' })
+      get(:index, params: { category: 'employer', name: 'in' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by school category' do
-      get(:index, params: { category: 'school' })
+      get(:index, params: { category: 'school', name: 'institution' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by employer type' do
-      get(:index, params: { type: 'ojt' })
+      get(:index, params: { type: 'ojt', name: 'in' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by school type' do
-      get(:index, params: { type: 'private' })
+      get(:index, params: { type: 'private', name: 'institution' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
