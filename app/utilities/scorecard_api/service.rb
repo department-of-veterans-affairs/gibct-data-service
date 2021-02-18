@@ -31,7 +31,15 @@ module ScorecardApi
       'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
       'latest.student.size': :undergrad_enrollment,
       'location.lat': :latitude,
-      'location.lon': :longitude
+      'location.lon': :longitude,
+      'latest.programs.cip_4_digit.unit_id': :unit_id,
+      'latest.programs.cip_4_digit.ope6_id': :ope6_id,
+      'latest.programs.cip_4_digit.school.type': :control,
+      'latest.programs.cip_4_digit.school.main_campus': :main,
+      'latest.programs.cip_4_digit.code': :cipcode,
+      'latest.programs.cip_4_digit.title': :cipdesc,
+      'latest.programs.cip_4_digit.credential.level': :credlev,
+      'latest.programs.cip_4_digit.credential.title': :creddesc
     }.freeze
 
     def self.populate
@@ -62,12 +70,38 @@ module ScorecardApi
     end
 
     def self.map_results(results)
+      degree_programs = []
       results.map do |result|
         scorecard = Scorecard.new
-        result.each_pair { |key, value| scorecard[API_MAPPINGS[key]] = value }
+        result.each_pair { |key, value| 
+          if value.kind_of?(Array)
+            degree_programs += value
+          else
+            scorecard[API_MAPPINGS[key]] = value 
+          end
+        }
         scorecard.derive_dependent_columns
         scorecard
       end
+      populate_degree_programs(degree_programs)
     end
+
+    def self.populate_degree_programs(scorecard_degree_programs)
+      scorecard_degree_program_results = []
+      scorecard_degree_programs.map do |degree_program|
+        scorecard_degree_program = ScorecardDegreeProgram.new
+        scorecard_degree_program[:unitid] = degree_program[:unit_id]
+        scorecard_degree_program[:ope6_id] = degree_program[:ope6_id]
+        scorecard_degree_program[:control] = degree_program[:school][:type]
+        scorecard_degree_program[:main] = degree_program[:school][:main_campus]
+        scorecard_degree_program[:cip_code] = degree_program[:code]
+        scorecard_degree_program[:cip_desc] = degree_program[:title]
+        scorecard_degree_program[:cred_lev] = degree_program[:credential][:level]
+        scorecard_degree_program[:cred_desc] = degree_program[:credential][:title]
+        scorecard_degree_program_results.push(scorecard_degree_program)
+      end
+      ScorecardDegreeProgram.populate(scorecard_degree_program_results)
+    end
+
   end
 end

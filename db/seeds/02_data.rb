@@ -59,6 +59,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
   SeedUtils.seed_table_with_upload(SchoolRating, user)
   SeedUtils.seed_table_with_upload(Scorecard, user)
+  SeedUtils.seed_table_with_upload(ScorecardDegreeProgram, user)
   SeedUtils.seed_table_with_upload(Sec103, user)
   SeedUtils.seed_table_with_upload(Sec109ClosedSchool, user)
   SeedUtils.seed_table_with_upload(Sec702, user)
