@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_10_111423) do
+ActiveRecord::Schema.define(version: 2021_02_10_164802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1287,6 +1287,17 @@ ActiveRecord::Schema.define(version: 2021_02_10_111423) do
     t.datetime "rated_at", null: false
   end
 
+  create_table "scorecard_degree_programs", force: :cascade do |t|
+    t.integer "unitid"
+    t.string "ope6_id"
+    t.integer "control"
+    t.integer "main"
+    t.string "cip_code"
+    t.string "cip_desc"
+    t.integer "cred_lev"
+    t.string "cred_desc"
+  end
+
   create_table "scorecards", id: :serial, force: :cascade do |t|
     t.string "cross", null: false
     t.string "insturl"
@@ -1416,6 +1427,11 @@ ActiveRecord::Schema.define(version: 2021_02_10_111423) do
     t.string "alias"
     t.float "latitude"
     t.float "longitude"
+    t.integer "main"
+    t.string "cipcode"
+    t.string "cipdesc"
+    t.integer "credlev"
+    t.string "creddesc"
     t.index ["cross"], name: "index_scorecards_on_cross"
     t.index ["ope"], name: "index_scorecards_on_ope"
   end
