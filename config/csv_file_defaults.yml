@@ -1,6 +1,9 @@
 generic:
   skip_lines: 0
-  col_sep: ","
+  col_sep: ','
+
+CipCode:
+  liberal_parsing: true
 
 EightKey:
   skip_lines: 1
@@ -15,7 +18,7 @@ Complaint:
   skip_lines: 7
 
 Program:
-  col_sep: "|"
+  col_sep: '|'
 
 SchoolCertifyingOfficial:
   liberal_parsing: true
