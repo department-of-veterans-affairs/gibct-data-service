@@ -71,7 +71,7 @@ module ScorecardApi
 
     def self.map_results(results)
       degree_programs = []
-      results.map do |result|
+      scorecard_results = results.map do |result|
         scorecard = Scorecard.new
         result.each_pair { |key, value| 
           if value.kind_of?(Array)
@@ -84,11 +84,11 @@ module ScorecardApi
         scorecard
       end
       populate_degree_programs(degree_programs)
+      return scorecard_results
     end
 
     def self.populate_degree_programs(scorecard_degree_programs)
-      scorecard_degree_program_results = []
-      scorecard_degree_programs.map do |degree_program|
+      scorecard_degree_program_results = scorecard_degree_programs.map do |degree_program|
         scorecard_degree_program = ScorecardDegreeProgram.new
         scorecard_degree_program[:unitid] = degree_program[:unit_id]
         scorecard_degree_program[:ope6_id] = degree_program[:ope6_id]
@@ -98,7 +98,7 @@ module ScorecardApi
         scorecard_degree_program[:cip_desc] = degree_program[:title]
         scorecard_degree_program[:cred_lev] = degree_program[:credential][:level]
         scorecard_degree_program[:cred_desc] = degree_program[:credential][:title]
-        scorecard_degree_program_results.push(scorecard_degree_program)
+        scorecard_degree_program
       end
       ScorecardDegreeProgram.populate(scorecard_degree_program_results)
     end
