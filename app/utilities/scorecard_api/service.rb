@@ -12,26 +12,11 @@ module ScorecardApi
       id: :cross,
       ope8_id: :ope,
       ope6_id: :ope6,
-      'school.school_url': :insturl,
-      'school.degrees_awarded.predominant': :pred_degree_awarded,
-      'school.locale': :locale,
-      'school.minority_serving.historically_black': :hbcu,
-      'school.men_only': :menonly,
-      'school.women_only': :womenonly,
-      'school.religious_affiliation': :relaffil,
-      'school.under_investigation': :hcm2,
-      'school.alias': :alias,
       'latest.aid.federal_loan_rate': :pctfloan,
       'latest.aid.median_debt_suppressed.completers.overall': :avg_stu_loan_debt,
       'latest.completion.rate_suppressed.four_year': :c150_4_pooled_supp,
       'latest.completion.rate_suppressed.lt_four_year_150percent': :c150_l4_pooled_supp,
       'latest.earnings.10_yrs_after_entry.median': :salary_all_students,
-      'latest.repayment.3_yr_repayment_suppressed.overall': :repayment_rate_all_students,
-      'latest.student.retention_rate.four_year.full_time': :retention_all_students_ba,
-      'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
-      'latest.student.size': :undergrad_enrollment,
-      'location.lat': :latitude,
-      'location.lon': :longitude,
       'latest.programs.cip_4_digit.unit_id': :unit_id,
       'latest.programs.cip_4_digit.ope6_id': :ope6_id,
       'latest.programs.cip_4_digit.school.type': :control,
@@ -39,7 +24,22 @@ module ScorecardApi
       'latest.programs.cip_4_digit.code': :cipcode,
       'latest.programs.cip_4_digit.title': :cipdesc,
       'latest.programs.cip_4_digit.credential.level': :credlev,
-      'latest.programs.cip_4_digit.credential.title': :creddesc
+      'latest.programs.cip_4_digit.credential.title': :creddesc,
+      'latest.repayment.3_yr_repayment_suppressed.overall': :repayment_rate_all_students,
+      'latest.student.retention_rate.four_year.full_time': :retention_all_students_ba,
+      'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
+      'latest.student.size': :undergrad_enrollment,
+      'location.lat': :latitude,
+      'location.lon': :longitude,
+      'school.alias': :alias,
+      'school.degrees_awarded.predominant': :pred_degree_awarded,
+      'school.locale': :locale,
+      'school.minority_serving.historically_black': :hbcu,
+      'school.men_only': :menonly,
+      'school.religious_affiliation': :relaffil,
+      'school.school_url': :insturl,
+      'school.under_investigation': :hcm2,
+      'school.women_only': :womenonly
     }.freeze
 
     def self.populate
@@ -74,7 +74,7 @@ module ScorecardApi
       scorecard_results = results.map do |result|
         scorecard = Scorecard.new
         result.each_pair { |key, value| 
-          if value.kind_of?(Array)
+          if value.is_a?(Array)
             degree_programs += value
           else
             scorecard[API_MAPPINGS[key]] = value 
