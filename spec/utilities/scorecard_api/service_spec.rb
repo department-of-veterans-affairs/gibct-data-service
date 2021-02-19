@@ -50,7 +50,7 @@ describe ScorecardApi::Service do
     end
   end
 
-  describe 'populate_degree_programs', focus: true do
+  describe 'populate_degree_programs' do
     it 'creates scorecard_degree_programs' do
 
       degree_programs = [
