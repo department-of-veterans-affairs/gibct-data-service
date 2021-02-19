@@ -73,13 +73,13 @@ module ScorecardApi
       degree_programs = []
       scorecard_results = results.map do |result|
         scorecard = Scorecard.new
-        result.each_pair { |key, value|
+        result.each_pair do |key, value|
           if value.is_a?(Array)
             degree_programs += value
           else
             scorecard[API_MAPPINGS[key]] = value
           end
-        }
+        end
         scorecard.derive_dependent_columns
         scorecard
       end
