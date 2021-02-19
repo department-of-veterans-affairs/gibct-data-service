@@ -49,4 +49,24 @@ describe ScorecardApi::Service do
       end
     end
   end
+
+  describe 'populate_degree_programs', focus: true do
+    it 'creates scorecard_degree_programs' do
+
+      degree_programs = [
+        {
+          :ope6_id=>"000000", 
+          :code=>"1", 
+          :credential=>{:level=>1, :title=>"title"}, 
+          :school=>{:main_campus=>0, :type=>0}, 
+          :title=>"title", 
+          :unit_id=>1
+        }
+      ]
+
+      described_class.populate_degree_programs(degree_programs)
+      expect(ScorecardDegreeProgram.count()).to eq(degree_programs.size)
+    end
+  end
+
 end
