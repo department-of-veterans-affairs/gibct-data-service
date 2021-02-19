@@ -1427,11 +1427,6 @@ ActiveRecord::Schema.define(version: 2021_02_10_164802) do
     t.string "alias"
     t.float "latitude"
     t.float "longitude"
-    t.integer "main"
-    t.string "cipcode"
-    t.string "cipdesc"
-    t.integer "credlev"
-    t.string "creddesc"
     t.index ["cross"], name: "index_scorecards_on_cross"
     t.index ["ope"], name: "index_scorecards_on_ope"
   end
