@@ -73,18 +73,18 @@ module ScorecardApi
       degree_programs = []
       scorecard_results = results.map do |result|
         scorecard = Scorecard.new
-        result.each_pair { |key, value| 
+        result.each_pair { |key, value|
           if value.is_a?(Array)
             degree_programs += value
           else
-            scorecard[API_MAPPINGS[key]] = value 
+            scorecard[API_MAPPINGS[key]] = value
           end
         }
         scorecard.derive_dependent_columns
         scorecard
       end
       populate_degree_programs(degree_programs)
-      return scorecard_results
+      scorecard_results
     end
 
     def self.populate_degree_programs(scorecard_degree_programs)
@@ -102,6 +102,5 @@ module ScorecardApi
       end
       ScorecardDegreeProgram.populate(scorecard_degree_program_results)
     end
-
   end
 end
