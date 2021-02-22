@@ -462,7 +462,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:ipeds_ic_py) { IpedsIcPy.first }
       let(:ipeds_ic_ay) { IpedsIcAy.first }
 
-      let(:nil_ipeds_ic_ay) { IpedsIcPy::COLS_USED_IN_INSTITUTION.each_with_object({}) { |v, o| o[v] = nil } }
+      let(:nil_ipeds_ic_ay) { IpedsIcPy::COLS_USED_IN_INSTITUTION.index_with({}) { |v, o| o[v] = nil } }
 
       context 'when the institution fields are nil' do
         it 'copies columns used by institutions' do
