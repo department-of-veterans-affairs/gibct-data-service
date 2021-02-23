@@ -22,7 +22,7 @@ module ScorecardApi
       'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
       'latest.student.size': :undergrad_enrollment,
       'location.lat': :latitude,
-      'location.lon': :longitude,      
+      'location.lon': :longitude,
       'school.school_url': :insturl,
       'school.degrees_awarded.predominant': :pred_degree_awarded,
       'school.locale': :locale,
@@ -31,7 +31,7 @@ module ScorecardApi
       'school.women_only': :womenonly,
       'school.religious_affiliation': :relaffil,
       'school.under_investigation': :hcm2,
-      'school.alias': :alias,
+      'school.alias': :alias
     }.freeze
 
     DEGREE_PROGRAMS_API_MAPPINGS = {
@@ -57,7 +57,6 @@ module ScorecardApi
 
       map_results(results)
     end
-
 
     def self.populate_degree_programs
       results = []
