@@ -15,6 +15,7 @@ CSV_TYPES_TABLES = [
   { klass: Mou, required?: true },
   { klass: Outcome, required?: true },
   { klass: Scorecard, required?: true, has_api?: true },
+  { klass: ScorecardDegreeProgram, required?: true, has_api?: true },
   { klass: Sec702, required?: true },
   { klass: Sva, required?: true },
   { klass: Vsoc, required?: true },

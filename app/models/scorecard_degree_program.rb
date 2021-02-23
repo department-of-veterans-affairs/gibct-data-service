@@ -12,7 +12,9 @@ class ScorecardDegreeProgram < ImportableRecord
     'cred_desc' => { column: :cred_desc, converter: BaseConverter }
   }.freeze
 
-  def self.populate(scorecard_degree_program_results)
-    load(scorecard_degree_program_results)
+  def self.populate()
+    results = ScorecardApi::Service.populate_degree_programs
+    load(results) if results.any?
+    results.any?
   end
 end
