@@ -107,7 +107,7 @@ module ScorecardApi
     def self.map_degree_program_results(results)
       degree_program_results = []
       results.each do |result|
-        if result.key?(:'latest.programs.cip_4_digit')
+        next unless result.key?(:'latest.programs.cip_4_digit')
           result[:'latest.programs.cip_4_digit'].each do |degree_program|
             scorecard_degree_program = ScorecardDegreeProgram.new
             scorecard_degree_program[:unitid] = degree_program[:unit_id]
@@ -119,7 +119,7 @@ module ScorecardApi
             scorecard_degree_program[:cred_lev] = degree_program[:credential][:level]
             scorecard_degree_program[:cred_desc] = degree_program[:credential][:title]
             degree_program_results.push(scorecard_degree_program)
-          end
+
         end
       end
       degree_program_results
