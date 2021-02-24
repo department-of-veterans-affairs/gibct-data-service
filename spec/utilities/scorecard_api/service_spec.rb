@@ -8,6 +8,7 @@ describe ScorecardApi::Service do
     let(:result_2) { { id: '2', 'school.degrees_awarded.predominant': 0 } }
     let(:response_results) { [result_1, result_2] }
     let(:client_instance) { instance_double(ScorecardApi::Client) }
+
     context 'when total is greater than MAX_PAGE_SIZE' do
       let(:total) { ScorecardApi::Service::MAX_PAGE_SIZE + 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
@@ -50,7 +51,7 @@ describe ScorecardApi::Service do
   end
 
   describe 'populate scorecard degree programs' do
-    let(:result_1) {
+    let(:result_1) do
       {
         'latest.programs.cip_4_digit': [{
           unitid: 1,
@@ -58,8 +59,8 @@ describe ScorecardApi::Service do
           credential: {}
         }]
       }
-    }
-    let(:result_2) {
+    end
+    let(:result_2) do
       {
         'latest.programs.cip_4_digit': [{
           unitid: 2,
@@ -67,10 +68,11 @@ describe ScorecardApi::Service do
           credential: {}
         }]
       }
-    }
+    end
 
     let(:response_results) { [result_1, result_2] }
     let(:client_instance) { instance_double(ScorecardApi::Client) }
+
     context 'when total is greater than MAX_PAGE_SIZE' do
       let(:total) { ScorecardApi::Service::MAX_PAGE_SIZE + 50 }
       let(:body) { { results: response_results, metadata: { total: total } } }
