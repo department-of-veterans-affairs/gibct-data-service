@@ -16,7 +16,7 @@ class ScorecardDegreeProgram < ImportableRecord
   API_SOURCE = 'https://collegescorecard.ed.gov/data/'
 
   def self.populate
-    results = ScorecardApi::Service.populate_degree_programs
+    results = ScorecardApi::Service.populate('scorecard degree program')
     load(results) if results.any?
     results.any?
   end

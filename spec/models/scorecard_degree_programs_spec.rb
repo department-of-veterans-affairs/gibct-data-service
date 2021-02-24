@@ -26,7 +26,7 @@ RSpec.describe ScorecardDegreeProgram, type: :model do
 
       expect(message).to be_truthy
       expect(ScorecardApi::Service).to have_received(:populate)
-      expxect(described_class).to have_received(:load)
+      expect(described_class).to have_received(:load)
     end
   end
 end

@@ -45,49 +45,29 @@ module ScorecardApi
       'latest.programs.cip_4_digit.credential.title': :creddesc
     }.freeze
 
-    def self.populate
+    def self.populate(result_type)
+      degree_programs = result_type == 'scorecard degree program'
+
       results = []
-
-      response_body = schools_api_call(0) #  call for page 0 to get initial @total
+      response_body = schools_api_call(0, degree_programs) #  call for page 0 to get initial @total
       results.push(*response_body[:results])
-
       number_of_pages = (response_body[:metadata][:total] / MAX_PAGE_SIZE).to_f.ceil
 
-      (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num)[:results]) }
+      (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num, degree_programs)[:results]) }
 
-      map_results(results)
+      if degree_programs
+        map_degree_program_results(results)
+      else
+        map_results(results)
+      end
     end
 
-    def self.populate_degree_programs
-      results = []
-
-      response_body = degree_programs_api_call(0) #  call for page 0 to get initial @total
-      results.push(*response_body[:results])
-
-      number_of_pages = (response_body[:metadata][:total] / MAX_PAGE_SIZE).to_f.ceil
-
-      (1..number_of_pages).each { |page_num| results.push(*degree_programs_api_call(page_num)[:results]) }
-
-      map_degree_program_results(results)
-    end
-
-    def self.schools_api_call(page)
+    def self.schools_api_call(page, degree_programs)
       params = {
-        'fields': API_MAPPINGS.keys.join(','),
+        'fields': !degree_programs ? API_MAPPINGS.keys.join(',') : DEGREE_PROGRAMS_API_MAPPINGS.keys.join(','),
         'per_page': MAX_PAGE_SIZE.to_s,
         'page': page
       }
-
-      client.schools(params).body
-    end
-
-    def self.degree_programs_api_call(page)
-      params = {
-        'fields': DEGREE_PROGRAMS_API_MAPPINGS.keys.join(','),
-        'per_page': MAX_PAGE_SIZE.to_s,
-        'page': page
-      }
-
       client.schools(params).body
     end
 

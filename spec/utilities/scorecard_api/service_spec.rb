@@ -22,7 +22,7 @@ describe ScorecardApi::Service do
         allow(ScorecardApi::Client).to receive(:new).and_return(client_instance)
         allow(client_instance).to receive(:schools).and_return(response)
 
-        results = described_class.populate
+        results = described_class.populate('scorecard')
 
         expect(results.size).to eq(response_results.size * 2)
         expect(results).to all(be_a(Scorecard))
@@ -42,7 +42,7 @@ describe ScorecardApi::Service do
         allow(ScorecardApi::Client).to receive(:new).and_return(client_instance)
         allow(client_instance).to receive(:schools).and_return(response)
 
-        results = described_class.populate
+        results = described_class.populate('scorecard')
 
         expect(results.size).to eq(response_results.size)
         expect(results).to all(be_a(Scorecard))
