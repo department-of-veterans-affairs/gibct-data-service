@@ -2,6 +2,7 @@
 
 class ScorecardDegreeProgram < ImportableRecord
   CSV_CONVERTER_INFO = {
+
     'unitid' => { column: :unitid, converter: NumberConverter },
     'ope6_id' => { column: :ope6_id, converter: BaseConverter },
     'control' => { column: :control, converter: NumberConverter },
@@ -11,6 +12,8 @@ class ScorecardDegreeProgram < ImportableRecord
     'cred_lev' => { column: :cred_lev, converter: NumberConverter },
     'cred_desc' => { column: :cred_desc, converter: BaseConverter }
   }.freeze
+
+  API_SOURCE = 'https://collegescorecard.ed.gov/data/'
 
   def self.populate
     results = ScorecardApi::Service.populate_degree_programs
