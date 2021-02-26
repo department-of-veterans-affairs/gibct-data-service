@@ -4,18 +4,17 @@ require 'scorecard_api/client'
 
 module ScorecardDegreeProgramApi
   class Service < ScorecardApi::Service
-
     def self.api_mappings
-    {
-      'latest.programs.cip_4_digit.unit_id': :unit_id,
-      'latest.programs.cip_4_digit.ope6_id': :ope6_id,
-      'latest.programs.cip_4_digit.school.type': :control,
-      'latest.programs.cip_4_digit.school.main_campus': :main,
-      'latest.programs.cip_4_digit.code': :cipcode,
-      'latest.programs.cip_4_digit.title': :cipdesc,
-      'latest.programs.cip_4_digit.credential.level': :credlev,
-      'latest.programs.cip_4_digit.credential.title': :creddesc
-    }.freeze
+      {
+        'latest.programs.cip_4_digit.unit_id': :unit_id,
+        'latest.programs.cip_4_digit.ope6_id': :ope6_id,
+        'latest.programs.cip_4_digit.school.type': :control,
+        'latest.programs.cip_4_digit.school.main_campus': :main,
+        'latest.programs.cip_4_digit.code': :cipcode,
+        'latest.programs.cip_4_digit.title': :cipdesc,
+        'latest.programs.cip_4_digit.credential.level': :credlev,
+        'latest.programs.cip_4_digit.credential.title': :creddesc
+      }.freeze
     end
 
     def self.map_results(results)

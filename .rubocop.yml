@@ -96,6 +96,7 @@ Metrics/MethodLength:
     - "app/controllers/v0/institutions_controller.rb"
     - "lib/roo_helper/loader.rb"
     - "lib/seed_utils.rb"
+    - "app/utilities/scorecard_api/service.rb"
 
 Metrics/ClassLength:
   Exclude:
