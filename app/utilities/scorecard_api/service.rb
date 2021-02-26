@@ -12,15 +12,6 @@ module ScorecardApi
       id: :cross,
       ope8_id: :ope,
       ope6_id: :ope6,
-      'school.school_url': :insturl,
-      'school.degrees_awarded.predominant': :pred_degree_awarded,
-      'school.locale': :locale,
-      'school.minority_serving.historically_black': :hbcu,
-      'school.men_only': :menonly,
-      'school.women_only': :womenonly,
-      'school.religious_affiliation': :relaffil,
-      'school.under_investigation': :hcm2,
-      'school.alias': :alias,
       'latest.aid.federal_loan_rate': :pctfloan,
       'latest.aid.median_debt_suppressed.completers.overall': :avg_stu_loan_debt,
       'latest.completion.rate_suppressed.four_year': :c150_4_pooled_supp,
@@ -31,29 +22,52 @@ module ScorecardApi
       'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
       'latest.student.size': :undergrad_enrollment,
       'location.lat': :latitude,
-      'location.lon': :longitude
+      'location.lon': :longitude,
+      'school.school_url': :insturl,
+      'school.degrees_awarded.predominant': :pred_degree_awarded,
+      'school.locale': :locale,
+      'school.minority_serving.historically_black': :hbcu,
+      'school.men_only': :menonly,
+      'school.women_only': :womenonly,
+      'school.religious_affiliation': :relaffil,
+      'school.under_investigation': :hcm2,
+      'school.alias': :alias
     }.freeze
 
-    def self.populate
+    DEGREE_PROGRAMS_API_MAPPINGS = {
+      'latest.programs.cip_4_digit.unit_id': :unit_id,
+      'latest.programs.cip_4_digit.ope6_id': :ope6_id,
+      'latest.programs.cip_4_digit.school.type': :control,
+      'latest.programs.cip_4_digit.school.main_campus': :main,
+      'latest.programs.cip_4_digit.code': :cipcode,
+      'latest.programs.cip_4_digit.title': :cipdesc,
+      'latest.programs.cip_4_digit.credential.level': :credlev,
+      'latest.programs.cip_4_digit.credential.title': :creddesc
+    }.freeze
+
+    def self.populate(result_type)
+      degree_programs = result_type == 'scorecard degree program'
+
       results = []
-
-      response_body = schools_api_call(0) #  call for page 0 to get initial @total
+      response_body = schools_api_call(0, degree_programs) #  call for page 0 to get initial @total
       results.push(*response_body[:results])
-
       number_of_pages = (response_body[:metadata][:total] / MAX_PAGE_SIZE).to_f.ceil
 
-      (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num)[:results]) }
+      (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num, degree_programs)[:results]) }
 
-      map_results(results)
+      if degree_programs
+        map_degree_program_results(results)
+      else
+        map_results(results)
+      end
     end
 
-    def self.schools_api_call(page)
+    def self.schools_api_call(page, degree_programs)
       params = {
-        'fields': API_MAPPINGS.keys.join(','),
+        'fields': !degree_programs ? API_MAPPINGS.keys.join(',') : DEGREE_PROGRAMS_API_MAPPINGS.keys.join(','),
         'per_page': MAX_PAGE_SIZE.to_s,
         'page': page
       }
-
       client.schools(params).body
     end
 
@@ -68,6 +82,27 @@ module ScorecardApi
         scorecard.derive_dependent_columns
         scorecard
       end
+    end
+
+    def self.map_degree_program_results(results)
+      degree_program_results = []
+      results.each do |result|
+        next unless result.key?(:'latest.programs.cip_4_digit')
+
+        result[:'latest.programs.cip_4_digit'].each do |degree_program|
+          scorecard_degree_program = ScorecardDegreeProgram.new
+          scorecard_degree_program[:unitid] = degree_program[:unit_id]
+          scorecard_degree_program[:ope6_id] = degree_program[:ope6_id]
+          scorecard_degree_program[:control] = degree_program[:school][:type]
+          scorecard_degree_program[:main] = degree_program[:school][:main_campus]
+          scorecard_degree_program[:cip_code] = degree_program[:code]
+          scorecard_degree_program[:cip_desc] = degree_program[:title]
+          scorecard_degree_program[:cred_lev] = degree_program[:credential][:level]
+          scorecard_degree_program[:cred_desc] = degree_program[:credential][:title]
+          degree_program_results.push(scorecard_degree_program)
+        end
+      end
+      degree_program_results
     end
   end
 end

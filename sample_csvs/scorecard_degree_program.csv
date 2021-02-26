@@ -1,0 +1,41 @@
+unitid, ope6_id, control, main, cip_code, cip_desc, cred_lev, cred_desc
+210492,3228,0,1,1312,"Teacher Education and Professional Development, Specific Levels and Methods.",3,Bachelors Degree
+210492,3228,0,1,2301,"English Language and Literature, General.",3,Bachelors Degree
+210492,3228,0,1,2401,"Liberal Arts and Sciences, General Studies and Humanities.",2,Associate's Degree
+210492,3228,0,1,2401,"Liberal Arts and Sciences, General Studies and Humanities.",3,Bachelors Degree
+210492,3228,0,1,2601,"Biology, General.",2,Associate's Degree
+210492,3228,0,1,2601,"Biology, General.",3,Bachelors Degree
+210492,3228,0,1,3000,"Multi-/Interdisciplinary Studies, General.",3,Bachelors Degree
+210492,3228,0,1,3099,"Multi/Interdisciplinary Studies, Other.",3,Bachelors Degree
+210492,3228,0,1,3802,Religion/Religious Studies.,3,Bachelors Degree
+210492,3228,0,1,3802,Religion/Religious Studies.,5,Master's Degree
+210492,3228,0,1,3906,Theological and Ministerial Studies.,5,Master's Degree
+210492,3228,0,1,4201,"Psychology, General.",3,Bachelors Degree
+210492,3228,0,1,4299,"Psychology, Other.",2,Associate's Degree
+210492,3228,0,1,4501,"Social Sciences, General.",2,Associate's Degree
+210492,3228,0,1,5201,"Business/Commerce, General.",3,Bachelors Degree
+210492,3228,0,1,5202,"Business Administration, Management and Operations.",2,Associate's Degree
+210492,3228,0,1,5202,"Business Administration, Management and Operations.",3,Bachelors Degree
+210492,3228,0,1,5401,History.,3,Bachelors Degree
+228185,39223,0,1,1204,Cosmetology and Related Personal Grooming Services.,1,Undergraduate Certificate or Diploma
+445762,38834,0,1,4703,Heavy/Industrial Equipment Maintenance Technologies.,1,Undergraduate Certificate or Diploma
+445762,38834,0,1,4706,Vehicle Maintenance and Repair Technologies.,1,Undergraduate Certificate or Diploma
+445762,38834,0,1,4901,Air Transportation.,1,Undergraduate Certificate or Diploma
+445948,38385,0,1,2203,Legal Support Services.,2,Associate's Degree
+445948,38385,0,1,4301,Criminal Justice and Corrections.,2,Associate's Degree
+445948,38385,0,1,5106,Dental Support Services and Allied Professions.,1,Undergraduate Certificate or Diploma
+445948,38385,0,1,5107,Health and Medical Administrative Services.,1,Undergraduate Certificate or Diploma
+445948,38385,0,1,5108,Allied Health and Medical Assisting Services.,1,Undergraduate Certificate or Diploma
+445948,38385,0,1,5110,Clinical/Medical Laboratory Science/Research and Allied Professions.,1,Undergraduate Certificate or Diploma
+445948,38385,0,1,5135,Somatic Bodywork and Related Therapeutic Services.,1,Undergraduate Certificate or Diploma
+446002,38333,0,1,5133,Alternative and Complementary Medicine and Medical Systems.,5,Master's Degree
+446002,38333,0,1,5133,Alternative and Complementary Medicine and Medical Systems.,7,First Professional Degree
+446048,39413,0,1,301,Natural Resources Conservation and Research.,3,Bachelors Degree
+446048,39413,0,1,501,Area Studies.,3,Bachelors Degree
+446048,39413,0,1,1312,"Teacher Education and Professional Development, Specific Levels and Methods.",3,Bachelors Degree
+446048,39413,0,1,1612,"Classics and Classical Languages, Literatures, and Linguistics.",3,Bachelors Degree
+446048,39413,0,1,2314,Literature.,3,Bachelors Degree
+446048,39413,0,1,2401,"Liberal Arts and Sciences, General Studies and Humanities.",3,Bachelors Degree
+446048,39413,0,1,2601,"Biology, General.",3,Bachelors Degree
+446048,39413,0,1,2602,"Biochemistry, Biophysics and Molecular Biology.",3,Bachelors Degree
+446048,39413,0,1,2609,"Physiology, Pathology and Related Sciences.",3,Bachelors Degree
