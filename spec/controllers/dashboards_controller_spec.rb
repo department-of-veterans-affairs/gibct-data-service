@@ -198,7 +198,7 @@ RSpec.describe DashboardsController, type: :controller do
       stub_const('Scorecard::POPULATE_SUCCESS_MESSAGE', nil)
 
       get(:api_fetch, params: { csv_type: Scorecard.name })
-      expect(flash.notice).to eq("#{Scorecard.name} finished fetching data from it's api")
+      expect(flash.notice).to eq("#{Scorecard.name} finished fetching data from its api")
     end
 
     it 'displays error message' do

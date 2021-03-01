@@ -123,7 +123,7 @@ class DashboardsController < ApplicationController
       message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
       return message if message.present?
 
-      "#{klass.name} finished fetching data from it's api"
+      "#{klass.name} finished fetching data from its api"
     end
   end
 end

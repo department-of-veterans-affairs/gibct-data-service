@@ -156,7 +156,7 @@ class Scorecard < ImportableRecord
   API_SOURCE = 'https://collegescorecard.ed.gov/data/'
 
   def self.populate
-    results = ScorecardApi::Service.populate('scorecard')
+    results = ScorecardApi::Service.populate
     load(results) if results.any?
     results.any?
   end

@@ -2,10 +2,27 @@
 
 require 'rails_helper'
 
-describe ScorecardApi::Service do
-  describe 'populate' do
-    let(:result_1) { { id: '1', 'school.degrees_awarded.predominant': 0 } }
-    let(:result_2) { { id: '2', 'school.degrees_awarded.predominant': 0 } }
+describe ScorecardDegreeProgramApi::Service do
+  describe 'populate scorecard degree programs' do
+    let(:result_1) do
+      {
+        'latest.programs.cip_4_digit': [{
+          unitid: 1,
+          school: {},
+          credential: {}
+        }]
+      }
+    end
+    let(:result_2) do
+      {
+        'latest.programs.cip_4_digit': [{
+          unitid: 2,
+          school: {},
+          credential: {}
+        }]
+      }
+    end
+
     let(:response_results) { [result_1, result_2] }
     let(:client_instance) { instance_double(ScorecardApi::Client) }
 
@@ -25,7 +42,7 @@ describe ScorecardApi::Service do
         results = described_class.populate
 
         expect(results.size).to eq(response_results.size * 2)
-        expect(results).to all(be_a(Scorecard))
+        expect(results).to all(be_a(ScorecardDegreeProgram))
       end
     end
 
@@ -43,9 +60,8 @@ describe ScorecardApi::Service do
         allow(client_instance).to receive(:schools).and_return(response)
 
         results = described_class.populate
-
         expect(results.size).to eq(response_results.size)
-        expect(results).to all(be_a(Scorecard))
+        expect(results).to all(be_a(ScorecardDegreeProgram))
       end
     end
   end
