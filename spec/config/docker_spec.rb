@@ -10,7 +10,7 @@ describe 'Docker' do
 
     it 'in Dockerfile' do
       search_string = 'ENV BUNDLER_VERSION='
-      docker_bundler_lines = File.foreach(Rails.root.join('Dockerfile')).grep /^#{search_string}/
+      docker_bundler_lines = File.foreach(Rails.root.join('Dockerfile')).grep(/^#{search_string}/)
 
       raise "#{search_string} not found in Dockerfile" unless docker_bundler_lines.any?
 
@@ -19,7 +19,7 @@ describe 'Docker' do
     end
 
     it 'installed' do
-      installed_bundle_version = Gem.loaded_specs["bundler"].version.version
+      installed_bundle_version = Gem.loaded_specs['bundler'].version.version
       expect(installed_bundle_version).to eq(locked_bundle_version)
     end
   end
