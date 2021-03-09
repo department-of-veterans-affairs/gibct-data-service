@@ -7,18 +7,6 @@ GIT
       multi_json (~> 1.0)
       script_utils (= 0.0.4)
 
-GIT
-  remote: https://github.com/rails-lts/activerecord-session_store.git
-  revision: d091c7ea819350bbb9433d4dd065379832d593a3
-  branch: secure-session-store
-  specs:
-    activerecord-session_store (1.1.3)
-      actionpack (>= 5.2.4.1)
-      activerecord (>= 5.2.4.1)
-      multi_json (~> 1.11, >= 1.11.2)
-      rack (>= 2.0.8, < 3)
-      railties (>= 5.2.4.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -444,7 +432,6 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.4)
   activerecord-import
-  activerecord-session_store!
   bcrypt (~> 3.1.7)
   brakeman
   bundler-audit
