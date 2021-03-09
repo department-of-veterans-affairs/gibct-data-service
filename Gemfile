@@ -19,7 +19,7 @@ gem 'rails', '~> 6.0.3.5'
 gem 'active_model_serializers', '~> 0.10.4'
 
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
-gem 'activerecord-session_store', '~> 1.0'
+gem 'activerecord-session_store', github: 'rails-lts/activerecord-session_store', branch: 'secure-session-store'
 
 gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
