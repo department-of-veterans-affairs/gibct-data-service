@@ -45,7 +45,7 @@ Rails.application.configure do
     api_root: "https://#{ENV['GOVDELIVERY_URL']}"
   }
 
-  # clear the entire whitelist, which lets through requests for all hostnames
-  config.hosts.clear
+  # Specify environment specific hostname and protocol
+  config.hosts = Settings.virtual_hosts
 
 end
