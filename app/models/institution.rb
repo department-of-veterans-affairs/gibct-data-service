@@ -263,6 +263,15 @@ class Institution < ImportableRecord
     VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase) if search_term.present?
   end
 
+  # Escape postgresql regex special characters that are used within search terms that are not caught by sanitize_sql
+  def self.postgres_regex_escape(search_term)
+    return search_term if search_term.blank?
+
+    escaped_term = search_term.clone
+    %w<( ) +>.each { |ec| escaped_term = escaped_term.gsub("#{ec}", "\\#{ec}") }
+    escaped_term
+  end
+
   # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
     return if query.blank? || query[:name].blank?
@@ -352,7 +361,8 @@ class Institution < ImportableRecord
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"
-
+    regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
+    
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
@@ -362,7 +372,7 @@ class Institution < ImportableRecord
                                                                   gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill,
                                                                   institution_search_term: institution_search_term,
-                                                                  regexp_exists_as_word: "\\y#{search_term}\\y"])
+                                                                  regexp_exists_as_word: regexp_exists_as_word])
 
     order(Arel.sql(sanitized_order_by))
   }
