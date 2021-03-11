@@ -268,7 +268,7 @@ class Institution < ImportableRecord
     return search_term if search_term.blank?
 
     escaped_term = search_term.clone
-    %w[( ) + [ ] ].each { |ec| escaped_term = escaped_term.gsub(ec.to_s, "\\#{ec}") }
+    %w[( ) + [ ]].each { |ec| escaped_term = escaped_term.gsub(ec.to_s, "\\#{ec}") }
     escaped_term
   end
 
@@ -362,7 +362,7 @@ class Institution < ImportableRecord
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"
     regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
-    
+
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
                                                                   search_term: search_term,
                                                                   upper_search_term: search_term.upcase,
