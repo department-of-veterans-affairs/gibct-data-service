@@ -263,15 +263,6 @@ class Institution < ImportableRecord
     VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase) if search_term.present?
   end
 
-  # Escape postgresql regex special characters that are used within search terms
-  def self.postgres_regex_escape(search_term)
-    return search_term if search_term.blank?
-
-    escaped_term = search_term.clone
-    %w<| ( ) . + * ? { } [ ]>.each { |ec| escaped_term = escaped_term.gsub("\\#{ec}", "\\#{ec}") }
-    escaped_term.gsub("'", "''")
-  end
-
   # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
     return if query.blank? || query[:name].blank?
@@ -339,7 +330,7 @@ class Institution < ImportableRecord
     state_search = query[:state_search] || false
 
     weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{postgres_regex_escape(search_term)}\\y', 'i') IS NOT NULL " \
+                     "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
                        'THEN 1 * :alias_modifier ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
@@ -370,7 +361,8 @@ class Institution < ImportableRecord
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill,
-                                                                  institution_search_term: institution_search_term])
+                                                                  institution_search_term: institution_search_term,
+                                                                  regexp_exists_as_word: "\\y#{search_term}\\y"])
 
     order(Arel.sql(sanitized_order_by))
   }
