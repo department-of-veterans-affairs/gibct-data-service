@@ -268,7 +268,7 @@ class Institution < ImportableRecord
     return search_term if search_term.blank?
 
     escaped_term = search_term.clone
-    %w<( ) +>.each { |ec| escaped_term = escaped_term.gsub("#{ec}", "\\#{ec}") }
+    %w[( ) + [ ] ].each { |ec| escaped_term = escaped_term.gsub(ec.to_s, "\\#{ec}") }
     escaped_term
   end
 
