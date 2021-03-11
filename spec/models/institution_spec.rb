@@ -197,12 +197,20 @@ RSpec.describe Institution, type: :model do
         expect(results[0].ialias).to eq(search_term)
       end
 
-      it 'alias contains' do
+      it 'ialias contains the search term as a word' do
         create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
         search_term = 'KU'
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
         expect(results[0].ialias).to include(search_term)
+      end
+
+      it 'institution matches with regex special character in search term' do
+        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: "KANSAS' UNIVERSITY NORTH")
+        search_term = "KANSAS'"
+        query = { name: search_term }
+        results = described_class.search(query).search_order(query)
+        expect(results[0].institution).to include(search_term)
       end
 
       it 'institution exact match' do

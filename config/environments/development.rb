@@ -44,4 +44,8 @@ Rails.application.configure do
     auth_token: ENV['GOVDELIVERY_TOKEN'],
     api_root: "https://#{ENV['GOVDELIVERY_URL']}"
   }
+
+  # Specify environment specific hostname and protocol
+  config.hosts = Settings.virtual_hosts
+
 end
