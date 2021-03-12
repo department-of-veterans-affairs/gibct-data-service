@@ -263,13 +263,13 @@ class Institution < ImportableRecord
     VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase) if search_term.present?
   end
 
-  # Escape postgresql regex special characters that are used within search terms
+  # Escape postgresql regex special characters that are used within search terms that are not caught by sanitize_sql
   def self.postgres_regex_escape(search_term)
     return search_term if search_term.blank?
 
     escaped_term = search_term.clone
-    %w<| ( ) . + * ? { } [ ]>.each { |ec| escaped_term = escaped_term.gsub("\\#{ec}", "\\#{ec}") }
-    escaped_term.gsub("'", "''")
+    %w[( ) + [ ]].each { |ec| escaped_term = escaped_term.gsub(ec.to_s, "\\#{ec}") }
+    escaped_term
   end
 
   # Depending on feature flags and search term determines where clause for search
@@ -339,7 +339,7 @@ class Institution < ImportableRecord
     state_search = query[:state_search] || false
 
     weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                     "CASE WHEN REGEXP_MATCH(ialias, '\\y#{postgres_regex_escape(search_term)}\\y', 'i') IS NOT NULL " \
+                     "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
                        'THEN 1 * :alias_modifier ELSE 0 END',
                      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
                      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
@@ -361,6 +361,7 @@ class Institution < ImportableRecord
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"
+    regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
                                                                   search_term: search_term,
@@ -370,7 +371,8 @@ class Institution < ImportableRecord
                                                                   alias_modifier: alias_modifier,
                                                                   gibill_modifier: gibill_modifier,
                                                                   max_gibill: max_gibill,
-                                                                  institution_search_term: institution_search_term])
+                                                                  institution_search_term: institution_search_term,
+                                                                  regexp_exists_as_word: regexp_exists_as_word])
 
     order(Arel.sql(sanitized_order_by))
   }
