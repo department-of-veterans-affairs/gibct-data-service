@@ -205,12 +205,14 @@ RSpec.describe Institution, type: :model do
         expect(results[0].ialias).to include(search_term)
       end
 
-      it 'institution matches with regex special character in search term' do
-        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: "KANSAS' UNIVERSITY NORTH")
-        search_term = "KANSAS'"
-        query = { name: search_term }
-        results = described_class.search(query).search_order(query)
-        expect(results[0].institution).to include(search_term)
+      ['!', '$', '(', ')', '*', '+', '.', ':', '<', '=', '>', '?', '[', ']', '^', '{', '|', '}', '-', "'"].each do |postgresql_regex_char|
+        it "institution matches with postgresql regex special character \"#{postgresql_regex_char}\" in search term" do
+          create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: "KANSAS#{postgresql_regex_char} UNIVERSITY NORTH")
+          search_term = "KANSAS#{postgresql_regex_char}"
+          query = { name: search_term }
+          results = described_class.search(query).search_order(query)
+          expect(results[0].institution).to include(search_term)
+        end
       end
 
       it 'institution exact match' do
