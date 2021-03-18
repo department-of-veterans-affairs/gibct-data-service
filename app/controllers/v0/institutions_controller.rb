@@ -35,8 +35,7 @@ module V0
       search_term = @query[:name]
 
       # Weighted sort is not needed when not using Institution scope search
-      if @query[:state_search] &&
-         (Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term))
+      if (Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term))
 
         render json: search_results.city_state_search_order(max_gibill)
                                    .page(params[:page]), meta: @meta
@@ -96,10 +95,10 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      if @query[:state_search] && Institution.state_search_term?(@query[:name])
+      if Institution.state_search_term?(@query[:name])
         relation = Institution.non_vet_tec_institutions(@version)
                               .where(state: @query[:name].upcase)
-      elsif @query[:state_search] && Institution.city_state_search_term?(@query[:name])
+      elsif Institution.city_state_search_term?(@query[:name])
         terms = @query[:name].upcase.split(',').map(&:strip)
         relation = Institution.non_vet_tec_institutions(@version)
                               .where({ city: terms[0].upcase, state: terms[1].upcase })
