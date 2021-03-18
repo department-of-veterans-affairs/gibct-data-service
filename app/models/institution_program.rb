@@ -68,7 +68,7 @@ class InstitutionProgram < ApplicationRecord
     if query.present?
       search_term = query[:name]
 
-      order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
+      order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC')
 
       conditions = [order_by.join(','), upper_contains_term: "%#{search_term.upcase}%"]
     end

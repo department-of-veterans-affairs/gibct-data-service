@@ -490,7 +490,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'search returns results with a valid state abbreviation uppercased search term' do
       create(:institution,  state: 'AK', version_id: Version.current_production.id)
-      get(:index, params: { name: 'AK', state_search: true })
+      get(:index, params: { name: 'AK' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -498,7 +498,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'search returns results with a valid state abbreviation lowercased search term' do
       create(:institution,  state: 'AK', version_id: Version.current_production.id)
-      get(:index, params: { name: 'ak', state_search: true })
+      get(:index, params: { name: 'ak' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -506,7 +506,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'search returns results with a valid city, state abbreviation uppercased search term' do
       create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
-      get(:index, params: { name: 'TESTVILLE, AK', state_search: true })
+      get(:index, params: { name: 'TESTVILLE, AK' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -514,14 +514,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'search returns results with a valid city, state abbreviation lowercased search term' do
       create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
-      get(:index, params: { name: 'testville, ak', state_search: true })
+      get(:index, params: { name: 'testville, ak' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns results with flag enabled for institution names' do
-      get(:index, params: { name: 'chicago', state_search: true })
+      get(:index, params: { name: 'chicago' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -536,7 +536,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filters by employer category' do
-      get(:index, params: { category: 'employer', name: 'in' })
+      get(:index, params: { category: 'employer', name: 'acme' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -550,7 +550,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filters by employer type' do
-      get(:index, params: { type: 'ojt', name: 'in' })
+      get(:index, params: { type: 'ojt', name: 'acme' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
