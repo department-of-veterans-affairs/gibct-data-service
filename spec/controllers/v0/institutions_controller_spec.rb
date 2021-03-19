@@ -519,13 +519,6 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
-
-    it 'search returns results with flag enabled for institution names' do
-      get(:index, params: { name: 'chicago' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
-      expect(response).to match_response_schema('institutions')
-    end
   end
 
   context 'with category and type search results' do

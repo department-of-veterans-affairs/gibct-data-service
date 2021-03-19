@@ -65,7 +65,7 @@ class InstitutionProgram < ApplicationRecord
     order_by = ['institutions.preferred_provider DESC NULLS LAST', 'institutions.institution']
     conditions = [order_by.join(',')]
 
-    if query.present?
+    if query.present? && !query[:name].nil?
       search_term = query[:name]
 
       order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC')

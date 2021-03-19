@@ -35,7 +35,7 @@ module V0
       search_term = @query[:name]
 
       # Weighted sort is not needed when not using Institution scope search
-      if (Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term))
+      if Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term)
 
         render json: search_results.city_state_search_order(max_gibill)
                                    .page(params[:page]), meta: @meta
