@@ -359,9 +359,6 @@ class Institution < ImportableRecord
       'institution'
     ]
 
-    # not included in weighted_sort as weight value would have to be at least 4.0 to affect order
-    order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC')
-
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill
     institution_search_term = "%#{processed_search_term}%"
