@@ -39,17 +39,15 @@ class InstitutionProgram < ApplicationRecord
     return if query.blank? || query[:name].blank?
 
     search_term = query[:name]
-    state_search = query[:state_search]
 
     clause = [
       'institution_programs.facility_code = (:upper_search_term)',
       'lower(description) LIKE (:lower_contains_term)',
       'institution % :contains_search_term',
       'UPPER(physical_city) = :upper_search_term',
-      'institutions.physical_zip = :search_term'
+      'institutions.physical_zip = :search_term',
+      'country LIKE :upper_contains_term'
     ]
-
-    clause << 'country LIKE :upper_contains_term' if state_search
 
     where(
       sanitize_sql_for_conditions(
@@ -67,15 +65,12 @@ class InstitutionProgram < ApplicationRecord
     order_by = ['institutions.preferred_provider DESC NULLS LAST', 'institutions.institution']
     conditions = [order_by.join(',')]
 
-    if query.present?
-      state_search = query[:state_search]
+    if query.present? && !query[:name].nil?
       search_term = query[:name]
 
-      if search_term.present?
-        order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
+      order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC')
 
-        conditions = [order_by.join(','), upper_contains_term: "%#{search_term.upcase}%"]
-      end
+      conditions = [order_by.join(','), upper_contains_term: "%#{search_term.upcase}%"]
     end
 
     sanitized_order_by = sanitize_sql_for_conditions(conditions)

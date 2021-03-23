@@ -278,7 +278,6 @@ class Institution < ImportableRecord
 
     search_term = query[:name]
     include_address = query[:include_address] || false
-    state_search = query[:state_search] || false
 
     clause = ['facility_code = :upper_search_term']
 
@@ -296,7 +295,7 @@ class Institution < ImportableRecord
     clause << 'UPPER(city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << 'zip = :search_term'
-    clause << 'country LIKE :upper_contains_term' if state_search
+    clause << 'country LIKE :upper_contains_term'
 
     if include_address
       3.times do |i|
@@ -336,15 +335,16 @@ class Institution < ImportableRecord
     return order('institution') if query.blank? || query[:name].blank?
 
     search_term = query[:name]
-    state_search = query[:state_search] || false
 
-    weighted_sort = ['CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-                     "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
-                       'THEN 1 * :alias_modifier ELSE 0 END',
-                     'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
-                     'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
-                     'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
-                     'COALESCE(SIMILARITY(institution, :search_term), 0)']
+    weighted_sort = [
+      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+      "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
+        'THEN 1 * :alias_modifier ELSE 0 END',
+      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
+      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
+      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
+      'COALESCE(SIMILARITY(institution, :search_term), 0)'
+    ]
 
     processed = institution_search_term(search_term)
     processed_search_term = processed[:search_term]
@@ -353,10 +353,11 @@ class Institution < ImportableRecord
     weighted_sort << 'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)' if excluded_only.blank?
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
-    order_by = ["#{weighted_sort.join(' + ')} DESC NULLS LAST", 'institution']
-
-    # not included in weighted_sort as weight value would have to be at least 4.0 to affect order
-    order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC') if state_search
+    order_by = [
+      'CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC',
+      "#{weighted_sort.join(' + ')} DESC NULLS LAST",
+      'institution'
+    ]
 
     alias_modifier = Settings.search.weight_modifiers.alias
     gibill_modifier = Settings.search.weight_modifiers.gibill

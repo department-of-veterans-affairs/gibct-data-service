@@ -49,11 +49,11 @@ module V0
 
     def search_results
       @query ||= normalized_query_params
-      if @query[:state_search] && Institution.state_search_term?(@query[:name])
+      if Institution.state_search_term?(@query[:name])
         relation = InstitutionProgram.joins(institution: :version)
                                      .eager_load(:institution)
                                      .where(institutions: { version: @version, state: @query[:name].upcase })
-      elsif @query[:state_search] && Institution.city_state_search_term?(@query[:name])
+      elsif Institution.city_state_search_term?(@query[:name])
         terms = @query[:name].split(',').map(&:strip)
         relation = InstitutionProgram.joins(institution: :version)
                                      .eager_load(:institution)
