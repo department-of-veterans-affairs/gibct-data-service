@@ -36,6 +36,8 @@ gem 'wongi-engine', '~> 0.3.5'
 
 # Mass importing of CSV data
 gem 'activerecord-import'
+# Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
+gem 'activerecord-session_store'
 
 gem 'config'
 

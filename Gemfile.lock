@@ -61,6 +61,12 @@ GEM
       activesupport (= 6.0.3.5)
     activerecord-import (1.0.5)
       activerecord (>= 3.2)
+    activerecord-session_store (2.0.0)
+      actionpack (>= 5.2.4.1)
+      activerecord (>= 5.2.4.1)
+      multi_json (~> 1.11, >= 1.11.2)
+      rack (>= 2.0.8, < 3)
+      railties (>= 5.2.4.1)
     activestorage (6.0.3.5)
       actionpack (= 6.0.3.5)
       activejob (= 6.0.3.5)
@@ -433,6 +439,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.4)
   activerecord-import
+  activerecord-session_store
   bcrypt (~> 3.1.7)
   brakeman
   bundler-audit
