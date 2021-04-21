@@ -27,8 +27,9 @@ Note that queries are PostgreSQL-specific.
 2. Install Ruby 2.6.6. (It is suggested to use a Ruby version manager such as [rbenv](https://github.com/rbenv/rbenv#installation) and then to [install Ruby 2.6.6](https://github.com/rbenv/rbenv#installing-ruby-versions)).
 3. Install Bundler to manager dependencies: `gem install bundler -v 2.1.4` and `bundle install`
 4. `npm install -g phantomjs` is necessary for running certain tests.
+5. Continue to Pre-Setup Configuration
 
-## Issues
+### Issues In Setup
 When running `bundle install` if this or a similar error occurs
 
 ```
@@ -43,14 +44,6 @@ brew install v8@3.15
 bundle config --local build.libv8 --with-system-v8
 bundle config --local build.therubyracer --with-v8-dir=/usr/local/opt/v8@3.15
 ```
-
-## Commands
-- `bundle exec rake lint` - Run the full suite of linters on the codebase.
-- `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!
-- `bundle exec rake security` - Run the suite of security scanners on the codebase.
-- `bundle exec rake ci` - Runs the continuous integration scripts which includes linters, security scanners, tests, and code coverage
-- `bundle exec rspec spec/path/to/spec` - Run a specific spec
-
 ## Pre-Setup Configuration
 
 ### Environment Variables
@@ -110,7 +103,41 @@ User.create(email: 'xxxxxx', password: 'xxxxxx')
 1. Run `bundle install` to set up the application.
 2. Setup the DS database by running `bundle exec rake db:setup`.
 3. Run any pending migrations by running `bundle exec rake db:migrate`.
-4. Start the application: `bundle exec rails s`
+4. Start the application: `bundle exec rails s -p 4000`
+5. You should be able to access the GIDS dashboard at "http://localhost:4000"
+6. Add the following in vets-api/config/settings.local.yml:
+```
+# Settings for GI Bill Data Service
+
+gids:
+  url: http://host.docker.internal:4000
+```
+7. Log in using the values for ADMIN_EMAIL and ADMIN_PW in application.yml
+8. Run vets-api and vets-website and confirm that you can see the GI Bill Comparison Tool  at http://localhost:3001/gi-bill-comparison-tool.
+
+### Cleanup local Database
+```
+brew services restart postgres
+bundle exec rake db:drop db:create db:schema:load db:seed
+```
+
+
+## Fetching Data from the College Scorecard API
+The gibct-data-service utilizes the U.S. Department of Education's College Scorecard API to retrieve some of the data for institutions that are displayed in the Comparison Tool. After obtaining and configuring your API key as described in the "Environment Variables" section of this README above, it is relatively trivial to fetch the latest data from the API.
+
+With the GIBCT Data Service Running locally, log in to access the dashboard. From there click the green "Fetch" button on the `Scorecard` row. The Institution data will be fetched automatically from the College Scorecard API and should return a success message when complete.
+
+Institutions have a one to many relationship with their associated degree programs. To fetch the latest data for the institution degree programs, click the green "Fetch" button on the `ScorecardDegreeProgram` row. The latest ScoreCardDegree program data will be fetched and you should receive a success message when complete.
+
+## Version Generation
+Much of the data in the gibct-data-service is used to build instances of institutions to display relevant data to users of the comparison tool for particular institutions. Since the data comes in as various CSV types to build these institution objects, a versioning system is necessary to ensure the correct data is being used when building the institution objects and only approved information is released to production. As mentioned in the "Data Modes and Versions" section above, there are versioned preview and production modes of the institutions that are built from the data in the uploaded CSVs. 
+
+To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using `gibct-data-service/app/models/institution_builder.rb` and produce the new institution objects. You will receive a success message when this is complete.
+
+
+ You can view the data contained in the new preview version by exporting the Institutions CSV by clicking the yellow "Download Export CSV" button in the "Latest Preview Version" table. A CSV download should begin producing a file with the naming convention of `institutions_version_x.csv` where x is the preview version number. If any additional CSVs need to be modified, you will need to upload them as necessary and generate another preview version.
+
+The preview version will not be made available to the comparison tool until it is published as a production version. To publish the latest preview version as a production version, click the red "Publish to Production" button in the Latest Preview Version. Note: this will only publish the version in the environment you are working in, for example running the GIBCT service locally and publishing a preview version will not affect the staging or production environments. To check the content of the new production version you can export the Institutions csv by clicking the yellow "Download Export CSV" button in the "Latest Production Version" table which will produce a file with the same naming convention described above.
 
 ## How to Contribute
 
