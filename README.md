@@ -121,6 +121,13 @@ brew services restart postgres
 bundle exec rake db:drop db:create db:schema:load db:seed
 ```
 
+## Commands
+- `bundle exec rake lint` - Run the full suite of linters on the codebase.
+- `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!
+- `bundle exec rake security` - Run the suite of security scanners on the codebase.
+- `bundle exec rake ci` - Runs the continuous integration scripts which includes linters, security scanners, tests, and code coverage
+- `bundle exec rspec spec/path/to/spec` - Run a specific spec
+
 
 ## Fetching Data from the College Scorecard API
 The gibct-data-service utilizes the U.S. Department of Education's College Scorecard API to retrieve some of the data for institutions that are displayed in the Comparison Tool. After obtaining and configuring your API key as described in the "Environment Variables" section of this README above, it is relatively trivial to fetch the latest data from the API.
