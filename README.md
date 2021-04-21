@@ -156,6 +156,7 @@ In addition to the versioned institution objects, the gibct-data-service uses ve
  - Zipcode Rates: Location specific payment rates.
  - Caution Flags: Warning messages specific to individual institutions.
 When generating a new preview or production version using the GIBCT, these objects are also versioned.
+
 ### Archived Data
 All versioned data is archived using corresponding archive objects except for caution flags
  - InstitutionCategoryRatingsArchive
