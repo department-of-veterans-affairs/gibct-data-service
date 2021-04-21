@@ -137,14 +137,33 @@ With the GIBCT Data Service Running locally, log in to access the dashboard. Fro
 Institutions have a one to many relationship with their associated degree programs. To fetch the latest data for the institution degree programs, click the green "Fetch" button on the `ScorecardDegreeProgram` row. The latest ScoreCardDegree program data will be fetched and you should receive a success message when complete.
 
 ## Version Generation
+### Instituion Versioning
 Much of the data in the gibct-data-service is used to build instances of institutions to display relevant data to users of the comparison tool for particular institutions. Since the data comes in as various CSV types to build these institution objects, a versioning system is necessary to ensure the correct data is being used when building the institution objects and only approved information is released to production. As mentioned in the "Data Modes and Versions" section above, there are versioned preview and production modes of the institutions that are built from the data in the uploaded CSVs. 
 
-To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using `gibct-data-service/app/models/institution_builder.rb` and produce the new institution objects. You will receive a success message when this is complete.
+To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using [gibct-data-service/app/models/institution_builder.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/models/institution_builder.rb) and produce the new institution objects. You will receive a success message when this is complete.
+
 
 
  You can view the data contained in the new preview version by exporting the Institutions CSV by clicking the yellow "Download Export CSV" button in the "Latest Preview Version" table. A CSV download should begin producing a file with the naming convention of `institutions_version_x.csv` where x is the preview version number. If any additional CSVs need to be modified, you will need to upload them as necessary and generate another preview version.
 
-The preview version will not be made available to the comparison tool until it is published as a production version. To publish the latest preview version as a production version, click the red "Publish to Production" button in the Latest Preview Version. Note: this will only publish the version in the environment you are working in, for example running the GIBCT service locally and publishing a preview version will not affect the staging or production environments. To check the content of the new production version you can export the Institutions csv by clicking the yellow "Download Export CSV" button in the "Latest Production Version" table which will produce a file with the same naming convention described above.
+The preview version will not be made available to the comparison tool until it is published as a production version. To publish the latest preview version as a production version, click the red "Publish to Production" button in the Latest Preview Version. Note: this will only publish the version in the environment you are working in, for example running the GIBCT service locally and publishing a preview version will not affect the staging or production environments. To check the content of the new production version you can export the Institutions CSV by clicking the yellow "Download Export CSV" button in the "Latest Production Version" table which will produce a file with the same naming convention described above.
+
+### Additional Versioning. 
+In addition to the versioned institution objects, the gibct-data-service uses versioning to keep track of other objects used in the comparison tool. These include:
+ - Institution Programs: VET TEC programs and their associated information.
+ - Institution Category Ratings: Data regarding experiences and various aspects of institutions to give an overall perspective on the institution and what it has to offer.
+ - School Certifying Officials: Contact information for the School's Certifying Officials
+ - Zipcode Rates: Location specific payment rates.
+ - Caution Flags: Warning messages specific to individual institutions.
+When generating a new preview or production version using the GIBCT, these objects are also versioned.
+### Archived Data
+All versioned data is archived using corresponding archive objects except for caution flags
+ - InstitutionCategoryRatingsArchive
+ - InstitutionProgramsArchive
+ - VersionedSchoolCertifyingOfficialsArchive
+ - ZipcodeRatesArchive
+ - InstitutionsArchive
+When a new preview version is created, the objects and their data in the current preview version are saved in the archive tables. The archived objects exist in case there is a reason to check what a previous version contained. At the moment there is no current way to roll back to previous versions, but this information can be accessed by querying the database(s) as necessary.
 
 ## How to Contribute
 
