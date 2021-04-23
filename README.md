@@ -54,7 +54,7 @@ An error occurred while installing mimemagic (0.3.7), and Bundler cannot continu
 Make sure that `gem install mimemagic -v '0.3.7' --source 'https://rubygems.org/'` succeeds before bundling.
 ```
 
-See [mimemageic](https://github.com/mimemagicrb/mimemagic/blob/master/README.md) to resolve the issue for your OS.
+See [mimemageic](https://github.com/mimemagicrb/mimemagic/blob/master/README.md) to resolve the issue.
 
 ## Pre-Setup Configuration
 
