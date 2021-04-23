@@ -30,7 +30,9 @@ Note that queries are PostgreSQL-specific.
 5. Continue to Pre-Setup Configuration
 
 ### Issues In Setup
-When running `bundle install` if this or a similar error occurs
+When running `bundle install` if an error occurs see below for possible solutions:
+
+#### libv8
 
 ```
 An error occurred while installing libv8 (3.16.14.19), and Bundler cannot continue.
@@ -44,6 +46,16 @@ brew install v8@3.15
 bundle config --local build.libv8 --with-system-v8
 bundle config --local build.therubyracer --with-v8-dir=/usr/local/opt/v8@3.15
 ```
+
+#### mimemagic
+
+```
+An error occurred while installing mimemagic (0.3.7), and Bundler cannot continue.
+Make sure that `gem install mimemagic -v '0.3.7' --source 'https://rubygems.org/'` succeeds before bundling.
+```
+
+See [mimemageic](https://github.com/mimemagicrb/mimemagic/blob/master/README.md) to resolve the issue for your OS.
+
 ## Pre-Setup Configuration
 
 ### Environment Variables
@@ -140,7 +152,7 @@ Institutions have a one to many relationship with their associated degree progra
 ### Instituion Versioning
 Much of the data in the gibct-data-service is used to build instances of institutions to display relevant data to users of the comparison tool for particular institutions. Since the data comes in as various CSV types to build these institution objects, a versioning system is necessary to ensure the correct data is being used when building the institution objects and only approved information is released to production. As mentioned in the "Data Modes and Versions" section above, there are versioned preview and production modes of the institutions that are built from the data in the uploaded CSVs. 
 
-To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/models/institution_builder.rb and produce the new institution objects. You will receive a success message when this is complete.
+To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using [app/models/institution_builder.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/models/institution_builder.rb) and produce the new institution objects. You will receive a success message when this is complete.
 
 
 
