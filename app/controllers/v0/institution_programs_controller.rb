@@ -29,7 +29,7 @@ module V0
 
       render json: search_results
         .search_order(@query)
-        .page(params[:page]), meta: @meta
+        .page(page), meta: @meta
     end
 
     private
@@ -115,6 +115,12 @@ module V0
       add_search_facet(raw_facets, :state)
       add_country_search_facet(raw_facets)
       raw_facets
+    end
+
+    def page
+      Integer(params[:page] || '0')
+    rescue ArgumentError
+      0
     end
   end
 end

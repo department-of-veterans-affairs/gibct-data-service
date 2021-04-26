@@ -38,10 +38,10 @@ module V0
       if Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term)
 
         render json: search_results.city_state_search_order(max_gibill)
-                                   .page(params[:page]), meta: @meta
+                                   .page(page), meta: @meta
       else
         render json: search_results.search_order(@query, max_gibill)
-                                   .page(params[:page]), meta: @meta
+                                   .page(page), meta: @meta
       end
     end
 
@@ -62,7 +62,7 @@ module V0
                             .where(version: @version)
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
-                            .page(params[:page])
+                            .page(page)
 
       @meta = {
         version: @version,
@@ -176,6 +176,12 @@ module V0
       add_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
+    end
+
+    def page
+      Integer(params[:page] || '0')
+    rescue ArgumentError
+      0
     end
   end
   # rubocop:enable Metrics/ClassLength
