@@ -292,14 +292,14 @@ class Institution < ImportableRecord
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
 
-    clause << 'UPPER(city) = :upper_search_term'
+    clause << 'UPPER(physical_city) = :upper_search_term'
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
-    clause << 'zip = :search_term'
-    clause << 'country LIKE :upper_contains_term'
+    clause << 'institutions.physical_zip = :search_term'
+    clause << 'physical_country LIKE :upper_contains_term'
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE :lower_contains_term"
+        clause << "lower(physical_address_#{i + 1}) LIKE :lower_contains_term"
       end
     end
 
