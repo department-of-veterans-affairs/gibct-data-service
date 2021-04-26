@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module V0
-  # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
     include Facets
 
@@ -184,5 +183,4 @@ module V0
       1
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
