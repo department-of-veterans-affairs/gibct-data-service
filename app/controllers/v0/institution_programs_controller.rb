@@ -118,9 +118,9 @@ module V0
     end
 
     def page
-      Integer(params[:page] || '0')
+      Integer(params[:page] || '1')
     rescue ArgumentError
-      0
+      1
     end
   end
 end
