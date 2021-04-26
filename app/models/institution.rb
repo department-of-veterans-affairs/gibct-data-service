@@ -272,6 +272,11 @@ class Institution < ImportableRecord
     escaped_term
   end
 
+  city_physical = production? ? 'city' : 'physical_city'
+  zipcode_physical = production? ? 'zip' : 'physical_zip'
+  country_physical = production? ? 'country' : 'physical_country'
+  address_physical = production? ? 'address' : 'physical_address'
+
   # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
     return if query.blank? || query[:name].blank?
@@ -292,14 +297,14 @@ class Institution < ImportableRecord
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
 
-    clause << 'UPPER(physical_city) = :upper_search_term'
+    clause << "UPPER(#{city_physical}) = :upper_search_term"
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
-    clause << 'institutions.physical_zip = :search_term'
-    clause << 'physical_country LIKE :upper_contains_term'
+    clause << "#{zipcode_physical} = :search_term"
+    clause << "#{country_physical} LIKE :upper_contains_term"
 
     if include_address
       3.times do |i|
-        clause << "lower(physical_address_#{i + 1}) LIKE :lower_contains_term"
+        clause << "lower(#{address_physical}_#{i + 1}) LIKE :lower_contains_term"
       end
     end
 
@@ -340,7 +345,7 @@ class Institution < ImportableRecord
       'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
       "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
         'THEN 1 * :alias_modifier ELSE 0 END',
-      'CASE WHEN UPPER(city) = :upper_search_term THEN 1 ELSE 0 END',
+      "CASE WHEN UPPER(#{city_physical}) = :upper_search_term THEN 1 ELSE 0 END",
       'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
       'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
       'COALESCE(SIMILARITY(institution, :search_term), 0)'
@@ -354,7 +359,7 @@ class Institution < ImportableRecord
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
     order_by = [
-      'CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC',
+      "CASE WHEN UPPER(#{city_physical}) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC",
       "#{weighted_sort.join(' + ')} DESC NULLS LAST",
       'institution'
     ]
