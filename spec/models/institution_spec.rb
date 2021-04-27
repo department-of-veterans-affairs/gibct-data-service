@@ -173,7 +173,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'includes the address fields if include_address is set' do
-        institution = create(:institution, address_1: 'address_1')
+        institution = create(:institution, physical_address_1: 'address_1')
         expect(described_class.search({ name: 'address_1', include_address: true }).take).to eq(institution)
         expect(described_class.search({ name: 'address_1' }).count).to eq(0)
       end
