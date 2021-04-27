@@ -11,6 +11,12 @@ module V0
 
     private
 
+    def page
+      Integer(params[:page] || '1')
+    rescue ArgumentError
+      1
+    end
+
     # Newest production data version assumed when version param is undefined
     def resolve_version
       v = params[:version]

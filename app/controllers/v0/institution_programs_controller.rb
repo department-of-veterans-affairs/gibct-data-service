@@ -116,11 +116,5 @@ module V0
       add_country_search_facet(raw_facets)
       raw_facets
     end
-
-    def page
-      Integer(params[:page] || '1')
-    rescue ArgumentError
-      1
-    end
   end
 end
