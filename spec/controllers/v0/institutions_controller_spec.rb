@@ -453,9 +453,9 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'has facet metadata' do
-      get(:index, params: { name: 'chicago' })
+      get(:index, params: { name: 'ny' })
       facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['state']['il']).to eq(1)
+      expect(facets['state']['ny']).to eq(3)
       expect(facets['country'].count).to eq(1)
       expect(facets['country'][0]['name']).to eq('USA')
     end

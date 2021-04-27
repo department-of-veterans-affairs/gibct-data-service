@@ -225,10 +225,10 @@ RSpec.describe Institution, type: :model do
 
       it 'city exact match' do
         institution = create(:institution, :mit)
-        search_term = institution.city
+        search_term = institution.physical_city
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
-        expect(results[0].city).to eq(search_term)
+        expect(results[0].physical_city).to eq(search_term)
       end
 
       it 'gibill value' do
