@@ -27,7 +27,6 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :address_1
   attribute :address_2
   attribute :address_3
-  attribute :updated_at
   attribute :physical_address_1
   attribute :physical_address_2
   attribute :physical_address_3
