@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module V0
-  # rubocop:disable Metrics/ClassLength
   class InstitutionsController < ApiController
     include Facets
 
@@ -38,10 +37,10 @@ module V0
       if Institution.state_search_term?(search_term) || Institution.city_state_search_term?(search_term)
 
         render json: search_results.city_state_search_order(max_gibill)
-                                   .page(params[:page]), meta: @meta
+                                   .page(page), meta: @meta
       else
         render json: search_results.search_order(@query, max_gibill)
-                                   .page(params[:page]), meta: @meta
+                                   .page(page), meta: @meta
       end
     end
 
@@ -62,7 +61,7 @@ module V0
                             .where(version: @version)
                             .where(parent_facility_code_id: params[:id])
                             .order(:institution)
-                            .page(params[:page])
+                            .page(page)
 
       @meta = {
         version: @version,
@@ -178,5 +177,4 @@ module V0
       raw_facets
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

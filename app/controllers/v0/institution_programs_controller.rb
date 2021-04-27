@@ -29,7 +29,7 @@ module V0
 
       render json: search_results
         .search_order(@query)
-        .page(params[:page]), meta: @meta
+        .page(page), meta: @meta
     end
 
     private
