@@ -17,7 +17,7 @@ module InstitutionBuilder
     add_arf_gi_bill(version.id)
     add_post_911_stats(version.id)
     add_mou(version.id)
-    add_scorecard(version.id)
+    ScorecardBuilder.add_scorecard(version.id)
     add_ipeds_ic(version.id)
     add_ipeds_hd(version.id)
     add_ipeds_ic_ay(version.id)
@@ -37,7 +37,7 @@ module InstitutionBuilder
     build_institution_programs(version.id)
     build_versioned_school_certifying_official(version.id)
     set_count_of_caution_flags(version.id)
-    update_lat_lon_from_scorecard(version.id)
+    ScorecardBuilder.update_lat_lon_from_scorecard(version.id)
   end
 
   def self.build_ratings(version)
@@ -299,29 +299,6 @@ module InstitutionBuilder
     SQL
 
     CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
-  end
-
-  def self.add_scorecard(version_id)
-    str = <<-SQL
-      UPDATE institutions SET #{columns_for_update(Scorecard)}, ialias = scorecards.alias
-      FROM scorecards
-      WHERE institutions.cross = scorecards.cross
-      AND institutions.version_id = #{version_id}
-    SQL
-
-    Institution.connection.update(str)
-  end
-
-  def self.update_lat_lon_from_scorecard(version_id)
-    str = <<-SQL
-      UPDATE institutions SET latitude = scorecards.latitude, longitude = scorecards.longitude
-      FROM scorecards
-      WHERE institutions.cross = scorecards.cross
-      AND institutions.version_id = #{version_id}
-      AND institutions.latitude is NULL
-    SQL
-
-    Institution.connection.update(str)
   end
 
   def self.add_ipeds_ic(version_id)
