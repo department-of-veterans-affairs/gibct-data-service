@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_10_164802) do
+ActiveRecord::Schema.define(version: 2021_04_28_133008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -471,6 +471,7 @@ ActiveRecord::Schema.define(version: 2021_02_10_164802) do
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
     t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
+    t.index ["latitude", "longitude"], name: "index_institutions_on_latitude_and_longitude"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
     t.index ["ope6"], name: "index_institutions_on_ope6"
