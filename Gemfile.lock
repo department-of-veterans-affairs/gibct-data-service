@@ -183,6 +183,9 @@ GEM
     font-awesome-rails (4.7.0.5)
       railties (>= 3.2, < 6.1)
     formatador (0.2.5)
+    geocode (0.2.1)
+      json
+      trollop
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     govdelivery-tms (2.8.4)
@@ -406,6 +409,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
+    trollop (2.9.10)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
@@ -454,6 +458,7 @@ DEPENDENCIES
   faraday_middleware
   figaro
   font-awesome-rails
+  geocode (~> 0.2.1)
   govdelivery-tms (= 2.8.4)
   guard-rspec
   jquery-rails
