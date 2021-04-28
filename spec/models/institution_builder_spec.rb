@@ -933,7 +933,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(VersionedSchoolCertifyingOfficial.count).to be_zero
       end
     end
-    
+
     describe 'when setting section 103 data' do
       it 'sets default message for IHL institutions' do
         weam = create :weam, :ihl_facility_code

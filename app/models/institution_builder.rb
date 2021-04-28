@@ -45,7 +45,8 @@ module InstitutionBuilder
       build_zip_code_rates_from_weams(version.id)
       build_institution_programs(version.id)
       build_versioned_school_certifying_official(version.id)
-      ScorecardBuilder.update_lat_lon_from_scorecard(version.id)
+      ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
+      build_lat_long(version.id)
     end
 
     def self.build_ratings(version)
@@ -711,7 +712,7 @@ module InstitutionBuilder
         WHERE weams.facility_code = institutions.facility_code
           AND SUBSTRING(weams.facility_code, 1, 2) IN(#{ihl_prefixes})
           AND institutions.version_id = #{version_id};
-  
+
         -- set message based on sec103s
         UPDATE institutions SET #{columns_for_update(Sec103)},
           section_103_message = CASE
@@ -784,14 +785,14 @@ module InstitutionBuilder
           INNER JOIN institutions i ON p.facility_code = i.facility_code
           WHERE i.version_id = #{version_id}
             AND i.approved = true;;
-  
+
         UPDATE institution_programs SET
           length_in_hours = 0,
           length_in_weeks = 0
         WHERE id IN (
           SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id HAVING COUNT(*) > 1
         );
-  
+
         DELETE FROM institution_programs WHERE id NOT IN (
           SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id
         );
@@ -930,6 +931,42 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(sql)
+    end
+
+    def build_lat_long(version_id)
+      current_version = Version.current_production
+
+      from_sql = <<-SQL
+        FROM institutions i LEFT OUTER JOIN institutions p ON (
+            i.facility_code = p.facility_code
+            AND p.version_id = :current_version
+            AND (
+              i.physical_address_1 != p.physical_address_1 OR
+              i.physical_address_2 != p.physical_address_2 OR
+              i.physical_address_3 != p.physical_address_3 OR
+              i.physical_city != p.physical_city OR
+              i.physical_state != p.physical_state OR
+              i.physical_country != p.physical_country OR
+              i.physical_zip != p.physical_zip
+            )
+          )
+      SQL
+
+      where_sql = <<-SQL
+          WHERE (
+            i.latitude IS NULL OR i.longitude IS NULL
+          )
+          AND i.version_id = :preview_version
+          AND i.approved IS true
+          AND p.id IS NOT NULL
+      SQL
+
+      from_query = Institution.sanitize_sql_for_conditions([from_sql, current_version: current_version])
+      where_query = Institution.sanitize_sql_for_conditions([where_sql, preview_version: version_id])
+
+      Institution.connection.select(query)
+
+      missing_lat_long_rows = Institution.from(from_query).where(where_query)
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InstitutionBuilder
   class ScorecardBuilder
     extend Common
@@ -13,7 +15,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
     end
 
-    def self.update_lat_lon_from_scorecard(version_id)
+    def self.add_lat_lon_from_scorecard(version_id)
       str = <<-SQL
       UPDATE institutions SET latitude = scorecards.latitude, longitude = scorecards.longitude
       FROM scorecards
