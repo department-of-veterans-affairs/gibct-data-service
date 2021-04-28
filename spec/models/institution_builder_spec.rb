@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe InstitutionBuilder, type: :model do
   let(:user) { User.first }
   let(:institutions) { Institution.where(version: Version.current_preview) }
+  let(:factory_class) { InstitutionBuilder::Factory }
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
@@ -42,12 +43,12 @@ RSpec.describe InstitutionBuilder, type: :model do
 
     context 'when not successful' do
       it 'returns a success = false' do
-        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         expect(described_class.run(user)[:success]).to be_falsey
       end
 
       it 'returns an error message' do
-        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         expect(described_class.run(user)[:error_msg]).to eq('BOOM!')
       end
 
@@ -55,7 +56,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
         statement_invalid.set_backtrace(%(backtrace))
-        allow(described_class).to receive(:add_crosswalk).and_raise(statement_invalid)
+        allow(factory_class).to receive(:add_crosswalk).and_raise(statement_invalid)
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
@@ -63,14 +64,14 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       it 'logs errors at the Rails level' do
         error_message = 'There was an error of unexpected origin: BOOM!'
-        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
       end
 
       it 'does not change the institutions or versions if not successful' do
-        allow(described_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         create :version
         version = Version.current_preview
         described_class.run(user)
@@ -932,18 +933,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(VersionedSchoolCertifyingOfficial.count).to be_zero
       end
     end
-
-    describe 'when setting count_of_caution_flags' do
-      it 'has count greater than zero' do
-        create :accreditation_institute_campus
-        create :accreditation_action_probationary
-
-        described_class.run(user)
-
-        expect(institutions.where('count_of_caution_flags > 0').count).to be > 0
-      end
-    end
-
+    
     describe 'when setting section 103 data' do
       it 'sets default message for IHL institutions' do
         weam = create :weam, :ihl_facility_code

@@ -63,7 +63,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
 
     it 'does not change the institutions table when not successful' do
-      allow(InstitutionBuilder).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+      allow(InstitutionBuilder::Factory).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
       post(:build)
 
       expect(assigns(:error_msg)).to eq('BOOM!')
