@@ -1,6 +1,6 @@
 module InstitutionBuilder
   class ScorecardBuilder
-    extend InstitutionBuilderCommon
+    extend Common
 
     def self.add_scorecard(version_id)
       str = <<-SQL

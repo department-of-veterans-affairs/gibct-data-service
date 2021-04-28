@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module InstitutionBuilder
-  module InstitutionBuilderCommon
+  module Common
     def columns_for_update(klass)
       table_name = klass.name.underscore.pluralize
       klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
@@ -13,7 +13,7 @@ module InstitutionBuilder
   end
 
   class Factory
-    extend InstitutionBuilderCommon
+    extend Common
 
     def self.run_insertions(version)
       initialize_with_weams(version)
