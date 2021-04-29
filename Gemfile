@@ -21,7 +21,7 @@ gem 'active_model_serializers', '~> 0.10.4'
 gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
-gem 'geocode', '~> 0.2.1'
+gem "geocoder", "~> 1.6"
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
