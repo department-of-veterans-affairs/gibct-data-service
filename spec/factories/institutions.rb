@@ -27,9 +27,9 @@ FactoryBot.define do
     end
 
     trait :in_chicago do
-      city { 'CHICAGO' }
-      state { 'IL' }
-      country { 'USA' }
+      physical_city { 'CHICAGO' }
+      physical_state { 'IL' }
+      physical_country { 'USA' }
       stem_offered { true }
     end
 

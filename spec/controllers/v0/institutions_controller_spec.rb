@@ -342,7 +342,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns results exact matching city' do
-      create(:institution, :independent_study, city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
+      create(:institution, :independent_study, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
       get(:index, params: { name: 'VERY LONG CITY NAME' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
@@ -359,7 +359,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'search returns results zip' do
-      create(:institution, :independent_study, zip: '29461', version_id: Version.current_production.id)
+      create(:institution, :independent_study, physical_zip: '29461', version_id: Version.current_production.id)
       get(:index, params: { name: '29461' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
@@ -401,14 +401,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'filter by uppercase country returns results' do
-      get(:index, params: { name: 'chicago', country: 'USA' })
+      get(:index, params: { name: 'chicago', physical_country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by lowercase country returns results' do
-      get(:index, params: { name: 'chicago', country: 'usa' })
+      get(:index, params: { name: 'chicago', physical_country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -453,9 +453,9 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'has facet metadata' do
-      get(:index, params: { name: 'chicago' })
+      get(:index, params: { name: 'ny' })
       facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['state']['il']).to eq(1)
+      expect(facets['state']['ny']).to eq(3)
       expect(facets['country'].count).to eq(1)
       expect(facets['country'][0]['name']).to eq('USA')
     end

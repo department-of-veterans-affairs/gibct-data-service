@@ -27,11 +27,11 @@ RSpec.describe 'institutions', type: :request do
     end
 
     it 'allow searching by address fields' do
-      institution = create(:institution, address_1: 'address_1', version_id: Version.current_production.id)
+      institution = create(:institution, physical_address_1: 'address_1', version_id: Version.current_production.id)
       get(v0_institutions_path(name: 'address_1', include_address: true))
       data = JSON.parse(response.body)['data'][0]
       expect(data['id'].to_i).to eq(institution.id)
-      expect(data['attributes']['address_1']).to eq('address_1')
+      expect(data['attributes']['physical_address_1']).to eq('address_1')
     end
   end
 

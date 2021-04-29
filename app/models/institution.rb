@@ -276,6 +276,11 @@ class Institution < ImportableRecord
   scope :search, lambda { |query|
     return if query.blank? || query[:name].blank?
 
+    city_physical = production? ? 'city' : 'physical_city'
+    zipcode_physical = production? ? 'zip' : 'physical_zip'
+    country_physical = production? ? 'country' : 'physical_country'
+    address_physical = production? ? 'address' : 'physical_address'
+
     search_term = query[:name]
     include_address = query[:include_address] || false
 
@@ -292,14 +297,14 @@ class Institution < ImportableRecord
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
 
-    clause << 'UPPER(city) = :upper_search_term'
+    clause << "UPPER(#{city_physical}) = :upper_search_term"
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
-    clause << 'zip = :search_term'
-    clause << 'country LIKE :upper_contains_term'
+    clause << "#{zipcode_physical} = :search_term"
+    clause << "#{country_physical} LIKE :upper_contains_term"
 
     if include_address
       3.times do |i|
-        clause << "lower(address_#{i + 1}) LIKE :lower_contains_term"
+        clause << "lower(#{address_physical}_#{i + 1}) LIKE :lower_contains_term"
       end
     end
 
