@@ -173,7 +173,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'includes the address fields if include_address is set' do
-        institution = create(:institution, address_1: 'address_1')
+        institution = create(:institution, physical_address_1: 'address_1')
         expect(described_class.search({ name: 'address_1', include_address: true }).take).to eq(institution)
         expect(described_class.search({ name: 'address_1' }).count).to eq(0)
       end
@@ -225,10 +225,10 @@ RSpec.describe Institution, type: :model do
 
       it 'city exact match' do
         institution = create(:institution, :mit)
-        search_term = institution.city
+        search_term = institution.physical_city
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
-        expect(results[0].city).to eq(search_term)
+        expect(results[0].physical_city).to eq(search_term)
       end
 
       it 'gibill value' do
