@@ -954,11 +954,10 @@ module InstitutionBuilder
 
       where_sql = <<-SQL
           WHERE (
-            i.latitude IS NULL OR i.longitude IS NULL
+            i.latitude IS NULL OR i.longitude IS NULL or p.id IS NOT NULL
           )
           AND i.version_id = :preview_version
           AND i.approved IS true
-          AND p.id IS NOT NULL
       SQL
 
       from_query = Institution.sanitize_sql_for_conditions([from_sql, current_version: current_version])
