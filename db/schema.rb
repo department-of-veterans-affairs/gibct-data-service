@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_27_120720) do
+ActiveRecord::Schema.define(version: 2021_04_28_133008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -473,6 +473,7 @@ ActiveRecord::Schema.define(version: 2021_04_27_120720) do
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
     t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
+    t.index ["latitude", "longitude"], name: "index_institutions_on_latitude_and_longitude"
     t.index ["online_only"], name: "index_institutions_on_online_only"
     t.index ["ope"], name: "index_institutions_on_ope"
     t.index ["ope6"], name: "index_institutions_on_ope6"
