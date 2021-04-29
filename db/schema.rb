@@ -13,6 +13,8 @@
 ActiveRecord::Schema.define(version: 2021_04_28_133008) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "cube"
+  enable_extension "earthdistance"
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
