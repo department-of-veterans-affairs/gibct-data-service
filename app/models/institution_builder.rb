@@ -6,6 +6,17 @@ module InstitutionBuilder
       table_name = klass.name.underscore.pluralize
       klass::COLS_USED_IN_INSTITUTION.map(&:to_s).map { |col| %("#{col}" = #{table_name}.#{col}) }.join(', ')
     end
+
+    def add_columns_for_update(version_id, klass, where_clause)
+      str = <<-SQL
+        UPDATE institutions SET #{columns_for_update(klass)}
+        FROM #{klass.table_name}
+        WHERE #{where_clause}
+        AND institutions.version_id = #{version_id}
+      SQL
+
+      Institution.connection.update(str)
+    end
   end
 
   def self.run(user)
@@ -84,8 +95,8 @@ module InstitutionBuilder
 
       version.delete unless success
 
-    { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
-  end
+      { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
+    end
 
     def self.initialize_with_weams(version)
       columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
@@ -116,24 +127,17 @@ module InstitutionBuilder
 
     def self.add_crosswalk(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(Crosswalk)}
-        FROM crosswalks
-        WHERE institutions.facility_code = crosswalks.facility_code
-        AND institutions.version_id = #{version_id}
+        institutions.facility_code = crosswalks.facility_code
       SQL
-
-      Institution.connection.update(str)
+      add_columns_for_update(version_id, Crosswalk, str)
     end
 
     def self.add_sec109_closed_school(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(Sec109ClosedSchool)}
-        FROM  sec109_closed_schools
-        WHERE institutions.facility_code = sec109_closed_schools.facility_code
-        AND institutions.version_id = #{version_id}
+        institutions.facility_code = sec109_closed_schools.facility_code
       SQL
 
-      Institution.connection.update(str)
+      add_columns_for_update(version_id, Sec109ClosedSchool, str)
     end
 
     def self.add_sva(version_id)
@@ -150,13 +154,9 @@ module InstitutionBuilder
 
     def self.add_vsoc(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(Vsoc)}
-        FROM vsocs
-        WHERE institutions.facility_code = vsocs.facility_code
-        AND institutions.version_id = #{version_id}
+        institutions.facility_code = vsocs.facility_code
       SQL
-
-      Institution.connection.update(str)
+      add_columns_for_update(version_id, Vsoc, str)
     end
 
     def self.add_eight_key(version_id)
@@ -310,13 +310,10 @@ module InstitutionBuilder
 
     def self.add_ipeds_ic(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(IpedsIc)}
-        FROM ipeds_ics
-        WHERE institutions.cross = ipeds_ics.cross
-        AND institutions.version_id = #{version_id}
+        institutions.cross = ipeds_ics.cross
       SQL
 
-      Institution.connection.update(str)
+      add_columns_for_update(version_id, IpedsIc, str)
     end
 
     def self.add_ipeds_hd(version_id)
@@ -332,13 +329,10 @@ module InstitutionBuilder
 
     def self.add_ipeds_ic_ay(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(IpedsIcAy)}
-        FROM ipeds_ic_ays
-        WHERE institutions.cross = ipeds_ic_ays.cross
-        AND institutions.version_id = #{version_id}
+        institutions.cross = ipeds_ic_ays.cross
       SQL
 
-      Institution.connection.update(str)
+      add_columns_for_update(version_id, IpedsIcAy, str)
     end
 
     def self.add_ipeds_ic_py(version_id)
@@ -570,13 +564,9 @@ module InstitutionBuilder
 
     def self.add_outcome(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(Outcome)}
-        FROM outcomes
-        WHERE institutions.facility_code = outcomes.facility_code
-        AND institutions.version_id = #{version_id}
+        institutions.facility_code = outcomes.facility_code
       SQL
-
-      Institution.connection.update(str)
+      add_columns_for_update(version_id, Outcome, str)
     end
 
     def self.add_stem_offered(version_id)
