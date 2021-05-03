@@ -228,6 +228,11 @@ class Institution < ImportableRecord
     institution_type_name != 'OJT'
   end
 
+  def physical_address_location
+    physical_address = [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
+    [physical_address, physical_city, physical_state, physical_country].compact.join(', ')
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
