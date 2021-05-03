@@ -4,7 +4,7 @@ module InstitutionBuilder
   class ScorecardBuilder
     extend Common
 
-    def self.add_scorecard(version_id)
+    def self.build(version_id)
       str = <<-SQL
       UPDATE institutions SET #{columns_for_update(Scorecard)}, ialias = scorecards.alias
       FROM scorecards

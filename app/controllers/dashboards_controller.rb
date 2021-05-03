@@ -19,6 +19,7 @@ class DashboardsController < ApplicationController
       flash.alert = "Preview Data not built: #{@error_msg}"
     else
       flash.notice = "Preview Data (#{@version.number}) built successfully"
+      flash.alert = results[:messages] if results[:messages]
     end
 
     redirect_to dashboards_path

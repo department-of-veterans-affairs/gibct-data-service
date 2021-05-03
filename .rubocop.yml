@@ -97,6 +97,7 @@ Metrics/MethodLength:
     - "lib/roo_helper/loader.rb"
     - "lib/seed_utils.rb"
     - "app/utilities/scorecard_api/service.rb"
+    - "app/utilities/institution_builder/lat_long_builder.rb"
 
 Metrics/ClassLength:
   Exclude:

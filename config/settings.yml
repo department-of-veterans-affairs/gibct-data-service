@@ -58,6 +58,10 @@ search:
     - "&"
     - "-"
 
+geocode:
+  mapbox:
+    batch: 50
+    max_calls: 10
 virtual_hosts: ["127.0.0.1", "localhost", "10.0.2.2", "192.168.2.2", "host.docker.internal"] # Safe host names
 
 

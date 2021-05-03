@@ -26,7 +26,7 @@ module InstitutionBuilder
       add_arf_gi_bill(version.id)
       add_post_911_stats(version.id)
       add_mou(version.id)
-      ScorecardBuilder.add_scorecard(version.id)
+      ScorecardBuilder.build(version.id)
       add_ipeds_ic(version.id)
       add_ipeds_hd(version.id)
       add_ipeds_ic_ay(version.id)
@@ -46,7 +46,7 @@ module InstitutionBuilder
       build_institution_programs(version.id)
       build_versioned_school_certifying_official(version.id)
       ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
-      build_lat_long(version.id)
+      {'CensusLatLong': LatLongBuilder.build(version.id)}
     end
 
     def self.build_ratings(version)
@@ -56,10 +56,10 @@ module InstitutionBuilder
     def self.run(user)
       error_msg = nil
       version = Version.create!(production: false, user: user)
-
+      build_messages = {}
       begin
         Institution.transaction do
-          run_insertions(version)
+          build_messages = run_insertions(version)
         end
 
         Institution.transaction do
@@ -86,7 +86,7 @@ module InstitutionBuilder
 
       version.delete unless success
 
-      { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
+      { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success, messages: build_messages }
     end
 
     def self.initialize_with_weams(version)
@@ -931,41 +931,6 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(sql)
-    end
-
-    def build_lat_long(version_id)
-      current_version = Version.current_production
-
-      from_sql = <<-SQL
-        FROM institutions i LEFT OUTER JOIN institutions p ON (
-            i.facility_code = p.facility_code
-            AND p.version_id = :current_version
-            AND (
-              i.physical_address_1 != p.physical_address_1 OR
-              i.physical_address_2 != p.physical_address_2 OR
-              i.physical_address_3 != p.physical_address_3 OR
-              i.physical_city != p.physical_city OR
-              i.physical_state != p.physical_state OR
-              i.physical_country != p.physical_country OR
-              i.physical_zip != p.physical_zip
-            )
-          )
-      SQL
-
-      where_sql = <<-SQL
-          WHERE (
-            i.latitude IS NULL OR i.longitude IS NULL or p.id IS NOT NULL
-          )
-          AND i.version_id = :preview_version
-          AND i.approved IS true
-      SQL
-
-      from_query = Institution.sanitize_sql_for_conditions([from_sql, current_version: current_version])
-      where_query = Institution.sanitize_sql_for_conditions([where_sql, preview_version: version_id])
-
-      Institution.connection.select(query)
-
-      missing_lat_long_rows = Institution.from(from_query).where(where_query)
     end
   end
 end
