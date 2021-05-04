@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApiControllerShared < ApplicationController
+class ApiController < ApplicationController
   skip_before_action :authenticate_user!
   before_action :resolve_version
 
