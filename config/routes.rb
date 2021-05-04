@@ -61,9 +61,15 @@ Rails.application.routes.draw do
   end
 
   namespace :v1, defaults: { format: 'json' } do
+    get '/calculator/constants' => 'calculator_constants#index'
+
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection
       get :children, on: :member
+    end
+
+    resources :institution_programs, only: [:index] do
+      get :autocomplete, on: :collection
     end
 
     resources :yellow_ribbon_programs, only: :index
