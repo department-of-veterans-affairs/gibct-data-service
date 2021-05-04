@@ -110,6 +110,7 @@ Metrics/ClassLength:
     - "app/models/upload.rb"
     - "app/controllers/v0/institutions_controller.rb"
     - "app/controllers/v0/institution_programs_controller.rb"
+    - "app/models/institution_builder.rb"
 
 Metrics/AbcSize:
   Max: 40
