@@ -3,6 +3,23 @@
 module V1
   class InstitutionsController < ApiController
     include Facets
+
+    # GET /v1/institutions/autocomplete?term=harv
+    def autocomplete
+      @data = []
+      if params[:term].present?
+        @query ||= normalized_query_params
+        @search_term = params[:term]&.strip&.downcase
+        @data = filter_results(Institution.approved_institutions(@version)).autocomplete(@search_term)
+      end
+      @meta = {
+        version: @version,
+        term: @search_term
+      }
+      @links = { self: self_link }
+      render json: { data: @data, meta: @meta, links: @links }, adapter: :json
+    end
+
     # GET /v1/institutions?name=duluth&x=y
     def index
       @query ||= normalized_query_params

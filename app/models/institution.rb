@@ -291,8 +291,11 @@ class Institution < ImportableRecord
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
 
+    clause << 'UPPER(ialias) LIKE :upper_contains_term'
+
     where(sanitize_sql_for_conditions([clause.join(' OR '),
                                        upper_search_term: search_term.upcase,
+                                       upper_contains_term: "%#{search_term.upcase}%",
                                        institution_search_term: "%#{processed_search_term}%"]))
   }
 
