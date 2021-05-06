@@ -65,6 +65,7 @@ Layout/LineLength:
   Max: 120
   Exclude:
     - "app/controllers/v0/institutions_controller.rb"
+    - "app/controllers/v1/institutions_controller.rb"
     - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
     - "app/models/gibct_site_mapper.rb"
     - "app/models/archiver.rb"
@@ -72,6 +73,7 @@ Layout/LineLength:
     - "app/validators/va_caution_flag_validator.rb"
     - "spec/models/institution_tree_spec.rb"
     - "spec/controllers/v0/institutions_controller_spec.rb"
+    - "spec/controllers/v1/institutions_controller_spec.rb"
     - "spec/models/institution_spec.rb"
     - "spec/factories/institution_programs.rb"
     
@@ -94,6 +96,7 @@ Metrics/MethodLength:
     - "app/models/archiver.rb"
     - "app/models/caution_flag.rb"
     - "app/controllers/v0/institutions_controller.rb"
+    - "app/controllers/v1/institutions_controller.rb"
     - "lib/roo_helper/loader.rb"
     - "lib/seed_utils.rb"
     - "app/utilities/scorecard_api/service.rb"
@@ -111,6 +114,7 @@ Metrics/ClassLength:
     - "app/controllers/v0/institutions_controller.rb"
     - "app/controllers/v0/institution_programs_controller.rb"
     - "app/models/institution_builder.rb"
+    - "app/controllers/v1/institutions_controller.rb"
 
 Metrics/AbcSize:
   Max: 40

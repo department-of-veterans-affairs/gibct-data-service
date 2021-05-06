@@ -273,6 +273,33 @@ class Institution < ImportableRecord
   end
 
   # Depending on feature flags and search term determines where clause for search
+  scope :search_v1, lambda { |query|
+    return if query.blank? || query[:name].blank?
+
+    search_term = query[:name]
+
+    clause = ['facility_code = :upper_search_term']
+
+    processed = institution_search_term(search_term)
+    processed_search_term = processed[:search_term]
+    excluded_only = processed[:excluded_only]
+
+    if excluded_only
+      clause <<  'institution % :institution_search_term'
+    else
+      clause <<  'institution_search % :institution_search_term'
+      clause <<  'institution_search LIKE UPPER(:institution_search_term)'
+    end
+
+    clause << 'UPPER(ialias) LIKE :upper_contains_term'
+
+    where(sanitize_sql_for_conditions([clause.join(' OR '),
+                                       upper_search_term: search_term.upcase,
+                                       upper_contains_term: "%#{search_term.upcase}%",
+                                       institution_search_term: "%#{processed_search_term}%"]))
+  }
+
+  # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
     return if query.blank? || query[:name].blank?
 

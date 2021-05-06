@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :user
 
   match '/v0/*path', to: 'api#cors_preflight', via: [:options]
+  match '/v1/*path', to: 'api#cors_preflight', via: [:options]
   get 'status' => 'status#status'
 
   get 'auth/login', to: 'auth#new', as: 'saml_login'
@@ -43,6 +44,23 @@ Rails.application.routes.draw do
   end
 
   namespace :v0, defaults: { format: 'json' } do
+    get '/calculator/constants' => 'calculator_constants#index'
+
+    resources :institutions, only: [:index, :show] do
+      get :autocomplete, on: :collection
+      get :children, on: :member
+    end
+
+    resources :institution_programs, only: [:index] do
+      get :autocomplete, on: :collection
+    end
+
+    resources :yellow_ribbon_programs, only: :index
+
+    resources :zipcode_rates, only: :show
+  end
+
+  namespace :v1, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
 
     resources :institutions, only: [:index, :show] do

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe V0::ApiController, type: :controller do
+RSpec.describe ApiController, type: :controller do
   subject(:api_controller) { JSON.parse(response.body)['errors'].first }
 
   controller do
@@ -22,9 +22,9 @@ RSpec.describe V0::ApiController, type: :controller do
   let(:keys_for_all_env) { %w[title detail code status] }
   let(:keys_for_with_meta) { keys_for_all_env + ['meta'] }
 
-  context 'Parameter Missing' do
+  context 'when Parameter Missing' do
     before do
-      routes.draw { get 'parameter_missing' => 'v0/api#parameter_missing' }
+      routes.draw { get 'parameter_missing' => 'api#parameter_missing' }
       create(:version, :production)
     end
 
@@ -48,9 +48,9 @@ RSpec.describe V0::ApiController, type: :controller do
     end
   end
 
-  context 'Internal Server Error' do
+  context 'when Internal Server Error' do
     before do
-      routes.draw { get 'internal_server_error' => 'v0/api#internal_server_error' }
+      routes.draw { get 'internal_server_error' => 'api#internal_server_error' }
       create(:version, :production)
     end
 
@@ -74,9 +74,9 @@ RSpec.describe V0::ApiController, type: :controller do
     end
   end
 
-  context 'Unauthorized' do
+  context 'when Unauthorized' do
     before do
-      routes.draw { get 'unauthorized' => 'v0/api#unauthorized' }
+      routes.draw { get 'unauthorized' => 'api#unauthorized' }
       create(:version, :production)
     end
 
