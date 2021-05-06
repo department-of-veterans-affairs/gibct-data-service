@@ -343,8 +343,10 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns results correctly ordered results' do
-      create(:institution, institution: 'HARVAR', institution_search: 'HARVAR', gibill: 1, version_id: Version.current_production.id)
-      first = create(:institution, institution: 'HARVARDY', institution_search: 'HARVARDY', gibill: 100, version_id: Version.current_production.id)
+      create(:institution, institution: 'HARVAR', institution_search: 'HARVAR', gibill: 1,
+                           version_id: Version.current_production.id)
+      first = create(:institution, institution: 'HARVARDY', institution_search: 'HARVARDY',
+                                   gibill: 100, version_id: Version.current_production.id)
       get(:index, params: { name: 'HARVARD' })
       expect(JSON.parse(response.body)['data'][0]['attributes']['name']).to eq(first.institution)
       expect(response.media_type).to eq('application/json')
