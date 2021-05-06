@@ -1,0 +1,33 @@
+name: Mirror GIDS images to ECR when version.txt changes
+
+on:
+  push:
+    branches: 
+      - 'sri/gids_github_action'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-gov-west-1"
+      - name: Log into ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - uses: actions/checkout@v2
+      - name: Run docker build
+           - name: Tag/Push to AWS ECR
+        id: tag-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: dsva/gi-bill-data-service
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build --tag dsva/gi-bill-data-service:$GITHUB_SHA -- $PWD
+          docker tag dsva/gi-bill-data-service:$GITHUB_SHA $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
