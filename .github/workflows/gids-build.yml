@@ -19,8 +19,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - uses: actions/checkout@v2
-      - name: Run docker build
-           - name: Tag/Push to AWS ECR
+      - name: Tag/Push to AWS ECR
         id: tag-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
