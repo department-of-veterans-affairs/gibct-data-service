@@ -24,9 +24,9 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: dsva/gi-bill-data-service
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: gids-${{ github.sha }}
         run: |
-          docker build --tag dsva/gi-bill-data-service:$GITHUB_SHA -- $PWD
-          docker tag dsva/gi-bill-data-service:$GITHUB_SHA $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build --tag dsva/gi-bill-data-service:gids-$GITHUB_SHA -- $PWD
+          docker tag dsva/gi-bill-data-service:gids-$GITHUB_SHA $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
