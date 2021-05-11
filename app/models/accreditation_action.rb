@@ -12,10 +12,10 @@ class AccreditationAction < ImportableRecord
     'programname' => { column: :program_name, converter: BaseConverter },
     'sequentialid' => { column: :sequential_id, converter: NumberConverter },
     'actiondescription' => { column: :action_description, converter: BaseConverter },
-    'actiondate' => { column: :action_date, converter: DateConverter },
+    'actiondate' => { column: :action_date, converter: BaseConverter },
     'justificationdescription' => { column: :justification_description, converter: BaseConverter },
     'justificationother' => { column: :justification_other, converter: BaseConverter },
-    'enddate' => { column: :end_date, converter: DateConverter }
+    'enddate' => { column: :end_date, converter: BaseConverter }
   }.freeze
 
   PROBATIONARY_STATUSES = [
