@@ -88,7 +88,7 @@ module V1
           query[k].try(:downcase!)
         end
         %i[latitude longitude distance].each do |k|
-          query[k] = float_conversion(query[k])
+          query[k] = float_conversion(query[k]) if query[k].present?
         end
       end
     end
