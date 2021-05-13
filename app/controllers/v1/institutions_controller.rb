@@ -29,10 +29,15 @@ module V1
         facets: facets
       }
 
-      # For sorting by percentage instead whole number
-      max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
+      if @query[:name].blank? && @query[:latitude].present? && @query[:longitude].present? && @query[:distance].present?
+        results = Institution.approved_institutions(@version).location_search(@query).limit(@query[:limit] || 25)
+      else
+        # For sorting by percentage instead whole number
+        max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
+        results = search_results.search_order(@query, max_gibill).page(page)
+      end
 
-      render json: search_results.search_order(@query, max_gibill).page(page),
+      render json: results,
              each_serializer: InstitutionSearchResultSerializer,
              meta: @meta
     end
@@ -81,6 +86,9 @@ module V1
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
            online_only distance_learning].each do |k|
           query[k].try(:downcase!)
+        end
+        %i[latitude longitude distance].each do |k|
+          query[k] = float_conversion(query[k])
         end
       end
     end
