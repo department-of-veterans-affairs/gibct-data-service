@@ -4,13 +4,13 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :institution, key: :name
   attribute :facility_code
   attribute :physical_city, key: :city
-  attribute :physical_state, key: state
+  attribute :physical_state, key: :state
   attribute :accreditation_type
   attribute :gibill, key: :student_count
   attribute :rating_average
   attribute :rating_count
   attribute :institution_type_name, key: :type
-  attribute :physical_country, key: country
+  attribute :physical_country, key: :country
   attribute :caution_flags
   attribute :caution_flag
   attribute :student_veteran
