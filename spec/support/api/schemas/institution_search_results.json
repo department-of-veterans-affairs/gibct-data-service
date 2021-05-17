@@ -62,8 +62,7 @@
               "caution_flags": { "type": ["null", "array"] },
               "student_veteran": { "type": ["null", "boolean"] },
               "yr": { "type": ["null", "boolean"] },
-              "campus_type": { "type": ["null", "string"] },
-              "count_of_caution_flags": { "type": ["null", "number"] }
+              "campus_type": { "type": ["null", "string"] }
             },
             "required": [
               "name",
@@ -77,8 +76,7 @@
               "caution_flags",
               "student_veteran",
               "yr",
-              "campus_type",
-              "count_of_caution_flags"
+              "campus_type"
             ]
           }
         },

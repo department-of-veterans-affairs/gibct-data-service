@@ -304,9 +304,11 @@ class Institution < ImportableRecord
   }
 
   scope :location_search, lambda { |query|
+    return if query.blank? || query[:latitude].blank? || query[:longitude].blank?
+
     latitude = query[:latitude]
     longitude = query[:longitude]
-    distance = query[:distance]
+    distance = query[:distance] || 50
 
     clause = 'earth_box(ll_to_earth(:latitude,:longitude), :radius) @> ll_to_earth(latitude, longitude)'
 

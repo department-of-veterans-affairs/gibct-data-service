@@ -25,7 +25,6 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :latitude
   attribute :longitude
 
-
   def caution_flags
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
