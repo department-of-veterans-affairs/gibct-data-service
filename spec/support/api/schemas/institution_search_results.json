@@ -60,9 +60,12 @@
               "highest_degree": { "type": ["null", "integer"] },
               "student_count": { "type": ["null", "integer"] },
               "caution_flags": { "type": ["null", "array"] },
+              "caution_flag": { "type": ["null", "boolean"] },
               "student_veteran": { "type": ["null", "boolean"] },
               "yr": { "type": ["null", "boolean"] },
-              "campus_type": { "type": ["null", "string"] }
+              "campus_type": { "type": ["null", "string"] },
+              "latitude": { "type": ["null", "number"] },
+              "longitude": { "type": ["null", "number"] }
             },
             "required": [
               "name",
@@ -74,9 +77,12 @@
               "highest_degree",
               "student_count",
               "caution_flags",
+              "caution_flag",
               "student_veteran",
               "yr",
-              "campus_type"
+              "campus_type",
+              "latitude",
+              "longitude"
             ]
           }
         },
@@ -95,5 +101,5 @@
       "required": ["self", "first", "prev", "next", "last"]
     }
   },
-  "required": ["meta", "data", "links"]
+  "required": ["meta", "data"]
 }
