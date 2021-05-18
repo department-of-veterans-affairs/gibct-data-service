@@ -143,5 +143,11 @@ FactoryBot.define do
       institution { 'KANSAS UNIVERSITY NORTH' }
       institution_search { 'KANSAS NORTH' }
     end
+
+    trait :location do
+      latitude { 32.790803 }
+      longitude { -79.938087 }
+      institution { 'CHARLESTON SCHOOL OF LAW' }
+    end
   end
 end
