@@ -25,7 +25,7 @@ module V1
       @query ||= normalized_query_params
       @meta = {
         version: @version,
-        count: nil,
+        count: 0,
         facets: {}
       }
 
