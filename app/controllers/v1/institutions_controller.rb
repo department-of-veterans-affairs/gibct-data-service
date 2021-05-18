@@ -23,20 +23,26 @@ module V1
     # GET /v1/institutions?name=duluth&x=y
     def index
       @query ||= normalized_query_params
+      @meta = {
+        version: @version,
+        count: nil,
+        facets: {}
+      }
 
       if @query[:tab] == 'location'
-        results = Institution.approved_institutions(@version).location_search(@query)
+        location_results = Institution.approved_institutions(@version).location_search(@query)
+        results = location_results.location_select(@query).location_order
+
+        @meta[:count] = location_results.count
+        @meta[:facets] = facets(location_results)
       else
         # For sorting by percentage instead whole number
         max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
         results = search_results.search_order(@query, max_gibill).page(page)
-      end
 
-      @meta = {
-          version: @version,
-          count: results.count,
-          facets: facets(results)
-      }
+        @meta[:count] = results.count
+        @meta[:facets] = facets(results)
+      end
 
       render json: results,
              each_serializer: InstitutionSearchResultSerializer,
