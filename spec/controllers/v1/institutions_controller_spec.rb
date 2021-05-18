@@ -387,6 +387,14 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
+    it 'search returns location results' do
+      create(:institution, :location, version_id: Version.current_production.id)
+      get(:index, params: { latitude: '32.7876', longitude: '-79.9403', distance: '0.2', tab: 'location' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
     it 'filter by uppercase country returns results' do
       get(:index, params: { name: 'institution', country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
