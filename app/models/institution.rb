@@ -272,6 +272,10 @@ class Institution < ImportableRecord
     escaped_term
   end
 
+  def self.radius_in_meters(miles)
+    miles * 1609.34
+  end
+
   # Depending on feature flags and search term determines where clause for search
   scope :search_v1, lambda { |query|
     return if query.blank? || query[:name].blank?
@@ -297,6 +301,21 @@ class Institution < ImportableRecord
                                        upper_search_term: search_term.upcase,
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        institution_search_term: "%#{processed_search_term}%"]))
+  }
+
+  scope :location_search, lambda { |query|
+    return if query.blank? || query[:latitude].blank? || query[:longitude].blank?
+
+    latitude = query[:latitude]
+    longitude = query[:longitude]
+    distance = query[:distance] || 50
+
+    clause = 'earth_box(ll_to_earth(:latitude,:longitude), :radius) @> ll_to_earth(latitude, longitude)'
+
+    where(sanitize_sql_for_conditions([clause,
+                                       latitude: latitude,
+                                       longitude: longitude,
+                                       radius: radius_in_meters(distance)]))
   }
 
   # Depending on feature flags and search term determines where clause for search
