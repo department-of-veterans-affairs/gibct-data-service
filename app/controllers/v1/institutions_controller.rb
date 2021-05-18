@@ -29,10 +29,15 @@ module V1
         facets: facets
       }
 
-      # For sorting by percentage instead whole number
-      max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
+      if @query[:tab] == 'location'
+        results = Institution.approved_institutions(@version).location_search(@query).limit(@query[:limit] || 25)
+      else
+        # For sorting by percentage instead whole number
+        max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
+        results = search_results.search_order(@query, max_gibill).page(page)
+      end
 
-      render json: search_results.search_order(@query, max_gibill).page(page),
+      render json: results,
              each_serializer: InstitutionSearchResultSerializer,
              meta: @meta
     end
@@ -73,14 +78,16 @@ module V1
       query = params.deep_dup
       query.tap do
         query[:name].try(:strip!)
-        query[:name].try(:downcase!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
-        %i[category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
+        %i[name category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning].each do |k|
+           online_only distance_learning tab].each do |k|
           query[k].try(:downcase!)
+        end
+        %i[latitude longitude distance].each do |k|
+          query[k] = float_conversion(query[k]) if query[k].present?
         end
       end
     end

@@ -16,6 +16,12 @@ class ApiController < ApplicationController
     1
   end
 
+  def float_conversion(val)
+    Float(val)
+  rescue ArgumentError
+    nil
+  end
+
   # Newest production data version assumed when version param is undefined
   def resolve_version
     v = params[:version]
