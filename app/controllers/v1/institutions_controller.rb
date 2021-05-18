@@ -23,19 +23,20 @@ module V1
     # GET /v1/institutions?name=duluth&x=y
     def index
       @query ||= normalized_query_params
-      @meta = {
-        version: @version,
-        count: search_results.count,
-        facets: facets
-      }
 
       if @query[:tab] == 'location'
-        results = Institution.approved_institutions(@version).location_search(@query).limit(@query[:limit] || 25)
+        results = Institution.approved_institutions(@version).location_search(@query)
       else
         # For sorting by percentage instead whole number
         max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
         results = search_results.search_order(@query, max_gibill).page(page)
       end
+
+      @meta = {
+          version: @version,
+          count: results.count,
+          facets: facets(results)
+      }
 
       render json: results,
              each_serializer: InstitutionSearchResultSerializer,
@@ -133,16 +134,16 @@ module V1
 
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
-    def facets
-      institution_types = search_results.filter_count(:institution_type_name)
+    def facets(results)
+      institution_types = results.filter_count(:institution_type_name)
       result = {
         category: {
           school: institution_types.except(Institution::EMPLOYER).inject(0) { |count, (_t, n)| count + n },
           employer: institution_types[Institution::EMPLOYER].to_i
         },
         type: institution_types,
-        state: search_results.filter_count(:state),
-        country: embed(search_results.filter_count(:country)),
+        state: results.filter_count(:state),
+        country: embed(results.filter_count(:country)),
         student_vet_group: boolean_facet,
         yellow_ribbon_scholarship: boolean_facet,
         principles_of_excellence: boolean_facet,
@@ -155,7 +156,7 @@ module V1
         menonly: boolean_facet,
         womenonly: boolean_facet,
         hbcu: boolean_facet,
-        relaffil: search_results.filter_count(:relaffil)
+        relaffil: results.filter_count(:relaffil)
       }
 
       add_active_search_facets(result)
