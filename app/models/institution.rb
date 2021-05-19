@@ -33,6 +33,8 @@ class Institution < ImportableRecord
     'i'
   )
 
+  MILE_METER_CONVERSION_RATE = 1609.34
+
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -168,6 +170,8 @@ class Institution < ImportableRecord
     'longitude' => { column: :longitude, converter: NumberConverter }
   }.freeze
 
+  attribute :distance
+
   has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
   has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
@@ -273,7 +277,7 @@ class Institution < ImportableRecord
   end
 
   def self.radius_in_meters(miles)
-    miles * 1609.34
+    miles * MILE_METER_CONVERSION_RATE
   end
 
   # Depending on feature flags and search term determines where clause for search
@@ -301,6 +305,24 @@ class Institution < ImportableRecord
                                        upper_search_term: search_term.upcase,
                                        upper_contains_term: "%#{search_term.upcase}%",
                                        institution_search_term: "%#{processed_search_term}%"]))
+  }
+
+  scope :location_select, lambda { |query|
+    return select if query.blank? || query[:latitude].blank? || query[:longitude].blank?
+
+    latitude = query[:latitude]
+    longitude = query[:longitude]
+    # rubocop:disable Layout/LineLength
+    distance_column = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate distance'
+    # rubocop:enable Layout/LineLength
+
+    clause = ['institutions.*', distance_column]
+
+    select(sanitize_sql_for_conditions([clause.join(','),
+                                        table_name: table_name,
+                                        latitude: latitude,
+                                        longitude: longitude,
+                                        conversion_rate: MILE_METER_CONVERSION_RATE]))
   }
 
   scope :location_search, lambda { |query|
@@ -438,6 +460,10 @@ class Institution < ImportableRecord
                                                                   max_gibill: max_gibill])
 
     order(Arel.sql(sanitized_order_by))
+  }
+
+  scope :location_order, lambda {
+    order('distance')
   }
 
   scope :filter_result, lambda { |field, value|
