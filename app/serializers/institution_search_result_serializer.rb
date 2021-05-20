@@ -24,7 +24,6 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :dod_bah
   attribute :bah
-  attribute :country
   attribute :latitude
   attribute :longitude
   attribute :distance
