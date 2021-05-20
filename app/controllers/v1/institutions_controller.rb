@@ -136,8 +136,8 @@ module V1
 
       relation = relation.where('count_of_caution_flags = 0 AND school_closing IS FALSE') if @query[:exclude_warnings]
       relation = relation.where(count_of_caution_flags: 0) if @query[:exclude_caution_flags]
-      relation = relation.where("relaffil IS NOT NULL") if @query[:is_relaffil]
-      relation = relation.where("menonly = 1 OR womenonly = 1") if @query[:single_gender_school]
+      relation = relation.where('relaffil IS NOT NULL') if @query[:is_relaffil]
+      relation = relation.where('menonly = 1 OR womenonly = 1') if @query[:single_gender_school]
 
       relation
     end
