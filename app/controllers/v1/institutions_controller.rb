@@ -29,7 +29,7 @@ module V1
         facets: {}
       }
 
-      if @query[:tab] == 'location'
+      if @query.key?(:latitude) && @query.key?(:longitude)
         location_results = Institution.approved_institutions(@version).location_search(@query)
         results = location_results.location_select(@query).location_order
 
@@ -90,7 +90,7 @@ module V1
         end
         %i[name category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning tab].each do |k|
+           online_only distance_learning location].each do |k|
           query[k].try(:downcase!)
         end
         %i[latitude longitude distance].each do |k|
