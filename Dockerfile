@@ -28,6 +28,7 @@ RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads
     cc-test-reporter --version
 
 COPY --chown=gi-bill-data-service:gi-bill-data-service docker-entrypoint.sh ./
+COPY --chown=gi-bill-data-service:gi-bill-data-service config /srv/gi-bill-data-service/src/config/
 USER gi-bill-data-service
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 
