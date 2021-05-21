@@ -32,7 +32,8 @@
         "properties": {
           "id": { "type": "integer" },
           "value": { "type": "string" },
-          "label": { "type": "string" }
+          "label": { "type": "string" },
+          "distance": {"type": "null"}
         },
         "required": [
           "id",
