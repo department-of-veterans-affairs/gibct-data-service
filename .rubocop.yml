@@ -137,10 +137,12 @@ Metrics/BlockLength:
 Metrics/CyclomaticComplexity:
   Exclude:
     - "app/validators/va_caution_flag_validator.rb"
+    - "app/controllers/v1/institutions_controller.rb"
     
 Metrics/PerceivedComplexity:
   Exclude:
     - "app/validators/va_caution_flag_validator.rb"
+    - "app/controllers/v1/institutions_controller.rb"
 
 # Don't worry about ambiguous blocks in RSpec
 # Official recommendation from rubocop team is to disable this rule for specs.
