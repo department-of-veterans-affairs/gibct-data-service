@@ -100,10 +100,12 @@ FactoryBot.define do
 
     trait :exclude_caution_flags do
       count_of_caution_flags { 1 }
+      caution_flag { true }
     end
 
     trait :exclude_school_closing do
       count_of_caution_flags { 1 }
+      caution_flag { true }
     end
 
     trait :preferred_provider do

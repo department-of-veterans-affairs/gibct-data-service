@@ -110,7 +110,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     it 'excludes institutions with caution flags' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :exclude_caution_flags, :start_like_harv, :production_version)
-      get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true, schools: true })
+      get(:autocomplete, params: { term: 'harv', caution_flag: true, schools: true })
+      puts response.body.inspect.to_s
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')
@@ -120,7 +121,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     it 'excludes institutions with school closing flag' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :exclude_school_closing, :start_like_harv, :production_version)
-      get(:autocomplete, params: { term: 'harv', exclude_warnings: true, schools: true })
+      get(:autocomplete, params: { term: 'harv', caution_flag: true, schools: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')
