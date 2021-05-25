@@ -24,10 +24,11 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :dod_bah
   attribute :bah
-  attribute :country
   attribute :latitude
   attribute :longitude
   attribute :distance
+  attribute :accredited
+  attribute :vet_tec_provider
 
   def caution_flags
     object.caution_flags.map do |flag|
