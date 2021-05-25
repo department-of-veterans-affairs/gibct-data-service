@@ -126,14 +126,22 @@ module V1
         [:womenonly], # boolean
         [:menonly], # boolean
         [:hbcu], # boolean
-        [:relaffil]
+        [:relaffil],
+        [:vet_tec_provider] # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
       end
 
-      relation = relation.where('count_of_caution_flags = 0 AND school_closing IS FALSE') if @query[:exclude_warnings]
-      relation = relation.where(count_of_caution_flags: 0) if @query[:exclude_caution_flags]
+      relation = relation.where('caution_flag IS NULL') if @query[:caution_flag]
+      relation = relation.where('relaffil IS NOT NULL') if @query[:is_relaffil]
+      relation = relation.where(accredited: true) if @query[:accredited]
+      relation = relation.where('menonly = 1 OR womenonly = 1') if @query[:single_gender_school]
+      if @query[:schools].to_s != 'true'
+        relation = relation.where('institution_type_name=? OR vet_tec_provider=?', 'OJT', 'true')
+      end
+      relation = relation.where.not(institution_type_name: 'OJT') if @query[:employers].to_s != 'true'
+      relation = relation.where(vet_tec_provider: false) if @query[:vettec].to_s != 'true'
 
       relation
     end
@@ -162,7 +170,8 @@ module V1
         menonly: boolean_facet,
         womenonly: boolean_facet,
         hbcu: boolean_facet,
-        relaffil: results.filter_count(:relaffil)
+        relaffil: results.filter_count(:relaffil),
+        vet_tec_provider: boolean_facet
       }
 
       add_active_search_facets(result)
