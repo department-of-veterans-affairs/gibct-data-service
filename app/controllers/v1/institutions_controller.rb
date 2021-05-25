@@ -137,7 +137,9 @@ module V1
       relation = relation.where('relaffil IS NOT NULL') if @query[:is_relaffil]
       relation = relation.where(accredited: true) if @query[:accredited]
       relation = relation.where('menonly = 1 OR womenonly = 1') if @query[:single_gender_school]
-      relation = relation.where('institution_type_name=? OR vet_tec_provider=?', 'OJT', 'true') if @query[:schools].to_s != 'true'
+      if @query[:schools].to_s != 'true'
+        relation = relation.where('institution_type_name=? OR vet_tec_provider=?', 'OJT', 'true')
+      end
       relation = relation.where.not(institution_type_name: 'OJT') if @query[:employers].to_s != 'true'
       relation = relation.where(vet_tec_provider: false) if @query[:vettec].to_s != 'true'
 
