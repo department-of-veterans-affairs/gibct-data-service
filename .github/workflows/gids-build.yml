@@ -25,6 +25,15 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: dsva/gi-bill-data-service
           IMAGE_TAG: gids-${{ github.sha }}
+      - name: Get saml key from Parameter Store
+        uses: marvinpinto/action-inject-ssm-secrets@latest
+        with:
+          ssm_parameter: /credstashed/gids.dev.saml_key
+          env_variable_name: GIDS_ENV_SAML_KEY
+      - name: Store key to the container
+        uses: "finnp/create-file-action@master"
+          env: 
+           FILE_NAME: "/srv/gi-bill-data-service/secret"
         run: |
           docker build --tag dsva/gi-bill-data-service:gids-$GITHUB_SHA -- $PWD
           docker tag dsva/gi-bill-data-service:gids-$GITHUB_SHA $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
