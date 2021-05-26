@@ -30,7 +30,7 @@ module V1
       }
 
       if @query.key?(:latitude) && @query.key?(:longitude)
-        location_results = Institution.approved_institutions(@version).location_search(@query)
+        location_results = filter_results(Institution.approved_institutions(@version).location_search(@query))
         results = location_results.location_select(@query).location_order
 
         @meta[:count] = location_results.count
