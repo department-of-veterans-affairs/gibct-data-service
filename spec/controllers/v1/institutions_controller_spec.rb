@@ -433,7 +433,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'excludes vet_tec_provider institutions' do
-      vet_tec = create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+      create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
       get(:index, params: { name: 'vet tec', vettec: true })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
@@ -496,7 +496,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filters by school category' do
-      get(:index, params: { category: 'school', name: 'institution', schools: true})
+      get(:index, params: { category: 'school', name: 'institution', schools: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
