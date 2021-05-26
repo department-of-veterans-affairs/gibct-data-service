@@ -29,7 +29,7 @@ module V1
         facets: {}
       }
 
-      if @query[:tab] == 'location'
+      if @query.key?(:latitude) && @query.key?(:longitude)
         location_results = Institution.approved_institutions(@version).location_search(@query)
         results = location_results.location_select(@query).location_order
 
@@ -90,7 +90,7 @@ module V1
         end
         %i[name category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning tab].each do |k|
+           online_only distance_learning location].each do |k|
           query[k].try(:downcase!)
         end
         %i[latitude longitude distance].each do |k|
@@ -133,15 +133,13 @@ module V1
         relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
       end
 
-      relation = relation.where('caution_flag IS NULL') if @query[:caution_flag]
+      relation = relation.where('caution_flag IS NULL') if @query[:exclude_caution_flags]
       relation = relation.where('relaffil IS NOT NULL') if @query[:is_relaffil]
       relation = relation.where(accredited: true) if @query[:accredited]
       relation = relation.where('menonly = 1 OR womenonly = 1') if @query[:single_gender_school]
-      if @query[:schools].to_s != 'true'
-        relation = relation.where('institution_type_name=? OR vet_tec_provider=?', 'OJT', 'true')
-      end
-      relation = relation.where.not(institution_type_name: 'OJT') if @query[:employers].to_s != 'true'
-      relation = relation.where(vet_tec_provider: false) if @query[:vettec].to_s != 'true'
+      relation = relation.where("institution_type_name != 'OJT' AND vet_tec_provider != true") if @query[:schools]
+      relation = relation.where.not(institution_type_name: 'OJT') if @query[:employers]
+      relation = relation.where(vet_tec_provider: false) if @query[:vettec]
 
       relation
     end
