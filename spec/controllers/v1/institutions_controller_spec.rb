@@ -101,7 +101,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'includes vet_tec_provider institutions' do
       create(:institution, :production_version, :vet_tec_provider, :start_like_harv)
-      get(:autocomplete, params: { term: 'harv', schools: true, vettec: true })
+      get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -110,18 +110,17 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     it 'excludes institutions with caution flags' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :exclude_caution_flags, :start_like_harv, :production_version)
-      get(:autocomplete, params: { term: 'harv', caution_flag: true, schools: true })
-      puts response.body.inspect.to_s
+      get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
     it 'excludes institutions with school closing flag' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :exclude_school_closing, :start_like_harv, :production_version)
-      get(:autocomplete, params: { term: 'harv', caution_flag: true, schools: true })
+      get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true, schools: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')
@@ -381,7 +380,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       create(:institution, :ca_employer, version_id: Version.current_production.id)
       create(:institution, :ca_employer, campus_type: 'E', version_id: Version.current_production.id)
       create(:institution, :ca_employer, campus_type: 'Y', version_id: Version.current_production.id)
-      get(:index, params: { name: 'acme', employers: true })
+      get(:index, params: { name: 'acme' })
 
       expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(response.content_type).to eq('application/json')
@@ -429,8 +428,14 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'includes vet_tec_provider institutions' do
       vet_tec = create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
-      get(:index, params: { name: 'vet tec', schools: true, vettec: true })
+      get(:index, params: { name: 'vet tec' })
       expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(vet_tec.facility_code)
+    end
+
+    it 'excludes vet_tec_provider institutions' do
+      vet_tec = create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+      get(:index, params: { name: 'vet tec', vettec: true })
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
 
     it 'filters by preferred_provider' do
@@ -484,14 +489,14 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filters by employer category' do
-      get(:index, params: { category: 'employer', name: 'acme', employers: true })
+      get(:index, params: { category: 'employer', name: 'acme' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filters by school category' do
-      get(:index, params: { category: 'school', name: 'institution', schools: true })
+      get(:index, params: { category: 'school', name: 'institution', schools: true})
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
@@ -499,7 +504,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'filters by employer type' do
       get(:index, params: { type: 'ojt', name: 'acme', employers: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
