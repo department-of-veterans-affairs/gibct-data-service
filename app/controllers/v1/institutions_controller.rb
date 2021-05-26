@@ -30,20 +30,17 @@ module V1
       }
 
       if @query.key?(:latitude) && @query.key?(:longitude)
-        location_results = filter_results(Institution.approved_institutions(@version).location_search(@query))
-        results = location_results.location_select(@query).location_order
-
-        @meta[:count] = location_results.count
-        @meta[:facets] = facets(location_results)
+        results = filter_results(Institution.approved_institutions(@version).location_search(@query))
+                  .location_select(@query)
+                  .location_order
       else
         # For sorting by percentage instead whole number
         max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
         results = search_results.search_order(@query, max_gibill).page(page)
-
-        @meta[:count] = results.count
-        @meta[:facets] = facets(results)
       end
 
+      @meta[:count] = results.count
+      @meta[:facets] = facets(results)
       render json: results,
              each_serializer: InstitutionSearchResultSerializer,
              meta: @meta
