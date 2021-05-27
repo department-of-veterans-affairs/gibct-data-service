@@ -111,7 +111,7 @@ module V1
           query[k] = float_conversion(query[k]) if query[k].present?
         end
         %i[facility_codes].each do |k|
-          query[k] = query[k].split(',')
+          query[k] = query[k].split(',') if query[k].present?
         end
       end
     end
