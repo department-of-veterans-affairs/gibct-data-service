@@ -5,7 +5,7 @@ on:
       - tskinn-k8s-docker-update
 
 jobs:
-  mirror:
+  build-docker-image:
     runs-on: ubuntu-20.04
     steps:
       - name: Configure AWS Credentials
@@ -21,7 +21,7 @@ jobs:
       - name: Tag/Push to AWS ECR
         id: tag-image
         env:
-          ECR_REPO: ${{ steps.login-ecr.outputs.registry }}/dsva-gibct-data-service
+          ECR_REPO: ${{ steps.login-ecr.outputs.registry }}/dsva/gibct-data-service
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --tag ${ECR_REPO}:${IMAGE_TAG} --target k8s -- $PWD

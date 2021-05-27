@@ -65,7 +65,7 @@ COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bi
 USER gi-bill-data-service
 
 ENTRYPOINT []
-CMD "bundle exec puma -p 3004 -C config/puma.rb"
+CMD ["bundle", "exec", "puma", "-p", "3004", "-C", "config/puma.rb"]
 
 ###
 # production
