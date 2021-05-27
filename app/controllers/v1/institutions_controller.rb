@@ -35,6 +35,10 @@ module V1
 
         @meta[:count] = location_results.count
         @meta[:facets] = facets(location_results)
+      elsif @query[:facility_codes]
+        results = Institution.approved_institutions(@version).where(facility_code: facility_codes).order('institution')
+
+        @meta[:count] = results.count
       else
         # For sorting by percentage instead whole number
         max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
@@ -49,25 +53,17 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions/{facility_codes}
-    # Separate ids by semi colon
+    # GET /v1/institutions/20005123
     def show
-      facility_codes = params[:id].split(';')
+      facility_code = @query[:id]
+
+      resource = Institution.approved_institutions(@version).find_by(facility_code: facility_code)
+
+      raise Common::Exceptions::RecordNotFound, facility_code unless resource
+
       @links = { self: self_link }
-
-      if facility_codes.length == 1
-        resource = Institution.approved_institutions(@version).find_by(facility_code: facility_codes[0])
-        raise Common::Exceptions::RecordNotFound, params[:id] unless resource
-
-        render json: resource, serializer: InstitutionProfileSerializer,
-               meta: { version: @version }, links: @links
-      else
-        results = Institution.approved_institutions(@version).where(facility_code: facility_codes).order('institution')
-        raise Common::Exceptions::RecordNotFound, params[:id] unless results.any?
-
-        render json: results, each_serializer: InstitutionProfileSerializer,
-               meta: { version: @version }, links: @links
-      end
+      render json: resource, serializer: InstitutionProfileSerializer,
+             meta: { version: @version }, links: @links
     end
 
     # GET /v1/institutions/20005123/children
