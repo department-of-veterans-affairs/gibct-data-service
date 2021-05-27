@@ -49,16 +49,17 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions/20005123
+    # GET /v1/institutions/{facility_codes}
+    # Separate ids by semi colon
     def show
-      resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
-
-      raise Common::Exceptions::RecordNotFound, params[:id] unless resource
+      facility_codes = params[:id].split(';')
+      results = Institution.approved_institutions(@version).where(facility_code: facility_codes)
 
       @links = { self: self_link }
-      render json: resource, serializer: InstitutionProfileSerializer,
+      render json: results, each_serializer: InstitutionProfileSerializer,
              meta: { version: @version }, links: @links
     end
+
 
     # GET /v1/institutions/20005123/children
     def children
