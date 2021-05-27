@@ -21,6 +21,11 @@ module V1
     end
 
     # GET /v1/institutions?name=duluth&x=y
+    #   Default search
+    # GET /v1/institutions?latitude=0.0&longitude=0.0
+    #   Location search
+    # GET /v1/institutions?facility_codes=1,2,3,4
+    #   Search by facility code and return using InstitutionCompareSerializer
     def index
       @query ||= normalized_query_params
       @meta = {
@@ -28,6 +33,7 @@ module V1
         count: 0,
         facets: {}
       }
+      serializer = InstitutionSearchResultSerializer
 
       if @query.key?(:latitude) && @query.key?(:longitude)
         location_results = Institution.approved_institutions(@version).location_search(@query)
@@ -35,10 +41,12 @@ module V1
 
         @meta[:count] = location_results.count
         @meta[:facets] = facets(location_results)
-      elsif @query[:facility_codes]
-        results = Institution.approved_institutions(@version).where(facility_code: facility_codes).order('institution')
+      elsif @query.key?(:facility_codes)
+        results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
+                      .order('institution')
 
         @meta[:count] = results.count
+        serializer = InstitutionCompareSerializer
       else
         # For sorting by percentage instead whole number
         max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
@@ -49,7 +57,7 @@ module V1
       end
 
       render json: results,
-             each_serializer: InstitutionSearchResultSerializer,
+             each_serializer: serializer,
              meta: @meta
     end
 
@@ -101,6 +109,9 @@ module V1
         end
         %i[latitude longitude distance].each do |k|
           query[k] = float_conversion(query[k]) if query[k].present?
+        end
+        %i[facility_codes].each do |k|
+          query[k] = query[k].split(',')
         end
       end
     end
