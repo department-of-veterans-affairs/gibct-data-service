@@ -50,6 +50,24 @@ RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find $
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
+# kubernetes focused build
+#
+# k8s target
+# this stage is used in live environmnets in k8s
+# once gids is completely migrated to k8s this target will replace the default production target
+###
+FROM base AS k8s
+
+ENV RAILS_ENV="production"
+ENV PATH="/usr/local/bundle/bin:${PATH}"
+COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
+COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
+USER gi-bill-data-service
+
+ENTRYPOINT []
+CMD "bundle exec puma -p 3004 -C config/puma.rb"
+
+###
 # production
 #
 # default target
