@@ -53,15 +53,21 @@ module V1
     # Separate ids by semi colon
     def show
       facility_codes = params[:id].split(';')
-      results = if facility_codes.length == 1
-                  Institution.approved_institutions(@version).find_by(facility_code: facility_codes[0])
-                else
-                  Institution.approved_institutions(@version).where(facility_code: facility_codes)
-                end
-
       @links = { self: self_link }
-      render json: results, each_serializer: InstitutionProfileSerializer,
-             meta: { version: @version }, links: @links
+
+      if facility_codes.length == 1
+        resource = Institution.approved_institutions(@version).find_by(facility_code: facility_codes[0])
+        raise Common::Exceptions::RecordNotFound, params[:id] unless resource
+
+        render json: resource, serializer: InstitutionProfileSerializer,
+               meta: { version: @version }, links: @links
+      else
+        results = Institution.approved_institutions(@version).where(facility_code: facility_codes).order('institution')
+        raise Common::Exceptions::RecordNotFound, params[:id] unless results.any?
+
+        render json: results, each_serializer: InstitutionProfileSerializer,
+               meta: { version: @version }, links: @links
+      end
     end
 
     # GET /v1/institutions/20005123/children
