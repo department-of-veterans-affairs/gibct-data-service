@@ -389,7 +389,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'search returns location results' do
       create(:institution, :location, version_id: Version.current_production.id)
-      get(:index, params: { latitude: '32.7876', longitude: '-79.9403', distance: '0.2', tab: 'location' })
+      get(:index, params: { latitude: '32.7876', longitude: '-79.9403', distance: '50', tab: 'location' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
