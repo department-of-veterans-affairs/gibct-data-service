@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :institution, key: :name
   attribute :facility_code
@@ -99,4 +98,3 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
