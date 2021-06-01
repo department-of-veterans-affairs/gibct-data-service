@@ -496,7 +496,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       i1 = create(:institution, version_id: Version.current_production.id)
       i2 = create(:institution, version_id: Version.current_production.id)
       i3 = create(:institution, version_id: Version.current_production.id)
-      get(:compare, params: {facility_codes: [i1.facility_code, i2.facility_code, i3.facility_code]})
+      get(:facility_codes, params: {facility_codes: [i1.facility_code, i2.facility_code, i3.facility_code]})
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_compare_results')

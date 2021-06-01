@@ -61,7 +61,7 @@ module V1
 
     # GET /v1/institutions?facility_codes=1,2,3,4
     #   Search by facility code and return using InstitutionCompareSerializer
-    def compare
+    def facility_codes
       @query ||= normalized_query_params
 
       results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
