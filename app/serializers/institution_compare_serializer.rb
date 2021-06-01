@@ -6,6 +6,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :facility_code
   attribute :physical_city, key: :city
   attribute :physical_state, key: :state
+  attribute :physical_zip, key: :zip
   attribute :physical_country, key: :country
   attribute :accreditation_type
   attribute :gibill, key: :student_count
@@ -25,24 +26,14 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :dod_bah
   attribute :bah
-  attribute :latitude
-  attribute :longitude
-  attribute :distance
   attribute :accredited
   attribute :vet_tec_provider
 
-  attribute :cross
   attribute :flight
   attribute :correspondence
-  attribute :ope
-  attribute :ope6
   attribute :f1sysnam, key: :school_system_name
   attribute :f1syscod, key: :school_system_code
-  attribute :ialias, key: :alias
   attribute :locale_type
-  attribute :address_1
-  attribute :address_2
-  attribute :address_3
   attribute :undergrad_enrollment
   attribute :student_veteran_link
   attribute :poe
@@ -90,8 +81,6 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :updated_at
   attribute :online_only
   attribute :distance_learning
-  attribute :physical_zip, key: :zip
-  attribute :parent_facility_code_id
   attribute :stem_indicator
   attribute :section_103_message
   attribute :hcm2

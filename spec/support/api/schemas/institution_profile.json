@@ -509,13 +509,10 @@
               "type": ["null", "integer"]
             },
             "rating_average":{
-              "type": ["null", "integer"]
+              "type": ["null", "integer", "number"]
             },
             "rating_count":{
               "type": ["integer"]
-            },
-            "rating_average":{
-              "type": ["null", "number"]
             },
             "institution_category_ratings": {
               "type": "array",
