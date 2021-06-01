@@ -65,12 +65,11 @@ module V1
       @query ||= normalized_query_params
 
       results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
-                           .order('institution')
+                           .order(:institution)
 
       @meta = {
         version: @version,
-        count: results.count,
-        facets: facets(results)
+        count: results.count
       }
 
       render json: results,
@@ -124,9 +123,6 @@ module V1
         end
         %i[latitude longitude distance].each do |k|
           query[k] = float_conversion(query[k]) if query[k].present?
-        end
-        %i[facility_codes].each do |k|
-          query[k] = query[k].split(',') if query[k].present?
         end
       end
     end
