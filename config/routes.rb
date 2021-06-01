@@ -62,6 +62,7 @@ Rails.application.routes.draw do
 
   namespace :v1, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
+    get '/institutions', to: 'institutions#compare', constraints: lambda { |request| request.query_parameters[:facility_codes].present? }
 
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection

@@ -24,8 +24,6 @@ module V1
     #   Default search
     # GET /v1/institutions?latitude=0.0&longitude=0.0
     #   Location search
-    # GET /v1/institutions?facility_codes=1,2,3,4
-    #   Search by facility code and return using InstitutionCompareSerializer
     def index
       @query ||= normalized_query_params
       @meta = {
@@ -33,7 +31,6 @@ module V1
         count: 0,
         facets: {}
       }
-      serializer = InstitutionSearchResultSerializer
 
       if @query.key?(:latitude) && @query.key?(:longitude)
         location_results = Institution.approved_institutions(@version).location_search(@query)
@@ -41,12 +38,6 @@ module V1
 
         @meta[:count] = location_results.count
         @meta[:facets] = facets(location_results)
-      elsif @query.key?(:facility_codes)
-        results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
-                      .order('institution')
-
-        @meta[:count] = results.count
-        serializer = InstitutionCompareSerializer
       else
         # For sorting by percentage instead whole number
         max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
@@ -57,7 +48,29 @@ module V1
       end
 
       render json: results,
-             each_serializer: serializer,
+             each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
+    end
+
+    # GET /v1/institutions?facility_codes=1,2,3,4
+    #   Search by facility code and return using InstitutionCompareSerializer
+    def compare
+      @query ||= normalized_query_params
+      @meta = {
+          version: @version,
+          count: 0,
+          facets: {}
+      }
+
+      if @query.key?(:facility_codes)
+        results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
+                      .order('institution')
+
+        @meta[:count] = results.count
+      end
+
+      render json: results || [],
+             each_serializer: InstitutionCompareSerializer,
              meta: @meta
     end
 
