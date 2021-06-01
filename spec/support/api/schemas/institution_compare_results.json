@@ -461,9 +461,6 @@
             "preferred_provider",
             "dod_bah",
             "bah",
-            "latitude",
-            "longitude",
-            "distance",
             "accredited",
             "vet_tec_provider"
           ]
