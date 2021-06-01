@@ -80,11 +80,9 @@ module V1
 
     # GET /v1/institutions/20005123
     def show
-      facility_code = @query[:id]
+      resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
-      resource = Institution.approved_institutions(@version).find_by(facility_code: facility_code)
-
-      raise Common::Exceptions::RecordNotFound, facility_code unless resource
+      raise Common::Exceptions::RecordNotFound, params[:id] unless resource
 
       @links = { self: self_link }
       render json: resource, serializer: InstitutionProfileSerializer,
