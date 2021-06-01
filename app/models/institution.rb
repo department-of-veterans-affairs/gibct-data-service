@@ -276,10 +276,6 @@ class Institution < ImportableRecord
     escaped_term
   end
 
-  def self.radius_in_meters(miles)
-    miles * MILE_METER_CONVERSION_RATE
-  end
-
   # Depending on feature flags and search term determines where clause for search
   scope :search_v1, lambda { |query|
     return if query.blank? || query[:name].blank?
@@ -332,12 +328,15 @@ class Institution < ImportableRecord
     longitude = query[:longitude]
     distance = query[:distance] || 50
 
-    clause = 'earth_box(ll_to_earth(:latitude,:longitude), :radius) @> ll_to_earth(latitude, longitude)'
+    # rubocop:disable Layout/LineLength
+    clause = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate <= :distance'
+    # rubocop:enable Layout/LineLength
 
     where(sanitize_sql_for_conditions([clause,
                                        latitude: latitude,
                                        longitude: longitude,
-                                       radius: radius_in_meters(distance)]))
+                                       conversion_rate: MILE_METER_CONVERSION_RATE,
+                                       distance: distance]))
   }
 
   # Depending on feature flags and search term determines where clause for search
