@@ -46,7 +46,6 @@ module V1
       @query ||= normalized_query_params
 
       location_results = filter_results(Institution.approved_institutions(@version).location_search(@query))
-      binding.pry
       results = location_results.location_select(@query).location_order
 
       @meta = {
