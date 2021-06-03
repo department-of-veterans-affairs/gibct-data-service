@@ -539,7 +539,7 @@ class Institution < ImportableRecord
     exclude_vettec = query.key?(:exclude_vettec)
 
     if exclude_schools && exclude_employers && !exclude_vettec
-      filters << 'vet_tec_provider is TRUE'
+      filters << 'vet_tec_provider IS TRUE'
     else
       filters << 'institution_type_name NOT IN (:schools)' if exclude_schools
       filters << 'institution_type_name != :employer' if exclude_employers
