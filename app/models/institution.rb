@@ -506,6 +506,7 @@ class Institution < ImportableRecord
   scope :filter_result_v1, lambda { |query|
     filters = []
 
+    # ['column name', 'query param name']
     [
       %w[institution_type_name type],
       ['country'],
