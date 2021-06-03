@@ -506,36 +506,36 @@ class Institution < ImportableRecord
   scope :filter_result_v1, lambda { |query|
     filters = []
 
-    # booleans
     [
-      ['student_veteran'],
-      %w[yr yellow_ribbon_scholarship],
-      ['preferred_provider'],
-      ['hbcu'],
-      ['relaffil'],
-      ['accredited']
-    ].filter { |filter_args| query[filter_args.last].present? }
+        %w[institution_type_name type],
+        ['country'],
+        ['state'],
+      ['student_veteran'], # boolean
+        %w[yr yellow_ribbon_scholarship], # boolean
+      ['preferred_provider'], # boolean
+      ['accredited'] # boolean
+    ].filter { |filter_args| query.key?(filter_args.last) }
       .each do |filter_args|
-      filters << "#{filter_args.first} IS #{query[filter_args.last]} "
+      param_value = query[filter_args.last]
+      clause = if param_value == 'true' || param_value == 'yes'
+                'IS true'
+              elsif param_value == 'false' || param_value == 'no'
+                'IS false'
+              else
+                "= '#{param_value}'"
+              end
+      filters << "#{filter_args.first} #{clause}"
     end
 
-    # equals operators
-    [
-      %w[institution_type_name type],
-      ['country'],
-      ['state']
-    ].filter { |filter_args| query[filter_args.last].present? }
-      .each do |filter_args|
-      filters << "#{filter_args.first} = #{query[filter_args.last]} "
-    end
-
-    filters << 'caution_flag IS NULL OR caution_flag IS false' if query[:exclude_caution_flags].present?
-    filters << '(menonly = 1 OR womenonly = 1)' if query[:single_gender_school]
+    filters << 'caution_flag IS NULL OR caution_flag IS FALSE' if query.key?(:exclude_caution_flags)
+    filters << '(menonly = 1 OR womenonly = 1)' if query.key?(:single_gender_school)
+    filters << 'relaffil IS NOT NULL' if query.key?(:relaffil)
+    filters << 'hbcu = 1' if query.key?(:hbcu)
 
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
-    filters << 'institution_type_name NOT IN (:schools)' if query[:exclude_schools].present?
-    filters << "institution_type_name != ':employer'" if query[:exclude_employers].present?
-    filters << 'vet_tec_provider IS FALSE' if query[:exclude_vettec].present?
+    filters << 'institution_type_name NOT IN (:schools)' if query.key?(:exclude_schools)
+    filters << "institution_type_name != :employer" if query.key?(:exclude_employers)
+    filters << 'vet_tec_provider IS FALSE' if query.key?(:exclude_vettec)
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
                                                                   employer: EMPLOYER,
