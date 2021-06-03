@@ -534,9 +534,17 @@ class Institution < ImportableRecord
     filters << 'hbcu = 1' if query.key?(:hbcu)
 
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
-    filters << 'institution_type_name NOT IN (:schools)' if query.key?(:exclude_schools)
-    filters << 'institution_type_name != :employer' if query.key?(:exclude_employers)
-    filters << 'vet_tec_provider IS FALSE' if query.key?(:exclude_vettec)
+    exclude_schools = query.key?(:exclude_schools)
+    exclude_employers = query.key?(:exclude_employers)
+    exclude_vettec = query.key?(:exclude_vettec)
+
+    if exclude_schools && exclude_employers && !exclude_vettec
+      filters << 'vet_tec_provider is TRUE'
+    else
+      filters << 'institution_type_name NOT IN (:schools)' if exclude_schools
+      filters << 'institution_type_name != :employer' if exclude_employers
+      filters << 'vet_tec_provider IS FALSE' if exclude_vettec
+    end
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
                                                                   employer: EMPLOYER,
