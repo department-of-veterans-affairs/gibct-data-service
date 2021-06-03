@@ -59,6 +59,24 @@ module V1
              meta: @meta
     end
 
+    # GET /v1/institutions?facility_codes=1,2,3,4
+    #   Search by facility code and return using InstitutionCompareSerializer
+    def facility_codes
+      @query ||= normalized_query_params
+
+      results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
+                           .order(:institution)
+
+      @meta = {
+        version: @version,
+        count: results.count
+      }
+
+      render json: results,
+             each_serializer: InstitutionCompareSerializer,
+             meta: @meta
+    end
+
     # GET /v1/institutions/20005123
     def show
       resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
