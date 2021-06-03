@@ -387,14 +387,6 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    it 'search returns location results' do
-      create(:institution, :location, version_id: Version.current_production.id)
-      get(:index, params: { latitude: '32.7876', longitude: '-79.9403', distance: '5', tab: 'location' })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.media_type).to eq('application/json')
-      expect(response).to match_response_schema('institution_search_results')
-    end
-
     it 'filter by uppercase country returns results' do
       get(:index, params: { name: 'institution', country: 'USA', schools: true })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
@@ -478,6 +470,36 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
       check_boolean_facets(facets)
+    end
+  end
+
+  context 'with location results' do
+    before do
+      create(:version, :production)
+    end
+
+    it 'search returns location results' do
+      create(:institution, :location, version_id: Version.current_production.id)
+      get(:location, params: { latitude: '32.7876', longitude: '-79.9403', distance: '50', tab: 'location' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+  end
+
+  context 'with compare results' do
+    before do
+      create(:version, :production)
+    end
+
+    it 'search returns compare results' do
+      i1 = create(:institution, version_id: Version.current_production.id)
+      i2 = create(:institution, version_id: Version.current_production.id)
+      i3 = create(:institution, version_id: Version.current_production.id)
+      get(:facility_codes, params: { facility_codes: [i1.facility_code, i2.facility_code, i3.facility_code] })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_compare_results')
     end
   end
 

@@ -21,31 +21,59 @@ module V1
     end
 
     # GET /v1/institutions?name=duluth&x=y
+    #   Default search
     def index
       @query ||= normalized_query_params
+
+      # For sorting by percentage instead whole number
+      max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
+      results = search_results.search_order(@query, max_gibill).page(page)
+
       @meta = {
         version: @version,
-        count: 0,
-        facets: {}
+        count: results.count,
+        facets: facets(results)
       }
-
-      if @query.key?(:latitude) && @query.key?(:longitude)
-        location_results = Institution.approved_institutions(@version).location_search(@query)
-        results = location_results.location_select(@query).location_order
-
-        @meta[:count] = location_results.count
-        @meta[:facets] = facets(location_results)
-      else
-        # For sorting by percentage instead whole number
-        max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
-        results = search_results.search_order(@query, max_gibill).page(page)
-
-        @meta[:count] = results.count
-        @meta[:facets] = facets(results)
-      end
 
       render json: results,
              each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
+    end
+
+    # GET /v1/institutions?latitude=0.0&longitude=0.0
+    #   Location search
+    def location
+      @query ||= normalized_query_params
+
+      location_results = Institution.approved_institutions(@version).location_search(@query)
+      results = location_results.location_select(@query).location_order
+
+      @meta = {
+        version: @version,
+        count: location_results.count,
+        facets: facets(location_results)
+      }
+
+      render json: results,
+             each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
+    end
+
+    # GET /v1/institutions?facility_codes=1,2,3,4
+    #   Search by facility code and return using InstitutionCompareSerializer
+    def facility_codes
+      @query ||= normalized_query_params
+
+      results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
+                           .order(:institution)
+
+      @meta = {
+        version: @version,
+        count: results.count
+      }
+
+      render json: results,
+             each_serializer: InstitutionCompareSerializer,
              meta: @meta
     end
 
