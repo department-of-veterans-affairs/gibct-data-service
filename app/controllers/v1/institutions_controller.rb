@@ -28,9 +28,9 @@ module V1
       # For sorting by percentage instead whole number
       max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
       results = Institution.approved_institutions(@version)
-                    .search_v1(@query)
-                    .filter_result_v1(@query)
-                    .search_order(@query, max_gibill).page(page)
+                           .search_v1(@query)
+                           .filter_result_v1(@query)
+                           .search_order(@query, max_gibill).page(page)
 
       @meta = {
         version: @version,
@@ -129,7 +129,7 @@ module V1
         end
       end
     end
-    
+
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
     def facets(results)
