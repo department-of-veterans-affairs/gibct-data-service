@@ -507,23 +507,23 @@ class Institution < ImportableRecord
     filters = []
 
     [
-        %w[institution_type_name type],
-        ['country'],
-        ['state'],
+      %w[institution_type_name type],
+      ['country'],
+      ['state'],
       ['student_veteran'], # boolean
-        %w[yr yellow_ribbon_scholarship], # boolean
+      %w[yr yellow_ribbon_scholarship], # boolean
       ['preferred_provider'], # boolean
       ['accredited'] # boolean
     ].filter { |filter_args| query.key?(filter_args.last) }
       .each do |filter_args|
       param_value = query[filter_args.last]
-      clause = if param_value == 'true' || param_value == 'yes'
-                'IS true'
-              elsif param_value == 'false' || param_value == 'no'
-                'IS false'
-              else
-                "= '#{param_value}'"
-              end
+      clause = if %w[true yes].include?(param_value)
+                 'IS true'
+               elsif %w[false no].include?(param_value)
+                 'IS false'
+               else
+                 "= '#{param_value}'"
+               end
       filters << "#{filter_args.first} #{clause}"
     end
 
@@ -534,7 +534,7 @@ class Institution < ImportableRecord
 
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
     filters << 'institution_type_name NOT IN (:schools)' if query.key?(:exclude_schools)
-    filters << "institution_type_name != :employer" if query.key?(:exclude_employers)
+    filters << 'institution_type_name != :employer' if query.key?(:exclude_employers)
     filters << 'vet_tec_provider IS FALSE' if query.key?(:exclude_vettec)
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
