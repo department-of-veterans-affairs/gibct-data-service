@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Institution < ImportableRecord
-  EMPLOYER = 'OJT'
-  SCHOOLS = ['CORRESPONDENCE', 'FLIGHT', 'FOR PROFIT', 'FOREIGN', 'PRIVATE', 'PUBLIC'].freeze
+  EMPLOYER = Weam::OJT
+  SCHOOLS = [Weam::CORRESPONDENCE, Weam::FLIGHT, Weam::FOR_PROFIT, Weam::FOREIGN, Weam::PRIVATE, Weam::PUBLIC].freeze
 
   DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
 
