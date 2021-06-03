@@ -112,8 +112,8 @@ module V1
     def search_results
       @query ||= normalized_query_params
       Institution.approved_institutions(@version)
-                            .search_v1(@query)
-                     .filter_result_v1(@query)
+                 .search_v1(@query)
+                 .filter_result_v1(@query)
     end
 
     # TODO: If filter counts are desired in the future, change boolean facets

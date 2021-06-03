@@ -2,7 +2,7 @@
 
 class Institution < ImportableRecord
   EMPLOYER = 'OJT'
-  SCHOOLS = ['CORRESPONDENCE','FLIGHT','FOR PROFIT','FOREIGN','PRIVATE','PUBLIC']
+  SCHOOLS = ['CORRESPONDENCE', 'FLIGHT', 'FOR PROFIT', 'FOREIGN', 'PRIVATE', 'PUBLIC'].freeze
 
   DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
 
@@ -508,24 +508,24 @@ class Institution < ImportableRecord
 
     # booleans
     [
-        ['student_veteran'],
-        %w[yr yellow_ribbon_scholarship],
-        ['preferred_provider'],
-        ['hbcu'],
-        ['relaffil'],
-        ['accredited']
-    ].filter{ |filter_args| query[filter_args.last].present? }
-        .each do |filter_args|
+      ['student_veteran'],
+      %w[yr yellow_ribbon_scholarship],
+      ['preferred_provider'],
+      ['hbcu'],
+      ['relaffil'],
+      ['accredited']
+    ].filter { |filter_args| query[filter_args.last].present? }
+      .each do |filter_args|
       filters << "#{filter_args.first} IS #{query[filter_args.last]} "
     end
 
     # equals operators
     [
-        %w[institution_type_name type],
-        ['country'],
-        ['state'],
-    ].filter{ |filter_args| query[filter_args.last].present? }
-        .each do |filter_args|
+      %w[institution_type_name type],
+      ['country'],
+      ['state']
+    ].filter { |filter_args| query[filter_args.last].present? }
+      .each do |filter_args|
       filters << "#{filter_args.first} = #{query[filter_args.last]} "
     end
 
