@@ -10,7 +10,7 @@ module V1
       if params[:term].present?
         @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = filter_results(Institution.approved_institutions(@version)).autocomplete(@search_term)
+        @data = Institution.approved_institutions(@version).filter_result_v1(@query).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -45,7 +45,7 @@ module V1
     def location
       @query ||= normalized_query_params
 
-      location_results = filter_results(Institution.approved_institutions(@version).location_search(@query))
+      location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
       results = location_results.location_select(@query).location_order
 
       @meta = {
@@ -111,47 +111,9 @@ module V1
 
     def search_results
       @query ||= normalized_query_params
-      relation = Institution.approved_institutions(@version)
+      Institution.approved_institutions(@version)
                             .search_v1(@query)
-      filter_results(relation)
-    end
-
-    def filter_results(relation)
-      [
-        %i[institution_type_name type],
-        [:category],
-        [:country],
-        [:state],
-        %i[student_veteran student_veteran_group], # boolean
-        %i[yr yellow_ribbon_scholarship], # boolean
-        %i[poe principles_of_excellence], # boolean
-        %i[eight_keys eight_keys_to_veteran_success], # boolean
-        [:stem_offered], # boolean
-        [:independent_study], # boolean
-        [:online_only],
-        [:distance_learning],
-        [:priority_enrollment], # boolean
-        [:preferred_provider], # boolean
-        [:stem_indicator], # boolean
-        [:womenonly], # boolean
-        [:menonly], # boolean
-        [:hbcu], # boolean
-        [:relaffil],
-        [:vet_tec_provider] # boolean
-      ].each do |filter_args|
-        filter_args << filter_args[0] if filter_args.size == 1
-        relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
-      end
-
-      relation = relation.where('caution_flag IS NULL') if @query[:exclude_caution_flags]
-      relation = relation.where('relaffil IS NOT NULL') if @query[:is_relaffil]
-      relation = relation.where(accredited: true) if @query[:accredited]
-      relation = relation.where('menonly = 1 OR womenonly = 1') if @query[:single_gender_school]
-      relation = relation.where("institution_type_name != 'OJT' AND vet_tec_provider != true") if @query[:schools]
-      relation = relation.where.not(institution_type_name: 'OJT') if @query[:employers]
-      relation = relation.where(vet_tec_provider: false) if @query[:vettec]
-
-      relation
+                     .filter_result_v1(@query)
     end
 
     # TODO: If filter counts are desired in the future, change boolean facets

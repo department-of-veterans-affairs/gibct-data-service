@@ -2,6 +2,7 @@
 
 class Institution < ImportableRecord
   EMPLOYER = 'OJT'
+  SCHOOLS = ['CORRESPONDENCE','FLIGHT','FOR PROFIT','FOREIGN','PRIVATE','PUBLIC']
 
   DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
 
@@ -500,5 +501,46 @@ class Institution < ImportableRecord
 
   scope :non_vet_tec_institutions, lambda { |version|
     approved_institutions(version).where(vet_tec_provider: false)
+  }
+
+  scope :filter_result_v1, lambda { |query|
+    filters = []
+
+    # booleans
+    [
+        ['student_veteran'],
+        %w[yr yellow_ribbon_scholarship],
+        ['preferred_provider'],
+        ['hbcu'],
+        ['relaffil'],
+        ['accredited']
+    ].filter{ |filter_args| query[filter_args.last].present? }
+        .each do |filter_args|
+      filters << "#{filter_args.first} IS #{query[filter_args.last]} "
+    end
+
+    # equals operators
+    [
+        %w[institution_type_name type],
+        ['country'],
+        ['state'],
+    ].filter{ |filter_args| query[filter_args.last].present? }
+        .each do |filter_args|
+      filters << "#{filter_args.first} = #{query[filter_args.last]} "
+    end
+
+    filters << 'caution_flag IS NULL OR caution_flag IS false' if query[:exclude_caution_flags].present?
+    filters << '(menonly = 1 OR womenonly = 1)' if query[:single_gender_school]
+
+    # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
+    filters << 'institution_type_name NOT IN (:schools)' if query[:exclude_schools].present?
+    filters << "institution_type_name != ':employer'" if query[:exclude_employers].present?
+    filters << 'vet_tec_provider IS FALSE' if query[:exclude_vettec].present?
+
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
+                                                                  employer: EMPLOYER,
+                                                                  schools: SCHOOLS])
+
+    where(Arel.sql(sanitized_order_by))
   }
 end
