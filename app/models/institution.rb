@@ -528,7 +528,7 @@ class Institution < ImportableRecord
       filters << "#{filter_args.first} #{clause}"
     end
 
-    filters << 'caution_flag IS NULL OR caution_flag IS FALSE' if query.key?(:exclude_caution_flags)
+    filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
     filters << '(menonly = 1 OR womenonly = 1)' if query.key?(:single_gender_school)
     filters << 'relaffil IS NOT NULL' if query.key?(:relaffil)
     filters << 'hbcu = 1' if query.key?(:hbcu)
