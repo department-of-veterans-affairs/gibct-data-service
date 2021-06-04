@@ -546,10 +546,10 @@ class Institution < ImportableRecord
       filters << 'vet_tec_provider IS FALSE' if exclude_vettec
     end
 
-    sanitized_order_by = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
+    sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
                                                                   employer: EMPLOYER,
                                                                   schools: SCHOOLS])
 
-    where(Arel.sql(sanitized_order_by))
+    where(Arel.sql(sanitized_clause))
   }
 end
