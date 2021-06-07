@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_07_132032) do
+ActiveRecord::Schema.define(version: 2021_06_07_134144) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -626,6 +626,8 @@ ActiveRecord::Schema.define(version: 2021_06_07_132032) do
     t.float "rating_average"
     t.float "latitude"
     t.float "longitude"
+    t.boolean "employer_provider"
+    t.boolean "school_provider"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
