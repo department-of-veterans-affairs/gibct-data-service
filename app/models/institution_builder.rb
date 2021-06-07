@@ -57,6 +57,7 @@ module InstitutionBuilder
       build_institution_programs(version.id)
       build_versioned_school_certifying_official(version.id)
       ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
+      add_type_grouping(version.id)
     end
 
     def self.build_ratings(version)
@@ -919,6 +920,20 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(sql)
+    end
+
+    def add_type_grouping(version_id)
+      str = <<-SQL
+        UPDATE institutions SET
+          school_provider = CASE WHEN institution_type_name IN (:schools) THEN TRUE ELSE FALSE END,
+          employer_provider = CASE WHEN institution_type_name = :employer THEN TRUE ELSE FALSE END
+        WHERE institutions.vet_tec_provider IS FALSE
+        AND institutions.version_id = #{version_id}
+      SQL
+
+      Institution.connection.update(Institution.sanitize_sql_for_conditions([str,
+                                                                             employer: Institution::EMPLOYER,
+                                                                             schools: Institution::SCHOOLS]))
     end
   end
 end
