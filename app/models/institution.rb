@@ -536,7 +536,7 @@ class Institution < ImportableRecord
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
     filters << 'school_provider IS FALSE' if query.key?(:exclude_schools)
     filters << 'employer_provider IS FALSE' if query.key?(:exclude_employers)
-    filters << 'vet_tec_provider IS FALSE' if query.key?(:exclude_employers)
+    filters << 'vet_tec_provider IS FALSE' if query.key?(:exclude_vettec)
 
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
                                                                   employer: EMPLOYER,
