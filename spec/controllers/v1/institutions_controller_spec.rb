@@ -139,7 +139,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'filters by exclude schools' do
       institution = create(:institution, :start_like_harv, :production_version)
-      create(:institution, :start_like_harv, :production_version, institution_type_name: Institution::EMPLOYER)
+      create(:institution, :start_like_harv, :production_version, :employer)
       get(:autocomplete, params: { term: 'harv', exclude_schools: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).not_to eq(institution.id)
