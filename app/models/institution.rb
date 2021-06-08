@@ -543,14 +543,14 @@ class Institution < ImportableRecord
     preferred_provider = query[:preferred_provider] && !exclude_vettec || false
 
     if preferred_provider
-      type_filters = []
+      provider_filters = []
       # checked: vet tec, preferred
-      type_filters << '(vet_tec_provider IS TRUE AND preferred_provider IS TRUE)'
+      provider_filters << '(vet_tec_provider IS TRUE AND preferred_provider IS TRUE)'
       # checked: schools
-      type_filters << 'school_provider IS TRUE' unless exclude_schools
+      provider_filters << 'school_provider IS TRUE' unless exclude_schools
       # checked: employers
-      type_filters << 'employer_provider IS TRUE' unless exclude_employers
-      filters << '(' + type_filters.join(' OR ') + ')'
+      provider_filters << 'employer_provider IS TRUE' unless exclude_employers
+      filters << '(' + provider_filters.join(' OR ') + ')'
     end
 
     filters << 'school_provider IS FALSE' if exclude_schools
