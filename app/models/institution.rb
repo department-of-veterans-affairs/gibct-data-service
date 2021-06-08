@@ -539,8 +539,8 @@ class Institution < ImportableRecord
     filters << 'vet_tec_provider IS FALSE' if query.key?(:exclude_vettec)
 
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
-                                                                  employer: EMPLOYER,
-                                                                  schools: SCHOOLS])
+                                                                employer: EMPLOYER,
+                                                                schools: SCHOOLS])
 
     where(Arel.sql(sanitized_clause))
   }
