@@ -168,7 +168,9 @@ class Institution < ImportableRecord
     'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter },
     'poo_status' => { column: :poo_status, converter: BaseConverter },
     'latitude' => { column: :latitude, converter: NumberConverter },
-    'longitude' => { column: :longitude, converter: NumberConverter }
+    'longitude' => { column: :longitude, converter: NumberConverter },
+    'employer_provider' => { column: :employer_provider, converter: BooleanConverter },
+    'school_provider' => { column: :school_provider, converter: BooleanConverter }
   }.freeze
 
   attribute :distance
