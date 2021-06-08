@@ -121,6 +121,7 @@ FactoryBot.define do
       state { 'SC' }
       country { 'USA' }
       preferred_provider { true }
+      vet_tec_provider { true }
     end
 
     trait :closure109 do

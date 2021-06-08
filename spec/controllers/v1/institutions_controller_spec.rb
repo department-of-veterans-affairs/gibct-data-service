@@ -188,10 +188,10 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filters by preferred_provider' do
-      institution = create(:institution, :start_like_harv, :production_version, preferred_provider: 'true')
+      institution = create(:institution, :start_like_harv, :production_version, vet_tec_provider: true, preferred_provider: true)
       create(:institution, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv', preferred_provider: true })
-      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'].count).to eq(2)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
@@ -343,7 +343,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     it 'filters by preferred_provider' do
       create(:institution, :in_nyc, version_id: Version.current_production.id)
       create(:institution, :preferred_provider, version_id: Version.current_production.id)
-      get(:index, params: { preferred_provider: true })
+      get(:index, params: { exclude_schools: true, exclude_employers: true, preferred_provider: true })
       expect(JSON.parse(response.body)['data'].map { |a| a['attributes']['preferred_provider'] }).to all(eq(true))
     end
 
