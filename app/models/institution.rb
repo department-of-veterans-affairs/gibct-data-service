@@ -505,6 +505,7 @@ class Institution < ImportableRecord
     approved_institutions(version).where(vet_tec_provider: false)
   }
 
+  # rubocop:disable Metrics/BlockLength
   scope :filter_result_v1, lambda { |query|
     filters = []
 
@@ -563,4 +564,5 @@ class Institution < ImportableRecord
 
     where(Arel.sql(sanitized_clause))
   }
+  # rubocop:enable Metrics/BlockLength
 end
