@@ -29,10 +29,18 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :distance
   attribute :accredited
   attribute :vet_tec_provider
+  attribute :programs
+  link(:self) { v0_institution_url(object.facility_code) }
 
   def caution_flags
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
+    end
+  end
+
+  def programs
+    object.institution_programs.map do |program|
+      InstitutionProgramProfileSerializer.new(program)
     end
   end
 end
