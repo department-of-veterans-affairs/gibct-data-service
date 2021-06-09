@@ -192,7 +192,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       create(:institution, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv', preferred_provider: true })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
-      vet_tec_providers_id = JSON.parse(response.body)['data'].map{|r| r['id']}
+      vet_tec_providers_id = JSON.parse(response.body)['data'].map { |r| r['id'] }
       expect(vet_tec_providers_id).to include(institution.id)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
