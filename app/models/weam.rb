@@ -8,6 +8,14 @@
 # Quirks: protectorates are listed as states
 # rubocop:disable Metrics/ClassLength
 class Weam < ImportableRecord
+  OJT = 'OJT'
+  PRIVATE = 'PRIVATE'
+  FOREIGN = 'FOREIGN'
+  CORRESPONDENCE = 'CORRESPONDENCE'
+  FLIGHT = 'FLIGHT'
+  FOR_PROFIT = 'FOR PROFIT'
+  PUBLIC = 'PUBLIC'
+
   REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'
 
   LAW_CODES_BLOCKING_APPROVED_STATUS = [
@@ -82,8 +90,8 @@ class Weam < ImportableRecord
 
   def institution_type
     msg = 'Unable to determine institution type'
-    errors.add(:institution_type, msg) unless ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE',
-                                               'FLIGHT', 'FOR PROFIT', 'PUBLIC'].include?(institution_type_name)
+    errors.add(:institution_type, msg) unless [OJT, PRIVATE, FOREIGN, CORRESPONDENCE,
+                                               FLIGHT, FOR_PROFIT, PUBLIC].include?(institution_type_name)
   end
 
   # Computes all fields that are dependent on other fields. Called in validation because

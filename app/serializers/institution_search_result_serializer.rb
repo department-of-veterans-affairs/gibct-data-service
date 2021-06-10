@@ -33,6 +33,8 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :program_length_in_hours
 
   link(:self) { v0_institution_url(object.facility_code) }
+  attribute :school_provider
+  attribute :employer_provider
 
   def caution_flags
     object.caution_flags.map do |flag|
