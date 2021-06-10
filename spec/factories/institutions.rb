@@ -10,6 +10,9 @@ FactoryBot.define do
     sequence(:country) { |n| "country #{n}" }
     sequence(:insturl) { |n| "www.school.edu/#{n}" }
     institution_type_name { 'PRIVATE' }
+    school_provider { true }
+    employer_provider { false }
+    vet_tec_provider { false }
     school_closing { false }
 
     approved { true }
@@ -80,6 +83,9 @@ FactoryBot.define do
       state { 'CA' }
       country { 'USA' }
       institution_type_name { 'OJT' }
+      employer_provider { true }
+      vet_tec_provider { false }
+      school_provider { false }
     end
 
     trait :institution_builder do
@@ -96,6 +102,8 @@ FactoryBot.define do
       state { 'SC' }
       country { 'USA' }
       vet_tec_provider { true }
+      school_provider { false }
+      employer_provider { false }
     end
 
     trait :exclude_caution_flags do
@@ -113,6 +121,7 @@ FactoryBot.define do
       state { 'SC' }
       country { 'USA' }
       preferred_provider { true }
+      vet_tec_provider { true }
     end
 
     trait :closure109 do
@@ -150,6 +159,13 @@ FactoryBot.define do
       latitude { 32.790803 }
       longitude { -79.938087 }
       institution { 'CHARLESTON SCHOOL OF LAW' }
+    end
+
+    trait :employer do
+      vet_tec_provider { false }
+      school_provider { false }
+      employer_provider { true }
+      institution_type_name { Institution::EMPLOYER }
     end
   end
 end

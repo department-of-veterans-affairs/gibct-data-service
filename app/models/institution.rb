@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Institution < ImportableRecord
-  EMPLOYER = 'OJT'
+  EMPLOYER = Weam::OJT
+  SCHOOLS = [Weam::CORRESPONDENCE, Weam::FLIGHT, Weam::FOR_PROFIT, Weam::FOREIGN, Weam::PRIVATE, Weam::PUBLIC].freeze
 
   DEFAULT_IHL_SECTION_103_MESSAGE = 'Contact the School Certifying Official (SCO) for requirements'
 
@@ -167,7 +168,9 @@ class Institution < ImportableRecord
     'requires_coe_and_criteria' => { column: :requires_coe_and_criteria, converter: BooleanConverter },
     'poo_status' => { column: :poo_status, converter: BaseConverter },
     'latitude' => { column: :latitude, converter: NumberConverter },
-    'longitude' => { column: :longitude, converter: NumberConverter }
+    'longitude' => { column: :longitude, converter: NumberConverter },
+    'employer_provider' => { column: :employer_provider, converter: BooleanConverter },
+    'school_provider' => { column: :school_provider, converter: BooleanConverter }
   }.freeze
 
   attribute :distance
@@ -501,4 +504,65 @@ class Institution < ImportableRecord
   scope :non_vet_tec_institutions, lambda { |version|
     approved_institutions(version).where(vet_tec_provider: false)
   }
+
+  # rubocop:disable Metrics/BlockLength
+  scope :filter_result_v1, lambda { |query|
+    filters = []
+
+    # ['column name', 'query param name']
+    [
+      %w[institution_type_name type],
+      ['country'],
+      ['state'],
+      ['student_veteran'], # boolean
+      %w[yr yellow_ribbon_scholarship], # boolean
+      ['accredited'] # boolean
+    ].filter { |filter_args| query.key?(filter_args.last) }
+      .each do |filter_args|
+      param_value = query[filter_args.last]
+      clause = if %w[true yes].include?(param_value)
+                 'IS true'
+               elsif %w[false no].include?(param_value)
+                 'IS false'
+               else
+                 "= '#{param_value}'"
+               end
+      filters << "#{filter_args.first} #{clause}"
+    end
+
+    filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
+    filters << '(menonly = 1 OR womenonly = 1)' if query.key?(:single_gender_school)
+    filters << 'relaffil IS NOT NULL' if query.key?(:relaffil)
+    filters << 'hbcu = 1' if query.key?(:hbcu)
+
+    # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
+    exclude_schools = query.key?(:exclude_schools)
+    exclude_employers = query.key?(:exclude_employers)
+    exclude_vettec = query.key?(:exclude_vettec)
+
+    # Cannot have preferred_provider checked when excluding vet_tec_providers
+    preferred_provider = query[:preferred_provider] && !exclude_vettec || false
+
+    if preferred_provider
+      provider_filters = []
+      # checked: vet tec, preferred
+      provider_filters << '(vet_tec_provider IS TRUE AND preferred_provider IS TRUE)'
+      # checked: schools
+      provider_filters << 'school_provider IS TRUE' unless exclude_schools
+      # checked: employers
+      provider_filters << 'employer_provider IS TRUE' unless exclude_employers
+      filters << '(' + provider_filters.join(' OR ') + ')'
+    end
+
+    filters << 'school_provider IS FALSE' if exclude_schools
+    filters << 'employer_provider IS FALSE' if exclude_employers
+    filters << 'vet_tec_provider IS FALSE' if exclude_vettec
+
+    sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
+                                                                employer: EMPLOYER,
+                                                                schools: SCHOOLS])
+
+    where(Arel.sql(sanitized_clause))
+  }
+  # rubocop:enable Metrics/BlockLength
 end
