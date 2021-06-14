@@ -29,6 +29,10 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :distance
   attribute :accredited
   attribute :vet_tec_provider
+  attribute :program_count
+  attribute :program_length_in_hours
+
+  link(:self) { v0_institution_url(object.facility_code) }
   attribute :school_provider
   attribute :employer_provider
 
@@ -36,5 +40,13 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end
+  end
+
+  def program_count
+    object.institution_programs.count
+  end
+
+  def program_length_in_hours
+    object.institution_programs.map(&:length_in_hours)
   end
 end

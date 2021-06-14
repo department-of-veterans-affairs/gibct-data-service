@@ -1,105 +1,252 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "object",
-  "properties": {
-    "meta": {
-      "type": "object",
-      "properties": {
-        "count": {
-          "type" : "integer"
-        },
-        "facets": {
-          "type": "object"
-        },
-        "version": {
-          "type": "object",
-          "properties": {
-            "number": {
-              "type": "number"
-            },
-            "created_at": {
-              "type": "string"
-            },
-            "preview": {
-              "type": "boolean"
-            }
-          }
-        }
+  "data": [
+    {
+      "id": "1",
+      "type": "institutions",
+      "attributes": {
+        "name": "institution 1000",
+        "facility_code": "00000001",
+        "city": null,
+        "state": null,
+        "country": null,
+        "accreditation_type": null,
+        "student_count": null,
+        "rating_average": null,
+        "rating_count": 0,
+        "type": "PRIVATE",
+        "caution_flags": [],
+        "caution_flag": null,
+        "student_veteran": null,
+        "yr": null,
+        "campus_type": null,
+        "highest_degree": null,
+        "hbcu": null,
+        "menonly": null,
+        "womenonly": null,
+        "relaffil": null,
+        "preferred_provider": false,
+        "dod_bah": null,
+        "bah": null,
+        "latitude": null,
+        "longitude": null,
+        "distance": null,
+        "accredited": null,
+        "vet_tec_provider": false,
+        "program_count": 0,
+        "program_length_in_hours": [],
+        "school_provider": true,
+        "employer_provider": false
       },
-      "required": ["version"]
-    },
-    "data": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "maxItems": 10,
-        "additionalProperties": false,
-        "properties": {
-          "id": { "type": "string" },
-          "type": { "type": "string" },
-          "attributes": {
-            "type": "object",
-            "properties": {
-              "name": { "type": "string" },
-              "facility_code": { "type": "string" },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "OJT",
-                  "PRIVATE",
-                  "FOREIGN",
-                  "CORRESPONDENCE",
-                  "FLIGHT",
-                  "FOR PROFIT",
-                  "PUBLIC"
-                ]
-              },
-              "city": { "type": ["null", "string"] },
-              "state": { "type": ["null", "string"] },
-              "country": { "type": ["null", "string"] },
-              "highest_degree": { "type": ["null", "integer"] },
-              "student_count": { "type": ["null", "integer"] },
-              "caution_flags": { "type": ["null", "array"] },
-              "caution_flag": { "type": ["null", "boolean"] },
-              "student_veteran": { "type": ["null", "boolean"] },
-              "yr": { "type": ["null", "boolean"] },
-              "campus_type": { "type": ["null", "string"] },
-              "latitude": { "type": ["null", "number"] },
-              "longitude": { "type": ["null", "number"] }
-            },
-            "required": [
-              "name",
-              "facility_code",
-              "type",
-              "city",
-              "state",
-              "country",
-              "highest_degree",
-              "student_count",
-              "caution_flags",
-              "caution_flag",
-              "student_veteran",
-              "yr",
-              "campus_type",
-              "latitude",
-              "longitude"
-            ]
-          }
-        },
-        "required": ["id", "type", "attributes"]
+      "links": {
+        "self": "http://localhost:3000/v0/institutions/00000001"
       }
     },
-    "links": {
-      "type": "object",
-      "properties": {
-        "self": { "type": "string" },
-        "first": { "type": "string" },
-        "prev": { "type": ["null", "string"] },
-        "next": { "type": ["null", "string"] },
-        "last": { "type": "string" }
+    {
+      "id": "2",
+      "type": "institutions",
+      "attributes": {
+        "name": "institution 1001",
+        "facility_code": "00000002",
+        "city": null,
+        "state": null,
+        "country": null,
+        "accreditation_type": null,
+        "student_count": null,
+        "rating_average": null,
+        "rating_count": 0,
+        "type": "PRIVATE",
+        "caution_flags": [],
+        "caution_flag": null,
+        "student_veteran": null,
+        "yr": null,
+        "campus_type": null,
+        "highest_degree": null,
+        "hbcu": null,
+        "menonly": null,
+        "womenonly": null,
+        "relaffil": null,
+        "preferred_provider": false,
+        "dod_bah": null,
+        "bah": null,
+        "latitude": null,
+        "longitude": null,
+        "distance": null,
+        "accredited": null,
+        "vet_tec_provider": false,
+        "program_count": 0,
+        "program_length_in_hours": [],
+        "school_provider": true,
+        "employer_provider": false
       },
-      "required": ["self", "first", "prev", "next", "last"]
+      "links": {
+        "self": "http://localhost:3000/v0/institutions/00000002"
+      }
+    },
+    {
+      "id": "3",
+      "type": "institutions",
+      "attributes": {
+        "name": "institution 1002",
+        "facility_code": "00000003",
+        "city": "CHICAGO",
+        "state": "IL",
+        "country": "USA",
+        "accreditation_type": null,
+        "student_count": null,
+        "rating_average": null,
+        "rating_count": 0,
+        "type": "PRIVATE",
+        "caution_flags": [],
+        "caution_flag": null,
+        "student_veteran": null,
+        "yr": null,
+        "campus_type": null,
+        "highest_degree": null,
+        "hbcu": null,
+        "menonly": null,
+        "womenonly": null,
+        "relaffil": null,
+        "preferred_provider": false,
+        "dod_bah": null,
+        "bah": null,
+        "latitude": null,
+        "longitude": null,
+        "distance": null,
+        "accredited": null,
+        "vet_tec_provider": false,
+        "program_count": 0,
+        "program_length_in_hours": [],
+        "school_provider": true,
+        "employer_provider": false
+      },
+      "links": {
+        "self": "http://localhost:3000/v0/institutions/00000003"
+      }
+    },
+    {
+      "id": "4",
+      "type": "institutions",
+      "attributes": {
+        "name": "institution 1003",
+        "facility_code": "00000004",
+        "city": null,
+        "state": null,
+        "country": null,
+        "accreditation_type": null,
+        "student_count": null,
+        "rating_average": null,
+        "rating_count": 0,
+        "type": "PRIVATE",
+        "caution_flags": [],
+        "caution_flag": null,
+        "student_veteran": null,
+        "yr": null,
+        "campus_type": null,
+        "highest_degree": null,
+        "hbcu": null,
+        "menonly": null,
+        "womenonly": null,
+        "relaffil": null,
+        "preferred_provider": false,
+        "dod_bah": null,
+        "bah": null,
+        "latitude": null,
+        "longitude": null,
+        "distance": null,
+        "accredited": null,
+        "vet_tec_provider": false,
+        "program_count": 0,
+        "program_length_in_hours": [],
+        "school_provider": true,
+        "employer_provider": false
+      },
+      "links": {
+        "self": "http://localhost:3000/v0/institutions/00000004"
+      }
     }
-  },
-  "required": ["meta", "data"]
+  ],
+
+  "meta": {
+    "version": {
+      "number": 1,
+      "created_at": "2021-06-14T12:24:07.096Z",
+      "preview": false
+    },
+    "count": 4,
+    "facets": {
+      "category": {
+        "school": 4,
+        "employer": 0
+      },
+      "type": {
+        "private": 4
+      },
+      "state": {
+        "ny": 3
+      },
+      "country": [
+        {
+          "name": "USA",
+          "count": 3
+        },
+        {
+          "name": "country 1",
+          "count": 1
+        }
+      ],
+      "student_vet_group": {
+        "true": null,
+        "false": null
+      },
+      "yellow_ribbon_scholarship": {
+        "true": null,
+        "false": null
+      },
+      "principles_of_excellence": {
+        "true": null,
+        "false": null
+      },
+      "eight_keys_to_veteran_success": {
+        "true": null,
+        "false": null
+      },
+      "stem_offered": {
+        "true": null,
+        "false": null
+      },
+      "independent_study": {
+        "true": null,
+        "false": null
+      },
+      "online_only": {
+        "true": null,
+        "false": null
+      },
+      "distance_learning": {
+        "true": null,
+        "false": null
+      },
+      "priority_enrollment": {
+        "true": null,
+        "false": null
+      },
+      "menonly": {
+        "true": null,
+        "false": null
+      },
+      "womenonly": {
+        "true": null,
+        "false": null
+      },
+      "hbcu": {
+        "true": null,
+        "false": null
+      },
+      "relaffil": {},
+      "vet_tec_provider": {
+        "true": null,
+        "false": null
+      }
+    }
+  }
 }
