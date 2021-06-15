@@ -38,6 +38,10 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:liberal_parsing]
   end
 
+  def clean_parsing
+    Common::Shared.file_type_defaults(csv_type)[:clean]
+  end
+
   def self.last_uploads
     Upload.select('DISTINCT ON("csv_type") *')
           .where(ok: true, csv_type: UPLOAD_TYPES_ALL_NAMES)

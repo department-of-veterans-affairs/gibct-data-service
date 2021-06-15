@@ -18,6 +18,7 @@ module RooHelper
     #   - :klass The ImportableRecord class
     #   - :skip_lines Number of lines to skip before Header row, used for warning messages and finding headers
     #   - :first_line This is used for warning messages, default value is 2
+    #   - :clean Disable regex /[[:cntrl:]]|^[\p{Space}]+|[\p{Space}]+$/ from being applied when pulling rows from file
     #
     # File Options
     # - :liberal_parsing  Used when file is either .txt or .csv
@@ -115,7 +116,11 @@ module RooHelper
       end
 
       # do not need to account for sheet_options[:skip_lines] here because of passing in the headers_mapping
-      rows = sheet.parse(headers_mapping.merge(clean: true))
+      rows = if sheet_options[:clean]
+               sheet.parse(headers_mapping.merge(clean: true))
+             else
+               sheet.parse(headers_mapping)
+             end
 
       results = parse_rows(sheet_klass, file_headers, rows, sheet_options) do |row|
         result = {}
@@ -163,7 +168,7 @@ module RooHelper
                                 file_options[:sheets]
                                   .map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
                               else
-                                [{ klass: klass, skip_lines: 0, first_line: 2 }]
+                                [{ klass: klass, skip_lines: 0, first_line: 2, clean: true }]
                               end
 
       file_options

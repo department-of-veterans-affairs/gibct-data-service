@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_07_134144) do
+ActiveRecord::Schema.define(version: 2021_06_14_192028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1593,6 +1593,14 @@ ActiveRecord::Schema.define(version: 2021_06_07_134144) do
     t.index ["number"], name: "index_versions_on_number"
     t.index ["user_id"], name: "index_versions_on_user_id"
     t.index ["uuid"], name: "index_versions_on_uuid", unique: true
+  end
+
+  create_table "vrrap_providers", force: :cascade do |t|
+    t.string "school_name"
+    t.string "facility_code"
+    t.string "programs"
+    t.boolean "vaco"
+    t.string "address"
   end
 
   create_table "vsocs", id: :serial, force: :cascade do |t|
