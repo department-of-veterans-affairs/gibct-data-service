@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_14_192028) do
+ActiveRecord::Schema.define(version: 2021_06_15_152425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -465,6 +465,7 @@ ActiveRecord::Schema.define(version: 2021_06_14_192028) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
+    t.boolean "vrrap", default: false
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -628,6 +629,7 @@ ActiveRecord::Schema.define(version: 2021_06_14_192028) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
+    t.boolean "vrrap"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
