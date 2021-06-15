@@ -22,6 +22,8 @@ module InstitutionBuilder
       WHERE institutions.cross = scorecards.cross
       AND institutions.version_id = #{version_id}
       AND institutions.latitude is NULL
+      AND scorecards.latitude BETWEEN -90 AND 90
+      AND scorecards.longitude BETWEEN -180 AND 180
       SQL
 
       Institution.connection.update(str)

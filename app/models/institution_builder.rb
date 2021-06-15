@@ -38,10 +38,10 @@ module InstitutionBuilder
       add_post_911_stats(version.id)
       add_mou(version.id)
       ScorecardBuilder.build(version.id)
-      add_ipeds_ic(version.id)
-      add_ipeds_hd(version.id)
-      add_ipeds_ic_ay(version.id)
-      add_ipeds_ic_py(version.id)
+      IpedsBuilder.build_ic(version.id)
+      IpedsBuilder.build_hd(version.id)
+      IpedsBuilder.build_ic_ay(version.id)
+      IpedsBuilder.build_ic_py(version.id)
       add_sec_702(version.id)
       add_settlement(version.id)
       add_hcm(version.id)
@@ -307,48 +307,6 @@ module InstitutionBuilder
       SQL
 
       CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
-    end
-
-    def self.add_ipeds_ic(version_id)
-      str = <<-SQL
-        institutions.cross = ipeds_ics.cross
-      SQL
-
-      add_columns_for_update(version_id, IpedsIc, str)
-    end
-
-    def self.add_ipeds_hd(version_id)
-      str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(IpedsHd)}, longitude = ipeds_hds.longitud
-        FROM ipeds_hds
-        WHERE institutions.cross = ipeds_hds.cross
-        AND institutions.version_id = #{version_id}
-      SQL
-
-      Institution.connection.update(str)
-    end
-
-    def self.add_ipeds_ic_ay(version_id)
-      str = <<-SQL
-        institutions.cross = ipeds_ic_ays.cross
-      SQL
-
-      add_columns_for_update(version_id, IpedsIcAy, str)
-    end
-
-    def self.add_ipeds_ic_py(version_id)
-      columns = IpedsIcPy::COLS_USED_IN_INSTITUTION.map(&:to_s).map do |col|
-        %("#{col}" = CASE WHEN institutions.#{col} IS NULL THEN ipeds_ic_pies.#{col} ELSE institutions.#{col} END)
-      end.join(', ')
-
-      str = <<-SQL
-        UPDATE institutions SET #{columns}
-        FROM ipeds_ic_pies
-        WHERE institutions.cross = ipeds_ic_pies.cross
-        AND institutions.version_id = #{version_id}
-      SQL
-
-      Institution.connection.update(str)
     end
 
     # Updates institution table as well as creates caution_flags
