@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a loadable model' do |options|
+RSpec.shared_examples 'a loadable model' do |options = { skip_lines: 0 }, file_ext = 'csv'|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
 
@@ -10,9 +10,9 @@ RSpec.shared_examples 'a loadable model' do |options|
   end
 
   describe 'when loading' do
-    let(:csv_file) { "./spec/fixtures/#{name}.csv" }
-    let(:csv_file_invalid) { "./spec/fixtures/#{name}_invalid.csv" }
-    let(:csv_file_missing_column) { "./spec/fixtures/#{name}_missing_column.csv" }
+    let(:csv_file) { "./spec/fixtures/#{name}.#{file_ext}" }
+    let(:csv_file_invalid) { "./spec/fixtures/#{name}_invalid.#{file_ext}" }
+    let(:csv_file_missing_column) { "./spec/fixtures/#{name}_missing_column.#{file_ext}" }
     let(:user) { User.first }
 
     load_options = Common::Shared.file_type_defaults(described_class.name, options)
@@ -21,26 +21,30 @@ RSpec.shared_examples 'a loadable model' do |options|
                      sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
                                 clean: load_options[:clean] }] }
 
-    context 'with an error-free csv file' do
+    context "with an error-free #{file_ext} file" do
       it 'deletes the old table content' do
         expect { described_class.load_with_roo(csv_file, file_options) }
           .to change(described_class, :count).from(5).to(2)
       end
 
       it 'loads the table' do
-        results = described_class.load_with_roo(csv_file, file_options).first[:results]
+        loaded_info = described_class.load_with_roo(csv_file, file_options).first
+        results = loaded_info[:results]
 
+        expect(loaded_info[:header_warnings].count).to eq(0)
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(2)
       end
     end
 
-    context 'with a problematic csv file' do
+    context "with a problematic #{file_ext} file" do
       let(:csv_rows) { 2 }
 
       it 'does not load invalid records into the table' do
-        results = described_class.load_with_roo(csv_file_invalid, file_options).first[:results]
+        loaded_info = described_class.load_with_roo(csv_file_invalid, file_options).first
+        results = loaded_info[:results]
 
+        expect(loaded_info[:header_warnings].count).to eq(0)
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(1)
       end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'an exportable model' do |options|
+RSpec.shared_examples 'an exportable model' do |options = { skip_lines: 0 }|
   subject { described_class.export }
 
   let(:name) { described_class.name.underscore }
@@ -12,7 +12,8 @@ RSpec.shared_examples 'an exportable model' do |options|
     load_options = Common::Shared.file_type_defaults(described_class.name, options)
 
     file_options = { liberal_parsing: load_options[:liberal_parsing],
-                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i) }] }
+                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
+                                clean: load_options[:clean] }] }
 
     before do
       described_class.load_with_roo(csv_file, file_options)

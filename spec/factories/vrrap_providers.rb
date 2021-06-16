@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :vrrap_provider do
     facility_code { generate :facility_code }
-    vaoc { true }
+    vaco { true }
   end
 end
