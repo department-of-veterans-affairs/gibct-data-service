@@ -134,7 +134,6 @@ module InstitutionBuilder
       add_columns_for_update(version_id, Crosswalk, str)
     end
 
-
     def self.add_in_state_tuition_policy_url(version_id)
       str = <<-SQL
         institutions.facility_code = in_state_tuition_policy_urls.facility_code
