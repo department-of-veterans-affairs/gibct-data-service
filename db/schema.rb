@@ -465,7 +465,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_152425) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
-    t.boolean "vrrap", default: false
+    t.boolean "vrrap"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
