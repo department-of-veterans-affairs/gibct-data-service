@@ -22,3 +22,6 @@ Program:
 
 SchoolCertifyingOfficial:
   liberal_parsing: true
+
+InStateTuitionPolicyUrl:
+  liberal_parsing: true
