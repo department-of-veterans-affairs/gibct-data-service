@@ -18,7 +18,8 @@ RSpec.shared_examples 'a loadable model' do |options|
     load_options = Common::Shared.file_type_defaults(described_class.name, options)
 
     file_options = { liberal_parsing: load_options[:liberal_parsing],
-                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i) }] }
+                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
+                                clean: load_options[:clean] }] }
 
     context 'with an error-free csv file' do
       it 'deletes the old table content' do
