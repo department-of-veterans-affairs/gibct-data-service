@@ -9,7 +9,8 @@ module SeedUtils
     group_options[:types].each do |type|
       sheets << {
         klass: type,
-        skip_lines: 0
+        skip_lines: 0,
+        clean_rows: true,
       }
     end
 
@@ -23,8 +24,8 @@ module SeedUtils
   def seed_table_with_upload(klass, user, options = {}, file_ext = 'csv')
     seed_options = Common::Shared.file_type_defaults(klass.name, options)
     file_options = { liberal_parsing: seed_options[:liberal_parsing],
-                     sheets: [{ klass: klass, skip_lines: seed_options[:skip_lines].try(:to_i) },
-                              clean_rows: seed_options[:clean_rows] ] }
+                     sheets: [{ klass: klass, skip_lines: seed_options[:skip_lines].try(:to_i) ,
+                              clean_rows: seed_options[:clean_rows] }] }
 
     csv_type = klass.name
     csv_name = "#{csv_type.underscore}.#{file_ext}"
