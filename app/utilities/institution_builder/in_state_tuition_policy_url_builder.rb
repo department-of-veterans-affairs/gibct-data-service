@@ -4,7 +4,7 @@ module InstitutionBuilder
   class InStateTuitionPolicyUrlBuilder
     extend Common
 
-    def self.add_in_state_tuition_policy_url(version_id)
+    def self.build(version_id)
       str = <<-SQL
         institutions.facility_code = in_state_tuition_policy_urls.facility_code
       SQL
