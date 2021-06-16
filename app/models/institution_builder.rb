@@ -58,7 +58,7 @@ module InstitutionBuilder
       build_versioned_school_certifying_official(version.id)
       ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
       add_provider_type(version.id)
-      add_in_state_tuition_policy_url(version.id)
+      InStateTuitionPolicyUrlBuilder.add_in_state_tuition_policy_url(version.id)
     end
 
     def self.build_ratings(version)
@@ -132,13 +132,6 @@ module InstitutionBuilder
         institutions.facility_code = crosswalks.facility_code
       SQL
       add_columns_for_update(version_id, Crosswalk, str)
-    end
-
-    def self.add_in_state_tuition_policy_url(version_id)
-      str = <<-SQL
-        institutions.facility_code = in_state_tuition_policy_urls.facility_code
-      SQL
-      add_columns_for_update(version_id, InStateTuitionPolicyUrl, str)
     end
 
     def self.add_sec109_closed_school(version_id)

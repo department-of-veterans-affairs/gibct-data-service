@@ -170,7 +170,8 @@ class Institution < ImportableRecord
     'latitude' => { column: :latitude, converter: NumberConverter },
     'longitude' => { column: :longitude, converter: NumberConverter },
     'employer_provider' => { column: :employer_provider, converter: BooleanConverter },
-    'school_provider' => { column: :school_provider, converter: BooleanConverter }
+    'school_provider' => { column: :school_provider, converter: BooleanConverter },
+    'in_state_tuition_information' => { column: :in_state_tuition_information, converter: BaseConverter }
   }.freeze
 
   attribute :distance
