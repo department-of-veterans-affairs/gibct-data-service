@@ -6,10 +6,9 @@ module InstitutionBuilder
 
     def self.build(version_id)
       str = <<-SQL
-        UPDATE institutions SET vrrap = true
+        UPDATE institutions SET vrrap = vrrap_providers.vaco
         FROM vrrap_providers
         WHERE institutions.facility_code = vrrap_providers.facility_code
-        AND vaco IS TRUE
         AND institutions.version_id = #{version_id}
       SQL
 
