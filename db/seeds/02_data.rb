@@ -69,6 +69,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(Vsoc, user)
   SeedUtils.seed_table_with_upload(Weam, user)
   SeedUtils.seed_table_with_upload(YellowRibbonProgramSource, user)
+  SeedUtils.seed_table_with_upload(VrrapProvider, user, {},'xlsx')
 end
 
 

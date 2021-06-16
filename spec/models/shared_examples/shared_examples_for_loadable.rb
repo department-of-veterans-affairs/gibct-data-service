@@ -19,7 +19,7 @@ RSpec.shared_examples 'a loadable model' do |options = { skip_lines: 0 }, file_e
 
     file_options = { liberal_parsing: load_options[:liberal_parsing],
                      sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
-                                clean: load_options[:clean] }] }
+                                clean_rows: load_options[:clean] }] }
 
     context "with an error-free #{file_ext} file" do
       it 'deletes the old table content' do

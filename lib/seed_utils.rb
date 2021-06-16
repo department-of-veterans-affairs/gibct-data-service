@@ -14,31 +14,33 @@ module SeedUtils
     end
 
     file_options = { sheets: sheets }
-    xlxs_type = group
     xlxs_name = "#{group}.xlsx"
 
-    load_table(Group, user, file_options.reverse_merge(options), xlxs_name, xlxs_type)
+    load_table(Group, user, file_options.reverse_merge(options),
+               xlxs_name, group, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   end
 
-  def seed_table_with_upload(klass, user, options = {})
+  def seed_table_with_upload(klass, user, options = {}, file_ext = 'csv')
     seed_options = Common::Shared.file_type_defaults(klass.name, options)
     file_options = { liberal_parsing: seed_options[:liberal_parsing],
-                     sheets: [{ klass: klass, skip_lines: seed_options[:skip_lines].try(:to_i) }] }
+                     sheets: [{ klass: klass, skip_lines: seed_options[:skip_lines].try(:to_i) },
+                              clean_rows: seed_options[:clean_rows] ] }
 
     csv_type = klass.name
-    csv_name = "#{csv_type.underscore}.csv"
+    csv_name = "#{csv_type.underscore}.#{file_ext}"
+    content_type = if file_ext == 'xlsx'
+                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                   else
+                     'text/csv'
+                   end
 
-    load_table(klass, user, file_options, csv_name, csv_type)
+    load_table(klass, user, file_options, csv_name, csv_type, content_type)
   end
 
-  def load_table(klass, user, file_options, file_name, file_type)
+  def load_table(klass, user, file_options, file_name, file_type, content_type)
     file_path = 'sample_csvs'
-    xlsx_content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    csv_content_type = 'text/csv'
 
     puts "Loading #{klass.name} from #{file_path}/#{file_name} ... "
-
-    content_type = file_type == klass.name ? csv_content_type : xlsx_content_type
 
     uf = ActionDispatch::Http::UploadedFile.new(
       tempfile: File.new(Rails.root.join(file_path, file_name)),

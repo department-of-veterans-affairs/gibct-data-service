@@ -13,7 +13,7 @@ RSpec.shared_examples 'an exportable model' do |options = { skip_lines: 0 }|
 
     file_options = { liberal_parsing: load_options[:liberal_parsing],
                      sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
-                                clean: load_options[:clean] }] }
+                                clean_rows: load_options[:clean] }] }
 
     before do
       described_class.load_with_roo(csv_file, file_options)

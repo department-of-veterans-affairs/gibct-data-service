@@ -38,8 +38,8 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:liberal_parsing]
   end
 
-  def clean_parsing
-    Common::Shared.file_type_defaults(csv_type)[:clean]
+  def clean_rows
+    Common::Shared.file_type_defaults(csv_type)[:clean_rows]
   end
 
   def self.last_uploads

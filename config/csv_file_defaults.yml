@@ -1,7 +1,7 @@
 generic:
   skip_lines: 0
   col_sep: ','
-  clean: true
+  clean_rows: true
 
 CipCode:
   liberal_parsing: true
@@ -25,4 +25,4 @@ SchoolCertifyingOfficial:
   liberal_parsing: true
 
 VrrapProvider:
-  clean: false
+  clean_rows: false

@@ -116,7 +116,7 @@ module RooHelper
       end
 
       # do not need to account for sheet_options[:skip_lines] here because of passing in the headers_mapping
-      rows = if sheet_options[:clean]
+      rows = if sheet_options[:clean_rows]
                sheet.parse(headers_mapping.merge(clean: true))
              else
                sheet.parse(headers_mapping)
@@ -168,7 +168,7 @@ module RooHelper
                                 file_options[:sheets]
                                   .map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
                               else
-                                [{ klass: klass, skip_lines: 0, first_line: 2, clean: true }]
+                                [{ klass: klass, skip_lines: 0, first_line: 2, clean_rows: true }]
                               end
 
       file_options
