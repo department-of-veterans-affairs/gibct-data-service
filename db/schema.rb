@@ -248,8 +248,8 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
   create_table "in_state_tuition_policy_urls", force: :cascade do |t|
     t.string "facility_code"
     t.string "in_state_tuition_information"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "institution_category_ratings", force: :cascade do |t|
