@@ -28,10 +28,8 @@ RSpec.shared_examples 'a loadable model' do |options = { skip_lines: 0 }, file_e
       end
 
       it 'loads the table' do
-        loaded_info = described_class.load_with_roo(csv_file, file_options).first
-        results = loaded_info[:results]
+        results = described_class.load_with_roo(csv_file, file_options).first[:results]
 
-        expect(loaded_info[:header_warnings].count).to eq(0)
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(2)
       end
@@ -41,10 +39,8 @@ RSpec.shared_examples 'a loadable model' do |options = { skip_lines: 0 }, file_e
       let(:csv_rows) { 2 }
 
       it 'does not load invalid records into the table' do
-        loaded_info = described_class.load_with_roo(csv_file_invalid, file_options).first
-        results = loaded_info[:results]
+        results = described_class.load_with_roo(csv_file_invalid, file_options).first[:results]
 
-        expect(loaded_info[:header_warnings].count).to eq(0)
         expect(results.num_inserts).to eq(1)
         expect(results.ids.length).to eq(1)
       end
