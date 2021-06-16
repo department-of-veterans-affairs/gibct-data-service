@@ -27,6 +27,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :bah
   attribute :accredited
   attribute :vet_tec_provider
+  attribute :vrrap
 
   attribute :flight
   attribute :correspondence
