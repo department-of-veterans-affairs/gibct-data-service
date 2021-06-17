@@ -65,6 +65,7 @@ class UploadRequirements
 
     def inclusion_requirement_message(validations)
       return validations.options[:display_values] if validations.options[:display_values].present?
+
       validations.options[:in].map(&:to_s)
     end
   end

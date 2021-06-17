@@ -10,6 +10,5 @@ class VrrapProvider < ImportableRecord
   }.freeze
 
   validates :facility_code, presence: true
-  validates :vaco, inclusion: {in:  [true, false], display_values: %w[Approved Disapproved]}
-
+  validates :vaco, inclusion: { in: [true, false], display_values: %w[Approved Disapproved] }
 end
