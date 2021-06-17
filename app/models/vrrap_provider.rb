@@ -5,9 +5,11 @@ class VrrapProvider < ImportableRecord
     'schoolname' => { column: :school_name, converter: FacilityCodeConverter },
     'facilitycode' => { column: :facility_code, converter: BaseConverter },
     'programs' => { column: :programs, converter: BaseConverter },
-    'vaco_approved/disapproved' => { column: :vaco, converter: BaseConverter },
+    'vaco_approved/disapproved' => { column: :vaco, converter: BooleanConverter },
     'address' => { column: :address, converter: BaseConverter }
   }.freeze
 
-  validates :facility_code, :vaco, presence: true
+  validates :facility_code, presence: true
+  validates :vaco, inclusion: {in:  [true, false], values: %w[Approved Disapproved]}
+
 end
