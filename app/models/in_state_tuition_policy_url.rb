@@ -10,5 +10,4 @@ class InStateTuitionPolicyUrl < ImportableRecord
 
   validates :facility_code, presence: true
   validates :in_state_tuition_information, presence: true
-
 end
