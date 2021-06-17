@@ -152,7 +152,7 @@ class GroupsController < ApplicationController
       sheets << {
         klass: sheet_type.constantize,
         skip_lines: @group.skip_lines[index].to_i,
-        clean_rows: true,
+        clean_rows: true
       }
     end
     { sheets: sheets }

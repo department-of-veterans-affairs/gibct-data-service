@@ -18,7 +18,8 @@ module RooHelper
     #   - :klass The ImportableRecord class
     #   - :skip_lines Number of lines to skip before Header row, used for warning messages and finding headers
     #   - :first_line This is used for warning messages, default value is 2
-    #   - :clean_rows Enable/Disable regex /[[:cntrl:]]|^[\p{Space}]+|[\p{Space}]+$/ from being applied when pulling rows from file
+    #   - :clean_rows Enable/Disable regex /[[:cntrl:]]|^[\p{Space}]+|[\p{Space}]+$/
+    #                 from being applied when pulling rows from file
     #
     # File Options
     # - :liberal_parsing  Used when file is either .txt or .csv
