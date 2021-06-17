@@ -18,7 +18,7 @@ RSpec.describe DashboardsController, type: :controller do
 
     roo_options = { liberal_parsing: load_options[:liberal_parsing],
                     sheets: [{ klass: klass, skip_lines: load_options[:skip_lines].try(:to_i),
-                               clean_rows: load_options[:clean] }] }
+                               clean_rows: load_options[:clean_rows] }] }
 
     klass.load_with_roo("#{csv_path}/#{csv_name}", roo_options)
     upload.update(ok: true)

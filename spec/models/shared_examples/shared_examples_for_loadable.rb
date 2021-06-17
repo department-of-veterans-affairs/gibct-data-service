@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a loadable model' do |options = { skip_lines: 0 }, file_ext = 'csv'|
+RSpec.shared_examples 'a loadable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
+  file_ext = options[:file_ext] || 'csv'
 
   before do
     create :user
@@ -19,7 +20,7 @@ RSpec.shared_examples 'a loadable model' do |options = { skip_lines: 0 }, file_e
 
     file_options = { liberal_parsing: load_options[:liberal_parsing],
                      sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
-                                clean_rows: load_options[:clean] }] }
+                                clean_rows: load_options[:clean_rows] }] }
 
     context "with an error-free #{file_ext} file" do
       it 'deletes the old table content' do

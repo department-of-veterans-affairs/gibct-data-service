@@ -5,8 +5,8 @@ require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe VrrapProvider, type: :model do
-  it_behaves_like 'a loadable model', { skip_lines: 0 }, 'xlsx'
-  it_behaves_like 'an exportable model'
+  it_behaves_like 'a loadable model', skip_lines: 0, file_ext: 'xlsx'
+  it_behaves_like 'an exportable model', skip_lines: 0
 
   describe 'when validating' do
     subject(:vrrap_provider) { build :vrrap_provider }
