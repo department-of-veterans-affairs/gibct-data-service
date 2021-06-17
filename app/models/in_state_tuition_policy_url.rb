@@ -7,4 +7,8 @@ class InStateTuitionPolicyUrl < ImportableRecord
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'in_state_tuition_information' => { column: :in_state_tuition_information, converter: BaseConverter }
   }.freeze
+
+  validates :facility_code, presence: true
+  validates :in_state_tuition_information, presence: true
+
 end
