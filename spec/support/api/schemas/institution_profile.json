@@ -519,6 +519,9 @@
               "items": {
                 "type": "object"
               }
+            },
+            "vrrap": {
+              "type": ["null","boolean"]
             }
           },
           "required": [
