@@ -6,7 +6,7 @@
       "type": "object",
       "properties": {
         "count": {
-          "type" : "integer"
+          "type": "integer"
         },
         "version": {
           "type": "object",
@@ -31,444 +31,445 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "attributes": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "facility_code": {
-              "type": "string"
-            },
-            "city": {
-              "type": ["null", "string"]
-            },
-            "state": {
-              "type": ["null", "string"]
-            },
-            "zip": {
-              "type": ["null", "string"]
-            },
-            "country": {
-              "type": ["null", "string"]
-            },
-            "accreditation_type": {
-              "type": ["null", "string"]
-            },
-            "student_count": {
-              "type": ["null", "integer"]
-            },
-            "rating_average":{
-              "type": ["null", "integer", "number"]
-            },
-            "rating_count":{
-              "type": ["integer"]
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "OJT",
-                "PRIVATE",
-                "FOREIGN",
-                "CORRESPONDENCE",
-                "FLIGHT",
-                "FOR PROFIT",
-                "PUBLIC"
-              ]
-            },
-            "caution_flags": {
-              "type": ["null", "array"]
-            },
-            "caution_flag": {
-              "type": ["null", "boolean"]
-            },
-            "student_veteran": {
-              "type": ["null", "boolean"]
-            },
-            "yr": {
-              "type": ["null", "boolean"]
-            },
-            "campus_type": {
-              "type": ["null", "string"]
-            },
-            "highest_degree": {
-              "type": ["null", "integer"]
-            },
-            "hbcu":{
-              "type": ["null", "integer"]
-            },
-            "menonly":{
-              "type": ["null", "integer"]
-            },
-            "pctfloan":{
-              "type": ["null", "number"]
-            },
-            "relaffil":{
-              "type": ["null", "integer"]
-            },
-            "womenonly":{
-              "type": ["null", "integer"]
-            },
-            "preferred_provider": {
-              "type": "boolean"
-            },
-            "dod_bah": {
-              "type": ["null", "number"]
-            },
-            "bah": {
-              "type": ["null", "number"]
-            },
-            "accredited": {
-              "type": ["null", "boolean"]
-            },
-            "vet_tec_provider": {
-              "type": "boolean"
-            },
-            "flight": {
-              "type": ["null", "boolean"]
-            },
-            "correspondence": {
-              "type": ["null", "boolean"]
-            },
-            "school_system_name": {
-              "type": ["null", "string"]
-            },
-            "school_system_code": {
-              "type": ["null", "number"]
-            },
-            "locale_type": {
-              "type": ["null", "string"]
-            },
-            "undergrad_enrollment": {
-              "type": ["null", "integer"]
-            },
-            "student_veteran_link": {
-              "type": ["null", "string"]
-            },
-            "poe": {
-              "type": ["null", "boolean"]
-            },
-            "eight_keys": {
-              "type": ["null", "boolean"]
-            },
-            "stem_offered": {
-              "type": ["null", "boolean"]
-            },
-            "dodmou": {
-              "type": ["null", "boolean"]
-            },
-            "sec_702": {
-              "type": ["null", "boolean"]
-            },
-            "vet_success_name": {
-              "type": ["null", "string"]
-            },
-            "vet_success_email": {
-              "type": ["null", "string"]
-            },
-            "credit_for_mil_training": {
-              "type": ["null", "boolean"]
-            },
-            "vet_poc": {
-              "type": ["null", "boolean"]
-            },
-            "student_vet_grp_ipeds": {
-              "type": ["null", "boolean"]
-            },
-            "soc_member": {
-              "type": ["null", "boolean"]
-            },
-            "retention_rate_veteran_ba": {
-              "type": ["null", "number"]
-            },
-            "retention_all_students_ba": {
-              "type": ["null", "number"]
-            },
-            "retention_rate_veteran_otb": {
-              "type": ["null", "number"]
-            },
-            "retention_all_students_otb": {
-              "type": ["null", "number"]
-            },
-            "persistance_rate_veteran_ba": {
-              "type": ["null", "number"]
-            },
-            "persistance_rate_veteran_otb": {
-              "type": ["null", "number"]
-            },
-            "graduation_rate_veteran": {
-              "type": ["null", "number"]
-            },
-            "graduation_rate_all_students": {
-              "type": ["null", "number"]
-            },
-            "transfer_out_rate_veteran": {
-              "type": ["null", "number"]
-            },
-            "transfer_out_rate_all_students": {
-              "type": ["null", "number"]
-            },
-            "salary_all_students": {
-              "type": ["null", "number"]
-            },
-            "repayment_rate_all_students": {
-              "type": ["null", "number"]
-            },
-            "avg_stu_loan_debt": {
-              "type": ["null", "number"]
-            },
-            "calendar": {
-              "type": ["null", "string"]
-            },
-            "tuition_in_state": {
-              "type": ["null", "number"]
-            },
-            "tuition_out_of_state": {
-              "type": ["null", "number"]
-            },
-            "books": {
-              "type": ["null", "number"]
-            },
-            "online_all": {
-              "type": ["null", "string"]
-            },
-            "p911_tuition_fees": {
-              "type": ["null", "number"]
-            },
-            "p911_recipients": {
-              "type": ["null", "integer"]
-            },
-            "p911_yellow_ribbon": {
-              "type": ["null", "number"]
-            },
-            "p911_yr_recipients": {
-              "type": ["null", "integer"]
-            },
-            "accreditation_status": {
-              "type": ["null", "string"]
-            },
-            "complaints": {
-              "type": "object",
-              "properties": {
-                "facility_code": {
-                  "type": ["null", "integer"]
-                },
-                "financial_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "quality_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "refund_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "marketing_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "accreditation_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "degree_requirements_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "student_loans_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "grades_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "credit_transfer_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "credit_job_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "job_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "transcript_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "other_by_fac_code": {
-                  "type": ["null", "integer"]
-                },
-                "main_campus_roll_up": {
-                  "type": ["null", "integer"]
-                },
-                "financial_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "quality_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "refund_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "marketing_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "accreditation_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "degree_requirements_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "student_loans_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "grades_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "credit_transfer_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "jobs_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "transcript_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                },
-                "other_by_ope_id_do_not_sum": {
-                  "type": ["null", "integer"]
-                }
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
               },
-              "required": [
-                "facility_code",
-                "financial_by_fac_code",
-                "quality_by_fac_code",
-                "refund_by_fac_code",
-                "marketing_by_fac_code",
-                "accreditation_by_fac_code",
-                "degree_requirements_by_fac_code",
-                "student_loans_by_fac_code",
-                "grades_by_fac_code",
-                "credit_transfer_by_fac_code",
-                "credit_job_by_fac_code",
-                "job_by_fac_code",
-                "transcript_by_fac_code",
-                "other_by_fac_code",
-                "main_campus_roll_up",
-                "financial_by_ope_id_do_not_sum",
-                "quality_by_ope_id_do_not_sum",
-                "refund_by_ope_id_do_not_sum",
-                "marketing_by_ope_id_do_not_sum",
-                "accreditation_by_ope_id_do_not_sum",
-                "degree_requirements_by_ope_id_do_not_sum",
-                "student_loans_by_ope_id_do_not_sum",
-                "grades_by_ope_id_do_not_sum",
-                "credit_transfer_by_ope_id_do_not_sum",
-                "jobs_by_ope_id_do_not_sum",
-                "transcript_by_ope_id_do_not_sum",
-                "other_by_ope_id_do_not_sum"
-              ]
-            },
-            "school_closing": {
-              "type": ["null", "boolean"]
-            },
-            "school_closing_on": {
-              "type": ["null", "string"]
-            },
-            "school_closing_message": {
-              "type": ["null", "string"]
-            },
-            "yellow_ribbon_programs": {
-              "type": "array",
-              "items": {
+              "facility_code": {
+                "type": "string"
+              },
+              "city": {
+                "type": ["null", "string"]
+              },
+              "state": {
+                "type": ["null", "string"]
+              },
+              "zip": {
+                "type": ["null", "string"]
+              },
+              "country": {
+                "type": ["null", "string"]
+              },
+              "accreditation_type": {
+                "type": ["null", "string"]
+              },
+              "student_count": {
+                "type": ["null", "integer"]
+              },
+              "rating_average": {
+                "type": ["null", "integer", "number"]
+              },
+              "rating_count": {
+                "type": ["integer"]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "OJT",
+                  "PRIVATE",
+                  "FOREIGN",
+                  "CORRESPONDENCE",
+                  "FLIGHT",
+                  "FOR PROFIT",
+                  "PUBLIC"
+                ]
+              },
+              "caution_flags": {
+                "type": ["null", "array"]
+              },
+              "caution_flag": {
+                "type": ["null", "boolean"]
+              },
+              "student_veteran": {
+                "type": ["null", "boolean"]
+              },
+              "yr": {
+                "type": ["null", "boolean"]
+              },
+              "campus_type": {
+                "type": ["null", "string"]
+              },
+              "highest_degree": {
+                "type": ["null", "integer"]
+              },
+              "hbcu": {
+                "type": ["null", "integer"]
+              },
+              "menonly": {
+                "type": ["null", "integer"]
+              },
+              "pctfloan": {
+                "type": ["null", "number"]
+              },
+              "relaffil": {
+                "type": ["null", "integer"]
+              },
+              "womenonly": {
+                "type": ["null", "integer"]
+              },
+              "preferred_provider": {
+                "type": "boolean"
+              },
+              "dod_bah": {
+                "type": ["null", "number"]
+              },
+              "bah": {
+                "type": ["null", "number"]
+              },
+              "accredited": {
+                "type": ["null", "boolean"]
+              },
+              "vet_tec_provider": {
+                "type": "boolean"
+              },
+              "program_length_in_hours": { "type": ["null", "array"] },
+              "flight": {
+                "type": ["null", "boolean"]
+              },
+              "correspondence": {
+                "type": ["null", "boolean"]
+              },
+              "school_system_name": {
+                "type": ["null", "string"]
+              },
+              "school_system_code": {
+                "type": ["null", "number"]
+              },
+              "locale_type": {
+                "type": ["null", "string"]
+              },
+              "undergrad_enrollment": {
+                "type": ["null", "integer"]
+              },
+              "student_veteran_link": {
+                "type": ["null", "string"]
+              },
+              "poe": {
+                "type": ["null", "boolean"]
+              },
+              "eight_keys": {
+                "type": ["null", "boolean"]
+              },
+              "stem_offered": {
+                "type": ["null", "boolean"]
+              },
+              "dodmou": {
+                "type": ["null", "boolean"]
+              },
+              "sec_702": {
+                "type": ["null", "boolean"]
+              },
+              "vet_success_name": {
+                "type": ["null", "string"]
+              },
+              "vet_success_email": {
+                "type": ["null", "string"]
+              },
+              "credit_for_mil_training": {
+                "type": ["null", "boolean"]
+              },
+              "vet_poc": {
+                "type": ["null", "boolean"]
+              },
+              "student_vet_grp_ipeds": {
+                "type": ["null", "boolean"]
+              },
+              "soc_member": {
+                "type": ["null", "boolean"]
+              },
+              "retention_rate_veteran_ba": {
+                "type": ["null", "number"]
+              },
+              "retention_all_students_ba": {
+                "type": ["null", "number"]
+              },
+              "retention_rate_veteran_otb": {
+                "type": ["null", "number"]
+              },
+              "retention_all_students_otb": {
+                "type": ["null", "number"]
+              },
+              "persistance_rate_veteran_ba": {
+                "type": ["null", "number"]
+              },
+              "persistance_rate_veteran_otb": {
+                "type": ["null", "number"]
+              },
+              "graduation_rate_veteran": {
+                "type": ["null", "number"]
+              },
+              "graduation_rate_all_students": {
+                "type": ["null", "number"]
+              },
+              "transfer_out_rate_veteran": {
+                "type": ["null", "number"]
+              },
+              "transfer_out_rate_all_students": {
+                "type": ["null", "number"]
+              },
+              "salary_all_students": {
+                "type": ["null", "number"]
+              },
+              "repayment_rate_all_students": {
+                "type": ["null", "number"]
+              },
+              "avg_stu_loan_debt": {
+                "type": ["null", "number"]
+              },
+              "calendar": {
+                "type": ["null", "string"]
+              },
+              "tuition_in_state": {
+                "type": ["null", "number"]
+              },
+              "tuition_out_of_state": {
+                "type": ["null", "number"]
+              },
+              "books": {
+                "type": ["null", "number"]
+              },
+              "online_all": {
+                "type": ["null", "string"]
+              },
+              "p911_tuition_fees": {
+                "type": ["null", "number"]
+              },
+              "p911_recipients": {
+                "type": ["null", "integer"]
+              },
+              "p911_yellow_ribbon": {
+                "type": ["null", "number"]
+              },
+              "p911_yr_recipients": {
+                "type": ["null", "integer"]
+              },
+              "accreditation_status": {
+                "type": ["null", "string"]
+              },
+              "complaints": {
                 "type": "object",
                 "properties": {
-                  "division_professional_school": {
-                    "type": ["null", "string"]
-                  },
-                  "number_of_students": {
+                  "facility_code": {
                     "type": ["null", "integer"]
                   },
-                  "degree_level": {
-                    "type": ["null", "string"]
+                  "financial_by_fac_code": {
+                    "type": ["null", "integer"]
                   },
-                  "contribution_amount": {
-                    "type": ["null", "number"]
+                  "quality_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "refund_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "marketing_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "accreditation_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "degree_requirements_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "student_loans_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "grades_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "credit_transfer_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "credit_job_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "job_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "transcript_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "other_by_fac_code": {
+                    "type": ["null", "integer"]
+                  },
+                  "main_campus_roll_up": {
+                    "type": ["null", "integer"]
+                  },
+                  "financial_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "quality_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "refund_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "marketing_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "accreditation_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "degree_requirements_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "student_loans_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "grades_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "credit_transfer_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "jobs_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "transcript_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
+                  },
+                  "other_by_ope_id_do_not_sum": {
+                    "type": ["null", "integer"]
                   }
                 },
                 "required": [
-                  "division_professional_school",
-                  "number_of_students",
-                  "degree_level",
-                  "contribution_amount"
+                  "facility_code",
+                  "financial_by_fac_code",
+                  "quality_by_fac_code",
+                  "refund_by_fac_code",
+                  "marketing_by_fac_code",
+                  "accreditation_by_fac_code",
+                  "degree_requirements_by_fac_code",
+                  "student_loans_by_fac_code",
+                  "grades_by_fac_code",
+                  "credit_transfer_by_fac_code",
+                  "credit_job_by_fac_code",
+                  "job_by_fac_code",
+                  "transcript_by_fac_code",
+                  "other_by_fac_code",
+                  "main_campus_roll_up",
+                  "financial_by_ope_id_do_not_sum",
+                  "quality_by_ope_id_do_not_sum",
+                  "refund_by_ope_id_do_not_sum",
+                  "marketing_by_ope_id_do_not_sum",
+                  "accreditation_by_ope_id_do_not_sum",
+                  "degree_requirements_by_ope_id_do_not_sum",
+                  "student_loans_by_ope_id_do_not_sum",
+                  "grades_by_ope_id_do_not_sum",
+                  "credit_transfer_by_ope_id_do_not_sum",
+                  "jobs_by_ope_id_do_not_sum",
+                  "transcript_by_ope_id_do_not_sum",
+                  "other_by_ope_id_do_not_sum"
                 ]
+              },
+              "school_closing": {
+                "type": ["null", "boolean"]
+              },
+              "school_closing_on": {
+                "type": ["null", "string"]
+              },
+              "school_closing_message": {
+                "type": ["null", "string"]
+              },
+              "yellow_ribbon_programs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "division_professional_school": {
+                      "type": ["null", "string"]
+                    },
+                    "number_of_students": {
+                      "type": ["null", "integer"]
+                    },
+                    "degree_level": {
+                      "type": ["null", "string"]
+                    },
+                    "contribution_amount": {
+                      "type": ["null", "number"]
+                    }
+                  },
+                  "required": [
+                    "division_professional_school",
+                    "number_of_students",
+                    "degree_level",
+                    "contribution_amount"
+                  ]
+                }
+              },
+              "independent_study": {
+                "type": ["null", "boolean"]
+              },
+              "priority_enrollment": {
+                "type": ["null", "boolean"]
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "updated_at": {
+                "type": "string"
+              },
+              "online_only": {
+                "type": ["null", "boolean"]
+              },
+              "distance_learning": {
+                "type": ["null", "boolean"]
+              },
+              "stem_indicator": {
+                "type": "boolean"
+              },
+              "section_103_message": {
+                "type": ["null", "string"]
+              },
+              "hcm2": {
+                "type": ["null", "integer"]
+              },
+              "institution_category_ratings": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "vrrap": {
+                "type": ["null", "boolean"]
               }
             },
-            "independent_study": {
-              "type": ["null", "boolean"]
-            },
-            "priority_enrollment": {
-              "type": ["null", "boolean"]
-            },
-            "created_at": {
-              "type": "string"
-            },
-            "updated_at": {
-              "type": "string"
-            },
-            "online_only": {
-              "type": ["null", "boolean"]
-            },
-            "distance_learning": {
-              "type": ["null", "boolean"]
-            },
-            "stem_indicator": {
-              "type": "boolean"
-            },
-            "section_103_message": {
-              "type": ["null", "string"]
-            },
-            "hcm2":{
-              "type": ["null", "integer"]
-            },
-            "institution_category_ratings": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              }
-            },
-            "vrrap": {
-              "type": ["null","boolean"]
-            }
-          },
-          "required": [
-            "facility_code",
-            "city",
-            "state",
-            "country",
-            "accreditation_type",
-            "student_count",
-            "rating_average",
-            "rating_count",
-            "type",
-            "caution_flags",
-            "caution_flag",
-            "student_veteran",
-            "yr",
-            "campus_type",
-            "highest_degree",
-            "hbcu",
-            "menonly",
-            "womenonly",
-            "relaffil",
-            "preferred_provider",
-            "dod_bah",
-            "bah",
-            "accredited",
-            "vet_tec_provider"
-          ]
-        }
-      },
+            "required": [
+              "facility_code",
+              "city",
+              "state",
+              "country",
+              "accreditation_type",
+              "student_count",
+              "rating_average",
+              "rating_count",
+              "type",
+              "caution_flags",
+              "caution_flag",
+              "student_veteran",
+              "yr",
+              "campus_type",
+              "highest_degree",
+              "hbcu",
+              "menonly",
+              "womenonly",
+              "relaffil",
+              "preferred_provider",
+              "dod_bah",
+              "bah",
+              "accredited",
+              "vet_tec_provider"
+            ]
+          }
+        },
         "required": ["id", "type", "attributes"]
       }
     },
