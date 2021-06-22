@@ -59,6 +59,7 @@ module InstitutionBuilder
       ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
       add_provider_type(version.id)
       InStateTuitionPolicyUrlBuilder.build(version.id)
+      VrrapBuilder.build(version.id)
     end
 
     def self.build_ratings(version)

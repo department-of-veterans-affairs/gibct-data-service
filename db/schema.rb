@@ -473,6 +473,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.boolean "employer_provider"
     t.boolean "school_provider"
     t.string "in_state_tuition_information"
+    t.boolean "vrrap"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -637,6 +638,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.boolean "employer_provider"
     t.boolean "school_provider"
     t.string "in_state_tuition_information"
+    t.boolean "vrrap"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1602,6 +1604,14 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.index ["number"], name: "index_versions_on_number"
     t.index ["user_id"], name: "index_versions_on_user_id"
     t.index ["uuid"], name: "index_versions_on_uuid", unique: true
+  end
+
+  create_table "vrrap_providers", force: :cascade do |t|
+    t.string "school_name"
+    t.string "facility_code"
+    t.string "programs"
+    t.boolean "vaco"
+    t.string "address"
   end
 
   create_table "vsocs", id: :serial, force: :cascade do |t|

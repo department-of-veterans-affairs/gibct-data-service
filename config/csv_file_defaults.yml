@@ -1,6 +1,7 @@
 generic:
   skip_lines: 0
   col_sep: ','
+  clean_rows: true
 
 CipCode:
   liberal_parsing: true
@@ -25,3 +26,6 @@ SchoolCertifyingOfficial:
 
 InStateTuitionPolicyUrl:
   liberal_parsing: true
+
+VrrapProvider:
+  clean_rows: false
