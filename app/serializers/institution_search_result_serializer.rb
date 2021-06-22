@@ -31,10 +31,11 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :vet_tec_provider
   attribute :program_count
   attribute :program_length_in_hours
-
-  link(:self) { v0_institution_url(object.facility_code) }
   attribute :school_provider
   attribute :employer_provider
+  attribute :vrrap
+
+  link(:self) { v0_institution_url(object.facility_code) }
 
   def caution_flags
     object.caution_flags.map do |flag|
