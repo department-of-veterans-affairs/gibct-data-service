@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_15_152425) do
+ActiveRecord::Schema.define(version: 2021_06_15_232805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -245,6 +245,13 @@ ActiveRecord::Schema.define(version: 2021_06_15_152425) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "in_state_tuition_policy_urls", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "in_state_tuition_information"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "institution_category_ratings", force: :cascade do |t|
     t.string "category_name", null: false
     t.float "average_rating"
@@ -465,6 +472,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_152425) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
+    t.string "in_state_tuition_information"
     t.boolean "vrrap"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
@@ -629,6 +637,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_152425) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
+    t.string "in_state_tuition_information"
     t.boolean "vrrap"
   end
 
