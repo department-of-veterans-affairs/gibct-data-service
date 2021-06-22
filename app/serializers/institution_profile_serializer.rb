@@ -105,6 +105,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :institution_category_ratings
   attribute :rating_average
   attribute :rating_count
+  attribute :in_state_tuition_information
   attribute :vrrap
 
   link(:website) { object.website_link }

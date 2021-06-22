@@ -6,7 +6,7 @@
       "type": "object",
       "properties": {
         "count": {
-          "type" : "integer"
+          "type": "integer"
         },
         "facets": {
           "type": "object"
@@ -490,28 +490,28 @@
             "updated_at": {
               "type": "string"
             },
-            "hbcu":{
+            "hbcu": {
               "type": ["null", "integer"]
             },
-            "hcm2":{
+            "hcm2": {
               "type": ["null", "integer"]
             },
-            "menonly":{
+            "menonly": {
               "type": ["null", "integer"]
             },
-            "pctfloan":{
+            "pctfloan": {
               "type": ["null", "number"]
             },
-            "relaffil":{
+            "relaffil": {
               "type": ["null", "integer"]
             },
-            "womenonly":{
+            "womenonly": {
               "type": ["null", "integer"]
             },
-            "rating_average":{
+            "rating_average": {
               "type": ["null", "integer", "number"]
             },
-            "rating_count":{
+            "rating_count": {
               "type": ["integer"]
             },
             "institution_category_ratings": {
@@ -520,8 +520,11 @@
                 "type": "object"
               }
             },
+            "in_state_tuition_information": {
+              "type": ["null", "boolean"]
+            },
             "vrrap": {
-              "type": ["null","boolean"]
+              "type": ["null", "boolean"]
             }
           },
           "required": [

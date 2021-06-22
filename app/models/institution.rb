@@ -171,6 +171,7 @@ class Institution < ImportableRecord
     'longitude' => { column: :longitude, converter: NumberConverter },
     'employer_provider' => { column: :employer_provider, converter: BooleanConverter },
     'school_provider' => { column: :school_provider, converter: BooleanConverter },
+    'in_state_tuition_information' => { column: :in_state_tuition_information, converter: BaseConverter },
     'vrrap_provider' => { column: :vrrap, converter: BooleanConverter }
   }.freeze
 
