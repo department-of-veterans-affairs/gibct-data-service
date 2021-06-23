@@ -118,6 +118,12 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
     end
   end
 
+  def in_state_tuition_information
+    return object.in_state_tuition_information if object.in_state_tuition_information.start_with? 'http'
+
+    "http://#{object.in_state_tuition_information}"
+  end
+
   def versioned_school_certifying_officials
     object.versioned_school_certifying_officials.select do |sco|
       VersionedSchoolCertifyingOfficialSerializer.new(sco)
