@@ -263,7 +263,6 @@
                   },
                   "financial_by_fac_code": {
                     "type": ["null", "integer"]
-<<<<<<< HEAD
                   },
                   "quality_by_fac_code": {
                     "type": ["null", "integer"]
@@ -301,45 +300,6 @@
                   "other_by_fac_code": {
                     "type": ["null", "integer"]
                   },
-=======
-                  },
-                  "quality_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "refund_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "marketing_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "accreditation_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "degree_requirements_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "student_loans_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "grades_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "credit_transfer_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "credit_job_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "job_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "transcript_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
-                  "other_by_fac_code": {
-                    "type": ["null", "integer"]
-                  },
->>>>>>> c7cb4034daebe608b0b60eb9d314f766e598d30e
                   "main_campus_roll_up": {
                     "type": ["null", "integer"]
                   },
@@ -478,12 +438,9 @@
                   "type": "object"
                 }
               },
-<<<<<<< HEAD
-=======
               "in_state_tuition_information": {
                 "type": ["null", "boolean"]
               },
->>>>>>> c7cb4034daebe608b0b60eb9d314f766e598d30e
               "vrrap": {
                 "type": ["null", "boolean"]
               }
