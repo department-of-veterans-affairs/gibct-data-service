@@ -131,6 +131,7 @@
               "vet_tec_provider": {
                 "type": "boolean"
               },
+              "program_length_in_hours": { "type": ["null", "array"] },
               "flight": {
                 "type": ["null", "boolean"]
               },
