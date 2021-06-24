@@ -2,9 +2,7 @@
 
 class LatitudeLongitudeIssuesController < ApplicationController
   def export
-    flash.alert = 'Not implemented'
-
-    redirect_to dashboards_path
+    send_data CensusLatLong.export, type: 'application/zip', filename: "#{CensusLatLong.name}.zip"
   end
 
   def import

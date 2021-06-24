@@ -10,6 +10,14 @@ module Common
       generate_version(csv_headers, number)
     end
 
+    def generate_csv(rows)
+      CSV.generate(col_sep: defaults[:col_sep]) do |csv|
+        rows.each{|row|
+          csv << row
+        }
+      end
+    end
+
     private
 
     def defaults

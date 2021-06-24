@@ -237,6 +237,10 @@ class Institution < ImportableRecord
     institution_type_name != 'OJT'
   end
 
+  def physical_address
+    [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
@@ -567,4 +571,8 @@ class Institution < ImportableRecord
     where(Arel.sql(sanitized_clause))
   }
   # rubocop:enable Metrics/BlockLength
+
+  scope :missing_lat_long, lambda { |version|
+    approved_institutions(version).where.not(latitude: null, longitude: null)
+  }
 end
