@@ -12,9 +12,8 @@ module Common
 
     def generate_csv(rows)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
-        rows.each{|row|
-          csv << row
-        }
+        csv << rows[0]
+        # rows.each { |row| csv << row }
       end
     end
 

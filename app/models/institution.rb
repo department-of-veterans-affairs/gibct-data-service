@@ -241,6 +241,10 @@ class Institution < ImportableRecord
     [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
   end
 
+  def address
+    [address_1, address_2, address_3].compact.join(' ')
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
@@ -573,6 +577,6 @@ class Institution < ImportableRecord
   # rubocop:enable Metrics/BlockLength
 
   scope :missing_lat_long, lambda { |version|
-    approved_institutions(version).where.not(latitude: null, longitude: null)
+    approved_institutions(version).where(latitude: nil).or(approved_institutions(version).where(longitude: nil))
   }
 end

@@ -33,7 +33,7 @@ class Group < Upload
     end.string
   end
 
-  def self.export_csvs_as_zip(csvs, klass)
+  def self.export_csvs_as_zip(csvs)
     Zip::OutputStream.write_buffer do |zio|
       csvs.each_index do |csv, index|
         zio.put_next_entry("#{klass}_#{index}.csv")

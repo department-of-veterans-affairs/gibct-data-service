@@ -206,6 +206,24 @@ class Weam < ImportableRecord
     [physical_city, physical_zip, physical_address_1].compact
   end
 
+  def self.missing_lat_long
+    sql = <<-SQL
+      SELECT weams.*
+			FROM weams
+			LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
+			LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
+			WHERE
+			(ipeds_hds.cross IS NULL AND scorecards.cross IS NULL) OR
+			(ipeds_hds.cross IS NOT NULL AND (UPPER(ipeds_hds.city) != UPPER(weams.physical_city) OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state) OR UPPER(weams.institution) != UPPER(ipeds_hds.institution))) OR
+			(scorecards.cross IS NOT NULL AND (UPPER(scorecards.city) != UPPER(weams.physical_city) OR UPPER(scorecards.state) != UPPER(weams.physical_state)))
+      AND weams.approved IS TRUE
+    SQL
+
+    Weam.connection.execute(sql)
+  end
+
+  scope :approved_institutions, -> { where(approved: true) }
+
   private
 
   def poo_status_valid?
@@ -227,23 +245,6 @@ class Weam < ImportableRecord
   def physical_address
     [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
   end
-
-  scope :approved_institutions, -> { where(approved: true) }
-  scope :missing_lat_long, lambda {
-    sql = <<-SQL
-      SELECT weams.*
-			FROM weams
-			LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
-			LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
-			WHERE
-			(ipeds_hds.cross IS NULL AND scorecards.cross IS NULL) OR
-			(ipeds_hds.cross IS NOT NULL AND (UPPER(ipeds_hds.city) != UPPER(weams.physical_city) OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state) OR UPPER(weams.institution) != UPPER(ipeds_hds.institution))) OR
-			(scorecards.cross IS NOT NULL AND (UPPER(scorecards.city) != UPPER(weams.physical_city) OR UPPER(scorecards.state) != UPPER(weams.physical_state)))
-      AND weams.approved IS TRUE
-    SQL
-
-    select(sql)
-  }
 end
 
 # rubocop:enable Metrics/ClassLength
