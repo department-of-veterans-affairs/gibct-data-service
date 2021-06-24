@@ -37,6 +37,6 @@ class CensusLatLong
       csvs << generate_csv(batch)
     end
 
-    Group.export_csvs_as_zip(csvs)
+    Group.export_csvs_as_zip(csvs, name)
   end
 end
