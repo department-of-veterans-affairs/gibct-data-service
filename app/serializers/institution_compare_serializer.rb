@@ -27,6 +27,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :bah
   attribute :accredited
   attribute :vet_tec_provider
+  attribute :program_length_in_hours
   attribute :vrrap
 
   attribute :flight
@@ -97,5 +98,9 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end
+  end
+
+  def program_length_in_hours
+    object.institution_programs.map(&:length_in_hours)
   end
 end
