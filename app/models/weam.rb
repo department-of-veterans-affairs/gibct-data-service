@@ -218,7 +218,7 @@ class Weam < ImportableRecord
   #   - does not have an ipeds_hd or scorecard
   #   - has ipeds_hd row but either physical city, physical state, or institution name does not match
   #   - has scorecard row but either physical city, or physical state does not match
-  scope :missing_lat_long_physical, -> {
+  scope :missing_lat_long_physical, lambda {
     sql = <<-SQL
       SELECT weams.*
 			FROM weams
@@ -226,24 +226,24 @@ class Weam < ImportableRecord
 			LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
 			WHERE
       (
-        (ipeds_hds.cross IS NULL AND scorecards.cross IS NULL) 
-        OR (ipeds_hds.cross IS NOT NULL 
+        (ipeds_hds.cross IS NULL AND scorecards.cross IS NULL)
+        OR (ipeds_hds.cross IS NOT NULL
           AND (
-            UPPER(ipeds_hds.city) != UPPER(weams.physical_city)  
-            OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state) 
-            OR UPPER(weams.institution) != UPPER(ipeds_hds.institution) 
-            OR ipeds_hds.latitude IS NULL 
-            OR ipeds_hds.longitud IS NULL 
-            OR ipeds_hds.latitude NOT BETWEEN -90 AND 90 
+            UPPER(ipeds_hds.city) != UPPER(weams.physical_city)
+            OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state)
+            OR UPPER(weams.institution) != UPPER(ipeds_hds.institution)
+            OR ipeds_hds.latitude IS NULL
+            OR ipeds_hds.longitud IS NULL
+            OR ipeds_hds.latitude NOT BETWEEN -90 AND 90
             OR ipeds_hds.longitud NOT BETWEEN -180 AND 180
-          )) 
-        OR (scorecards.cross IS NOT NULL 
+          ))
+        OR (scorecards.cross IS NOT NULL
           AND (
-            UPPER(scorecards.city) != UPPER(weams.physical_city) 
+            UPPER(scorecards.city) != UPPER(weams.physical_city)
             OR UPPER(scorecards.state) != UPPER(weams.physical_state)
-            OR scorecards.latitude IS NULL 
-            OR scorecards.longitude IS NULL 
-            OR scorecards.latitude NOT BETWEEN -90 AND 90 
+            OR scorecards.latitude IS NULL
+            OR scorecards.longitude IS NULL
+            OR scorecards.latitude NOT BETWEEN -90 AND 90
             OR scorecards.longitude NOT BETWEEN -180 AND 180
           ))
       )
@@ -257,21 +257,21 @@ class Weam < ImportableRecord
   # Return approved rows without physical_city or physical_state where
   #   - has ipeds_hd row but either city, or state does not match
   #   - has scorecard row but either city, or state does not match
-  scope :missing_lat_long_mailing, -> {
+  scope :missing_lat_long_mailing, lambda {
     sql = <<-SQL
       SELECT weams.*
       FROM weams
       LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
       LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
       WHERE (
-        (ipeds_hds.cross IS NOT NULL 
+        (ipeds_hds.cross IS NOT NULL
           AND (
-            UPPER(ipeds_hds.city) != UPPER(weams.city) 
-            OR UPPER(ipeds_hds.state) != UPPER(weams.state) 
+            UPPER(ipeds_hds.city) != UPPER(weams.city)
+            OR UPPER(ipeds_hds.state) != UPPER(weams.state)
             OR UPPER(ipeds_hds.institution) != UPPER(weams.institution)
-        )) 
-        OR (scorecards.cross IS NOT NULL 
-          AND (UPPER(scorecards.city) != UPPER(weams.city) 
+        ))
+        OR (scorecards.cross IS NOT NULL
+          AND (UPPER(scorecards.city) != UPPER(weams.city)
           OR UPPER(scorecards.state) != UPPER(weams.state)
         ))
       )
@@ -301,7 +301,6 @@ class Weam < ImportableRecord
   def vet_tec_approved?
     applicable_law_code.downcase.include? REQUIRED_VET_TEC_LAW_CODE
   end
-
 end
 
 # rubocop:enable Metrics/ClassLength
