@@ -33,6 +33,8 @@ class Group < Upload
     end.string
   end
 
+  # For each CSV object in csvs create a CSV file within the Zip::OutputStream
+  # Returns the binary data for the zip file
   def self.export_csvs_as_zip(csvs, type)
     Zip::OutputStream.write_buffer do |zio|
       csvs.each_with_index do |csv, index|

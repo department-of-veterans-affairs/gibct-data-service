@@ -10,6 +10,7 @@ module Common
       generate_version(csv_headers, number)
     end
 
+    # simple version that takes incoming array of arrays and creates a CSV object with it
     def generate_csv(rows)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         rows.each { |row| csv << row }

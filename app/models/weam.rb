@@ -206,7 +206,19 @@ class Weam < ImportableRecord
     [physical_city, physical_zip, physical_address_1].compact
   end
 
-  def self.missing_lat_long_physical
+  def address
+    [address_1, address_2, address_3].compact.join(' ')
+  end
+
+  def physical_address
+    [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
+  end
+
+  # Return approved rows with physical_city and physical_state where
+  #   - does not have an ipeds_hd or scorecard
+  #   - has ipeds_hd row but either physical city, physical state, or institution name does not match
+  #   - has scorecard row but either physical city, or physical state does not match
+  scope :missing_lat_long_physical, -> {
     sql = <<-SQL
       SELECT weams.*
 			FROM weams
@@ -239,10 +251,13 @@ class Weam < ImportableRecord
       AND weams.approved IS TRUE
     SQL
 
-    Weam.connection.execute(sql)
-  end
+    find_by_sql(sql)
+  }
 
-  def self.missing_lat_long_mailing
+  # Return approved rows without physical_city or physical_state where
+  #   - has ipeds_hd row but either city, or state does not match
+  #   - has scorecard row but either city, or state does not match
+  scope :missing_lat_long_mailing, -> {
     sql = <<-SQL
       SELECT weams.*
       FROM weams
@@ -264,8 +279,8 @@ class Weam < ImportableRecord
       AND weams.approved IS TRUE
     SQL
 
-    Weam.connection.execute(sql)
-  end
+    find_by_sql(sql)
+  }
 
   scope :approved_institutions, -> { where(approved: true) }
 
@@ -287,9 +302,6 @@ class Weam < ImportableRecord
     applicable_law_code.downcase.include? REQUIRED_VET_TEC_LAW_CODE
   end
 
-  def physical_address
-    [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
-  end
 end
 
 # rubocop:enable Metrics/ClassLength
