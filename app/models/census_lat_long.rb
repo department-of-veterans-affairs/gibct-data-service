@@ -30,8 +30,6 @@ class CensusLatLong
     Group.export_csvs_as_zip(csvs, name)
   end
 
-  private_class_method :add_institution_addressesd, :add_weams_physical_addresses, :add_weams_mailing_addresses
-
   # rubocop:disable Metrics/CyclomaticComplexity
   # Adds Approved Institutions rows from latest version that do not have a latitude or longitude
   #   - if the facility code is present in weams_facility_codes it is ignored
@@ -80,4 +78,7 @@ class CensusLatLong
       addresses << value.unshift(weam.facility_code) if value.compact.count.positive?
     end
   end
+
+  private_class_method :add_institution_addresses, :add_weams_physical_addresses, :add_weams_mailing_addresses
+
 end
