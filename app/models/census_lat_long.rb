@@ -7,7 +7,7 @@ class CensusLatLong
 
   def self.export
     missing_lat_long_weams = Weam.missing_lat_long
-    weams_facility_codes = missing_lat_long_weams.map { |weam| weam[:facility_code] }.uniq
+    weams_facility_codes = missing_lat_long_weams.map { |weam| weam['facility_code'] }.uniq
 
     addresses = []
     Institution.missing_lat_long(Version.latest).each do |institution|
@@ -20,20 +20,20 @@ class CensusLatLong
                     institution.physical_zip || institution.zip]
     end
 
-    # missing_lat_long_weams.each do |weam|
-    #   physical_address = [weam[:physical_address_1], weam[:physical_address_2], weam[:physical_address_3]].compact.join(' ')
-    #   address = [weam[:address_1], weam[:address_2], weam[:address_3]].compact.join(' ')
-    #
-    #   value = [weam[:facility_code], physical_address || address,
-    #                 weam[:physical_city] || weam[:city],
-    #                 weam[:physical_state] || weam[:state],
-    #                 weam[:physical_zip] || weam[:zip]]
-    #
-    #   addresses << value if value.compact.count > 0
-    # end
+    missing_lat_long_weams.each do |weam|
+      physical_address = [weam['physical_address_1'], weam['physical_address_2'], weam['physical_address_3']].compact.join(' ')
+      address = [weam['address_1'], weam['address_2'], weam['address_3']].compact.join(' ')
+
+      value = [weam['facility_code'], physical_address || address,
+                    weam['physical_city'] || weam['city'],
+                    weam['physical_state'] || weam['state'],
+                    weam['physical_zip'] || weam['zip']]
+
+      addresses << value if value.compact.count > 0
+    end
 
     csvs = []
-    addresses.compact.in_groups_of(10_000) do |batch|
+    addresses.compact.in_groups_of(10_000, false) do |batch|
       csvs << generate_csv(batch)
     end
 
