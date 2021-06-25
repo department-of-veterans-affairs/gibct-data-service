@@ -80,5 +80,4 @@ class CensusLatLong
   end
 
   private_class_method :add_institution_addresses, :add_weams_physical_addresses, :add_weams_mailing_addresses
-
 end
