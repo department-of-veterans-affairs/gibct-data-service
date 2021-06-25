@@ -206,33 +206,61 @@ class Weam < ImportableRecord
     [physical_city, physical_zip, physical_address_1].compact
   end
 
-  def self.missing_lat_long
+  def self.missing_lat_long_physical
     sql = <<-SQL
       SELECT weams.*
 			FROM weams
 			LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
 			LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
 			WHERE
-			(ipeds_hds.cross IS NULL AND scorecards.cross IS NULL) 
-      OR (ipeds_hds.cross IS NOT NULL 
-      AND (
-        UPPER(ipeds_hds.city) != UPPER(weams.physical_city)  
-        OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state) 
-        OR UPPER(weams.institution) != UPPER(ipeds_hds.institution) 
-        OR ipeds_hds.latitude IS NULL 
-        OR ipeds_hds.longitud IS NULL 
-        OR ipeds_hds.latitude NOT BETWEEN -90 AND 90 
-        OR ipeds_hds.longitud NOT BETWEEN -180 AND 180
-      )) 
-      OR (scorecards.cross IS NOT NULL 
-      AND (
-        UPPER(scorecards.city) != UPPER(weams.physical_city) 
-        OR UPPER(scorecards.state) != UPPER(weams.physical_state)
-        OR scorecards.latitude IS NULL 
-        OR scorecards.longitude IS NULL 
-        OR scorecards.latitude NOT BETWEEN -90 AND 90 
-        OR scorecards.longitude NOT BETWEEN -180 AND 180
-      ))
+      (
+        (ipeds_hds.cross IS NULL AND scorecards.cross IS NULL) 
+        OR (ipeds_hds.cross IS NOT NULL 
+          AND (
+            UPPER(ipeds_hds.city) != UPPER(weams.physical_city)  
+            OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state) 
+            OR UPPER(weams.institution) != UPPER(ipeds_hds.institution) 
+            OR ipeds_hds.latitude IS NULL 
+            OR ipeds_hds.longitud IS NULL 
+            OR ipeds_hds.latitude NOT BETWEEN -90 AND 90 
+            OR ipeds_hds.longitud NOT BETWEEN -180 AND 180
+          )) 
+        OR (scorecards.cross IS NOT NULL 
+          AND (
+            UPPER(scorecards.city) != UPPER(weams.physical_city) 
+            OR UPPER(scorecards.state) != UPPER(weams.physical_state)
+            OR scorecards.latitude IS NULL 
+            OR scorecards.longitude IS NULL 
+            OR scorecards.latitude NOT BETWEEN -90 AND 90 
+            OR scorecards.longitude NOT BETWEEN -180 AND 180
+          ))
+      )
+      AND weams.physical_city IS NOT NULL AND weams.physical_state IS NOT NULL
+      AND weams.approved IS TRUE
+    SQL
+
+    Weam.connection.execute(sql)
+  end
+
+  def self.missing_lat_long_mailing
+    sql = <<-SQL
+      SELECT weams.*
+      FROM weams
+      LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
+      LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
+      WHERE (
+        (ipeds_hds.cross IS NOT NULL 
+          AND (
+            UPPER(ipeds_hds.city) != UPPER(weams.city) 
+            OR UPPER(ipeds_hds.state) != UPPER(weams.state) 
+            OR UPPER(ipeds_hds.institution) != UPPER(weams.institution)
+        )) 
+        OR (scorecards.cross IS NOT NULL 
+          AND (UPPER(scorecards.city) != UPPER(weams.city) 
+          OR UPPER(scorecards.state) != UPPER(weams.state)
+        ))
+      )
+      AND weams.physical_state IS NULL and weams.physical_city IS NULL
       AND weams.approved IS TRUE
     SQL
 
