@@ -258,15 +258,15 @@ RSpec.describe Weam, type: :model do
   end
 
   describe 'missing_lat_long_physical' do
-    it "includes a weam row without ipeds_hd or scorecard" do
+    it 'includes a weam row without ipeds_hd or scorecard' do
       create(:weam)
-      weam_ipeds = create(:weam, cross: "1")
-      weam_scorecard = create(:weam, cross: "2")
+      weam_ipeds = create(:weam, cross: '1')
+      weam_scorecard = create(:weam, cross: '2')
       create(:ipeds_hd, cross: weam_ipeds.cross)
       create(:scorecard, cross: weam_scorecard.cross)
 
       addresses = []
-      described_class.add_weams_physical_addresses(addresses, Weam.missing_lat_long_physical)
+      described_class.add_weams_physical_addresses(addresses, described_class.missing_lat_long_physical)
       expect(addresses.count).to eq(1)
     end
 

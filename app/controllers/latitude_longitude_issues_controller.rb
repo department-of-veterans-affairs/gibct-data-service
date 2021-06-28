@@ -3,7 +3,7 @@
 class LatitudeLongitudeIssuesController < ApplicationController
   def export
     send_data CensusLatLong.export, type: 'application/zip', filename: "#{CensusLatLong.name}.zip"
-  rescue => e
+  rescue StandardError => e
     log_error(e)
   end
 
@@ -19,5 +19,4 @@ class LatitudeLongitudeIssuesController < ApplicationController
     Rails.logger.error error.message + error.backtrace.to_s
     redirect_to dashboards_path, alert: "#{error.message}\n#{error.backtrace[0]}"
   end
-
 end

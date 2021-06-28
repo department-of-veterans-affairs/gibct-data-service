@@ -30,22 +30,24 @@ class CensusLatLong
     Group.export_csvs_as_zip(csvs, name)
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   # Adds Approved Institutions rows from latest version that do not have a latitude or longitude
   #   - if the facility code is present in weams_facility_codes it is ignored
   def self.add_institution_addresses(addresses, weams_facility_codes)
     Institution.missing_lat_long(Version.latest).each do |institution|
       next if weams_facility_codes.include?(institution.facility_code)
 
-      value = [institution.physical_address || institution.address,
-               institution.physical_city || institution.city,
-               institution.physical_state || institution.state,
-               institution.physical_zip || institution.zip]
+      physical_value = [institution.physical_address, institution.physical_city, institution.physical_state,
+                        institution.physical_zip]
 
-      addresses << value.unshift(institution.facility_code) if value.compact.count.positive?
+      mailing_value = [institution.address, institution.city, institution.state, institution.zip]
+
+      if physical_value.compact.count.positive?
+        addresses << physical_value.unshift(institution.facility_code)
+      elsif mailing_value.compact.count.positive?
+        addresses << mailing_value.unshift(institution.facility_code)
+      end
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   # Adds Approved Weams rows with physical city and physical state that meets one of these conditions:
   #   - does not have an ipeds_hd or scorecard
