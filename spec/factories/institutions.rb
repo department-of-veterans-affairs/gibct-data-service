@@ -132,6 +132,9 @@ FactoryBot.define do
     end
 
     trait :physical_address do
+      physical_address_1 { '123' }
+      physical_address_2 { 'Main St' }
+      physical_address_3 { 'Unit abc' }
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
       physical_country { 'USA' }
@@ -166,6 +169,11 @@ FactoryBot.define do
       school_provider { false }
       employer_provider { true }
       institution_type_name { Institution::EMPLOYER }
+    end
+
+    trait :lat_long do
+      latitude { 0 }
+      longitude { 0 }
     end
   end
 end

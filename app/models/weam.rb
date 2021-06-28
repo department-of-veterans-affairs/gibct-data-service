@@ -207,11 +207,15 @@ class Weam < ImportableRecord
   end
 
   def address
-    [address_1, address_2, address_3].compact.join(' ')
+    compact_address = [address_1, address_2, address_3].compact.join(' ')
+    return nil if compact_address.blank?
+    compact_address
   end
 
   def physical_address
-    [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
+    compact_address = [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
+    return nil if compact_address.blank?
+    compact_address
   end
 
   # Return approved rows with physical_city and physical_state where

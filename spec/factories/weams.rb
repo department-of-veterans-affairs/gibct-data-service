@@ -173,6 +173,24 @@ FactoryBot.define do
       state { 'TN' }
     end
 
+    trait :physical_address do
+      physical_address_1 { '123' }
+      physical_address_2 { 'Main St' }
+      physical_address_3 { 'Unit abc' }
+      physical_city { 'CHICAGO' }
+      physical_state { 'IL' }
+      physical_country { 'USA' }
+    end
+
+    trait :no_physical_address do
+      physical_address_1 { nil }
+      physical_address_2 { nil }
+      physical_address_3 { nil }
+      physical_city { nil }
+      physical_state { nil }
+      physical_country { nil }
+    end
+
     initialize_with do
       new(
         facility_code: facility_code, institution: institution, ope: ope, state: state,
