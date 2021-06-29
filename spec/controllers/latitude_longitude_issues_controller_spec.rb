@@ -19,5 +19,21 @@ RSpec.describe LatitudeLongitudeIssuesController, type: :controller do
       get(:export)
       expect(response.headers['Content-Disposition']).to include('filename="CensusLatLong.zip"')
     end
+
+    it 'displays error' do
+      allow(CensusLatLong).to receive(:export).and_raise(StandardError, 'BOOM!')
+      get(:export)
+      expect(flash[:alert]).to be_present
+      expect(flash[:alert]).to match 'BOOM!'
+    end
+  end
+
+  describe 'import' do
+    login_user
+
+    it 'is not implemented' do
+      get(:import)
+      expect(flash[:alert]).to match 'Not implemented'
+    end
   end
 end
