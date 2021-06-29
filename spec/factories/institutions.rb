@@ -140,6 +140,15 @@ FactoryBot.define do
       physical_country { 'USA' }
     end
 
+    trait :mailing_address do
+      address_1 { '123' }
+      address_2 { 'Main St' }
+      address_3 { 'Unit abc' }
+      city { 'CHICAGO' }
+      state { 'IL' }
+      country { 'USA' }
+    end
+
     trait :production_version do
       version_id { Version.current_production.id }
     end

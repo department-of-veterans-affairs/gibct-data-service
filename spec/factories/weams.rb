@@ -191,6 +191,23 @@ FactoryBot.define do
       physical_country { nil }
     end
 
+    trait :mailing_address do
+      address_1 { '123' }
+      address_2 { 'Main St' }
+      address_3 { 'Unit abc' }
+      city { 'CHICAGO' }
+      state { 'IL' }
+      country { 'USA' }
+    end
+
+    trait :no_mailing_address do
+      address_1 { nil }
+      address_2 { nil }
+      address_3 { nil }
+      city { nil }
+      state { nil }
+    end
+
     initialize_with do
       new(
         facility_code: facility_code, institution: institution, ope: ope, state: state,
