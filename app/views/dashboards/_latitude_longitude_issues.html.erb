@@ -1,0 +1,27 @@
+<h2>Latitude/Longitude Issues</h2>
+<div id="latitude-longitude-issues-dashboard" class="row row-space-12 equal">
+  <div class="col col-xs-12 col-md-6 col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">Census Latitude/Longitude Data</div>
+      <div class="panel-body">
+        <p><a href="https://geocoding.geo.census.gov/geocoder/locations/addressbatch?form" target="_blank">Census Location Batch Address Tool</a></p>
+        <div class="row">
+          <span>
+          <%= link_to latitude_longitude_issues_export_path do %>
+            <button class="btn dashboard-btn-success">
+              Export
+            </button>
+          <% end %>
+          </span>
+          <span>
+            <%= link_to latitude_longitude_issues_import_path do %>
+              <button class="btn dashboard-btn-success">
+                Import
+              </button>
+            <% end %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

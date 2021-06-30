@@ -44,4 +44,16 @@ RSpec.describe Group, type: :model do
       expect(binary_data).to be_present
     end
   end
+
+  describe 'export_csvs_as_zip' do
+    it 'returns binary_data' do
+      csvs = []
+      csvs << CSV.generate do |csv|
+        csv << %w[1 2 a b]
+      end
+
+      binary_data = described_class.export_csvs_as_zip(csvs, CensusLatLong.name)
+      expect(binary_data).to be_present
+    end
+  end
 end
