@@ -27,6 +27,7 @@ module InstitutionBuilder
     extend Common
 
     def self.run_insertions(version)
+      build_messages = {}
       initialize_with_weams(version)
       add_crosswalk(version.id)
       add_sec103(version.id)
@@ -60,6 +61,9 @@ module InstitutionBuilder
       add_provider_type(version.id)
       InStateTuitionPolicyUrlBuilder.build(version.id)
       VrrapBuilder.build(version.id)
+      build_messages[CensusLatLong.name] = LatLongBuilder.build(version.id)
+
+      build_messages
     end
 
     def self.build_ratings(version)
@@ -69,9 +73,10 @@ module InstitutionBuilder
     def self.run(user)
       error_msg = nil
       version = Version.create!(production: false, user: user)
+      build_messages = {}
       begin
         Institution.transaction do
-          run_insertions(version)
+          build_messages = run_insertions(version)
         end
 
         Institution.transaction do
@@ -98,7 +103,7 @@ module InstitutionBuilder
 
       version.delete unless success
 
-      { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success }
+      { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success, messages: build_messages }
     end
 
     def self.initialize_with_weams(version)

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'roo_helper/shared'
-
-class CensusLatLong
-  include RooHelper
+class CensusLatLong < ImportableRecord
+  COLS_USED_IN_INSTITUTION = %i[latitude longitude].freeze
 
   # Creates a ZIP file of CSVs by combining results from
   #  - add_institution_addresses
