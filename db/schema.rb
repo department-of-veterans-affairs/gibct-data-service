@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_28_180440) do
+ActiveRecord::Schema.define(version: 2021_07_01_165043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(version: 2021_06_28_180440) do
   end
 
   create_table "census_lat_longs", force: :cascade do |t|
-    t.string "record_id_number"
+    t.string "facility_code"
     t.string "input_address"
     t.string "tiger_address_range_match_indicator"
     t.string "tiger_match_type"
