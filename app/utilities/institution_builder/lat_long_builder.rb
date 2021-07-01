@@ -11,7 +11,7 @@ module InstitutionBuilder
           latitude = CAST(SPLIT_PART(interpolated_longitude_latitude,',',1) AS double precision ),
           longitude = CAST(SPLIT_PART(interpolated_longitude_latitude,',',2) AS double precision )
         FROM census_lat_longs
-        WHERE institutions.facility_code = census_lat_longs.record_id_number
+        WHERE institutions.facility_code = census_lat_longs.facility_code
           AND (institutions.latitude IS NULL OR institutions.longitude IS NULL)
           AND institutions.version_id = #{version_id}
           AND CAST(SPLIT_PART(interpolated_longitude_latitude,',',1) AS double precision ) BETWEEN -90 AND 90
@@ -28,7 +28,7 @@ module InstitutionBuilder
 
       str = <<-SQL
         UPDATE institutions SET
-          latitude = prod_institutions.latitude
+          latitude = prod_institutions.latitude,
           longitude = prod_institutions.longitude
         FROM institutions LEFT OUTER JOIN institutions prod_institutions ON (
             institutions.facility_code = prod_institutions.facility_code
