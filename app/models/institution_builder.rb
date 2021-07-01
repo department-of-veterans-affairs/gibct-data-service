@@ -63,7 +63,7 @@ module InstitutionBuilder
       VrrapBuilder.build(version.id)
       build_messages[CensusLatLong.name] = LatLongBuilder.build(version.id)
 
-      build_messages
+      build_messages.filter { |_k, v| v.present? }
     end
 
     def self.build_ratings(version)
@@ -103,7 +103,8 @@ module InstitutionBuilder
 
       version.delete unless success
 
-      { version: Version.current_preview, error_msg: error_msg, notice: notice, success: success, messages: build_messages }
+      { version: Version.current_preview, error_msg: error_msg,
+        notice: notice, success: success, messages: build_messages }
     end
 
     def self.initialize_with_weams(version)
