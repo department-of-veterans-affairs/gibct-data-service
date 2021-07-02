@@ -26,26 +26,35 @@ module InstitutionBuilder
     def self.still_missing_lat_long(version_id)
       current_version = Version.current_production
 
+      # Select all production version institutions whose preview version does NOT have a latitude or longitude
+      # Then compare returned production version institutions to preview version ones without latitude or longitude
+      # and only set preview version latitude and longitude if all physical address values match
       str = <<-SQL
         UPDATE institutions SET
-          latitude = prod_institutions.latitude,
-          longitude = prod_institutions.longitude
-        FROM institutions LEFT OUTER JOIN institutions prod_institutions ON (
-            institutions.facility_code = prod_institutions.facility_code
-            AND prod_institutions.version_id = :current_version
-            AND prod_institutions.longitude IS NOT NULL
-            AND prod_institutions.latitude IS NOT NULL
-            AND institutions.physical_address_1 = prod_institutions.physical_address_1
-            AND institutions.physical_address_2 = prod_institutions.physical_address_2
-            AND institutions.physical_address_3 = prod_institutions.physical_address_3
-            AND institutions.physical_city = prod_institutions.physical_city
-            AND institutions.physical_state = prod_institutions.physical_state
-            AND institutions.physical_country = prod_institutions.physical_country
-            AND institutions.physical_zip = prod_institutions.physical_zip
-            AND prod_institutions.approved IS true
-          )
+          latitude = prod_i.latitude,
+          longitude = prod_i.longitude
+        FROM (
+            SELECT * FROM institutions 
+            WHERE version_id = :current_version
+            AND longitude IS NOT NULL
+            AND latitude IS NOT NULL
+            AND approved IS true
+            AND facility_code IN (
+              SELECT facility_code FROM institutions
+              WHERE (institutions.latitude IS NULL OR institutions.longitude IS NULL)
+              AND institutions.version_id = :preview_version
+              AND institutions.approved IS true
+            )
+          ) prod_i
         WHERE (institutions.latitude IS NULL OR institutions.longitude IS NULL)
-		      AND prod_institutions.id IS NOT NULL
+          AND institutions.physical_address_1 = prod_i.physical_address_1
+          AND institutions.physical_address_2 = prod_i.physical_address_2
+          AND institutions.physical_address_3 = prod_i.physical_address_3
+          AND institutions.physical_city = prod_i.physical_city
+          AND institutions.physical_state = prod_i.physical_state
+          AND institutions.physical_country = prod_i.physical_country
+          AND institutions.physical_zip = prod_i.physical_zip
+          AND institutions.facility_code = prod_i.facility_code
           AND institutions.version_id = :preview_version
           AND institutions.approved IS true
       SQL
