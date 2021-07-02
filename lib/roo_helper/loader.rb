@@ -51,11 +51,16 @@ module RooHelper
                               process_sheet(sheet_klass, sheet, sheet_options, file_options)
                             end
 
-          loaded_sheets << {
-            results: sheet_klass.load_records(processed_sheet[:results], sheet_options),
-            header_warnings: processed_sheet[:header_warnings],
-            klass: sheet_klass
-          }
+                            results = if file_options[:skip_loading]
+                              processed_sheet[:results]
+                            else 
+                              sheet_klass.load_records(processed_sheet[:results], sheet_options)
+                            end
+                  loaded_sheets << {
+                              results: results,
+                              header_warnings: processed_sheet[:header_warnings],
+                              klass: sheet_klass
+                            }
         end
       end
 

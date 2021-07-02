@@ -8,7 +8,25 @@ class LatitudeLongitudeIssuesController < ApplicationController
   end
 
   def import
-    flash.alert = 'Not implemented'
+    @census_lat_long = CensusLatLong.new
+    @extensions = Settings.roo_upload.extensions.single.join(', ')
+    # CensusLatLong.import
+  end
+
+  def update
+    csv_results = []
+    results = []
+    header_warnings = []
+    file_options = { }
+
+    params[:uploaded_files].each {|file| 
+      csv_results << CensusLatLong.load_with_roo(file, file_options.merge(skip_loading: true))
+    }
+
+    csv_results.each{ |csv_result|
+      # results << csv_result[:results]
+      # header_warnings << csv_result[:header_warnings]
+    }
 
     redirect_to dashboards_path
   end

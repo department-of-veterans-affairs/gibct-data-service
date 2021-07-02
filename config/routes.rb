@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
   get '/latitude_longitude_issues/export' => 'latitude_longitude_issues#export', as: :latitude_longitude_issues_export
   get '/latitude_longitude_issues/import' => 'latitude_longitude_issues#import', as: :latitude_longitude_issues_import
+  post '/latitude_longitude_issues/import' => 'latitude_longitude_issues#update', as: :latitude_longitude_issues_update
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
