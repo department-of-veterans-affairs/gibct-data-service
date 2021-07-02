@@ -10,22 +10,16 @@ class LatitudeLongitudeIssuesController < ApplicationController
   def import
     @census_lat_long = CensusLatLong.new
     @extensions = Settings.roo_upload.extensions.single.join(', ')
-    # CensusLatLong.import
   end
 
   def update
     csv_results = []
-    results = []
-    header_warnings = []
-    file_options = {}
+    file_options = { skip_loading: true }
+
+    CensusLatLong.delete_all
 
     params[:uploaded_files].each do |file|
-      csv_results << CensusLatLong.load_with_roo(file, file_options.merge(skip_loading: true))
-    end
-
-    csv_results.each do |csv_result|
-      # results << csv_result[:results]
-      # header_warnings << csv_result[:header_warnings]
+      csv_results << CensusLatLong.load_with_roo(file, file_options)
     end
 
     redirect_to dashboards_path
