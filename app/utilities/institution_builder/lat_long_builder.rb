@@ -25,6 +25,7 @@ module InstitutionBuilder
     # rubocop:disable Metrics/MethodLength
     def self.still_missing_lat_long(version_id)
       current_version = Version.current_production
+      return '' if current_version.blank?
 
       # Select all production version institutions whose preview version does NOT have a latitude or longitude
       # Then compare returned production version institutions to preview version ones without latitude or longitude
@@ -34,7 +35,7 @@ module InstitutionBuilder
           latitude = prod_i.latitude,
           longitude = prod_i.longitude
         FROM (
-            SELECT * FROM institutions 
+            SELECT * FROM institutions
             WHERE version_id = :current_version
             AND longitude IS NOT NULL
             AND latitude IS NOT NULL
