@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class CensusLatLong < ImportableRecord
-  CSV_CONVERTER_INFO = {}.freeze
+  CSV_CONVERTER_INFO = {
+    'record_id_number' => { column: :facility_code, converter: FacilityCodeConverter }
+  }.freeze
 
   # Creates a ZIP file of CSVs by combining results from
   #  - add_institution_addresses
