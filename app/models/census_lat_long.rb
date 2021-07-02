@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CensusLatLong < ImportableRecord
+  CSV_CONVERTER_INFO = {}.freeze
+
   # Creates a ZIP file of CSVs by combining results from
   #  - add_institution_addresses
   #  - add_weams_physical_addresses
