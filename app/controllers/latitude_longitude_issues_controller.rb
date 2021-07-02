@@ -17,16 +17,16 @@ class LatitudeLongitudeIssuesController < ApplicationController
     csv_results = []
     results = []
     header_warnings = []
-    file_options = { }
+    file_options = {}
 
-    params[:uploaded_files].each {|file| 
+    params[:uploaded_files].each do |file|
       csv_results << CensusLatLong.load_with_roo(file, file_options.merge(skip_loading: true))
-    }
+    end
 
-    csv_results.each{ |csv_result|
+    csv_results.each do |csv_result|
       # results << csv_result[:results]
       # header_warnings << csv_result[:header_warnings]
-    }
+    end
 
     redirect_to dashboards_path
   end

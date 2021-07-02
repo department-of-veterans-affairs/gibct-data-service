@@ -5,7 +5,6 @@ require 'roo_helper/shared'
 class CensusLatLong < ImportableRecord
   include RooHelper
 
-
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: BaseConverter },
     'input_address' => { column: :input_address, converter: BaseConverter },
