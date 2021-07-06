@@ -27,13 +27,4 @@ RSpec.describe LatitudeLongitudeIssuesController, type: :controller do
       expect(flash[:alert]).to match 'BOOM!'
     end
   end
-
-  describe 'import' do
-    login_user
-
-    it 'is not implemented' do
-      get(:import)
-      expect(flash[:alert]).to match 'Not implemented'
-    end
-  end
 end
