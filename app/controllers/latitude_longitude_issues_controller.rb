@@ -17,11 +17,13 @@ class LatitudeLongitudeIssuesController < ApplicationController
     @upload = Upload.create(merged_params)
     begin
       data = CensusLatLong.load_multiple_files(merged_params[:upload_files], CensusLatLong)
-      alert_messages(data)
+      not_ok = alert_messages(data)
 
-      @upload.update(ok: data.present?, completed_at: Time.now.utc.to_s(:db))
+      @upload.update(ok: not_ok.empty?, completed_at: Time.now.utc.to_s(:db))
 
-      error_msg = "There was no saved #{CensusLatLong.name} data. Please check the file(s)."
+      # only grab not_ok files names
+      files = not_ok.map{|i| @upload.csv.split(' , ')[i]}.join(' , ')
+      error_msg = "There was no saved #{CensusLatLong.name} data. Please check the file(s): #{files}."
       raise(StandardError, error_msg) unless @upload.ok?
 
       redirect_to action: 'show', id: @upload.id
@@ -46,15 +48,18 @@ class LatitudeLongitudeIssuesController < ApplicationController
 
   private
 
+  # Loop through each file's array of sheets to create messages for user and check if each file is consider ok
   def alert_messages(data)
+    not_ok = []
     flash[:csv_success] = []
     flash[:warning] = []
-    # Loop through each file's array of sheets
-    data.each do |file_results|
-      file_results.each do |result|
-        file_messages(result)
+    data.each_with_index do |file_results, index|
+      file_results.each do |data|
+        file_messages(data)
+        not_ok << index unless data[:results].present? && data[:results].ids.present?
       end
     end
+    not_ok.uniq
   end
 
   def file_messages(data)
