@@ -75,6 +75,11 @@ module RooHelper
                                   skip_lines: options[:skip_lines],
                                   keep_data: options[:keep_data],
                                   no_headers: options[:no_headers] }] }
+
+      # seems odd based on option name but the option disables this from happening for each file allowing the table data
+      # to persist for all files being uploaded
+      klass.delete_all if options[:keep_data]
+
       files.map do |file|
         CensusLatLong.load_with_roo(file, file_options)
       end

@@ -16,8 +16,6 @@ class LatitudeLongitudeIssuesController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-      CensusLatLong.delete_all
-
       data = CensusLatLong.load_multiple_files(merged_params[:upload_files], CensusLatLong)
       alert_messages(data)
 
