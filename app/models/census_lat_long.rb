@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CensusLatLong < ImportableRecord
-
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: BaseConverter },
     'input_address' => { column: :input_address, converter: BaseConverter },

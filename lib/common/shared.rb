@@ -10,11 +10,11 @@ module Common
       name.constantize
     end
 
-    def self.file_type_defaults(klass, options = {})
+    def self.file_type_defaults(klass_name, options = {})
       # Pull the default CSV options to be used
       # If default CSV options exist overwrite generic defaults
       generic_options = Rails.application.config.csv_defaults['generic']
-      klass_options = Rails.application.config.csv_defaults[klass]
+      klass_options = Rails.application.config.csv_defaults[klass_name]
       default_options = if klass_options.present?
                           generic_options.merge(klass_options)
                         else

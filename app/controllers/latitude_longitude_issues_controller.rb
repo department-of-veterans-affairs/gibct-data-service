@@ -14,19 +14,34 @@ class LatitudeLongitudeIssuesController < ApplicationController
   end
 
   def create
-    csv_results = []
-    file_options = { skip_loading: true }
+    @upload = Upload.create(merged_params)
+    begin
+      CensusLatLong.delete_all
+      data = CensusLatLong.load_multiple_files(merged_params[:upload_files], CensusLatLong)
 
-    CensusLatLong.delete_all
-
-    params[:uploaded_files].each do |file|
-      csv_results << CensusLatLong.load_with_roo(file, file_options)
+      redirect_to dashboards_path
+    rescue StandardError => e
+      @upload = Upload.from_csv_type(CensusLatLong.name)
+      @extensions = Settings.roo_upload.extensions.single.join(', ')
+      csv_requirements
+      alert_and_log("Failed to upload #{original_filenames} : #{e.message}\n#{e.backtrace[0]}", e)
+      render :new
     end
-
-    redirect_to dashboards_path
   end
 
   private
+
+  def original_filenames
+    upload_params[:upload_files].map(&:original_filename).join(' , ')
+  end
+
+  def merged_params
+    upload_params.merge(csv: original_filenames, user: current_user)
+  end
+
+  def upload_params
+    @upload_params ||= params.require(:upload).permit(:csv_type, :comment, upload_files: [])
+  end
 
   def csv_requirements
     @requirements = [RooHelper.valid_col_seps] + UploadRequirements.requirements_messages(CensusLatLong)

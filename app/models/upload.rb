@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file
+  attr_accessor :skip_lines, :upload_file, :upload_files
 
   belongs_to :user, inverse_of: :versions
 
@@ -40,6 +40,10 @@ class Upload < ApplicationRecord
 
   def clean_rows
     Common::Shared.file_type_defaults(csv_type)[:clean_rows]
+  end
+
+  def keep_data
+    Common::Shared.file_type_defaults(csv_type)[:keep_data]
   end
 
   def self.last_uploads

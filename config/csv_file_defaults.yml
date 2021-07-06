@@ -2,6 +2,8 @@ generic:
   skip_lines: 0
   col_sep: ','
   clean_rows: true
+  keep_data: false
+  liberal_parsing: false
 
 CipCode:
   liberal_parsing: true
@@ -29,3 +31,7 @@ InStateTuitionPolicyUrl:
 
 VrrapProvider:
   clean_rows: false
+
+CensusLatLong:
+  keep_data: true
+  no_headers: true
