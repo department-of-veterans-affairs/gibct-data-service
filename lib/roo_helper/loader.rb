@@ -215,7 +215,8 @@ module RooHelper
                                 file_options[:sheets]
                                   .map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
                               else
-                                [{ klass: klass, skip_lines: 0, first_line: 2, clean_rows: true, multiple_files: false }]
+                                [{ klass: klass, skip_lines: 0, first_line: 2, clean_rows: true,
+                                   multiple_files: false }]
                               end
 
       file_options

@@ -21,8 +21,8 @@ class LatitudeLongitudeIssuesController < ApplicationController
 
       @upload.update(ok: not_ok.empty?, completed_at: Time.now.utc.to_s(:db))
 
-      # only grab not_ok files names
-      files = not_ok.map{|i| @upload.csv.split(' , ')[i]}.join(' , ')
+      # only grab not_ok filenames
+      files = not_ok.map { |i| @upload.csv.split(' , ')[i] }.join(' , ')
       error_msg = "There was no saved #{CensusLatLong.name} data. Please check the file(s): #{files}."
       raise(StandardError, error_msg) unless @upload.ok?
 
@@ -54,9 +54,9 @@ class LatitudeLongitudeIssuesController < ApplicationController
     flash[:csv_success] = []
     flash[:warning] = []
     data.each_with_index do |file_results, index|
-      file_results.each do |data|
-        file_messages(data)
-        not_ok << index unless data[:results].present? && data[:results].ids.present?
+      file_results.each do |file_data|
+        file_messages(file_data)
+        not_ok << index unless file_data[:results].present? && file_data[:results].ids.present?
       end
     end
     not_ok.uniq
@@ -101,7 +101,6 @@ class LatitudeLongitudeIssuesController < ApplicationController
 
   def csv_requirements
     @requirements = [RooHelper.valid_col_seps] + UploadRequirements.requirements_messages(CensusLatLong)
-    @custom_batch_validator = "#{CensusLatLong.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
     @inclusion = UploadRequirements.validation_messages_inclusion(CensusLatLong)
   end
 
