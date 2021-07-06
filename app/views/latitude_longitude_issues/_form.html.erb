@@ -1,12 +1,5 @@
-
-    <%= form_with do |f| %>
-
-  <div class="form-group">
-    <%= f.label(:file_group, for: 'csv_type_display') %><br />
-    <%= f.text_field(:csv_type, disabled: true, name: "csv_type_display", id: "csv_type_display", value: @census_lat_long.class.name) %>
-    <%= f.hidden_field(:csv_type) %>
-  </div>
-
+    <%= form_for(@upload, multipart: true) do |f| %>
+      <%= render partial: 'uploads/csv_type_static', locals: { upload: @upload, f: f } %>
 
       <div class="form-group">
         <%= f.label(:skip_lines_before_header, for: "upload_skip_lines") %><br />
@@ -14,9 +7,9 @@
       </div>
 
       <div class="form-group">
-        <%= f.label(:upload_files) %>
+        <%= f.label(:upload_file) %>
         <p class="help-block">Valid file formats include: <%= @extensions %></p>
-        <%= f.file_field(:uploaded_files, class: "form-control", multiple: true, required: true, accept: @extensions) %>
+        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions, multiple: true) %>
       </div>
 
       <div class="form-group">
@@ -26,6 +19,7 @@
 
       <div class="actions">
         <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
-        <%= f.submit "upload", class: "btn btn-primary" %>
+        <%= f.submit "Upload", class: "btn btn-primary" %>
       </div>
     <% end %>
+

@@ -7,12 +7,13 @@ class LatitudeLongitudeIssuesController < ApplicationController
     log_error(e)
   end
 
-  def import
-    @census_lat_long = CensusLatLong.new
+  def new
+    @upload = Upload.from_csv_type(CensusLatLong.name)
     @extensions = Settings.roo_upload.extensions.single.join(', ')
+    csv_requirements
   end
 
-  def update
+  def create
     csv_results = []
     file_options = { skip_loading: true }
 
@@ -26,6 +27,12 @@ class LatitudeLongitudeIssuesController < ApplicationController
   end
 
   private
+
+  def csv_requirements
+    @requirements = [RooHelper.valid_col_seps] + UploadRequirements.requirements_messages(CensusLatLong)
+    @custom_batch_validator = "#{CensusLatLong.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
+    @inclusion = UploadRequirements.validation_messages_inclusion(CensusLatLong)
+  end
 
   def log_error(error)
     Rails.logger.error error.message + error.backtrace.to_s
