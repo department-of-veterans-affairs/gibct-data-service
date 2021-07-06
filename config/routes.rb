@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   post '/calculator_constants' => 'calculator_constants#update', as: :calculator_constants_update
 
   get '/latitude_longitude_issues/export' => 'latitude_longitude_issues#export', as: :latitude_longitude_issues_export
-  resources :latitude_longitude_issues, only: [:new, :create]
+  resources :latitude_longitude_issues, only: [:new, :create, :show]
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }

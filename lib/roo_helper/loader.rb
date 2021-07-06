@@ -106,7 +106,7 @@ module RooHelper
     end
 
     # Get rows from the sheet
-    def sheet_rows(sheet_options, file_headers, headers_mapping)
+    def sheet_rows(sheet, sheet_options, file_headers, headers_mapping)
       # do not need to account for sheet_options[:skip_lines] here because of passing in the headers_mapping
       if sheet_options[:no_headers]
         # iterate through each row and zip the headers and values together to make Hashes
@@ -166,7 +166,7 @@ module RooHelper
         headers_mapping[column] = file_header
       end
 
-      rows = sheet_rows(sheet_options, file_headers, headers_mapping)
+      rows = sheet_rows(sheet, sheet_options, file_headers, headers_mapping)
 
       results = parse_rows(sheet_klass, rows, sheet_options) do |row|
         result = {}

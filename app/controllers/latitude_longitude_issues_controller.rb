@@ -17,9 +17,14 @@ class LatitudeLongitudeIssuesController < ApplicationController
     @upload = Upload.create(merged_params)
     begin
       CensusLatLong.delete_all
-      data = CensusLatLong.load_multiple_files(merged_params[:upload_files], CensusLatLong)
 
-      redirect_to dashboards_path
+      data = CensusLatLong.load_multiple_files(merged_params[:upload_files], CensusLatLong)
+      @upload.update(ok: data.present?, completed_at: Time.now.utc.to_s(:db))
+
+      error_msg = "There was no saved #{CensusLatLong.name} data. Please check the file(s)."
+      raise(StandardError, error_msg) unless @upload.ok?
+
+      redirect_to @upload
     rescue StandardError => e
       @upload = Upload.from_csv_type(CensusLatLong.name)
       @extensions = Settings.roo_upload.extensions.single.join(', ')
