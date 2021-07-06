@@ -9,6 +9,7 @@
       <div class="form-group">
         <%= f.label(:upload_file) %>
         <p class="help-block">Valid file formats include: <%= @extensions %></p>
+        <p class="help-block">Multiple files can be selected and uploaded at one time.</p>
         <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions, multiple: true) %>
       </div>
 
