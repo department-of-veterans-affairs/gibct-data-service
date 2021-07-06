@@ -75,18 +75,9 @@ module RooHelper
                                   skip_lines: options[:skip_lines],
                                   keep_data: options[:keep_data],
                                   no_headers: options[:no_headers] }] }
-      results = []
-      files.each do |file|
-        results << CensusLatLong.load_with_roo(file, file_options)
+      files.map do |file|
+        CensusLatLong.load_with_roo(file, file_options)
       end
-
-      # Loop through each file's array of sheets
-      # results.each do |file_results|
-      #   file_results.each do |result|
-      #   end
-      # end
-
-      results
     end
 
     private

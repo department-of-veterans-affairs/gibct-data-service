@@ -19,12 +19,14 @@ class LatitudeLongitudeIssuesController < ApplicationController
       CensusLatLong.delete_all
 
       data = CensusLatLong.load_multiple_files(merged_params[:upload_files], CensusLatLong)
+      alert_messages(data)
+
       @upload.update(ok: data.present?, completed_at: Time.now.utc.to_s(:db))
 
       error_msg = "There was no saved #{CensusLatLong.name} data. Please check the file(s)."
       raise(StandardError, error_msg) unless @upload.ok?
 
-      redirect_to @upload
+      redirect_to action: 'show', id: @upload.id
     rescue StandardError => e
       @upload = Upload.from_csv_type(CensusLatLong.name)
       @extensions = Settings.roo_upload.extensions.single.join(', ')
@@ -34,7 +36,49 @@ class LatitudeLongitudeIssuesController < ApplicationController
     end
   end
 
+  def show
+    @upload = Upload.find_by(id: params[:id])
+
+    csv_requirements if @upload.present?
+    return if @upload.present?
+
+    alert_and_log("Upload with id: '#{params[:id]}' not found")
+    redirect_to uploads_path
+  end
+
   private
+
+  def alert_messages(data)
+    # Loop through each file's array of sheets
+    data.each do |file_results|
+      file_results.each do |result|
+        file_messages(result)
+      end
+    end
+  end
+
+  def file_messages(data)
+    results = data[:results]
+
+    total_rows_count = results.ids.length
+    failed_rows = results.failed_instances
+    failed_rows_count = failed_rows.length
+    valid_rows = total_rows_count - failed_rows_count
+    validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
+                              .map(&:display_errors_with_row)
+
+    if valid_rows.positive?
+      flash[:csv_success] = {
+          total_rows_count: total_rows_count.to_s,
+          valid_rows: valid_rows.to_s,
+          failed_rows_count: failed_rows_count.to_s
+      }.compact
+    end
+
+    flash[:warning] = {
+        'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
+    }.compact
+  end
 
   def original_filenames
     upload_params[:upload_files].map(&:original_filename).join(' , ')
