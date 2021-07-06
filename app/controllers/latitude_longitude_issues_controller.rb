@@ -67,19 +67,21 @@ class LatitudeLongitudeIssuesController < ApplicationController
     failed_rows_count = failed_rows.length
     valid_rows = total_rows_count - failed_rows_count
     validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
-                              .map(&:display_errors_with_row)
+                                     .map(&:display_errors_with_row)
 
     if valid_rows.positive?
       flash[:csv_success] << {
-          total_rows_count: total_rows_count.to_s,
-          valid_rows: valid_rows.to_s,
-          failed_rows_count: failed_rows_count.to_s
+        total_rows_count: total_rows_count.to_s,
+        valid_rows: valid_rows.to_s,
+        failed_rows_count: failed_rows_count.to_s
       }.compact
     end
 
-    flash[:warning] << {
+    unless validation_warnings.empty?
+      flash[:warning] << {
         'The following rows should be checked: ': validation_warnings
-    } unless validation_warnings.empty?
+      }
+    end
   end
 
   def original_filenames

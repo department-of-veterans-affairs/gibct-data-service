@@ -11,12 +11,12 @@
 <% end %>
 
 <% if flash[:csv_success]&.count.positive? %>
-  <% flash[:csv_success].each do |value|  %>
+  <% flash[:csv_success].each_with_index do |value, index|  %>
     <aside class="alert alert-success">
       <div class="errors">
         <p>The upload succeeded: </p>
         <ul>
-          <li><%= @upload.csv %>.csv</li>
+          <li><%= @upload.csv.split(' , ')[index] %>.csv</li>
           <li>Total data rows: <%= value[:total_rows_count] %></li>
           <li>Valid data rows: <%= value[:valid_rows] %></li>
           <li>Invalid data rows <strong style="color:red;">*</strong> : <%= value[:failed_rows_count] %></li>
@@ -34,6 +34,7 @@
 <% if flash[:warning]&.count.positive? %>
   <% flash[:warning].each do |value|  %>
     <aside class="alert alert-warning">
+      <p><%= @upload.csv.split(' , ')[index] %>.csv</p>
       <% if value.is_a? Hash %>
         <% value.each_pair do |label, dangers| %>
           <%= pretty_error(dangers, label) %>
