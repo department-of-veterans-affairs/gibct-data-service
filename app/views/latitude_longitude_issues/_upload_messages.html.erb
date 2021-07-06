@@ -10,34 +10,38 @@
   </aside>
 <% end %>
 
-<% if flash[:csv_success].present? %>
-  <aside class="alert alert-success">
-    <div class="errors">
-      <p>The upload succeeded: </p>
-      <ul>
-        <li><%= @upload.csv_type %>.csv</li>
-        <li>Total data rows: <%= flash[:csv_success][:total_rows_count] %></li>
-        <li>Valid data rows: <%= flash[:csv_success][:valid_rows] %></li>
-        <li>Invalid data rows <strong style="color:red;">*</strong> : <%= flash[:csv_success][:failed_rows_count] %></li>
+<% if flash[:csv_success]&.count.positive? %>
+  <% flash[:csv_success].each do |value|  %>
+    <aside class="alert alert-success">
+      <div class="errors">
+        <p>The upload succeeded: </p>
         <ul>
-          <li>
-            Invalid Data Rows are not included in new version generation.
-          </li>
+          <li><%= @upload.csv %>.csv</li>
+          <li>Total data rows: <%= value[:total_rows_count] %></li>
+          <li>Valid data rows: <%= value[:valid_rows] %></li>
+          <li>Invalid data rows <strong style="color:red;">*</strong> : <%= value[:failed_rows_count] %></li>
+          <ul>
+            <li>
+              Invalid Data Rows are not included in new version generation.
+            </li>
+          </ul>
         </ul>
-      </ul>
-    </div>
-  </aside>
+      </div>
+    </aside>
+  <% end %>
 <% end %>
 
-<% if flash[:warning].present? %>
-  <aside class="alert alert-warning">
-    <% if flash[:warning].is_a? Hash %>
-      <% flash[:warning].each_pair do |label, dangers| %>
-        <%= pretty_error(dangers, label) %>
+<% if flash[:warning]&.count.positive? %>
+  <% flash[:warning].each do |value|  %>
+    <aside class="alert alert-warning">
+      <% if value.is_a? Hash %>
+        <% value.each_pair do |label, dangers| %>
+          <%= pretty_error(dangers, label) %>
+        <% end %>
+      <% else %>
+        <%= value.html_safe %>
       <% end %>
-    <% else %>
-      <%= flash[:warning].html_safe %>
-    <% end %>
-  </aside>
+    </aside>
+  <% end %>
 <% end %>
 

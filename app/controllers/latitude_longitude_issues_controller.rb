@@ -49,6 +49,8 @@ class LatitudeLongitudeIssuesController < ApplicationController
   private
 
   def alert_messages(data)
+    flash[:csv_success] = []
+    flash[:warning] = []
     # Loop through each file's array of sheets
     data.each do |file_results|
       file_results.each do |result|
@@ -68,16 +70,16 @@ class LatitudeLongitudeIssuesController < ApplicationController
                               .map(&:display_errors_with_row)
 
     if valid_rows.positive?
-      flash[:csv_success] = {
+      flash[:csv_success] << {
           total_rows_count: total_rows_count.to_s,
           valid_rows: valid_rows.to_s,
           failed_rows_count: failed_rows_count.to_s
       }.compact
     end
 
-    flash[:warning] = {
-        'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
-    }.compact
+    flash[:warning] << {
+        'The following rows should be checked: ': validation_warnings
+    } unless validation_warnings.empty?
   end
 
   def original_filenames
