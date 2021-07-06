@@ -21,7 +21,7 @@ module RooHelper
     #   - :first_line This is used for warning messages, default value is 2
     #   - :clean_rows Enable/Disable regex /[[:cntrl:]]|^[\p{Space}]+|[\p{Space}]+$/
     #                 from being applied when pulling rows from file
-    #   - :keep_data  When set to true disables the sheet_klass.delete_all for the file.
+    #   - :multiple_files  When set to true disables the sheet_klass.delete_all for the file.
     #   - :no_headers When file does not contain headers
     #
     # File Options
@@ -46,7 +46,7 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
-          sheet_klass.delete_all unless sheet_options[:keep_data]
+          sheet_klass.delete_all unless sheet_options[:multiple_files]
 
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
@@ -73,12 +73,11 @@ module RooHelper
       file_options = { liberal_parsing: options[:liberal_parsing],
                        sheets: [{ klass: klass,
                                   skip_lines: options[:skip_lines],
-                                  keep_data: options[:keep_data],
+                                  multiple_files: options[:multiple_files],
                                   no_headers: options[:no_headers] }] }
 
-      # seems odd based on option name but the option disables this from happening for each file allowing the table data
-      # to persist for all files being uploaded
-      klass.delete_all if options[:keep_data]
+      # The option disables deleting when each file is loaded and instead allows for a single deletion before loading
+      klass.delete_all if options[:multiple_files]
 
       files.map do |file|
         CensusLatLong.load_with_roo(file, file_options)
@@ -216,7 +215,7 @@ module RooHelper
                                 file_options[:sheets]
                                   .map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
                               else
-                                [{ klass: klass, skip_lines: 0, first_line: 2, clean_rows: true, keep_data: false }]
+                                [{ klass: klass, skip_lines: 0, first_line: 2, clean_rows: true, multiple_files: false }]
                               end
 
       file_options

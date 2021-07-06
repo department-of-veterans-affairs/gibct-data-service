@@ -2,7 +2,7 @@ generic:
   skip_lines: 0
   col_sep: ','
   clean_rows: true
-  keep_data: false
+  multiple_files: false
   liberal_parsing: false
 
 CipCode:
@@ -33,5 +33,5 @@ VrrapProvider:
   clean_rows: false
 
 CensusLatLong:
-  keep_data: true
+  multiple_files: true
   no_headers: true

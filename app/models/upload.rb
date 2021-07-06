@@ -42,8 +42,8 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:clean_rows]
   end
 
-  def keep_data
-    Common::Shared.file_type_defaults(csv_type)[:keep_data]
+  def multiple_files
+    Common::Shared.file_type_defaults(csv_type)[:multiple_files]
   end
 
   def self.last_uploads(for_display = false)
