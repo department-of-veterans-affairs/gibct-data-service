@@ -497,6 +497,7 @@ ActiveRecord::Schema.define(version: 2021_07_07_151300) do
     t.index ["facility_code", "institution", "ialias"], name: "index_institutions_on_facility_code_and_institution_and_ialias"
     t.index ["facility_code", "institution_search", "ialias"], name: "index_institutions_on_facility_code_institution_search_ialias"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
+    t.index ["gibill"], name: "index_institutions_on_gibill"
     t.index ["ialias"], name: "index_institutions_on_ialias"
     t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
     t.index ["institution_search"], name: "index_institutions_on_institution_search"
