@@ -38,6 +38,8 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   link(:self) { v0_institution_url(object.facility_code) }
 
   def caution_flags
+    return [] unless object.caution_flag
+
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end
