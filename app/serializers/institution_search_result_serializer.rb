@@ -44,10 +44,10 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   end
 
   def program_count
-    object.institution_programs.count
+    object.institution_programs.count if object.vet_tec_provider
   end
 
   def program_length_in_hours
-    object.institution_programs.map(&:length_in_hours)
+    object.institution_programs.map(&:length_in_hours) if object.vet_tec_provider
   end
 end
