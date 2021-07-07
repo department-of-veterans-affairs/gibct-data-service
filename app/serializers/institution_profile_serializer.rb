@@ -125,12 +125,16 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   end
 
   def programs
+    return [] unless object.vet_tec_provider
+
     object.institution_programs.map do |program|
       InstitutionProgramProfileSerializer.new(program)
     end
   end
 
   def caution_flags
+    return [] unless object.caution_flag
+
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end

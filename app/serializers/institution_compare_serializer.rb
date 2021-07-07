@@ -95,12 +95,13 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   end
 
   def caution_flags
+    return [] unless object.caution_flag
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end
   end
 
   def program_length_in_hours
-    object.institution_programs.map(&:length_in_hours)
+    object.institution_programs.map(&:length_in_hours) if object.vet_tec_provider
   end
 end
