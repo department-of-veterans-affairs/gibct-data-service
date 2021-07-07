@@ -88,7 +88,7 @@ class LatitudeLongitudeIssuesController < ApplicationController
   end
 
   def original_filenames
-    upload_params[:upload_files].map(&:original_filename).join(' , ')
+    upload_params[:upload_files]&.map(&:original_filename)&.join(' , ')
   end
 
   def merged_params
