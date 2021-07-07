@@ -298,7 +298,7 @@ class Institution < ImportableRecord
   #
   # Scopes
   #
-  
+
   scope :filter_count, lambda { |field|
     group(field).where.not(field => nil).order(field).count
   }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_01_165043) do
+ActiveRecord::Schema.define(version: 2021_07_07_151300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -494,8 +494,12 @@ ActiveRecord::Schema.define(version: 2021_07_01_165043) do
     t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
+    t.index ["facility_code", "institution", "ialias"], name: "index_institutions_on_facility_code_and_institution_and_ialias"
+    t.index ["facility_code", "institution_search", "ialias"], name: "index_institutions_on_facility_code_institution_search_ialias"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
+    t.index ["ialias"], name: "index_institutions_on_ialias"
     t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
+    t.index ["institution_search"], name: "index_institutions_on_institution_search"
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["latitude", "longitude"], name: "index_institutions_on_latitude_and_longitude"
     t.index ["online_only"], name: "index_institutions_on_online_only"
