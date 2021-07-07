@@ -47,13 +47,13 @@ RSpec.describe LatitudeLongitudeIssuesController, type: :controller do
 
     def requirements(csv_class, requirement_class)
       csv_class.validators
-          .find { |requirements| requirements.class == requirement_class }
+               .find { |requirements| requirements.class == requirement_class }
     end
 
     def map_attributes(csv_class, requirement_class)
       requirements(csv_class, requirement_class)
-          .attributes
-          .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
+        .attributes
+        .map { |column| csv_class::CSV_CONVERTER_INFO.select { |_k, v| v[:column] == column }.keys.join(', ') }
     end
 
     describe 'requirements_messages for CensusLatLong' do
@@ -79,17 +79,17 @@ RSpec.describe LatitudeLongitudeIssuesController, type: :controller do
         expect do
           post :create,
                params: {
-                   upload: { upload_files: [upload_file], comment: 'Test', csv_type: CensusLatLong.name  }
+                 upload: { upload_files: [upload_file], comment: 'Test', csv_type: CensusLatLong.name }
                }
         end.to change(CensusLatLong, :count).by(2)
       end
 
       it 'redirects to show' do
         expect(
-            post(:create,
-                 params: {
-                     upload: { upload_files: [upload_file], comment: 'Test', csv_type: CensusLatLong.name }
-                 })
+          post(:create,
+               params: {
+                 upload: { upload_files: [upload_file], comment: 'Test', csv_type: CensusLatLong.name }
+               })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
     end
@@ -98,8 +98,8 @@ RSpec.describe LatitudeLongitudeIssuesController, type: :controller do
       it 'formats a notice message in the flash' do
         file = build(:upload, :census_lat_long, csv_name: 'census_lat_long_caret.csv').upload_file
         expect(
-            post(:create,
-                 params: { upload: { upload_files: [file], comment: 'Test', csv_type: CensusLatLong.name } })
+          post(:create,
+               params: { upload: { upload_files: [file], comment: 'Test', csv_type: CensusLatLong.name } })
         ).to render_template(:new)
         error_message = 'Unable to determine column separators, valid separators equal "|" and ","'
         expect(flash[:danger]).to include(error_message)
