@@ -96,6 +96,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
 
   def caution_flags
     return [] unless object.caution_flag
+
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end

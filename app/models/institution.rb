@@ -503,14 +503,14 @@ class Institution < ImportableRecord
 
     # ['column name', 'query param name']
     [
-        %w[institution_type_name type],
-        ['country'],
-        ['state'],
-        ['student_veteran'], # boolean
-        %w[yr yellow_ribbon_scholarship], # boolean
-        ['accredited'] # boolean
+      %w[institution_type_name type],
+      ['country'],
+      ['state'],
+      ['student_veteran'], # boolean
+      %w[yr yellow_ribbon_scholarship], # boolean
+      ['accredited'] # boolean
     ].filter { |filter_args| query.key?(filter_args.last) }
-        .each do |filter_args|
+      .each do |filter_args|
       param_value = query[filter_args.last]
       clause = if %w[true yes].include?(param_value)
                  'IS true'
@@ -582,12 +582,12 @@ class Institution < ImportableRecord
     search_term = query[:name]
 
     weighted_sort = [
-        'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
-        "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
-        'THEN 1 * :alias_modifier ELSE 0 END',
-        'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
-        'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
-        'COALESCE(SIMILARITY(institution, :search_term), 0)'
+      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+      "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
+      'THEN 1 * :alias_modifier ELSE 0 END',
+      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
+      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
+      'COALESCE(SIMILARITY(institution, :search_term), 0)'
     ]
 
     processed = institution_search_term(search_term)
@@ -598,8 +598,8 @@ class Institution < ImportableRecord
     weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
 
     order_by = [
-        "#{weighted_sort.join(' + ')} DESC NULLS LAST",
-        'institution'
+      "#{weighted_sort.join(' + ')} DESC NULLS LAST",
+      'institution'
     ]
 
     alias_modifier = Settings.search.weight_modifiers.alias
