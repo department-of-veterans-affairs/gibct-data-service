@@ -30,7 +30,7 @@ module V1
       results = Institution.approved_institutions(@version)
                            .search_v1(@query)
                            .filter_result_v1(@query)
-                           .search_order(@query, max_gibill).page(page)
+                           .search_order_v1(@query, max_gibill).page(page)
 
       @meta = {
         version: @version,
