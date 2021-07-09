@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
-  attr_accessor :skip_lines, :upload_file
+  attr_accessor :skip_lines, :upload_file, :upload_files
 
   belongs_to :user, inverse_of: :versions
 
@@ -23,7 +23,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if [*UPLOAD_TYPES_ALL_NAMES, 'Institution'].include?(csv_type)
+    return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name, CensusLatLong.name].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -42,14 +42,24 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:clean_rows]
   end
 
-  def self.last_uploads
+  def multiple_files
+    Common::Shared.file_type_defaults(csv_type)[:multiple_files]
+  end
+
+  def self.last_uploads(for_display = false)
+    csv_types = if for_display
+                  UPLOAD_TYPES_ALL_NAMES
+                else
+                  [*UPLOAD_TYPES_ALL_NAMES, CensusLatLong.name]
+                end
+
     Upload.select('DISTINCT ON("csv_type") *')
-          .where(ok: true, csv_type: UPLOAD_TYPES_ALL_NAMES)
+          .where(ok: true, csv_type: csv_types)
           .order(csv_type: :asc, updated_at: :desc)
   end
 
   def self.last_uploads_rows
-    uploads = Upload.last_uploads.to_a
+    uploads = Upload.last_uploads(true).to_a
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
