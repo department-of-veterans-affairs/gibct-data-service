@@ -58,5 +58,12 @@ FactoryBot.define do
       csv { Scorecard.name }
       ok { true }
     end
+
+    trait :census_lat_long do
+      csv_type { CensusLatLong.name }
+      csv { CensusLatLong.name }
+      csv_name { 'census_lat_long.csv' }
+      ok { true }
+    end
   end
 end
