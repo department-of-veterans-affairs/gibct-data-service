@@ -8,14 +8,14 @@ module InstitutionBuilder
     def self.build(version_id)
       str = <<-SQL
         UPDATE institutions SET
-          latitude = CAST(SPLIT_PART(interpolated_longitude_latitude,',',1) AS double precision ),
-          longitude = CAST(SPLIT_PART(interpolated_longitude_latitude,',',2) AS double precision )
+          latitude = CAST(SPLIT_PART(interpolated_longitude_latitude,',',2) AS double precision ),
+          longitude = CAST(SPLIT_PART(interpolated_longitude_latitude,',',1) AS double precision )
         FROM census_lat_longs
         WHERE institutions.facility_code = census_lat_longs.facility_code
           AND (institutions.latitude IS NULL OR institutions.longitude IS NULL)
           AND institutions.version_id = #{version_id}
-          AND CAST(SPLIT_PART(interpolated_longitude_latitude,',',1) AS double precision ) BETWEEN -90 AND 90
-          AND CAST(SPLIT_PART(interpolated_longitude_latitude,',',2) AS double precision ) BETWEEN -180 AND 180
+          AND CAST(SPLIT_PART(interpolated_longitude_latitude,',',2) AS double precision ) BETWEEN -90 AND 90
+          AND CAST(SPLIT_PART(interpolated_longitude_latitude,',',1) AS double precision ) BETWEEN -180 AND 180
       SQL
 
       Institution.connection.update(str)
