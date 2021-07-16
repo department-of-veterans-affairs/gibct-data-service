@@ -172,6 +172,7 @@ class Institution < ImportableRecord
     'employer_provider' => { column: :employer_provider, converter: BooleanConverter },
     'school_provider' => { column: :school_provider, converter: BooleanConverter },
     'in_state_tuition_information' => { column: :in_state_tuition_information, converter: BaseConverter },
+    'in_state_tuition_url' => { column: :in_state_tuition_url, converter: BaseConverter },
     'vrrap_provider' => { column: :vrrap, converter: BooleanConverter }
   }.freeze
 
