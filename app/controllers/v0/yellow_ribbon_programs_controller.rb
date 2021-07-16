@@ -4,6 +4,22 @@ module V0
   class YellowRibbonProgramsController < ApiController
     include Facets
 
+    # GET /v0/yellow_ribbon_programs/autocomplete?term=harv
+    def autocomplete
+      @data = []
+      if params[:term].present?
+        @query ||= normalized_query_params
+        @search_term = params[:term]&.strip&.downcase
+        @data = Institution.approved_institutions(@version).where(yr: true).autocomplete(@search_term)
+      end
+      @meta = {
+        version: @version,
+        term: @search_term
+      }
+      @links = { self: self_link }
+      render json: { data: @data, meta: @meta, links: @links }, adapter: :json
+    end
+
     # GET /v0/yellow_ribbon_programs
     # ?page=1
     # &per_page=30
@@ -15,6 +31,7 @@ module V0
     # &number_of_students=unlimited
     # &name=university
     # &state=co
+    # Default search
     def index
       @meta = {
         version: @version,

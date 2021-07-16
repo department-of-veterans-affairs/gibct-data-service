@@ -59,7 +59,9 @@ Rails.application.routes.draw do
       get :autocomplete, on: :collection
     end
 
-    resources :yellow_ribbon_programs, only: :index
+    resources :yellow_ribbon_programs, only: [:index] do
+      get :autocomplete, on: :collection
+    end
 
     resources :zipcode_rates, only: :show
   end
@@ -78,7 +80,9 @@ Rails.application.routes.draw do
       get :autocomplete, on: :collection
     end
 
-    resources :yellow_ribbon_programs, only: :index
+    resources :yellow_ribbon_programs, only: [:index] do
+      get :autocomplete, on: :collection
+    end
 
     resources :zipcode_rates, only: :show
   end
