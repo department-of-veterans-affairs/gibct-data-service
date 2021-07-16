@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_15_152500) do
+ActiveRecord::Schema.define(version: 2021_07_16_084900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -485,9 +485,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_152500) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
-    t.boolean "vrrap"
     t.string "in_state_tuition_information"
-    t.string "in_state_tuition_url"
+    t.boolean "vrrap"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -656,9 +655,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_152500) do
     t.float "longitude"
     t.boolean "employer_provider"
     t.boolean "school_provider"
-    t.boolean "vrrap"
     t.string "in_state_tuition_information"
-    t.string "in_state_tuition_url"
+    t.boolean "vrrap"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1694,7 +1692,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_152500) do
     t.string "parent_facility_code_id"
     t.integer "csv_row"
     t.string "institution_search"
-    t.string "in_state_tuition_url"
+    t.string "in_state_tuition_information"
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
