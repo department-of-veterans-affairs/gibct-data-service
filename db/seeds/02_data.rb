@@ -47,7 +47,6 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(EightKey, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(EduProgram, user)
   SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 0)
-  SeedUtils.seed_table_with_upload(InStateTuitionPolicyUrl, user)
   SeedUtils.seed_table_with_upload(IpedsCipCode, user)
   SeedUtils.seed_table_with_upload(IpedsHd, user)
   SeedUtils.seed_table_with_upload(IpedsIc, user)
