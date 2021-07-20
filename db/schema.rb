@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_07_151300) do
+ActiveRecord::Schema.define(version: 2021_07_16_084900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1692,6 +1692,7 @@ ActiveRecord::Schema.define(version: 2021_07_07_151300) do
     t.string "parent_facility_code_id"
     t.integer "csv_row"
     t.string "institution_search"
+    t.string "in_state_tuition_information"
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
