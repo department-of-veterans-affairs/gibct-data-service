@@ -6,6 +6,6 @@ class BooleanConverter < BaseConverter
 
     return nil if value.blank?
 
-    value.to_s.match(/\A(true|t|yes|ye|y|1|on)\z/i).present? ? true : false
+    value.to_s.match(/\A(true|t|yes|ye|y|1|on|approved)\z/i).present? ? true : false
   end
 end

@@ -36,8 +36,12 @@ Rails.application.routes.draw do
 
   get '/archives' => 'archives#index'
   get '/archives/export/:csv_type/:number' => 'archives#export', as: :archives_export, defaults: { format: 'csv' }
+
   get '/calculator_constants' => 'calculator_constants#index'
   post '/calculator_constants' => 'calculator_constants#update', as: :calculator_constants_update
+
+  get '/latitude_longitude_issues/export' => 'latitude_longitude_issues#export', as: :latitude_longitude_issues_export
+  resources :latitude_longitude_issues, only: [:new, :create, :show]
 
   resources :storages, only: [:index, :edit, :update, :show] do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
@@ -62,6 +66,8 @@ Rails.application.routes.draw do
 
   namespace :v1, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
+    get '/institutions', to: 'institutions#facility_codes', constraints: lambda { |request| request.query_parameters.key?(:facility_codes) }
+    get '/institutions', to: 'institutions#location', constraints: lambda { |request| request.query_parameters.key?(:latitude) && request.query_parameters.key?(:longitude) }
 
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection

@@ -301,3 +301,8 @@ table.crosswalk-issues thead.sub th {
   flex-wrap: wrap;
   display: flex;
 }
+
+#latitude-longitude-issues-dashboard .row {
+    margin-left: 0;
+    margin-right: 0;
+}

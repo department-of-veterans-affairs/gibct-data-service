@@ -8,6 +8,14 @@
 # Quirks: protectorates are listed as states
 # rubocop:disable Metrics/ClassLength
 class Weam < ImportableRecord
+  OJT = 'OJT'
+  PRIVATE = 'PRIVATE'
+  FOREIGN = 'FOREIGN'
+  CORRESPONDENCE = 'CORRESPONDENCE'
+  FLIGHT = 'FLIGHT'
+  FOR_PROFIT = 'FOR PROFIT'
+  PUBLIC = 'PUBLIC'
+
   REQUIRED_VET_TEC_LAW_CODE = 'educational institution is approved for vet tec only'
 
   LAW_CODES_BLOCKING_APPROVED_STATUS = [
@@ -82,8 +90,8 @@ class Weam < ImportableRecord
 
   def institution_type
     msg = 'Unable to determine institution type'
-    errors.add(:institution_type, msg) unless ['OJT', 'PRIVATE', 'FOREIGN', 'CORRESPONDENCE',
-                                               'FLIGHT', 'FOR PROFIT', 'PUBLIC'].include?(institution_type_name)
+    errors.add(:institution_type, msg) unless [OJT, PRIVATE, FOREIGN, CORRESPONDENCE,
+                                               FLIGHT, FOR_PROFIT, PUBLIC].include?(institution_type_name)
   end
 
   # Computes all fields that are dependent on other fields. Called in validation because
@@ -197,6 +205,90 @@ class Weam < ImportableRecord
   def physical_address_values_for_match
     [physical_city, physical_zip, physical_address_1].compact
   end
+
+  def address
+    compact_address = [address_1, address_2, address_3].compact.join(' ')
+    return nil if compact_address.blank?
+
+    compact_address
+  end
+
+  def physical_address
+    compact_address = [physical_address_1, physical_address_2, physical_address_3].compact.join(' ')
+    return nil if compact_address.blank?
+
+    compact_address
+  end
+
+  # Return approved rows with physical_city and physical_state where
+  #   - does not have an ipeds_hd or scorecard
+  #   - has ipeds_hd row but either physical city, physical state, or institution name does not match
+  #   - has scorecard row but either physical city, or physical state does not match
+  scope :missing_lat_long_physical, lambda {
+    sql = <<-SQL
+      SELECT weams.*
+			FROM weams
+			LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
+			LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
+			WHERE
+      (
+        (ipeds_hds.cross IS NULL AND scorecards.cross IS NULL)
+        OR (ipeds_hds.cross IS NOT NULL
+          AND (
+            UPPER(ipeds_hds.city) != UPPER(weams.physical_city)
+            OR UPPER(ipeds_hds.state) != UPPER(weams.physical_state)
+            OR UPPER(weams.institution) != UPPER(ipeds_hds.institution)
+            OR ipeds_hds.latitude IS NULL
+            OR ipeds_hds.longitud IS NULL
+            OR ipeds_hds.latitude NOT BETWEEN -90 AND 90
+            OR ipeds_hds.longitud NOT BETWEEN -180 AND 180
+          ))
+        OR (scorecards.cross IS NOT NULL
+          AND (
+            UPPER(scorecards.city) != UPPER(weams.physical_city)
+            OR UPPER(scorecards.state) != UPPER(weams.physical_state)
+            OR scorecards.latitude IS NULL
+            OR scorecards.longitude IS NULL
+            OR scorecards.latitude NOT BETWEEN -90 AND 90
+            OR scorecards.longitude NOT BETWEEN -180 AND 180
+          ))
+      )
+      AND weams.physical_city IS NOT NULL AND weams.physical_state IS NOT NULL
+      AND weams.approved IS TRUE
+    SQL
+
+    find_by_sql(sql)
+  }
+
+  # Return approved rows without physical_city or physical_state where
+  #   - has ipeds_hd row but either city, or state does not match
+  #   - has scorecard row but either city, or state does not match
+  scope :missing_lat_long_mailing, lambda {
+    sql = <<-SQL
+      SELECT weams.*
+      FROM weams
+      LEFT OUTER JOIN ipeds_hds ON weams.cross = ipeds_hds.cross
+      LEFT OUTER JOIN scorecards ON weams.cross = scorecards.cross
+      WHERE (
+        (ipeds_hds.cross IS NOT NULL
+          AND (
+            UPPER(ipeds_hds.city) != UPPER(weams.city)
+            OR UPPER(ipeds_hds.state) != UPPER(weams.state)
+            OR UPPER(ipeds_hds.institution) != UPPER(weams.institution)
+        ))
+        OR (scorecards.cross IS NOT NULL
+          AND (UPPER(scorecards.city) != UPPER(weams.city)
+          OR UPPER(scorecards.state) != UPPER(weams.state)
+        ))
+      )
+      AND weams.physical_state IS NULL and weams.physical_city IS NULL
+      AND weams.approved IS TRUE
+    SQL
+
+    find_by_sql(sql)
+  }
+
+  scope :approved_institutions, -> { where(approved: true) }
 
   private
 

@@ -105,6 +105,8 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :institution_category_ratings
   attribute :rating_average
   attribute :rating_count
+  attribute :in_state_tuition_information
+  attribute :vrrap
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
@@ -123,12 +125,16 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   end
 
   def programs
+    return [] unless object.vet_tec_provider
+
     object.institution_programs.map do |program|
       InstitutionProgramProfileSerializer.new(program)
     end
   end
 
   def caution_flags
+    return [] unless object.caution_flag
+
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end

@@ -10,7 +10,7 @@ module V1
       if params[:term].present?
         @query ||= normalized_query_params
         @search_term = params[:term]&.strip&.downcase
-        @data = filter_results(Institution.approved_institutions(@version)).autocomplete(@search_term)
+        @data = Institution.approved_institutions(@version).filter_result_v1(@query).autocomplete(@search_term)
       end
       @meta = {
         version: @version,
@@ -21,31 +21,62 @@ module V1
     end
 
     # GET /v1/institutions?name=duluth&x=y
+    #   Default search
     def index
       @query ||= normalized_query_params
+
+      # For sorting by percentage instead whole number
+      max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
+      results = Institution.approved_institutions(@version)
+                           .search_v1(@query)
+                           .filter_result_v1(@query)
+                           .search_order_v1(@query, max_gibill).page(page)
+
       @meta = {
         version: @version,
-        count: 0,
-        facets: {}
+        count: results.count,
+        facets: facets(results)
       }
-
-      if @query.key?(:latitude) && @query.key?(:longitude)
-        location_results = Institution.approved_institutions(@version).location_search(@query)
-        results = location_results.location_select(@query).location_order
-
-        @meta[:count] = location_results.count
-        @meta[:facets] = facets(location_results)
-      else
-        # For sorting by percentage instead whole number
-        max_gibill = Institution.approved_institutions(@version).maximum(:gibill) || 0
-        results = search_results.search_order(@query, max_gibill).page(page)
-
-        @meta[:count] = results.count
-        @meta[:facets] = facets(results)
-      end
 
       render json: results,
              each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
+    end
+
+    # GET /v1/institutions?latitude=0.0&longitude=0.0
+    #   Location search
+    def location
+      @query ||= normalized_query_params
+
+      location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
+      results = location_results.location_select(@query).location_order
+
+      @meta = {
+        version: @version,
+        count: location_results.count,
+        facets: facets(location_results)
+      }
+
+      render json: results,
+             each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
+    end
+
+    # GET /v1/institutions?facility_codes=1,2,3,4
+    #   Search by facility code and return using InstitutionCompareSerializer
+    def facility_codes
+      @query ||= normalized_query_params
+
+      results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
+                           .order(:institution)
+
+      @meta = {
+        version: @version,
+        count: results.count
+      }
+
+      render json: results,
+             each_serializer: InstitutionCompareSerializer,
              meta: @meta
     end
 
@@ -97,51 +128,6 @@ module V1
           query[k] = float_conversion(query[k]) if query[k].present?
         end
       end
-    end
-
-    def search_results
-      @query ||= normalized_query_params
-      relation = Institution.approved_institutions(@version)
-                            .search_v1(@query)
-      filter_results(relation)
-    end
-
-    def filter_results(relation)
-      [
-        %i[institution_type_name type],
-        [:category],
-        [:country],
-        [:state],
-        %i[student_veteran student_veteran_group], # boolean
-        %i[yr yellow_ribbon_scholarship], # boolean
-        %i[poe principles_of_excellence], # boolean
-        %i[eight_keys eight_keys_to_veteran_success], # boolean
-        [:stem_offered], # boolean
-        [:independent_study], # boolean
-        [:online_only],
-        [:distance_learning],
-        [:priority_enrollment], # boolean
-        [:preferred_provider], # boolean
-        [:stem_indicator], # boolean
-        [:womenonly], # boolean
-        [:menonly], # boolean
-        [:hbcu], # boolean
-        [:relaffil],
-        [:vet_tec_provider] # boolean
-      ].each do |filter_args|
-        filter_args << filter_args[0] if filter_args.size == 1
-        relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
-      end
-
-      relation = relation.where('caution_flag IS NULL') if @query[:exclude_caution_flags]
-      relation = relation.where('relaffil IS NOT NULL') if @query[:is_relaffil]
-      relation = relation.where(accredited: true) if @query[:accredited]
-      relation = relation.where('menonly = 1 OR womenonly = 1') if @query[:single_gender_school]
-      relation = relation.where("institution_type_name != 'OJT' AND vet_tec_provider != true") if @query[:schools]
-      relation = relation.where.not(institution_type_name: 'OJT') if @query[:employers]
-      relation = relation.where(vet_tec_provider: false) if @query[:vettec]
-
-      relation
     end
 
     # TODO: If filter counts are desired in the future, change boolean facets

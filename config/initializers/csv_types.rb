@@ -8,6 +8,7 @@ CSV_TYPES_TABLES = [
   { klass: Crosswalk, required?: true },
   { klass: EightKey, required?: true },
   { klass: Hcm, required?: true },
+  { klass: InStateTuitionPolicyUrl, required?: true },
   { klass: IpedsHd, required?: true },
   { klass: IpedsIcAy, required?: true },
   { klass: IpedsIcPy, required?: true },
@@ -32,6 +33,7 @@ CSV_TYPES_TABLES = [
   { klass: VaCautionFlag, required?: false },
   { klass: Post911Stat, required?: false },
   { klass: SchoolRating, required?: false },
+  { klass: VrrapProvider, required?: false },
 ].freeze
 
 CSV_TYPES_HAS_API_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }.freeze

@@ -151,7 +151,8 @@ class GroupsController < ApplicationController
     @group.sheet_type_list.each_with_index do |sheet_type, index|
       sheets << {
         klass: sheet_type.constantize,
-        skip_lines: @group.skip_lines[index].to_i
+        skip_lines: @group.skip_lines[index].to_i,
+        clean_rows: true
       }
     end
     { sheets: sheets }

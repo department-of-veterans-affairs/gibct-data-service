@@ -3,6 +3,7 @@
 RSpec.shared_examples 'a loadable model' do |options|
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
+  file_ext = options[:file_ext] || 'csv'
 
   before do
     create :user
@@ -10,17 +11,18 @@ RSpec.shared_examples 'a loadable model' do |options|
   end
 
   describe 'when loading' do
-    let(:csv_file) { "./spec/fixtures/#{name}.csv" }
-    let(:csv_file_invalid) { "./spec/fixtures/#{name}_invalid.csv" }
-    let(:csv_file_missing_column) { "./spec/fixtures/#{name}_missing_column.csv" }
+    let(:csv_file) { "./spec/fixtures/#{name}.#{file_ext}" }
+    let(:csv_file_invalid) { "./spec/fixtures/#{name}_invalid.#{file_ext}" }
+    let(:csv_file_missing_column) { "./spec/fixtures/#{name}_missing_column.#{file_ext}" }
     let(:user) { User.first }
 
     load_options = Common::Shared.file_type_defaults(described_class.name, options)
 
     file_options = { liberal_parsing: load_options[:liberal_parsing],
-                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i) }] }
+                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
+                                clean_rows: load_options[:clean_rows] }] }
 
-    context 'with an error-free csv file' do
+    context "with an error-free #{file_ext} file" do
       it 'deletes the old table content' do
         expect { described_class.load_with_roo(csv_file, file_options) }
           .to change(described_class, :count).from(5).to(2)
@@ -34,7 +36,7 @@ RSpec.shared_examples 'a loadable model' do |options|
       end
     end
 
-    context 'with a problematic csv file' do
+    context "with a problematic #{file_ext} file" do
       let(:csv_rows) { 2 }
 
       it 'does not load invalid records into the table' do

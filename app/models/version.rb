@@ -35,6 +35,10 @@ class Version < ApplicationRecord
     cp.first
   end
 
+  def self.latest
+    Version.newest.first
+  end
+
   def self.previews_exist?
     Version.newest.first.preview?
   end

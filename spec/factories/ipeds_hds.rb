@@ -7,6 +7,8 @@ FactoryBot.define do
     f1sysnam { 'example school' }
     f1syscod { 123 }
     ialias { 'exsc' }
+    latitude { 0.0 }
+    longitud { 0.0 }
 
     trait :institution_builder do
       cross { '999999' }
