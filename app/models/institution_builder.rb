@@ -58,7 +58,6 @@ module InstitutionBuilder
       build_versioned_school_certifying_official(version.id)
       ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
       add_provider_type(version.id)
-      InStateTuitionPolicyUrlBuilder.build(version.id)
       VrrapBuilder.build(version.id)
     end
 
