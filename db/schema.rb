@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_07_151300) do
+ActiveRecord::Schema.define(version: 2021_07_16_092600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -254,13 +254,6 @@ ActiveRecord::Schema.define(version: 2021_07_07_151300) do
     t.string "facility_code"
     t.string "cross"
     t.string "ope"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "in_state_tuition_policy_urls", force: :cascade do |t|
-    t.string "facility_code"
-    t.string "in_state_tuition_information"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -1692,6 +1685,7 @@ ActiveRecord::Schema.define(version: 2021_07_07_151300) do
     t.string "parent_facility_code_id"
     t.integer "csv_row"
     t.string "institution_search"
+    t.string "in_state_tuition_information"
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
