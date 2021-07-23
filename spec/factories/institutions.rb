@@ -138,6 +138,7 @@ FactoryBot.define do
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
       physical_country { 'USA' }
+      physical_zip { '12345' }
     end
 
     trait :mailing_address do
