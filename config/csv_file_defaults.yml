@@ -26,9 +26,6 @@ Program:
 SchoolCertifyingOfficial:
   liberal_parsing: true
 
-InStateTuitionPolicyUrl:
-  liberal_parsing: true
-
 VrrapProvider:
   clean_rows: false
 

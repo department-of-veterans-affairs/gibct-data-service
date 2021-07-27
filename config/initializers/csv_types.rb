@@ -8,7 +8,6 @@ CSV_TYPES_TABLES = [
   { klass: Crosswalk, required?: true },
   { klass: EightKey, required?: true },
   { klass: Hcm, required?: true },
-  { klass: InStateTuitionPolicyUrl, required?: true },
   { klass: IpedsHd, required?: true },
   { klass: IpedsIcAy, required?: true },
   { klass: IpedsIcPy, required?: true },

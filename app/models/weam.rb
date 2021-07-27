@@ -32,7 +32,7 @@ class Weam < ImportableRecord
     physical_address_1 physical_address_2 physical_address_3
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning approved preferred_provider stem_indicator
-    campus_type parent_facility_code_id institution_search
+    campus_type parent_facility_code_id institution_search in_state_tuition_information
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -76,7 +76,8 @@ class Weam < ImportableRecord
     'preferred_provider' => { column: :preferred_provider, converter: BooleanConverter },
     'stem_indicator' => { column: :stem_indicator, converter: BooleanConverter },
     'campus_indicator' => { column: :campus_type, converter: BaseConverter },
-    'parent_facility_code' => { column: :parent_facility_code_id, converter: BaseConverter }
+    'parent_facility_code' => { column: :parent_facility_code_id, converter: BaseConverter },
+    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: BaseConverter }
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
