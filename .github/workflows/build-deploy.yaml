@@ -30,7 +30,7 @@ jobs:
   #         docker push ${ECR_REPO}:latest
   #         echo "::set-output name=image::$ECR_REPO:$IMAGE_TAG"
   deploy:
-    needs: build-docker-image
+    # needs: build-docker-image
     runs-on: ubuntu-20.04
     steps:
       - name: Configure AWS Credentials
