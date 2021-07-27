@@ -1,4 +1,4 @@
-name: build docker image
+name: build and deploy dev/staging
 on:
   push:
     branches:
@@ -75,4 +75,4 @@ jobs:
             author_name: va-vsp-bot
             author_email: devops@va.gov
             message: 'auto update gibct-data-service manifests'
-            #branch: loki-dev-8b4aa76a0636d3db9eaeed41815e36ef7aea3b87
+            branch: 'main'
