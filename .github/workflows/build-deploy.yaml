@@ -2,7 +2,7 @@ name: build and deploy dev/staging
 on:
   push:
     branches:
-      - tskinn-k8s-docker-update
+      - master
 
 jobs:
   build-docker-image:
@@ -55,18 +55,8 @@ jobs:
         env:
             IMAGE_TAG: ${{ github.sha }}
         run: |
-          ls -la
           echo "{\"imageTag\": \"${IMAGE_TAG}\"}" > vsp-infra-application-manifests/apps/vsp-tools-backend/gibct-data-service/dev/config.json
           echo "{\"imageTag\": \"${IMAGE_TAG}\"}" > vsp-infra-application-manifests/apps/vsp-tools-backend/gibct-data-service/staging/config.json
-      # - name: git save manifest
-      #   run: |
-      #     cd vsp-infra-application-manifests
-      #     git add loki/dev/*
-      #     git add loki/staging/*
-      #     git config user.email "devops@va.gov"
-      #     git config user.name "va-vsp-bot"
-      #     git commit -m "auto update gibct-data-service manifests"
-      #     git push -u origin main
       - name: Add and Commit file for dev and staging
         uses: EndBug/add-and-commit@v7
         with:
