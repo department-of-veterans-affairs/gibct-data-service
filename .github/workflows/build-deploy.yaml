@@ -5,32 +5,32 @@ on:
       - tskinn-k8s-docker-update
 
 jobs:
-  # build-docker-image:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: "us-gov-west-1"
-  #     - name: Log into ECR
-  #       id: login-ecr
-  #       uses: aws-actions/amazon-ecr-login@v1
-  #     - uses: actions/checkout@v2
-  #     - name: Tag/Push to AWS ECR
-  #       id: tag-image
-  #       env:
-  #         ECR_REPO: ${{ steps.login-ecr.outputs.registry }}/dsva/gibct-data-service
-  #         IMAGE_TAG: ${{ github.sha }}
-  #       run: |
-  #         docker build --tag ${ECR_REPO}:${IMAGE_TAG} --target k8s -- $PWD
-  #         docker build --tag ${ECR_REPO}:latest --target k8s -- $PWD
-  #         docker push ${ECR_REPO}:${IMAGE_TAG}
-  #         docker push ${ECR_REPO}:latest
-  #         echo "::set-output name=image::$ECR_REPO:$IMAGE_TAG"
+  build-docker-image:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-gov-west-1"
+      - name: Log into ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - uses: actions/checkout@v2
+      - name: Tag/Push to AWS ECR
+        id: tag-image
+        env:
+          ECR_REPO: ${{ steps.login-ecr.outputs.registry }}/dsva/gibct-data-service
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build --tag ${ECR_REPO}:${IMAGE_TAG} --target k8s -- $PWD
+          docker build --tag ${ECR_REPO}:latest --target k8s -- $PWD
+          docker push ${ECR_REPO}:${IMAGE_TAG}
+          docker push ${ECR_REPO}:latest
+          echo "::set-output name=image::$ECR_REPO:$IMAGE_TAG"
   deploy:
-    # needs: build-docker-image
+    needs: build-docker-image
     runs-on: ubuntu-20.04
     steps:
       - name: Configure AWS Credentials
@@ -67,12 +67,12 @@ jobs:
       #     git config user.name "va-vsp-bot"
       #     git commit -m "auto update gibct-data-service manifests"
       #     git push -u origin main
-      # - name: Add and Commit file for dev and staging
-      #   uses: EndBug/add-and-commit@v7
-      #   with:
-      #       add: '["dev/config.json", "staging/config.json"]'
-      #       cwd: './vsp-infra-application-manifests/apps/vsp-tools-backend/gibct-data-service/'
-      #       author_name: va-vsp-bot
-      #       author_email: devops@va.gov
-      #       message: 'auto update gibct-data-service manifests'
-      #       #branch: loki-dev-8b4aa76a0636d3db9eaeed41815e36ef7aea3b87
+      - name: Add and Commit file for dev and staging
+        uses: EndBug/add-and-commit@v7
+        with:
+            add: '["dev/config.json", "staging/config.json"]'
+            cwd: './vsp-infra-application-manifests/apps/vsp-tools-backend/gibct-data-service/'
+            author_name: va-vsp-bot
+            author_email: devops@va.gov
+            message: 'auto update gibct-data-service manifests'
+            #branch: loki-dev-8b4aa76a0636d3db9eaeed41815e36ef7aea3b87
