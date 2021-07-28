@@ -2,7 +2,7 @@ name: build and deploy dev/staging
 on:
   push:
     branches:
-      - tskinn-k8s-docker-update
+      - master
 
 jobs:
   test:
@@ -25,7 +25,8 @@ jobs:
       - name: Log into ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v2
       - name: Tag/Push to AWS ECR
         id: tag-image
         env:
