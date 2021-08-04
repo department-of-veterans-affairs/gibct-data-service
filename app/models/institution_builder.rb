@@ -524,22 +524,21 @@ module InstitutionBuilder
     end
 
     def self.add_poo_status_caution_flag(version_id)
-
       str = <<-SQL
       UPDATE institutions SET
         caution_flag = TRUE,
         caution_flag_reason = 'caution_flag_reason'
       WHERE institutions.poo_status = 'SUSP'
       AND institutions.version_id = #{version_id}
-    SQL
-        
+      SQL
+
       Institution.connection.update(str)
-      
+
       caution_flag_clause = <<-SQL
       FROM institutions
       WHERE institutions.poo_status = 'SUSP'
       AND institutions.version_id = #{version_id}
-    SQL
+      SQL
 
       CautionFlag.build(version_id, PooStatusFlag, caution_flag_clause)
     end
