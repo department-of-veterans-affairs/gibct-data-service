@@ -46,7 +46,6 @@ module InstitutionBuilder
       add_sec_702(version.id)
       add_settlement(version.id)
       add_hcm(version.id)
-      add_poo_status_caution_flag(version.id)
       add_complaint(version.id)
       add_outcome(version.id)
       add_stem_offered(version.id)
@@ -59,6 +58,7 @@ module InstitutionBuilder
       build_institution_programs(version.id)
       build_versioned_school_certifying_official(version.id)
       ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
+      SuspendedCautionFlags.build(version.id)
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       build_messages[CensusLatLong.name] = LatLongBuilder.build(version.id)
@@ -521,26 +521,6 @@ module InstitutionBuilder
       SQL
 
       CautionFlag.build(version_id, HcmCautionFlag, caution_flag_clause)
-    end
-
-    def self.add_poo_status_caution_flag(version_id)
-      str = <<-SQL
-      UPDATE institutions SET
-        caution_flag = TRUE,
-        caution_flag_reason = 'caution_flag_reason'
-      WHERE institutions.poo_status = 'SUSP'
-      AND institutions.version_id = #{version_id}
-      SQL
-
-      Institution.connection.update(str)
-
-      caution_flag_clause = <<-SQL
-      FROM institutions
-      WHERE institutions.poo_status = 'SUSP'
-      AND institutions.version_id = #{version_id}
-      SQL
-
-      CautionFlag.build(version_id, PooStatusFlag, caution_flag_clause)
     end
 
     def self.add_complaint(version_id)
