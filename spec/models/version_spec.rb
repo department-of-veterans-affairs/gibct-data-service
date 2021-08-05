@@ -18,6 +18,10 @@ RSpec.describe Version, type: :model do
       expect(version.gibct_link).to eq(ENV['GIBCT_URL'])
     end
 
+    it 'has sandbox_link based on configuration' do
+      expect(version.sandbox_link).to eq(ENV['SANDBOX_URL'])
+    end
+
     describe '#as_json' do
       it 'returns attributes appropriate for API responses' do
         expect(version.as_json.keys).to eq(%i[number created_at preview])

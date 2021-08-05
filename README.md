@@ -67,13 +67,14 @@ The following environment variables need to be configured for **GIDS**:
 	 more, please refer to the [vets-api repo](https://github.com/department-of-veterans-affairs/vets-api) and
 	 [vets-website repo](https://github.com/department-of-veterans-affairs/vets-website) where the **GIBCT** backend and
 	 client application, respectively, are located.
-2. `ADMIN_EMAIL`: This is the email you will use to sign onto **GIDS**.
-3. `ADMIN_PW`: This is the password for the email (above) you will use.
-4. `LINK_HOST`: This will be `http://localhost:3000`
-5. `GOVDELIVERY_STAGING_SERVICE`: This is 'True' or 'False' and a string since they are set by python.
-6. `GOVDELIVERY_TOKEN`: This is the token for govdelivery.com.
-7. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
-8. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
+2. `SANDBOX_URL`: Same as `GIBCT_URL` but points to the **GIBCT Sandbox**
+3. `ADMIN_EMAIL`: This is the email you will use to sign onto **GIDS**.
+4. `ADMIN_PW`: This is the password for the email (above) you will use.
+5. `LINK_HOST`: This will be `http://localhost:3000`
+6. `GOVDELIVERY_STAGING_SERVICE`: This is 'True' or 'False' and a string since they are set by python.
+7. `GOVDELIVERY_TOKEN`: This is the token for govdelivery.com.
+8. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
+9. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
 
 The following are required, these are related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
 
@@ -92,6 +93,7 @@ To create these variables, you will need to create an `application.yml` file und
 ADMIN_EMAIL: 'something@example.gov'
 ADMIN_PW: 'something...'
 GIBCT_URL: 'http://localhost:3001/gi-bill-comparison-tool'
+SANDBOX_URL: 'http://localhost:3001/gi-bill-comparison-tool-sandbox'
 GOVDELIVERY_STAGING_SERVICE: 'True'
 GOVDELIVERY_TOKEN: 'abc123'
 GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
