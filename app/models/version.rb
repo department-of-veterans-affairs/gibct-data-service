@@ -77,6 +77,11 @@ class Version < ApplicationRecord
     "#{ENV['GIBCT_URL']}#{version_info}"
   end
 
+  def sandbox_link
+    version_info = production? ? '' : "?version=#{uuid}"
+    "#{ENV['SANDBOX_URL']}#{version_info}"
+  end
+
   def as_json(_options = nil)
     {
       number: number,

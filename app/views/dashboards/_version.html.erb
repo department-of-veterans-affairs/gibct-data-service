@@ -10,6 +10,8 @@
     <% else %>
       <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank", rel: "noopener noreferrer",
           class: "btn dashboard-btn-success btn-xs", role: "button" %>
+      <%= link_to 'Show redesign', version.sandbox_link, target: "_blank", rel: "noopener noreferrer",
+          class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <%= link_to 'Download Export CSV', dashboard_export_version_path(version.number),
           class: "btn dashboard-btn-warning btn-xs", role: "button" %>
       <% if version.publishable? %>
