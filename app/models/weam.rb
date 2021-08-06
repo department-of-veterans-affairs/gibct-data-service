@@ -294,7 +294,7 @@ class Weam < ImportableRecord
   private
 
   def poo_status_valid?
-    !poo_status.nil? && poo_status.match?(/aprvd/i)
+    !poo_status.nil? && poo_status.match?(/aprvd|susp/i)
   end
 
   def invalid_law_code?
