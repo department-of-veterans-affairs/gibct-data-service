@@ -19,7 +19,6 @@ module VetsApi
 
         conn.response :snakecase
         conn.response :raise_error, error_prefix: service_name
-        conn.response :scorecard_api_errors
         conn.response :json_parser
 
         conn.adapter Faraday.default_adapter

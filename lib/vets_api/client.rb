@@ -8,7 +8,9 @@ module VetsApi
     configuration VetsApi::Configuration
 
     def feature_toggles(params)
-      raise(ParamsMissingError, 'No feature flags provided for the features param') if params.blank? || params[:features].blank?
+      if params.blank? || params[:features].blank?
+        raise(ParamsMissingError, 'No feature flags provided for the features param')
+      end
 
       perform(:get, 'feature_toggles', params)
     end
