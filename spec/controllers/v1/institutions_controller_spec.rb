@@ -127,10 +127,10 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('autocomplete')
     end
 
-    it 'filters by type' do
+    it 'filters by excluding type' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :start_like_harv, :production_version, institution_type_name: Weam::PUBLIC)
-      get(:autocomplete, params: { term: 'harv', type: Weam::PRIVATE })
+      get(:autocomplete, params: { term: 'harv', excluded_school_types: [Weam::PUBLIC] })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')

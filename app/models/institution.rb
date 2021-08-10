@@ -503,9 +503,9 @@ class Institution < ImportableRecord
 
     # ['column name', 'query param name']
     [
-      %w[institution_type_name type],
       ['country'],
       ['state'],
+      # following are only present if including schools in results
       ['student_veteran'], # boolean
       %w[yr yellow_ribbon_scholarship], # boolean
       ['accredited'] # boolean
@@ -522,15 +522,22 @@ class Institution < ImportableRecord
       filters << "#{filter_args.first} #{clause}"
     end
 
-    filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
-    filters << '(menonly = 1 OR womenonly = 1)' if query.key?(:single_gender_school)
-    filters << 'relaffil IS NOT NULL' if query.key?(:relaffil)
-    filters << 'hbcu = 1' if query.key?(:hbcu)
-
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
     exclude_schools = query.key?(:exclude_schools)
     exclude_employers = query.key?(:exclude_employers)
     exclude_vettec = query.key?(:exclude_vettec)
+
+    # frontend does not show these filters if excluding schools from results
+    unless exclude_schools
+      filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
+      filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
+
+      if query.key?(:special_mission)
+        special_mission = query[:special_mission]
+        filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
+        filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
+      end
+    end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
     preferred_provider = query[:preferred_provider] && !exclude_vettec || false
@@ -551,8 +558,7 @@ class Institution < ImportableRecord
     filters << 'vet_tec_provider IS FALSE' if exclude_vettec
 
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
-                                                                employer: EMPLOYER,
-                                                                schools: SCHOOLS])
+                                                                excludedTypes: query[:excluded_school_types]])
 
     where(Arel.sql(sanitized_clause))
   }
