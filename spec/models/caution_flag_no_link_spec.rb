@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative '../../app/utilities/caution_flag_templates/caution_flag_template'
-require_relative '../../app/utilities/caution_flag_templates/accreditation_caution_flag'
-require_relative '../../app/utilities/caution_flag_templates/hcm_caution_flag'
-require_relative '../../app/utilities/caution_flag_templates/mou_caution_flag'
+require_relative '../../app/utilities/caution_flag_templates/poo_status_flag'
+require_relative '../../app/utilities/caution_flag_templates/sec702_caution_flag'
 
 RSpec.describe CautionFlag, type: :model do
   describe 'when validating' do
@@ -61,20 +59,6 @@ RSpec.describe CautionFlag, type: :model do
                                        version_id: version.id,
                                        institution_id: institution.id).first
           expect(flag.description).to be_present
-        end
-
-        it "has #{template.name} LINK_TEXT value" do
-          flag = described_class.where(source: template::NAME,
-                                       version_id: version.id,
-                                       institution_id: institution.id).first
-          expect(flag.link_text).to be_present
-        end
-
-        it "has #{template.name} LINK_URL value" do
-          flag = described_class.where(source: template::NAME,
-                                       version_id: version.id,
-                                       institution_id: institution.id).first
-          expect(flag.link_url).to eq(template::LINK_URL)
         end
       end
     end
