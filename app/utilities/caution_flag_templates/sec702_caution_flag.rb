@@ -10,5 +10,5 @@ class Sec702CautionFlag < CautionFlagTemplate
                 'to offer recent Veterans and other covered individuals in-state tuition, regardless of their '\
                 'state residency.'
   LINK_TEXT = 'Learn more about Section 702 requirements'
-  LINK_URL = 'https://www.benefits.va.gov/gibill/docs/factsheets/section_702_factsheet.pdf'
+  LINK_URL = nil
 end
