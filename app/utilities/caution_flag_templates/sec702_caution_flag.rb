@@ -9,6 +9,6 @@ class Sec702CautionFlag < CautionFlagTemplate
                 'benefits because it doesn\'\'t comply with Section 702. This law requires public universities '\
                 'to offer recent Veterans and other covered individuals in-state tuition, regardless of their '\
                 'state residency.'
-  LINK_TEXT = 'Learn more about Section 702 requirements'
+  LINK_TEXT = nil
   LINK_URL = nil
 end
