@@ -8,18 +8,18 @@ RSpec.describe InstitutionTree, type: :model do
   describe 'institution tree' do
     before do
       create :version, :production
-      create(:institution, facility_code: '100', campus_type: 'Y', version_id: Version.current_production.id)
-      create(:institution, facility_code: '101', parent_facility_code_id: '100', campus_type: 'N', version_id: Version.current_production.id)
-      create(:institution, facility_code: '102', parent_facility_code_id: '100', campus_type: 'N', version_id:  Version.current_production.id)
-      create(:institution, facility_code: '103', parent_facility_code_id: '100', campus_type: 'N', version_id:  Version.current_production.id)
-      create(:institution, facility_code: '104', parent_facility_code_id: '102', campus_type: 'E', version_id:  Version.current_production.id)
-      create(:institution, facility_code: '105', parent_facility_code_id: '103', campus_type: 'E', version_id:  Version.current_production.id)
-      create(:institution, facility_code: '106', parent_facility_code_id: '103', campus_type: 'E', version_id:  Version.current_production.id)
-      create(:institution, facility_code: '107', parent_facility_code_id: '103', campus_type: 'E', version_id:  Version.current_production.id)
-      create(:institution, facility_code: '108', parent_facility_code_id: '100', campus_type: 'E', version_id:  Version.current_production.id)
+      create(:institution, facility_code: '100', campus_type: 'Y', poo_status: 'APRVD', version_id: Version.current_production.id)
+      create(:institution, facility_code: '101', parent_facility_code_id: '100', campus_type: 'N', poo_status: 'SUSP', version_id: Version.current_production.id)
+      create(:institution, facility_code: '102', parent_facility_code_id: '100', campus_type: 'N', poo_status: 'APRVD', version_id: Version.current_production.id)
+      create(:institution, facility_code: '103', parent_facility_code_id: '100', campus_type: 'N', poo_status: 'SUSP', version_id: Version.current_production.id)
+      create(:institution, facility_code: '104', parent_facility_code_id: '102', campus_type: 'E', poo_status: 'APRVD', version_id: Version.current_production.id)
+      create(:institution, facility_code: '105', parent_facility_code_id: '103', campus_type: 'E', poo_status: 'SUSP', version_id: Version.current_production.id)
+      create(:institution, facility_code: '106', parent_facility_code_id: '103', campus_type: 'E', poo_status: 'APRVD', version_id: Version.current_production.id)
+      create(:institution, facility_code: '107', parent_facility_code_id: '103', campus_type: 'E', poo_status: 'SUSP', version_id: Version.current_production.id)
+      create(:institution, facility_code: '108', parent_facility_code_id: '100', campus_type: 'E', poo_status: 'APRVD', version_id: Version.current_production.id)
       create(:institution, facility_code: '109', version_id: Version.current_production.id)
       create :version, :production
-      create(:institution, facility_code: '110', parent_facility_code_id: '100', campus_type: 'E', version_id: Version.current_production.id)
+      create(:institution, facility_code: '110', parent_facility_code_id: '100', campus_type: 'E', poo_status: 'SUSP', version_id: Version.current_production.id)
     end
 
     context 'when built' do
