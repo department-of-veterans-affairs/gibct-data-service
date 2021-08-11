@@ -88,6 +88,8 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :pctfloan
   attribute :institution_category_ratings
   attribute :school_provider
+  attribute :vet_tec_provider
+  attribute :employer_provider
 
   def yellow_ribbon_programs
     object.yellow_ribbon_programs.map do |yrp|
