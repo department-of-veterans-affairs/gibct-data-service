@@ -445,13 +445,13 @@
                 "type": ["null", "boolean"]
               },
               "school_provider": {
-                "type": ["null", "string"]
+                "type": ["null", "boolean"]
               },
               "vet_tec_provider": {
-                "type": ["null", "string"]
+                "type": ["null", "boolean"]
               },
               "employer_provider": {
-                "type": ["null", "string"]
+                "type": ["null", "boolean"]
               }
             },
             "required": [
