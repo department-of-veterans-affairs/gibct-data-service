@@ -443,6 +443,15 @@
               },
               "vrrap": {
                 "type": ["null", "boolean"]
+              },
+              "school_provider": {
+                "type": ["null", "string"]
+              },
+              "vet_tec_provider": {
+                "type": ["null", "string"]
+              },
+              "employer_provider": {
+                "type": ["null", "string"]
               }
             },
             "required": [
