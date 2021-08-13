@@ -31,7 +31,7 @@ CSV_TYPES_TABLES = [
   { klass: Sec103, required?: false },
   { klass: VaCautionFlag, required?: false },
   { klass: Post911Stat, required?: false },
-  { klass: SchoolRating, required?: false },
+  { klass: SchoolRating, required?: false, feature_flag: 'gibct_school_ratings' },
   { klass: VrrapProvider, required?: false },
 ].freeze
 
