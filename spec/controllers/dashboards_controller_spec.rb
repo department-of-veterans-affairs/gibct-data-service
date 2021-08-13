@@ -6,12 +6,12 @@ require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
 
 RSpec.describe DashboardsController, type: :controller do
-  it_behaves_like 'an authenticating controller', :index, 'dashboards'
-
   before do
     allow(VetsApi::Service).to receive(:feature_enabled?).and_return(false)
   end
-  
+
+  it_behaves_like 'an authenticating controller', :index, 'dashboards'
+
   def load_table(klass)
     csv_name = "#{klass.name.underscore}.csv"
     csv_type = klass.name
