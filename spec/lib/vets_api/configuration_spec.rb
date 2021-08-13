@@ -24,7 +24,7 @@ describe VetsApi::Configuration do
 
   describe '#base_path' do
     it 'returns LINK_HOST' do
-      expect(described_class.instance.base_path).to eq('http://localhost:3000/v0')
+      expect(described_class.instance.base_path).to eq("#{Figaro.env.link_host}/v0")
     end
   end
 
