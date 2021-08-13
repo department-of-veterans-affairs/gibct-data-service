@@ -986,6 +986,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:weam) { Weam.find_by(facility_code: '11000000') }
 
       before do
+        allow(VetsApi::Service).to receive(:feature_enabled?).and_return(true)
         create :weam, :ihl_facility_code
       end
 
