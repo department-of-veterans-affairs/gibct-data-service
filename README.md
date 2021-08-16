@@ -142,6 +142,13 @@ bundle exec rake db:drop db:create db:schema:load db:seed
 - `bundle exec rake ci` - Runs the continuous integration scripts which includes linters, security scanners, tests, and code coverage
 - `bundle exec rspec spec/path/to/spec` - Run a specific spec
 
+## Feature Flags
+ Feature Flags that are set in [vets-api/config/features.yml](https://github.com/department-of-veterans-affairs/vets-api/blob/master/config/features.yml) values can be checked by using [app/utilities/vets_api/service.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/utilities/vets_api/service.rb).
+```
+    if VetsApi::Service.feature_enabled?('a_feature_flag')
+        puts "A Feature Flag is enabled"
+    end
+```
 
 ## Fetching Data from the College Scorecard API
 The gibct-data-service utilizes the U.S. Department of Education's College Scorecard API to retrieve some of the data for institutions that are displayed in the Comparison Tool. After obtaining and configuring your API key as described in the "Environment Variables" section of this README above, it is relatively trivial to fetch the latest data from the API.
@@ -151,7 +158,7 @@ With the GIBCT Data Service Running locally, log in to access the dashboard. Fro
 Institutions have a one to many relationship with their associated degree programs. To fetch the latest data for the institution degree programs, click the green "Fetch" button on the `ScorecardDegreeProgram` row. The latest ScoreCardDegree program data will be fetched and you should receive a success message when complete.
 
 ## Version Generation
-### Instituion Versioning
+### Institution Versioning
 Much of the data in the gibct-data-service is used to build instances of institutions to display relevant data to users of the comparison tool for particular institutions. Since the data comes in as various CSV types to build these institution objects, a versioning system is necessary to ensure the correct data is being used when building the institution objects and only approved information is released to production. As mentioned in the "Data Modes and Versions" section above, there are versioned preview and production modes of the institutions that are built from the data in the uploaded CSVs. 
 
 To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using [app/models/institution_builder.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/models/institution_builder.rb) and produce the new institution objects. You will receive a success message when this is complete.
