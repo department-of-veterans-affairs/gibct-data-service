@@ -303,6 +303,10 @@ class Institution < ImportableRecord
     group(field).where.not(field => nil).order(field).count
   }
 
+  scope :boolean_filter_count, lambda { |field, value = true|
+    where(field => value).order(field).count
+  }
+
   scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 
   scope :approved_institutions, lambda { |version|

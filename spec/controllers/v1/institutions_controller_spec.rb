@@ -355,13 +355,6 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    it 'includes type search term in facets' do
-      get(:index, params: { name: 'chicago', type: Weam::FOREIGN })
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['type']['foreign']).not_to be_nil
-      expect(facets['type']['foreign']).to eq(0)
-    end
-
     it 'includes state search term in facets' do
       get(:index, params: { name: 'chicago', state: 'WY' })
       facets = JSON.parse(response.body)['meta']['facets']
