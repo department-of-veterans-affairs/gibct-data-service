@@ -127,10 +127,10 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('autocomplete')
     end
 
-    it 'filters by type' do
+    it 'filters by excluding type' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :start_like_harv, :production_version, institution_type_name: Weam::PUBLIC)
-      get(:autocomplete, params: { term: 'harv', type: Weam::PRIVATE })
+      get(:autocomplete, params: { term: 'harv', excluded_school_types: [Weam::PUBLIC] })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')
@@ -353,13 +353,6 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
-    end
-
-    it 'includes type search term in facets' do
-      get(:index, params: { name: 'chicago', type: Weam::FOREIGN })
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['type']['foreign']).not_to be_nil
-      expect(facets['type']['foreign']).to eq(0)
     end
 
     it 'includes state search term in facets' do
