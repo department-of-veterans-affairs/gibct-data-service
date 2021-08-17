@@ -8,6 +8,7 @@ RSpec.describe 'Dashboard', type: :request do
   before do
     user = User.create!(email: 'testuser@va.gov', password: 'secretshh')
     login_as(user, scope: :user)
+    allow(VetsApi::Service).to receive(:feature_enabled?).and_return(false)
   end
 
   it 'responds to POST #build with success' do

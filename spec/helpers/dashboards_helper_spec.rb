@@ -47,4 +47,11 @@ RSpec.describe DashboardsHelper, type: :helper do
       expect(helper.cannot_fetch_api(Scorecard.name)).to eq(true)
     end
   end
+
+  describe 'hide_upload_type' do
+    it 'hides SchoolRating' do
+      allow(VetsApi::Service).to receive(:feature_enabled?).and_return(false)
+      expect(helper.hide_upload_type(SchoolRating.name)).to eq(true)
+    end
+  end
 end
