@@ -35,7 +35,9 @@ checks:
 plugins:
   rubocop:
     enabled: true
-    channel: rubocop-0-74
+    channel: rubocop-0-82
+    config:
+      file: .rubocop.yml
   brakeman:
     enabled: true
   bundler-audit:
