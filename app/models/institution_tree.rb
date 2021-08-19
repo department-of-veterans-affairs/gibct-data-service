@@ -67,7 +67,7 @@ module InstitutionTree
             SELECT i.facility_code
             FROM institutions i
             INNER JOIN related_down r ON i.parent_facility_code_id = r.facility_code
-            WHERE i.version_id = ? 
+            WHERE i.version_id = ?
             AND i.approved IS TRUE
         ) SELECT facility_code FROM related_down WHERE facility_code != ?
       SQL
