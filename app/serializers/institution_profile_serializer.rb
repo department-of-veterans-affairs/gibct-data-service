@@ -107,6 +107,10 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :rating_count
   attribute :in_state_tuition_information
   attribute :vrrap
+  attribute :approved
+  attribute :school_provider
+  attribute :vet_tec_provider
+  attribute :employer_provider
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
