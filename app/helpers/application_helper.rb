@@ -16,22 +16,22 @@ module ApplicationHelper
   end
 
   def link_if_not_active(body, path, method = 'GET')
-    active_link?(path, method) ? content_tag(:a, body) : link_to(body, path)
+    active_link?(path, method) ? tag.a(body) : link_to(body, path)
   end
 
   # Wraps an array of error messages in an html list with a label (optional) above it
   def pretty_error(errors, error_label = '')
     return '' if errors.blank? && error_label.blank?
 
-    content_tag(:div, class: 'errors') do
-      concat(content_tag(:p, error_label)) if error_label.present?
+    tag.div(class: 'errors') do
+      concat(tag.p(error_label)) if error_label.present?
 
       if errors.present?
         concat(
-          content_tag(:ul) do
+          tag.ul do
             errors = [errors] unless errors.is_a? Array
             errors.map do |error|
-              concat content_tag(:li, error)
+              concat tag.li(error)
             end
           end
         )

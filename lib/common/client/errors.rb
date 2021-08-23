@@ -7,8 +7,7 @@ module Common
       class Error < StandardError; end
 
       class ClientError < Error
-        attr_accessor :status
-        attr_accessor :body
+        attr_accessor :status, :body
 
         def initialize(message = nil, status = nil, body = nil)
           super(message)
@@ -18,7 +17,9 @@ module Common
       end
 
       class NotAuthenticated < ClientError; end
+
       class Serialization < ClientError; end
+
       class ParsingError < ClientError; end
 
       class HTTPError < ClientError
