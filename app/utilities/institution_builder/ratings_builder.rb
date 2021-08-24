@@ -54,7 +54,14 @@ module InstitutionBuilder
                     ELSE #{category}
                   END,
                   ROW_NUMBER() OVER (PARTITION BY rater_id ORDER BY rated_at DESC ) AS row_num
-                FROM school_ratings
+                  FROM school_ratings
+                  WHERE overall_experience IS NOT NULL 
+                  OR quality_of_classes IS NOT NULL
+                  OR online_instruction IS NOT NULL
+                  OR job_preparation IS NOT NULL
+                  OR gi_bill_support IS NOT NULL
+                  OR veteran_community IS NOT NULL
+                  OR marketing_practices IS NOT NULL
               ) top_votes
             WHERE row_num = 1
           ) votes ON institutions.facility_code = vote_facility_code
