@@ -92,7 +92,15 @@ module InstitutionBuilder
               / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
               + SUM(rated2_count) + SUM(rated1_count))::float
             END average,
-            COUNT(DISTINCT rater_id) count
+            COUNT(DISTINCT CASE 
+              WHEN overall_experience IS NOT NULL
+              OR quality_of_classes IS NOT NULL
+              OR online_instruction IS NOT NULL
+              OR job_preparation IS NOT NULL
+              OR gi_bill_support IS NOT NULL
+              OR veteran_community IS NOT NULL
+              OR marketing_practices IS NOT NULL
+               THEN rater_id END) count
           FROM institution_category_ratings
             INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
               AND institutions.version_id = #{version_id}
