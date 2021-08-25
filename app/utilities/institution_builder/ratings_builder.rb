@@ -55,7 +55,7 @@ module InstitutionBuilder
                   END,
                   ROW_NUMBER() OVER (PARTITION BY rater_id ORDER BY rated_at DESC ) AS row_num
                   FROM school_ratings
-                  WHERE overall_experience IS NOT NULL 
+                  WHERE overall_experience IS NOT NULL
                   OR quality_of_classes IS NOT NULL
                   OR online_instruction IS NOT NULL
                   OR job_preparation IS NOT NULL
@@ -92,7 +92,7 @@ module InstitutionBuilder
               / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
               + SUM(rated2_count) + SUM(rated1_count))::float
             END average,
-            COUNT(DISTINCT CASE 
+            COUNT(DISTINCT CASE
               WHEN overall_experience IS NOT NULL
               OR quality_of_classes IS NOT NULL
               OR online_instruction IS NOT NULL
