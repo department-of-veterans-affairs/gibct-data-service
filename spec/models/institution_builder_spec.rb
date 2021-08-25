@@ -1118,7 +1118,6 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(5)
       end
-
     end
 
     describe 'when missing latitude and longitude' do
