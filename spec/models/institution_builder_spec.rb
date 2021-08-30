@@ -1056,7 +1056,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.rated3_count).to eq(2)
         expect(overall_experience.rated4_count).to eq(0)
         expect(overall_experience.rated5_count).to eq(0)
-        expect(overall_experience.na_count).to eq(1)
+        expect(overall_experience.na_count).to eq(0)
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(3)
       end
@@ -1117,24 +1117,6 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.na_count).to eq(0)
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(5)
-      end
-
-      it 'calculates a null average for 0 votes' do
-        create(:school_rating, :ihl_facility_code)
-        create(:school_rating, :ihl_facility_code)
-
-        described_class.run(user)
-
-        overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
-        expect(overall_experience.rated1_count).to eq(0)
-        expect(overall_experience.rated2_count).to eq(0)
-        expect(overall_experience.rated3_count).to eq(0)
-        expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.rated5_count).to eq(0)
-        expect(overall_experience.na_count).to eq(2)
-        expect(overall_experience.total_count).to eq(0)
-        expect(overall_experience.average_rating).to be_nil
       end
     end
 

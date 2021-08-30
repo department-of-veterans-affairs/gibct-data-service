@@ -117,6 +117,7 @@ Metrics/ClassLength:
     - "app/models/institution_builder.rb"
     - "app/controllers/v1/institutions_controller.rb"
     - "app/serializers/institution_compare_serializer.rb"
+    - "app/utilities/institution_builder/ratings_builder.rb"
 
 Metrics/AbcSize:
   Max: 40
