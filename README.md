@@ -150,6 +150,19 @@ bundle exec rake db:drop db:create db:schema:load db:seed
     end
 ```
 
+## Environment checks
+[config/initializers/common.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/config/initializers/common.rb#L18) provides three checks to determine which environment the application is being run in.  These checks can be called like so throughout the application.
+```
+    if production?
+        puts "In production"
+    elsif staging?
+        puts "In staging"
+    elsif development?
+        puts "In development or on local machine"
+    else 
+        raise "deployment_env is not a valid DEPLOYMENT_ENV value. Expected vagov-dev, vagov-staging or vagov-prod"
+```
+
 ## Fetching Data from the College Scorecard API
 The gibct-data-service utilizes the U.S. Department of Education's College Scorecard API to retrieve some of the data for institutions that are displayed in the Comparison Tool. After obtaining and configuring your API key as described in the "Environment Variables" section of this README above, it is relatively trivial to fetch the latest data from the API.
 
