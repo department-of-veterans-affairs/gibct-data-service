@@ -341,6 +341,7 @@ class Institution < ImportableRecord
   }
 
   scope :location_search, lambda { |query|
+    byebug
     return if query.blank? || query[:latitude].blank? || query[:longitude].blank?
 
     latitude = query[:latitude]
@@ -526,9 +527,11 @@ class Institution < ImportableRecord
     filters = []
 
     # ['column name', 'query param name']
+    conversion_hash = {'state' => 'physical_state', 'country' => 'physical_country'}
     [
       %w[institution_type_name type],
       ['country'],
+      ['name'],
       ['state'],
       ['student_veteran'], # boolean
       %w[yr yellow_ribbon_scholarship], # boolean
@@ -543,9 +546,25 @@ class Institution < ImportableRecord
                else
                  "= '#{param_value}'"
                end
-      filters << "#{filter_args.first} #{clause}"
+      
+      if filter_args.first == "name"
+        state_country_search = query[:name].split(",")
+        if state_country_search.length > 1
+          if state_country_search[1].present?
+            state = state_country_search[1].upcase.strip
+            filters << "physical_state = '#{state}'"
+          end
+          if state_country_search[2].present?
+            country = state_country_search[2].upcase.strip
+            filters << "physical_country = '#{country}'"
+          end
+        end
+      else
+        filter_argument = conversion_hash[filter_args.first].present? ? conversion_hash[filter_args.first] : filter_args.first
+        filters << "#{filter_argument} #{clause}"
+      end
     end
-
+    # byebug
     filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
     filters << '(menonly = 1 OR womenonly = 1)' if query.key?(:single_gender_school)
     filters << 'relaffil IS NOT NULL' if query.key?(:relaffil)
@@ -577,7 +596,6 @@ class Institution < ImportableRecord
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
                                                                 employer: EMPLOYER,
                                                                 schools: SCHOOLS])
-
     where(Arel.sql(sanitized_clause))
   }
   # rubocop:enable Metrics/BlockLength
