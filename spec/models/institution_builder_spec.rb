@@ -9,6 +9,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
+    allow(VetsApi::Service).to receive(:feature_enabled?).and_return(false)
   end
 
   describe '#run' do
@@ -986,6 +987,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:weam) { Weam.find_by(facility_code: '11000000') }
 
       before do
+        allow(VetsApi::Service).to receive(:feature_enabled?).and_return(true)
         create :weam, :ihl_facility_code
       end
 
@@ -1054,7 +1056,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.rated3_count).to eq(2)
         expect(overall_experience.rated4_count).to eq(0)
         expect(overall_experience.rated5_count).to eq(0)
-        expect(overall_experience.na_count).to eq(1)
+        expect(overall_experience.na_count).to eq(0)
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(3)
       end
@@ -1116,23 +1118,38 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(5)
       end
+    end
 
-      it 'calculates a null average for 0 votes' do
-        create(:school_rating, :ihl_facility_code)
-        create(:school_rating, :ihl_facility_code)
+    describe 'when missing latitude and longitude' do
+      it 'sets latitude and longitdue from CensusLatLong' do
+        weam = create(:weam)
+        census_lat_long = create(:census_lat_long, facility_code: weam.facility_code)
+        described_class.run(user)
+        institution = institutions.where(facility_code: weam.facility_code).first
+        expect(institution.longitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[0])
+        expect(institution.latitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[1])
+      end
+
+      it 'sets latitude and longitude from previous version' do
+        create(:version, :production)
+        prod_institution = create(:institution, :lat_long, :physical_address, version_id: Version.current_production.id)
+        weam = create(:weam, facility_code: prod_institution.facility_code, approved: true,
+                             physical_address_1: prod_institution.physical_address_1,
+                             physical_address_2: prod_institution.physical_address_2,
+                             physical_address_3: prod_institution.physical_address_3,
+                             physical_city: prod_institution.physical_city,
+                             physical_state: prod_institution.physical_state,
+                             physical_country: prod_institution.physical_country,
+                             physical_zip: prod_institution.physical_zip)
 
         described_class.run(user)
+        prev_institution = institutions.where(facility_code: weam.facility_code,
+                                              version_id: Version.current_preview.id).first
 
-        overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
-        expect(overall_experience.rated1_count).to eq(0)
-        expect(overall_experience.rated2_count).to eq(0)
-        expect(overall_experience.rated3_count).to eq(0)
-        expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.rated5_count).to eq(0)
-        expect(overall_experience.na_count).to eq(2)
-        expect(overall_experience.total_count).to eq(0)
-        expect(overall_experience.average_rating).to be_nil
+        expect(prod_institution.facility_code).to eq(prev_institution.facility_code)
+        expect(prod_institution.physical_address).to eq(prev_institution.physical_address)
+        expect(prod_institution.latitude).to eq(prev_institution.latitude)
+        expect(prod_institution.longitude).to eq(prev_institution.longitude)
       end
     end
   end

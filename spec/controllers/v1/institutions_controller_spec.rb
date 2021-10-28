@@ -127,10 +127,10 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('autocomplete')
     end
 
-    it 'filters by type' do
+    it 'filters by excluding type' do
       institution = create(:institution, :start_like_harv, :production_version)
       create(:institution, :start_like_harv, :production_version, institution_type_name: Weam::PUBLIC)
-      get(:autocomplete, params: { term: 'harv', type: Weam::PRIVATE })
+      get(:autocomplete, params: { term: 'harv', excluded_school_types: [Weam::PUBLIC] })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
       expect(response.media_type).to eq('application/json')
@@ -148,8 +148,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filters by country' do
-      institution = create(:institution, :start_like_harv, :production_version)
-      create(:institution, :start_like_harv, :production_version, country: 'CAN')
+      institution = create(:institution, :start_like_harv, :production_version, physical_country: 'USA')
+      create(:institution, :start_like_harv, :production_version, country: 'CAN', physical_country: 'CAN')
       get(:autocomplete, params: { term: 'harv', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
@@ -158,7 +158,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filters by state' do
-      institution = create(:institution, :start_like_harv, :production_version)
+      byebug
+      institution = create(:institution, :start_like_harv, :production_version, physical_state: "MA")
       create(:institution, :start_like_harv, :production_version, state: 'MD')
       get(:autocomplete, params: { term: 'harv', state: 'ma' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
@@ -309,21 +310,21 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filter by uppercase country returns results' do
-      get(:index, params: { name: 'institution', country: 'USA' })
+      get(:index, params: { name: 'institution', country: 'USA', physical_country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filter by lowercase country returns results' do
-      get(:index, params: { name: 'institution', country: 'usa' })
+      get(:index, params: { name: 'institution', country: 'usa' , physical_country: 'usa'})
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filter by uppercase state returns results' do
-      get(:index, params: { state: 'NY' })
+      get(:index, params: { state: 'NY' , physical_state: 'ny'})
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
@@ -349,21 +350,14 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filter by lowercase state returns results' do
-      get(:index, params: { state: 'ny' })
+      get(:index, params: { state: 'ny', physical_state: 'ny' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    it 'includes type search term in facets' do
-      get(:index, params: { name: 'chicago', type: Weam::FOREIGN })
-      facets = JSON.parse(response.body)['meta']['facets']
-      expect(facets['type']['foreign']).not_to be_nil
-      expect(facets['type']['foreign']).to eq(0)
-    end
-
     it 'includes state search term in facets' do
-      get(:index, params: { name: 'chicago', state: 'WY' })
+      get(:index, params: { name: 'chicago', state: 'WY', physical_state: 'WY'})
       facets = JSON.parse(response.body)['meta']['facets']
       expect(facets['state']['wy']).not_to be_nil
       expect(facets['state']['wy']).to eq(0)

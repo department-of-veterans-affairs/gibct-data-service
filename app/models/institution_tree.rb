@@ -47,6 +47,7 @@ module InstitutionTree
           FROM institutions i
           INNER JOIN related_up r ON r.parent_facility_code_id = i.facility_code
           WHERE i.version_id = ?
+          AND i.approved IS TRUE
       ) SELECT * FROM related_up where campus_type = 'Y'
       SQL
       sql = Institution.send(:sanitize_sql,
@@ -67,6 +68,7 @@ module InstitutionTree
             FROM institutions i
             INNER JOIN related_down r ON i.parent_facility_code_id = r.facility_code
             WHERE i.version_id = ?
+            AND i.approved IS TRUE
         ) SELECT facility_code FROM related_down WHERE facility_code != ?
       SQL
 

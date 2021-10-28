@@ -67,13 +67,14 @@ The following environment variables need to be configured for **GIDS**:
 	 more, please refer to the [vets-api repo](https://github.com/department-of-veterans-affairs/vets-api) and
 	 [vets-website repo](https://github.com/department-of-veterans-affairs/vets-website) where the **GIBCT** backend and
 	 client application, respectively, are located.
-2. `ADMIN_EMAIL`: This is the email you will use to sign onto **GIDS**.
-3. `ADMIN_PW`: This is the password for the email (above) you will use.
-4. `LINK_HOST`: This will be `http://localhost:3000`
-5. `GOVDELIVERY_STAGING_SERVICE`: This is 'True' or 'False' and a string since they are set by python.
-6. `GOVDELIVERY_TOKEN`: This is the token for govdelivery.com.
-7. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
-8. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
+2. `SANDBOX_URL`: Same as `GIBCT_URL` but points to the **GIBCT Sandbox**
+3. `ADMIN_EMAIL`: This is the email you will use to sign onto **GIDS**.
+4. `ADMIN_PW`: This is the password for the email (above) you will use.
+5. `LINK_HOST`: This will be `http://localhost:3000`
+6. `GOVDELIVERY_STAGING_SERVICE`: This is 'True' or 'False' and a string since they are set by python.
+7. `GOVDELIVERY_TOKEN`: This is the token for govdelivery.com.
+8. `GOVDELIVERY_URL`: This is the URL with which we send devise emails.
+9. `DEPLOYMENT_ENV:`: This is the environment flag so that features can be disabled/enabled in certain environments.
 
 The following are required, these are related to a SAML login flow only available when the application is deployed to the VA environment. Values provided in `config/application.yml.example are suitable to get the rails server running locally, but won't provide any functionality.
 
@@ -92,6 +93,7 @@ To create these variables, you will need to create an `application.yml` file und
 ADMIN_EMAIL: 'something@example.gov'
 ADMIN_PW: 'something...'
 GIBCT_URL: 'http://localhost:3001/gi-bill-comparison-tool'
+SANDBOX_URL: 'http://localhost:3001/gi-bill-comparison-tool-sandbox'
 GOVDELIVERY_STAGING_SERVICE: 'True'
 GOVDELIVERY_TOKEN: 'abc123'
 GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
@@ -140,6 +142,26 @@ bundle exec rake db:drop db:create db:schema:load db:seed
 - `bundle exec rake ci` - Runs the continuous integration scripts which includes linters, security scanners, tests, and code coverage
 - `bundle exec rspec spec/path/to/spec` - Run a specific spec
 
+## Feature Flags
+ Feature Flags that are set in [vets-api/config/features.yml](https://github.com/department-of-veterans-affairs/vets-api/blob/master/config/features.yml) values can be checked by using [app/utilities/vets_api/service.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/utilities/vets_api/service.rb).
+```
+    if VetsApi::Service.feature_enabled?('a_feature_flag')
+        puts "A Feature Flag is enabled"
+    end
+```
+
+## Environment checks
+[config/initializers/common.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/config/initializers/common.rb#L18) provides three checks to determine which environment the application is being run in.  These checks can be called like so throughout the application.
+```
+    if production?
+        puts "In production"
+    elsif staging?
+        puts "In staging"
+    elsif development?
+        puts "In development or on local machine"
+    else 
+        raise "deployment_env is not a valid DEPLOYMENT_ENV value. Expected vagov-dev, vagov-staging or vagov-prod"
+```
 
 ## Fetching Data from the College Scorecard API
 The gibct-data-service utilizes the U.S. Department of Education's College Scorecard API to retrieve some of the data for institutions that are displayed in the Comparison Tool. After obtaining and configuring your API key as described in the "Environment Variables" section of this README above, it is relatively trivial to fetch the latest data from the API.
@@ -149,7 +171,7 @@ With the GIBCT Data Service Running locally, log in to access the dashboard. Fro
 Institutions have a one to many relationship with their associated degree programs. To fetch the latest data for the institution degree programs, click the green "Fetch" button on the `ScorecardDegreeProgram` row. The latest ScoreCardDegree program data will be fetched and you should receive a success message when complete.
 
 ## Version Generation
-### Instituion Versioning
+### Institution Versioning
 Much of the data in the gibct-data-service is used to build instances of institutions to display relevant data to users of the comparison tool for particular institutions. Since the data comes in as various CSV types to build these institution objects, a versioning system is necessary to ensure the correct data is being used when building the institution objects and only approved information is released to production. As mentioned in the "Data Modes and Versions" section above, there are versioned preview and production modes of the institutions that are built from the data in the uploaded CSVs. 
 
 To generate a new preview version you must first upload any CSVs that contain changes that you wish to see in the new version of institutions being built. After you are satisfied with what has been uploaded, you must generate a new preview version by clicking "Generate New Preview Version" under the "Latest Preview Version" header on the GIBCT Dashboard. This will increment the preview version and build a new preview data set by running active record queries on the various data using [app/models/institution_builder.rb](https://github.com/department-of-veterans-affairs/gibct-data-service/blob/master/app/models/institution_builder.rb) and produce the new institution objects. You will receive a success message when this is complete.

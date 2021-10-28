@@ -295,69 +295,35 @@ class Institution < ImportableRecord
     escaped_term
   end
 
-  # Depending on feature flags and search term determines where clause for search
-  scope :search_v1, lambda { |query|
-    return if query.blank? || query[:name].blank?
+  #
+  # Scopes
+  #
 
-    search_term = query[:name]
-
-    clause = ['facility_code = :upper_search_term']
-
-    processed = institution_search_term(search_term)
-    processed_search_term = processed[:search_term]
-    excluded_only = processed[:excluded_only]
-
-    if excluded_only
-      clause <<  'institution % :institution_search_term'
-    else
-      clause <<  'institution_search % :institution_search_term'
-      clause <<  'institution_search LIKE UPPER(:institution_search_term)'
-    end
-
-    clause << 'UPPER(ialias) LIKE :upper_contains_term'
-
-    where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       upper_search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%",
-                                       institution_search_term: "%#{processed_search_term}%"]))
+  scope :filter_count, lambda { |field|
+    group(field).where.not(field => nil).order(field).count
   }
 
-  scope :location_select, lambda { |query|
-    return select if query.blank? || query[:latitude].blank? || query[:longitude].blank?
-
-    latitude = query[:latitude]
-    longitude = query[:longitude]
-    # rubocop:disable Layout/LineLength
-    distance_column = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate distance'
-    # rubocop:enable Layout/LineLength
-
-    clause = ['institutions.*', distance_column]
-
-    select(sanitize_sql_for_conditions([clause.join(','),
-                                        table_name: table_name,
-                                        latitude: latitude,
-                                        longitude: longitude,
-                                        conversion_rate: MILE_METER_CONVERSION_RATE]))
+  scope :boolean_filter_count, lambda { |field, value = true|
+    where(field => value).order(field).count
   }
 
-  scope :location_search, lambda { |query|
-    byebug
-    return if query.blank? || query[:latitude].blank? || query[:longitude].blank?
+  scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
 
-    latitude = query[:latitude]
-    longitude = query[:longitude]
-    distance = query[:distance] || 50
-
-    # rubocop:disable Layout/LineLength
-    clause = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate <= :distance'
-    # rubocop:enable Layout/LineLength
-
-    where(sanitize_sql_for_conditions([clause,
-                                       latitude: latitude,
-                                       longitude: longitude,
-                                       conversion_rate: MILE_METER_CONVERSION_RATE,
-                                       distance: distance]))
+  scope :approved_institutions, lambda { |version|
+    joins(:version).no_extentions.where(approved: true, version: version)
   }
+
+  scope :non_vet_tec_institutions, lambda { |version|
+    approved_institutions(version).where(vet_tec_provider: false)
+  }
+
+  scope :missing_lat_long, lambda { |version|
+    approved_institutions(version).where(latitude: nil).or(approved_institutions(version).where(longitude: nil))
+  }
+
+  #
+  # V0
+  #
 
   # Depending on feature flags and search term determines where clause for search
   scope :search, lambda { |query|
@@ -481,10 +447,6 @@ class Institution < ImportableRecord
     order(Arel.sql(sanitized_order_by))
   }
 
-  scope :location_order, lambda {
-    order('distance')
-  }
-
   scope :filter_result, lambda { |field, value|
     return if value.blank?
     raise ArgumentError, 'Field name is required' if field.blank?
@@ -508,31 +470,50 @@ class Institution < ImportableRecord
     end
   }
 
-  scope :filter_count, lambda { |field|
-    group(field).where.not(field => nil).order(field).count
-  }
+  #
+  # V1 search
+  #
 
-  scope :no_extentions, -> { where("campus_type != 'E' OR campus_type IS NULL") }
+  # Depending on feature flags and search term determines where clause for search
+  scope :search_v1, lambda { |query|
+    return if query.blank? || query[:name].blank?
 
-  scope :approved_institutions, lambda { |version|
-    joins(:version).no_extentions.where(approved: true, version: version)
-  }
+    search_term = query[:name]
 
-  scope :non_vet_tec_institutions, lambda { |version|
-    approved_institutions(version).where(vet_tec_provider: false)
+    clause = ['facility_code = :upper_search_term']
+
+    processed = institution_search_term(search_term)
+    processed_search_term = processed[:search_term]
+    excluded_only = processed[:excluded_only]
+
+    if excluded_only
+      clause <<  'institution % :institution_search_term'
+    else
+      clause <<  'institution_search % :institution_search_term'
+      clause <<  'institution_search LIKE UPPER(:institution_search_term)'
+    end
+
+    clause << 'UPPER(ialias) LIKE :upper_contains_term'
+
+    where(sanitize_sql_for_conditions([clause.join(' OR '),
+                                       upper_search_term: search_term.upcase,
+                                       upper_contains_term: "%#{search_term.upcase}%",
+                                       institution_search_term: "%#{processed_search_term}%"]))
   }
 
   # rubocop:disable Metrics/BlockLength
   scope :filter_result_v1, lambda { |query|
     filters = []
-
+    # seems to have to search fields, using country and state on production
+    country_physical = 'physical_country'
+    state_physical = 'physical_state'
     # ['column name', 'query param name']
-    conversion_hash = {'state' => 'physical_state', 'country' => 'physical_country'}
+    # conversion_hash = {'state' => 'physical_state', 'country' => 'physical_country'}
     [
-      %w[institution_type_name type],
       ['country'],
       ['name'],
       ['state'],
+      # following are only present if including schools in results
       ['student_veteran'], # boolean
       %w[yr yellow_ribbon_scholarship], # boolean
       ['accredited'] # boolean
@@ -547,21 +528,27 @@ class Institution < ImportableRecord
                  "= '#{param_value}'"
                end
       
+      #checks text field for a state and country else uses the state/country in filter
       if filter_args.first == "name"
         state_country_search = query[:name].split(",")
         if state_country_search.length > 1
           if state_country_search[1].present?
             state = state_country_search[1].upcase.strip
-            filters << "physical_state = '#{state}'"
+            filters << "#{state_physical} = '#{state}'"
           end
           if state_country_search[2].present?
             country = state_country_search[2].upcase.strip
-            filters << "physical_country = '#{country}'"
+            filters << "#{country_physical} = '#{country}'"
           end
         end
       else
-        filter_argument = conversion_hash[filter_args.first].present? ? conversion_hash[filter_args.first] : filter_args.first
-        filters << "#{filter_argument} #{clause}"
+        if filter_args.first == "state"
+          filters << "#{state_physical} #{clause}"
+        elsif filter_args.first == "country"
+          filters << "#{country_physical} #{clause}"
+        else
+          filters << "#{filter_args.first} #{clause}"
+        end
       end
     end
     # byebug
@@ -574,6 +561,18 @@ class Institution < ImportableRecord
     exclude_schools = query.key?(:exclude_schools)
     exclude_employers = query.key?(:exclude_employers)
     exclude_vettec = query.key?(:exclude_vettec)
+
+    # frontend does not show these filters if excluding schools from results
+    unless exclude_schools
+      filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
+      filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
+
+      if query.key?(:special_mission)
+        special_mission = query[:special_mission]
+        filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
+        filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
+      end
+    end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
     preferred_provider = query[:preferred_provider] && !exclude_vettec || false
@@ -592,15 +591,116 @@ class Institution < ImportableRecord
     filters << 'school_provider IS FALSE' if exclude_schools
     filters << 'employer_provider IS FALSE' if exclude_employers
     filters << 'vet_tec_provider IS FALSE' if exclude_vettec
-
+    
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
-                                                                employer: EMPLOYER,
-                                                                schools: SCHOOLS])
+                                                                excludedTypes: query[:excluded_school_types]])
+
     where(Arel.sql(sanitized_clause))
   }
-  # rubocop:enable Metrics/BlockLength
 
-  scope :missing_lat_long, lambda { |version|
-    approved_institutions(version).where(latitude: nil).or(approved_institutions(version).where(longitude: nil))
+  # rubocop:enable Metrics/BlockLength
+  # Orders institutions by
+  # - weighted sort
+  # - institution name
+  #
+  # WEIGHTED SORT:
+  # All values should be between 0.0 and 1.0
+  # Exact matches should add 1.0 to weight and not have a modifier
+  # Use or add modifiers that are set in Settings.search.weight_modifiers to tweak weights if needed
+  #
+  # The weight is a sum of the cases below
+  # ialias^^: exact match, if contains the search term as a word
+  # institution: exact match, if starts with search term, similarity
+  # institution_search: similarity
+  # gibill^^: institution's value divided by provided max gibill value
+  #
+  # ^^ = Has a Settings.search.weight_modifiers setting
+  #
+  # facility_code and zip are not included in order by because of their standard formats
+  scope :search_order_v1, lambda { |query, max_gibill = 0|
+    return order('institution') if query.blank? || query[:name].blank?
+
+    search_term = query[:name]
+
+    weighted_sort = [
+      'CASE WHEN UPPER(ialias) = :upper_search_term THEN 1 ELSE 0 END',
+      "CASE WHEN REGEXP_MATCH(ialias, :regexp_exists_as_word, 'i') IS NOT NULL " \
+      'THEN 1 * :alias_modifier ELSE 0 END',
+      'CASE WHEN UPPER(institution) = :upper_search_term THEN 1 ELSE 0 END',
+      'CASE WHEN UPPER(institution) LIKE :upper_starts_with_term THEN 1 ELSE 0 END',
+      'COALESCE(SIMILARITY(institution, :search_term), 0)'
+    ]
+
+    processed = institution_search_term(search_term)
+    processed_search_term = processed[:search_term]
+    excluded_only = processed[:excluded_only]
+
+    weighted_sort << 'COALESCE(SIMILARITY(institution_search, :institution_search_term), 0)' if excluded_only.blank?
+    weighted_sort << '((COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT)) * :gibill_modifier)' if max_gibill.nonzero?
+
+    order_by = [
+      "#{weighted_sort.join(' + ')} DESC NULLS LAST",
+      'institution'
+    ]
+
+    alias_modifier = Settings.search.weight_modifiers.alias
+    gibill_modifier = Settings.search.weight_modifiers.gibill
+    institution_search_term = "%#{processed_search_term}%"
+    regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
+
+    sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
+                                                                  search_term: search_term,
+                                                                  upper_search_term: search_term.upcase,
+                                                                  upper_starts_with_term: "#{search_term.upcase}%",
+                                                                  alias_modifier: alias_modifier,
+                                                                  gibill_modifier: gibill_modifier,
+                                                                  max_gibill: max_gibill,
+                                                                  institution_search_term: institution_search_term,
+                                                                  regexp_exists_as_word: regexp_exists_as_word])
+
+    order(Arel.sql(sanitized_order_by))
+  }
+
+  #
+  # V1 Location
+  #
+
+  scope :location_select, lambda { |query|
+    return select if query.blank? || query[:latitude].blank? || query[:longitude].blank?
+
+    latitude = query[:latitude]
+    longitude = query[:longitude]
+    # rubocop:disable Layout/LineLength
+    distance_column = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate distance'
+    # rubocop:enable Layout/LineLength
+
+    clause = ['institutions.*', distance_column]
+
+    select(sanitize_sql_for_conditions([clause.join(','),
+                                        table_name: table_name,
+                                        latitude: latitude,
+                                        longitude: longitude,
+                                        conversion_rate: MILE_METER_CONVERSION_RATE]))
+  }
+
+  scope :location_search, lambda { |query|
+    return if query.blank? || query[:latitude].blank? || query[:longitude].blank?
+
+    latitude = query[:latitude]
+    longitude = query[:longitude]
+    distance = query[:distance] || 50
+
+    # rubocop:disable Layout/LineLength
+    clause = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate <= :distance'
+    # rubocop:enable Layout/LineLength
+    where(sanitize_sql_for_conditions([clause,
+                                       latitude: latitude,
+                                       longitude: longitude,
+                                       conversion_rate: MILE_METER_CONVERSION_RATE,
+                                       distance: distance]))
+  }
+
+  scope :location_order, lambda {
+    order('distance')
   }
 end

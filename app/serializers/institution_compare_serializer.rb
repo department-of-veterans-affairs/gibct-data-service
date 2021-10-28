@@ -87,6 +87,9 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :hcm2
   attribute :pctfloan
   attribute :institution_category_ratings
+  attribute :school_provider
+  attribute :vet_tec_provider
+  attribute :employer_provider
 
   def yellow_ribbon_programs
     object.yellow_ribbon_programs.map do |yrp|
@@ -95,12 +98,14 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   end
 
   def caution_flags
+    return [] unless object.caution_flag
+
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
     end
   end
 
   def program_length_in_hours
-    object.institution_programs.map(&:length_in_hours)
+    object.institution_programs.map(&:length_in_hours) if object.vet_tec_provider
   end
 end

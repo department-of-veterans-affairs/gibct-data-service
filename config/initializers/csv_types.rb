@@ -8,7 +8,6 @@ CSV_TYPES_TABLES = [
   { klass: Crosswalk, required?: true },
   { klass: EightKey, required?: true },
   { klass: Hcm, required?: true },
-  { klass: InStateTuitionPolicyUrl, required?: true },
   { klass: IpedsHd, required?: true },
   { klass: IpedsIcAy, required?: true },
   { klass: IpedsIcPy, required?: true },
@@ -32,7 +31,7 @@ CSV_TYPES_TABLES = [
   { klass: Sec103, required?: false },
   { klass: VaCautionFlag, required?: false },
   { klass: Post911Stat, required?: false },
-  { klass: SchoolRating, required?: false },
+  { klass: SchoolRating, required?: false, feature_flag: 'gibct_school_ratings' },
   { klass: VrrapProvider, required?: false },
 ].freeze
 

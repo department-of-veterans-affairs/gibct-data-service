@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_15_232805) do
+ActiveRecord::Schema.define(version: 2021_07_16_092600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -111,6 +111,19 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.string "link_text"
     t.string "link_url"
     t.string "flag_date"
+  end
+
+  create_table "census_lat_longs", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "input_address"
+    t.string "tiger_address_range_match_indicator"
+    t.string "tiger_match_type"
+    t.string "tiger_output_address"
+    t.string "interpolated_longitude_latitude"
+    t.string "tiger_line_id"
+    t.string "tiger_line_id_side"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "cip_codes", force: :cascade do |t|
@@ -241,13 +254,6 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.string "facility_code"
     t.string "cross"
     t.string "ope"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "in_state_tuition_policy_urls", force: :cascade do |t|
-    t.string "facility_code"
-    t.string "in_state_tuition_information"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -481,8 +487,13 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"
     t.index ["distance_learning"], name: "index_institutions_on_distance_learning"
+    t.index ["facility_code", "institution", "ialias"], name: "index_institutions_on_facility_code_and_institution_and_ialias"
+    t.index ["facility_code", "institution_search", "ialias"], name: "index_institutions_on_facility_code_institution_search_ialias"
     t.index ["facility_code"], name: "index_institutions_on_facility_code"
+    t.index ["gibill"], name: "index_institutions_on_gibill"
+    t.index ["ialias"], name: "index_institutions_on_ialias"
     t.index ["institution"], name: "index_institutions_on_institution", opclass: :gin_trgm_ops, using: :gin
+    t.index ["institution_search"], name: "index_institutions_on_institution_search"
     t.index ["institution_type_name"], name: "index_institutions_on_institution_type_name"
     t.index ["latitude", "longitude"], name: "index_institutions_on_latitude_and_longitude"
     t.index ["online_only"], name: "index_institutions_on_online_only"
@@ -1674,6 +1685,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_232805) do
     t.string "parent_facility_code_id"
     t.integer "csv_row"
     t.string "institution_search"
+    t.string "in_state_tuition_information"
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"

@@ -30,7 +30,7 @@ module V1
       results = Institution.approved_institutions(@version)
                            .search_v1(@query)
                            .filter_result_v1(@query)
-                           .search_order(@query, max_gibill).page(page)
+                           .search_order_v1(@query, max_gibill).page(page)
 
       @meta = {
         version: @version,
@@ -133,13 +133,11 @@ module V1
     # TODO: If filter counts are desired in the future, change boolean facets
     # to use search_results.filter_count(param) instead of default value
     def facets(results)
-      institution_types = results.filter_count(:institution_type_name)
       result = {
         category: {
-          school: institution_types.except(Institution::EMPLOYER).inject(0) { |count, (_t, n)| count + n },
-          employer: institution_types[Institution::EMPLOYER].to_i
+          school: results.boolean_filter_count(:school_provider),
+          employer: results.boolean_filter_count(:employer_provider)
         },
-        type: institution_types,
         state: results.filter_count(:state),
         country: embed(results.filter_count(:country)),
         student_vet_group: boolean_facet,
@@ -163,7 +161,6 @@ module V1
 
     def add_active_search_facets(raw_facets)
       add_search_facet(raw_facets, :state)
-      add_search_facet(raw_facets, :type)
       add_country_search_facet(raw_facets)
       raw_facets
     end
