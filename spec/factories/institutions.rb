@@ -21,18 +21,22 @@ FactoryBot.define do
       city { 'NEW YORK' }
       state { 'NY' }
       country { 'USA' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
     end
 
     trait :in_new_rochelle do
       city { 'NEW ROCHELLE' }
       state { 'NY' }
       country { 'USA' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
     end
 
     trait :in_chicago do
       physical_city { 'CHICAGO' }
-      physical_state { 'IL' }
-      physical_country { 'USA' }
+      state { 'IL' }
+      country { 'USA' }
       stem_offered { true }
     end
 
@@ -42,6 +46,8 @@ FactoryBot.define do
       city { 'SOME OTHER CITY' }
       state { 'IL' }
       country { 'USA' }
+      physical_state { 'IL' }
+      physical_country { 'USA' }
     end
 
     trait :independent_study do
@@ -50,6 +56,8 @@ FactoryBot.define do
       city { 'ALBUQUERQUE' }
       state { 'NM' }
       country { 'USA' }
+      physical_state { 'NM' }
+      physical_country { 'USA' }
       independent_study { true }
     end
 
@@ -59,6 +67,8 @@ FactoryBot.define do
       city { 'ALBUQUERQUE' }
       state { 'NM' }
       country { 'USA' }
+      physical_state { 'NM' }
+      physical_country { 'USA' }
       priority_enrollment { true }
     end
 
@@ -67,6 +77,8 @@ FactoryBot.define do
       city { 'BOSTON' }
       state { 'MA' }
       country { 'USA' }
+      physical_state { 'MA' }
+      physical_country { 'USA' }
     end
 
     trait :contains_harv do
@@ -74,6 +86,8 @@ FactoryBot.define do
       city { 'BOSTON' }
       state { 'MA' }
       country { 'USA' }
+      physical_state { 'MA' }
+      physical_country { 'USA' }
     end
 
     trait :ca_employer do
@@ -82,6 +96,8 @@ FactoryBot.define do
       city { 'LOS ANGELES' }
       state { 'CA' }
       country { 'USA' }
+      physical_state { 'CA' }
+      physical_country { 'USA' }
       institution_type_name { 'OJT' }
       employer_provider { true }
       vet_tec_provider { false }
@@ -101,6 +117,8 @@ FactoryBot.define do
       city { 'CHARLESTON' }
       state { 'SC' }
       country { 'USA' }
+      physical_state { 'SC' }
+      physical_country { 'USA' }
       vet_tec_provider { true }
       school_provider { false }
       employer_provider { false }
@@ -118,6 +136,8 @@ FactoryBot.define do
 
     trait :preferred_provider do
       city { 'CHARLESTON' }
+      physical_state { 'SC' }
+      physical_country { 'USA' }
       state { 'SC' }
       country { 'USA' }
       preferred_provider { true }
@@ -137,7 +157,9 @@ FactoryBot.define do
       physical_address_3 { 'Unit abc' }
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
+      state { 'IL' }
       physical_country { 'USA' }
+      country { 'USA' }
       physical_zip { '12345' }
     end
 
@@ -146,8 +168,9 @@ FactoryBot.define do
       address_2 { 'Main St' }
       address_3 { 'Unit abc' }
       city { 'CHICAGO' }
-      state { 'IL' }
-      country { 'USA' }
+      physical_city { 'CHICAGO' }
+      physical_state { 'IL' }
+      physical_country { 'USA' }
     end
 
     trait :production_version do

@@ -504,10 +504,11 @@ class Institution < ImportableRecord
   # rubocop:disable Metrics/BlockLength
   scope :filter_result_v1, lambda { |query|
     filters = []
-
+    physical_filters = []
     # ['column name', 'query param name']
     [
       ['country'],
+      ['name'],
       ['state'],
       # following are only present if including schools in results
       ['student_veteran'], # boolean
@@ -523,7 +524,35 @@ class Institution < ImportableRecord
                else
                  "= '#{param_value}'"
                end
-      filters << "#{filter_args.first} #{clause}"
+      
+      #checks text field for a state and country else uses the state/country in filter
+      # added step that makes sure it won't return results where the state field is null
+      if filter_args.first == "name"
+        state_country_search = query[:name].split(",")
+        if state_country_search.length > 1
+          if state_country_search[1].present?
+            state = state_country_search[1].upcase.strip
+            filters << "state = '#{state}'"
+            filters << "physical_state = '#{state}'"
+            filters << "state IS NOT NULL"
+            filters << "physical_state IS NOT NULL"
+          end
+          if state_country_search[2].present?
+            country = state_country_search[2].upcase.strip unless !state_country_search[2].present?
+            filters << "country = '#{country}'"
+            filters << "physical_country = '#{country}'"
+            filters << "country IS NOT NULL"
+            filters << "physical_country IS NOT NULL"
+          end
+        end
+      else
+        filters << "#{filter_args.first} #{clause}"
+        if filter_args.first == "state" || filter_args.first == "country"
+          filters << "physical_#{filter_args.first} #{clause}"
+          filters << "#{filter_args.first} IS NOT NULL"
+          filters << "physical_#{filter_args.first} IS NOT NULL"
+        end
+      end
     end
 
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
