@@ -4,3 +4,12 @@
 # review when someone opens a pull request.
 
 *       @department-of-veterans-affairs/backend-review-group
+
+# Sample CSVs
+sample_csvs @department-of-veterans-affairs/afs-code-reviewers
+sample_csvs @department-of-veterans-affairs/backend-review-group 
+
+# Github config
+.github/PULL_REQUEST_TEMPLATE.md @department-of-veterans-affairs/afs-code-reviewers
+.github/PULL_REQUEST_TEMPLATE.md @department-of-veterans-affairs/backend-review-group 
+
