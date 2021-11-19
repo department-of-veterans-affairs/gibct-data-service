@@ -171,6 +171,8 @@ FactoryBot.define do
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
       physical_country { 'USA' }
+      state { 'IL' }
+      country { 'USA' }
     end
 
     trait :production_version do
