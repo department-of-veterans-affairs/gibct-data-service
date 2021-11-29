@@ -22,6 +22,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'

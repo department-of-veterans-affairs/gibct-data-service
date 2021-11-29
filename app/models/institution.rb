@@ -295,6 +295,34 @@ class Institution < ImportableRecord
     escaped_term
   end
 
+  def check_coord_mismatch(query)
+    geocoded_coord = Geocoder.coordinates("#{self.address}, #{self.city}, #{self.state}")
+    if geocoded_coord.present?
+      geocoded_lat = geocoded_coord[0].round(2)
+      geocoded_long = geocoded_coord[1].round(2)
+      if geocoded_lat == self.latitude.round(2) && geocoded_long == self.longitude.round(2)
+        self
+      else
+        check_distance = Geocoder::Calculations.distance_between([geocoded_lat, geocoded_long], [query[:latitude],query[:longitude]])
+        check_distance <= query[:distance] ? self : nil
+      end
+    else
+      geocoded_coord_zip = Geocoder.coordinates(self.physical_zip)
+      if geocoded_coord_zip.present?
+        geocoded_lat = geocoded_coord_zip[0].round(2)
+        geocoded_long = geocoded_coord_zip[1].round(2)
+        if geocoded_lat == self.latitude.round(2) && geocoded_long == self.longitude.round(2)
+          self
+        else
+          check_distance = Geocoder::Calculations.distance_between([geocoded_lat, geocoded_long], [query[:latitude],query[:longitude]])
+          check_distance <= query[:distance] ? self : nil
+        end
+      else
+        nil
+      end
+    end
+  end
+
   #
   # Scopes
   #

@@ -164,9 +164,6 @@ FactoryBot.define do
     end
 
     trait :mailing_address do
-      address_1 { '123' }
-      address_2 { 'Main St' }
-      address_3 { 'Unit abc' }
       city { 'CHICAGO' }
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
@@ -196,6 +193,14 @@ FactoryBot.define do
     trait :location do
       latitude { 32.790803 }
       longitude { -79.938087 }
+      address_1 { '81' }
+      address_2 { 'Mary St' }
+      city { 'Charleston' }
+      physical_city { 'Charleston' }
+      physical_state { 'SC' }
+      physical_country { 'USA' }
+      state { 'SC' }
+      country { 'USA' }
       institution { 'CHARLESTON SCHOOL OF LAW' }
     end
 
