@@ -251,6 +251,27 @@ class Institution < ImportableRecord
     compact_address
   end
 
+  def coordinates_mismatch(query)
+    geocoded_coord = Geocoder.coordinates("#{address}, #{city}, #{state}")
+    if geocoded_coord.present?
+      check_coordinates(geocoded_coord, latitude, longitude, query)
+    else
+      geocoded_coord_zip = Geocoder.coordinates(physical_zip)
+      check_coordinates(geocoded_coord_zip, latitude, longitude, query) if geocoded_coord_zip.present?
+    end
+  end
+
+  def check_coordinates(geocoded_coord, latitude, longitude, query)
+    lat = geocoded_coord[0].round(2)
+    long = geocoded_coord[1].round(2)
+    if lat == latitude.round(2) && long == longitude.round(2)
+      self
+    else
+      check_distance = Geocoder::Calculations.distance_between([lat, long], [query[:latitude], query[:longitude]])
+      check_distance <= query[:distance] ? self : nil
+    end
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
@@ -293,34 +314,6 @@ class Institution < ImportableRecord
     escaped_term = search_term.clone
     %w[( ) + [ ]].each { |ec| escaped_term = escaped_term.gsub(ec.to_s, "\\#{ec}") }
     escaped_term
-  end
-
-  def check_coord_mismatch(query)
-    geocoded_coord = Geocoder.coordinates("#{self.address}, #{self.city}, #{self.state}")
-    if geocoded_coord.present?
-      geocoded_lat = geocoded_coord[0].round(2)
-      geocoded_long = geocoded_coord[1].round(2)
-      if geocoded_lat == self.latitude.round(2) && geocoded_long == self.longitude.round(2)
-        self
-      else
-        check_distance = Geocoder::Calculations.distance_between([geocoded_lat, geocoded_long], [query[:latitude],query[:longitude]])
-        check_distance <= query[:distance] ? self : nil
-      end
-    else
-      geocoded_coord_zip = Geocoder.coordinates(self.physical_zip)
-      if geocoded_coord_zip.present?
-        geocoded_lat = geocoded_coord_zip[0].round(2)
-        geocoded_long = geocoded_coord_zip[1].round(2)
-        if geocoded_lat == self.latitude.round(2) && geocoded_long == self.longitude.round(2)
-          self
-        else
-          check_distance = Geocoder::Calculations.distance_between([geocoded_lat, geocoded_long], [query[:latitude],query[:longitude]])
-          check_distance <= query[:distance] ? self : nil
-        end
-      else
-        nil
-      end
-    end
   end
 
   #
@@ -532,7 +525,6 @@ class Institution < ImportableRecord
   # rubocop:disable Metrics/BlockLength
   scope :filter_result_v1, lambda { |query|
     filters = []
-    physical_filters = []
     # ['column name', 'query param name']
     [
       ['country'],
@@ -552,30 +544,30 @@ class Institution < ImportableRecord
                else
                  "= '#{param_value}'"
                end
-      
-      #checks text field for a state and country else uses the state/country in filter
+
+      # checks text field for a state and country else uses the state/country in filter
       # added step that makes sure it won't return results where the state field is null
-      if filter_args.first == "name"
-        state_country_search = query[:name].split(",")
+      if filter_args.first == 'name'
+        state_country_search = query[:name].split(',')
         if state_country_search.length > 1
           if state_country_search[1].present?
             state = state_country_search[1].upcase.strip
             filters << "state = '#{state}'"
             filters << "physical_state = '#{state}'"
-            filters << "state IS NOT NULL"
-            filters << "physical_state IS NOT NULL"
+            filters << 'state IS NOT NULL'
+            filters << 'physical_state IS NOT NULL'
           end
           if state_country_search[2].present?
-            country = state_country_search[2].upcase.strip unless !state_country_search[2].present?
+            country = state_country_search[2].upcase.strip
             filters << "country = '#{country}'"
             filters << "physical_country = '#{country}'"
-            filters << "country IS NOT NULL"
-            filters << "physical_country IS NOT NULL"
+            filters << 'country IS NOT NULL'
+            filters << 'physical_country IS NOT NULL'
           end
         end
       else
         filters << "#{filter_args.first} #{clause}"
-        if filter_args.first == "state" || filter_args.first == "country"
+        if filter_args.first == 'state' || filter_args.first == 'country'
           filters << "physical_#{filter_args.first} #{clause}"
           filters << "#{filter_args.first} IS NOT NULL"
           filters << "physical_#{filter_args.first} IS NOT NULL"

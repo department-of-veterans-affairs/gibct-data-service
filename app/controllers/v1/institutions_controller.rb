@@ -51,15 +51,13 @@ module V1
       location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
       results = location_results.location_select(@query).location_order
 
-      ##found a few cases where lat and longitude is wrong, added this step
+      # #found a few cases where lat and longitude is wrong, added this step
       ## using geocoder to check returned coordinates and filter out bad cases
       checked_results = []
-      
-      results.each do |result| 
-        check_result = result.check_coord_mismatch(@query)
-        if check_result.present?
-          checked_results << check_result
-        end
+
+      results.each do |result|
+        check_result = result.coordinates_mismatch(@query)
+        checked_results << check_result if check_result.present?
       end
 
       @meta = {

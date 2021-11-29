@@ -309,14 +309,14 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'filter by uppercase country returns results' do
-      get(:index, params: { name: 'institution', country: 'USA'})
+      get(:index, params: { name: 'institution', country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filter by lowercase country returns results' do
-      get(:index, params: { name: 'institution', country: 'usa'})
+      get(:index, params: { name: 'institution', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
