@@ -251,27 +251,6 @@ class Institution < ImportableRecord
     compact_address
   end
 
-  def coordinates_mismatch(query)
-    geocoded_coord = Geocoder.coordinates("#{address}, #{city}, #{state}")
-    if geocoded_coord.present?
-      check_coordinates(geocoded_coord, latitude, longitude, query)
-    else
-      geocoded_coord_zip = Geocoder.coordinates(physical_zip)
-      check_coordinates(geocoded_coord_zip, latitude, longitude, query) if geocoded_coord_zip.present?
-    end
-  end
-
-  def check_coordinates(geocoded_coord, latitude, longitude, query)
-    lat = geocoded_coord[0].round(2)
-    long = geocoded_coord[1].round(2)
-    if lat == latitude.round(2) && long == longitude.round(2)
-      self
-    else
-      check_distance = Geocoder::Calculations.distance_between([lat, long], [query[:latitude], query[:longitude]])
-      check_distance <= query[:distance] ? self : nil
-    end
-  end
-
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #

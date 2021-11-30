@@ -51,22 +51,13 @@ module V1
       location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
       results = location_results.location_select(@query).location_order
 
-      # #found a few cases where lat and longitude is wrong, added this step
-      ## using geocoder to check returned coordinates and filter out bad cases
-      checked_results = []
-
-      results.each do |result|
-        check_result = result.coordinates_mismatch(@query)
-        checked_results << check_result if check_result.present?
-      end
-
       @meta = {
         version: @version,
         count: location_results.count,
         facets: facets(location_results)
       }
 
-      render json: checked_results,
+      render json: results,
              each_serializer: InstitutionSearchResultSerializer,
              meta: @meta
     end
