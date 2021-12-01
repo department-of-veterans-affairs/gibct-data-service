@@ -19,7 +19,7 @@ task fix_coord_mismatch: :environment do
         update_mismatch(result, geocoded_coord)
       else
         # if can't find re-geocodes by address_2 and updates if mismatch is found
-        geocoded_city = Geocoder.coordinates("#{result.city}, #{result.state}")
+        geocoded_city = Geocoder.coordinates("#{result.address_2}, #{result.city}, #{result.state}")
         if geocoded_city.present?
           update_mismatch(result, geocoded_city)
         else
