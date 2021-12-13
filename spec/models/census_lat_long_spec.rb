@@ -24,8 +24,7 @@ RSpec.describe CensusLatLong, type: :model do
 
       addresses = []
       described_class.add_institution_addresses(addresses, [])
-      #added geocoder callback to geocode cases with missing longitude and latitude
-      expect(addresses.count).to eq(0)
+      expect(addresses.count).to eq(1)
     end
 
     it 'does not include an institution missing lat long whose facility code also qualifies from weams' do
@@ -46,9 +45,8 @@ RSpec.describe CensusLatLong, type: :model do
 
       addresses = []
       described_class.add_institution_addresses(addresses, [])
-      #added geocoder callback to geocode cases with missing longitude and latitude
-      expect(addresses.count).to eq(0)
-      expect(addresses[0]).to eq(nil)
+      expect(addresses.count).to eq(1)
+      expect(addresses[0]).to eq(mailing_values)
     end
   end
 
