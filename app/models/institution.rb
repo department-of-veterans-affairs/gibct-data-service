@@ -184,6 +184,10 @@ class Institution < ImportableRecord
   has_many :institution_category_ratings, dependent: :destroy
   belongs_to :version
 
+  geocoded_by :full_address
+
+  after_validation :geocode
+
   self.per_page = 10
 
   def scorecard_link
@@ -249,6 +253,13 @@ class Institution < ImportableRecord
     return nil if compact_address.blank?
 
     compact_address
+  end
+
+  def full_address
+    full_address = [address, city, state, zip, country].compact.join(' ')
+    return nil if full_address.blank?
+
+    full_address
   end
 
   # Given a search term representing a partial school name, returns all
