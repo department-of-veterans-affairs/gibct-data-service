@@ -1,0 +1,11 @@
+rake aborted!
+NoMethodError: undefined method `round' for nil:NilClass
+/Users/patrick.arthur/gibct-data-service/lib/tasks/fix_coord_mismatch.rake:29:in `update_mismatch'
+/Users/patrick.arthur/gibct-data-service/lib/tasks/fix_coord_mismatch.rake:18:in `block (2 levels) in <top (required)>'
+/Users/patrick.arthur/gibct-data-service/lib/tasks/fix_coord_mismatch.rake:9:in `each'
+/Users/patrick.arthur/gibct-data-service/lib/tasks/fix_coord_mismatch.rake:9:in `block in <top (required)>'
+/Users/patrick.arthur/.rvm/gems/ruby-2.6.6/gems/rake-13.0.6/exe/rake:27:in `<top (required)>'
+/Users/patrick.arthur/.rvm/gems/ruby-2.6.6/bin/ruby_executable_hooks:22:in `eval'
+/Users/patrick.arthur/.rvm/gems/ruby-2.6.6/bin/ruby_executable_hooks:22:in `<main>'
+Tasks: TOP => fix_coord_mismatch
+(See full trace by running task with --trace)
