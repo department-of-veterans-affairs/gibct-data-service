@@ -30,9 +30,8 @@ task fix_phys_country_coord: :environment do
 end
 
 def parse_address(res, field)
-  address = field
-  if address.present?
-    "#{address}, #{res.city}, #{res.physical_country}"
+  if field.present?
+    "#{field}, #{res.city}, #{res.physical_country}"
   else
     "#{res.city}, #{res.physical_country}"
   end

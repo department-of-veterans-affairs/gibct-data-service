@@ -7,9 +7,9 @@ task fix_coord_mismatch: :environment do
 
   if by_address.present?
     by_address.each do |result|
-      address = parse_address(result, result.address)
-      address2 = parse_address(result, result.address_2)
-      address3 = parse_address(result, result.address_3)
+      address = parse_add(result, result.address)
+      address2 = parse_add(result, result.address_2)
+      address3 = parse_add(result, result.address_3)
       geocoded = Geocoder.coordinates(address)
       geocoded2 = Geocoder.coordinates(address2)
       geocoded3 = Geocoder.coordinates(address3)
@@ -24,13 +24,11 @@ task fix_coord_mismatch: :environment do
   end
 end
 
-def parse_address(res, field)
-  string = "#{res.city}, #{res.state}, #{res.zip}, #{res.country}"
-  address = field
+def parse_add(res, address)
   if address.present?
-    "#{address}, " + string
+    "#{address}, #{res.city}, #{res.state}, #{res.zip}, #{res.country}"
   else
-    string
+    "#{res.city}, #{res.state}, #{res.zip}, #{res.country}"
   end
 end
 
