@@ -7,19 +7,30 @@ task fix_coord_mismatch: :environment do
 
   if by_address.present?
     by_address.each do |result|
-      r = result
-      # checks first addresss
-      geocoded = Geocoder.coordinates("#{r.address}, #{r.city}, #{r.state}, #{r.zip}, #{r.country}")
+      address = parse_address(result, result.address)
+      address2 = parse_address(result, result.address_2)
+      address3 = parse_address(result, result.address_3)
+      geocoded = Geocoder.coordinates(address)
+      geocoded2 = Geocoder.coordinates(address2)
+      geocoded3 = Geocoder.coordinates(address3)
       if geocoded.present?
-        # if present will update record, else will check address_2 and adress_3 fields
-        update_mismatch(r, geocoded)
+        update_mismatch(result, geocoded)
+      elsif geocoded2.present? && geocoded.nil?
+        update_mismatch(result, geocoded2)
       else
-        geocoded2 = Geocoder.coordinates("#{r.address_2}, #{r.city}, #{r.state}, #{r.zip}, #{r.country}")
-        geocoded3 = Geocoder.coordinates("#{r.address_3}, #{r.city}, #{r.state}, #{r.zip}, #{r.country}")
-        update_mismatch(r, geocoded2) if geocoded2.present?
-        update_mismatch(r, geocoded3) if geocoded3.present?
+        update_mismatch(result, geocoded3)
       end
     end
+  end
+end
+
+def parse_address(res, field)
+  string = "#{res.city}, #{res.state}, #{res.zip}, #{res.country}"
+  address = field
+  if address.present?
+    "#{address}, " + string
+  else
+    string
   end
 end
 
