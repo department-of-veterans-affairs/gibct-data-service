@@ -25,7 +25,7 @@ gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 0.15'
+gem 'pg', '~> 1.1'
 gem 'roo', '~> 2.8'
 gem 'roo-xls', '~> 1.2'
 gem 'rubyzip', '~> 2.3'
@@ -73,10 +73,10 @@ group :development, :test do
 
   # Linters
   gem 'jshint', platforms: :ruby
-  gem 'rubocop', require: false
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
-  gem 'scss_lint', require: false
+  gem 'rubocop', '0.82.0', require: false
+  gem 'rubocop-rails', '2.5.2'
+  gem 'rubocop-rspec', '1.38.1'
+  gem 'scss_lint', '0.59.0', require: false
 
   # Security scanners
   gem 'brakeman'
