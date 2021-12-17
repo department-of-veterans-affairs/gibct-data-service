@@ -11,7 +11,7 @@ ruby '2.6.6'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 4.3.9'
 
-gem 'rails', '~> 6.0.4.1'
+gem 'rails', '~> 6.1.4.4'
 
 # Gems with special version/repo needs
 
