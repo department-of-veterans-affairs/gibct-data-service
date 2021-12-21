@@ -16,9 +16,8 @@ RSpec.describe UploadRequirements do
 
   describe 'requirements_messages' do
     it 'returns validates numericality messages' do
-      validations_of_str = 'current academic year va bah rate'
-      message = { message: 'These columns can only contain numeric values: ', value: [validations_of_str] }
-
+      validations_of_str = ["facility code", "institution name", "institution country"]
+      message = { message: 'These columns must have a value: ', value: validations_of_str }
       messages = described_class.requirements_messages(Weam)
       expect(messages).to include(message)
     end
