@@ -97,7 +97,7 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates numericality messages' do
-        validations_of_str = ["facility code", "institution name", "institution country"]
+        validations_of_str = ['facility code', 'institution name', 'institution country']
         message = { message: 'These columns must have a value: ', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end

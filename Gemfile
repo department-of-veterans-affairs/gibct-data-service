@@ -73,9 +73,9 @@ group :development, :test do
 
   # Linters
   gem 'jshint', platforms: :ruby
-  gem 'rubocop', require: false
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
+  gem 'rubocop', '0.82.0', require: false
+  gem 'rubocop-rails', '2.5.2'
+  gem 'rubocop-rspec', '1.38.1'
   gem 'scss_lint', require: false
 
   # Security scanners
