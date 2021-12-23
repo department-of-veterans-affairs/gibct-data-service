@@ -76,7 +76,7 @@ RSpec.describe UploadsController, type: :controller do
 
     def requirements(csv_class, requirement_class)
       csv_class.validators
-               .find { |requirements| requirements.class == requirement_class }
+               .find { |requirements| requirements.instance_of?(requirement_class) }
     end
 
     def map_attributes(csv_class, requirement_class)
