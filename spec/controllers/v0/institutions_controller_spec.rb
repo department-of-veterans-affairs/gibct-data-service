@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe V0::InstitutionsController, type: :controller do
   def expect_response_match_schema(schema)
-    expect(response.content_type).to eq('application/json')
+    expect(response.media_type).to eq('application/json')
     expect(response).to match_response_schema(schema)
   end
 
@@ -34,7 +34,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:version, :production)
       create(:institution, :contains_harv)
       get(:index, params: { version: 'invalid_data' })
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
       expect(body['meta']['version']['number'].to_i).to eq(Version.current_production.number)
@@ -45,7 +45,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       v = create(:version, :preview)
       create(:institution, :contains_harv, :production_version)
       get(:index, params: { version: v.uuid })
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
       body = JSON.parse response.body
       expect(body['meta']['version']['number'].to_i).to eq(Version.current_preview.number)
@@ -61,7 +61,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create_list(:institution, 2, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -69,7 +69,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create_list(:institution, 7, :start_like_harv, :production_version, approved: true)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(6)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -77,7 +77,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :start_like_harv)
       get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -85,7 +85,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :start_like_harv, approved: false)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -95,7 +95,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :start_like_harv, :production_version)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(2)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -103,7 +103,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :vet_tec_provider, :start_like_harv)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -113,7 +113,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -123,7 +123,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', exclude_warnings: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -133,7 +133,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', type: 'private' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -143,7 +143,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', category: 'school' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -153,7 +153,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -163,7 +163,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', state: 'ma' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -173,7 +173,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', student_veteran_group: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -183,7 +183,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', yellow_ribbon_scholarship: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -193,7 +193,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', principles_of_excellence: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -203,7 +203,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', eight_keys_to_veteran_success: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -213,7 +213,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', stem_offered: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -223,7 +223,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', independent_study: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -233,7 +233,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', online_only: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -243,7 +243,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', distance_learning: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -253,7 +253,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', priority_enrollment: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -263,7 +263,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', preferred_provider: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -273,7 +273,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', stem_indicator: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
   end
@@ -311,14 +311,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'search returns results' do
       get(:index)
       expect(JSON.parse(response.body)['data'].count).to eq(4)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns results matching name' do
       get(:index, params: { name: 'chicago' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -327,7 +327,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :uchicago, version_id: Version.current_production.id)
       get(:index, params: { name: 'UNIVERSITY OF NDEPENDENT STUDY' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -337,7 +337,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:index, params: { name: 'UNIVERSITY OF INDEPENDENT STUDY' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['attributes']['name']).to eq(first.institution)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -345,7 +345,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :independent_study, physical_city: 'VERY LONG CITY NAME', version_id: Version.current_production.id)
       get(:index, params: { name: 'VERY LONG CITY NAME' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -354,7 +354,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       first = create(:institution, institution: 'HARVARDY', institution_search: 'HARVARDY', gibill: 100, version_id: Version.current_production.id)
       get(:index, params: { name: 'HARVARD' })
       expect(JSON.parse(response.body)['data'][0]['attributes']['name']).to eq(first.institution)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -362,7 +362,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :independent_study, physical_zip: '29461', version_id: Version.current_production.id)
       get(:index, params: { name: '29461' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -370,14 +370,14 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, :independent_study, ialias: 'UIS', version_id: Version.current_production.id)
       get(:index, params: { name: 'uis' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'search returns case-insensitive results' do
       get(:index, params: { name: 'CHICAGO' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -385,7 +385,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, institution_search: 'with space', version_id: Version.current_production.id)
       get(:index, params: { name: 'with space' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -396,28 +396,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       get(:index, params: { name: 'acme' })
 
       expect(JSON.parse(response.body)['data'].count).to eq(2)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by uppercase country returns results' do
       get(:index, params: { name: 'chicago', physical_country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by lowercase country returns results' do
       get(:index, params: { name: 'chicago', physical_country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filter by uppercase state returns results' do
       get(:index, params: { state: 'NY' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -448,7 +448,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'filter by lowercase state returns results' do
       get(:index, params: { state: 'ny' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -492,7 +492,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution,  state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'AK' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -500,7 +500,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution,  state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'ak' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -508,7 +508,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'TESTVILLE, AK' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
@@ -516,7 +516,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
       create(:institution, city: 'TESTVILLE', state: 'AK', version_id: Version.current_production.id)
       get(:index, params: { name: 'testville, ak' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
   end
@@ -531,28 +531,28 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'filters by employer category' do
       get(:index, params: { category: 'employer', name: 'acme' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by school category' do
       get(:index, params: { category: 'school', name: 'institution' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by employer type' do
       get(:index, params: { type: 'ojt', name: 'acme' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
 
     it 'filters by school type' do
       get(:index, params: { type: 'private', name: 'institution' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
     end
   end
@@ -565,21 +565,21 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     it 'returns profile details' do
       school = create(:institution, :in_chicago, :production_version)
       get(:show, params: { id: school.facility_code })
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end
 
     it 'returns profile details for VET TEC institution' do
       school = create(:institution, :vet_tec_provider, :production_version)
       get(:show, params: { id: school.facility_code })
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_profile')
     end
 
     it 'returns common exception response if school not found' do
       get(:show, params: { id: '10000' })
       assert_response :missing
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('errors')
     end
   end
@@ -594,7 +594,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
       child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code, version_id: school.version_id)
       get(:children, params: { id: school.facility_code })
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
 
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(child_school.facility_code)
@@ -604,7 +604,7 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
     it 'returns empty record set' do
       get(:children, params: { id: '10000' })
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
   end
