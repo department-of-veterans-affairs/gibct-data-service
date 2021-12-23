@@ -451,7 +451,6 @@ DEPENDENCIES
   config
   database_cleaner
   devise
-  execjs (= 2.8.1)
   factory_bot_rails (> 5)
   faker (~> 1.6, >= 1.6.2)
   faraday
