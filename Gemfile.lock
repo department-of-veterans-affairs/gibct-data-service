@@ -483,7 +483,7 @@ DEPENDENCIES
   ruby-saml
   rubyzip (~> 2.3)
   sass-rails (= 6.0)
-  scss_lint (= 0.59.0)
+  scss_lint
   sentry-raven (~> 2.9.0)
   simplecov
   sitemap_generator

@@ -76,7 +76,7 @@ group :development, :test do
   gem 'rubocop', '0.82.0', require: false
   gem 'rubocop-rails', '2.5.2'
   gem 'rubocop-rspec', '1.38.1'
-  gem 'scss_lint', '0.59.0', require: false
+  gem 'scss_lint', require: false
 
   # Security scanners
   gem 'brakeman'

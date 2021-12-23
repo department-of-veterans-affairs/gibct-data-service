@@ -19,7 +19,7 @@ task fix_phys_country_coord: :environment do
         geocoded3 = Geocoder.coordinates(address3)
         if geocoded.present?
           update_mismatch(result, geocoded)
-        elsif geocoded2.present? && geocoded.nil?
+        elsif geocoded2.present?
           update_mismatch(result, geocoded2)
         else
           update_mismatch(result, geocoded3)
