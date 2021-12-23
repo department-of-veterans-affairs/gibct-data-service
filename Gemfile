@@ -11,7 +11,7 @@ ruby '2.6.6'
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 4.3.9'
 
-gem 'rails', '~> 6.1.4.4'
+gem 'rails', '~> 6.1'
 
 # Gems with special version/repo needs
 
@@ -25,7 +25,7 @@ gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 1.1'
+gem 'pg'
 gem 'roo', '~> 2.8'
 gem 'roo-xls', '~> 1.2'
 gem 'rubyzip', '~> 2.3'

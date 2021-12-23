@@ -41,6 +41,8 @@ module GibctDataService
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths += Dir["#{config.root}/app/utilities/**/"]
 
+    config.action_dispatch.return_only_media_type_on_content_type = false
+
     # YAML Defaults for CSV
     config.csv_defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
   end
