@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe UploadRequirements do
   def validations(csv_class, requirement_class)
     csv_class.validators
-             .find { |requirements| requirements.class == requirement_class }
+             .find { |requirements| requirements.instance_of?(requirement_class) }
   end
 
   def map_attributes(csv_class, requirement_class)

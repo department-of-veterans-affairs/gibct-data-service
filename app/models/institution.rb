@@ -277,7 +277,7 @@ class Institution < ImportableRecord
   # i.e. Charleston, SC
   def self.city_state_search_term?(search_term)
     if search_term.present?
-      /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
+      /[a-zA-Z]+,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
         VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s)
     end
   end
@@ -362,11 +362,11 @@ class Institution < ImportableRecord
     end
 
     where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       upper_search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%",
-                                       lower_contains_term: "%#{search_term.downcase}%",
-                                       search_term: search_term.to_s,
-                                       institution_search_term: "%#{processed_search_term}%"]))
+                                       { upper_search_term: search_term.upcase,
+                                         upper_contains_term: "%#{search_term.upcase}%",
+                                         lower_contains_term: "%#{search_term.downcase}%",
+                                         search_term: search_term.to_s,
+                                         institution_search_term: "%#{processed_search_term}%" }]))
   }
 
   # Orders institutions by
@@ -423,15 +423,15 @@ class Institution < ImportableRecord
     regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
-                                                                  search_term: search_term,
-                                                                  upper_search_term: search_term.upcase,
-                                                                  upper_starts_with_term: "#{search_term.upcase}%",
-                                                                  upper_contains_term: "%#{search_term.upcase}%",
-                                                                  alias_modifier: alias_modifier,
-                                                                  gibill_modifier: gibill_modifier,
-                                                                  max_gibill: max_gibill,
-                                                                  institution_search_term: institution_search_term,
-                                                                  regexp_exists_as_word: regexp_exists_as_word])
+                                                                  { search_term: search_term,
+                                                                    upper_search_term: search_term.upcase,
+                                                                    upper_starts_with_term: "#{search_term.upcase}%",
+                                                                    upper_contains_term: "%#{search_term.upcase}%",
+                                                                    alias_modifier: alias_modifier,
+                                                                    gibill_modifier: gibill_modifier,
+                                                                    max_gibill: max_gibill,
+                                                                    institution_search_term: institution_search_term,
+                                                                    regexp_exists_as_word: regexp_exists_as_word }])
 
     order(Arel.sql(sanitized_order_by))
   }
@@ -442,7 +442,7 @@ class Institution < ImportableRecord
     order_by << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
-                                                                  max_gibill: max_gibill])
+                                                                  { max_gibill: max_gibill }])
 
     order(Arel.sql(sanitized_order_by))
   }
@@ -496,9 +496,9 @@ class Institution < ImportableRecord
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
 
     where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       upper_search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%",
-                                       institution_search_term: "%#{processed_search_term}%"]))
+                                       { upper_search_term: search_term.upcase,
+                                         upper_contains_term: "%#{search_term.upcase}%",
+                                         institution_search_term: "%#{processed_search_term}%" }]))
   }
 
   # rubocop:disable Metrics/BlockLength
@@ -590,7 +590,7 @@ class Institution < ImportableRecord
     filters << 'vet_tec_provider IS FALSE' if exclude_vettec
 
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
-                                                                excludedTypes: query[:excluded_school_types]])
+                                                                { excludedTypes: query[:excluded_school_types] }])
 
     where(Arel.sql(sanitized_clause))
   }
@@ -646,14 +646,14 @@ class Institution < ImportableRecord
     regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
-                                                                  search_term: search_term,
-                                                                  upper_search_term: search_term.upcase,
-                                                                  upper_starts_with_term: "#{search_term.upcase}%",
-                                                                  alias_modifier: alias_modifier,
-                                                                  gibill_modifier: gibill_modifier,
-                                                                  max_gibill: max_gibill,
-                                                                  institution_search_term: institution_search_term,
-                                                                  regexp_exists_as_word: regexp_exists_as_word])
+                                                                  { search_term: search_term,
+                                                                    upper_search_term: search_term.upcase,
+                                                                    upper_starts_with_term: "#{search_term.upcase}%",
+                                                                    alias_modifier: alias_modifier,
+                                                                    gibill_modifier: gibill_modifier,
+                                                                    max_gibill: max_gibill,
+                                                                    institution_search_term: institution_search_term,
+                                                                    regexp_exists_as_word: regexp_exists_as_word }])
 
     order(Arel.sql(sanitized_order_by))
   }
@@ -674,10 +674,10 @@ class Institution < ImportableRecord
     clause = ['institutions.*', distance_column]
 
     select(sanitize_sql_for_conditions([clause.join(','),
-                                        table_name: table_name,
-                                        latitude: latitude,
-                                        longitude: longitude,
-                                        conversion_rate: MILE_METER_CONVERSION_RATE]))
+                                        { table_name: table_name,
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                          conversion_rate: MILE_METER_CONVERSION_RATE }]))
   }
 
   scope :location_search, lambda { |query|
@@ -692,10 +692,10 @@ class Institution < ImportableRecord
     # rubocop:enable Layout/LineLength
 
     where(sanitize_sql_for_conditions([clause,
-                                       latitude: latitude,
-                                       longitude: longitude,
-                                       conversion_rate: MILE_METER_CONVERSION_RATE,
-                                       distance: distance]))
+                                       { latitude: latitude,
+                                         longitude: longitude,
+                                         conversion_rate: MILE_METER_CONVERSION_RATE,
+                                         distance: distance }]))
   }
 
   scope :location_order, lambda {
