@@ -7,7 +7,7 @@ RSpec.describe StatusController, type: :controller do
   describe 'GET #status' do
     it 'returns ok' do
       get :status
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(JSON.parse(response.body)['status']).to eq('ok')
     end
   end
