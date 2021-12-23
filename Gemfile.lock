@@ -132,7 +132,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    diff-lcs (1.4.4)
+    diff-lcs (1.5.0)
     docile (1.4.0)
     dry-configurable (0.13.0)
       concurrent-ruby (~> 1.0)
@@ -451,6 +451,7 @@ DEPENDENCIES
   config
   database_cleaner
   devise
+  execjs (= 2.8.1)
   factory_bot_rails (> 5)
   faker (~> 1.6, >= 1.6.2)
   faraday
@@ -471,7 +472,7 @@ DEPENDENCIES
   pry-nav
   puma (~> 4.3.9)
   rack-cors
-  rails (~> 6.1.1)
+  rails (~> 6.1)
   rails-controller-testing
   rainbow
   roo (~> 2.8)

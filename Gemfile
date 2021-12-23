@@ -9,9 +9,9 @@ ruby '2.6.6'
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
+gem 'execjs', '2.8.1'
 gem 'puma', '~> 4.3.9'
-
-gem 'rails', '6.1.4.1'
+gem 'rails', '~> 6.1'
 
 # Gems with special version/repo needs
 
