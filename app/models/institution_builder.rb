@@ -800,8 +800,8 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(Institution.sanitize_sql_for_conditions([str,
-                                                                             { employer: Institution::EMPLOYER,
-                                                                               schools: Institution::SCHOOLS }]))
+                                                                             employer: Institution::EMPLOYER,
+                                                                             schools: Institution::SCHOOLS]))
     end
   end
 end

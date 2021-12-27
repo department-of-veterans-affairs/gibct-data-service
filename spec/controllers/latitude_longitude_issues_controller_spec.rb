@@ -47,7 +47,7 @@ RSpec.describe LatitudeLongitudeIssuesController, type: :controller do
 
     def requirements(csv_class, requirement_class)
       csv_class.validators
-               .find { |requirements| requirements.instance_of?(requirement_class) }
+               .find { |requirements| requirements.class == requirement_class }
     end
 
     def map_attributes(csv_class, requirement_class)

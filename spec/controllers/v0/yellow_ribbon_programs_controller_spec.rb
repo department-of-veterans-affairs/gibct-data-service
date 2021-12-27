@@ -18,7 +18,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       create(:version, :production)
       create(:yellow_ribbon_program)
       get(:index, params: { version: 'invalid_data' })
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
       body = JSON.parse response.body
       expect(body['meta']['version']['number'].to_i).to eq(Version.current_production.number)
@@ -36,7 +36,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index)
       data = JSON.parse(response.body)['data']
       expect(data.count).to eq(4)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -44,7 +44,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { name: 'institution' })
       data = JSON.parse(response.body)['data']
       expect(data.count).to eq(4)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -52,7 +52,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { name: 'INSTITUTION ' })
       data = JSON.parse(response.body)['data']
       expect(data.count).to eq(4)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -60,7 +60,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { name: 'institution ' })
       data = JSON.parse(response.body)['data']
       expect(data.count).to eq(4)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -68,7 +68,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { sort_by: 'number_of_students', sort_direction: 'desc' })
       data = JSON.parse(response.body)['data']
       expect(data.last['attributes']['number_of_students']).to eq(1)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -76,7 +76,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { sort_by: 'Number_of_Students', sort_direction: 'DESC' })
       data = JSON.parse(response.body)['data']
       expect(data.last['attributes']['number_of_students']).to eq(1)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -84,7 +84,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       get(:index, params: { sort_by: ' number_of_students ', sort_direction: 'desc' })
       data = JSON.parse(response.body)['data']
       expect(data.last['attributes']['number_of_students']).to eq(1)
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 
@@ -93,7 +93,7 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
       data = JSON.parse(response.body)['data']
       expect(data.count).to eq(4)
       expect(data.first['attributes']['name_of_institution']).to include('institution ')
-      expect(response.media_type).to eq('application/json')
+      expect(response.content_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
     end
 

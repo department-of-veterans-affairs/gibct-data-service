@@ -52,11 +52,11 @@ class InstitutionProgram < ApplicationRecord
     where(
       sanitize_sql_for_conditions(
         [clause.join(' OR '),
-         { upper_search_term: search_term.upcase,
-           upper_contains_term: "%#{search_term.upcase}%",
-           lower_contains_term: "%#{search_term.downcase}%",
-           contains_search_term: "%#{search_term}%",
-           search_term: search_term.to_s }]
+         upper_search_term: search_term.upcase,
+         upper_contains_term: "%#{search_term.upcase}%",
+         lower_contains_term: "%#{search_term.downcase}%",
+         contains_search_term: "%#{search_term}%",
+         search_term: search_term.to_s]
       )
     )
   }
@@ -70,7 +70,7 @@ class InstitutionProgram < ApplicationRecord
 
       order_by.unshift('CASE WHEN UPPER(country) LIKE :upper_contains_term THEN 1 ELSE 0 END DESC')
 
-      conditions = [order_by.join(','), { upper_contains_term: "%#{search_term.upcase}%" }]
+      conditions = [order_by.join(','), upper_contains_term: "%#{search_term.upcase}%"]
     end
 
     sanitized_order_by = sanitize_sql_for_conditions(conditions)

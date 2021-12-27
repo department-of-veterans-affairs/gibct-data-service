@@ -30,10 +30,10 @@ class YellowRibbonProgram < ApplicationRecord
       sanitize_sql_for_conditions(
         [
           clause.join(' AND '),
-          { city: "%#{query['city']}%", # (includes)
-            country: (query['country']).to_s, # (is equal)
-            name: "%#{query['name']}%", # (includes)
-            state: (query['state']).to_s } # (is equal)
+          city: "%#{query['city']}%", # (includes)
+          country: (query['country']).to_s, # (is equal)
+          name: "%#{query['name']}%", # (includes)
+          state: (query['state']).to_s # (is equal)
         ]
       )
     )
