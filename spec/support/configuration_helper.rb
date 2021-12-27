@@ -40,6 +40,7 @@ module Specs
 
       class ServiceException < StandardError
         attr_accessor :key, :response_values, :original_status, :original_body
+
         def initialize(key, response_values, original_status, original_body)
           self.key = key
           self.response_values = response_values
