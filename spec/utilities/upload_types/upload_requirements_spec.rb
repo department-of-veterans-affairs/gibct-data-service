@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe UploadRequirements do
   def validations(csv_class, requirement_class)
     csv_class.validators
-             .find { |requirements| requirements.class == requirement_class }
+             .find { |requirements| requirements.instance_of?(requirement_class) }
   end
 
   def map_attributes(csv_class, requirement_class)
@@ -16,9 +16,8 @@ RSpec.describe UploadRequirements do
 
   describe 'requirements_messages' do
     it 'returns validates numericality messages' do
-      validations_of_str = 'current academic year va bah rate'
-      message = { message: 'These columns can only contain numeric values: ', value: [validations_of_str] }
-
+      validations_of_str = ['facility code', 'institution name', 'institution country']
+      message = { message: 'These columns must have a value: ', value: validations_of_str }
       messages = described_class.requirements_messages(Weam)
       expect(messages).to include(message)
     end

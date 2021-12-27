@@ -13,7 +13,7 @@ class UploadRequirements
       inclusion = []
 
       type.validators.each do |validations|
-        next unless validations.class == ActiveModel::Validations::InclusionValidator
+        next unless validations.instance_of?(ActiveModel::Validations::InclusionValidator)
 
         inclusion.push({ message: affected_attributes(validations, type).join(', '),
                          value: inclusion_requirement_message(validations) })

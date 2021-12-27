@@ -61,8 +61,8 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(Institution.sanitize_sql_for_conditions([str,
-                                                                             current_version: current_version.id,
-                                                                             preview_version: version_id]))
+                                                                             { current_version: current_version.id,
+                                                                               preview_version: version_id }]))
 
       ''
     end

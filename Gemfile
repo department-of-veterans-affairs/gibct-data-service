@@ -10,8 +10,7 @@ ruby '2.6.6'
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 4.3.9'
-
-gem 'rails', '~> 6.0.4.1'
+gem 'rails', '~> 6.1'
 
 # Gems with special version/repo needs
 
@@ -25,7 +24,7 @@ gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 0.15'
+gem 'pg'
 gem 'roo', '~> 2.8'
 gem 'roo-xls', '~> 1.2'
 gem 'rubyzip', '~> 2.3'
@@ -46,7 +45,7 @@ gem 'devise'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'figaro'
-gem 'font-awesome-rails'
+gem 'font-awesome-rails', '4.7.0.6'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'newrelic_rpm'
@@ -73,9 +72,9 @@ group :development, :test do
 
   # Linters
   gem 'jshint', platforms: :ruby
-  gem 'rubocop', require: false
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
+  gem 'rubocop', '0.82.0', require: false
+  gem 'rubocop-rails', '2.5.2'
+  gem 'rubocop-rspec', '1.38.1'
   gem 'scss_lint', require: false
 
   # Security scanners
