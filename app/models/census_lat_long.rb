@@ -36,36 +36,4 @@ class CensusLatLong < ImportableRecord
 
     Group.export_csvs_as_zip(csvs, name)
   end
-
-  # Adds Approved Weams rows with physical city and physical state that meets one of these conditions:
-  #   - does not have an ipeds_hd or scorecard
-  #   - has ipeds_hd row but either physical city, physical state, or institution name does not match
-  #   - has scorecard row but either physical city, or physical state does not match
-  def self.add_weams_physical_addresses(addresses, missing_lat_long_physical_weams)
-    missing_lat_long_physical_weams.each do |weam|
-      value = [weam.physical_address,
-               weam.physical_city,
-               weam.physical_state,
-               weam.physical_zip]
-
-      addresses << value.unshift(weam.facility_code) if value.compact.count.positive?
-    end
-  end
-
-  # Adds Approved Weams rows without physical city and physical state that meets one of these conditions:
-  #   - has ipeds_hd row but either city, or state does not match
-  #   - has scorecard row but either city, or state does not match
-  #   - if the facility code is present in missing_lat_long_physical_weams it is ignored
-  def self.add_weams_mailing_addresses(addresses, missing_lat_long_mailing_weams, weams_physical_facility_codes)
-    missing_lat_long_mailing_weams.each do |weam|
-      next if weams_physical_facility_codes.include?(weam.facility_code)
-
-      value = [weam.address,
-               weam.city,
-               weam.state,
-               weam.zip]
-
-      addresses << value.unshift(weam.facility_code) if value.compact.count.positive?
-    end
-  end
 end
