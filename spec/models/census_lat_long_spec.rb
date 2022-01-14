@@ -35,15 +35,6 @@ RSpec.describe CensusLatLong, type: :model do
       described_class.add_institution_addresses(addresses, [weam.facility_code])
       expect(addresses.count).to eq(0)
     end
-
-    it 'includes an institution missing lat long but uses mailing address' do
-      create(:institution, :lat_long, version: Version.latest)
-
-      addresses = []
-      described_class.add_institution_addresses(addresses, [])
-      expect(addresses.count).to eq(0)
-      expect(addresses[0]).to eq(nil)
-    end
   end
 
   describe 'add_weams_physical_addresses' do

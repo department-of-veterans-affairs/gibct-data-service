@@ -37,25 +37,6 @@ class CensusLatLong < ImportableRecord
     Group.export_csvs_as_zip(csvs, name)
   end
 
-  # Adds Approved Institutions rows from latest version that do not have a latitude or longitude
-  #   - if the facility code is present in weams_facility_codes it is ignored
-  def self.add_institution_addresses(addresses, weams_facility_codes)
-    Institution.missing_lat_long(Version.latest).each do |institution|
-      next if weams_facility_codes.include?(institution.facility_code)
-
-      physical_value = [institution.physical_address, institution.physical_city, institution.physical_state,
-                        institution.physical_zip]
-
-      mailing_value = [institution.address, institution.city, institution.state, institution.zip]
-
-      if physical_value.compact.count.positive?
-        addresses << physical_value.unshift(institution.facility_code)
-      elsif mailing_value.compact.count.positive?
-        addresses << mailing_value.unshift(institution.facility_code)
-      end
-    end
-  end
-
   # Adds Approved Weams rows with physical city and physical state that meets one of these conditions:
   #   - does not have an ipeds_hd or scorecard
   #   - has ipeds_hd row but either physical city, physical state, or institution name does not match
