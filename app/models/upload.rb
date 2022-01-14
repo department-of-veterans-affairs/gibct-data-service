@@ -23,7 +23,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name, CensusLatLong.name].include?(csv_type)
+    return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -50,7 +50,7 @@ class Upload < ApplicationRecord
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES
                 else
-                  [*UPLOAD_TYPES_ALL_NAMES, CensusLatLong.name]
+                  [*UPLOAD_TYPES_ALL_NAMES]
                 end
 
     Upload.select('DISTINCT ON("csv_type") *')
