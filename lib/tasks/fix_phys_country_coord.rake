@@ -45,11 +45,15 @@ def update_mismatch(result, geocoded_coord)
     if result.latitude.present? && result.longitude.present?
       if lat.round(2) != result.latitude.round(2) || long.round(2) != result.longitude.round(2)
         puts "updated #{int} from [lat: #{result.latitude}, long: #{result.longitude}] to [lat: #{lat}, long: #{long}]"
-        result.update(latitude: lat, longitude: long)
+        result.latitude = lat
+        result.longitude = long
+        result.save(validate: false)
       end
     else
       puts "updated #{int} from [lat: #{result.latitude}, long: #{result.longitude}] to [lat: #{lat}, long: #{long}]"
-      result.update(latitude: lat, longitude: long)
+      result.latitude = lat
+      result.longitude = long
+      result.save(validate: false)
     end
   end
 end
