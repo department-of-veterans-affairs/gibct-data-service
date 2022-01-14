@@ -1129,28 +1129,6 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institution.longitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[0])
         expect(institution.latitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[1])
       end
-
-      it 'sets latitude and longitude from previous version' do
-        create(:version, :production)
-        prod_institution = create(:institution, :lat_long, :physical_address, version_id: Version.current_production.id)
-        weam = create(:weam, facility_code: prod_institution.facility_code, approved: true,
-                             physical_address_1: prod_institution.physical_address_1,
-                             physical_address_2: prod_institution.physical_address_2,
-                             physical_address_3: prod_institution.physical_address_3,
-                             physical_city: prod_institution.physical_city,
-                             physical_state: prod_institution.physical_state,
-                             physical_country: prod_institution.physical_country,
-                             physical_zip: prod_institution.physical_zip)
-
-        described_class.run(user)
-        prev_institution = institutions.where(facility_code: weam.facility_code,
-                                              version_id: Version.current_preview.id).first
-
-        expect(prod_institution.facility_code).to eq(prev_institution.facility_code)
-        expect(prod_institution.physical_address).to eq(prev_institution.physical_address)
-        expect(prod_institution.latitude).to eq(prev_institution.latitude)
-        expect(prod_institution.longitude).to eq(prev_institution.longitude)
-      end
     end
   end
 end

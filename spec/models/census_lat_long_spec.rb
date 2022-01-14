@@ -24,7 +24,7 @@ RSpec.describe CensusLatLong, type: :model do
 
       addresses = []
       described_class.add_institution_addresses(addresses, [])
-      expect(addresses.count).to eq(1)
+      expect(addresses.count).to eq(0)
     end
 
     it 'does not include an institution missing lat long whose facility code also qualifies from weams' do
@@ -37,16 +37,12 @@ RSpec.describe CensusLatLong, type: :model do
     end
 
     it 'includes an institution missing lat long but uses mailing address' do
-      institution = create(:institution, :mailing_address, version: Version.latest)
       create(:institution, :lat_long, version: Version.latest)
-
-      mailing_values = [institution.facility_code, institution.address, institution.city,
-                        institution.state, institution.zip]
 
       addresses = []
       described_class.add_institution_addresses(addresses, [])
-      expect(addresses.count).to eq(1)
-      expect(addresses[0]).to eq(mailing_values)
+      expect(addresses.count).to eq(0)
+      expect(addresses[0]).to eq(nil)
     end
   end
 

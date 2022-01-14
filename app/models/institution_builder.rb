@@ -57,11 +57,11 @@ module InstitutionBuilder
       build_zip_code_rates_from_weams(version.id)
       build_institution_programs(version.id)
       build_versioned_school_certifying_official(version.id)
-      ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
+      # ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
       SuspendedCautionFlags.build(version.id)
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
-      build_messages[CensusLatLong.name] = LatLongBuilder.build(version.id)
+      # build_messages[CensusLatLong.name] = LatLongBuilder.build(version.id)
 
       build_messages.filter { |_k, v| v.present? }
     end
@@ -99,6 +99,14 @@ module InstitutionBuilder
         success = false
       end
 
+      missing_lat_long = Institution.where(latitude: nil, longitude: nil)
+
+      if missing_lat_long.present?
+        Rails.logger.info "Updating #{missing_lat_long.count} without latitude and longitude"
+        missing_lat_long.find_each(&:save!)
+      end
+
+      # not working, will fix later
       version.delete unless success
 
       { version: Version.current_preview, error_msg: error_msg,
