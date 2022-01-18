@@ -183,8 +183,6 @@ class Institution < ImportableRecord
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :institution_category_ratings, dependent: :destroy
   belongs_to :version
-  geocoded_by :geocoded_address
-  after_validation :geocode
 
   self.per_page = 10
 
@@ -251,13 +249,6 @@ class Institution < ImportableRecord
     return nil if compact_address.blank?
 
     compact_address
-  end
-
-  def geocoded_address
-    geocoded_address = [address, city, state, country].compact.join(', ')
-    return nil if geocoded_address.blank?
-
-    geocoded_address
   end
 
   # Given a search term representing a partial school name, returns all
