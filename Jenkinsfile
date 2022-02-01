@@ -29,19 +29,19 @@ pipeline {
           commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
         }
 
-        build job: 'builds/gi-bill-data-service', parameters: [
+        build job: 'builds/gibct-data-service', parameters: [
           booleanParam(name: 'notify_slack', value: false),
           stringParam(name: 'ref', value: commit),
           booleanParam(name: 'release', value: false),
         ], wait: true
 
-        build job: 'deploys/gi-bill-data-service-vagov-dev', parameters: [
+        build job: 'deploys/gibct-data-service-vagov-dev', parameters: [
           booleanParam(name: 'notify_slack', value: true),
           booleanParam(name: 'migration_status', value: true),
           stringParam(name: 'ref', value: commit),
         ], wait: false
 
-        build job: 'deploys/gi-bill-data-service-vagov-staging', parameters: [
+        build job: 'deploys/gibct-data-service-vagov-staging', parameters: [
           booleanParam(name: 'notify_slack', value: true),
           booleanParam(name: 'migration_status', value: true),
           stringParam(name: 'ref', value: commit),
