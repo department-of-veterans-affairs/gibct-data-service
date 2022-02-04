@@ -145,12 +145,12 @@ class Scorecard < ImportableRecord
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
     'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },
-    'alias' => { column: :alias, converter: BaseConverter },
-    'latitude' => { column: :latitude, converter: NumberConverter },
-    'longitude' => { column: :longitude, converter: NumberConverter }
+    'alias' => { column: :alias, converter: BaseConverter }
   }.freeze
 
   after_initialize :derive_dependent_columns
+
+  self.ignored_columns = %w[longitude latitude]
 
   POPULATE_SUCCESS_MESSAGE = 'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/'
   API_SOURCE = 'https://collegescorecard.ed.gov/data/'
