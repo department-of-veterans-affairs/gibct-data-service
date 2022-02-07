@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IpedsHd < ImportableRecord
-  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod latitude].freeze
+  COLS_USED_IN_INSTITUTION = %i[vet_tuition_policy_url f1sysnam f1syscod].freeze
 
   CSV_CONVERTER_INFO = {
     'unitid' => { column: :cross, converter: CrossConverter },
@@ -69,14 +69,14 @@ class IpedsHd < ImportableRecord
     'countycd' => { column: :countycd, converter: NumberConverter },
     'countynm' => { column: :countynm, converter: BaseConverter },
     'cngdstcd' => { column: :cngdstcd, converter: NumberConverter },
-    'longitud' => { column: :longitud, converter: NumberConverter },
-    'latitude' => { column: :latitude, converter: NumberConverter },
     'dfrcgid' => { column: :dfrcgid, converter: NumberConverter },
     'dfrcuscg' => { column: :dfrcuscg, converter: BaseConverter }
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
   validates :cross, presence: true
+
+  self.ignored_columns = %w[longitud latitude]
 
   def full_address
     [addr, city, state, zip].compact
