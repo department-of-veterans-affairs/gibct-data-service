@@ -68,20 +68,11 @@ module RooHelper
     # Load multiple files at a time
     #
     # Assume all files are of the same type
-    def load_multiple_files(files, klass)
+    def load_multiple_files(_files, klass)
       options = Common::Shared.file_type_defaults(klass.name)
-      file_options = { liberal_parsing: options[:liberal_parsing],
-                       sheets: [{ klass: klass,
-                                  skip_lines: options[:skip_lines],
-                                  multiple_files: options[:multiple_files],
-                                  no_headers: options[:no_headers] }] }
 
       # The option disables deleting when each file is loaded and instead allows for a single deletion before loading
       klass.delete_all if options[:multiple_files]
-
-      files.map do |file|
-        CensusLatLong.load_with_roo(file, file_options)
-      end
     end
 
     private

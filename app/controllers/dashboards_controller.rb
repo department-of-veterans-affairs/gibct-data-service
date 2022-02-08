@@ -62,9 +62,11 @@ class DashboardsController < ApplicationController
 
       flash.notice = 'Production data updated'
 
-      # Build Sitemap and notify search engines in production only
-      ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
-      GibctSiteMapper.new(ping: ping)
+      if production?
+        # Build Sitemap and notify search engines in production only
+        ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
+        GibctSiteMapper.new(ping: ping)
+      end
 
       if Settings.archiver.archive
         # Archive previous versions of generated data

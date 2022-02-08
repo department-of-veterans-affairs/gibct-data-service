@@ -21,8 +21,6 @@ module ScorecardApi
         'latest.student.retention_rate.four_year.full_time': :retention_all_students_ba,
         'latest.student.retention_rate.lt_four_year.full_time': :retention_all_students_otb,
         'latest.student.size': :undergrad_enrollment,
-        'location.lat': :latitude,
-        'location.lon': :longitude,
         'school.school_url': :insturl,
         'school.degrees_awarded.predominant': :pred_degree_awarded,
         'school.locale': :locale,

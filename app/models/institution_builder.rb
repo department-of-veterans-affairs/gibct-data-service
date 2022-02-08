@@ -97,7 +97,7 @@ module InstitutionBuilder
         success = false
       end
 
-      missing_lat_long = Institution.where(latitude: nil, longitude: nil)
+      missing_lat_long = Institution.where(version: version, latitude: nil, longitude: nil)
 
       if missing_lat_long.present?
         Rails.logger.info "Updating #{missing_lat_long.count} without latitude and longitude"
