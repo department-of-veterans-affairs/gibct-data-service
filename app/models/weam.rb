@@ -33,6 +33,7 @@ class Weam < ImportableRecord
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning approved preferred_provider stem_indicator
     campus_type parent_facility_code_id institution_search in_state_tuition_information
+    latitude longitude
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
@@ -88,6 +89,15 @@ class Weam < ImportableRecord
                         inverse_of: :weam, dependent: :delete)
 
   after_initialize :derive_dependent_columns
+  geocoded_by :geocoded_address
+  after_validation :geocode
+
+  def geocoded_address
+    geocoded_address = [physical_address_1, city, state, country].compact.join(', ')
+    return nil if geocoded_address.blank?
+
+    geocoded_address
+  end
 
   def institution_type
     msg = 'Unable to determine institution type'
