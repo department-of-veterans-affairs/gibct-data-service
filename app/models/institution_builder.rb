@@ -79,6 +79,13 @@ module InstitutionBuilder
           end
         end
 
+        missing_lat_long = Institution.where(version: version, latitude: nil, longitude: nil)
+
+        if missing_lat_long.present?
+          Rails.logger.info "Updating #{missing_lat_long.count} without latitude and longitude"
+          missing_lat_long.find_each(&:save!)
+        end
+
         version.update(completed_at: Time.now.utc.to_s(:db))
 
         notice = 'Institution build was successful'
@@ -97,13 +104,6 @@ module InstitutionBuilder
         success = false
       end
 
-      missing_lat_long = Institution.where(version: version, latitude: nil, longitude: nil)
-
-      if missing_lat_long.present?
-        Rails.logger.info "Updating #{missing_lat_long.count} without latitude and longitude"
-        missing_lat_long.find_each(&:save!)
-      end
-
       # not working, will fix later
       version.delete unless success
 
@@ -120,11 +120,13 @@ module InstitutionBuilder
       str += Weam
              .select(columns)
              .select("#{version.number.to_i} as version")
+             .select("#{version.number.to_i} as version")
              .select("#{conn.quote(timestamp)} as created_at")
              .select("#{conn.quote(timestamp)} as updated_at")
              .select('v.id as version_id')
              .to_sql
       str += "INNER JOIN versions v ON v.number = #{version.number}"
+
       Institution.connection.insert(str)
 
       # remove duplicates
