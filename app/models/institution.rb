@@ -251,13 +251,6 @@ class Institution < ImportableRecord
     compact_address
   end
 
-  def geocoded_address
-    geocoded_address = [address, city, state, country].compact.join(', ')
-    return nil if geocoded_address.blank?
-
-    geocoded_address
-  end
-
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #
@@ -322,10 +315,6 @@ class Institution < ImportableRecord
 
   scope :non_vet_tec_institutions, lambda { |version|
     approved_institutions(version).where(vet_tec_provider: false)
-  }
-
-  scope :missing_lat_long, lambda { |version|
-    approved_institutions(version).where(latitude: nil).or(approved_institutions(version).where(longitude: nil))
   }
 
   #

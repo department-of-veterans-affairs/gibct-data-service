@@ -293,4 +293,12 @@ RSpec.describe Institution, type: :model do
       end
     end
   end
+
+  describe 'physical_address' do
+    let(:institution) { build :institution }
+
+    it 'returns physical_address' do
+      expect(institution.physical_address).to eq(nil)
+    end
+  end
 end
