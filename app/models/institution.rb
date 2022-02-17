@@ -183,8 +183,6 @@ class Institution < ImportableRecord
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_many :institution_category_ratings, dependent: :destroy
   belongs_to :version
-  geocoded_by :geocoded_address
-  after_validation :geocode
 
   self.per_page = 10
 

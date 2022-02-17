@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_11_182431) do
+ActiveRecord::Schema.define(version: 2021_07_16_092600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1686,8 +1686,6 @@ ActiveRecord::Schema.define(version: 2022_02_11_182431) do
     t.integer "csv_row"
     t.string "institution_search"
     t.string "in_state_tuition_information"
-    t.float "latitude"
-    t.float "longitude"
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"

@@ -79,13 +79,6 @@ module InstitutionBuilder
           end
         end
 
-        missing_lat_long = Institution.where(version: version, latitude: nil, longitude: nil)
-
-        if missing_lat_long.present?
-          Rails.logger.info "Updating #{missing_lat_long.count} without latitude and longitude"
-          missing_lat_long.find_each(&:save!)
-        end
-
         version.update(completed_at: Time.now.utc.to_s(:db))
 
         notice = 'Institution build was successful'

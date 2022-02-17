@@ -46,7 +46,7 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
-          sheet_klass.delete_all unless sheet_options[:multiple_files] || sheet_klass.name == 'Weam'
+          sheet_klass.delete_all unless sheet_options[:multiple_files]
 
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
@@ -126,12 +126,7 @@ module RooHelper
         csv_row = r_index + sheet_options[:first_line] + skip_lines
         result[:csv_row] = csv_row if sheet_klass.column_names.include?('csv_row')
 
-        if sheet_klass.name == 'Weam'
-          existing_weam = Weam.find_by(facility_code: result[:facility_code])
-          results << sheet_klass.new(result) if existing_weam.blank?
-        else
-          results << sheet_klass.new(result)
-        end
+        results << sheet_klass.new(result)
       end
       results
     end

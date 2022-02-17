@@ -1123,11 +1123,10 @@ RSpec.describe InstitutionBuilder, type: :model do
     describe 'when missing latitude and longitude' do
       it 'sets latitude and longitdue from CensusLatLong' do
         weam = create(:weam)
-        census_lat_long = create(:census_lat_long, facility_code: weam.facility_code)
         described_class.run(user)
         institution = institutions.where(facility_code: weam.facility_code).first
-        expect(institution.longitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[0])
-        expect(institution.latitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[1])
+        expect(institution.longitude).to eq(nil)
+        expect(institution.latitude).to eq(nil)
       end
     end
   end
