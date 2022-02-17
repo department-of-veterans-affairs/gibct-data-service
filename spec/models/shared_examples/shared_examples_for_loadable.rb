@@ -24,13 +24,8 @@ RSpec.shared_examples 'a loadable model' do |options|
 
     context "with an error-free #{file_ext} file" do
       it 'deletes the old table content' do
-        if described_class.name == 'Weam'
-          expect { described_class.load_with_roo(csv_file, file_options) }
-            .to change(described_class, :count).from(5).to(7)
-        else
-          expect { described_class.load_with_roo(csv_file, file_options) }
-            .to change(described_class, :count).from(5).to(2)
-        end
+        expect { described_class.load_with_roo(csv_file, file_options) }
+          .to change(described_class, :count).from(5).to(2)
       end
 
       it 'loads the table' do
