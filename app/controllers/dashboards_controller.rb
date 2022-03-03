@@ -7,6 +7,7 @@ class DashboardsController < ApplicationController
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
+    flash.alert = 'Geocoding Instiutions, publishing to production is disabled' unless Version.current_preview.geocoded
   end
 
   def build

@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/vets-json-schema
-  revision: ee3c19a0714b6b77101f79aec86af4bc9c460bba
+  revision: 9eebc8fcdb40e8ff4a2e4cebe20722cfcbd2d31a
   branch: master
   specs:
-    vets_json_schema (20.19.2)
+    vets_json_schema (20.19.1)
       multi_json (~> 1.0)
       script_utils (= 0.0.4)
 
@@ -134,7 +134,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
     docile (1.4.0)
-    dry-configurable (0.14.0)
+    dry-configurable (0.13.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.6)
     dry-container (0.9.0)
@@ -143,11 +143,11 @@ GEM
     dry-core (0.7.1)
       concurrent-ruby (~> 1.0)
     dry-inflector (0.2.1)
-    dry-initializer (3.1.1)
+    dry-initializer (3.0.4)
     dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-schema (1.9.1)
+    dry-schema (1.8.0)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.13, >= 0.13.0)
       dry-core (~> 0.5, >= 0.5)
@@ -160,12 +160,12 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
-    dry-validation (1.8.0)
+    dry-validation (1.7.0)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.7, >= 0.7.1)
       dry-core (~> 0.5, >= 0.5)
       dry-initializer (~> 3.0)
-      dry-schema (~> 1.9, >= 1.9.1)
+      dry-schema (~> 1.8, >= 1.8.0)
     equalizer (0.0.11)
     erubi (1.10.0)
     execjs (2.8.1)
@@ -176,7 +176,7 @@ GEM
       railties (>= 5.0.0)
     faker (1.9.6)
       i18n (>= 0.7)
-    faraday (0.17.5)
+    faraday (0.17.4)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.14.0)
       faraday (>= 0.7.4, < 1.0)
@@ -243,15 +243,13 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
     minitest (5.15.0)
     multi_json (1.15.0)
     multipart-post (2.1.1)
     nenv (0.3.0)
-    newrelic_rpm (8.5.0)
+    newrelic_rpm (8.4.0)
     nio4r (2.5.8)
-    nokogiri (1.13.3)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.13.1-x86_64-darwin)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -259,9 +257,9 @@ GEM
     oj (3.13.11)
     orm_adapter (0.5.0)
     parallel (1.21.0)
-    parser (3.1.1.0)
+    parser (3.1.0.0)
       ast (~> 2.4.1)
-    pg (1.3.3)
+    pg (1.3.2)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -395,8 +393,8 @@ GEM
       builder (~> 3.0)
     spreadsheet (1.3.0)
       ruby-ole
-    spring (4.0.0)
-    sprockets (4.0.3)
+    spring (3.1.1)
+    sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.4.2)
@@ -438,7 +436,7 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
-  ruby
+  x86_64-darwin-19
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.4)
@@ -500,7 +498,7 @@ DEPENDENCIES
   will_paginate
 
 RUBY VERSION
-   ruby 2.7.4p191
+   ruby 2.6.6p146
 
 BUNDLED WITH
-   2.1.4
+   2.2.11
