@@ -67,14 +67,11 @@ class DashboardsController < ApplicationController
         ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
         GibctSiteMapper.new(ping: ping)
       end
-
-      if Settings.archiver.archive
-        # Archive previous versions of generated data
-        Archiver.archive_previous_versions
-      end
+      Archiver.archive_previous_versions if Settings.archiver.archive
     end
 
     redirect_to dashboards_path
+    `rake fix_coord_mismatch`
   end
 
   def api_fetch
