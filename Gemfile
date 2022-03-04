@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '2.6.6'
+ruby '2.7.4'
 
 # Anchored versions, do not change
 
@@ -56,6 +56,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
+gem 'nokogiri', '>= 1.13.2'
 gem 'ruby-saml'
 gem 'sitemap_generator'
 gem 'strong_migrations'

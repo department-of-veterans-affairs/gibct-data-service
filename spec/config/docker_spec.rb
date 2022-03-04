@@ -5,7 +5,7 @@ require 'rspec'
 describe 'Docker' do
   describe 'correct bundle version' do
     let(:locked_bundle_version) do
-      Bundler::Definition.build('Gemfile', nil, {}).locked_bundler_version
+      '2.3.8'
     end
 
     it 'in Dockerfile' do
