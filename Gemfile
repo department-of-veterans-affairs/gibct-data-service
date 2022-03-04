@@ -56,7 +56,6 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
-gem 'nokogiri', '>= 1.13.2'
 gem 'ruby-saml'
 gem 'sitemap_generator'
 gem 'strong_migrations'
