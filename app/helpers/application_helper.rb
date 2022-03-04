@@ -19,6 +19,12 @@ module ApplicationHelper
     active_link?(path, method) ? content_tag(:a, body) : link_to(body, path)
   end
 
+  def show_geocode_message(version)
+    unless ENV.fetch('RAILS_ENV') == 'test'
+      flash.alert = 'Geocoding Instiutions, publishing to production is disabled' unless version.geocoded
+    end
+  end
+
   # Wraps an array of error messages in an html list with a label (optional) above it
   def pretty_error(errors, error_label = '')
     return '' if errors.blank? && error_label.blank?

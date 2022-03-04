@@ -3,19 +3,16 @@
 class DashboardsController < ApplicationController
   def index
     @uploads = Upload.last_uploads_rows
-
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
-    flash.alert = 'Geocoding Instiutions, publishing to production is disabled' unless Version.current_preview.geocoded
+    show_geocode_message(Version.current_preview)
   end
 
   def build
     results = InstitutionBuilder.run(current_user)
-
     @version = results[:version]
     @error_msg = results[:error_msg]
-
     if @error_msg.present?
       flash.alert = "Preview Data not built: #{@error_msg}"
     else
@@ -24,6 +21,7 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
+    `rake fix_coord_mismatch` unless ENV.fetch('RAILS_ENV') == 'test'
   end
 
   def export
@@ -72,7 +70,6 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
-    `rake fix_coord_mismatch`
   end
 
   def api_fetch
