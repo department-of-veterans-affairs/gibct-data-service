@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:2.6.6-slim-stretch AS base
+FROM ruby:2.7.4-slim-buster AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
@@ -40,7 +40,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.2.11'
+ENV BUNDLER_VERSION='2.3.8'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
