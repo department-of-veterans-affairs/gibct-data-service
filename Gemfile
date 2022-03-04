@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '2.6.6'
+ruby '~> 2.7'
 
 # Anchored versions, do not change
 
@@ -71,7 +71,6 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'jshint', platforms: :ruby
   gem 'rubocop', '0.82.0', require: false
   gem 'rubocop-rails', '2.5.2'
   gem 'rubocop-rspec', '1.38.1'
