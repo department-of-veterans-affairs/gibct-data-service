@@ -6,7 +6,7 @@ class DashboardsController < ApplicationController
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
-    show_geocode_message(Version.current_preview)
+    geocode_message(@preview_versions)
   end
 
   def build
@@ -21,7 +21,7 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
-    `rake fix_coord_mismatch` unless ENV.fetch('RAILS_ENV') == 'test'
+    `rake fix_coord_mismatch`
   end
 
   def export

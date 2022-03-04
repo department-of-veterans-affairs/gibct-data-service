@@ -41,9 +41,9 @@ class ApplicationController < ActionController::Base
     flash[:danger] = message
   end
 
-  def show_geocode_message(version)
-    unless ENV.fetch('RAILS_ENV') == 'test'
-      flash.alert = 'Geocoding Instiutions, publishing to production is disabled' unless version.geocoded
+  def geocode_message(preview_versions)
+    unless preview_versions.present? && preview_versions.first.geocoded
+      flash.alert = 'Geocoding Instiutions, publishing to production is disabled'
     end
   end
 end

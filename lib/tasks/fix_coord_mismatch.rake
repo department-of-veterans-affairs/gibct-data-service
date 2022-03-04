@@ -30,7 +30,7 @@ task fix_coord_mismatch: :environment do
     end
   end
 
-  version.update(geocoded: true)
+  version.update(geocoded: true) if version.present?
 end
 
 def geocode_fields(result, address, address2, address3)
