@@ -21,7 +21,6 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
-    `rake fix_coord_mismatch`
   end
 
   def export

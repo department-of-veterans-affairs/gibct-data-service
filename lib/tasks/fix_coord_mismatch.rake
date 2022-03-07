@@ -7,25 +7,27 @@ task fix_coord_mismatch: :environment do
   by_address = results.select { |r| r.address.present? && r.city.present? }
   country = results.reject { |r| r.physical_country == 'USA' }
 
-  if by_address.present?
-    by_address.each do |result|
-      address = parse_add(result, result.address)
-      address2 = parse_add(result, result.address_2)
-      address3 = parse_add(result, result.address_3)
-      geocode_fields(result, address, address2, address3)
-    end
-  end
-
-  if country.present?
-    country.each do |result|
-      if result.state.present? && result.physical_country.present?
-        geocoded_ct = Geocoder.coordinates(result.physical_country)
-        update_mismatch(result, geocoded_ct)
-      else
-        address = parse_address(result, result.address)
-        address2 = parse_address(result, result.address_2)
-        address3 = parse_address(result, result.address_3)
+  if version.present?
+    if by_address.present? && version.geocoded == false
+      by_address.each do |result|
+        address = parse_add(result, result.address)
+        address2 = parse_add(result, result.address_2)
+        address3 = parse_add(result, result.address_3)
         geocode_fields(result, address, address2, address3)
+      end
+    end
+
+    if country.present?
+      country.each do |result|
+        if result.state.present? && result.physical_country.present? && version.geocoded == false
+          geocoded_ct = Geocoder.coordinates(result.physical_country)
+          update_mismatch(result, geocoded_ct)
+        else
+          address = parse_address(result, result.address)
+          address2 = parse_address(result, result.address_2)
+          address3 = parse_address(result, result.address_3)
+          geocode_fields(result, address, address2, address3)
+        end
       end
     end
   end
