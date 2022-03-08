@@ -32,9 +32,9 @@ module V1
                            .filter_result_v1(@query)
                            .search_order_v1(@query, max_gibill).page(page)
 
-      if @query[:excluded_school_types]&.include?("HIGH SCHOOL")
-        results = results.where("facility_code NOT $LIKE ?", "_5%")
-      end             
+      if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
+        results = results.where('facility_code NOT $LIKE ?', '_5%')
+      end
 
       @meta = {
         version: @version,
