@@ -33,7 +33,7 @@ module V1
                            .search_order_v1(@query, max_gibill).page(page)
 
       if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
-        results = results.where('facility_code NOT $LIKE ?', '_5%')
+        results = results.filter_high_school(@query)
       end
 
       @meta = {
