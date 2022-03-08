@@ -6,8 +6,8 @@ task fix_coord_mismatch: :environment do
   results = Institution.approved_institutions(version)
   by_address = results.select { |r| r.address.present? && r.city.present? }
   country = results.reject { |r| r.physical_country == 'USA' }
-
-  if version.present?
+  # will remove staging check, don't want it running on prod until tested
+  if version.present? && staging?
     if by_address.present? && version.geocoded == false
       by_address.each do |result|
         address = parse_add(result, result.address)
