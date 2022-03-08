@@ -3,18 +3,16 @@
 class DashboardsController < ApplicationController
   def index
     @uploads = Upload.last_uploads_rows
-
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
+    geocode_message(@preview_versions)
   end
 
   def build
     results = InstitutionBuilder.run(current_user)
-
     @version = results[:version]
     @error_msg = results[:error_msg]
-
     if @error_msg.present?
       flash.alert = "Preview Data not built: #{@error_msg}"
     else
@@ -67,11 +65,7 @@ class DashboardsController < ApplicationController
         ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
         GibctSiteMapper.new(ping: ping)
       end
-
-      if Settings.archiver.archive
-        # Archive previous versions of generated data
-        Archiver.archive_previous_versions
-      end
+      Archiver.archive_previous_versions if Settings.archiver.archive
     end
 
     redirect_to dashboards_path
