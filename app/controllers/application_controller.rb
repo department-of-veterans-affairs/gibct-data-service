@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def geocode_message(preview_versions)
-    unless preview_versions.present? && preview_versions.first.geocoded
+    if preview_versions.present? && preview_versions.first.geocoded == false && preview_versions.completed_at.present?
       flash.alert = 'Geocoding Instiutions, publishing to production is disabled'
     end
   end
