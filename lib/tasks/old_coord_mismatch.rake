@@ -2,7 +2,7 @@
 
 desc 'task to update any mistmached coordinates with geocoder gem.'
 task old_coord_mismatch: :environment do
-  results = Institution.approved_institutions(Version.last)
+  results = nstitution.approved_institutions(Version.current_preview).where(latitude: nil, longitude: nil)
   by_address = results.select { |r| r.address.present? && r.city.present? }
 
   if by_address.present?
