@@ -6,7 +6,7 @@ class DashboardsController < ApplicationController
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
-    geocode_message(@preview_versions)
+    geocode_message(Version.current_preview) unless Version.current_preview.nil?
   end
 
   def build

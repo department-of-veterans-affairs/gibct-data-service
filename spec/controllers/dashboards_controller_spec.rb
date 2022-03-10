@@ -74,6 +74,12 @@ RSpec.describe DashboardsController, type: :controller do
       expect(assigns(:error_msg)).to eq('BOOM!')
       expect(Institution.count).to be_zero
     end
+
+    it 'test flash message when geocoding' do
+      post(:build)
+      get(:index)
+      expect(flash[:alert]).to eq('Geocoding Instiutions, publishing to production is disabled')
+    end
   end
 
   describe 'GET export' do
