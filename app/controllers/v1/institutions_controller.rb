@@ -32,7 +32,7 @@ module V1
                            .filter_result_v1(@query)
                            .search_order_v1(@query, max_gibill).page(page)
 
-      results = results.filter_high_school(@query) if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
+      results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
         version: @version,
