@@ -295,6 +295,10 @@ class Institution < ImportableRecord
     escaped_term
   end
 
+  def self.filter_high_school
+    where('facility_code NOT LIKE ?', '_5%')
+  end
+
   #
   # Scopes
   #
@@ -549,7 +553,6 @@ class Institution < ImportableRecord
         end
       end
     end
-
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
     exclude_schools = query.key?(:exclude_schools)
     exclude_employers = query.key?(:exclude_employers)
