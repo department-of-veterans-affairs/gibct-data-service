@@ -6,7 +6,7 @@ task old_coord_mismatch: :environment do
   by_address = results.select { |r| r.address.present? && r.city.present? }
 
   if by_address.present?
-    by_address.each do |result|
+    results.each do |result|
       address = parse_add(result, result.address)
       address2 = parse_add(result, result.address_2)
       address3 = parse_add(result, result.address_3)

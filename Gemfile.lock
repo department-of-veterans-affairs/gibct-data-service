@@ -478,7 +478,7 @@ DEPENDENCIES
   pry-nav
   puma (~> 4.3.9)
   rack-cors
-  rails (= 6.1.4.7)
+  rails (~> 6.1.4.7)
   rails-controller-testing
   rainbow
   roo (~> 2.8)
