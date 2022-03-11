@@ -228,7 +228,6 @@ GEM
       json_schema
     json_schema (0.21.0)
     jsonapi-renderer (0.2.2)
-    libv8 (3.16.14.19)
     libv8 (3.16.14.19-x86_64-linux)
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
