@@ -53,6 +53,8 @@ module V1
       location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
       results = location_results.location_select(@query).location_order
 
+      results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
+
       @meta = {
         version: @version,
         count: location_results.count,
