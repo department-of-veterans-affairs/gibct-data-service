@@ -47,6 +47,7 @@ COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN bundle exec whenever --update-crontab
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
