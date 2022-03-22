@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_03_155317) do
+ActiveRecord::Schema.define(version: 2022_03_22_154645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -463,7 +463,6 @@ ActiveRecord::Schema.define(version: 2022_03_03_155317) do
     t.boolean "solely_requires_coe"
     t.boolean "requires_coe_and_criteria"
     t.integer "count_of_caution_flags", default: 0
-    t.string "section_103_message"
     t.string "poo_status"
     t.integer "hbcu"
     t.integer "hcm2"
@@ -480,6 +479,7 @@ ActiveRecord::Schema.define(version: 2022_03_03_155317) do
     t.boolean "school_provider"
     t.string "in_state_tuition_information"
     t.boolean "vrrap"
+    t.string "section_103_message", default: "no"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin

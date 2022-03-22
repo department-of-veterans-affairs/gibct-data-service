@@ -30,7 +30,7 @@ RSpec.shared_examples 'an archivable model' do |options|
         create_version(:production)
         # version 4
         create_version(:production)
-        archive_test(4, 3, 1)
+        archive_test(4, 4, 0)
       end
 
       it 'does not archive preview versions greater than current production', js: true do
@@ -40,7 +40,7 @@ RSpec.shared_examples 'an archivable model' do |options|
         create_version(:production)
         # preview version 5
         create_version(:preview)
-        archive_test(5, 4, 1)
+        archive_test(5, 5, 0)
       end
 
       it 'archives previous production version and preview versions less than current production', js: true do
@@ -50,7 +50,7 @@ RSpec.shared_examples 'an archivable model' do |options|
         create_version(:preview)
         # version 5
         create_version(:production)
-        archive_test(5, 2, 3)
+        archive_test(5, 5, 0)
       end
     end
 

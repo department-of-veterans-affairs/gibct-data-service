@@ -157,7 +157,8 @@ module V1
         womenonly: boolean_facet,
         hbcu: boolean_facet,
         relaffil: results.filter_count(:relaffil),
-        vet_tec_provider: boolean_facet
+        vet_tec_provider: boolean_facet,
+        section_103_message: boolean_facet
       }
 
       add_active_search_facets(result)

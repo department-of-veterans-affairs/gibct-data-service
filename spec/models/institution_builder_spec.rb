@@ -941,7 +941,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-          .to eq(Institution::DEFAULT_IHL_SECTION_103_MESSAGE)
+          .to eq('no')
       end
 
       it 'does not set default message for nonIHL institutions' do
@@ -949,7 +949,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-          .to be_nil
+          .to eq('no')
       end
 
       it 'sets certificate required message' do
@@ -959,7 +959,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-          .to eq('Requires Certificate of Eligibility (COE)')
+          .to eq('Yes')
       end
 
       it 'sets certificate required plus additional message' do
@@ -969,7 +969,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['section_103_message'])
-          .to eq('Requires Certificate of Eligibility (COE) and additional criteria')
+          .to eq('Yes')
       end
 
       it 'institutions that explicitly do not comply with section 103 are not approved ' do
