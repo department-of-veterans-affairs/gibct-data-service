@@ -9,7 +9,7 @@ ruby '2.7.4'
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '~> 4.3.9'
+gem 'puma', '~> 5.6.4'
 gem 'rails', '~> 6.1.4.7'
 
 # Gems with special version/repo needs
@@ -24,6 +24,7 @@ gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
+gem 'nokogiri', '~> 1.13', '>= 1.13.4'
 gem 'pg'
 gem 'roo', '~> 2.8'
 gem 'roo-xls', '~> 1.2'

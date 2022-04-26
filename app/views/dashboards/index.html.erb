@@ -4,7 +4,11 @@
   </div>
 </div>
 
-<h2>Latest Production Version</h2>
+<% if production? %>
+  <h2>Latest Live Version in Production</h2>
+<% else %>
+  <h2>Latest Live Version in Staging</h2>
+<% end %>
 <div class="row row-space-6">
   <div class="col-xs-12">
     <table class="table table-hover table-condensed table-bordered table-responsive">
