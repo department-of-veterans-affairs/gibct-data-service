@@ -5,7 +5,7 @@ task fix_coord_mismatch: :environment do
   version = Version.current_preview
   results = Institution.approved_institutions(version)
   by_address = results.where(latitude: nil, longitude: nil).where.not(address_1: nil, city: nil)
-  country = results.where.not(physical_country: "USA")
+  country = results.where.not(physical_country: 'USA')
   # will remove staging check, don't want it running on prod until tested
   if version.present?
     if by_address.present? && version.geocoded == false
