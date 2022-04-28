@@ -7,6 +7,7 @@ class DashboardsController < ApplicationController
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
     geocode_message(Version.current_preview) unless Version.current_preview.nil?
+    @aws_loc = (production? ? 'Publish to Production' : 'Publish to Staging')
   end
 
   def build

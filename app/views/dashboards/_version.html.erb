@@ -13,13 +13,13 @@
       <%= link_to 'Download Export CSV', dashboard_export_version_path(version.number),
           class: "btn dashboard-btn-warning btn-xs", role: "button" %>
       <% if version.publishable? && version.geocoded %>
-        <%= link_to 'Publish to Production', dashboard_push_path, method: :post,
-            data: { confirm: "Are you sure you wish to publish preview version #{version.number} to production?" },
+        <%= link_to @aws_loc, dashboard_push_path, method: :post,
+            data: { confirm: "Are you sure you wish to publish preview version #{version.number} to #{production? ? 'production' : 'staging'}?" },
             class: "btn dashboard-btn-danger btn-xs",
             role: "button",
             id: "version_publish" %>
       <% elsif version.preview? %>
-          <a class="btn dashboard-btn-danger btn-xs" disabled role="button">Publish to Production</a>
+          <a class="btn dashboard-btn-danger btn-xs" disabled role="button"><%= @aws_loc %></a>
       <% end %>
     <% end %>
   </td>
