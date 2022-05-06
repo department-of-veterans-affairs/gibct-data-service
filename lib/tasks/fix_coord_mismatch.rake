@@ -11,9 +11,10 @@ task fix_coord_mismatch: :environment do
     if by_address.present? && version.geocoded == false
       by_address.each do |result|
         address = parse_add(result, result.address)
+        address1 = parse_add(result, result.address_1)
         address2 = parse_add(result, result.address_2)
         address3 = parse_add(result, result.address_3)
-        geocode_fields(result, address, address2, address3)
+        geocode_fields(result, address, address1, address2, address3)
       end
     end
 
@@ -24,9 +25,10 @@ task fix_coord_mismatch: :environment do
           update_mismatch(result, geocoded_ct)
         else
           address = parse_address(result, result.address)
+          address1 = parse_address(result, result.address_1)
           address2 = parse_address(result, result.address_2)
           address3 = parse_address(result, result.address_3)
-          geocode_fields(result, address, address2, address3)
+          geocode_fields(result, address, address1, address2, address3)
         end
       end
     end
@@ -35,14 +37,31 @@ task fix_coord_mismatch: :environment do
   version.update(geocoded: true) if version.present?
 end
 
-def geocode_fields(result, address, address2, address3)
+def geocode_fields(result, address, address1, address2, address3)
   geocoded = Geocoder.coordinates(address)
+  geocoded1 = Geocoder.coordinates(address1)
   geocoded2 = Geocoder.coordinates(address2)
   geocoded3 = Geocoder.coordinates(address3)
   if geocoded.present?
     update_mismatch(result, geocoded)
+  elsif geocoded1.present?
+    update_mismatch(result, geocoded1)
   elsif geocoded2.present?
     update_mismatch(result, geocoded2)
+  else
+    check_bad_address(result, geocoded3)
+  end
+end
+
+def check_bad_address(result, geocoded3)
+  stopwords = %w[ave avenue road rd dr drive blvd pkwy]
+  stopwords_regex = /\b(#{Regexp.union(*stopwords).source})\b/i
+  add_split = result.address.split(stopwords_regex).map(&:strip)[0..1].join(' ')
+  new_address = [add_split, result.state, result.zip].compact.join(' ')
+  geocoded = Geocoder.coordinates(new_address)
+  # geocoded.present? ? update_mismatch(result, geocoded) : update_mismatch(result, geocoded3)
+  if geocoded.present?
+    update_mismatch(result, geocoded)
   else
     update_mismatch(result, geocoded3)
   end
