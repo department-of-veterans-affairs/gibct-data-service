@@ -651,6 +651,7 @@ ActiveRecord::Schema.define(version: 2022_05_10_161347) do
     t.boolean "school_provider"
     t.string "in_state_tuition_information"
     t.boolean "vrrap"
+    t.boolean "bad_address", default: false
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|

@@ -16,6 +16,7 @@ FactoryBot.define do
     school_closing { false }
 
     approved { true }
+    bad_address { false }
 
     trait :in_nyc do
       city { 'NEW YORK' }
