@@ -87,5 +87,15 @@ RSpec.describe SearchGeocoder, type: :model do
       expect(Institution.last.latitude).to eq(40.6150446)
       expect(Institution.last.longitude).to eq(15.0495566)
     end
+
+    it 'updates coordinates bad address fields, country with state' do
+      institution = create :institution, :regular_address_country
+      institution.update(version: version, version_id: version.id, state: 'NY')
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_country
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(42.6384261)
+      expect(Institution.last.longitude).to eq(12.674297)
+    end
   end
 end
