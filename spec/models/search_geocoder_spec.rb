@@ -1,0 +1,91 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe SearchGeocoder, type: :model do
+  let(:version) { create(:version, :preview) }
+
+  describe '#process_geocoder_address' do
+    it 'does not process without version' do
+      institution = create :institution, :regular_address
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(nil)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results).to eq([])
+      expect(geo_search_results.results).to eq([])
+      expect(institution.latitude).to eq(nil)
+      expect(institution.longitude).to eq(nil)
+    end
+
+    it 'updates coordinates using address field' do
+      institution = create :institution, :regular_address
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(42.6840271)
+      expect(Institution.last.longitude).to eq(-73.82587727551194)
+    end
+
+    it 'updates coordinates using address_2 field' do
+      institution = create :institution, :regular_address_2
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(42.6840271)
+      expect(Institution.last.longitude).to eq(-73.82587727551194)
+    end
+
+    it 'updates coordinates bad address fields' do
+      institution = create :institution, :bad_address
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(42.6840271)
+      expect(Institution.last.longitude).to eq(-73.82587727551194)
+    end
+
+    it 'updates coordinates bad address fields, can not find address' do
+      institution = create :institution, :bad_address
+      institution.update(version: version, version_id: version.id, address_1: 'sunshine highway')
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(42.6511674)
+      expect(Institution.last.longitude).to eq(-73.754968)
+      expect(Institution.last.bad_address).to eq(true)
+    end
+
+    it 'updates coordinates bad address fields by name' do
+      institution = create :institution, :bad_address_with_name
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(42.6840271)
+      expect(Institution.last.longitude).to eq(-73.82587727551194)
+    end
+
+    it 'coordinates bad address fields by name with numbering' do
+      institution = create :institution, :bad_address_with_name_numbered
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(33.7976469)
+      expect(Institution.last.longitude).to eq(-84.4159008)
+    end
+
+    it 'updates coordinates bad address fields, country' do
+      institution = create :institution, :regular_address_country
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_country
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude).to eq(40.6150446)
+      expect(Institution.last.longitude).to eq(15.0495566)
+    end
+  end
+end
