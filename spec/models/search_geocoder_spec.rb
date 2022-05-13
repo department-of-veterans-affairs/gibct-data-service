@@ -23,8 +23,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(42.6840271)
-      expect(Institution.last.longitude).to eq(-73.82587727551194)
+      expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
 
     it 'updates coordinates using address_2 field' do
@@ -33,8 +33,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(42.6840271)
-      expect(Institution.last.longitude).to eq(-73.82587727551194)
+      expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
 
     it 'updates coordinates bad address fields' do
@@ -43,8 +43,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(42.6840271)
-      expect(Institution.last.longitude).to eq(-73.82587727551194)
+      expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
 
     it 'updates coordinates bad address fields, can not find address' do
@@ -53,8 +53,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(42.6511674)
-      expect(Institution.last.longitude).to eq(-73.754968)
+      expect(Institution.last.latitude.round(2)).to eq(42.6511674.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-73.754968.round(2))
       expect(Institution.last.bad_address).to eq(true)
     end
 
@@ -64,8 +64,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(42.6840271)
-      expect(Institution.last.longitude).to eq(-73.82587727551194)
+      expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
 
     it 'coordinates bad address fields by name with numbering' do
@@ -74,8 +74,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(33.7976469)
-      expect(Institution.last.longitude).to eq(-84.4159008)
+      expect(Institution.last.latitude.round(2)).to eq(33.7976469.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-84.4159008.round(2))
     end
 
     it 'updates coordinates bad address fields, country' do
@@ -84,8 +84,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_country
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(40.6150446)
-      expect(Institution.last.longitude).to eq(15.0495566)
+      expect(Institution.last.latitude.round(2)).to eq(40.6150446.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(15.0495566.round(2))
     end
 
     it 'updates coordinates bad address fields, country with state' do
