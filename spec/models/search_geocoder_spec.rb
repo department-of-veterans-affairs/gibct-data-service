@@ -94,8 +94,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_country
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude).to eq(42.6384261)
-      expect(Institution.last.longitude).to eq(12.674297)
+      expect(Institution.last.latitude.round(2)).to eq(42.6384261.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(12.674297.round(2))
     end
   end
 end
