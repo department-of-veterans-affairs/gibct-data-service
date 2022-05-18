@@ -19,6 +19,17 @@ RSpec.describe SearchGeocoder, type: :model do
 
     it 'updates coordinates using address field' do
       institution = create :institution, :regular_address
+      institution.update(address_2: nil, address_3: nil)
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
+      expect(geo_search_results.results.count).to eq(Institution.count)
+      expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
+      expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
+    end
+
+    it 'updates coordinates using address_1 field' do
+      institution = create :institution, :regular_address
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
