@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module GeocoderLogic
+  private
+
   def check_bad_address(result, geocoded3)
     # uses geocoder text search and looks for coords by Institution name if applicable
     inst = result.institution
