@@ -5,9 +5,11 @@ module GeocoderLogic
 
   def check_bad_address(result, geocoded3)
     # uses geocoder text search and looks for coords by Institution name if applicable
-    inst = result.institution
-    geocode_name = Geocoder.search(inst.downcase.split('#').first) if inst.present?
-    geocode_name.present? ? full_text_search(result, geocode_name, geocoded3) : search_bad_address(result, geocoded3)
+    if result.country == 'USA' || result.physical_country == 'USA'
+      inst = result.institution
+      geocode_name = Geocoder.search(inst.downcase.split('#').first) if inst.present?
+      geocode_name.present? ? full_text_search(result, geocode_name, geocoded3) : search_bad_address(result, geocoded3)
+    end
   end
 
   def search_bad_address(result, geocoded3)
