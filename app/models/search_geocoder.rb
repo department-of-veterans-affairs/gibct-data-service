@@ -2,9 +2,10 @@
 
 class SearchGeocoder
   include ::GeocoderLogic
-  attr_accessor :results, :by_address, :country
+  attr_accessor :version, :results, :by_address, :country
 
   def initialize(version)
+    @version = version
     @results = Institution.approved_institutions(version)
     @by_address = results.where(latitude: nil, longitude: nil).where.not(address_1: nil, city: nil)
     @country = results.where.not(physical_country: 'USA')
@@ -17,6 +18,7 @@ class SearchGeocoder
                  parse_add_fields(result, result.address_2)]
       geocode_fields(result, address)
     end
+    process_geocoder_country
   end
 
   def process_geocoder_country
@@ -31,6 +33,7 @@ class SearchGeocoder
         geocode_fields(result, address)
       end
     end
+    version.update(geocoded: true) if version.present? && version.geocoded == false
   end
 
   def parse_add_fields(res, field)
