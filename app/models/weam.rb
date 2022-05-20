@@ -25,7 +25,7 @@ class Weam < ImportableRecord
 
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
-    address_1 address_2 address_3
+    high_school address_1 address_2 address_3
     country accredited bah poe yr poo_status
     institution_type_name va_highest_degree_offered flight correspondence
     independent_study priority_enrollment

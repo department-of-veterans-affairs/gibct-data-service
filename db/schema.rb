@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_10_161347) do
+ActiveRecord::Schema.define(version: 2022_05_20_205359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -481,6 +481,7 @@ ActiveRecord::Schema.define(version: 2022_05_10_161347) do
     t.boolean "vrrap"
     t.string "section_103_message", default: "no"
     t.boolean "bad_address", default: false
+    t.boolean "high_school", default: false
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -1689,6 +1690,7 @@ ActiveRecord::Schema.define(version: 2022_05_10_161347) do
     t.integer "csv_row"
     t.string "institution_search"
     t.string "in_state_tuition_information"
+    t.boolean "high_school", default: false
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
