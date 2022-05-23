@@ -1,26 +1,52 @@
 # frozen_string_literal: true
 
+# old script to run while search by name for bad addresses is tested
+
 desc 'task to update any mistmached coordinates with geocoder gem.'
 task old_coord_mismatch: :environment do
-  results = Institution.approved_institutions(Version.current_preview).where(latitude: nil, longitude: nil)
-  by_address = results.select { |r| r.address.present? && r.city.present? }
-
-  if by_address.present?
-    results.each do |result|
-      address = parse_add(result, result.address)
-      address2 = parse_add(result, result.address_2)
-      address3 = parse_add(result, result.address_3)
-      geocoded = Geocoder.coordinates(address)
-      geocoded2 = Geocoder.coordinates(address2)
-      geocoded3 = Geocoder.coordinates(address3)
-      if geocoded.present?
-        update_mismatch(result, geocoded)
-      elsif geocoded2.present?
-        update_mismatch(result, geocoded2)
-      else
-        update_mismatch(result, geocoded3)
+  version = Version.current_preview
+  results = Institution.approved_institutions(version)
+  by_address = results.where(latitude: nil, longitude: nil).where.not(address_1: nil, city: nil)
+  country = results.where.not(physical_country: 'USA')
+  # will remove staging check, don't want it running on prod until tested
+  if version.present?
+    if by_address.present? && version.geocoded == false
+      by_address.each do |result|
+        address = parse_add(result, result.address)
+        address2 = parse_add(result, result.address_2)
+        address3 = parse_add(result, result.address_3)
+        geocode_fields(result, address, address2, address3)
       end
     end
+
+    if country.present?
+      country.each do |result|
+        if result.state.present? && result.physical_country.present? && version.geocoded == false
+          geocoded_ct = Geocoder.coordinates(result.physical_country)
+          update_mismatch(result, geocoded_ct)
+        else
+          address = parse_address(result, result.address)
+          address2 = parse_address(result, result.address_2)
+          address3 = parse_address(result, result.address_3)
+          geocode_fields(result, address, address2, address3)
+        end
+      end
+    end
+  end
+
+  version.update(geocoded: true) if version.present?
+end
+
+def geocode_fields(result, address, address2, address3)
+  geocoded = Geocoder.coordinates(address)
+  geocoded2 = Geocoder.coordinates(address2)
+  geocoded3 = Geocoder.coordinates(address3)
+  if geocoded.present?
+    update_mismatch(result, geocoded)
+  elsif geocoded2.present?
+    update_mismatch(result, geocoded2)
+  else
+    update_mismatch(result, geocoded3)
   end
 end
 
@@ -29,6 +55,14 @@ def parse_add(res, address)
     "#{address}, #{res.city}, #{res.state}, #{res.zip}, #{res.country}"
   else
     "#{res.city}, #{res.state}, #{res.zip}, #{res.country}"
+  end
+end
+
+def parse_address(res, field)
+  if field.present?
+    "#{field}, #{res.city}, #{res.physical_country}"
+  else
+    "#{res.city}, #{res.physical_country}"
   end
 end
 

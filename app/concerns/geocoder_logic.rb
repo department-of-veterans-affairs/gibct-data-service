@@ -27,8 +27,8 @@ module GeocoderLogic
       update_mismatch(result, geocoded)
     else
       update_mismatch(result, geocoded3)
-      result.update(bad_address: true)
     end
+    result.update(bad_address: true)
   end
 
   def full_text_search(result, geocode_name, geocoded3)
