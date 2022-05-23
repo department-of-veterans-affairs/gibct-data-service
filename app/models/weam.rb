@@ -25,7 +25,7 @@ class Weam < ImportableRecord
 
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
-    address_1 address_2 address_3
+    high_school address_1 address_2 address_3
     country accredited bah poe yr poo_status
     institution_type_name va_highest_degree_offered flight correspondence
     independent_study priority_enrollment
@@ -77,7 +77,8 @@ class Weam < ImportableRecord
     'stem_indicator' => { column: :stem_indicator, converter: BooleanConverter },
     'campus_indicator' => { column: :campus_type, converter: BaseConverter },
     'parent_facility_code' => { column: :parent_facility_code_id, converter: BaseConverter },
-    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: BaseConverter }
+    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: BaseConverter },
+    'high_school' => { column: :high_school, converter: BooleanConverter }
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all

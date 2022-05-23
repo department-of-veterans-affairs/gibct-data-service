@@ -17,6 +17,7 @@ FactoryBot.define do
 
     approved { true }
     bad_address { false }
+    high_school { false }
 
     trait :in_nyc do
       city { 'NEW YORK' }

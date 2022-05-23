@@ -296,7 +296,7 @@ class Institution < ImportableRecord
   end
 
   def self.filter_high_school
-    where('facility_code NOT LIKE ?', '_5%')
+    where(high_school: false)
   end
 
   #
