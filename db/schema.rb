@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_20_205359) do
+ActiveRecord::Schema.define(version: 2022_05_23_191124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -653,6 +653,7 @@ ActiveRecord::Schema.define(version: 2022_05_20_205359) do
     t.string "in_state_tuition_information"
     t.boolean "vrrap"
     t.boolean "bad_address", default: false
+    t.boolean "high_school", default: false
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|

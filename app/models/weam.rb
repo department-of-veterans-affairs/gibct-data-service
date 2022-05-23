@@ -77,7 +77,8 @@ class Weam < ImportableRecord
     'stem_indicator' => { column: :stem_indicator, converter: BooleanConverter },
     'campus_indicator' => { column: :campus_type, converter: BaseConverter },
     'parent_facility_code' => { column: :parent_facility_code_id, converter: BaseConverter },
-    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: BaseConverter }
+    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: BaseConverter },
+    'high_school' => { column: :high_school, converter: BooleanConverter }
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
