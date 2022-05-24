@@ -252,12 +252,12 @@ GEM
     nenv (0.3.0)
     newrelic_rpm (8.6.0)
     nio4r (2.5.8)
-    nokogiri (1.13.6)
+    nokogiri (1.13.4)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    nokogiri (1.13.6-x86_64-darwin)
+    nokogiri (1.13.4-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.6-x86_64-linux)
+    nokogiri (1.13.4-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -478,7 +478,7 @@ DEPENDENCIES
   json (>= 2.3.0)
   json_matchers
   newrelic_rpm
-  nokogiri (~> 1.13)
+  nokogiri (~> 1.13, >= 1.13.4)
   oj
   pg
   pry-nav
