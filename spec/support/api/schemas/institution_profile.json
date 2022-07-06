@@ -525,6 +525,9 @@
             },
             "vrrap": {
               "type": ["null", "boolean"]
+            },
+            "ownership_name": {
+              "type": ["null", "string"]
             }
           },
           "required": [

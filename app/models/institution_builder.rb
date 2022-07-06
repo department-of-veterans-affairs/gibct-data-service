@@ -32,6 +32,7 @@ module InstitutionBuilder
       add_crosswalk(version.id)
       add_sec103(version.id)
       add_sva(version.id)
+      add_owner(version.id)
       add_vsoc(version.id)
       add_eight_key(version.id)
       add_accreditation(version.id)
@@ -158,6 +159,13 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(str)
+    end
+
+    def self.add_owner(version_id)
+      str = <<-SQL
+        institutions.facility_code = institution_owners.facility_code
+      SQL
+      add_columns_for_update(version_id, InstitutionOwner, str)
     end
 
     def self.add_vsoc(version_id)

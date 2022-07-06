@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_23_191124) do
+ActiveRecord::Schema.define(version: 2022_07_06_131902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -285,6 +285,15 @@ ActiveRecord::Schema.define(version: 2022_05_23_191124) do
     t.bigint "institution_id", null: false
   end
 
+  create_table "institution_owners", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "chief_officer"
+    t.string "ownership_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "institution_programs", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "program_type"
@@ -482,6 +491,8 @@ ActiveRecord::Schema.define(version: 2022_05_23_191124) do
     t.string "section_103_message", default: "no"
     t.boolean "bad_address", default: false
     t.boolean "high_school", default: false
+    t.string "chief_officer"
+    t.string "ownership_name"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -654,6 +665,8 @@ ActiveRecord::Schema.define(version: 2022_05_23_191124) do
     t.boolean "vrrap"
     t.boolean "bad_address", default: false
     t.boolean "high_school", default: false
+    t.string "chief_officer"
+    t.string "ownership_name"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
