@@ -233,7 +233,7 @@ GEM
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.17.0)
+    loofah (2.18.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.2.8)
@@ -277,7 +277,7 @@ GEM
     puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.4)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-test (1.1.0)
@@ -304,7 +304,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.4.2)
+    rails-html-sanitizer (1.4.3)
       loofah (~> 2.3)
     railties (6.1.5.1)
       actionpack (= 6.1.5.1)
@@ -483,9 +483,11 @@ DEPENDENCIES
   pg
   pry-nav
   puma (~> 5.6.4)
+  rack (>= 2.2.3.1)
   rack-cors
   rails (~> 6.1.5.1)
   rails-controller-testing
+  rails-html-sanitizer (>= 1.4.3)
   rainbow
   roo (~> 2.8)
   roo-xls (~> 1.2)

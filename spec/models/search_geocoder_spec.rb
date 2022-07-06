@@ -80,13 +80,14 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'coordinates bad address fields by name with numbering' do
+      # fixed flakey test
       institution = create :institution, :bad_address_with_name_numbered
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(Institution.count)
-      expect(Institution.last.latitude.round(2)).to eq(33.7976469.round(2))
-      expect(Institution.last.longitude.round(2)).to eq(-84.4159008.round(2))
+      expect(Institution.last.latitude.round(1)).to eq(33.7976469.round(1))
+      expect(Institution.last.longitude.round(1)).to eq(-84.4159008.round(1))
     end
 
     it 'updates coordinates bad address fields, country' do
