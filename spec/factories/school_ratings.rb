@@ -26,6 +26,13 @@ FactoryBot.define do
       marketing_practices { nil }
     end
 
+    trait :gi_bill_support_only do
+      overall_experience { nil }
+      quality_of_classes { nil }
+      gi_bill_support { 5 }
+      veteran_community { nil }
+    end
+
     trait :all_threes do
       overall_experience { 3 }
       quality_of_classes { 3 }

@@ -1015,31 +1015,31 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
 
       it 'creates a InstitutionCategoryRating for every category' do
-        create_list(:school_rating, 3, :ihl_facility_code, :online_instruction_only)
+        create_list(:school_rating, 3, :ihl_facility_code, :gi_bill_support_only)
 
         described_class.run(user)
-        expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(7)
+        
+        expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(4)
       end
 
       it 'counts ratings correctly' do
-        create(:school_rating, :ihl_facility_code, online_instruction: 5)
-        create(:school_rating, :ihl_facility_code, online_instruction: 4)
-        create(:school_rating, :ihl_facility_code, online_instruction: 3)
-        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 1)
+        create(:school_rating, :ihl_facility_code, gi_bill_support: 4)
+        create(:school_rating, :ihl_facility_code, gi_bill_support: 3)
+        create(:school_rating, :ihl_facility_code, gi_bill_support: 1)
+        create(:school_rating, :ihl_facility_code, gi_bill_support: 0)
 
         described_class.run(user)
 
-        online_instruction = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'online_instruction')
+        gi_bill_support = InstitutionCategoryRating
+                          .find_by(institution_id: institution.id, category_name: 'gi_bill_support')
 
-        expect(online_instruction.rated1_count).to eq(1)
-        expect(online_instruction.rated2_count).to eq(0)
-        expect(online_instruction.rated3_count).to eq(1)
-        expect(online_instruction.rated4_count).to eq(1)
-        expect(online_instruction.rated5_count).to eq(1)
-        expect(online_instruction.na_count).to eq(0)
-        expect(online_instruction.total_count).to eq(4)
-        expect(online_instruction.average_rating).to eq(3.25)
+        expect(gi_bill_support.rated1_count).to eq(1)
+        expect(gi_bill_support.rated2_count).to eq(0)
+        expect(gi_bill_support.rated3_count).to eq(1)
+        expect(gi_bill_support.rated4_count).to eq(1)
+        expect(gi_bill_support.na_count).to eq(1)
+        expect(gi_bill_support.total_count).to eq(3)
+        expect(gi_bill_support.average_rating).to eq(2.6666666666666665)
       end
 
       it 'ignores "NA" votes when calculating category average' do
@@ -1051,34 +1051,33 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         overall_experience = InstitutionCategoryRating
                              .find_by(institution_id: institution.id, category_name: 'overall_experience')
+
         expect(overall_experience.rated1_count).to eq(0)
         expect(overall_experience.rated2_count).to eq(0)
         expect(overall_experience.rated3_count).to eq(2)
         expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.rated5_count).to eq(0)
         expect(overall_experience.na_count).to eq(0)
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(3)
       end
 
       it 'only counts most recent rating by rater' do
-        create_list(:school_rating, 4, :ihl_facility_code, online_instruction: 2)
-        create(:school_rating, :ihl_facility_code, online_instruction: 2, rater_id: 'test')
-        create(:school_rating, :ihl_facility_code, :next_day, online_instruction: 5, rater_id: 'test')
+        create_list(:school_rating, 4, :ihl_facility_code, quality_of_classes: 2)
+        create(:school_rating, :ihl_facility_code, quality_of_classes: 2, rater_id: 'test')
+        create(:school_rating, :ihl_facility_code, :next_day, quality_of_classes: 3, rater_id: 'test')
 
         described_class.run(user)
 
-        online_instruction = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'online_instruction')
+        quality_of_classes = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'quality_of_classes')
 
-        expect(online_instruction.rated1_count).to eq(0)
-        expect(online_instruction.rated2_count).to eq(4)
-        expect(online_instruction.rated3_count).to eq(0)
-        expect(online_instruction.rated4_count).to eq(0)
-        expect(online_instruction.rated5_count).to eq(1)
-        expect(online_instruction.na_count).to eq(0)
-        expect(online_instruction.total_count).to eq(5)
-        expect(online_instruction.average_rating).to eq(2.6)
+        expect(quality_of_classes.rated1_count).to eq(0)
+        expect(quality_of_classes.rated2_count).to eq(4)
+        expect(quality_of_classes.rated3_count).to eq(1)
+        expect(quality_of_classes.rated4_count).to eq(0)
+        expect(quality_of_classes.na_count).to eq(0)
+        expect(quality_of_classes.total_count).to eq(5)
+        expect(quality_of_classes.average_rating).to eq(2.2)
       end
 
       it 'treats rating <= 0 as NA' do
@@ -1095,13 +1094,12 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.rated2_count).to eq(0)
         expect(overall_experience.rated3_count).to eq(2)
         expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.rated5_count).to eq(0)
         expect(overall_experience.na_count).to eq(2)
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(3)
       end
 
-      it 'treats rating > 5 as 5' do
+      it 'treats rating > 4 as 4' do
         create(:school_rating, :ihl_facility_code, overall_experience: 6)
         create(:school_rating, :ihl_facility_code, overall_experience: 6)
 
@@ -1109,14 +1107,14 @@ RSpec.describe InstitutionBuilder, type: :model do
 
         overall_experience = InstitutionCategoryRating
                              .find_by(institution_id: institution.id, category_name: 'overall_experience')
+
         expect(overall_experience.rated1_count).to eq(0)
         expect(overall_experience.rated2_count).to eq(0)
         expect(overall_experience.rated3_count).to eq(0)
-        expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.rated5_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(2)
         expect(overall_experience.na_count).to eq(0)
         expect(overall_experience.total_count).to eq(2)
-        expect(overall_experience.average_rating).to eq(5)
+        expect(overall_experience.average_rating).to eq(4)
       end
     end
 

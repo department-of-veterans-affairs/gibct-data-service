@@ -13,7 +13,6 @@ module InstitutionBuilder
           rated2_count,
           rated3_count,
           rated4_count,
-          rated5_count,
           na_count,
           average_rating,
           total_count
@@ -25,7 +24,6 @@ module InstitutionBuilder
           SUM(CASE #{category} WHEN 2 THEN 1 ELSE 0 END),
           SUM(CASE #{category} WHEN 3 THEN 1 ELSE 0 END),
           SUM(CASE #{category} WHEN 4 THEN 1 ELSE 0 END),
-          SUM(CASE #{category} WHEN 5 THEN 1 ELSE 0 END),
           SUM(CASE WHEN #{category} IS NULL THEN 1 ELSE 0 END),
           CASE
             WHEN COUNT(#{category}) = 0 THEN NULL
@@ -33,8 +31,7 @@ module InstitutionBuilder
           (SUM(CASE #{category} WHEN 1 THEN 1 ELSE 0 END)
            + SUM(CASE #{category} WHEN 2 THEN 2 ELSE 0 END)
            + SUM(CASE #{category} WHEN 3 THEN 3 ELSE 0 END)
-           + SUM(CASE #{category} WHEN 4 THEN 4 ELSE 0 END)
-           + SUM(CASE #{category} WHEN 5 THEN 5 ELSE 0 END)) / COUNT(#{category})::float
+           + SUM(CASE #{category} WHEN 4 THEN 4 ELSE 0 END)) / COUNT(#{category})::float
           END,
           COUNT(#{category})
         FROM institutions
@@ -50,18 +47,15 @@ module InstitutionBuilder
                   facility_code,
                   CASE
                     WHEN #{category} <= 0 THEN null
-                    WHEN #{category} > 5 THEN 5
+                    WHEN #{category} > 4 THEN 4
                     ELSE #{category}
                   END,
                   ROW_NUMBER() OVER (PARTITION BY rater_id ORDER BY rated_at DESC ) AS row_num
                   FROM school_ratings
                   WHERE overall_experience IS NOT NULL
                   OR quality_of_classes IS NOT NULL
-                  OR online_instruction IS NOT NULL
-                  OR job_preparation IS NOT NULL
                   OR gi_bill_support IS NOT NULL
                   OR veteran_community IS NOT NULL
-                  OR marketing_practices IS NOT NULL
               ) top_votes
             WHERE row_num = 1
           ) votes ON institutions.facility_code = vote_facility_code
@@ -84,22 +78,19 @@ module InstitutionBuilder
           SELECT
             institution_id,
             CASE
-              WHEN SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
+              WHEN SUM(rated4_count) + SUM(rated3_count)
                 + SUM(rated2_count) + SUM(rated1_count) = 0 THEN NULL::float
             ELSE
-            (SUM(rated5_count) * 5 + SUM(rated4_count) * 4 + SUM(rated3_count) * 3
+            (SUM(rated4_count) * 4 + SUM(rated3_count) * 3
               + SUM(rated2_count) * 2 + SUM(rated1_count))
-              / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
+              / (SUM(rated4_count) + SUM(rated3_count)
               + SUM(rated2_count) + SUM(rated1_count))::float
             END average,
             COUNT(DISTINCT CASE
               WHEN overall_experience IS NOT NULL
               OR quality_of_classes IS NOT NULL
-              OR online_instruction IS NOT NULL
-              OR job_preparation IS NOT NULL
               OR gi_bill_support IS NOT NULL
               OR veteran_community IS NOT NULL
-              OR marketing_practices IS NOT NULL
                THEN rater_id END) count
           FROM institution_category_ratings
             INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
