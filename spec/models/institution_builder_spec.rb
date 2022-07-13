@@ -1018,7 +1018,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         create_list(:school_rating, 3, :ihl_facility_code, :gi_bill_support_only)
 
         described_class.run(user)
-        
+
         expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(4)
       end
 
