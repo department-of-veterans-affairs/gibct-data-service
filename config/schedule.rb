@@ -23,8 +23,10 @@ set :job_template, nil
 every 1.day, at: '4:30 pm' do
   command "sudo su - -c 'docker exec -it gi-bill-data-service bash'"
   command 'source config/.env.sh'
-  command 'nohup rake fix_coord_mismatch & exit'
+  command 'nohup rake old_coord_mismatch & exit'
   command "sudo su - -c 'docker exec -it gi-bill-data-service tail -f nohup.out'"
 end
+
+
 
 

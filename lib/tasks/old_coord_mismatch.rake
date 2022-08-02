@@ -5,7 +5,7 @@
 desc 'task to update any mistmached coordinates with geocoder gem.'
 task old_coord_mismatch: :environment do
   version = Version.current_preview
-  results = Institution.approved_institutions(version)
+  results = Institution.approved_institutions(Version.current_preview).where(latitude: nil, longitude: nil).count
   by_address = results.where(latitude: nil, longitude: nil).where.not(address_1: nil, city: nil)
   country = results.where.not(physical_country: 'USA')
   # will remove staging check, don't want it running on prod until tested

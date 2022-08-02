@@ -67,42 +67,54 @@ module InstitutionBuilder
     end
 
     def self.build(version_id)
-      InstitutionCategoryRating::RATING_CATEGORY_COLUMNS.each do |category_column|
-        build_institution_category_ratings_for_category(version_id, category_column)
-      end
-
-      sql = <<-SQL
-        UPDATE institutions
-        SET rating_average = ratings.average, rating_count = ratings.count
-        FROM(
-          SELECT
-            institution_id,
-            CASE
-              WHEN SUM(rated4_count) + SUM(rated3_count)
-                + SUM(rated2_count) + SUM(rated1_count) = 0 THEN NULL::float
-            ELSE
-            (SUM(rated4_count) * 4 + SUM(rated3_count) * 3
-              + SUM(rated2_count) * 2 + SUM(rated1_count))
-              / (SUM(rated4_count) + SUM(rated3_count)
-              + SUM(rated2_count) + SUM(rated1_count))::float
-            END average,
-            COUNT(DISTINCT CASE
-              WHEN overall_experience IS NOT NULL
-              OR quality_of_classes IS NOT NULL
-              OR gi_bill_support IS NOT NULL
-              OR veteran_community IS NOT NULL
-               THEN rater_id END) count
-          FROM institution_category_ratings
-            INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
-              AND institutions.version_id = #{version_id}
-            INNER JOIN school_ratings ON institutions.facility_code = school_ratings.facility_code
-          group by institution_id
-        ) ratings
-        WHERE id = ratings.institution_id
-        AND version_id = #{version_id}
+      str = <<-SQL
+        UPDATE school_ratings SET 
+          quality_of_classes = ((instructor_knowledge + instructor_engagement + course_material_support + succesful_learning_experience + contribution_career_learning_experience ) / 5),
+          gi_bill_support = ((interact_school_officials + support_school_officials + avail_school_officials + timely_completion_docs + helpfulness_school) / 5),
+          veteran_community = ((extent_support_school + extent_support_others) / 2),
+          overall_experience = ((overall_learning_experience + overall_school_experience) / 2);
       SQL
 
-      Institution.connection.update(sql)
+      SchoolRating.connection.update(str)
+
+      # SchoolRating.connection.execute(SchoolRating.send(:sanitize_sql_for_conditions, [str]))
+
+      # InstitutionCategoryRating::RATING_CATEGORY_COLUMNS.each do |category_column|
+      #   build_institution_category_ratings_for_category(version_id, category_column)
+      # end
+
+      # sql = <<-SQL
+      #   UPDATE institutions
+      #   SET rating_average = ratings.average, rating_count = ratings.count
+      #   FROM(
+      #     SELECT
+      #       institution_id,
+      #       CASE
+      #         WHEN SUM(rated4_count) + SUM(rated3_count)
+      #           + SUM(rated2_count) + SUM(rated1_count) = 0 THEN NULL::float
+      #       ELSE
+      #       (SUM(rated4_count) * 4 + SUM(rated3_count) * 3
+      #         + SUM(rated2_count) * 2 + SUM(rated1_count))
+      #         / (SUM(rated4_count) + SUM(rated3_count)
+      #         + SUM(rated2_count) + SUM(rated1_count))::float
+      #       END average,
+      #       COUNT(DISTINCT CASE
+      #         WHEN overall_experience IS NOT NULL
+      #         OR quality_of_classes IS NOT NULL
+      #         OR gi_bill_support IS NOT NULL
+      #         OR veteran_community IS NOT NULL
+      #          THEN rater_id END) count
+      #     FROM institution_category_ratings
+      #       INNER JOIN institutions ON institution_category_ratings.institution_id = institutions.id
+      #         AND institutions.version_id = #{version_id}
+      #       INNER JOIN school_ratings ON institutions.facility_code = school_ratings.facility_code
+      #     group by institution_id
+      #   ) ratings
+      #   WHERE id = ratings.institution_id
+      #   AND version_id = #{version_id}
+      # SQL
+
+      # Institution.connection.update(sql)
     end
   end
 end

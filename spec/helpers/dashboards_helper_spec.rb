@@ -7,6 +7,10 @@ RSpec.describe DashboardsHelper, type: :helper do
   let(:missing_required) { build :upload, :missing_required }
   let(:missing_upload) { build :upload, :missing_upload }
   let(:user) { User.first }
+  let(:preview_version1) { FactoryBot.create(:version, :preview) }
+  let(:preview_version2) { FactoryBot.create(:version, :preview) }
+  let(:prod_version1) { FactoryBot.create(:version, :production) }
+  let(:prod_version2) { FactoryBot.create(:version, :production) }
 
   describe 'latest_upload_class' do
     it 'no class for ok upload' do
@@ -45,6 +49,26 @@ RSpec.describe DashboardsHelper, type: :helper do
     it 'returns true when fetch is in progress' do
       create :upload, :scorecard_in_progress
       expect(helper.cannot_fetch_api(Scorecard.name)).to eq(true)
+    end
+  end
+
+  describe 'can_generate_preview' do
+    it 'returns false when fetch is not in progress' do
+      create :upload, :scorecard_finished
+      expect(helper.can_generate_preview([preview_version1, preview_version2])).to eq('disabled')
+    end
+
+    it 'returns true when fetch is in progress' do
+      create :upload, :scorecard_in_progress
+      expect(helper.can_generate_preview([prod_version1, prod_version2])).to eq(nil)
+    end
+  end
+
+  describe 'hide_upload_type' do
+    it 'returns false when ' do
+      create :upload, :scorecard_finished
+      byebug
+      expect(helper.hide_upload_type(Upload.first)).to eq('false')
     end
   end
 end
