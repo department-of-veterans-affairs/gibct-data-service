@@ -67,7 +67,6 @@ RSpec.describe DashboardsHelper, type: :helper do
   describe 'hide_upload_type' do
     it 'returns false when ' do
       create :upload, :scorecard_finished
-      byebug
       expect(helper.hide_upload_type(Upload.first)).to eq('false')
     end
   end
