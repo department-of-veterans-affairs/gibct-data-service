@@ -70,6 +70,13 @@ module InstitutionBuilder
       build_messages = {}
       begin
         Institution.transaction do
+          Institution.update_attributes(
+            accredited: false, # data type boolean
+            accreditation_type: nil, # data type string
+            accreditation_status: nil, # data type string
+            caution_flag: false,  # data type boolean
+            caution_flag_reason: nil, # data type string
+          )
           build_messages = run_insertions(version)
         end
 
