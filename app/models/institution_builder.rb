@@ -71,7 +71,7 @@ module InstitutionBuilder
       begin
         Institution.transaction do
           if staging?
-            Institution.update(
+            Institution.in_batches.update_all(
               accredited: nil,
               accreditation_type: nil,
               accreditation_status: nil,
