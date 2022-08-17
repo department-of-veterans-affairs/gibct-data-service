@@ -983,12 +983,11 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when calculating category ratings' do
-      let(:institution) { institutions.find_by(facility_code: weam.facility_code) }
-      let(:weam) { Weam.find_by(facility_code: '11000000') }
-
       before do
         allow(VetsApi::Service).to receive(:feature_enabled?).and_return(true)
-        create :weam, :ihl_facility_code
+        weam = create :weam, :ihl_facility_code
+        create(:institution, facility_code: weam.facility_code)
+        @institution = institutions.find_by(facility_code: weam.facility_code)
       end
 
       it 'counts number of total institution ratings' do
@@ -1050,7 +1049,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+                             .find_by(institution_id: @institution.id, category_name: 'overall_experience')
 
         expect(overall_experience.rated1_count).to eq(0)
         expect(overall_experience.rated2_count).to eq(0)
