@@ -62,7 +62,6 @@ module InstitutionBuilder
         WHERE version_id = #{version_id}
         GROUP BY institutions.id
       SQL
-      byebug
       InstitutionCategoryRating.connection.execute(InstitutionCategoryRating.send(:sanitize_sql_for_conditions, [sql]))
     end
 
