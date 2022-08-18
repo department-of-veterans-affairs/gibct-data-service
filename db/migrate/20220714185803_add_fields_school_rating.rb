@@ -26,5 +26,10 @@ class AddFieldsSchoolRating < ActiveRecord::Migration[6.1]
 	add_column :school_ratings, :extent_support_others, :integer, default: 0
 	add_column :school_ratings, :overall_learning_experience, :integer, default: 0
 	add_column :school_ratings, :overall_school_experience, :integer, default: 0
+	add_column :school_ratings, :overall_experience, :integer, default: 0
+	add_column :school_ratings, :gi_bill_support, :integer, default: 0
+	add_column :school_ratings, :veteran_community, :integer, default: 0
+	add_column :school_ratings, :quality_of_classes, :integer, default: 0
   end
 end
+# 

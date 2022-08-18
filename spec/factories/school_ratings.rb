@@ -35,12 +35,9 @@ FactoryBot.define do
 
     trait :all_threes do
       overall_experience { 3 }
-      quality_of_classes { 3 }
-      online_instruction { 3 }
-      job_preparation { 3 }
       gi_bill_support { 3 }
       veteran_community { 3 }
-      marketing_practices { 3 }
+      quality_of_classes { 3 }
     end
   end
 end
