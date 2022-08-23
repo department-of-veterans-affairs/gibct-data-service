@@ -18,6 +18,7 @@ FactoryBot.define do
     approved { true }
     bad_address { false }
     high_school { false }
+    ownership_name { nil }
 
     trait :in_nyc do
       city { 'NEW YORK' }
@@ -25,6 +26,7 @@ FactoryBot.define do
       country { 'USA' }
       physical_state { 'NY' }
       physical_country { 'USA' }
+      ownership_name { 'test' }
     end
 
     trait :in_new_rochelle do
@@ -33,6 +35,7 @@ FactoryBot.define do
       country { 'USA' }
       physical_state { 'NY' }
       physical_country { 'USA' }
+      ownership_name { 'test' }
     end
 
     trait :in_chicago do
@@ -40,6 +43,7 @@ FactoryBot.define do
       state { 'IL' }
       country { 'USA' }
       stem_offered { true }
+      ownership_name { 'test' }
     end
 
     trait :uchicago do
@@ -50,6 +54,7 @@ FactoryBot.define do
       country { 'USA' }
       physical_state { 'IL' }
       physical_country { 'USA' }
+      ownership_name { 'test' }
     end
 
     trait :independent_study do
@@ -61,6 +66,7 @@ FactoryBot.define do
       physical_state { 'NM' }
       physical_country { 'USA' }
       independent_study { true }
+      ownership_name { 'test' }
     end
 
     trait :priority_enrollment do
@@ -72,6 +78,7 @@ FactoryBot.define do
       physical_state { 'NM' }
       physical_country { 'USA' }
       priority_enrollment { true }
+      ownership_name { 'test' }
     end
 
     trait :start_like_harv do
@@ -81,6 +88,7 @@ FactoryBot.define do
       country { 'USA' }
       physical_state { 'MA' }
       physical_country { 'USA' }
+      ownership_name { 'test' }
     end
 
     trait :contains_harv do
@@ -90,6 +98,7 @@ FactoryBot.define do
       country { 'USA' }
       physical_state { 'MA' }
       physical_country { 'USA' }
+      ownership_name { 'test' }
     end
 
     trait :ca_employer do
@@ -104,6 +113,7 @@ FactoryBot.define do
       employer_provider { true }
       vet_tec_provider { false }
       school_provider { false }
+      ownership_name { 'test' }
     end
 
     trait :institution_builder do
@@ -111,6 +121,7 @@ FactoryBot.define do
       ope { '00279100' }
       ope6 { '02791' }
       cross { '999999' }
+      ownership_name { 'test' }
     end
 
     trait :vet_tec_provider do
@@ -124,6 +135,7 @@ FactoryBot.define do
       vet_tec_provider { true }
       school_provider { false }
       employer_provider { false }
+      ownership_name { 'test' }
     end
 
     trait :exclude_caution_flags do
