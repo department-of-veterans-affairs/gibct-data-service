@@ -110,7 +110,7 @@ module InstitutionBuilder
       end
 
       # not working, will fix later
-      version.destroy unless success
+      version.delete unless success
 
       { version: Version.current_preview, error_msg: error_msg,
         notice: notice, success: success, messages: build_messages }

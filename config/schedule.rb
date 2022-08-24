@@ -28,5 +28,3 @@ every 1.day, at: '4:30 pm' do
 end
 
 
-
-

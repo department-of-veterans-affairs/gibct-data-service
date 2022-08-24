@@ -996,6 +996,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         create(:school_rating)
 
         described_class.run(user)
+
         expect(institution.rating_count).to eq(7)
       end
 
