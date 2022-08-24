@@ -82,8 +82,13 @@ module InstitutionBuilder
             )
             # rubocop:enable Rails/SkipsModelValidations
           end
-          RatingsBuilder.build(version.id)
           build_messages = run_insertions(version)
+        end
+
+        if VetsApi::Service.feature_enabled?('gibct_school_ratings')
+          Institution.transaction do
+            RatingsBuilder.build(version.id)
+          end
         end
 
         version.update(completed_at: Time.now.utc.to_s(:db))

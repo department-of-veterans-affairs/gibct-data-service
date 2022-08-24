@@ -16,14 +16,11 @@ FactoryBot.define do
       rated_at { DateTime.parse('2020-02-01T12:05:02+08:00') }
     end
 
-    trait :online_instruction_only do
+    trait :quality_of_classes_only do
       overall_experience { nil }
-      quality_of_classes { nil }
-      online_instruction { 5 }
-      job_preparation { nil }
+      quality_of_classes { 5 }
       gi_bill_support { nil }
       veteran_community { nil }
-      marketing_practices { nil }
     end
 
     trait :gi_bill_support_only do

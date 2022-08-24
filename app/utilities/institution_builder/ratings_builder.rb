@@ -82,7 +82,7 @@ module InstitutionBuilder
             ELSE
             (SUM(rated4_count) * 4 + SUM(rated3_count) * 3
               + SUM(rated2_count) * 2 + SUM(rated1_count))
-              / (SUM(rated5_count) + SUM(rated4_count) + SUM(rated3_count)
+              / (SUM(rated4_count) + SUM(rated3_count)
               + SUM(rated2_count) + SUM(rated1_count))::float
             END average,
             COUNT(DISTINCT CASE
