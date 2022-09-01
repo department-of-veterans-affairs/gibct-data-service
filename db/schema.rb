@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_06_142339) do
+ActiveRecord::Schema.define(version: 2022_07_14_185803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1331,6 +1331,32 @@ ActiveRecord::Schema.define(version: 2022_07_06_142339) do
     t.integer "veteran_community"
     t.integer "marketing_practices"
     t.datetime "rated_at", null: false
+    t.string "email_address"
+    t.string "age"
+    t.string "gender"
+    t.string "school"
+    t.string "degree"
+    t.datetime "graduation_date"
+    t.string "benefit_program"
+    t.string "enrollment_type"
+    t.string "monthly_payments_benefit"
+    t.string "payee_number"
+    t.string "objective_code"
+    t.datetime "survey_sent_date"
+    t.integer "instructor_knowledge", default: 0
+    t.integer "instructor_engagement", default: 0
+    t.integer "course_material_support", default: 0
+    t.integer "succesful_learning_experience", default: 0
+    t.integer "contribution_career_learning_experience", default: 0
+    t.integer "interact_school_officials", default: 0
+    t.integer "support_school_officials", default: 0
+    t.integer "avail_school_officials", default: 0
+    t.integer "timely_completion_docs", default: 0
+    t.integer "helpfulness_school", default: 0
+    t.integer "extent_support_school", default: 0
+    t.integer "extent_support_others", default: 0
+    t.integer "overall_learning_experience", default: 0
+    t.integer "overall_school_experience", default: 0
   end
 
   create_table "scorecard_degree_programs", force: :cascade do |t|

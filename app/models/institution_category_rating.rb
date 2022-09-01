@@ -3,12 +3,9 @@
 class InstitutionCategoryRating < ApplicationRecord
   RATING_CATEGORY_COLUMNS = %w[
     overall_experience
-    quality_of_classes
-    online_instruction
-    job_preparation
     gi_bill_support
     veteran_community
-    marketing_practices
+    quality_of_classes
   ].freeze
 
   belongs_to :institution

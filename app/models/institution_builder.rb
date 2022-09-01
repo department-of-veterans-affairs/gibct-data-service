@@ -71,6 +71,18 @@ module InstitutionBuilder
       build_messages = {}
       begin
         Institution.transaction do
+          if staging?
+            # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
+            # rubocop:disable Rails/SkipsModelValidations
+            Institution.in_batches.update_all(
+              accredited: nil,
+              accreditation_type: nil,
+              accreditation_status: nil,
+              caution_flag: nil,
+              caution_flag_reason: nil
+            )
+            # rubocop:enable Rails/SkipsModelValidations
+          end
           build_messages = run_insertions(version)
         end
 

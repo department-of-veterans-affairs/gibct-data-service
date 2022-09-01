@@ -36,9 +36,9 @@ module DashboardsHelper
                upload[:klass].name
              end
 
-      name == csv_type && upload[:feature_flag].present?
+      name == csv_type
     end.first
 
-    upload_type.present? && !VetsApi::Service.feature_enabled?(upload_type[:feature_flag])
+    upload_type.present?
   end
 end

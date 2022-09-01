@@ -90,6 +90,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :school_provider
   attribute :vet_tec_provider
   attribute :employer_provider
+  attribute :ownership_name
 
   def yellow_ribbon_programs
     object.yellow_ribbon_programs.map do |yrp|
