@@ -53,20 +53,6 @@ jobs:
         with:
           ssm_parameter: /devops/VA_VSP_BOT_GITHUB_TOKEN
           env_variable_name: VA_VSP_BOT_GITHUB_TOKEN
-      - name: Check out Manifest Repo
-        uses: actions/checkout@v2
-        with:
-          repository: department-of-veterans-affairs/vsp-infra-application-manifests
-          token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}
-          fetch-depth: 1
-          path: vsp-infra-application-manifests
-      - name: Update Manifest in dev and staging
-        env:
-            IMAGE_TAG: ${{ github.sha }}
-        run: |
-          echo "{\"imageTag\": \"${IMAGE_TAG}\"}" > vsp-infra-application-manifests/apps/vsp-tools-backend/gibct-data-service/dev/config.json
-          echo "{\"imageTag\": \"${IMAGE_TAG}\"}" > vsp-infra-application-manifests/apps/vsp-tools-backend/gibct-data-service/staging/config.json
-      - name: Add and Commit file for dev and staging
         uses: EndBug/add-and-commit@v7
         with:
             add: '["dev/config.json", "staging/config.json"]'
