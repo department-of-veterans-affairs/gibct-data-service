@@ -63,10 +63,4 @@ RSpec.describe DashboardsHelper, type: :helper do
       expect(helper.can_generate_preview([prod_version1, prod_version2])).to eq(nil)
     end
   end
-
-  describe 'hide_upload_type' do
-    it 'hides SchoolRating' do
-      expect(helper.hide_upload_type(SchoolRating.name)).to eq(true)
-    end
-  end
 end
