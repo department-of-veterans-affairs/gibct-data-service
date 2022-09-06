@@ -1,0 +1,15 @@
+name: runs test on dev/staging
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Run Tests
+        run: |
+          make ci
