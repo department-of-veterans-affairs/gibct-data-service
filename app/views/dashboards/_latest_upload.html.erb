@@ -1,6 +1,4 @@
-<% if hide_upload_type(upload.csv_type) %>
-<%else %>
-  <tr id="row_<%=upload.csv_type%>"
+<tr id="row_<%=upload.csv_type%>"
       class="<%= latest_upload_class(upload) %>"
       title="<%= latest_upload_title(upload) %>">
     <td><%= upload.csv_type %></td>
@@ -36,4 +34,3 @@
       <% end %>
     </td>
   </tr>
-<%end %>

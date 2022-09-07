@@ -22,23 +22,4 @@ module DashboardsHelper
   def cannot_fetch_api(csv_type)
     Upload.fetching_for?(csv_type)
   end
-
-  # In production Hide upload types that are disabled via boolean property not_prod_ready?
-  #
-  # If an upload type has a feature_flag String property check if enabled
-  def hide_upload_type(csv_type)
-    return true if production? && UPLOAD_TYPES_NO_PROD_NAMES.include?(csv_type)
-
-    upload_type = UPLOAD_TYPES.select do |upload|
-      name = if upload[:klass].is_a? String
-               upload[:klass]
-             else
-               upload[:klass].name
-             end
-
-      name == csv_type
-    end.first
-
-    upload_type.present?
-  end
 end
