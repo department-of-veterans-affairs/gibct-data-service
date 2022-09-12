@@ -16,7 +16,7 @@ class SchoolRating < ImportableRecord
     'payee_number' => { column: :payee_number, converter: BaseConverter },
     'objective_code' => { column: :objective_code, converter: BaseConverter },
     'rated_at' => { column: :rated_at, converter: DateConverter },
-    'survey_sent_date' => { column: :survey_sent_date, converter: BaseConverter },
+    'survey_sent_date' => { column: :survey_sent_date, converter: DateConverter },
     'overall_experience' => { column: :overall_experience, converter: BaseConverter },
     'gi_bill_support' => { column: :gi_bill_support, converter: BaseConverter },
     'veteran_community' => { column: :veteran_community, converter: BaseConverter },
