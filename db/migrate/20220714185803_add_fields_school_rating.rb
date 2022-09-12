@@ -1,5 +1,6 @@
 class AddFieldsSchoolRating < ActiveRecord::Migration[6.1]
   def change
+  	#add fields to school ratings
   	add_column :school_ratings, :email_address, :string
 	add_column :school_ratings, :age, :string
 	add_column :school_ratings, :gender, :string
