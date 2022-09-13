@@ -9,7 +9,7 @@ class SchoolRating < ImportableRecord
     'school' => { column: :school, converter: BaseConverter },
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'degree' => { column: :degree, converter: BaseConverter },
-    'graduation_date' => { column: :graduation_date, converter: BaseConverter },
+    'graduation_date' => { column: :graduation_date, converter: DateConverter },
     'benefit_program' => { column: :benefit_program, converter: BaseConverter },
     'enrollment_type' => { column: :enrollment_type, converter: BaseConverter },
     'monthly_payments_benefit' => { column: :monthly_payments_benefit, converter: BaseConverter },
