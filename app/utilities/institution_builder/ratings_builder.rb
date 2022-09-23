@@ -71,6 +71,30 @@ module InstitutionBuilder
       end
 
       sql = <<-SQL
+        UPDATE institution_category_ratings
+        set instructor_knowledge = school_ratings.instructor_knowledge,
+            instructor_engagement = school_ratings.instructor_engagement,
+            course_material_support = school_ratings.course_material_support,
+            succesful_learning_experience = school_ratings.succesful_learning_experience,
+            contribution_career_learning_experience = school_ratings.contribution_career_learning_experience,
+            interact_school_officials = school_ratings.interact_school_officials,
+            support_school_officials = school_ratings.support_school_officials,
+            avail_school_officials = school_ratings.avail_school_officials,
+            timely_completion_docs = school_ratings.timely_completion_docs,
+            helpfulness_school = school_ratings.helpfulness_school,
+            extent_support_school = school_ratings.extent_support_school,
+            extent_support_others = school_ratings.extent_support_others,
+            overall_learning_experience = school_ratings.overall_learning_experience,
+            overall_school_experience = school_ratings.overall_school_experience
+        FROM school_ratings, institutions
+        WHERE institutions.facility_code = school_ratings.facility_code
+          AND institutions.id = institution_category_ratings.institution_id
+          AND institutions.version_id = #{version_id}
+      SQL
+
+      InstitutionCategoryRating.connection.execute(InstitutionCategoryRating.send(:sanitize_sql_for_conditions, [sql]))
+
+      sql = <<-SQL
         UPDATE institutions
         SET rating_average = ratings.average, rating_count = ratings.count
         FROM(
