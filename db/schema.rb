@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_14_185803) do
+ActiveRecord::Schema.define(version: 2022_09_23_174542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -269,6 +269,20 @@ ActiveRecord::Schema.define(version: 2022_07_14_185803) do
     t.integer "rated1_count"
     t.integer "na_count"
     t.bigint "institution_id", null: false
+    t.integer "instructor_knowledge", default: 0
+    t.integer "instructor_engagement", default: 0
+    t.integer "course_material_support", default: 0
+    t.integer "succesful_learning_experience", default: 0
+    t.integer "contribution_career_learning_experience", default: 0
+    t.integer "interact_school_officials", default: 0
+    t.integer "support_school_officials", default: 0
+    t.integer "avail_school_officials", default: 0
+    t.integer "timely_completion_docs", default: 0
+    t.integer "helpfulness_school", default: 0
+    t.integer "extent_support_school", default: 0
+    t.integer "extent_support_others", default: 0
+    t.integer "overall_learning_experience", default: 0
+    t.integer "overall_school_experience", default: 0
     t.index ["institution_id"], name: "index_institution_category_ratings_on_institution_id"
   end
 
@@ -283,6 +297,20 @@ ActiveRecord::Schema.define(version: 2022_07_14_185803) do
     t.integer "rated1_count"
     t.integer "na_count"
     t.bigint "institution_id", null: false
+    t.integer "instructor_knowledge", default: 0
+    t.integer "instructor_engagement", default: 0
+    t.integer "course_material_support", default: 0
+    t.integer "succesful_learning_experience", default: 0
+    t.integer "contribution_career_learning_experience", default: 0
+    t.integer "interact_school_officials", default: 0
+    t.integer "support_school_officials", default: 0
+    t.integer "avail_school_officials", default: 0
+    t.integer "timely_completion_docs", default: 0
+    t.integer "helpfulness_school", default: 0
+    t.integer "extent_support_school", default: 0
+    t.integer "extent_support_others", default: 0
+    t.integer "overall_learning_experience", default: 0
+    t.integer "overall_school_experience", default: 0
   end
 
   create_table "institution_owners", force: :cascade do |t|
