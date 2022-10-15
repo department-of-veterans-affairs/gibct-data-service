@@ -12,9 +12,10 @@ RSpec.describe 'Dashboard', type: :request do
   end
 
   it 'responds to POST #build with success' do
+    create(:version, :production)
     post dashboard_build_path
     expect(response).to redirect_to('/dashboards')
-    expect(flash[:notice]).to match 'Preview Data (1) built successfully'
+    expect(flash[:notice]).to include("Preview Data", "built successfully")
   end
 
   it 'responds to POST #push' do
