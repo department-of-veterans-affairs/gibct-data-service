@@ -133,16 +133,6 @@ RSpec.describe SearchGeocoder, type: :model do
       expect(geocoder.results.ids).not_to include(geocoded_institution.id)
     end
 
-    it 'does not include current production institutions with no_geocode_match true' do
-      non_geocoded_institution = create :institution, :regular_address
-      non_geocoded_institution.update(version: version, version_id: version.id)
-      no_geocode_match_true = create(:institution, :regular_address, :no_geocode_match)
-
-      geocoder = described_class.new(version)
-      expect(geocoder.results.ids).to include(non_geocoded_institution.id)
-      expect(geocoder.results.ids).not_to include(no_geocode_match_true.id)
-    end
-
     it 'by_address collection only includes country USA or nil' do
       institution1 = create :institution, :physical_address
       institution1.update(version: version, version_id: version.id)
@@ -166,14 +156,6 @@ RSpec.describe SearchGeocoder, type: :model do
       # addresses get combined into address[0], address[1] and address[2] behave as expected
       expect(Institution.first.latitude.round(2)).to eq(38.9890174.round(2))
       expect(Institution.first.longitude.round(2)).to eq(-77.149411.round(2))
-    end
-
-    it 'sets no_geocode_match if geocoding unsuccessful' do
-      institution = create :institution, :ungeocodable
-      institution.update(version: version, version_id: version.id)
-      geocoder = described_class.new(version)
-      geocoder.process_geocoder_address
-      expect(Institution.first.no_geocode_match).to eq( true )
     end
 
     it 'geocodes foreign address in bad_address logic if unable to geocode by address lines' do

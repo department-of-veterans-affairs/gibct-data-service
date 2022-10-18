@@ -521,7 +521,6 @@ ActiveRecord::Schema.define(version: 2022_09_28_231214) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
-    t.boolean "no_geocode_match", default: false
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -696,7 +695,6 @@ ActiveRecord::Schema.define(version: 2022_09_28_231214) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
-    t.boolean "no_geocode_match", default: false
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|

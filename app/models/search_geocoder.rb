@@ -7,7 +7,7 @@ class SearchGeocoder
   def initialize(version)
     @version = version
     # note that after successful updates, results get decremented
-    @results = Institution.approved_institutions(version).where(latitude: nil, longitude: nil, no_geocode_match: false) 
+    @results = Institution.approved_institutions(version).where(latitude: nil, longitude: nil)
     Rails.logger.info "@results size: #{@results.size}"
     @by_address = results.where(physical_country: ['USA', nil])
     Rails.logger.info "by_address size:  #{@by_address.size}"
@@ -75,8 +75,7 @@ class SearchGeocoder
     if geocoded_coord.present?
       update_institution(result, geocoded_coord[0], geocoded_coord[1])
     else
-      Rails.logger.info "  No coordinates found, long/lat will not be updated, no_geocode_match will be updated to true"
-      result.no_geocode_match = true
+      Rails.logger.info "  No coordinates found, long/lat will not be updated"
       result.save(validate: false)
     end
   end

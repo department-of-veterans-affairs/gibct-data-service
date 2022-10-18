@@ -311,20 +311,6 @@ FactoryBot.define do
       zip { '20817' }
     end
 
-    trait :no_geocode_match do
-      no_geocode_match { true }
-    end
-
-    trait :ungeocodable do
-      address_3 { 'tkladieeaa' }
-      address_2 { 'adsfadsfadsf' }
-      address_1 { 'kljlkjnn' }
-      city { 'weijdia' }
-      state { 'ZZ' }
-      country { 'USA' }
-      zip { '00100' }
-    end
-
     trait :foreign_bad_address do
       address_1 { 'CASH OFFICE FIN SVCS' }
       address_2 { 'UNIT 1 MARKET SQUARE' }

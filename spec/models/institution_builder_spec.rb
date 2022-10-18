@@ -1168,14 +1168,5 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(institution2.longitude).not_to be_nil
       expect(institution2.latitude).not_to be_nil
     end
-
-    it 'sets no_geocode_match to true if geocode unsuccessful and address has not changed' do
-      institution.no_geocode_match = true
-      institution.save
-      described_class.run(user)
-      institution2 = Institution.last
-
-      expect(institution2.no_geocode_match).to eq(true)
-    end
   end
 end
