@@ -851,7 +851,7 @@ module InstitutionBuilder
             or (i.physical_city is null and prod_i.physical_city is null)
             )
 
-        AND (i.physical_state = prod_i.physical_state 
+        AND (i.physical_state = prod_i.physical_state
             or (i.physical_state is null and prod_i.physical_state is null)
             )
 
@@ -868,13 +868,13 @@ module InstitutionBuilder
     end
 
     def self.geocode_institutions(version)
-      start = Time.now
-      search_geocoder = SearchGeocoder.new(version) 
+      start = Time.now.utc
+      search_geocoder = SearchGeocoder.new(version)
       search_geocoder.process_geocoder_address if search_geocoder.by_address.present?
       version.update(geocoded: true)
-      finish = Time.now
-      Rails.logger.info "Start: #{start}"
-      Rails.logger.info "End: #{finish}"
+      finish = Time.now.utc
+      Rails.logger.info "*** Beg: #{start}"
+      Rails.logger.info "*** End: #{finish}"
     end
   end
 end

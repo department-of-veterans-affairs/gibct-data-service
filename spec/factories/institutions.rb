@@ -319,6 +319,6 @@ FactoryBot.define do
       state { nil }
       country { 'UNITED KINGDOM' }
       zip { nil }
-    end    
+    end
   end
 end

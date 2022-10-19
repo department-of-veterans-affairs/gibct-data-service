@@ -17,14 +17,21 @@ RSpec.describe SearchGeocoder, type: :model do
       expect(institution.longitude).to eq(nil)
     end
 
-    it 'updates coordinates using address field' do
+    it 'decrements the results after a successful geocode' do
       institution = create :institution, :regular_address
-      institution.update(address_2: nil, address_3: nil)
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
       expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results.count).to eq(0)
+    end
+
+    it 'updates coordinates using address field' do
+      institution = create :institution, :regular_address
+      institution.update(address_2: nil, address_3: nil)
+      institution.update(version: version, version_id: version.id)
+      geo_search_results = described_class.new(version)
+      geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
       expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
@@ -33,9 +40,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :regular_address
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
       expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
@@ -44,9 +49,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :regular_address_2
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
       expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
@@ -55,9 +58,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :bad_address
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
       expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
@@ -66,9 +67,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :bad_address
       institution.update(version: version, version_id: version.id, address_1: 'sunshine highway')
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(42.6511674.round(2))
       expect(Institution.last.longitude.round(2)).to eq(-73.754968.round(2))
       expect(Institution.last.bad_address).to eq(true)
@@ -78,9 +77,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :bad_address_with_name
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
       expect(Institution.last.longitude.round(2)).to eq(-73.82587727551194.round(2))
     end
@@ -90,9 +87,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :bad_address_with_name_numbered
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(1)).to eq(33.7976469.round(1))
       expect(Institution.last.longitude.round(1)).to eq(-84.4159008.round(1))
     end
@@ -101,9 +96,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :regular_address_country
       institution.update(version: version, version_id: version.id)
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_country
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(40.6150446.round(2))
       expect(Institution.last.longitude.round(2)).to eq(15.0495566.round(2))
     end
@@ -112,9 +105,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution = create :institution, :regular_address_country
       institution.update(version: version, version_id: version.id, state: 'NY')
       geo_search_results = described_class.new(version)
-      expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_country
-      expect(geo_search_results.results.count).to eq(0)
       expect(Institution.last.latitude.round(2)).to eq(42.6384261.round(2))
       expect(Institution.last.longitude.round(2)).to eq(12.674297.round(2))
     end
@@ -133,13 +124,16 @@ RSpec.describe SearchGeocoder, type: :model do
       expect(geocoder.results.ids).not_to include(geocoded_institution.id)
     end
 
+    def create_institution(trait, version)
+      institution = create :institution, trait
+      institution.update(version: version, version_id: version.id)
+      institution
+    end
+
     it 'by_address collection only includes country USA or nil' do
-      institution1 = create :institution, :physical_address
-      institution1.update(version: version, version_id: version.id)
-      institution2 = create :institution, :regular_address_country_nil
-      institution2.update(version: version, version_id: version.id)
-      institution3 = create :institution, :regular_address_country
-      institution3.update(version: version, version_id: version.id)
+      institution1 = create_institution(:physical_address, version)
+      institution2 = create_institution(:regular_address_country_nil, version)
+      institution3 = create_institution(:regular_address_country, version)
 
       geocoder = described_class.new(version)
       expect(geocoder.by_address.ids).to include(institution1.id)
@@ -172,7 +166,7 @@ RSpec.describe SearchGeocoder, type: :model do
       institution.update(version: version, version_id: version.id)
       geocoder = described_class.new(version)
       geocoder.process_geocoder_address
-      expect(Institution.first.bad_address).not_to eq( true )
+      expect(Institution.first.bad_address).not_to eq(true)
     end
   end
 end

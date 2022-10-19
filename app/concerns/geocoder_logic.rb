@@ -60,7 +60,7 @@ module GeocoderLogic
   def text_search_numbered_address(result, geo, city, state, num)
     search = []
     address_number = result.institution.downcase.split('#').last.to_i
-    titleized_city = (result.city) ? result.city.titleize : ""
+    titleized_city = result.city ? result.city.titleize : ''
     search << geo if city == titleized_city && state == result.state && num == address_number
     search
   end

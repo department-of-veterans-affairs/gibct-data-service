@@ -17,8 +17,8 @@ class SearchGeocoder
 
   def process_geocoder_address
     by_address.each_with_index do |result, idx|
-      Rails.logger.info "#{idx}: processing USA: #{result.institution} " +
-        "#{result.address} #{result.address_1} #{result.address_2} " +
+      Rails.logger.info "#{idx}: processing USA: #{result.institution} " \
+        "#{result.address} #{result.address_1} #{result.address_2} " \
         "#{result.city}, #{result.state}, #{result.zip}"
 
       address = [parse_add_fields(result, result.address),
@@ -31,8 +31,8 @@ class SearchGeocoder
 
   def process_geocoder_country
     country.each_with_index do |result, idx|
-      Rails.logger.info "#{idx}: processing #{result.country}: " + 
-        "#{result.institution} #{result.address} #{result.address_1} " +
+      Rails.logger.info "#{idx}: processing #{result.country}: " \
+        "#{result.institution} #{result.address} #{result.address_1} " \
         "#{result.address_2} #{result.city}, #{result.state}, #{result.zip}"
 
       if result.state.present? && result.physical_country.present?
@@ -57,31 +57,35 @@ class SearchGeocoder
   end
 
   def geocode_fields(result, address)
+    geocoded = nil
     [address[0], address[1], address[2]].each do |addy|
       geocoded = Geocoder.coordinates(addy) if addy.present?
       if geocoded.present?
         update_mismatch(result, geocoded)
-        return
+        break
       end
     end
+
+    return if geocoded.present?
 
     # no geocode match on first 3 address fields. Geocode based on city, state, zip
     # then check bad address on result of geocoding
     geocoded3 = Geocoder.coordinates("#{result.city}, #{result.state}, #{result.zip}")
-    check_bad_address(result, geocoded3) 
+    check_bad_address(result, geocoded3)
   end
 
   def update_mismatch(result, geocoded_coord)
     if geocoded_coord.present?
       update_institution(result, geocoded_coord[0], geocoded_coord[1])
     else
-      Rails.logger.info "  No coordinates found, long/lat will not be updated"
+      Rails.logger.info '  No coordinates found, long/lat will not be updated'
       result.save(validate: false)
     end
   end
 
   def update_institution(result, lat, long)
-    res_lat, res_long = result.latitude, result.longitude
+    res_lat = result.latitude
+    res_long = result.longitude
 
     msg = "updated #{result.institution} from [lat: #{res_lat}, long: #{res_long}] to [lat: #{lat}, long: #{long}]"
     Rails.logger.info msg
