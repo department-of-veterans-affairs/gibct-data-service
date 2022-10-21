@@ -40,11 +40,4 @@ class ApplicationController < ActionController::Base
     Rails.logger.error message + error&.backtrace.to_s
     flash[:danger] = message
   end
-
-  def geocode_message(current_version)
-    v = current_version
-    unless v.geocoded && !v.completed_at.nil?
-      flash.alert = 'Geocoding Instiutions, publishing to production is disabled'
-    end
-  end
 end
