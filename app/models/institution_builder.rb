@@ -864,7 +864,9 @@ module InstitutionBuilder
         AND i.version_id = #{version_id}
         AND i.approved IS TRUE
       SQL
-      Institution.connection.execute(str)
+
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
     end
 
     def self.geocode_institutions(version)
