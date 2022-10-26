@@ -11,7 +11,7 @@ RSpec.describe InstitutionSerializer, type: :serializer do
   let(:links) { data['links'] }
 
   it 'includes id' do
-    expect(data['id'].to_i).to eq(institution.id)
+    expect(data['id']).to eq(institution.id)
   end
 
   it 'links to the college scorecard' do
