@@ -179,7 +179,6 @@ FactoryBot.define do
       physical_address_3 { 'Unit abc' }
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
-      physical_zip { '12345' }
       physical_country { 'USA' }
     end
 
@@ -207,10 +206,6 @@ FactoryBot.define do
       address_3 { nil }
       city { nil }
       state { nil }
-    end
-
-    trait :approved_institution do
-      approved { true }
     end
 
     initialize_with do

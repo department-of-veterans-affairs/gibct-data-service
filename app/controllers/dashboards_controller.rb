@@ -6,6 +6,7 @@ class DashboardsController < ApplicationController
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
+    geocode_message(Version.current_preview) unless Version.current_preview.nil?
     @aws_loc = (production? ? 'Publish to Production' : 'Publish to Staging')
   end
 
@@ -16,7 +17,7 @@ class DashboardsController < ApplicationController
     if @error_msg.present?
       flash.alert = "Preview Data not built: #{@error_msg}"
     else
-      flash.notice = "Preview Data (#{@version.number}) built and geocoded successfully"
+      flash.notice = "Preview Data (#{@version.number}) built successfully"
       flash.alert = results[:messages] if results[:messages]
     end
 

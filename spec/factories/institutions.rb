@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :institution do
+    sequence(:id) { |n| n }
     facility_code { generate :facility_code }
     cross { generate :cross }
     sequence(:institution, 1000) { |n| "institution #{n}" }
@@ -195,17 +196,6 @@ FactoryBot.define do
       physical_country { 'IT' }
     end
 
-    trait :regular_address_country_nil do
-      address_1 { '1400 Washington Ave' }
-      address_2 { '1400 Washington Ave #123' }
-      address_3 { 'Unit abc' }
-      city { 'ALBANY' }
-      state { 'NY' }
-      country { nil }
-      physical_country { nil }
-      zip { '12222' }
-    end
-
     trait :regular_address_2 do
       address_1 { '1400 Washington bdvd 122123d' }
       address_2 { '1400 Washington Ave' }
@@ -299,26 +289,6 @@ FactoryBot.define do
     trait :lat_long do
       latitude { 0 }
       longitude { 0 }
-    end
-
-    trait :mixed_addresses do
-      address_3 { nil }
-      address_2 { '7100 Whittier Blvd' }
-      address_1 { '8500 River Rd' }
-      city { 'Bethesda' }
-      state { 'MD' }
-      country { 'USA' }
-      zip { '20817' }
-    end
-
-    trait :foreign_bad_address do
-      address_1 { 'CASH OFFICE FIN SVCS' }
-      address_2 { 'UNIT 1 MARKET SQUARE' }
-      address_3 { nil }
-      city { 'HESLINGTON YORK' }
-      state { nil }
-      country { 'UNITED KINGDOM' }
-      zip { nil }
     end
   end
 end
