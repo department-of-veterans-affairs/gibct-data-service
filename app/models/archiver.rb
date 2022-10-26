@@ -38,11 +38,10 @@ module Archiver
   def self.create_archives(source, archive, previous_version, production_version)
     return if archive.blank?
 
-    cols = archive.column_names
-    insert_cols = (cols.map { |col| '"' + col + '"' }).join(', ')
-    select_cols = (cols.map { |col| 's.' + col }).join(', ')
-
-    str = "INSERT INTO #{archive.table_name}(#{insert_cols}) SELECT #{select_cols} FROM #{source.table_name} s "
+    str = <<~SQL
+      INSERT INTO #{archive.table_name}
+      SELECT s.* FROM #{source.table_name} s
+    SQL
     str += source.has_attribute?(:institution_id) ? 'JOIN institutions i ON s.institution_id = i.id JOIN versions v ON i.version_id = v.id' : 'JOIN versions v ON s.version_id = v.id'
     str += ' WHERE v.number >= ? AND v.number < ?;'
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
