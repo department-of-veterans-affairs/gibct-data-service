@@ -6,7 +6,6 @@ FactoryBot.define do
 
     trait :production do
       production { true }
-      geocoded { true }
     end
 
     trait :preview do
