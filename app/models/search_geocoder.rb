@@ -6,21 +6,13 @@ class SearchGeocoder
 
   def initialize(version)
     @version = version
-    # note that after successful updates, results get decremented
-    @results = Institution.approved_institutions(version).where(latitude: nil, longitude: nil)
-    Rails.logger.info "@results size: #{@results.size}"
-    @by_address = results.where(physical_country: ['USA', nil])
-    Rails.logger.info "by_address size:  #{@by_address.size}"
+    @results = Institution.approved_institutions(version)
+    @by_address = results.where(latitude: nil, longitude: nil).where.not(address_1: nil, city: nil)
     @country = results.where.not(physical_country: 'USA')
-    Rails.logger.info "country size: #{@country.size}"
   end
 
   def process_geocoder_address
-    by_address.each_with_index do |result, idx|
-      Rails.logger.info "#{idx}: processing USA: #{result.institution} " \
-        "#{result.address} #{result.address_1} #{result.address_2} " \
-        "#{result.city}, #{result.state}, #{result.zip}"
-
+    by_address.each do |result|
       address = [parse_add_fields(result, result.address),
                  parse_add_fields(result, result.address_1),
                  parse_add_fields(result, result.address_2)]
@@ -30,11 +22,7 @@ class SearchGeocoder
   end
 
   def process_geocoder_country
-    country.each_with_index do |result, idx|
-      Rails.logger.info "#{idx}: processing #{result.country}: " \
-        "#{result.institution} #{result.address} #{result.address_1} " \
-        "#{result.address_2} #{result.city}, #{result.state}, #{result.zip}"
-
+    country.each do |result|
       if result.state.present? && result.physical_country.present?
         geocoded_ct = Geocoder.coordinates(result.physical_country)
         update_mismatch(result, geocoded_ct)
@@ -45,6 +33,7 @@ class SearchGeocoder
         geocode_fields(result, address)
       end
     end
+    version.update(geocoded: true) if version.present? && version.geocoded == false
   end
 
   def parse_add_fields(res, field)
@@ -57,41 +46,42 @@ class SearchGeocoder
   end
 
   def geocode_fields(result, address)
-    geocoded = nil
-    [address[0], address[1], address[2]].each do |addy|
-      geocoded = Geocoder.coordinates(addy) if addy.present?
-      if geocoded.present?
-        update_mismatch(result, geocoded)
-        break
-      end
-    end
-
-    return if geocoded.present?
-
-    # no geocode match on first 3 address fields. Geocode based on city, state, zip
-    # then check bad address on result of geocoding
+    geocoded = Geocoder.coordinates(address[0])
+    geocoded1 = Geocoder.coordinates(address[1])
+    geocoded2 = Geocoder.coordinates(address[2])
     geocoded3 = Geocoder.coordinates("#{result.city}, #{result.state}, #{result.zip}")
-    check_bad_address(result, geocoded3)
+    if geocoded.present?
+      update_mismatch(result, geocoded)
+    elsif geocoded1.present?
+      update_mismatch(result, geocoded1)
+    elsif geocoded2.present?
+      update_mismatch(result, geocoded2)
+    else
+      check_bad_address(result, geocoded3)
+    end
   end
 
   def update_mismatch(result, geocoded_coord)
     if geocoded_coord.present?
-      update_institution(result, geocoded_coord[0], geocoded_coord[1])
-    else
-      Rails.logger.info '  No coordinates found, long/lat will not be updated'
-      result.save(validate: false)
+      update_institution(result, geocoded_coord[0], geocoded_coord[1], result.latitude, result.longitude)
     end
   end
 
-  def update_institution(result, lat, long)
-    res_lat = result.latitude
-    res_long = result.longitude
-
-    msg = "updated #{result.institution} from [lat: #{res_lat}, long: #{res_long}] to [lat: #{lat}, long: #{long}]"
-    Rails.logger.info msg
-
-    result.latitude = lat
-    result.longitude = long
-    result.save(validate: false)
+  def update_institution(result, lat, long, res_lat, res_long)
+    if res_lat.present? && res_long.present?
+      if lat.round(2) != res_lat.round(2) || long.round(2) != res_long.round(2)
+        msg = "updated #{result.institution} from [lat: #{res_lat}, long: #{res_long}] to [lat: #{lat}, long: #{long}]"
+        Rails.logger.info msg
+        result.latitude = lat
+        result.longitude = long
+        result.save(validate: false)
+      end
+    else
+      msg = "updated #{result.institution} from [lat: #{res_lat}, long: #{res_long}] to [lat: #{lat}, long: #{long}]"
+      Rails.logger.info msg
+      result.latitude = lat
+      result.longitude = long
+      result.save(validate: false)
+    end
   end
 end
