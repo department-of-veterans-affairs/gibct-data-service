@@ -58,6 +58,7 @@ RSpec.describe DashboardsController, type: :controller do
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
         load_table(klass)
       end
+      create(:version, :production)
     end
 
     it 'builds a new institutions table and returns the version when successful' do
@@ -73,12 +74,6 @@ RSpec.describe DashboardsController, type: :controller do
 
       expect(assigns(:error_msg)).to eq('BOOM!')
       expect(Institution.count).to be_zero
-    end
-
-    it 'test flash message when geocoding' do
-      post(:build)
-      get(:index)
-      expect(flash[:alert]).to eq('Geocoding Instiutions, publishing to production is disabled')
     end
   end
 
