@@ -10,6 +10,7 @@ RSpec.describe InstitutionBuilder, type: :model do
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
     allow(VetsApi::Service).to receive(:feature_enabled?).and_return(false)
+    create(:version, :production)
   end
 
   describe '#run' do
@@ -1127,6 +1128,45 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(institution.longitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[0])
         expect(institution.latitude.to_s).to eq(census_lat_long.interpolated_longitude_latitude.split(',')[1])
       end
+    end
+  end
+
+  describe '#run - with geocoding and updating geocoding from production' do
+    let(:production_version) { Version.current_production }
+    let(:institution) { create(:institution, :physical_address) }
+
+    before do
+      weam = create(:weam, :physical_address, :approved_institution)
+      weam.facility_code = '12345'
+      weam.save(validate: false)
+      institution.version = production_version
+      institution.facility_code = '12345'
+    end
+
+    it 'copies long and lat from production as part of generating preview' do
+      institution.longitude = 39.14
+      institution.latitude = -75.09
+      institution.save
+      described_class.run(user)
+      institution2 = Institution.last
+
+      expect(institution2.version_id).to eq(Version.current_preview.id)
+      expect(institution2.longitude).to eq(39.14)
+      expect(institution2.latitude).to eq(-75.09)
+    end
+
+    it 'does not copy long and lat from production as part of generating preview if address changes' do
+      institution.longitude = 39.14
+      institution.latitude = -75.09
+      institution.physical_zip = '22222'
+      institution.save
+      described_class.run(user)
+      institution2 = Institution.last
+      expect(institution2.version_id).to eq(Version.current_preview.id)
+      expect(institution2.longitude.round(2)).not_to eq(institution.longitude.round(2))
+      expect(institution2.latitude.round(2)).not_to eq(institution.latitude.round(2))
+      expect(institution2.longitude).not_to be_nil
+      expect(institution2.latitude).not_to be_nil
     end
   end
 end
