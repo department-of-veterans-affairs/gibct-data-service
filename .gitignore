@@ -77,3 +77,5 @@ config/environments/*.local.yml
 *.iml
 
 ~$*.xlsx
+.idea/
+
