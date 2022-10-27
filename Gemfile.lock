@@ -477,7 +477,7 @@ DEPENDENCIES
   json (>= 2.3.0)
   json_matchers
   newrelic_rpm
-  nokogiri (~> 1.13.9)
+  nokogiri (~> 1.13)
   oj
   pg
   pry-nav
