@@ -10,15 +10,8 @@ class DashboardsController < ApplicationController
   end
 
   def build
-    results = InstitutionBuilder.run(current_user)
-    @version = results[:version]
-    @error_msg = results[:error_msg]
-    if @error_msg.present?
-      flash.alert = "Preview Data not built: #{@error_msg}"
-    else
-      flash.notice = "Preview Data (#{@version.number}) built and geocoded successfully"
-      flash.alert = results[:messages] if results[:messages]
-    end
+    GeneratePreviewJob.perform_later(current_user)
+    flash.notice = 'Preview Version is being generated. Grab a cup of coffee and check back later.'
 
     redirect_to dashboards_path
   end
