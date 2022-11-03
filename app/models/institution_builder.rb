@@ -68,7 +68,6 @@ module InstitutionBuilder
     end
 
     def self.run(user)
-      error_msg = nil
       version = Version.create!(production: false, user: user)
       build_messages = {}
       begin
@@ -94,33 +93,28 @@ module InstitutionBuilder
           end
         end
 
+        # Clean up any existing unstaged previews
+        prior_preview_ids = Version.prior_preview_ids
+        delete_prior_preview_data(prior_preview_ids) if prior_preview_ids
+        log_info_status 'Complete'
         version.update(completed_at: Time.now.utc.to_s(:db))
-
-        notice = 'Institution build was successful'
-        success = true
       rescue ActiveRecord::StatementInvalid => e
         notice = 'There was an error occurring at the database level'
+        log_info_status notice
         error_msg = e.message
         Rails.logger.error "#{notice}: #{error_msg}"
-
-        success = false
+        version.delete
       rescue StandardError => e
         notice = 'There was an error of unexpected origin'
+        log_info_status notice
         error_msg = e.message
         Rails.logger.error "#{notice}: #{error_msg}"
-
-        success = false
+        version.delete
       end
-
-      # not working, will fix later
-      version.delete unless success
-
-      { version: Version.current_preview, error_msg: error_msg,
-        notice: notice, success: success, messages: build_messages }
     end
 
     def self.initialize_with_weams(version)
-      Rails.logger.info "*** #{Time.now.utc} Starting creation of base Institution rows"
+      log_info_status 'Starting creation of base Institution rows'
 
       columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
       timestamp = Time.now.utc.to_s(:db)
@@ -138,8 +132,7 @@ module InstitutionBuilder
       str += "INNER JOIN versions v ON v.number = #{version.number}"
 
       Institution.connection.insert(str)
-      
-      Rails.logger.info "*** #{Time.now.utc} Deleting duplicates"
+      log_info_status 'Deleting duplicates'
 
       # remove duplicates
       delete_str = <<-SQL
@@ -153,18 +146,18 @@ module InstitutionBuilder
     end
 
     def self.add_crosswalk(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Crosswalk information"
+      log_info_status 'Updating Crosswalk information'
 
       str = <<-SQL
         institutions.facility_code = crosswalks.facility_code
       SQL
       add_columns_for_update(version_id, Crosswalk, str)
 
-      Rails.logger.info "*** #{Time.now.utc} Complete"
+      log_info_status 'Complete'
     end
 
     def self.add_sec109_closed_school(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Sec109 information"
+      log_info_status 'Updating Sec109 information'
 
       str = <<-SQL
         institutions.facility_code = sec109_closed_schools.facility_code
@@ -174,7 +167,7 @@ module InstitutionBuilder
     end
 
     def self.add_sva(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating SVA information"
+      log_info_status 'Updating SVA information'
 
       str = <<-SQL
         UPDATE institutions SET
@@ -188,7 +181,7 @@ module InstitutionBuilder
     end
 
     def self.add_owner(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating owner information"
+      log_info_status 'Updating owner information'
 
       str = <<-SQL
         institutions.facility_code = institution_owners.facility_code
@@ -204,7 +197,7 @@ module InstitutionBuilder
     end
 
     def self.add_eight_key(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Eight Key information"
+      log_info_status 'Updating Eight Key information'
 
       str = <<-SQL
         UPDATE institutions SET eight_keys = TRUE
@@ -225,7 +218,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_accreditation(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Accredation type"
+      log_info_status 'Updating Accredation type'
 
       # Set the `accreditation_type`
       str = <<-SQL
@@ -270,7 +263,7 @@ module InstitutionBuilder
       SQL
 
       # Set the `accreditation_status`
-      Rails.logger.info "*** #{Time.now.utc} Updating Accredation status"
+      log_info_status 'Updating Accredation status'
       str = <<-SQL
         UPDATE institutions
         SET accreditation_status = aa.action_description,
@@ -283,7 +276,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
 
       # Create `caution_flags` rows
-      Rails.logger.info "*** #{Time.now.utc} Building Caution Flag 1"
+      log_info_status 'Building Caution Flag 1'
       caution_flag_clause = <<-SQL
         FROM accreditation_institute_campuses, accreditation_actions aa, institutions
         #{where_clause}
@@ -293,7 +286,7 @@ module InstitutionBuilder
     end
 
     def self.add_arf_gi_bill(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Arf GI Bill information"
+      log_info_status 'Updating Arf GI Bill information'
       str = <<-SQL
         UPDATE institutions SET gibill = arf_gi_bills.gibill
         FROM arf_gi_bills
@@ -305,7 +298,7 @@ module InstitutionBuilder
     end
 
     def self.add_post_911_stats(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Post 911 Stats information"
+      log_info_status 'Updating Post 911 Stats information'
       str = <<-SQL
         UPDATE institutions SET
           p911_recipients = tuition_and_fee_count,
@@ -325,7 +318,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_mou(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating MOU information"
+      log_info_status 'Updating MOU information'
       str = <<-SQL
         UPDATE institutions SET
           dodmou = mous.dodmou,
@@ -337,7 +330,7 @@ module InstitutionBuilder
 
       Institution.connection.update(str)
 
-      Rails.logger.info "*** #{Time.now.utc} Updating Caution Flag Reason"
+      log_info_status 'Updating Caution Flag Reason'
       str = <<-SQL
         UPDATE institutions SET
           caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
@@ -350,7 +343,7 @@ module InstitutionBuilder
 
       Institution.connection.update(str)
 
-      Rails.logger.info "*** #{Time.now.utc} Building Caution Flag 2"
+      log_info_status 'Building Caution Flag 2'
       caution_flag_clause = <<-SQL
         FROM institutions, (
           SELECT distinct(ope) FROM mous
@@ -376,7 +369,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_sec_702(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Sec 702 information"
+      log_info_status 'Updating Sec 702 information'
       where_conditions = <<-SQL
           AND institutions.institution_type_name = 'PUBLIC'
           AND institutions.version_id = #{version_id}
@@ -404,7 +397,7 @@ module InstitutionBuilder
 
       Institution.connection.update(str)
 
-      Rails.logger.info "*** #{Time.now.utc} Creating Caution Flag rows 3"
+      log_info_status 'Creating Caution Flag rows 3'
       caution_flag_clause = <<-SQL
         FROM institutions
         WHERE NOT institutions.sec_702
@@ -422,7 +415,7 @@ module InstitutionBuilder
     def self.add_settlement(version_id)
       # Update institutions table for "Download Data on All Schools (Excel)"
       # Update all institutions without an IPEDs value
-      Rails.logger.info "*** #{Time.now.utc} Updating Settlement information"
+      log_info_status 'Updating Settlement information'
       str = <<-SQL
         UPDATE institutions SET
           caution_flag = TRUE,
@@ -443,7 +436,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
 
       # Update all institutions with an IPEDs value
-      Rails.logger.info "*** #{Time.now.utc} Updating IPED Caution Flag information"
+      log_info_status 'Updating IPED Caution Flag information'
       str = <<-SQL
         UPDATE institutions SET
           caution_flag = TRUE,
@@ -464,7 +457,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
 
       # Create Caution Flags
-      Rails.logger.info "*** #{Time.now.utc} Creating Caution Flag rows"
+      log_info_status 'Creating Caution Flag rows'
       timestamp = Time.now.utc.to_s(:db)
       conn = ApplicationRecord.connection
       insert_columns = %i[
@@ -509,7 +502,7 @@ module InstitutionBuilder
       CautionFlag.connection.execute(sql)
 
       # Update all institutions with an IPEDs value
-      Rails.logger.info "*** #{Time.now.utc} Creating IPEDs Caution Flag rows"
+      log_info_status 'Creating IPEDs Caution Flag rows'
       str = <<-SQL
             INSERT INTO caution_flags (#{insert_columns.join(' , ')})
             SELECT institutions.id,
@@ -547,7 +540,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_hcm(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating HCM Caution Flag information"
+      log_info_status 'Updating HCM Caution Flag information'
       hcm_list = <<-SQL
         (SELECT ope,
             array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
@@ -583,7 +576,7 @@ module InstitutionBuilder
     end
 
     def self.add_outcome(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Outcome information"
+      log_info_status 'Updating Outcome information'
       str = <<-SQL
         institutions.facility_code = outcomes.facility_code
       SQL
@@ -591,7 +584,7 @@ module InstitutionBuilder
     end
 
     def self.add_stem_offered(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Stem offered information"
+      log_info_status 'Updating Stem offered information'
       str = <<-SQL
         UPDATE institutions SET stem_offered=true
         FROM ipeds_cip_codes, stem_cip_codes
@@ -606,7 +599,7 @@ module InstitutionBuilder
     end
 
     def self.add_yellow_ribbon_programs(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Creating Yellow Ribbon Program rows"
+      log_info_status 'Creating Yellow Ribbon Program rows'
       str = <<-SQL
         INSERT INTO yellow_ribbon_programs
           (version, institution_id, degree_level, division_professional_school,
@@ -646,7 +639,7 @@ module InstitutionBuilder
     end
 
     def self.add_school_closure(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating School Closure information"
+      log_info_status 'Updating School Closure information'
       str = <<-SQL
         UPDATE institutions SET
           school_closing = TRUE,
@@ -661,7 +654,7 @@ module InstitutionBuilder
     end
 
     def self.add_vet_tec_provider(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Vet Tec information"
+      log_info_status 'Updating Vet Tec information'
       str = <<-SQL
       UPDATE institutions SET vet_tec_provider = TRUE
         from versions
@@ -672,7 +665,7 @@ module InstitutionBuilder
     end
 
     def self.build_zip_code_rates_from_weams(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Creating Zip Code Rate information"
+      log_info_status 'Creating Zip Code Rate information'
       timestamp = Time.now.utc.to_s(:db)
       conn = ApplicationRecord.connection
 
@@ -707,7 +700,7 @@ module InstitutionBuilder
     end
 
     def self.add_extension_campus_type(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Campus Type information"
+      log_info_status 'Updating Campus Type information'
       str = <<-SQL
       UPDATE institutions SET campus_type = 'E'
       FROM versions
@@ -719,7 +712,7 @@ module InstitutionBuilder
     end
 
     def self.add_sec103(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Sec103 information"
+      log_info_status 'Updating Sec103 information'
       str = <<-SQL
        -- set message based on sec103s
         UPDATE institutions SET #{columns_for_update(Sec103)},
@@ -742,7 +735,7 @@ module InstitutionBuilder
     # edu_programs.length_in_weeks is being used twice because
     # it is a short term fix to an issue that they aren't sure how we should fix
     def self.build_institution_programs(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Creating Institution Program rows"
+      log_info_status 'Creating Institution Program rows'
       str = <<-SQL
         INSERT INTO institution_programs (
           program_type,
@@ -810,7 +803,7 @@ module InstitutionBuilder
     end
 
     def self.build_versioned_school_certifying_official(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Creating Versioned School Certifying Officials rows"
+      log_info_status 'Creating Versioned School Certifying Officials rows'
       valid_priorities = SchoolCertifyingOfficial::VALID_PRIORITY_VALUES.map { |value| "'#{value}'" }.join(', ')
       str = <<-SQL
         INSERT INTO versioned_school_certifying_officials(
@@ -847,7 +840,7 @@ module InstitutionBuilder
     end
 
     def self.add_provider_type(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Provider Type information"
+      log_info_status 'Updating Provider Type information'
       str = <<-SQL
         UPDATE institutions SET
           school_provider = CASE WHEN institution_type_name IN (:schools) AND vet_tec_provider IS FALSE THEN TRUE ELSE FALSE END,
@@ -861,7 +854,7 @@ module InstitutionBuilder
     end
 
     def self.update_longitude_and_latitude(version_id)
-      Rails.logger.info "*** #{Time.now.utc} Updating Longitude & Latitude information"
+      log_info_status 'Updating Longitude & Latitude information'
       # get current version id
       current_version_id = Version.current_production.id
 
@@ -915,13 +908,45 @@ module InstitutionBuilder
 
     def self.geocode_institutions(version)
       start = Time.now.utc
-      Rails.logger.info "*** #{start} Geocoding"
+      log_info_status 'Geocoding...'
       search_geocoder = SearchGeocoder.new(version)
       search_geocoder.process_geocoder_address if search_geocoder.by_address.present?
       version.update(geocoded: true)
       finish = Time.now.utc
       Rails.logger.info "*** Beg: #{start}"
       Rails.logger.info "*** End: #{finish}"
+    end
+
+    def self.delete_prior_preview_data(prior_preview_ids)
+      prior_preview_ids.each do |pp_id|
+        min_inst_id = Institution.where(version_id: pp_id).minimum(:id)
+        unless min_inst_id # no insititutions for this preview
+          Version.find(pp_id).destroy
+          next
+        end
+        max_inst_id = Institution.where(version_id: pp_id).maximum(:id)
+        delete_institution_data(pp_id, min_inst_id, max_inst_id)
+        Version.find(pp_id).destroy
+      end
+    end
+
+    def self.delete_institution_data(pp_id, min_inst_id, max_inst_id)
+      [CautionFlag, VersionedSchoolCertifyingOfficial, InstitutionProgram,
+       YellowRibbonProgram, InstitutionCategoryRating].each do |klass|
+        log_info_status "deleting prior unpublished preview #{klass.name} data"
+        klass
+          .where('institution_id between ? and ?', min_inst_id, max_inst_id).in_batches.delete_all
+      end
+
+      log_info_status 'deleting prior preview Insititution data'
+      Institution.where(version_id: pp_id).in_batches.delete_all
+      log_info_status 'deleting prior preview ZipcodeRate data'
+      ZipcodeRate.where(version_id: pp_id).in_batches.delete_all
+    end
+
+    def self.log_info_status(message)
+      Rails.logger.info "*** #{Time.now.utc} #{message}"
+      File.open('tmp/progress.txt', 'w') { |f| f.write(message) }
     end
   end
 end

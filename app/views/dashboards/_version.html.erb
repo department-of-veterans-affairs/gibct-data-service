@@ -6,7 +6,7 @@
   <td>
     <% if version.generating? %>
         <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
-        Reload page to refresh preview version status
+        Preview generation in progress, page will periodically refresh the status until complete
     <% else %>
       <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank", rel: "noopener noreferrer",
           class: "btn dashboard-btn-success btn-xs", role: "button" %>

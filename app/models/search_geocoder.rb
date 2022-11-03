@@ -2,12 +2,13 @@
 
 class SearchGeocoder
   include ::GeocoderLogic
-  attr_accessor :version, :results, :by_address, :country
+  attr_accessor :version, :results, :by_address, :country, :total_count
 
   def initialize(version)
     @version = version
     # note that after successful updates, results get decremented
     @results = Institution.approved_institutions(version).where(latitude: nil, longitude: nil)
+    @total_count = @results.size
     Rails.logger.info "@results size: #{@results.size}"
     @by_address = results.where(physical_country: ['USA', nil])
     Rails.logger.info "by_address size:  #{@by_address.size}"
@@ -17,9 +18,7 @@ class SearchGeocoder
 
   def process_geocoder_address
     by_address.each_with_index do |result, idx|
-      Rails.logger.info "#{idx}: processing USA: #{result.institution} " \
-        "#{result.address} #{result.address_1} #{result.address_2} " \
-        "#{result.city}, #{result.state}, #{result.zip}"
+      log_info_status(result, idx)
 
       address = [parse_add_fields(result, result.address),
                  parse_add_fields(result, result.address_1),
@@ -31,9 +30,7 @@ class SearchGeocoder
 
   def process_geocoder_country
     country.each_with_index do |result, idx|
-      Rails.logger.info "#{idx}: processing #{result.country}: " \
-        "#{result.institution} #{result.address} #{result.address_1} " \
-        "#{result.address_2} #{result.city}, #{result.state}, #{result.zip}"
+      log_info_status(result, (idx + @by_address.size))
 
       if result.state.present? && result.physical_country.present?
         geocoded_ct = Geocoder.coordinates(result.physical_country)
@@ -45,6 +42,14 @@ class SearchGeocoder
         geocode_fields(result, address)
       end
     end
+  end
+
+  def log_info_status(result, idx)
+    Rails.logger.info "#{idx}: processing #{result.country}: #{result.institution} " \
+    "#{result.address} #{result.address_1} #{result.address_2} " \
+    "#{result.city}, #{result.state}, #{result.zip}"
+
+    File.open('tmp/progress.txt', 'w') { |f| f.write("Geocoding #{idx} of #{@total_count}") } if (idx % 10).eql?(0)
   end
 
   def parse_add_fields(res, field)

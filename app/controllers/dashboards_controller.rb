@@ -7,6 +7,7 @@ class DashboardsController < ApplicationController
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
     @aws_loc = (production? ? 'Publish to Production' : 'Publish to Staging')
+    flash_progress_if_needed
   end
 
   def build
@@ -115,5 +116,11 @@ class DashboardsController < ApplicationController
 
       "#{klass.name} finished fetching data from its api"
     end
+  end
+
+  def flash_progress_if_needed
+    return if @preview_versions.empty? || !@preview_versions.first.generating?
+
+    flash.notice = File.read('tmp/progress.txt') if File.exist?('tmp/progress.txt')
   end
 end
