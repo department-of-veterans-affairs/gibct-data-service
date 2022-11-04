@@ -20,38 +20,33 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     context 'when successful' do
-      it 'returns a success = true' do
-        expect(described_class.run(user)[:success]).to be_truthy
-      end
-
-      it 'returns the new preview version record if successful' do
+      it 'generates a new preview version' do
         create :version
         old_version = Version.current_preview
-        version = described_class.run(user)[:version]
-        expect(version).to eq(Version.current_preview)
+        described_class.run(user)
+        version = Version.current_preview
         expect(version).not_to eq(old_version)
         expect(version.production).to be_falsey
         expect(version).not_to be_generating
       end
 
-      it 'returns a nil error_msg if successful' do
-        expect(described_class.run(user)[:error_msg]).to be_nil
+      it 'writes "Complete" to the temporary progress file' do
+        described_class.run(user)
+        expect(File.read('tmp/progress.txt')).to include('Complete')
       end
 
-      it 'returns a success notice when successful' do
-        expect(described_class.run(user)[:notice]).to eq('Institution build was successful')
+      it 'does not write "error" to the temporary progress file' do
+        described_class.run(user)
+        expect(File.read('tmp/progress.txt')).not_to include('error')
       end
     end
 
     context 'when not successful' do
-      it 'returns a success = false' do
+      it 'writes "error" to the temporary progress file' do
         allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        expect(described_class.run(user)[:success]).to be_falsey
-      end
+        described_class.run(user)
 
-      it 'returns an error message' do
-        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        expect(described_class.run(user)[:error_msg]).to eq('BOOM!')
+        expect(File.read('tmp/progress.txt')).to include('error')
       end
 
       it 'logs errors at the database level' do
@@ -1167,6 +1162,44 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(institution2.latitude.round(2)).not_to eq(institution.latitude.round(2))
       expect(institution2.longitude).not_to be_nil
       expect(institution2.latitude).not_to be_nil
+    end
+  end
+
+  describe 'when generating a preview version' do
+    # Rubocop flags you for too many let clauses
+    def create_preview_version
+      old_preview_version = create(:version, :preview)
+      institution = create(:institution)
+      institution.caution_flags << create(:caution_flag, :accreditation_issue)
+      institution.versioned_school_certifying_officials << create(:versioned_school_certifying_official)
+      institution.yellow_ribbon_programs << create(:yellow_ribbon_program)
+      institution.institution_category_ratings << create(:institution_category_rating)
+      old_preview_version.institutions << institution
+      old_preview_version.zipcode_rates << create(:zipcode_rate)
+      old_preview_version.save
+      old_preview_version
+    end
+
+    it 'deletes any existing preview versions (not published)' do
+      old_preview_version = create_preview_version
+      Institution.where(version_id: nil).delete_all # clear out cruft institutions
+      expect(CautionFlag.count).to eq(1)
+      expect(VersionedSchoolCertifyingOfficial.count).to eq(1)
+      expect(YellowRibbonProgram.count).to eq(1)
+      expect(InstitutionCategoryRating.count).to eq(1)
+      expect(Institution.count).to eq(1)
+      expect(ZipcodeRate.count).to eq(1)
+
+      described_class.run(user)
+
+      # Note the syntax here
+      expect { Version.find(old_preview_version.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect(CautionFlag.count).to eq(0)
+      expect(VersionedSchoolCertifyingOfficial.count).to eq(0)
+      expect(YellowRibbonProgram.count).to eq(0)
+      expect(InstitutionCategoryRating.count).to eq(0)
+      expect(Institution.count).to eq(0)
+      expect(ZipcodeRate.count).to eq(0)
     end
   end
 end

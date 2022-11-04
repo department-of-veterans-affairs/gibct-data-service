@@ -2,6 +2,8 @@
 
 FactoryBot.define do
   factory :versioned_school_certifying_official do
+    association :institution, factory: :institution
+
     facility_code { generate :facility_code }
     institution_name { 'Clements Ferry University' }
     priority { 'PRIMARY' }

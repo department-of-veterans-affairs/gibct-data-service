@@ -7,18 +7,12 @@ class DashboardsController < ApplicationController
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_preview_version
     @aws_loc = (production? ? 'Publish to Production' : 'Publish to Staging')
+    flash_progress_if_needed
   end
 
   def build
-    results = InstitutionBuilder.run(current_user)
-    @version = results[:version]
-    @error_msg = results[:error_msg]
-    if @error_msg.present?
-      flash.alert = "Preview Data not built: #{@error_msg}"
-    else
-      flash.notice = "Preview Data (#{@version.number}) built and geocoded successfully"
-      flash.alert = results[:messages] if results[:messages]
-    end
+    GeneratePreviewJob.perform_later(current_user)
+    flash.notice = 'Preview Version is being generated. Grab a cup of coffee and check back later.'
 
     redirect_to dashboards_path
   end
@@ -122,5 +116,11 @@ class DashboardsController < ApplicationController
 
       "#{klass.name} finished fetching data from its api"
     end
+  end
+
+  def flash_progress_if_needed
+    return if @preview_versions.empty? || !@preview_versions.first.generating?
+
+    flash.notice = File.read('tmp/progress.txt') if File.exist?('tmp/progress.txt')
   end
 end

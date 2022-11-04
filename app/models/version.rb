@@ -35,6 +35,13 @@ class Version < ApplicationRecord
     cp.first
   end
 
+  def self.prior_preview_ids
+    previews = preview.order(:id)
+    return nil unless previews
+
+    previews.ids[0..-2]
+  end
+
   def self.latest
     Version.newest.first
   end

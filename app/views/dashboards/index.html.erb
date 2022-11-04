@@ -105,3 +105,13 @@
     </table>
   </div>
 </div>
+
+<% if File.exist?('tmp/progress.txt') %>
+  <% line = File.read('tmp/progress.txt') %>
+  <% if line.start_with?('Complete') || line.start_with?('There was an error') %>
+    <% File.delete('tmp/progress.txt') %>
+    <script language="javascript" type="text/javascript">location.reload();</script>
+  <% else %>
+    <script language="javascript" type="text/javascript">setTimeout("location.reload();",10000);</script>
+  <% end %> 
+<% end %>

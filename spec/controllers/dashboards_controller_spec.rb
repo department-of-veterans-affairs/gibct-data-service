@@ -61,19 +61,11 @@ RSpec.describe DashboardsController, type: :controller do
       create(:version, :production)
     end
 
-    it 'builds a new institutions table and returns the version when successful' do
+    it 'Initiates a background job to generate the preview & geocode' do
       post(:build)
 
-      expect(assigns(:version)).not_to be_nil
-      expect(Institution.count).to be_positive
-    end
-
-    it 'does not change the institutions table when not successful' do
-      allow(InstitutionBuilder::Factory).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-      post(:build)
-
-      expect(assigns(:error_msg)).to eq('BOOM!')
-      expect(Institution.count).to be_zero
+      expect(response).to have_http_status(:redirect)
+      expect(flash.notice).to include('Preview Version is being generated')
     end
   end
 
