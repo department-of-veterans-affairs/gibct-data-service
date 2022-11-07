@@ -12,7 +12,7 @@ class DashboardsController < ApplicationController
 
   def build
     GeneratePreviewJob.perform_later(current_user)
-    flash.notice = 'Preview Version is being generated. Grab a cup of coffee and check back later.'
+    PreviewGenerationStatusInformation.create!(current_progress: 'Preview Version is being generated.')
 
     redirect_to dashboards_path
   end
@@ -121,6 +121,9 @@ class DashboardsController < ApplicationController
   def flash_progress_if_needed
     return if @preview_versions.empty? || !@preview_versions.first.generating?
 
-    flash.notice = File.read('tmp/progress.txt') if File.exist?('tmp/progress.txt')
+    if PreviewGenerationStatusInformation.exists?
+      pgsi = PreviewGenerationStatusInformation.last
+      flash.notice = pgsi.current_progress
+    end
   end
 end

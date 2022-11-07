@@ -15,7 +15,7 @@ RSpec.describe 'Dashboard', type: :request do
     create(:version, :production)
     post dashboard_build_path
     expect(response).to redirect_to('/dashboards')
-    expect(flash[:notice]).to include('Preview Version is being generated')
+    expect(PreviewGenerationStatusInformation.first.current_progress).to include('Preview Version is being generated')
   end
 
   it 'responds to POST #push' do
