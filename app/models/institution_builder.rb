@@ -946,7 +946,7 @@ module InstitutionBuilder
 
     def self.log_info_status(message)
       Rails.logger.info "*** #{Time.now.utc} #{message}"
-      UpdatePreviewGenerationStatusJob.perform_later(message)
+      File.open('tmp/progress.txt', 'w') { |f| f.write(message) }
     end
   end
 end
