@@ -30,26 +30,22 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version).not_to be_generating
       end
 
-      it 'writes "Complete" to the temporary progress file' do
+      it 'writes "Complete" to the log' do
+        allow(Rails.logger).to receive(:info)
         described_class.run(user)
-        expect(File.read('tmp/progress.txt')).to include('Complete')
+        expect(Rails.logger).to have_received(:info).with(/Complete/).at_least(:once)
       end
 
-      it 'does not write "error" to the temporary progress file' do
+      it 'does not write "error" to the log' do
+        allow(Rails.logger).to receive(:error)
         described_class.run(user)
-        expect(File.read('tmp/progress.txt')).not_to include('error')
+        expect(Rails.logger).to have_received(:error).with(/error/).exactly(0).times
       end
     end
 
     context 'when not successful' do
-      it 'writes "error" to the temporary progress file' do
-        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        described_class.run(user)
-
-        expect(File.read('tmp/progress.txt')).to include('error')
-      end
-
       it 'logs errors at the database level' do
+        sleep(5)
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
         statement_invalid.set_backtrace(%(backtrace))
@@ -57,14 +53,17 @@ RSpec.describe InstitutionBuilder, type: :model do
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
+        sleep(5)
       end
 
       it 'logs errors at the Rails level' do
+        sleep(5)
         error_message = 'There was an error of unexpected origin: BOOM!'
         allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
+        sleep(5)
       end
 
       it 'does not change the institutions or versions if not successful' do
