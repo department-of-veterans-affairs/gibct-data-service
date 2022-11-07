@@ -14,7 +14,8 @@ class PerformInstitutionTablesMaintenanceJob < ApplicationJob
   end
 
   def vacuum_and_analyze(table)
-    ActiveRecord::Base.connection.execute("VACUUM FULL ANALYZE #{table}")
+    sql = Version.send(:sanitize_sql, ["VACUUM FULL ANALYZE #{table}"])
+    ActiveRecord::Base.connection.execute(sql)
     Rails.logger.info "Vacuuming #{table}"
   end
 end
