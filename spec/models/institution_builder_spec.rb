@@ -30,24 +30,22 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version).not_to be_generating
       end
 
-      it 'writes "Complete" to the progress table and the log' do
+      it 'writes "Complete" to the log' do
         allow(Rails.logger).to receive(:info)
         described_class.run(user)
         expect(Rails.logger).to have_received(:info).with(/Complete/).at_least(:once)
-        sleep 10
-        expect(PreviewGenerationStatusInformation.last.current_progress).to include('Complete')
       end
 
-      it 'does not write "error" to the progress table or the log' do
+      it 'does not write "error" to the log' do
         allow(Rails.logger).to receive(:error)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(/error/).exactly(0).times
-        expect(PreviewGenerationStatusInformation.last.current_progress).not_to include('error')
       end
     end
 
     context 'when not successful' do
-      it 'logs errors at the database level and the progress table' do
+      it 'logs errors at the database level' do
+        sleep(5)
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
         statement_invalid.set_backtrace(%(backtrace))
@@ -55,18 +53,17 @@ RSpec.describe InstitutionBuilder, type: :model do
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
-        sleep 10
-        expect(PreviewGenerationStatusInformation.last.current_progress).to include('error')
+        sleep(5)
       end
 
-      it 'logs errors at the Rails level  and the progress table' do
+      it 'logs errors at the Rails level' do
+        sleep(5)
         error_message = 'There was an error of unexpected origin: BOOM!'
-        allow(factory_class).to receive(:add_sva).and_raise(StandardError, 'BOOM!')
+        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
-        sleep 10
-        expect(PreviewGenerationStatusInformation.last.current_progress).to include('error')
+        sleep(5)
       end
 
       it 'does not change the institutions or versions if not successful' do

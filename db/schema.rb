@@ -701,6 +701,12 @@ ActiveRecord::Schema.define(version: 2022_11_04_224830) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|

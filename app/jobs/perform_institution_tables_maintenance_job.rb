@@ -16,13 +16,5 @@ class PerformInstitutionTablesMaintenanceJob < ApplicationJob
   def vacuum_and_analyze(table)
     ActiveRecord::Base.connection.execute("VACUUM FULL ANALYZE #{table}")
     Rails.logger.info "Vacuuming #{table}"
-  rescue ActiveRecord::StatementInvalid => e
-    notice = 'There was an error occurring at the database level'
-    error_msg = e.message
-    Rails.logger.error "#{notice}: #{error_msg}"
-  rescue StandardError => e
-    notice = 'There was an error of unexpected origin'
-    error_msg = e.message
-    Rails.logger.error "#{notice}: #{error_msg}"
   end
 end
