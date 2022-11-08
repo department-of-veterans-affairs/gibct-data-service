@@ -22,23 +22,4 @@ module DashboardsHelper
   def cannot_fetch_api(csv_type)
     Upload.fetching_for?(csv_type)
   end
-
-  def preview_generation_started?
-    PreviewGenerationStatusInformation.exists?
-  end
-
-  def preview_generation_completed?
-    return unless preview_generation_started?
-
-    completed = false
-
-    pgsi = PreviewGenerationStatusInformation.last
-    if pgsi.current_progress.start_with?('Complete') || pgsi.current_progress.start_with?('There was an error')
-      completed = true
-      PreviewGenerationStatusInformation.delete_all
-      PerformInstitutionTablesMaintenanceJob.perform_later
-    end
-
-    completed
-  end
 end

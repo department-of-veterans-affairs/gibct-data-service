@@ -109,15 +109,6 @@ RSpec.describe SearchGeocoder, type: :model do
       expect(Institution.last.latitude.round(2)).to eq(42.6384261.round(2))
       expect(Institution.last.longitude.round(2)).to eq(12.674297.round(2))
     end
-
-    it 'adds records to the progress table as it runs' do
-      institution = create :institution, :regular_address
-      institution.update(version: version, version_id: version.id)
-      initial_progress_count = PreviewGenerationStatusInformation.count
-      geo_search_results = described_class.new(version)
-      geo_search_results.process_geocoder_address
-      expect(PreviewGenerationStatusInformation.count).to be > initial_progress_count
-    end
   end
 
   describe '#initialize' do

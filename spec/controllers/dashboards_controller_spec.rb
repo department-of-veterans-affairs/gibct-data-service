@@ -61,17 +61,11 @@ RSpec.describe DashboardsController, type: :controller do
       create(:version, :production)
     end
 
-    it 'Redirects to the dashboard' do
+    it 'Initiates a background job to generate the preview & geocode' do
       post(:build)
 
       expect(response).to have_http_status(:redirect)
-      expect(response).to redirect_to('/dashboards')
-    end
-
-    it 'Initiates a background job to generate the preview & geocode' do
-      initial_progress_count = PreviewGenerationStatusInformation.count
-      post(:build)
-      expect(PreviewGenerationStatusInformation.count).to be > initial_progress_count
+      expect(flash.notice).to include('Preview Version is being generated')
     end
   end
 
