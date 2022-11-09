@@ -1,6 +1,12 @@
 const tempProgress = (function () {
     const key = 'gibctProgress';
     return {
+        reload: function () {
+            location.reload();
+        },
+        timeout: function (){
+            setTimeout("location.reload();",10000);
+        },
         read: function () {
             return window.localStorage.getItem(key);
         },
