@@ -32,12 +32,12 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       it 'writes "Complete" to the temporary progress file' do
         described_class.run(user)
-        expect(File.read('tmp/progress.txt')).to include('Complete')
+        expect(session[:gibctProgress]).to include('Complete')
       end
 
       it 'does not write "error" to the temporary progress file' do
         described_class.run(user)
-        expect(File.read('tmp/progress.txt')).not_to include('error')
+        expect(session[:gibctProgress]).not_to include('error')
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         described_class.run(user)
 
-        expect(File.read('tmp/progress.txt')).to include('error')
+        expect(session[:gibctProgress]).to include('error')
       end
 
       it 'logs errors at the database level' do

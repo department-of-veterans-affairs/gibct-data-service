@@ -1,3 +1,5 @@
+<%= javascript_include_tag('tempProgress.js') %>
+
 <div class="row row-space-6">
   <div class="col-xs-12">
     <%= render partial: 'introduction' %>
@@ -106,12 +108,9 @@
   </div>
 </div>
 
-<% if File.exist?('tmp/progress.txt') %>
-  <% line = File.read('tmp/progress.txt') %>
-  <% if line.start_with?('Complete') || line.start_with?('There was an error') %>
-    <% File.delete('tmp/progress.txt') %>
-    <script language="javascript" type="text/javascript">location.reload();</script>
-  <% else %>
-    <script language="javascript" type="text/javascript">setTimeout("location.reload();",10000);</script>
-  <% end %> 
+<% if tempProgress.isCompleteOrHasError() %>
+  <% tempProgress.reset() %>
+  <script type="text/javascript">location.reload();</script>
+<% else %>
+  <script type="text/javascript">setTimeout("location.reload();",10000);</script>
 <% end %>
