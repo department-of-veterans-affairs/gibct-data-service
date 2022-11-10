@@ -28,6 +28,12 @@ module ScorecardApi
         'school.men_only': :menonly,
         'school.women_only': :womenonly,
         'school.religious_affiliation': :relaffil,
+        'school.minority_serving.hispanic': :hsi,
+        'school.minority_serving.nant': :nanti,
+        'school.minority_serving.annh': :annhi,
+        'school.minority_serving.aanipi': :aanapii,
+        'school.minority_serving.predominantly_black': :pbi,
+        'school.minority_serving.tribal': :tribal,
         'school.under_investigation': :hcm2,
         'school.alias': :alias }.freeze
     end

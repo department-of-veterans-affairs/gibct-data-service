@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_23_174542) do
+ActiveRecord::Schema.define(version: 2022_07_10_013541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -234,6 +234,19 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.index ["ope6"], name: "index_eight_keys_on_ope6"
   end
 
+  create_table "geocoded_noah", id: false, force: :cascade do |t|
+    t.float "longitude"
+    t.float "latitude"
+    t.string "physical_address_1"
+    t.string "physical_address_2"
+    t.string "physical_address_3"
+    t.string "physical_city"
+    t.string "physical_state"
+    t.string "physical_country"
+    t.string "physical_zip"
+    t.string "facility_code"
+  end
+
   create_table "hcms", id: :serial, force: :cascade do |t|
     t.string "ope", null: false
     t.string "ope6", null: false
@@ -269,20 +282,6 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.integer "rated1_count"
     t.integer "na_count"
     t.bigint "institution_id", null: false
-    t.integer "instructor_knowledge", default: 0
-    t.integer "instructor_engagement", default: 0
-    t.integer "course_material_support", default: 0
-    t.integer "succesful_learning_experience", default: 0
-    t.integer "contribution_career_learning_experience", default: 0
-    t.integer "interact_school_officials", default: 0
-    t.integer "support_school_officials", default: 0
-    t.integer "avail_school_officials", default: 0
-    t.integer "timely_completion_docs", default: 0
-    t.integer "helpfulness_school", default: 0
-    t.integer "extent_support_school", default: 0
-    t.integer "extent_support_others", default: 0
-    t.integer "overall_learning_experience", default: 0
-    t.integer "overall_school_experience", default: 0
     t.index ["institution_id"], name: "index_institution_category_ratings_on_institution_id"
   end
 
@@ -297,20 +296,6 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.integer "rated1_count"
     t.integer "na_count"
     t.bigint "institution_id", null: false
-    t.integer "instructor_knowledge", default: 0
-    t.integer "instructor_engagement", default: 0
-    t.integer "course_material_support", default: 0
-    t.integer "succesful_learning_experience", default: 0
-    t.integer "contribution_career_learning_experience", default: 0
-    t.integer "interact_school_officials", default: 0
-    t.integer "support_school_officials", default: 0
-    t.integer "avail_school_officials", default: 0
-    t.integer "timely_completion_docs", default: 0
-    t.integer "helpfulness_school", default: 0
-    t.integer "extent_support_school", default: 0
-    t.integer "extent_support_others", default: 0
-    t.integer "overall_learning_experience", default: 0
-    t.integer "overall_school_experience", default: 0
   end
 
   create_table "institution_owners", force: :cascade do |t|
@@ -521,6 +506,12 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -695,6 +686,12 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1351,40 +1348,10 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
   create_table "school_ratings", force: :cascade do |t|
     t.string "rater_id", null: false
     t.string "facility_code", null: false
-    t.integer "overall_experience"
-    t.integer "quality_of_classes"
     t.integer "online_instruction"
     t.integer "job_preparation"
-    t.integer "gi_bill_support"
-    t.integer "veteran_community"
     t.integer "marketing_practices"
     t.datetime "rated_at", null: false
-    t.string "email_address"
-    t.string "age"
-    t.string "gender"
-    t.string "school"
-    t.string "degree"
-    t.datetime "graduation_date"
-    t.string "benefit_program"
-    t.string "enrollment_type"
-    t.string "monthly_payments_benefit"
-    t.string "payee_number"
-    t.string "objective_code"
-    t.datetime "survey_sent_date"
-    t.integer "instructor_knowledge", default: 0
-    t.integer "instructor_engagement", default: 0
-    t.integer "course_material_support", default: 0
-    t.integer "succesful_learning_experience", default: 0
-    t.integer "contribution_career_learning_experience", default: 0
-    t.integer "interact_school_officials", default: 0
-    t.integer "support_school_officials", default: 0
-    t.integer "avail_school_officials", default: 0
-    t.integer "timely_completion_docs", default: 0
-    t.integer "helpfulness_school", default: 0
-    t.integer "extent_support_school", default: 0
-    t.integer "extent_support_others", default: 0
-    t.integer "overall_learning_experience", default: 0
-    t.integer "overall_school_experience", default: 0
   end
 
   create_table "scorecard_degree_programs", force: :cascade do |t|

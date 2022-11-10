@@ -128,7 +128,13 @@ module V0
         [:womenonly], # boolean
         [:menonly], # boolean
         [:hbcu], # boolean
-        [:relaffil]
+        [:relaffil], 
+        [:hsi], # boolean
+        [:nanti], # boolean
+        [:annhi], # boolean
+        [:aanapii], # boolean
+        [:pbi], # boolean
+        [:tribal] # boolean
       ].each do |filter_args|
         filter_args << filter_args[0] if filter_args.size == 1
         relation = relation.filter_result(filter_args[0], @query[filter_args[1]])
@@ -164,7 +170,13 @@ module V0
         menonly: boolean_facet,
         womenonly: boolean_facet,
         hbcu: boolean_facet,
-        relaffil: search_results.filter_count(:relaffil)
+        relaffil: search_results.filter_count(:relaffil),
+        hsi: boolean_facet,
+        nanti: boolean_facet,
+        annhi: boolean_facet,
+        aanapii: boolean_facet,
+        pbi: boolean_facet,
+        tribal: boolean_facet
       }
 
       add_active_search_facets(result)
