@@ -128,9 +128,6 @@
               "accredited": {
                 "type": ["null", "boolean"]
               },
-              "vet_tec_provider": {
-                "type": "boolean"
-              },
               "program_length_in_hours": { "type": ["null", "array"] },
               "flight": {
                 "type": ["null", "boolean"]
@@ -254,6 +251,24 @@
               },
               "accreditation_status": {
                 "type": ["null", "string"]
+              },
+              "hsi": {
+                "type": ["null", "integer"]
+              },
+              "nanti": {
+                "type": ["null", "integer"]
+              },
+              "annhi": {
+                "type": ["null", "integer"]
+              },
+              "aanapii": {
+                "type": ["null", "integer"]
+              },
+              "pbi": {
+                "type": ["null", "integer"]
+              },
+              "tribal": {
+                "type": ["null", "integer"]
               },
               "complaints": {
                 "type": "object",
@@ -481,7 +496,13 @@
               "dod_bah",
               "bah",
               "accredited",
-              "vet_tec_provider"
+              "vet_tec_provider",
+              "hsi",
+              "nanti",
+              "annhi",
+              "aanapii",
+              "pbi",
+              "tribal"
             ]
           }
         },
