@@ -396,7 +396,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       let(:scorecard) { Scorecard.first }
 
       before do
-        create :scorecard, :institution_builder
+        create :scorecard, :institution_builder, :new_mission_fields
         described_class.run(user)
       end
 
@@ -1050,7 +1050,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(overall_experience.rated2_count).to eq(0)
         expect(overall_experience.rated3_count).to eq(2)
         expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.na_count).to eq(0)
+        expect(overall_experience.na_count).to eq(1)
         expect(overall_experience.total_count).to eq(2)
         expect(overall_experience.average_rating).to eq(3)
       end

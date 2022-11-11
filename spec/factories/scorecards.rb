@@ -30,6 +30,15 @@ FactoryBot.define do
       cross { '999999' }
     end
 
+    trait :new_mission_fields do
+      hsi { 1 }
+      nanti { 1 }
+      annhi { 1 }
+      aanapii { 1 }
+      pbi { 1 }
+      tribal { 1 }
+    end
+
     initialize_with do
       new(
         cross: cross, insturl: insturl, pred_degree_awarded: pred_degree_awarded,
