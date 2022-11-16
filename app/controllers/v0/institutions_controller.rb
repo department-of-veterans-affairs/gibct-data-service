@@ -128,7 +128,7 @@ module V0
         [:womenonly], # boolean
         [:menonly], # boolean
         [:hbcu], # boolean
-        [:relaffil], 
+        [:relaffil],
         [:hsi], # boolean
         [:nanti], # boolean
         [:annhi], # boolean

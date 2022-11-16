@@ -37,7 +37,7 @@ RSpec.describe 'institutions', type: :request do
 
   describe '#search v1' do
     it 'searches v1 by name and returns new missions fields' do
-      institution = create(:institution, hsi: 1, version_id: Version.current_production.id)
+      create(:institution, hsi: 1, version_id: Version.current_production.id)
       get '/v1/institutions?name=institution&page=1'
       data = JSON.parse(response.body)['data'][0]
       expect(data['attributes']['hsi']).to eq(1)
