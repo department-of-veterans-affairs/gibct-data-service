@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_23_174542) do
+ActiveRecord::Schema.define(version: 2022_10_10_013541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -232,6 +232,19 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.index ["institution"], name: "index_eight_keys_on_institution"
     t.index ["ope"], name: "index_eight_keys_on_ope"
     t.index ["ope6"], name: "index_eight_keys_on_ope6"
+  end
+
+  create_table "geocoded_noah", id: false, force: :cascade do |t|
+    t.float "longitude"
+    t.float "latitude"
+    t.string "physical_address_1"
+    t.string "physical_address_2"
+    t.string "physical_address_3"
+    t.string "physical_city"
+    t.string "physical_state"
+    t.string "physical_country"
+    t.string "physical_zip"
+    t.string "facility_code"
   end
 
   create_table "hcms", id: :serial, force: :cascade do |t|
@@ -521,6 +534,12 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -695,6 +714,12 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.boolean "high_school", default: false
     t.string "chief_officer"
     t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1351,12 +1376,8 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
   create_table "school_ratings", force: :cascade do |t|
     t.string "rater_id", null: false
     t.string "facility_code", null: false
-    t.integer "overall_experience"
-    t.integer "quality_of_classes"
     t.integer "online_instruction"
     t.integer "job_preparation"
-    t.integer "gi_bill_support"
-    t.integer "veteran_community"
     t.integer "marketing_practices"
     t.datetime "rated_at", null: false
     t.string "email_address"
@@ -1385,6 +1406,10 @@ ActiveRecord::Schema.define(version: 2022_09_23_174542) do
     t.integer "extent_support_others", default: 0
     t.integer "overall_learning_experience", default: 0
     t.integer "overall_school_experience", default: 0
+    t.integer "overall_experience", default: 0
+    t.integer "gi_bill_support", default: 0
+    t.integer "veteran_community", default: 0
+    t.integer "quality_of_classes", default: 0
   end
 
   create_table "scorecard_degree_programs", force: :cascade do |t|

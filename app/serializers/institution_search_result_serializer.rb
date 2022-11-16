@@ -21,6 +21,12 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :menonly
   attribute :womenonly
   attribute :relaffil
+  attribute :hsi
+  attribute :nanti
+  attribute :annhi
+  attribute :aanapii
+  attribute :pbi
+  attribute :tribal
   attribute :preferred_provider
   attribute :dod_bah
   attribute :bah

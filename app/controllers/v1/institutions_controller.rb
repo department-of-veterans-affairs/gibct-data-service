@@ -157,6 +157,12 @@ module V1
         womenonly: boolean_facet,
         hbcu: boolean_facet,
         relaffil: results.filter_count(:relaffil),
+        hsi: boolean_facet,
+        nanti: boolean_facet,
+        annhi: boolean_facet,
+        aanapii: boolean_facet,
+        pbi: boolean_facet,
+        tribal: boolean_facet,
         vet_tec_provider: boolean_facet,
         section_103_message: boolean_facet
       }

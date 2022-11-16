@@ -102,6 +102,12 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :pctfloan
   attribute :relaffil
   attribute :womenonly
+  attribute :hsi
+  attribute :nanti
+  attribute :annhi
+  attribute :aanapii
+  attribute :pbi
+  attribute :tribal
   attribute :institution_category_ratings
   attribute :rating_average
   attribute :rating_count

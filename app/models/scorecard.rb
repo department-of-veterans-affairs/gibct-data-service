@@ -20,6 +20,7 @@ class Scorecard < ImportableRecord
     graduation_rate_all_students salary_all_students
     repayment_rate_all_students avg_stu_loan_debt
     hbcu menonly womenonly relaffil hcm2 pctfloan
+    hsi nanti annhi aanapii pbi tribal
   ].freeze
 
   CSV_CONVERTER_INFO = {

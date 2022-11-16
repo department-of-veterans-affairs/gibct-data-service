@@ -528,6 +528,24 @@
             },
              "ownership_name": {
               "type": ["null", "string"]
+            },
+            "hsi": {
+              "type": ["null", "integer"]
+            },
+            "nanti": {
+              "type": ["null", "integer"]
+            },
+            "annhi": {
+              "type": ["null", "integer"]
+            },
+            "aanapii": {
+              "type": ["null", "integer"]
+            },
+            "pbi": {
+              "type": ["null", "integer"]
+            },
+            "tribal": {
+              "type": ["null", "integer"]
             }
           },
           "required": [
@@ -608,7 +626,13 @@
             "menonly",
             "pctfloan",
             "relaffil",
-            "womenonly"
+            "womenonly",
+            "hsi",
+            "nanti",
+            "annhi",
+            "aanapii",
+            "pbi",
+            "tribal"
           ]
         },
         "links": {
