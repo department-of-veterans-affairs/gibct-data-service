@@ -234,19 +234,6 @@ ActiveRecord::Schema.define(version: 2022_10_10_013541) do
     t.index ["ope6"], name: "index_eight_keys_on_ope6"
   end
 
-  create_table "geocoded_noah", id: false, force: :cascade do |t|
-    t.float "longitude"
-    t.float "latitude"
-    t.string "physical_address_1"
-    t.string "physical_address_2"
-    t.string "physical_address_3"
-    t.string "physical_city"
-    t.string "physical_state"
-    t.string "physical_country"
-    t.string "physical_zip"
-    t.string "facility_code"
-  end
-
   create_table "hcms", id: :serial, force: :cascade do |t|
     t.string "ope", null: false
     t.string "ope6", null: false
