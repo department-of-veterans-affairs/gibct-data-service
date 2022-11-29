@@ -1,0 +1,2 @@
+class InstitutionSchoolRating < ApplicationRecord
+end
