@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: remove when we write new ratings code
 class InstitutionCategoryRating < ApplicationRecord
   RATING_CATEGORY_COLUMNS = %w[
     overall_experience

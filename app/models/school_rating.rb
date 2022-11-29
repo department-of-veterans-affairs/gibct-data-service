@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class SchoolRating < ImportableRecord
+  # TODO: remove when we write new ratings code
   CSV_CONVERTER_INFO = {
     'survey_key' => { column: :rater_id, converter: BaseConverter },
     'email_address' => { column: :email_address, converter: BaseConverter },

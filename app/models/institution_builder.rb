@@ -87,12 +87,6 @@ module InstitutionBuilder
           build_messages = run_insertions(version)
         end
 
-        if VetsApi::Service.feature_enabled?('gibct_school_ratings')
-          Institution.transaction do
-            RatingsBuilder.build(version.id)
-          end
-        end
-
         # Clean up any existing unstaged previews
         prior_preview_ids = Version.prior_preview_ids
         delete_prior_preview_data(prior_preview_ids) if prior_preview_ids
