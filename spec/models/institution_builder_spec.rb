@@ -29,26 +29,9 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version.production).to be_falsey
         expect(version).not_to be_generating
       end
-
-      it 'writes "Complete" to the temporary progress file' do
-        described_class.run(user)
-        expect(File.read('tmp/progress.txt')).to include('Complete')
-      end
-
-      it 'does not write "error" to the temporary progress file' do
-        described_class.run(user)
-        expect(File.read('tmp/progress.txt')).not_to include('error')
-      end
     end
 
     context 'when not successful' do
-      it 'writes "error" to the temporary progress file' do
-        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        described_class.run(user)
-
-        expect(File.read('tmp/progress.txt')).to include('error')
-      end
-
       it 'logs errors at the database level' do
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
