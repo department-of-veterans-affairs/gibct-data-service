@@ -978,6 +978,139 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'when calculating category ratings' do
+      let(:institution) { institutions.find_by(facility_code: weam.facility_code) }
+      let(:weam) { Weam.find_by(facility_code: '11000000') }
+
+      before do
+        allow(VetsApi::Service).to receive(:feature_enabled?).and_return(true)
+        create :weam, :ihl_facility_code
+      end
+
+      it 'counts number of total institution ratings' do
+        create_list(:school_rating, 7, :ihl_facility_code, :all_threes)
+        create(:school_rating)
+
+        described_class.run(user)
+
+        expect(institution.rating_count).to eq(7)
+      end
+
+      it 'averages overall institution rating' do
+        create_list(:school_rating, 3, :ihl_facility_code, :all_threes)
+
+        described_class.run(user)
+
+        expect(institution.rating_average).to eq(3)
+      end
+
+      it 'institution rating is null without any ratings' do
+        described_class.run(user)
+
+        expect(institution.rating_average).to be_nil
+      end
+
+      it 'creates a InstitutionCategoryRating for every category' do
+        create_list(:school_rating, 3, :ihl_facility_code, :quality_of_classes_only)
+
+        described_class.run(user)
+        expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(4)
+      end
+
+      it 'counts ratings correctly' do
+        create(:school_rating, :ihl_facility_code, quality_of_classes: 5)
+        create(:school_rating, :ihl_facility_code, quality_of_classes: 4)
+        create(:school_rating, :ihl_facility_code, quality_of_classes: 3)
+        create(:school_rating, :ihl_facility_code, :next_day, quality_of_classes: 1)
+
+        described_class.run(user)
+
+        quality_of_classes = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'quality_of_classes')
+
+        expect(quality_of_classes.rated1_count).to eq(1)
+        expect(quality_of_classes.rated2_count).to eq(0)
+        expect(quality_of_classes.rated3_count).to eq(1)
+        expect(quality_of_classes.rated4_count).to eq(2)
+        expect(quality_of_classes.na_count).to eq(0)
+        expect(quality_of_classes.total_count).to eq(4)
+        expect(quality_of_classes.average_rating).to eq(3)
+      end
+
+      it 'ignores "NA" votes when calculating category average' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.na_count).to eq(1)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(3)
+      end
+
+      it 'only counts most recent rating by rater' do
+        create_list(:school_rating, 4, :ihl_facility_code, quality_of_classes: 2)
+        create(:school_rating, :ihl_facility_code, quality_of_classes: 2, rater_id: 'test')
+        create(:school_rating, :ihl_facility_code, :next_day, quality_of_classes: 5, rater_id: 'test')
+
+        described_class.run(user)
+
+        quality_of_classes = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'quality_of_classes')
+
+        expect(quality_of_classes.rated1_count).to eq(0)
+        expect(quality_of_classes.rated2_count).to eq(4)
+        expect(quality_of_classes.rated3_count).to eq(0)
+        expect(quality_of_classes.rated4_count).to eq(1)
+        expect(quality_of_classes.na_count).to eq(0)
+        expect(quality_of_classes.total_count).to eq(5)
+        expect(quality_of_classes.average_rating).to eq(2.4)
+      end
+
+      it 'treats rating <= 0 as NA' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 3)
+        create(:school_rating, :ihl_facility_code, overall_experience: 0)
+        create(:school_rating, :ihl_facility_code, overall_experience: -1)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(2)
+        expect(overall_experience.rated4_count).to eq(0)
+        expect(overall_experience.na_count).to eq(2)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(3)
+      end
+
+      it 'treats rating > 5 as 5' do
+        create(:school_rating, :ihl_facility_code, overall_experience: 6)
+        create(:school_rating, :ihl_facility_code, overall_experience: 6)
+
+        described_class.run(user)
+
+        overall_experience = InstitutionCategoryRating
+                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
+        expect(overall_experience.rated1_count).to eq(0)
+        expect(overall_experience.rated2_count).to eq(0)
+        expect(overall_experience.rated3_count).to eq(0)
+        expect(overall_experience.rated4_count).to eq(2)
+        expect(overall_experience.na_count).to eq(0)
+        expect(overall_experience.total_count).to eq(2)
+        expect(overall_experience.average_rating).to eq(4)
+      end
+    end
+
     describe 'when missing latitude and longitude' do
       it 'sets latitude and longitdue from CensusLatLong' do
         weam = create(:weam)
