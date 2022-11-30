@@ -121,6 +121,6 @@ class DashboardsController < ApplicationController
   def flash_progress_if_needed
     return if @preview_versions.empty? || !@preview_versions.first.generating?
 
-    flash.notice = File.read('tmp/progress.txt') if File.exist?('tmp/progress.txt')
+    flash.notice = 'Preview generation in progress'
   end
 end
