@@ -34,6 +34,7 @@ CSV_TYPES_TABLES = [
   { klass: SchoolRating, required?: false},
   { klass: VrrapProvider, required?: false },
   { klass: InstitutionOwner, required?: false },
+  { klass: InstitutionSchoolRating, required?: false },
 ].freeze
 
 CSV_TYPES_HAS_API_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }.freeze
