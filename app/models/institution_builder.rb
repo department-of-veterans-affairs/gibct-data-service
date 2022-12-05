@@ -940,6 +940,7 @@ module InstitutionBuilder
 
     def self.log_info_status(message)
       Rails.logger.info "*** #{Time.now.utc} #{message}"
+      UpdatePreviewGenerationStatusJob.perform_later(message)
     end
   end
 end

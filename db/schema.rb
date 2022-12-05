@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_10_013541) do
+ActiveRecord::Schema.define(version: 2022_12_01_162558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1331,6 +1331,10 @@ ActiveRecord::Schema.define(version: 2022_10_10_013541) do
     t.integer "yellow_ribbon_payments"
     t.float "yellow_ribbon_total_amount"
     t.index ["facility_code"], name: "index_post911_stats_on_facility_code"
+  end
+
+  create_table "preview_generation_status_informations", force: :cascade do |t|
+    t.string "current_progress"
   end
 
   create_table "programs", id: :serial, force: :cascade do |t|
