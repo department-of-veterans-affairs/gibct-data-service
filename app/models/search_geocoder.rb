@@ -48,6 +48,11 @@ class SearchGeocoder
     Rails.logger.info "#{idx}: processing #{result.country}: #{result.institution} " \
     "#{result.address} #{result.address_1} #{result.address_2} " \
     "#{result.city}, #{result.state}, #{result.zip}"
+
+    unless production?
+      message = "Geocoding #{idx} of #{@total_count}"
+      UpdatePreviewGenerationStatusJob.perform_later(message) if (idx % 10).eql?(0)
+    end
   end
 
   def parse_add_fields(res, field)
