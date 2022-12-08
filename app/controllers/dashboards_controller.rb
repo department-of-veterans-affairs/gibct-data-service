@@ -122,7 +122,7 @@ class DashboardsController < ApplicationController
   def flash_progress_if_needed
     return if @preview_versions.empty? || !@preview_versions.first.generating?
 
-    if (development? || staging?) && PreviewGenerationStatusInformation.exists?
+    if PreviewGenerationStatusInformation.exists?
       pgsi = PreviewGenerationStatusInformation.last
       flash.notice = pgsi.current_progress
     end
