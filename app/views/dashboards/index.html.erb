@@ -106,12 +106,10 @@
   </div>
 </div>
 
-<% if development? || staging? %>
-  <% if preview_generation_started? %>
-    <% if preview_generation_completed? %>
-      <script nonce="**CSP_NONCE**" language="javascript" type="text/javascript">location.reload();</script>
-    <% else %>
-      <script nonce="**CSP_NONCE**" language="javascript" type="text/javascript">setTimeout("location.reload();",10000);</script>
-    <% end %> 
-  <% end %>
+<% if preview_generation_started? %>
+  <% if preview_generation_completed? %>
+    <script nonce="**CSP_NONCE**" language="javascript" type="text/javascript">location.reload();</script>
+  <% else %>
+    <script nonce="**CSP_NONCE**" language="javascript" type="text/javascript">setTimeout("location.reload();",10000);</script>
+  <% end %> 
 <% end %>
