@@ -447,12 +447,6 @@
               "hcm2": {
                 "type": ["null", "integer"]
               },
-              "institution_category_ratings": {
-                "type": "array",
-                "items": {
-                  "type": "object"
-                }
-              },
               "in_state_tuition_information": {
                 "type": ["null", "boolean"]
               },

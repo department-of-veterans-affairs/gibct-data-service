@@ -19,9 +19,6 @@ if ENV['CI'].blank?
   puts 'Deleting old institution programs'
   InstitutionProgram.delete_all
 
-  puts 'Deleting old institution category ratings'
-  InstitutionCategoryRating.delete_all
-
   puts 'Deleting old zipcode rates'
   ZipcodeRate.delete_all
 
@@ -57,7 +54,6 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(Post911Stat, user)
   SeedUtils.seed_table_with_upload(Program, user)
   SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
-  SeedUtils.seed_table_with_upload(SchoolRating, user)
   SeedUtils.seed_table_with_upload(Scorecard, user)
   SeedUtils.seed_table_with_upload(ScorecardDegreeProgram, user)
   SeedUtils.seed_table_with_upload(Sec103, user)

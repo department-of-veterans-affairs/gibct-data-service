@@ -36,7 +36,6 @@ module DashboardsHelper
     if pgsi.current_progress.start_with?('Complete') || pgsi.current_progress.start_with?('There was an error')
       completed = true
       PreviewGenerationStatusInformation.delete_all
-      PerformInstitutionTablesMaintenanceJob.perform_later
     end
 
     completed
