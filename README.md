@@ -185,7 +185,6 @@ The preview version will not be made available to the comparison tool until it i
 ### Additional Versioning. 
 In addition to the versioned institution objects, the gibct-data-service uses versioning to keep track of other objects used in the comparison tool. These include:
  - Institution Programs: VET TEC programs and their associated information.
- - Institution Category Ratings: Data regarding experiences and various aspects of institutions to give an overall perspective on the institution and what it has to offer.
  - School Certifying Officials: Contact information for the School's Certifying Officials
  - Zipcode Rates: Location specific payment rates.
  - Caution Flags: Warning messages specific to individual institutions.
@@ -193,7 +192,6 @@ When generating a new preview or production version using the GIBCT, these objec
 
 ### Archived Data
 All versioned data is archived using corresponding archive objects except for caution flags
- - InstitutionCategoryRatingsArchive
  - InstitutionProgramsArchive
  - VersionedSchoolCertifyingOfficialsArchive
  - ZipcodeRatesArchive

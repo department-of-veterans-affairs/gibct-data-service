@@ -1041,7 +1041,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       institution.caution_flags << create(:caution_flag, :accreditation_issue)
       institution.versioned_school_certifying_officials << create(:versioned_school_certifying_official)
       institution.yellow_ribbon_programs << create(:yellow_ribbon_program)
-      institution.institution_category_ratings << create(:institution_category_rating)
       old_preview_version.institutions << institution
       old_preview_version.zipcode_rates << create(:zipcode_rate)
       old_preview_version.save
@@ -1054,7 +1053,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(CautionFlag.count).to eq(1)
       expect(VersionedSchoolCertifyingOfficial.count).to eq(1)
       expect(YellowRibbonProgram.count).to eq(1)
-      expect(InstitutionCategoryRating.count).to eq(1)
       expect(Institution.count).to eq(1)
       expect(ZipcodeRate.count).to eq(1)
 
@@ -1065,7 +1063,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(CautionFlag.count).to eq(0)
       expect(VersionedSchoolCertifyingOfficial.count).to eq(0)
       expect(YellowRibbonProgram.count).to eq(0)
-      expect(InstitutionCategoryRating.count).to eq(0)
       expect(Institution.count).to eq(0)
       expect(ZipcodeRate.count).to eq(0)
     end

@@ -108,7 +108,6 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :aanapii
   attribute :pbi
   attribute :tribal
-  attribute :institution_category_ratings
   attribute :rating_average
   attribute :rating_count
   attribute :in_state_tuition_information

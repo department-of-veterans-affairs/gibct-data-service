@@ -926,7 +926,7 @@ module InstitutionBuilder
 
     def self.delete_institution_data(pp_id, min_inst_id, max_inst_id)
       [CautionFlag, VersionedSchoolCertifyingOfficial, InstitutionProgram,
-       YellowRibbonProgram, InstitutionCategoryRating].each do |klass|
+       YellowRibbonProgram].each do |klass|
         log_info_status "deleting prior unpublished preview #{klass.name} data"
         klass
           .where('institution_id between ? and ?', min_inst_id, max_inst_id).in_batches.delete_all
