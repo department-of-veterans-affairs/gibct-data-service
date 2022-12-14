@@ -58,7 +58,7 @@ gem 'rainbow'
 
 # Use ActiveModel has_secure_password
 gem 'rack', '>= 2.2.3.1'
-gem 'rails-html-sanitizer', '>= 1.4.3'
+gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'ruby-saml'
 gem 'sitemap_generator'
 gem 'strong_migrations'
