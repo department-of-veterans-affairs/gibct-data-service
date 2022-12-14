@@ -499,7 +499,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 6.1.6.1)
   rails-controller-testing
-  rails-html-sanitizer (>= 1.4.3)
+  rails-html-sanitizer (>= 1.4.4)
   rainbow
   roo (~> 2.8)
   roo-xls (~> 1.2)
