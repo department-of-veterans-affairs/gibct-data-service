@@ -6,8 +6,12 @@ class SearchGeocoder
 
   def initialize(version)
     @version = version
+
     # note that after successful updates, results get decremented
-    @results = Institution.approved_institutions(version).where(latitude: nil, longitude: nil)
+    @results =
+      Institution.approved_institutions(version)
+                 .where(latitude: nil, longitude: nil, ungeocodable: false)
+
     @total_count = @results.size
     Rails.logger.info "@results size: #{@results.size}"
     @by_address = results.where(physical_country: ['USA', nil])
@@ -64,19 +68,24 @@ class SearchGeocoder
 
   def geocode_fields(result, address)
     geocoded = nil
+    timed_out = nil
+
     [address[0], address[1], address[2]].each do |addy|
-      geocoded = Geocoder.coordinates(addy) if addy.present?
+      geocoded, timed_out = geocode_addy('coordinates', data, 0) if addy.present?
       if geocoded.present?
         update_mismatch(result, geocoded)
         break
       end
+      break if timed_out # Don't geocode using other addys
     end
 
-    return if geocoded.present?
+    return if geocoded.present? || timed_out
 
     # no geocode match on first 3 address fields. Geocode based on city, state, zip
     # then check bad address on result of geocoding
-    geocoded3 = Geocoder.coordinates("#{result.city}, #{result.state}, #{result.zip}")
+    geocoded3, timed_out = geocode_addy('coordinates', "#{result.city}, #{result.state}, #{result.zip}", 0)
+    return if timed_out
+
     check_bad_address(result, geocoded3)
   end
 
@@ -84,7 +93,8 @@ class SearchGeocoder
     if geocoded_coord.present?
       update_institution(result, geocoded_coord[0], geocoded_coord[1])
     else
-      Rails.logger.info '  No coordinates found, long/lat will not be updated'
+      Rails.logger.info '  *** No coordinates found, long/lat will not be updated ***'
+      result.ungeocodable = true
       result.save(validate: false)
     end
   end

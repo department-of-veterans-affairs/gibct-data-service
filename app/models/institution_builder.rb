@@ -62,6 +62,7 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       update_longitude_and_latitude(version.id)
+      update_ungeocodable(version.id)
       geocode_institutions(version)
 
       build_messages.filter { |_k, v| v.present? }
@@ -847,6 +848,8 @@ module InstitutionBuilder
                                                                                schools: Institution::SCHOOLS }]))
     end
 
+    # Pull forward into the current version the long/lat data for approved
+    # institutions where the addy hasn't changed.
     def self.update_longitude_and_latitude(version_id)
       log_info_status 'Updating Longitude & Latitude information'
       # get current version id
@@ -894,6 +897,58 @@ module InstitutionBuilder
         AND i.facility_code = prod_i.facility_code
         AND i.version_id = #{version_id}
         AND i.approved IS TRUE
+      SQL
+
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
+    end
+
+    # set the ungeocodable flag to true if it was ungeocodable and the addy has
+    # not changed
+    def self.update_ungeocodable(version_id)
+      log_info_status 'Updating Ungeocodable flag'
+      # get current version id
+      current_version_id = Version.current_production.id
+
+      str = <<-SQL
+        UPDATE institutions i SET
+          ungeocodable = true
+        FROM (
+          SELECT physical_address_1, physical_address_2, physical_address_3
+               , physical_city, physical_state, physical_country, physical_zip
+               , facility_code
+            FROM institutions
+           WHERE version_id = #{current_version_id}
+             AND longitude    IS NULL
+             AND latitude     IS NULL
+             AND approved     IS TRUE
+             AND ungeocodable IS TRUE
+          ) prod_i
+        WHERE (i.latitude IS NULL AND i.longitude IS NULL)
+
+          AND (i.physical_address_1 = prod_i.physical_address_1
+              or (i.physical_address_1 is null and prod_i.physical_address_1 is null))
+
+          AND (i.physical_address_2 = prod_i.physical_address_2
+              or (i.physical_address_2 is null and prod_i.physical_address_2 is null))
+
+          AND (i.physical_address_3 = prod_i.physical_address_3
+              or (i.physical_address_3 is null and prod_i.physical_address_3 is null))
+
+          AND (i.physical_city = prod_i.physical_city
+              or (i.physical_city is null and prod_i.physical_city is null))
+
+          AND (i.physical_state = prod_i.physical_state
+              or (i.physical_state is null and prod_i.physical_state is null))
+
+          AND (i.physical_zip = prod_i.physical_zip
+              or (i.physical_zip is null and prod_i.physical_zip is null))
+
+          AND i.physical_country = prod_i.physical_country
+          AND i.facility_code    = prod_i.facility_code
+          AND i.version_id       = #{version_id}
+
+          AND i.approved IS TRUE
       SQL
 
       sql = Institution.send(:sanitize_sql, [str])

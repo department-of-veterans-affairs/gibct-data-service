@@ -139,6 +139,7 @@ Metrics/CyclomaticComplexity:
   Exclude:
     - "app/validators/va_caution_flag_validator.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/models/search_geocoder.rb"
     - "lib/roo_helper/loader.rb"
     
 Metrics/PerceivedComplexity:
