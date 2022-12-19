@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_09_161802) do
+ActiveRecord::Schema.define(version: 2022_12_15_000914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -472,6 +472,7 @@ ActiveRecord::Schema.define(version: 2022_12_09_161802) do
     t.integer "aanapii"
     t.integer "pbi"
     t.integer "tribal"
+    t.boolean "ungeocodable", default: false
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -652,6 +653,7 @@ ActiveRecord::Schema.define(version: 2022_12_09_161802) do
     t.integer "aanapii"
     t.integer "pbi"
     t.integer "tribal"
+    t.boolean "ungeocodable"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
