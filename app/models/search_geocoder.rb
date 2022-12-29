@@ -71,7 +71,7 @@ class SearchGeocoder
     timed_out = nil
 
     [address[0], address[1], address[2]].each do |addy|
-      geocoded, timed_out = geocode_addy('coordinates', data, 0) if addy.present?
+      geocoded, timed_out = geocode_addy('coordinates', addy, 0) if addy.present?
       if geocoded.present?
         update_mismatch(result, geocoded)
         break

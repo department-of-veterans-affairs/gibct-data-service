@@ -118,6 +118,43 @@ RSpec.describe SearchGeocoder, type: :model do
       geo_search_results.process_geocoder_address
       expect(PreviewGenerationStatusInformation.count).to be > initial_progress_count
     end
+
+    it 'sets the ungeocodable flag to true if it could not find the coordinates' do
+      allow(Rails.logger).to receive(:info)
+      institution = create :institution, :regular_address
+      institution.update(version: version, version_id: version.id)
+      geo_search = described_class.new(version)
+      geo_search.update_mismatch(institution, nil)
+      expect(institution.ungeocodable).to be true
+      expect(Rails.logger).to have_received(:info).with(/No coordinates found/).at_least(:once)
+    end
+
+    describe 'exception handling' do
+      it 'handles exceptions when calling the geocoder api' do
+        sleep(5)
+        [Timeout::Error, SocketError, Geocoder::OverQueryLimitError, Geocoder::RequestDenied,
+         Geocoder::InvalidRequest, Geocoder::InvalidApiKey, Geocoder::ServiceUnavailable
+        ].each do |geocoding_exception|
+          run_exception_test(geocoding_exception)
+        end
+      end
+
+      def run_exception_test(geocoding_exception)
+        allow(Rails.logger).to receive(:info)
+        create_institution
+        geo_search = described_class.new(version)
+        results = geo_search.send :geocode_addy, 'exception_test', geocoding_exception, 0
+        expect(results[0]).to be_nil
+        expect(results[1]).to be true
+
+        expect(Rails.logger).to have_received(:info).with(/Geocode/).at_least(:once)
+      end
+
+      def create_institution
+        institution = create :institution, :regular_address
+        institution.update(version: version, version_id: version.id)
+      end
+    end
   end
 
   describe '#initialize' do

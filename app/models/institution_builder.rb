@@ -69,6 +69,7 @@ module InstitutionBuilder
     end
 
     def self.run(user)
+      prev_gen_start = Time.now.utc
       version = Version.create!(production: false, user: user)
       build_messages = {}
       begin
@@ -106,6 +107,11 @@ module InstitutionBuilder
         Rails.logger.error "#{notice}: #{error_msg}"
         version.delete
       end
+      prev_gen_end = Time.now.utc
+
+      Rails.logger.info "\n\n\n"
+      Rails.logger.info "*** Preview Generation Beg: #{prev_gen_start}"
+      Rails.logger.info "*** Preview Generation End: #{prev_gen_end}\n\n\n"
     end
 
     def self.initialize_with_weams(version)
@@ -962,8 +968,9 @@ module InstitutionBuilder
       search_geocoder.process_geocoder_address if search_geocoder.by_address.present?
       version.update(geocoded: true)
       finish = Time.now.utc
-      Rails.logger.info "*** Beg: #{start}"
-      Rails.logger.info "*** End: #{finish}"
+      Rails.logger.info "\n\n\n"
+      Rails.logger.info "*** Goecoding Beg: #{start}"
+      Rails.logger.info "*** Geocoding End: #{finish}\n\n\n"
     end
 
     def self.delete_prior_preview_data(prior_preview_ids)
