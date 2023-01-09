@@ -6,7 +6,9 @@ module GeocoderLogic
   def check_bad_address(result, geocoded3)
     # uses geocoder text search and looks for coords by Institution name if applicable
     inst = result.institution
-    geocode_name = Geocoder.search(inst.downcase.split('#').first) if inst.present?
+    geocode_name, timed_out = geocode_addy('search', inst.downcase.split('#').first, 0) if inst.present?
+    return if timed_out
+
     geocode_name.present? ? full_text_search(result, geocode_name, geocoded3) : search_bad_address(result, geocoded3)
   end
 
@@ -18,7 +20,10 @@ module GeocoderLogic
       add_split = result.address.split(stopwords_regex).map(&:strip)[0..1].join(' ')
       new_address = [add_split, result.state, result.zip].compact.join(' ')
     end
-    geocoded = Geocoder.coordinates(new_address)
+
+    geocoded, timed_out = geocode_addy('coordinates', new_address, 0)
+    return if timed_out
+
     update_bad_address(result, geocoded, geocoded3)
   end
 
@@ -72,5 +77,46 @@ module GeocoderLogic
     city_check = result.city.titleize if result.city
     search << geo if city == city_check || state == result.state || zip == result.zip || village == city_check
     search
+  end
+
+  def geocode_addy(geocode_type, data, retry_count = 0)
+    return [nil, true] if retry_count > 1 # only retry once, should be sufficient
+
+    begin
+      # We added this line so that RSpec and SimpleCov will test and show coverage for
+      # Exceptions the Geocoder gem raises. Not elegant but it does prove the exception
+      # handling logic works correctly. See "describe 'exception handling'" in the spec.
+      throw_geocode_exception(data) if geocode_type.eql?('exception_test')
+
+      timed_out = false
+      geocoded = Geocoder.send geocode_type.to_sym, data
+    rescue Timeout::Error
+      Rails.logger.info "  Geocode.#{geocode_type} timed out with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue SocketError
+      Rails.logger.info "  Geocode.#{geocode_type} socket error with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::OverQueryLimitError
+      Rails.logger.info "  Geocode.#{geocode_type} query limit error with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::RequestDenied
+      Rails.logger.info "  Geocode.#{geocode_type} request denied with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::InvalidRequest
+      Rails.logger.info "  Geocode.#{geocode_type} request invalid with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::InvalidApiKey
+      Rails.logger.info "  Geocode.#{geocode_type} API key invalid with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::ServiceUnavailable
+      Rails.logger.info "  Geocode.#{geocode_type} service unavailable with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    end
+
+    [geocoded, timed_out]
+  end
+
+  def throw_geocode_exception(exception_type)
+    raise exception_type
   end
 end

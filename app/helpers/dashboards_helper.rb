@@ -36,6 +36,10 @@ module DashboardsHelper
     if pgsi.current_progress.start_with?('Complete') || pgsi.current_progress.start_with?('There was an error')
       completed = true
       PreviewGenerationStatusInformation.delete_all
+      # maintain the indexes and tables in the local, dev & staging envs.
+      # The production env times out and periodic maintenance should be run
+      # in production anyway.
+      PerformInsitutionTablesMaintenanceJob.perform_later unless production?
     end
 
     completed

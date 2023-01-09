@@ -1,3 +1,4 @@
 Geocoder.configure(
-  timeout: 15
+  timeout: 15,
+  always_raise: :all
 )

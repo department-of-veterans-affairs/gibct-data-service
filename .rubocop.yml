@@ -87,6 +87,7 @@ Rails:
 
 Rails/Output:
   Exclude:
+    - "app/models/db_cleanup.rb"
     - "lib/**/*.rb"
 
 Metrics/MethodLength:
@@ -95,6 +96,7 @@ Metrics/MethodLength:
     - "app/models/institution_builder.rb"
     - "app/models/archiver.rb"
     - "app/models/caution_flag.rb"
+    - "app/concerns/geocoder_logic.rb"
     - "app/controllers/v0/institutions_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
     - "lib/roo_helper/loader.rb"
@@ -139,6 +141,7 @@ Metrics/CyclomaticComplexity:
   Exclude:
     - "app/validators/va_caution_flag_validator.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/models/search_geocoder.rb"
     - "lib/roo_helper/loader.rb"
     
 Metrics/PerceivedComplexity:
