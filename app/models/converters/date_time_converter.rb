@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-class DateConverter < BaseConverter
+class DateTimeConverter < BaseConverter
   def self.convert(value)
     value = super(value)
     return nil if value.blank?
 
     begin
-      return value if value.instance_of?(Date)
+      return value.to_date if value.instance_of?(DateTime)
 
-      Date.strptime(value, '%m/%d/%Y')
+      Date.strptime(value.to_date, '%m/%d/%Y')
     rescue ArgumentError
       nil
     end

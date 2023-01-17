@@ -62,6 +62,7 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       update_longitude_and_latitude(version.id)
+      rate_institutions(version.id) if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
       geocode_institutions(version)
 
       build_messages.filter { |_k, v| v.present? }
@@ -87,11 +88,12 @@ module InstitutionBuilder
           build_messages = run_insertions(version)
         end
 
-        if VetsApi::Service.feature_enabled?('gibct_school_ratings')
-          Institution.transaction do
-            RatingsBuilder.build(version.id)
-          end
-        end
+        # TODO:  replace with new ratings_builder 
+        # if VetsApi::Service.feature_enabled?('gibct_school_ratings')
+        #   Institution.transaction do
+        #     RatingsBuilder.build(version.id)
+        #   end
+        # end
 
         # Clean up any existing unstaged previews
         prior_preview_ids = Version.prior_preview_ids
@@ -932,7 +934,7 @@ module InstitutionBuilder
 
     def self.delete_institution_data(pp_id, min_inst_id, max_inst_id)
       [CautionFlag, VersionedSchoolCertifyingOfficial, InstitutionProgram,
-       YellowRibbonProgram, InstitutionCategoryRating].each do |klass|
+       YellowRibbonProgram, InstitutionRating].each do |klass|
         log_info_status "deleting prior unpublished preview #{klass.name} data"
         klass
           .where('institution_id between ? and ?', min_inst_id, max_inst_id).in_batches.delete_all
@@ -944,9 +946,164 @@ module InstitutionBuilder
       ZipcodeRate.where(version_id: pp_id).in_batches.delete_all
     end
 
+    def self.rate_institutions(version_id)
+      log_info_status 'Creating Institution Rating rows'
+
+      str = <<-SQL
+
+      insert into institution_ratings(
+        institution_id, q1_avg, q1_count, q2_avg, q2_count, q3_avg, q3_count, q4_avg, q4_count, q5_avg, q5_count, q7_avg, q7_count, q8_avg, q8_count, 
+        q9_avg, q9_count, q10_avg, q10_count, q11_avg, q11_count, q12_avg, q12_count, q13_avg, q13_count, q14_avg, q14_count, m1_avg, 
+        m2_avg, m3_avg, m4_avg, overall_avg, institution_rating_count
+      )
+        select institutions.id
+              ,case when q1_weighted_count = 0 then 0 else round(q1_weighted_count/q1_count::numeric,1) end as q1_avg, q1_count
+              ,case when q2_weighted_count = 0 then 0 else round(q2_weighted_count/q2_count::numeric,1) end as q2_avg, q2_count
+              ,case when q3_weighted_count = 0 then 0 else round(q3_weighted_count/q3_count::numeric,1) end as q3_avg, q3_count
+              ,case when q4_weighted_count = 0 then 0 else round(q4_weighted_count/q4_count::numeric,1) end as q4_avg, q4_count
+              ,case when q5_weighted_count = 0 then 0 else round(q5_weighted_count/q5_count::numeric,1) end as q5_avg, q5_count
+              ,case when q7_weighted_count = 0 then 0 else round(q7_weighted_count/q7_count::numeric,1) end as q7_avg, q7_count
+              ,case when q8_weighted_count = 0 then 0 else round(q8_weighted_count/q8_count::numeric,1) end as q8_avg, q8_count
+              ,case when q9_weighted_count = 0 then 0 else round(q9_weighted_count/q9_count::numeric,1) end as q9_avg, q9_count
+              ,case when q10_weighted_count = 0 then 0 else round(q10_weighted_count/q10_count::numeric,1) end as q10_avg, q10_count
+              ,case when q11_weighted_count = 0 then 0 else round(q11_weighted_count/q11_count::numeric,1) end as q11_avg, q11_count
+              ,case when q12_weighted_count = 0 then 0 else round(q12_weighted_count/q12_count::numeric,1) end as q12_avg, q12_count
+              ,case when q13_weighted_count = 0 then 0 else round(q13_weighted_count/q13_count::numeric,1) end as q13_avg, q13_count
+              ,case when q14_weighted_count = 0 then 0 else round(q14_weighted_count/q14_count::numeric,1) end as q14_avg, q14_count
+              ,case when q1_count = 0 and q2_count = 0 and q3_count = 0 and q4_count = 0 and q5_count = 0 then 0
+               else 
+                 round(
+                 (q1_weighted_count::numeric / m1_count) +
+                 (q2_weighted_count::numeric / m1_count) +
+                 (q3_weighted_count::numeric / m1_count) +
+                 (q4_weighted_count::numeric / m1_count) +
+                 (q5_weighted_count::numeric / m1_count)
+                 ,1)
+               end as m1_avg
+
+               ,case when q7_count = 0 and q8_count = 0 and q9_count = 0 and q10_count = 0 then 0
+               else
+                 round(
+                 (q7_weighted_count::numeric  / m2_count) +
+                 (q8_weighted_count::numeric  / m2_count) +
+                 (q9_weighted_count::numeric  / m2_count) +
+                 (q10_weighted_count::numeric / m2_count)
+                 ,1)
+               end as m2_avg
+
+               ,case when q11_count = 0 and q12_count = 0 then 0
+               else
+                round(
+                 (q11_weighted_count::numeric / m3_count) +
+                 (q12_weighted_count::numeric / m3_count)
+                ,1)
+               end as m3_avg
+
+               ,case when q13_count = 0 and q14_count = 0 then 0
+               else
+                round(
+                 (q13_weighted_count::numeric / m4_count) +
+                 (q14_weighted_count::numeric / m4_count)
+                ,1)
+               end as m4_avg
+               ,
+              round(
+               ((q1_weighted_count::numeric / overall_count)
+               +(q2_weighted_count::numeric / overall_count)
+               +(q3_weighted_count::numeric / overall_count)
+               +(q4_weighted_count::numeric / overall_count)
+               +(q5_weighted_count::numeric / overall_count)
+               +(q7_weighted_count::numeric / overall_count)
+               +(q8_weighted_count::numeric / overall_count)
+               +(q9_weighted_count::numeric / overall_count)
+               +(q10_weighted_count::numeric / overall_count)
+               +(q11_weighted_count::numeric / overall_count)
+               +(q12_weighted_count::numeric / overall_count)
+               +(q13_weighted_count::numeric / overall_count)
+               +(q14_weighted_count::numeric / overall_count))
+              ,1) as overall_average
+              ,institution_rating_count
+         from (
+                  select facility_code
+                  ,sum(case when q1 is null or q1 <= 0 then 0 else 1 end) as q1_count
+                  ,sum(case when q1 is null or q1 <= 0 then 0 when q1 > 4 then 4 else q1 end) as q1_weighted_count
+                  ,sum(case when q2 is null or q2 <= 0 then 0 else 1 end) as q2_count
+                  ,sum(case when q2 is null or q2 <= 0 then 0 when q2 > 4 then 4 else q2 end) as q2_weighted_count
+                  ,sum(case when q3 is null or q3 <= 0 then 0 else 1 end) as q3_count
+                  ,sum(case when q3 is null or q3 <= 0 then 0 when q3 > 4 then 4 else q3 end) as q3_weighted_count
+                  ,sum(case when q4 is null or q4 <= 0 then 0 else 1 end) as q4_count
+                  ,sum(case when q4 is null or q4 <= 0 then 0 when q4 > 4 then 4 else q4 end) as q4_weighted_count
+                  ,sum(case when q5 is null or q5 <= 0 then 0 else 1 end) as q5_count
+                  ,sum(case when q5 is null or q5 <= 0 then 0 when q5 > 4 then 4 else q5 end) as q5_weighted_count
+                  ,sum(case when q7 is null or q7 <= 0 then 0 else 1 end) as q7_count
+                  ,sum(case when q7 is null or q7 <= 0 then 0 when q7 > 4 then 4 else q7 end) as q7_weighted_count
+                  ,sum(case when q8 is null or q8 <= 0 then 0 else 1 end) as q8_count
+                  ,sum(case when q8 is null or q8 <= 0 then 0 when q8 > 4 then 4 else q8 end) as q8_weighted_count
+                  ,sum(case when q9 is null or q9 <= 0 then 0 else 1 end) as q9_count
+                  ,sum(case when q9 is null or q9 <= 0 then 0 when q9 > 4 then 4 else q9 end) as q9_weighted_count
+                  ,sum(case when q10 is null or q10 <= 0 then 0 else 1 end) as q10_count
+                  ,sum(case when q10 is null or q10 <= 0 then 0 when q10 > 4 then 4 else q10 end) as q10_weighted_count
+                  ,sum(case when q11 is null or q11 <= 0 then 0 else 1 end) as q11_count
+                  ,sum(case when q11 is null or q11 <= 0 then 0 when q11 > 4 then 4 else q11 end) as q11_weighted_count
+                  ,sum(case when q12 is null or q12 <= 0 then 0 else 1 end) as q12_count
+                  ,sum(case when q12 is null or q12 <= 0 then 0 when q12 > 4 then 4 else q12 end) as q12_weighted_count
+                  ,sum(case when q13 is null or q13 <= 0 then 0 else 1 end) as q13_count
+                  ,sum(case when q13 is null or q13 <= 0 then 0 when q13 > 4 then 4 else q13 end) as q13_weighted_count
+                  ,sum(case when q14 is null or q14 <= 0 then 0 else 1 end) as q14_count
+                  ,sum(case when q14 is null or q14 <= 0 then 0 when q14 > 4 then 4 else q14 end) as q14_weighted_count
+
+                  ,sum(
+                    (case when q1 is null or q1 <= 0 then 0 else 1 end) +
+                    (case when q2 is null or q2 <= 0 then 0 else 1 end) +
+                    (case when q3 is null or q3 <= 0 then 0 else 1 end) +
+                    (case when q4 is null or q4 <= 0 then 0 else 1 end) +
+                    (case when q5 is null or q5 <= 0 then 0 else 1 end)
+             ) as m1_count
+            ,sum(
+              (case when q7 is null or q7 <= 0 then 0 else 1 end) +
+              (case when q8 is null or q8 <= 0 then 0 else 1 end) +
+              (case when q9 is null or q9 <= 0 then 0 else 1 end) +
+              (case when q10 is null or q10 <= 0 then 0 else 1 end)
+             ) as m2_count
+
+            ,sum(
+              (case when q11 is null or q11 <= 0 then 0 else 1 end) +
+              (case when q12 is null or q12 <= 0 then 0 else 1 end)
+             ) as m3_count
+
+            ,sum(
+              (case when q13 is null or q13 <= 0 then 0 else 1 end) +
+              (case when q14 is null or q14 <= 0 then 0 else 1 end)
+             ) as m4_count
+
+            ,sum(
+              (case when q1 is null or q1 <= 0 then 0 else 1 end) +
+              (case when q2 is null or q2 <= 0 then 0 else 1 end) +
+              (case when q3 is null or q3 <= 0 then 0 else 1 end) +
+              (case when q4 is null or q4 <= 0 then 0 else 1 end) +
+              (case when q5 is null or q5 <= 0 then 0 else 1 end) +
+              (case when q7 is null or q7 <= 0 then 0 else 1 end) +
+              (case when q8 is null or q8 <= 0 then 0 else 1 end) +
+              (case when q9 is null or q9 <= 0 then 0 else 1 end) +
+              (case when q10 is null or q10 <= 0 then 0 else 1 end) +
+              (case when q11 is null or q11 <= 0 then 0 else 1 end) +
+              (case when q12 is null or q12 <= 0 then 0 else 1 end) +
+              (case when q13 is null or q13 <= 0 then 0 else 1 end) +
+              (case when q14 is null or q14 <= 0 then 0 else 1 end)
+             ) as overall_count
+
+             ,count(*) as institution_rating_count
+             from institution_school_ratings
+             group by facility_code
+             ) as facility_ratings inner join institutions on facility_ratings.facility_code = institutions.facility_code and institutions.version_id = #{version_id}
+      SQL
+      sql = InstitutionRating.send(:sanitize_sql, [str])
+      InstitutionRating.connection.execute(sql)
+    end
+
+
     def self.log_info_status(message)
       Rails.logger.info "*** #{Time.now.utc} #{message}"
-      File.open('tmp/progress.txt', 'w') { |f| f.write(message) }
     end
   end
 end

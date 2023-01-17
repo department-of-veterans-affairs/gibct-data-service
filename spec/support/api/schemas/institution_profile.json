@@ -514,8 +514,8 @@
             "rating_count": {
               "type": ["integer"]
             },
-            "institution_category_ratings": {
-              "type": "array",
+            "institution_rating": {
+              "type": "null",
               "items": {
                 "type": "object"
               }

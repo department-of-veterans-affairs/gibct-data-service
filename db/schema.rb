@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_22_172710) do
+ActiveRecord::Schema.define(version: 2022_12_02_170722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -374,32 +374,131 @@ ActiveRecord::Schema.define(version: 2022_11_22_172710) do
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
 
+  create_table "institution_ratings", force: :cascade do |t|
+    t.integer "institution_id"
+    t.decimal "q1_avg", precision: 2, scale: 1
+    t.integer "q1_count"
+    t.decimal "q2_avg", precision: 2, scale: 1
+    t.integer "q2_count"
+    t.decimal "q3_avg", precision: 2, scale: 1
+    t.integer "q3_count"
+    t.decimal "q4_avg", precision: 2, scale: 1
+    t.integer "q4_count"
+    t.decimal "q5_avg", precision: 2, scale: 1
+    t.integer "q5_count"
+    t.decimal "q7_avg", precision: 2, scale: 1
+    t.integer "q7_count"
+    t.decimal "q8_avg", precision: 2, scale: 1
+    t.integer "q8_count"
+    t.decimal "q9_avg", precision: 2, scale: 1
+    t.integer "q9_count"
+    t.decimal "q10_avg", precision: 2, scale: 1
+    t.integer "q10_count"
+    t.decimal "q11_avg", precision: 2, scale: 1
+    t.integer "q11_count"
+    t.decimal "q12_avg", precision: 2, scale: 1
+    t.integer "q12_count"
+    t.decimal "q13_avg", precision: 2, scale: 1
+    t.integer "q13_count"
+    t.decimal "q14_avg", precision: 2, scale: 1
+    t.integer "q14_count"
+    t.decimal "q15_avg", precision: 2, scale: 1
+    t.integer "q15_count"
+    t.decimal "q16_avg", precision: 2, scale: 1
+    t.integer "q16_count"
+    t.decimal "q17_avg", precision: 2, scale: 1
+    t.integer "q17_count"
+    t.decimal "q18_avg", precision: 2, scale: 1
+    t.integer "q18_count"
+    t.decimal "q19_avg", precision: 2, scale: 1
+    t.integer "q19_count"
+    t.decimal "q20_avg", precision: 2, scale: 1
+    t.integer "q20_count"
+    t.decimal "m1_avg", precision: 2, scale: 1
+    t.decimal "m2_avg", precision: 2, scale: 1
+    t.decimal "m3_avg", precision: 2, scale: 1
+    t.decimal "m4_avg", precision: 2, scale: 1
+    t.decimal "m5_avg", precision: 2, scale: 1
+    t.decimal "m6_avg", precision: 2, scale: 1
+    t.decimal "m7_avg", precision: 2, scale: 1
+    t.decimal "overall_avg", precision: 2, scale: 1
+    t.integer "institution_rating_count"
+    t.index ["institution_id"], name: "index_institution_ratings_on_institution_id", unique: true
+  end
+
+  create_table "institution_ratings_archives", force: :cascade do |t|
+    t.integer "institution_id"
+    t.decimal "q1_avg", precision: 2, scale: 1
+    t.integer "q1_count"
+    t.decimal "q2_avg", precision: 2, scale: 1
+    t.integer "q2_count"
+    t.decimal "q3_avg", precision: 2, scale: 1
+    t.integer "q3_count"
+    t.decimal "q4_avg", precision: 2, scale: 1
+    t.integer "q4_count"
+    t.decimal "q5_avg", precision: 2, scale: 1
+    t.integer "q5_count"
+    t.decimal "q7_avg", precision: 2, scale: 1
+    t.integer "q7_count"
+    t.decimal "q8_avg", precision: 2, scale: 1
+    t.integer "q8_count"
+    t.decimal "q9_avg", precision: 2, scale: 1
+    t.integer "q9_count"
+    t.decimal "q10_avg", precision: 2, scale: 1
+    t.integer "q10_count"
+    t.decimal "q11_avg", precision: 2, scale: 1
+    t.integer "q11_count"
+    t.decimal "q12_avg", precision: 2, scale: 1
+    t.integer "q12_count"
+    t.decimal "q13_avg", precision: 2, scale: 1
+    t.integer "q13_count"
+    t.decimal "q14_avg", precision: 2, scale: 1
+    t.integer "q14_count"
+    t.decimal "q15_avg", precision: 2, scale: 1
+    t.integer "q15_count"
+    t.decimal "q16_avg", precision: 2, scale: 1
+    t.integer "q16_count"
+    t.decimal "q17_avg", precision: 2, scale: 1
+    t.integer "q17_count"
+    t.decimal "q18_avg", precision: 2, scale: 1
+    t.integer "q18_count"
+    t.decimal "q19_avg", precision: 2, scale: 1
+    t.integer "q19_count"
+    t.decimal "q20_avg", precision: 2, scale: 1
+    t.integer "q20_count"
+    t.decimal "m1_avg", precision: 2, scale: 1
+    t.decimal "m2_avg", precision: 2, scale: 1
+    t.decimal "m3_avg", precision: 2, scale: 1
+    t.decimal "m4_avg", precision: 2, scale: 1
+    t.decimal "m5_avg", precision: 2, scale: 1
+    t.decimal "m6_avg", precision: 2, scale: 1
+    t.decimal "m7_avg", precision: 2, scale: 1
+    t.decimal "overall_avg", precision: 2, scale: 1
+    t.integer "institution_rating_count"
+  end
+
   create_table "institution_school_ratings", force: :cascade do |t|
-    t.string "survey_person_id"
-    t.string "email_address"
-    t.date "graduation_date"
-    t.string "facility_code"
-    t.string "facility_participant_name"
-    t.string "program_name"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "objective_code"
-    t.string "enrollment_type"
-    t.string "benefit_type"
-    t.string "payee_num"
-    t.string "monthly_payment_benefit"
+    t.string "survey_key"
+    t.string "email"
     t.string "age"
     t.string "gender"
-    t.string "survey_id"
-    t.date "sent_date"
+    t.string "school"
+    t.string "facility_code"
+    t.string "degree"
+    t.date "graduation_date"
+    t.string "benefit_program"
+    t.string "enrollment_type"
+    t.string "monthly_payment_benefit"
+    t.string "payee_number"
+    t.string "objective_code"
     t.date "response_date"
-    t.string "e_status"
+    t.date "sent_date"
     t.integer "q1"
     t.integer "q2"
     t.integer "q3"
     t.integer "q4"
     t.integer "q5"
-    t.integer "q6"
+    t.string "q6"
     t.integer "q7"
     t.integer "q8"
     t.integer "q9"
@@ -408,6 +507,12 @@ ActiveRecord::Schema.define(version: 2022_11_22_172710) do
     t.integer "q12"
     t.integer "q13"
     t.integer "q14"
+    t.integer "q15"
+    t.integer "q16"
+    t.integer "q17"
+    t.integer "q18"
+    t.integer "q19"
+    t.integer "q20"
   end
 
   create_table "institutions", id: :serial, force: :cascade do |t|

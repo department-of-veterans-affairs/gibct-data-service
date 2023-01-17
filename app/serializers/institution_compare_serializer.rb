@@ -92,7 +92,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :section_103_message
   attribute :hcm2
   attribute :pctfloan
-  attribute :institution_category_ratings
+  attribute :institution_rating
   attribute :school_provider
   attribute :vet_tec_provider
   attribute :employer_provider

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# delete me before pull request
+
 FactoryBot.define do
   factory :school_rating do
     sequence(:rater_id) do |n|

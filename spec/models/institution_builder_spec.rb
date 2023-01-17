@@ -29,26 +29,9 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version.production).to be_falsey
         expect(version).not_to be_generating
       end
-
-      it 'writes "Complete" to the temporary progress file' do
-        described_class.run(user)
-        expect(File.read('tmp/progress.txt')).to include('Complete')
-      end
-
-      it 'does not write "error" to the temporary progress file' do
-        described_class.run(user)
-        expect(File.read('tmp/progress.txt')).not_to include('error')
-      end
     end
 
     context 'when not successful' do
-      it 'writes "error" to the temporary progress file' do
-        allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
-        described_class.run(user)
-
-        expect(File.read('tmp/progress.txt')).to include('error')
-      end
-
       it 'logs errors at the database level' do
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
@@ -978,139 +961,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when calculating category ratings' do
-      let(:institution) { institutions.find_by(facility_code: weam.facility_code) }
-      let(:weam) { Weam.find_by(facility_code: '11000000') }
-
-      before do
-        allow(VetsApi::Service).to receive(:feature_enabled?).and_return(true)
-        create :weam, :ihl_facility_code
-      end
-
-      it 'counts number of total institution ratings' do
-        create_list(:school_rating, 7, :ihl_facility_code, :all_threes)
-        create(:school_rating)
-
-        described_class.run(user)
-
-        expect(institution.rating_count).to eq(7)
-      end
-
-      it 'averages overall institution rating' do
-        create_list(:school_rating, 3, :ihl_facility_code, :all_threes)
-
-        described_class.run(user)
-
-        expect(institution.rating_average).to eq(3)
-      end
-
-      it 'institution rating is null without any ratings' do
-        described_class.run(user)
-
-        expect(institution.rating_average).to be_nil
-      end
-
-      it 'creates a InstitutionCategoryRating for every category' do
-        create_list(:school_rating, 3, :ihl_facility_code, :quality_of_classes_only)
-
-        described_class.run(user)
-        expect(InstitutionCategoryRating.where("institution_id='#{institution.id}'").count).to eq(4)
-      end
-
-      it 'counts ratings correctly' do
-        create(:school_rating, :ihl_facility_code, quality_of_classes: 5)
-        create(:school_rating, :ihl_facility_code, quality_of_classes: 4)
-        create(:school_rating, :ihl_facility_code, quality_of_classes: 3)
-        create(:school_rating, :ihl_facility_code, :next_day, quality_of_classes: 1)
-
-        described_class.run(user)
-
-        quality_of_classes = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'quality_of_classes')
-
-        expect(quality_of_classes.rated1_count).to eq(1)
-        expect(quality_of_classes.rated2_count).to eq(0)
-        expect(quality_of_classes.rated3_count).to eq(1)
-        expect(quality_of_classes.rated4_count).to eq(2)
-        expect(quality_of_classes.na_count).to eq(0)
-        expect(quality_of_classes.total_count).to eq(4)
-        expect(quality_of_classes.average_rating).to eq(3)
-      end
-
-      it 'ignores "NA" votes when calculating category average' do
-        create(:school_rating, :ihl_facility_code, overall_experience: 3)
-        create(:school_rating, :ihl_facility_code, overall_experience: 3)
-        create(:school_rating, :ihl_facility_code)
-
-        described_class.run(user)
-
-        overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
-        expect(overall_experience.rated1_count).to eq(0)
-        expect(overall_experience.rated2_count).to eq(0)
-        expect(overall_experience.rated3_count).to eq(2)
-        expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.na_count).to eq(1)
-        expect(overall_experience.total_count).to eq(2)
-        expect(overall_experience.average_rating).to eq(3)
-      end
-
-      it 'only counts most recent rating by rater' do
-        create_list(:school_rating, 4, :ihl_facility_code, quality_of_classes: 2)
-        create(:school_rating, :ihl_facility_code, quality_of_classes: 2, rater_id: 'test')
-        create(:school_rating, :ihl_facility_code, :next_day, quality_of_classes: 5, rater_id: 'test')
-
-        described_class.run(user)
-
-        quality_of_classes = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'quality_of_classes')
-
-        expect(quality_of_classes.rated1_count).to eq(0)
-        expect(quality_of_classes.rated2_count).to eq(4)
-        expect(quality_of_classes.rated3_count).to eq(0)
-        expect(quality_of_classes.rated4_count).to eq(1)
-        expect(quality_of_classes.na_count).to eq(0)
-        expect(quality_of_classes.total_count).to eq(5)
-        expect(quality_of_classes.average_rating).to eq(2.4)
-      end
-
-      it 'treats rating <= 0 as NA' do
-        create(:school_rating, :ihl_facility_code, overall_experience: 3)
-        create(:school_rating, :ihl_facility_code, overall_experience: 3)
-        create(:school_rating, :ihl_facility_code, overall_experience: 0)
-        create(:school_rating, :ihl_facility_code, overall_experience: -1)
-
-        described_class.run(user)
-
-        overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
-        expect(overall_experience.rated1_count).to eq(0)
-        expect(overall_experience.rated2_count).to eq(0)
-        expect(overall_experience.rated3_count).to eq(2)
-        expect(overall_experience.rated4_count).to eq(0)
-        expect(overall_experience.na_count).to eq(2)
-        expect(overall_experience.total_count).to eq(2)
-        expect(overall_experience.average_rating).to eq(3)
-      end
-
-      it 'treats rating > 5 as 5' do
-        create(:school_rating, :ihl_facility_code, overall_experience: 6)
-        create(:school_rating, :ihl_facility_code, overall_experience: 6)
-
-        described_class.run(user)
-
-        overall_experience = InstitutionCategoryRating
-                             .find_by(institution_id: institution.id, category_name: 'overall_experience')
-        expect(overall_experience.rated1_count).to eq(0)
-        expect(overall_experience.rated2_count).to eq(0)
-        expect(overall_experience.rated3_count).to eq(0)
-        expect(overall_experience.rated4_count).to eq(2)
-        expect(overall_experience.na_count).to eq(0)
-        expect(overall_experience.total_count).to eq(2)
-        expect(overall_experience.average_rating).to eq(4)
-      end
-    end
-
     describe 'when missing latitude and longitude' do
       it 'sets latitude and longitdue from CensusLatLong' do
         weam = create(:weam)
@@ -1173,7 +1023,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       institution.caution_flags << create(:caution_flag, :accreditation_issue)
       institution.versioned_school_certifying_officials << create(:versioned_school_certifying_official)
       institution.yellow_ribbon_programs << create(:yellow_ribbon_program)
-      institution.institution_category_ratings << create(:institution_category_rating)
+      institution.institution_rating = create(:institution_rating)
       old_preview_version.institutions << institution
       old_preview_version.zipcode_rates << create(:zipcode_rate)
       old_preview_version.save
@@ -1186,7 +1036,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(CautionFlag.count).to eq(1)
       expect(VersionedSchoolCertifyingOfficial.count).to eq(1)
       expect(YellowRibbonProgram.count).to eq(1)
-      expect(InstitutionCategoryRating.count).to eq(1)
+      expect(InstitutionRating.count).to eq(1)
       expect(Institution.count).to eq(1)
       expect(ZipcodeRate.count).to eq(1)
 
@@ -1197,9 +1047,117 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(CautionFlag.count).to eq(0)
       expect(VersionedSchoolCertifyingOfficial.count).to eq(0)
       expect(YellowRibbonProgram.count).to eq(0)
-      expect(InstitutionCategoryRating.count).to eq(0)
+      expect(InstitutionRating.count).to eq(0)
       expect(Institution.count).to eq(0)
       expect(ZipcodeRate.count).to eq(0)
+    end
+  end
+
+  describe 'when calculating category ratings' do
+    let(:production_version) { Version.current_production }
+    let(:institution) { create(:institution, :physical_address) }
+
+    before do
+      weam = create(:weam, :physical_address, :approved_institution)
+      weam.facility_code = '11913105'
+      weam.save(validate: false)
+      create :institution_school_rating
+      create :institution_school_rating, :second_rating
+      institution.version = production_version
+      institution.facility_code = '11913105'
+      institution.save
+    end
+
+    it 'counts number of total institution ratings' do
+      expect(InstitutionSchoolRating.count).to eq(2)
+      described_class.run(user)
+      institution2 = Institution.last
+      expect(institution2.institution_rating.institution_rating_count).to eq(2)
+    end
+
+    it 'counts the number of responses for each question' do
+      described_class.run(user)
+      institution_rating = Institution.last.institution_rating
+      1.upto(14) do |j|
+        next if j.eql?(6) # question 6 is yes/no, doesn't get used for ratings
+
+        expect(institution_rating.send("q#{j}_count")).to eq(2)
+      end
+    end
+
+    it 'averages overall institution rating' do
+      described_class.run(user)
+      institution2 = Institution.last
+      expect(institution2.institution_rating.overall_avg).to eq(1.9)
+    end
+
+    it 'calculates the average response for each question' do
+      create :institution_school_rating, :third_rating
+      described_class.run(user)
+      institution_rating = Institution.last.institution_rating
+      1.upto(14) do |j|
+        next if j.eql?(6) # question 6 is yes/no, doesn't get used for ratings
+
+        expect(institution_rating.send("q#{j}_avg")).to eq(2.0)
+      end
+    end
+
+    it 'institution rating is null without any ratings' do
+      weam = create(:weam, :public, :approved_institution)
+      weam.facility_code = '11000001'
+      weam.save(validate: false)
+
+      described_class.run(user)
+      ins = Institution.where(facility_code: '11000001').first
+      expect(ins.institution_rating).to be_nil
+    end
+
+    it 'calculates correct average ratings for every main category' do
+      described_class.run(user)
+      institution2 = Institution.last
+      expect(institution2.institution_rating.m1_avg).to eq(2.0)
+      expect(institution2.institution_rating.m2_avg).to eq(1.8)
+      expect(institution2.institution_rating.m3_avg).to eq(1.8)
+      expect(institution2.institution_rating.m4_avg).to eq(2.0)
+    end
+
+    it 'does not include null or <=0 in question counts' do
+      create :institution_school_rating, :nil_rating
+      described_class.run(user)
+      institution_rating = Institution.last.institution_rating
+      1.upto(14) do |j|
+        next if j.eql?(6) # question 6 is yes/no, doesn't get used for ratings
+
+        expect(institution_rating.send("q#{j}_count")).to eq(2) unless j.eql?(14)
+        expect(institution_rating.send("q#{j}_count")).to eq(3) if j.eql?(14)
+      end
+    end
+
+    it 'does not include null or <=0 in average calculations' do
+      create :institution_school_rating, :third_rating
+      create :institution_school_rating, :nil_rating
+
+      described_class.run(user)
+      institution_rating = Institution.last.institution_rating
+      1.upto(14) do |j|
+        next if j.eql?(6) # question 6 is yes/no, doesn't get used for ratings
+
+        expect(institution_rating.send("q#{j}_avg")).to eq(2.0) unless j.eql?(14)
+        expect(institution_rating.send("q#{j}_avg")).to eq(2.3) if j.eql?(14)
+      end
+    end
+
+    it 'treats values greater than 4 as 4 for calculating averages' do
+      create :institution_school_rating, :third_rating
+      create :institution_school_rating, :greater_than_4_rating
+
+      described_class.run(user)
+      institution_rating = Institution.last.institution_rating
+      1.upto(14) do |j|
+        next if j.eql?(6) # question 6 is yes/no, doesn't get used for ratings
+
+        expect(institution_rating.send("q#{j}_avg")).to eq(2.5)
+      end
     end
   end
 end

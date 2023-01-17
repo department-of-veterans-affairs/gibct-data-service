@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+# TODO: refactor line #6 when we write new ratings code
 module Archiver
   ARCHIVE_TYPES = [
-    { source: InstitutionCategoryRating, archive: InstitutionCategoryRatingsArchive },
+    { source: InstitutionRating, archive: InstitutionRatingsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },

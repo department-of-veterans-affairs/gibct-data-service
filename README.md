@@ -193,7 +193,7 @@ When generating a new preview or production version using the GIBCT, these objec
 
 ### Archived Data
 All versioned data is archived using corresponding archive objects except for caution flags
- - InstitutionCategoryRatingsArchive
+ - InstitutionRatingsArchive
  - InstitutionProgramsArchive
  - VersionedSchoolCertifyingOfficialsArchive
  - ZipcodeRatesArchive

@@ -48,8 +48,6 @@ class SearchGeocoder
     Rails.logger.info "#{idx}: processing #{result.country}: #{result.institution} " \
     "#{result.address} #{result.address_1} #{result.address_2} " \
     "#{result.city}, #{result.state}, #{result.zip}"
-
-    File.open('tmp/progress.txt', 'w') { |f| f.write("Geocoding #{idx} of #{@total_count}") } if (idx % 10).eql?(0)
   end
 
   def parse_add_fields(res, field)
