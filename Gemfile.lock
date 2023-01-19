@@ -188,7 +188,7 @@ GEM
       railties (>= 3.2, < 6.2)
     formatador (1.1.0)
     geocoder (1.8.1)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     govdelivery-tms (2.8.4)
       activesupport
@@ -249,7 +249,7 @@ GEM
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.3)
+    minitest (5.17.0)
     multi_json (1.15.0)
     multipart-post (2.2.3)
     nenv (0.3.0)
