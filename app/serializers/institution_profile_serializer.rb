@@ -108,6 +108,11 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :aanapii
   attribute :pbi
   attribute :tribal
+
+  if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+    attribute :institution_rating
+  end
+
   attribute :rating_average
   attribute :rating_count
   attribute :in_state_tuition_information

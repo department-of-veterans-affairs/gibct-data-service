@@ -75,6 +75,10 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :rating_count
   attribute :rating_average
 
+  if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+    attribute :institution_rating
+  end
+
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:self) { v0_institution_url(object.facility_code) }

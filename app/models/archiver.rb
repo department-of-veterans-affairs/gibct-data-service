@@ -3,6 +3,7 @@
 # TODO: refactor line #6 when we write new ratings code
 module Archiver
   ARCHIVE_TYPES = [
+    { source: InstitutionRating, archive: InstitutionRatingsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
