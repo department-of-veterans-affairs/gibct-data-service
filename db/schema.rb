@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_17_170722) do
+ActiveRecord::Schema.define(version: 2023_01_25_154714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1948,6 +1948,7 @@ ActiveRecord::Schema.define(version: 2023_01_17_170722) do
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
+  add_foreign_key "institution_ratings", "institutions"
   add_foreign_key "institutions", "versions"
   add_foreign_key "versioned_school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
