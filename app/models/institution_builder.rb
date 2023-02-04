@@ -61,11 +61,16 @@ module InstitutionBuilder
       SuspendedCautionFlags.build(version.id)
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
-      update_longitude_and_latitude(version.id)
+
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
-      update_ungeocodable(version.id)
-      geocode_institutions(version)
+
+      unless initial_buildout?
+        update_longitude_and_latitude(version.id)
+        update_ungeocodable(version.id)
+        geocode_institutions(version)
+      end
+      geocode_using_csv_file if initial_buildout?
 
       build_messages.filter { |_k, v| v.present? }
     end
@@ -854,6 +859,26 @@ module InstitutionBuilder
       Institution.connection.update(Institution.sanitize_sql_for_conditions([str,
                                                                              { employer: Institution::EMPLOYER,
                                                                                schools: Institution::SCHOOLS }]))
+    end
+
+    def self.initial_buildout?
+      production_version_id = Version.current_production.id if Version.current_production
+      production_version_id.nil?
+    end
+
+    def self.geocode_using_csv_file
+      puts "\n\n\n***"
+      puts "Vacumming Institution tables..."
+      PerformInsitutionTablesMaintenanceJob.perform_later unless production?
+      sleep 120 # Give the vacuuming a chancd to more or less complete
+      CSV.foreach('sample_csvs/institution_long_lat_ung.csv', headers: true, col_sep: ',') do |row|
+        Institution.where(
+          facility_code: row['facility_code']
+        ).update(
+          longitude: row['longitude'], latitude: row['latitude'], ungeocodable: row['ungeocodable']
+        )
+      end
+      puts "***\n\n\n"
     end
 
     # Pull forward into the current version the long/lat data for approved

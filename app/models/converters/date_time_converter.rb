@@ -11,6 +11,8 @@ class DateTimeConverter < BaseConverter
       Date.strptime(value.to_date, '%m/%d/%Y')
     rescue ArgumentError
       nil
+    rescue TypeError
+      value.to_date.strftime('%m/%d/%Y')
     end
   end
 end
