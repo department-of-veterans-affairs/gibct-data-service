@@ -147,8 +147,8 @@ module RooHelper
       file_headers.each do |header|
         file_header = header.strip
         key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
-        info = converter_info(sheet_klass, key)
-        column = info.blank? ? file_header.downcase.to_sym : info[:column]
+        col_info = converter_info(sheet_klass, key)
+        column = col_info.blank? ? file_header.downcase.to_sym : col_info[:column]
         headers_mapping[column] = file_header
       end
 

@@ -514,6 +514,12 @@
             "rating_count": {
               "type": ["integer"]
             },
+            "institution_rating": {
+              "type": "null",
+              "items": {
+                "type": "object"
+              }
+            },
             "in_state_tuition_information": {
               "type": ["null", "boolean"]
             },

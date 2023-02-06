@@ -76,6 +76,7 @@ Layout/LineLength:
     - "spec/controllers/v1/institutions_controller_spec.rb"
     - "spec/models/institution_spec.rb"
     - "spec/factories/institution_programs.rb"
+    - "app/models/institution_school_rating.rb"
     
 
 # removing rule because get_session implies HTTP GET, and informs method

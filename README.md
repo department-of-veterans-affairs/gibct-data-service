@@ -196,6 +196,7 @@ All versioned data is archived using corresponding archive objects except for ca
  - VersionedSchoolCertifyingOfficialsArchive
  - ZipcodeRatesArchive
  - InstitutionsArchive
+ - InstitutionRatingsArchive
 When a new preview version is created, the objects and their data in the current preview version are saved in the archive tables. The archived objects exist in case there is a reason to check what a previous version contained. At the moment there is no current way to roll back to previous versions, but this information can be accessed by querying the database(s) as necessary.
 
 ## How to Contribute

@@ -10,6 +10,11 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :gibill, key: :student_count
   attribute :rating_average
   attribute :rating_count
+
+  if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+    attribute :institution_rating
+  end
+
   attribute :institution_type_name, key: :type
   attribute :caution_flags
   attribute :caution_flag
