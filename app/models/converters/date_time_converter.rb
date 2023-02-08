@@ -11,6 +11,10 @@ class DateTimeConverter < BaseConverter
       Date.strptime(value.to_date, '%m/%d/%Y')
     rescue ArgumentError
       nil
+    # for when you upload a spreadsheet with a date/time field to the databse with a date-only field, then export
+    # to a csv and re-upload, this handles the date-only field properly
+    rescue TypeError
+      value.to_date.strftime('%m/%d/%Y')
     end
   end
 end
