@@ -1041,7 +1041,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       institution.caution_flags << create(:caution_flag, :accreditation_issue)
       institution.versioned_school_certifying_officials << create(:versioned_school_certifying_official)
       institution.yellow_ribbon_programs << create(:yellow_ribbon_program)
-      institution.institution_rating = create(:institution_rating)
+      institution.institution_rating = build(:institution_rating)
       old_preview_version.institutions << institution
       old_preview_version.zipcode_rates << create(:zipcode_rate)
       old_preview_version.save
