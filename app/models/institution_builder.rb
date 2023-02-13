@@ -867,8 +867,6 @@ module InstitutionBuilder
     end
 
     def self.geocode_using_csv_file
-      puts "\n\n\n***"
-      puts "Vacumming Institution tables..."
       PerformInsitutionTablesMaintenanceJob.perform_later unless production?
       sleep 120 # Give the vacuuming a chancd to more or less complete
       CSV.foreach('sample_csvs/institution_long_lat_ung.csv', headers: true, col_sep: ',') do |row|
@@ -878,7 +876,6 @@ module InstitutionBuilder
           longitude: row['longitude'], latitude: row['latitude'], ungeocodable: row['ungeocodable']
         )
       end
-      puts "***\n\n\n"
     end
 
     # Pull forward into the current version the long/lat data for approved
