@@ -12,7 +12,7 @@ if ENV['CI'].blank?
     puts 'Building CrosswalkIssues'
     CrosswalkIssue.rebuild
 
-    puts "Done ... Woo Hoo!"
+    puts "Done ... Woo Hoo!!"
   else
     puts "Error occurred - check the logs"
   end
