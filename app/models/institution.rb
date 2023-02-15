@@ -563,12 +563,7 @@ class Institution < ImportableRecord
     unless exclude_schools
       filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
       filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
-
-      if query.key?(:special_mission)
-        special_mission = query[:special_mission]
-        filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
-        filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
-      end
+      filters << set_special_mission_filters(query) if query.keys.find{|e| /special_mission/ =~ e}
     end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
@@ -594,6 +589,26 @@ class Institution < ImportableRecord
 
     where(Arel.sql(sanitized_clause))
   }
+
+  def self.set_special_mission_filters(query)
+    filt = []
+    query.keys.each do |k|
+      next unless k.include?('special_mission')
+
+      v = query[k]
+      next unless v.eql?('true')
+
+      # needed b/c query params has men_only and women_only params, but they don't have underscores in db
+      str = k.sub('special_mission_','').sub('_','')
+      if str.eql?('relaffil')
+        filt << 'relaffil is not null'
+      else
+        filt << str + ' = 1'
+      end
+    end
+
+    '(' + filt.join(' OR ') + ')'
+  end
 
   # rubocop:enable Metrics/BlockLength
   # Orders institutions by
