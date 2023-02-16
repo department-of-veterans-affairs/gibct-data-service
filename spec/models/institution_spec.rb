@@ -167,6 +167,15 @@ RSpec.describe Institution, type: :model do
       end
     end
 
+    context 'with filter v1 scope' do
+      it 'filters on state only if only a state is provided in the name' do
+        create(:version, :production)
+        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        expect(described_class.search({ name: 'Hampton' }).filter_result_v1(['name'], ['state']).count).to eq(1)
+      end
+    end
+
     context 'with search scope' do
       it 'returns nil if no search term is provided' do
         expect(described_class.search(nil)).to be_empty
@@ -256,6 +265,14 @@ RSpec.describe Institution, type: :model do
       create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
 
       results = described_class.non_vet_tec_institutions(Version.current_production)
+      expect(results.count).to eq(1)
+    end
+
+    it 'excludes high schools when filtering them out' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, :high_school_institution, version_id: Version.current_production.id)
+      results = described_class.filter_high_school
       expect(results.count).to eq(1)
     end
 

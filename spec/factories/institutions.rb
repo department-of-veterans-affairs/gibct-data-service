@@ -19,12 +19,35 @@ FactoryBot.define do
     high_school { false }
     ownership_name { nil }
 
+    trait :high_school_institution do
+      high_school { true }
+      institution { 'Walt Whitman High School' }
+    end
+
     trait :in_nyc do
       city { 'NEW YORK' }
       state { 'NY' }
       country { 'USA' }
       physical_state { 'NY' }
       physical_country { 'USA' }
+      ownership_name { 'test' }
+    end
+
+    trait :in_nyc_state_country do
+      institution { 'Hampton' }
+      city { 'NEW YORK' }
+      state { 'NY' }
+      country { 'USA' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
+      ownership_name { 'test' }
+    end
+
+    trait :in_nyc_state_only do
+      institution { 'Hampton' }
+      city { 'NEW YORK' }
+      state { 'NY' }
+      physical_state { 'NY' }
       ownership_name { 'test' }
     end
 

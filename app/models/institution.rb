@@ -334,12 +334,10 @@ class Institution < ImportableRecord
     zipcode_physical = production? ? 'zip' : 'physical_zip'
     country_physical = production? ? 'country' : 'physical_country'
     address_physical = production? ? 'address' : 'physical_address'
-
     search_term = query[:name]
     include_address = query[:include_address] || false
 
     clause = ['facility_code = :upper_search_term']
-
     processed = institution_search_term(search_term)
     processed_search_term = processed[:search_term]
     excluded_only = processed[:excluded_only]
@@ -350,7 +348,6 @@ class Institution < ImportableRecord
       clause <<  'institution_search % :institution_search_term'
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
-
     clause << "UPPER(#{city_physical}) = :upper_search_term"
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << "#{zipcode_physical} = :search_term"
@@ -514,7 +511,8 @@ class Institution < ImportableRecord
       ['student_veteran'], # boolean
       %w[yr yellow_ribbon_scholarship], # boolean
       ['accredited'] # boolean
-    ].filter { |filter_args| query.key?(filter_args.last) }
+    ].filter { |filter_args| 
+      query.key?(filter_args.last) }
       .each do |filter_args|
       param_value = query[filter_args.last]
       clause = if %w[true yes].include?(param_value)
@@ -527,6 +525,7 @@ class Institution < ImportableRecord
 
       # checks text field for a state and country else uses the state/country in filter
       # added step that makes sure it won't return results where the state field is null
+byebug
       if filter_args.first == 'name'
         state_country_search = query[:name].split(',')
         if state_country_search.length > 1
@@ -563,7 +562,14 @@ class Institution < ImportableRecord
     unless exclude_schools
       filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
       filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
-      filters << set_special_mission_filters(query) if query.keys.find{|e| /special_mission/ =~ e}
+      # remove this feature/environment flag once approved for production
+      if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+        filters << set_special_mission_filters(query) if query.keys.find { |e| /special_mission/ =~ e }
+      elsif query.key?(:special_mission)
+        special_mission = query[:special_mission]
+        filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
+        filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
+      end
     end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
@@ -592,19 +598,15 @@ class Institution < ImportableRecord
 
   def self.set_special_mission_filters(query)
     filt = []
-    query.keys.each do |k|
+    query.each_key do |k|
       next unless k.include?('special_mission')
 
       v = query[k]
       next unless v.eql?('true')
 
-      # needed b/c query params has men_only and women_only params, but they don't have underscores in db
-      str = k.sub('special_mission_','').sub('_','')
-      if str.eql?('relaffil')
-        filt << 'relaffil is not null'
-      else
-        filt << str + ' = 1'
-      end
+      str = k.sub('special_mission_', '')
+      filt << 'relaffil is not null' if str.eql?('relaffil')
+      filt << str + ' = 1' unless str.eql?('relaffil')
     end
 
     '(' + filt.join(' OR ') + ')'
