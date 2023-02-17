@@ -172,14 +172,10 @@ RSpec.describe Institution, type: :model do
         create(:version, :production)
         create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
         create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
-        query = {
-          "name"=>"Hampton", "page"=>"1", "state"=>"NY", "format"=>"json", "controller"=>"v1/institutions", "action"=>"index", "institution"=>{}
-        }
+        query = { 'name' => 'Hampton', 'state' => 'NY' }
         expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(2)
-        expect(described_class.search_v1(query).filter_result_v1(query).to_sql)
-        .to include("physical_state")
-        expect(described_class.search_v1(query).filter_result_v1(query).to_sql)
-        .not_to include("physical_country")
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_state')
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).not_to include('physical_country')
       end
     end
 
@@ -188,13 +184,23 @@ RSpec.describe Institution, type: :model do
         create(:version, :production)
         create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
         create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
-        query = {
-          "name"=>"Hampton", "page"=>"1", "state"=>"NY", "country"=>"USA",
-          "format"=>"json", "controller"=>"v1/institutions", "action"=>"index", "institution"=>{}
-        }
+        query = { 'name' => 'Hampton', 'state' => 'NY', 'country' => 'USA' }
         expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(1)
-        expect(described_class.search_v1(query).filter_result_v1(query).to_sql)
-        .to include("physical_country")
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_country')
+      end
+    end
+
+    context 'with special mission filters' do
+      it 'applies special mission filters except relaffil if applicable' do
+        query = { 'special_mission_hbcu' => 'true' }
+        expect(described_class.set_special_mission_filters(query))
+          .to include('hbcu = 1')
+      end
+
+      it 'applies relaffil special mission filter if applicable' do
+        query = { 'special_mission_relaffil' => 'true' }
+        expect(described_class.set_special_mission_filters(query))
+          .to include('relaffil is not null')
       end
     end
 

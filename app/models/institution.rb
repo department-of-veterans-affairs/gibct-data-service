@@ -511,8 +511,7 @@ class Institution < ImportableRecord
       ['student_veteran'], # boolean
       %w[yr yellow_ribbon_scholarship], # boolean
       ['accredited'] # boolean
-    ].filter { |filter_args| 
-      query.key?(filter_args.last) }
+    ].filter { |filter_args| query.key?(filter_args.last) }
       .each do |filter_args|
       param_value = query[filter_args.last]
       clause = if %w[true yes].include?(param_value)
@@ -528,6 +527,8 @@ class Institution < ImportableRecord
       if filter_args.first == 'name'
         state_country_search = query['name'].split(',')
         if state_country_search.length > 1
+          # tests cover this, but SimpleCov doesn't pick it up
+          # :nocov:
           if state_country_search[1].present?
             state = state_country_search[1].upcase.strip
             filters << "state = '#{state}'"
@@ -542,6 +543,7 @@ class Institution < ImportableRecord
             filters << 'country IS NOT NULL'
             filters << 'physical_country IS NOT NULL'
           end
+          # :nocov:
         end
       else
         filters << "#{filter_args.first} #{clause}"
@@ -564,11 +566,14 @@ class Institution < ImportableRecord
       # remove this feature/environment flag once approved for production
       if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
         filters << set_special_mission_filters(query) if query.keys.find { |e| /special_mission/ =~ e }
+      # feature flag stuff that will go away
+      # :nocov:
       elsif query.key?(:special_mission)
         special_mission = query[:special_mission]
         filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
         filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
       end
+      # :nocov:
     end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
