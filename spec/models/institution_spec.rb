@@ -172,7 +172,29 @@ RSpec.describe Institution, type: :model do
         create(:version, :production)
         create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
         create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
-        expect(described_class.search({ name: 'Hampton' }).filter_result_v1(['name'], ['state']).count).to eq(1)
+        query = {
+          "name"=>"Hampton", "page"=>"1", "state"=>"NY", "format"=>"json", "controller"=>"v1/institutions", "action"=>"index", "institution"=>{}
+        }
+        expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(2)
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql)
+        .to include("physical_state")
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql)
+        .not_to include("physical_country")
+      end
+    end
+
+    context 'with filter v1 scope without country' do
+      it 'filters on state only if only a state is provided in the name' do
+        create(:version, :production)
+        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        query = {
+          "name"=>"Hampton", "page"=>"1", "state"=>"NY", "country"=>"USA",
+          "format"=>"json", "controller"=>"v1/institutions", "action"=>"index", "institution"=>{}
+        }
+        expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(1)
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql)
+        .to include("physical_country")
       end
     end
 

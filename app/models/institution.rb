@@ -525,9 +525,8 @@ class Institution < ImportableRecord
 
       # checks text field for a state and country else uses the state/country in filter
       # added step that makes sure it won't return results where the state field is null
-byebug
       if filter_args.first == 'name'
-        state_country_search = query[:name].split(',')
+        state_country_search = query['name'].split(',')
         if state_country_search.length > 1
           if state_country_search[1].present?
             state = state_country_search[1].upcase.strip
