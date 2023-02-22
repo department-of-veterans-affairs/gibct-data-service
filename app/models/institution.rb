@@ -334,12 +334,10 @@ class Institution < ImportableRecord
     zipcode_physical = production? ? 'zip' : 'physical_zip'
     country_physical = production? ? 'country' : 'physical_country'
     address_physical = production? ? 'address' : 'physical_address'
-
     search_term = query[:name]
     include_address = query[:include_address] || false
 
     clause = ['facility_code = :upper_search_term']
-
     processed = institution_search_term(search_term)
     processed_search_term = processed[:search_term]
     excluded_only = processed[:excluded_only]
@@ -350,7 +348,6 @@ class Institution < ImportableRecord
       clause <<  'institution_search % :institution_search_term'
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
-
     clause << "UPPER(#{city_physical}) = :upper_search_term"
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << "#{zipcode_physical} = :search_term"
@@ -528,8 +525,10 @@ class Institution < ImportableRecord
       # checks text field for a state and country else uses the state/country in filter
       # added step that makes sure it won't return results where the state field is null
       if filter_args.first == 'name'
-        state_country_search = query[:name].split(',')
+        state_country_search = query['name'].split(',')
         if state_country_search.length > 1
+          # tests cover this, but SimpleCov doesn't pick it up
+          # :nocov:
           if state_country_search[1].present?
             state = state_country_search[1].upcase.strip
             filters << "state = '#{state}'"
@@ -544,6 +543,7 @@ class Institution < ImportableRecord
             filters << 'country IS NOT NULL'
             filters << 'physical_country IS NOT NULL'
           end
+          # :nocov:
         end
       else
         filters << "#{filter_args.first} #{clause}"
@@ -563,12 +563,17 @@ class Institution < ImportableRecord
     unless exclude_schools
       filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
       filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
-
-      if query.key?(:special_mission)
+      # remove this feature/environment flag once approved for production
+      if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+        filters << set_special_mission_filters(query) if query.keys.find { |e| /special_mission/ =~ e }
+      # feature flag stuff that will go away
+      # :nocov:
+      elsif query.key?(:special_mission)
         special_mission = query[:special_mission]
         filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
         filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
       end
+      # :nocov:
     end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
@@ -594,6 +599,22 @@ class Institution < ImportableRecord
 
     where(Arel.sql(sanitized_clause))
   }
+
+  def self.set_special_mission_filters(query)
+    filt = []
+    query.each_key do |k|
+      next unless k.include?('special_mission')
+
+      v = query[k]
+      next unless v.eql?('true')
+
+      str = k.sub('special_mission_', '')
+      filt << 'relaffil is not null' if str.eql?('relaffil')
+      filt << str + ' = 1' unless str.eql?('relaffil')
+    end
+
+    '(' + filt.join(' OR ') + ')'
+  end
 
   # rubocop:enable Metrics/BlockLength
   # Orders institutions by

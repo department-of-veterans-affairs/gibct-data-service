@@ -167,6 +167,43 @@ RSpec.describe Institution, type: :model do
       end
     end
 
+    context 'with filter v1 scope' do
+      it 'filters on state only if only a state is provided in the name' do
+        create(:version, :production)
+        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        query = { 'name' => 'Hampton', 'state' => 'NY' }
+        expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(2)
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_state')
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).not_to include('physical_country')
+      end
+    end
+
+    context 'with filter v1 scope without country' do
+      it 'filters on state only if only a state is provided in the name' do
+        create(:version, :production)
+        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        query = { 'name' => 'Hampton', 'state' => 'NY', 'country' => 'USA' }
+        expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(1)
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_country')
+      end
+    end
+
+    context 'with special mission filters' do
+      it 'applies special mission filters except relaffil if applicable' do
+        query = { 'special_mission_hbcu' => 'true' }
+        expect(described_class.set_special_mission_filters(query))
+          .to include('hbcu = 1')
+      end
+
+      it 'applies relaffil special mission filter if applicable' do
+        query = { 'special_mission_relaffil' => 'true' }
+        expect(described_class.set_special_mission_filters(query))
+          .to include('relaffil is not null')
+      end
+    end
+
     context 'with search scope' do
       it 'returns nil if no search term is provided' do
         expect(described_class.search(nil)).to be_empty
@@ -256,6 +293,14 @@ RSpec.describe Institution, type: :model do
       create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
 
       results = described_class.non_vet_tec_institutions(Version.current_production)
+      expect(results.count).to eq(1)
+    end
+
+    it 'excludes high schools when filtering them out' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, :high_school_institution, version_id: Version.current_production.id)
+      results = described_class.filter_high_school
       expect(results.count).to eq(1)
     end
 
