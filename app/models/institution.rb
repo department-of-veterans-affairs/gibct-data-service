@@ -563,17 +563,7 @@ class Institution < ImportableRecord
     unless exclude_schools
       filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
       filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
-      # remove this feature/environment flag once approved for production
-      if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
-        filters << set_special_mission_filters(query) if query.keys.find { |e| /special_mission/ =~ e }
-      # feature flag stuff that will go away
-      # :nocov:
-      elsif query.key?(:special_mission)
-        special_mission = query[:special_mission]
-        filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
-        filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
-      end
-      # :nocov:
+      filters << set_special_mission_filters(query) if query.keys.find { |e| /special_mission/ =~ e }
     end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
