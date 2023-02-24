@@ -19,7 +19,7 @@ module Archiver
     timeout = '60000'
     begin
       ApplicationRecord.transaction do
-        timeout = set_timeout_sql || '60000'
+        (timeout = set_timeout_sql || '60000') unless production?
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
           source = if archivable[:source].has_attribute?(:institution_id)
@@ -37,11 +37,13 @@ module Archiver
       notice = 'There was an error of unexpected origin'
       process_exception(notice, e, production_version, previous_version)
     ensure
-      ActiveRecord::Base.connection.execute("SET statement_timeout = #{timeout}")
-      get_timeout_sql = "select setting from pg_settings where name = 'statement_timeout'"
-      Rails.logger.info 'resetting to default timeout'
-      timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
-      Rails.logger.info "default timeout (reset): #{timeout_result['setting']} ***\n\n\n"
+      unless production?
+        ActiveRecord::Base.connection.execute("SET statement_timeout = #{timeout}")
+        get_timeout_sql = "select setting from pg_settings where name = 'statement_timeout'"
+        Rails.logger.info 'resetting to default timeout'
+        timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
+        Rails.logger.info "default timeout (reset): #{timeout_result['setting']} ***\n\n\n"
+      end
     end
   end
 
