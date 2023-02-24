@@ -25,6 +25,8 @@ development:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
   database: gibct-data-service_development
+  variables:
+    statement_timeout: '60000'
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
