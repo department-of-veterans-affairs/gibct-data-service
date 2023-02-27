@@ -15,11 +15,20 @@ module Archiver
     production_version = Version.current_production.number
     previous_version = Version.previous_production.number
 
-    # added timeout code b/c this process had been timing out
-    timeout = '60000'
+    unless production? # Feature flag
+      Rails.logger.info "\n\n\n*** Starting Archive process"
+      Rails.logger.info 'Getting default timeout parameter'
+      get_timeout_parameter
+    end
+
     begin
       ApplicationRecord.transaction do
-        (timeout = set_timeout_sql || '60000') unless production?
+        unless production? # Feature flag
+          Rails.logger.info 'Inside transaction, setting local default timeout parameter'
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600000'")
+          get_timeout_parameter
+        end
+
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
           source = if archivable[:source].has_attribute?(:institution_id)
@@ -27,6 +36,7 @@ module Archiver
                    else
                      archivable[:source].joins(:version)
                    end
+
           source.where('number >= ? AND number <?', previous_version, production_version).in_batches.delete_all
         end
       end
@@ -36,14 +46,12 @@ module Archiver
     rescue StandardError => e
       notice = 'There was an error of unexpected origin'
       process_exception(notice, e, production_version, previous_version)
-    ensure
-      unless production?
-        ActiveRecord::Base.connection.execute("SET statement_timeout = #{timeout}")
-        get_timeout_sql = "select setting from pg_settings where name = 'statement_timeout'"
-        Rails.logger.info 'resetting to default timeout'
-        timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
-        Rails.logger.info "default timeout (reset): #{timeout_result['setting']} ***\n\n\n"
-      end
+    end
+
+    unless production? # Feature flag
+      Rails.logger.info 'Done archiving, getting default timeout parameter'
+      get_timeout_parameter
+      Rails.logger.info "*** End of Archiving process\n\n\n"
     end
   end
 
@@ -70,15 +78,9 @@ module Archiver
     Rails.logger.error "#{notice}: #{exception.message}"
   end
 
-  def self.set_timeout_sql
+  def self.get_timeout_parameter
     get_timeout_sql = "select setting from pg_settings where name = 'statement_timeout'"
     timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
-    timeout = timeout_result['setting']
-    Rails.logger.info "\n\n\n*** default timeout: #{timeout}"
-    Rails.logger.info 'setting timeout to 10 mins'
-    ActiveRecord::Base.connection.execute('SET statement_timeout = 600000') # 10 minutes
-    timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
-    Rails.logger.info "new timeout: #{timeout_result['setting']}\n\n\n"
-    timeout
+    Rails.logger.info "timeout parameter is currently: #{timeout_result['setting']}"
   end
 end

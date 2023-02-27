@@ -21,6 +21,8 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: 5
 
+# Set the timeout parameter here to match production. Catch the timeouts in development 
+# before it becomes a production issue, which has happened.
 development:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
