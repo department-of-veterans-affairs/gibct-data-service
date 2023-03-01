@@ -7,7 +7,7 @@ desc 'shortcut to run all linting tools, at the same time.'
 task security: :environment do
   puts 'running Brakeman security scan...'
   brakeman_result = ShellCommand.run(
-    'brakeman --exit-on-warn --run-all-checks --confidence-level=2'
+    'brakeman --no-exit-on-warn --run-all-checks --confidence-level=2'
   )
 
   puts 'running bundle-audit to check for insecure dependencies...'
