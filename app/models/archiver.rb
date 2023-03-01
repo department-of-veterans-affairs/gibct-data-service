@@ -15,19 +15,15 @@ module Archiver
     production_version = Version.current_production.number
     previous_version = Version.previous_production.number
 
-    unless production? # Feature flag
-      Rails.logger.info "\n\n\n*** Starting Archive process"
-      Rails.logger.info 'Getting default timeout parameter'
-      get_timeout_parameter
-    end
+    Rails.logger.info "\n\n\n*** Starting Archive process"
+    Rails.logger.info 'Getting default timeout parameter'
+    get_timeout_parameter
 
     begin
       ApplicationRecord.transaction do
-        unless production? # Feature flag
-          Rails.logger.info 'Inside transaction, setting local default timeout parameter'
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600000'")
-          get_timeout_parameter
-        end
+        Rails.logger.info 'Inside transaction, setting local default timeout parameter'
+        ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600000'")
+        get_timeout_parameter
 
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
@@ -48,11 +44,9 @@ module Archiver
       process_exception(notice, e, production_version, previous_version)
     end
 
-    unless production? # Feature flag
-      Rails.logger.info 'Done archiving, getting default timeout parameter'
-      get_timeout_parameter
-      Rails.logger.info "*** End of Archiving process\n\n\n"
-    end
+    Rails.logger.info 'Done archiving, getting default timeout parameter'
+    get_timeout_parameter
+    Rails.logger.info "*** End of Archiving process\n\n\n"
   end
 
   def self.create_archives(source, archive, previous_version, production_version)
