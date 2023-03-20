@@ -24,9 +24,11 @@ class AccreditationRecord < ImportableRecord
   # Hybrid) to substrings in the name of the accrediting body. So, for example,
   # if the accrediting agency is the "New England Medical Association", then
   # the accreditation is 'Regional'.
+
+  # vfep-439 - add northwest
   ACCREDITATIONS = {
     'regional' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i,
-                   /higher learning commission/i, /wasc/i],
+                   /higher learning commission/i, /wasc/i, /northwest/i],
     'national' => [/career schools/i, /continuing education/i, /independent colleges/i,
                    /biblical/i, /occupational/i, /distance/i, /new york/i, /transnational/i],
     'hybrid' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
