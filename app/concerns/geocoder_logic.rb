@@ -80,7 +80,7 @@ module GeocoderLogic
   end
 
   def geocode_addy(geocode_type, data, retry_count = 0)
-    return [nil, true] if retry_count > 1 # only retry once, should be sufficient
+    return [nil, true] if retry_count > 3
 
     begin
       # We added this line so that RSpec and SimpleCov will test and show coverage for
@@ -110,6 +110,15 @@ module GeocoderLogic
       geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
     rescue Geocoder::ServiceUnavailable
       Rails.logger.info "  Geocode.#{geocode_type} service unavailable with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::NetworkError
+      Rails.logger.info "  Geocode.#{geocode_type} network error with #{data} retrying"
+      geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
+    rescue Geocoder::ResponseParseError
+      Rails.logger.info "  Geocode.#{geocode_type} response parse error with #{data} retrying"
+      Rails.logger.info "  #{geocoded}"
+      @parse_error_count += 1
+      Rails.logger.info "  Parse error count: #{@parse_error_count}"
       geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
     end
 
