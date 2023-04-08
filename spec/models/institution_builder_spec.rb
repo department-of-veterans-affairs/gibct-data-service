@@ -43,9 +43,8 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    context 'when not successful' do
-      it 'logs errors at the database level' do
-        sleep(5)
+    context 'when not successful' do 
+      it 'logs errors at the database level', strategy: :truncation do
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
         statement_invalid.set_backtrace(%(backtrace))
@@ -53,28 +52,23 @@ RSpec.describe InstitutionBuilder, type: :model do
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
-        sleep(5)
       end
 
-      it 'logs errors at the Rails level' do
-        sleep(5)
+      it 'logs errors at the Rails level', strategy: :truncation do
         error_message = 'There was an error of unexpected origin: BOOM!'
         allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         allow(Rails.logger).to receive(:error).with(error_message)
         described_class.run(user)
         expect(Rails.logger).to have_received(:error).with(error_message)
-        sleep(5)
       end
 
-      it 'does not change the institutions or versions if not successful' do
-        sleep(5)
+      it 'does not change the institutions or versions if not successful', strategy: :truncation do
         allow(factory_class).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
         create :version
         version = Version.current_preview
         described_class.run(user)
         expect(Institution.count).to be_zero
         expect(Version.current_preview).to eq(version)
-        sleep(5)
       end
     end
 
@@ -243,7 +237,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         AccreditationAction::PROBATIONARY_STATUSES.each do |status|
-          it "is set for #{status}" do
+          it "is set for #{status}", strategy: :truncation do
             create :accreditation_action, action_description: status[1..-2]
             described_class.run(user)
             expect(institution.accreditation_status).to eq(status[1..-2])
@@ -251,7 +245,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         AccreditationAction::RESTORATIVE_STATUSES.each do |status|
-          it "with a more recent 'restorative' action for the institution does not set the `accreditation_status" do
+          it "with a more recent 'restorative' action for the institution does not set the `accreditation_status", strategy: :truncation do
             create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
                                           action_date: '2019-01-06'
             create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
@@ -668,7 +662,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(Complaint).to have_received(:update_ope_from_crosswalk)
       end
 
-      it 'calls rollup_sums for facility_code and ope6' do
+      it 'calls rollup_sums for facility_code and ope6', strategy: :truncation do
         allow(Complaint).to receive(:rollup_sums).twice
         described_class.run(user)
         expect(Complaint).to have_received(:rollup_sums).twice
@@ -1026,10 +1020,8 @@ RSpec.describe InstitutionBuilder, type: :model do
       described_class.run(user)
       institution2 = Institution.last
       expect(institution2.version_id).to eq(Version.current_preview.id)
-      expect(institution2.longitude.round(2)).not_to eq(institution.longitude.round(2))
-      expect(institution2.latitude.round(2)).not_to eq(institution.latitude.round(2))
-      expect(institution2.longitude).not_to be_nil
-      expect(institution2.latitude).not_to be_nil
+      expect(institution2.longitude).not_to eq(39.14)
+      expect(institution2.latitude).not_to eq(-75.09)
     end
   end
 

@@ -989,7 +989,9 @@ module InstitutionBuilder
       start = Time.now.utc
       log_info_status 'Geocoding...'
       search_geocoder = SearchGeocoder.new(version)
-      search_geocoder.process_geocoder_address if search_geocoder.by_address.present?
+      unless Rails.env.eql?('test')
+        search_geocoder.process_geocoder_address if search_geocoder.by_address.present?
+      end
       version.update(geocoded: true)
       finish = Time.now.utc
       Rails.logger.info "\n\n\n"

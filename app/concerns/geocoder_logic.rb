@@ -115,6 +115,7 @@ module GeocoderLogic
       Rails.logger.info "  Geocode.#{geocode_type} network error with #{data} retrying"
       geocoded, timed_out = geocode_addy(geocode_type, data, retry_count + 1)
     rescue Geocoder::ResponseParseError
+puts "\n\n\n*** response parse error"
       Rails.logger.info "  Geocode.#{geocode_type} response parse error with #{data} retrying"
       Rails.logger.info "  #{geocoded}"
       @parse_error_count += 1

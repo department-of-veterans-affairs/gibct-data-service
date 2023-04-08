@@ -70,8 +70,8 @@ RSpec.configure do |config|
   end
 
   # Run each test in a transaction
-  config.before do
-    DatabaseCleaner.strategy = :transaction
+  config.before(:each) do |example|
+    DatabaseCleaner.strategy = example.metadata[:strategy] || :transaction
   end
 
   # Only runs before examples which have been flagged :js => true.
