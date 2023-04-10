@@ -130,10 +130,12 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     describe 'exception handling' do
-      [Timeout::Error, SocketError, Geocoder::OverQueryLimitError, Geocoder::RequestDenied,
-      Geocoder::InvalidRequest, Geocoder::InvalidApiKey, Geocoder::ServiceUnavailable, 
-      Geocoder::ResponseParseError].each do |geocoding_exception|
-        it 'handles exceptions when calling the geocoder api', strategy: :truncation do
+      [
+        Timeout::Error, SocketError, Geocoder::OverQueryLimitError, Geocoder::RequestDenied,
+        Geocoder::InvalidRequest, Geocoder::InvalidApiKey, Geocoder::ServiceUnavailable,
+        Geocoder::ResponseParseError
+      ].each do |geocoding_exception|
+        it "handles #{geocoding_exception} exception when calling the geocoder api", strategy: :truncation do
           run_exception_test(geocoding_exception)
         end
       end

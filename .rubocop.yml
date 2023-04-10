@@ -123,11 +123,13 @@ Metrics/ClassLength:
 Metrics/AbcSize:
   Max: 40
   Exclude:
+    - "app/concerns/geocoder_logic.rb"
     - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
     - "app/models/institution_builder.rb"
 
 Metrics/ModuleLength:
   Exclude:
+    - "app/concerns/geocoder_logic.rb"
     - "app/models/institution_builder.rb"
     - "lib/roo_helper/loader.rb"
 

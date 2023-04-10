@@ -70,7 +70,7 @@ RSpec.configure do |config|
   end
 
   # Run each test in a transaction
-  config.before(:each) do |example|
+  config.before do |example|
     DatabaseCleaner.strategy = example.metadata[:strategy] || :transaction
   end
 

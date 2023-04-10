@@ -43,7 +43,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    context 'when not successful' do 
+    context 'when not successful' do
       it 'logs errors at the database level', strategy: :truncation do
         error_message = 'There was an error occurring at the database level: BOOM!'
         statement_invalid = ActiveRecord::StatementInvalid.new('BOOM!')
@@ -245,7 +245,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         AccreditationAction::RESTORATIVE_STATUSES.each do |status|
-          it "with a more recent 'restorative' action for the institution does not set the `accreditation_status", strategy: :truncation do
+          it "with a current 'restore' action, it doesn't set the accreditation_status", strategy: :truncation do
             create :accreditation_action, action_description: AccreditationAction::PROBATIONARY_STATUSES.first[1..-2],
                                           action_date: '2019-01-06'
             create :accreditation_action, action_description: status[1..-2], action_date: '2019-01-09'
