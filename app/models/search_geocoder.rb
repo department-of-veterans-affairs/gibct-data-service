@@ -2,7 +2,7 @@
 
 class SearchGeocoder
   include ::GeocoderLogic
-  attr_accessor :version, :results, :by_address, :country, :total_count
+  attr_accessor :version, :results, :by_address, :country, :total_count, :parse_error_count
 
   def initialize(version)
     @version = version
@@ -18,6 +18,7 @@ class SearchGeocoder
     Rails.logger.info "by_address size:  #{@by_address.size}"
     @country = results.where.not(physical_country: 'USA')
     Rails.logger.info "country size: #{@country.size}"
+    @parse_error_count = 0
   end
 
   def process_geocoder_address
@@ -30,6 +31,7 @@ class SearchGeocoder
       geocode_fields(result, address)
     end
     process_geocoder_country
+    Rails.logger.info "\n\n\n***  Parse error count = #{@parse_error_count} ***\n\n\n"
   end
 
   def process_geocoder_country

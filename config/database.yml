@@ -63,7 +63,7 @@ development:
 test:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
-  database: gibct-data-service_test
+  database: gibct-data-service_test<%= ENV['TEST_ENV_NUMBER'] %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

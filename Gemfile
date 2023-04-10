@@ -98,6 +98,7 @@ group :development, :test do
   gem 'capybara', '2.11.0'
   gem 'database_cleaner'
   gem 'faker', '~> 1.6', '>= 1.6.2'
+  gem 'parallel_tests'
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test
   gem 'vcr', '~> 3.0', '>= 3.0.1'
