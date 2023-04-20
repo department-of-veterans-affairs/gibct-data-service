@@ -32,7 +32,7 @@ RSpec.describe 'zipcode_rates', type: :request do
       expect(response).to have_http_status(:not_found)
       expect(JSON.parse(response.body)['errors'].first).to eq(
         'title' => 'Record not found',
-        'detail' => 'The record identified by 12345 could not be found',
+        'detail' => 'Record not found',
         'code' => '404',
         'status' => '404'
       )

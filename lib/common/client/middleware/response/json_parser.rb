@@ -10,7 +10,7 @@ module Common
 
           def on_complete(env)
             if env.response_headers['content-type']&.match?(/\bjson/)
-              if env.body =~ WHITESPACE_REGEX
+              if !env.body.empty? && is_whitespace?(env.body)
                 env.body = ''
               else
                 env.body = parse(env.body) unless UNPARSABLE_STATUS_CODES.include?(env[:status])
@@ -22,6 +22,15 @@ module Common
             Oj.load(body)
           rescue Oj::Error => e
             raise Common::Client::Errors::Serialization, e
+          end
+
+          def is_whitespace?(body)
+            return body =~ WHITESPACE_REGEX if body.is_a? String
+
+            # Should be a Hash
+            is_whitespace = body.values.all? do |value|
+              value.is_a?(String) && value.strip.empty?
+            end
           end
         end
       end
