@@ -5,7 +5,7 @@ class SchoolCertifyingOfficialValidator < ActiveModel::Validator
 
   def validate(record)
     unless SchoolCertifyingOfficial::VALID_PRIORITY_VALUES.include?(record.priority.to_s.upcase)
-      record.errors[:base] << 'Priority is not a valid value.'
+      record.errors.add(:base, 'Priority is not a valid value.')
     end
   end
 end

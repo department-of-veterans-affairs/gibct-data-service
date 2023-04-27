@@ -9,8 +9,8 @@ class EduProgramValidator < ActiveModel::Validator
   def validate(record)
     duplicates_exist = EduProgram.where(['vet_tec_program = ? AND facility_code = ? AND id != ?',
                                          record.vet_tec_program, record.facility_code, record.id]).any?
-    record.errors[:base] << non_unique_error_msg(record) if duplicates_exist
-    record.errors[:base] << 'The VET TEC Program (Program Name) is blank:' if record.vet_tec_program.blank?
+    record.errors.add(:base, non_unique_error_msg(record)) if duplicates_exist
+    record.errors.add(:base, 'The VET TEC Program (Program Name) is blank:') if record.vet_tec_program.blank?
     facility_code_in_weam?(record)
   end
 
@@ -24,6 +24,6 @@ class EduProgramValidator < ActiveModel::Validator
   def facility_code_in_weam?(record)
     facility_not_in_weam = record.facility_code.present? &&
                            Weam.where(['facility_code = ?', record.facility_code]).empty?
-    record.errors[:base] << SharedMessages.missing_facility_error_msg(record) if facility_not_in_weam
+    record.errors.add(:base, SharedMessages.missing_facility_error_msg(record)) if facility_not_in_weam
   end
 end
