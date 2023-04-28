@@ -180,7 +180,9 @@ class Institution < ImportableRecord
 
   has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
-  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
+  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' },
+           inverse_of: :institution, dependent: nil
+
   has_many :yellow_ribbon_programs, dependent: :destroy
   has_one  :institution_rating, dependent: :destroy
   belongs_to :version

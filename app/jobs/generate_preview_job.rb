@@ -1,6 +1,6 @@
-class GeneratePreviewJob < ApplicationJob
-  # frozen_string_literal: true
+# frozen_string_literal: true
 
+class GeneratePreviewJob < ApplicationJob
   queue_as :default
 
   def perform(current_user)

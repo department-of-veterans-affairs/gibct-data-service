@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '2.7.4'
+ruby '3.2.2'
 
 # Anchored versions, do not change
 
@@ -24,7 +24,7 @@ gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
-gem 'nokogiri', '~> 1.13.10'
+gem 'nokogiri', '~> 1.14.3'
 gem 'pg'
 gem 'roo', '~> 2.8'
 gem 'roo-xls', '~> 1.2'
@@ -75,10 +75,11 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'jshint', platforms: :ruby
-  gem 'rubocop', '0.82.0', require: false
-  gem 'rubocop-rails', '2.5.2'
-  gem 'rubocop-rspec', '1.38.1'
+  gem 'libv8-node', '16.10.0.0'
+  gem 'mini_racer'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
   gem 'scss_lint', require: false
 
   # Security scanners
@@ -97,7 +98,7 @@ group :development, :test do
 
   gem 'capybara', '2.11.0'
   gem 'database_cleaner'
-  gem 'faker', '~> 1.6', '>= 1.6.2'
+  gem 'faker', '~> 3.1', '>= 3.1.1'
   gem 'parallel_tests'
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test

@@ -5,7 +5,7 @@ class WeamValidator < BaseValidator
 
   def self.after_import_batch_validations(failed_instances)
     duplicate_facility_code.each do |record|
-      record.errors[:base] << non_unique_error_msg(record)
+      record.errors.add(:base, non_unique_error_msg(record))
       add_record_to_failed_instances(record, failed_instances)
     end
   end

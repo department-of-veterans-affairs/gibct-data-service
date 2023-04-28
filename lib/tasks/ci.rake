@@ -14,8 +14,8 @@ namespace :spec do
     end
     exit_status = begin
       Rake::Task['spec'].invoke
-                  rescue SystemExit => e
-                    e.status
+    rescue SystemExit => e
+      e.status
                   else
                     0
     end

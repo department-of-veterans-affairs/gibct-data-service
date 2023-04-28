@@ -18,11 +18,11 @@ FactoryBot.define do
     end
 
     trait :short_password do
-      password { Faker::Internet.password(7, 7).to_s }
+      password { Faker::Internet.password(min_length: 7, max_length: 7).to_s }
     end
 
     trait :long_password do
-      password { Faker::Internet.password(73, 73).to_s }
+      password { Faker::Internet.password(min_length: 73, max_length: 73).to_s }
     end
 
     trait :no_password do
