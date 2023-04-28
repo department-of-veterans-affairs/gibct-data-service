@@ -34,7 +34,7 @@ RSpec.describe CautionFlag, type: :model do
     # can't check equals on several fields because of quotes being escaped for inserting
     # into SQL
     CautionFlagTemplate.descendants.each do |template|
-      context "creates flag with #{template.name} values" do
+      context "when creating a flag with #{template.name} values" do
         before do
           clause_sql = <<-SQL
           FROM institutions

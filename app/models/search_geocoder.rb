@@ -7,7 +7,7 @@ class SearchGeocoder
   def initialize(version)
     @version = version
 
-    # note that after successful updates, results get decremented
+    # NOTE: that after successful updates, results get decremented
     @results =
       Institution.approved_institutions(version)
                  .where(latitude: nil, longitude: nil, ungeocodable: false)

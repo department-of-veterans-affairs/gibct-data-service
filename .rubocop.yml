@@ -61,6 +61,18 @@ Style/HashTransformKeys:
 Style/HashTransformValues:
   Enabled: true
 
+Style/HashSyntax:
+  Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/SingleArgumentDig:
+  Enabled: false
+
 Layout/LineLength:
   Max: 120
   Exclude:
@@ -81,6 +93,9 @@ Layout/LineLength:
 
 # removing rule because get_session implies HTTP GET, and informs method
 Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/VariableNumber:
   Enabled: false
 
 Rails:
@@ -124,8 +139,9 @@ Metrics/AbcSize:
   Max: 40
   Exclude:
     - "app/concerns/geocoder_logic.rb"
-    - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
     - "app/models/institution_builder.rb"
+    - "lib/roo_helper/loader.rb"
+    - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
 
 Metrics/ModuleLength:
   Exclude:
@@ -142,15 +158,23 @@ Metrics/BlockLength:
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - "app/validators/va_caution_flag_validator.rb"
+    - "app/controllers/dashboards_controller.rb"
+    - "app/controllers/groups_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/validators/va_caution_flag_validator.rb"
     - "app/models/search_geocoder.rb"
     - "lib/roo_helper/loader.rb"
-    
+    - "lib/common/client/base.rb"
+
+Metrics/ParameterLists:
+  Exclude:
+    - "lib/common/exceptions/external/backend_service_exception.rb"
+
 Metrics/PerceivedComplexity:
   Exclude:
-    - "app/validators/va_caution_flag_validator.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/validators/va_caution_flag_validator.rb"
     - "lib/roo_helper/loader.rb"
 
 # Don't worry about ambiguous blocks in RSpec
@@ -167,6 +191,9 @@ Naming/FileName:
 Lint/BooleanSymbol:
   Exclude:
     - "app/controllers/v0/institutions_controller.rb"
+
+Lint/MissingSuper:
+  Enabled: false
 
 Rails/HasManyOrHasOneDependent:
   Exclude:
@@ -194,7 +221,7 @@ RSpec/DescribeClass:
     - "spec/utilities/caution_flags/caution_flag_template_spec.rb"
 
 RSpec/ExampleLength:
-  Max: 8
+  Max: 15
   Exclude:
     - "spec/models/institution_program_spec.rb"
     - "spec/models/institution_builder_spec.rb"
@@ -209,6 +236,9 @@ RSpec/NestedGroups:
 # Determined to be too benign and/or numerous to justify changing
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
 
 # Added in v0.81
 Lint/RaiseException:

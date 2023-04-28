@@ -139,7 +139,7 @@ module InstitutionBuilder
              .to_sql
       str += "INNER JOIN versions v ON v.number = #{version.number}"
 
-      Institution.connection.insert(str)
+      Institution.connection.insert(str) # rubocop:disable Rails/SkipsModelValidations
       log_info_status 'Deleting duplicates'
 
       # remove duplicates
@@ -989,9 +989,7 @@ module InstitutionBuilder
       start = Time.now.utc
       log_info_status 'Geocoding...'
       search_geocoder = SearchGeocoder.new(version)
-      unless Rails.env.eql?('test')
-        search_geocoder.process_geocoder_address if search_geocoder.by_address.present?
-      end
+      search_geocoder.process_geocoder_address if !Rails.env.eql?('test') && search_geocoder.by_address.present?
       version.update(geocoded: true)
       finish = Time.now.utc
       Rails.logger.info "\n\n\n"

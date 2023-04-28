@@ -43,15 +43,11 @@ RSpec.describe 'UPLOAD_TYPES' do
       it "#{klass_name(upload)} upload type config has field klass" do
         expect(upload[:klass]).to be_a(String).or be < ImportableRecord
       end
-    end
 
-    UPLOAD_TYPES.each do |upload|
       it "#{klass_name(upload)} upload type config has field required?" do
         expect(upload[:required?]).to be_in([true, false])
       end
-    end
 
-    UPLOAD_TYPES.each do |upload|
       it "#{klass_name(upload)} upload type config not_prod_ready? is a boolean" do
         expect(upload[:not_prod_ready?]).to be_in([true, false]) if upload[:not_prod_ready?].present?
       end

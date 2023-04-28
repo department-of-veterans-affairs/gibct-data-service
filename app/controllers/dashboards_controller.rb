@@ -107,7 +107,7 @@ class DashboardsController < ApplicationController
 
   def fetch_api_data(api_upload)
     klass = api_upload.csv_type.constantize
-    populated = klass&.respond_to?(:populate) ? klass.populate : false
+    populated = klass.respond_to?(:populate) ? klass.populate : false
     api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
 
     if populated
