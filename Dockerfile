@@ -61,7 +61,11 @@ FROM base AS k8s
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
-RUN curl http://aia.pki.va.gov/PKI/AIA/VA/VA-Internal-S2-RCA1-v1.cer > VA.cer && openssl x509 -inform der -in VA.cer -out VA.pem && mv VA.pem /usr/local/share/ca-certificates/VA.crt && update-ca-certificates
+
+# Download VA Certs
+COPY ./import-va-certs.sh .
+RUN ./import-va-certs.sh
+
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 USER gi-bill-data-service
