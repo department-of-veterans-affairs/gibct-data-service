@@ -10,7 +10,7 @@ SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl libpq-dev dumb-init shared-mime-info nodejs cron
+    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
@@ -62,10 +62,6 @@ FROM base AS k8s
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-# Download VA Certs
-COPY ./import-va-certs.sh .
-RUN ./import-va-certs.sh
-
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 USER gi-bill-data-service
@@ -82,6 +78,11 @@ FROM base AS production
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+
+# Download VA Certs
+COPY ./import-va-certs.sh .
+RUN ./import-va-certs.sh
+
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 USER gi-bill-data-service
