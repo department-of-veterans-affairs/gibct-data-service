@@ -33,7 +33,8 @@ module DashboardsHelper
     completed = false
 
     pgsi = PreviewGenerationStatusInformation.last
-    if pgsi.current_progress.start_with?('Complete') || pgsi.current_progress.start_with?('There was an error')
+    if pgsi.current_progress.start_with?('Preview generated and published') ||
+       pgsi.current_progress.start_with?('There was an error')
       completed = true
       PreviewGenerationStatusInformation.delete_all
       # maintain the indexes and tables in the local, dev & staging envs.

@@ -52,6 +52,8 @@ module Archiver
   def self.create_archives(source, archive, previous_version, production_version)
     return if archive.blank?
 
+    UpdatePreviewGenerationStatusJob.perform_later("archiving #{source.table_name}")
+
     cols = archive.column_names
     insert_cols = (cols.map { |col| '"' + col + '"' }).join(', ')
     select_cols = (cols.map { |col| 's.' + col }).join(', ')
