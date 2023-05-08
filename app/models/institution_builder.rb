@@ -109,7 +109,6 @@ module InstitutionBuilder
         end
         Archiver.archive_previous_versions if Settings.archiver.archive
         log_info_status 'Preview generated and published'
-
       rescue ActiveRecord::StatementInvalid => e
         notice = 'There was an error occurring at the database level'
         log_info_status notice

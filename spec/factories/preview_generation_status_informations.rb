@@ -5,7 +5,7 @@ FactoryBot.define do
     current_progress { 'Preview Version is being generated.' }
 
     trait :complete do
-      current_progress { 'Complete' }
+      current_progress { 'Preview generated and published' }
     end
 
     trait :complete_error do

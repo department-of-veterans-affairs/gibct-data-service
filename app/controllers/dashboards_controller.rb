@@ -44,7 +44,7 @@ class DashboardsController < ApplicationController
   rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
- 
+
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
