@@ -10,7 +10,7 @@ class GibctSiteMapper
     configure_sitemap(verbose)
     generate_sitemap(version)
 
-    ping_search_engines if ping && version.present?
+    SitemapGenerator::Sitemap.ping_search_engines(sitemap_location) if ping && version.present?
   end
 
   def version
@@ -37,9 +37,5 @@ class GibctSiteMapper
         add "/profile/#{institution.facility_code}", priority: 0.8, changefreq: 'weekly'
       end
     end
-  end
-
-  def ping_search_engines
-    SitemapGenerator::Sitemap.ping_search_engines(sitemap_location) if version.present?
   end
 end

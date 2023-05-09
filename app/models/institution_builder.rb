@@ -101,12 +101,7 @@ module InstitutionBuilder
         delete_prior_preview_data(prior_preview_ids) if prior_preview_ids
         log_info_status 'Preview generated. Now publishing..'
         version.update(production: true, completed_at: Time.now.utc.to_s(:db))
-
-        if production?
-          # Build Sitemap and notify search engines in production only
-          ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
-          GibctSiteMapper.new(ping: ping)
-        end
+        GibctSiteMapper.new(ping: true) if production?
         Archiver.archive_previous_versions if Settings.archiver.archive
         log_info_status 'Preview generated and published'
       rescue ActiveRecord::StatementInvalid => e
