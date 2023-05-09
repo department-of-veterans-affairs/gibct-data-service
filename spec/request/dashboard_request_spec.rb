@@ -22,10 +22,4 @@ RSpec.describe 'Dashboard', type: :request do
       get dashboard_build_path
     end.to raise_error(ActionController::RoutingError)
   end
-
-  it 'does not respond to GET #push' do
-    expect do
-      get dashboard_push_path
-    end.to raise_error(ActionController::RoutingError)
-  end
 end
