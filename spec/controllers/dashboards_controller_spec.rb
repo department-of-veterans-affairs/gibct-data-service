@@ -142,47 +142,6 @@ RSpec.describe DashboardsController, type: :controller do
     end
   end
 
-  describe 'GET push' do
-    before do
-      allow(Archiver).to receive(:archive_previous_versions).and_return(nil)
-    end
-
-    login_user
-
-    context 'with no existing preview records' do
-      it 'returns an error message' do
-        post(:push)
-        expect(flash.alert).to eq('No preview version available')
-        expect(Version.current_production).to be_blank
-      end
-    end
-
-    describe 'with existing preview records' do
-      before do
-        create :version
-      end
-
-      context 'when successful' do
-        it 'sets the new production version' do
-          SiteMapperHelper.silence do
-            current_preview = Version.current_preview
-            expect(Version.current_production).to eq(nil)
-            post(:push)
-            expect(Version.current_production.production).to eq(true)
-            expect(Version.current_production).to eq(current_preview)
-          end
-        end
-
-        it 'updates production data' do
-          SiteMapperHelper.silence do
-            post(:push)
-          end
-          expect(flash.notice).to eq('Production data updated')
-        end
-      end
-    end
-  end
-
   describe 'GET api_fetch' do
     login_user
 

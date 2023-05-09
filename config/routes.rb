@@ -17,8 +17,7 @@ Rails.application.routes.draw do
   get '/dashboards/export/:csv_type' => 'dashboards#export', as: :dashboard_export, defaults: { format: 'csv' }
   get '/dashboards/api_fetch/:csv_type' => 'dashboards#api_fetch', as: :dashboard_api_fetch
   get '/dashboards/export/institutions/:number' => 'dashboards#export_version', as: :dashboard_export_version, defaults: { format: 'csv' }
-  post '/dashboards/push' => 'dashboards#push', as: :dashboard_push
-
+  
   resources :uploads, except: [:new, :destroy, :edit, :update] do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end

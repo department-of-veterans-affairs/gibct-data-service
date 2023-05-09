@@ -99,8 +99,11 @@ module InstitutionBuilder
         # Clean up any existing unstaged previews
         prior_preview_ids = Version.prior_preview_ids
         delete_prior_preview_data(prior_preview_ids) if prior_preview_ids
-        log_info_status 'Complete'
-        version.update(completed_at: Time.now.utc.to_s(:db))
+        log_info_status 'Preview generated. Now publishing..'
+        version.update(production: true, completed_at: Time.now.utc.to_s(:db))
+        GibctSiteMapper.new(ping: true) if production?
+        Archiver.archive_previous_versions if Settings.archiver.archive
+        log_info_status 'Preview generated and published'
       rescue ActiveRecord::StatementInvalid => e
         notice = 'There was an error occurring at the database level'
         log_info_status notice

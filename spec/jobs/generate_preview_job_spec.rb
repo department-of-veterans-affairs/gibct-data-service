@@ -14,7 +14,12 @@ RSpec.describe GeneratePreviewJob, type: :job do
     let(:job) { described_class.new(user) }
 
     it 'creates a new version' do
-      expect { job.perform(user) }.to change(Version, :count).by(1)
+      expect { perform_job(user) }.to change(Version, :count).by(1)
     end
+  end
+
+  def perform_job(user)
+    job.perform(user)
+    sleep(0.2)
   end
 end

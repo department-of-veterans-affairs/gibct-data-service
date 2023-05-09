@@ -45,27 +45,6 @@ class DashboardsController < ApplicationController
     log_error(e)
   end
 
-  def push
-    version = Version.current_preview
-
-    if version.blank?
-      flash.alert = 'No preview version available'
-    else
-      version.update(production: true)
-
-      flash.notice = 'Production data updated'
-
-      if production?
-        # Build Sitemap and notify search engines in production only
-        ping = request.original_url.include?(GibctSiteMapper::PRODUCTION_HOST)
-        GibctSiteMapper.new(ping: ping)
-      end
-      Archiver.archive_previous_versions if Settings.archiver.archive
-    end
-
-    redirect_to dashboards_path
-  end
-
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
@@ -120,8 +99,6 @@ class DashboardsController < ApplicationController
   end
 
   def flash_progress_if_needed
-    return if @preview_versions.empty? || !@preview_versions.first.generating?
-
     if PreviewGenerationStatusInformation.exists?
       pgsi = PreviewGenerationStatusInformation.last
       flash.notice = pgsi.current_progress
