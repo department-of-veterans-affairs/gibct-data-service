@@ -53,14 +53,21 @@ RSpec.describe DashboardsHelper, type: :helper do
   end
 
   describe 'can_generate_preview' do
-    it 'returns false when fetch is not in progress' do
+    it 'returns disabled when fetch is not in progress' do
       create :upload, :scorecard_finished
       expect(helper.can_generate_preview([preview_version1, preview_version2])).to eq('disabled')
     end
 
-    it 'returns true when fetch is in progress' do
+    it 'does not return disabled when fetch is in progress' do
       create :upload, :scorecard_in_progress
       expect(helper.can_generate_preview([prod_version1, prod_version2])).to eq(nil)
+    end
+
+    it 'returns disabled when publishing is in progress' do
+      create :version, :production
+      create :preview_generation_status_information, :publishing
+
+      expect(helper.can_generate_preview([])).to eq('disabled')
     end
   end
 

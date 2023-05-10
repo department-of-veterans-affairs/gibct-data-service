@@ -16,7 +16,14 @@ module DashboardsHelper
   end
 
   def can_generate_preview(preview_versions)
-    'disabled' if preview_versions[0]&.generating?
+    return 'disabled' if preview_versions[0]&.generating?
+
+    # We also want to disable while publishing is in progress
+    pgsi = PreviewGenerationStatusInformation.last
+    return 'disabled' unless
+      pgsi.nil? ||
+      pgsi.current_progress.start_with?('Preview generated and published') ||
+      pgsi.current_progress.start_with?('There was an error')
   end
 
   def cannot_fetch_api(csv_type)
