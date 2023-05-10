@@ -5,7 +5,6 @@
     
     wget \
         --level=1 \
-        --quiet \
         --recursive \
         --no-parent \
         --no-host-directories \
