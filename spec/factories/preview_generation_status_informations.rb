@@ -4,6 +4,10 @@ FactoryBot.define do
   factory :preview_generation_status_information do
     current_progress { 'Preview Version is being generated.' }
 
+    trait :publishing do
+      current_progress { 'archiving institutions' }
+    end
+
     trait :complete do
       current_progress { 'Preview generated and published' }
     end
