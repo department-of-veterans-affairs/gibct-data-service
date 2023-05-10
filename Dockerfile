@@ -79,6 +79,8 @@ FROM base AS production
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
+RUN whoami
+
 # Download VA Certs
 COPY ./import-va-certs.sh .
 RUN ./import-va-certs.sh
