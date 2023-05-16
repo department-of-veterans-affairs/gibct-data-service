@@ -45,6 +45,23 @@ class DashboardsController < ApplicationController
     log_error(e)
   end
 
+  def export_ungeocodables
+    respond_to do |format|
+      format.csv do
+        send_data Institution.export_ungeocodables(
+          Institution.ungeocodables.pluck(
+            :institution, :facility_code, :address_1, :address_2, :address_3, :city, :state,
+            :zip, :physical_country, :cross, :ope
+          )
+        ),
+                  type: 'text/csv',
+                  filename: 'ungeocodables.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
   def api_fetch
     class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
@@ -68,6 +85,10 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
+  end
+
+  def geocoding_issues
+    @ungeocodables = Institution.ungeocodables
   end
 
   private
