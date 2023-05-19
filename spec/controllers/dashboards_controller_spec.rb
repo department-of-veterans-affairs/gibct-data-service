@@ -11,7 +11,6 @@ RSpec.describe DashboardsController, type: :controller do
   end
 
   it_behaves_like 'an authenticating controller', :index, 'dashboards'
-  #it_behaves_like 'an authenticating controller', :ungeocodables, 'dashboards'
 
   def load_table(klass)
     csv_name = "#{klass.name.underscore}.csv"
