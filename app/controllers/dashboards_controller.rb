@@ -53,9 +53,7 @@ class DashboardsController < ApplicationController
             :institution, :facility_code, :address_1, :address_2, :address_3, :city, :state,
             :zip, :physical_country, :cross, :ope
           )
-        ),
-                  type: 'text/csv',
-                  filename: 'ungeocodables.csv'
+        ), type: 'text/csv', filename: 'ungeocodables.csv'
       end
     end
   rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
@@ -70,8 +68,7 @@ class DashboardsController < ApplicationController
     elsif class_name.present?
       csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
       begin
-        api_upload = Upload.new(csv_type: class_name, user: current_user, csv: csv,
-                                comment: "#{class_name} API Request")
+        api_upload = Upload.new(csv_type: class_name, user: current_user, csv: csv, comment: "#{class_name} API Request")
         flash.notice = fetch_api_data(api_upload) if api_upload.save!
       rescue StandardError => e
         message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
@@ -111,7 +108,6 @@ class DashboardsController < ApplicationController
     api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
 
     if populated
-
       message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
       return message if message.present?
 

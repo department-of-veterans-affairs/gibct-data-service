@@ -346,4 +346,24 @@ RSpec.describe Institution, type: :model do
       expect(institution.physical_address).to eq(nil)
     end
   end
+
+  context 'when reporting on ungeocodables' do
+    before do
+      create(:version, :production)
+      create(:institution, :location, :lat_long)
+      create(:institution, :foreign_bad_address, :ungeocodable)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      described_class.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+
+    it 'returns ungeocodable institutions for #ungeocodables' do
+      expect(described_class.ungeocodables.size).to eq(1)
+    end
+
+    it 'returns a count of ungeocodable institutions for #ungeocodable_count' do
+      expect(described_class.ungeocodable_count).to eq(1)
+    end
+  end
 end
