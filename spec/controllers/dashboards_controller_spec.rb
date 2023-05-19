@@ -178,4 +178,47 @@ RSpec.describe DashboardsController, type: :controller do
       expect(flash.alert).to include(message)
     end
   end
+
+  describe 'GET #geocoding_issues' do
+    login_user
+
+    before do
+      create(:version, :production)
+      create(:institution, :location, :lat_long)
+      create(:institution, :foreign_bad_address, :ungeocodable)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Institution.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+
+      get(:geocoding_issues)
+    end
+
+    it 'contains one ungeocodable institution' do
+      expect(assigns(:ungeocodables).length).to eq(1)
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe 'GET #export_ungeocodables' do
+    login_user
+
+    it 'causes a CSV to be exported' do
+      allow(Institution).to receive(:export_ungeocodables)
+      get(:export_ungeocodables, params: { format: :csv })
+      expect(Institution).to have_received(:export_ungeocodables)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_ungeocodables, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="ungeocodables.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_ungeocodables, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
 end

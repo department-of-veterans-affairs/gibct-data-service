@@ -45,16 +45,30 @@ class DashboardsController < ApplicationController
     log_error(e)
   end
 
+  def export_ungeocodables
+    respond_to do |format|
+      format.csv do
+        send_data Institution.export_ungeocodables(
+          Institution.ungeocodables.pluck(
+            :institution, :facility_code, :address_1, :address_2, :address_3, :city, :state,
+            :zip, :physical_country, :cross, :ope
+          )
+        ), type: 'text/csv', filename: 'ungeocodables.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
   def api_fetch
-    class_name = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
+    class_nm = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
     if Upload.fetching_for?(params[:csv_type])
       flash.alert = "#{params[:csv_type]} is already being fetched by another user"
-    elsif class_name.present?
-      csv = "#{class_name}::API_SOURCE".safe_constantize || "#{class_name} API"
+    elsif class_nm.present?
+      csv = "#{class_nm}::API_SOURCE".safe_constantize || "#{class_nm} API"
       begin
-        api_upload = Upload.new(csv_type: class_name, user: current_user, csv: csv,
-                                comment: "#{class_name} API Request")
+        api_upload = Upload.new(csv_type: class_nm, user: current_user, csv: csv, comment: "#{class_nm} API Request")
         flash.notice = fetch_api_data(api_upload) if api_upload.save!
       rescue StandardError => e
         message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
@@ -68,6 +82,10 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
+  end
+
+  def geocoding_issues
+    @ungeocodables = Institution.ungeocodables
   end
 
   private
@@ -90,7 +108,6 @@ class DashboardsController < ApplicationController
     api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
 
     if populated
-
       message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
       return message if message.present?
 

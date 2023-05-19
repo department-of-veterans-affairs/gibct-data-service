@@ -343,5 +343,11 @@ FactoryBot.define do
       country { 'UNITED KINGDOM' }
       zip { nil }
     end
+
+    trait :ungeocodable do
+      longitude { nil }
+      latitude { nil }
+      ungeocodable { true }
+    end
   end
 end

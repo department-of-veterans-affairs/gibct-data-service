@@ -17,6 +17,14 @@ module Common
       end
     end
 
+    def export_ungeocodables(ungeocodables)
+      ungeocodables.prepend(
+        ['Institution', 'Facility Code', 'Address 1', 'Address 2', 'Address 3', 'City', 'State',
+         'Zip', 'Country', 'IPED', 'OPE']
+      )
+      generate_csv(ungeocodables)
+    end
+
     private
 
     def defaults

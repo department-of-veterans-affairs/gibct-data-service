@@ -302,6 +302,15 @@ class Institution < ImportableRecord
     where(high_school: false)
   end
 
+  def self.ungeocodable_count
+    ungeocodables.count
+  end
+
+  def self.ungeocodables
+    version = Version.current_production
+    approved_institutions(version).where(latitude: nil, longitude: nil, ungeocodable: true).order(:institution)
+  end
+
   #
   # Scopes
   #
