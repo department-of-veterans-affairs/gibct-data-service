@@ -30,10 +30,10 @@ RSpec.describe InstitutionBuilder, type: :model do
         expect(version).not_to be_generating
       end
 
-      it 'writes "Preview generated and published" to the log' do
+      it "writes '#{CommonInstitutionBuilder::VersionGeneration::PUBLISH_COMPLETE_TEXT}' to the log" do
         allow(Rails.logger).to receive(:info)
         run_institution_builder(user)
-        expect(Rails.logger).to have_received(:info).with(/Preview\sgenerated\sand\spublished/).at_least(:once)
+        expect(Rails.logger).to have_received(:info).with(/Version\sgenerated\sand\spublished/).at_least(:once)
       end
 
       it 'does not write "error" to the log' do
@@ -1020,44 +1020,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       expect(institution2.version_id).to eq(Version.current_production.id)
       expect(institution2.longitude).not_to eq(39.14)
       expect(institution2.latitude).not_to eq(-75.09)
-    end
-  end
-
-  describe 'when generating a preview version' do
-    # Rubocop flags you for too many let clauses
-    def create_preview_version
-      old_preview_version = create(:version, :preview)
-      institution = create(:institution)
-      institution.caution_flags << create(:caution_flag, :accreditation_issue)
-      institution.versioned_school_certifying_officials << create(:versioned_school_certifying_official)
-      institution.yellow_ribbon_programs << create(:yellow_ribbon_program)
-      institution.institution_rating = build(:institution_rating)
-      old_preview_version.institutions << institution
-      old_preview_version.zipcode_rates << create(:zipcode_rate)
-      old_preview_version.save
-      old_preview_version
-    end
-
-    it 'deletes any existing preview versions (not published)' do
-      old_preview_version = create_preview_version
-      Institution.where(version_id: nil).delete_all # clear out cruft institutions
-      expect(CautionFlag.count).to eq(1)
-      expect(VersionedSchoolCertifyingOfficial.count).to eq(1)
-      expect(YellowRibbonProgram.count).to eq(1)
-      expect(InstitutionRating.count).to eq(1)
-      expect(Institution.count).to eq(1)
-      expect(ZipcodeRate.count).to eq(1)
-
-      run_institution_builder(user)
-
-      # Note the syntax here
-      expect { Version.find(old_preview_version.id) }.to raise_exception(ActiveRecord::RecordNotFound)
-      expect(CautionFlag.count).to eq(0)
-      expect(VersionedSchoolCertifyingOfficial.count).to eq(0)
-      expect(YellowRibbonProgram.count).to eq(0)
-      expect(InstitutionRating.count).to eq(0)
-      expect(Institution.count).to eq(0)
-      expect(ZipcodeRate.count).to eq(0)
     end
   end
 

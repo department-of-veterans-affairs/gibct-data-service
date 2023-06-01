@@ -83,17 +83,15 @@ RSpec.describe Upload, type: :model do
     end
 
     it 'returns all uploads if preview is blank' do
-      expect(described_class.since_last_preview_version.any?).to eq(true)
+      expect(described_class.since_last_version.any?).to eq(true)
     end
 
-    it 'returns uploads after preview' do
-      create :version, :preview
+    it 'returns uploads since the last version was generated' do
       described_class.where(csv_type: 'Weam')[1].update(ok: true)
-      create :version, :production, number: Version.current_preview.number
-      create :version, :preview
+      create :version, :production
       described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
-      expect(described_class.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
-      expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
+      expect(described_class.since_last_version.map(&:csv_type)).to include('Crosswalk')
+      expect(described_class.since_last_version.map(&:csv_type)).not_to include('Weam')
     end
   end
 

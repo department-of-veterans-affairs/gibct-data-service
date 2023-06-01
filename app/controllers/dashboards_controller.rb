@@ -5,8 +5,7 @@ class DashboardsController < ApplicationController
     @uploads = Upload.last_uploads_rows
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
-    @latest_uploads = Upload.since_last_preview_version
-    @aws_loc = (production? ? 'Publish to Production' : 'Publish to Staging')
+    @latest_uploads = Upload.since_last_version
     flash_progress_if_needed
   end
 
