@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module DashboardsHelper
+  include CommonInstitutionBuilder::VersionGeneration
+
   def latest_upload_class(upload)
     return '' if upload.ok?
     return 'danger' if UPLOAD_TYPES_REQUIRED_NAMES.include?(upload.csv_type)
@@ -22,7 +24,7 @@ module DashboardsHelper
     pgsi = PreviewGenerationStatusInformation.last
     return 'disabled' unless
       pgsi.nil? ||
-      pgsi.current_progress.start_with?('Preview generated and published') ||
+      pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
       pgsi.current_progress.start_with?('There was an error')
   end
 
@@ -40,7 +42,7 @@ module DashboardsHelper
     completed = false
 
     pgsi = PreviewGenerationStatusInformation.last
-    if pgsi.current_progress.start_with?('Preview generated and published') ||
+    if pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
        pgsi.current_progress.start_with?('There was an error')
       completed = true
       PreviewGenerationStatusInformation.delete_all

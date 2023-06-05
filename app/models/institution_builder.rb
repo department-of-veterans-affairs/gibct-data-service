@@ -24,6 +24,7 @@ module InstitutionBuilder
   end
 
   class Factory
+    include CommonInstitutionBuilder::VersionGeneration
     extend Common
 
     def self.run_insertions(version)
@@ -94,16 +95,12 @@ module InstitutionBuilder
             # rubocop:enable Rails/SkipsModelValidations
           end
           build_messages = run_insertions(version)
-        end
 
-        # Clean up any existing unstaged previews
-        prior_preview_ids = Version.prior_preview_ids
-        delete_prior_preview_data(prior_preview_ids) if prior_preview_ids
-        log_info_status 'Preview generated. Now publishing..'
-        version.update(production: true, completed_at: Time.now.utc.to_s(:db))
-        GibctSiteMapper.new(ping: true) if production?
-        Archiver.archive_previous_versions if Settings.archiver.archive
-        log_info_status 'Preview generated and published'
+          version.update(production: true, completed_at: Time.now.utc.to_s(:db))
+          GibctSiteMapper.new(ping: true) if production?
+          Archiver.archive_previous_versions if Settings.archiver.archive
+          log_info_status PUBLISH_COMPLETE_TEXT
+        end
       rescue ActiveRecord::StatementInvalid => e
         notice = 'There was an error occurring at the database level'
         log_info_status notice
@@ -998,19 +995,6 @@ module InstitutionBuilder
       Rails.logger.info "\n\n\n"
       Rails.logger.info "*** Goecoding Beg: #{start}"
       Rails.logger.info "*** Geocoding End: #{finish}\n\n\n"
-    end
-
-    def self.delete_prior_preview_data(prior_preview_ids)
-      prior_preview_ids.each do |pp_id|
-        min_inst_id = Institution.where(version_id: pp_id).minimum(:id)
-        unless min_inst_id # no insititutions for this preview
-          Version.find(pp_id).destroy
-          next
-        end
-        max_inst_id = Institution.where(version_id: pp_id).maximum(:id)
-        delete_institution_data(pp_id, min_inst_id, max_inst_id)
-        Version.find(pp_id).destroy
-      end
     end
 
     def self.delete_institution_data(pp_id, min_inst_id, max_inst_id)
