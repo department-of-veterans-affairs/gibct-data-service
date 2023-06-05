@@ -77,12 +77,12 @@ class Upload < ApplicationRecord
     uploads.sort_by { |upload| upload.csv_type.downcase }
   end
 
-  def self.since_last_preview_version
-    last_preview = Version.current_preview || Version.current_production
+  def self.since_last_version
+    last_version = Version.current_production
 
-    return Upload.last_uploads if last_preview.blank?
+    return Upload.last_uploads if last_version.blank?
 
-    Upload.last_uploads.where('updated_at > ?', last_preview.updated_at)
+    Upload.last_uploads.where('updated_at > ?', last_version.updated_at)
   end
 
   def self.from_csv_type(csv_type)

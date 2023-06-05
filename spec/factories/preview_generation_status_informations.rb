@@ -9,7 +9,7 @@ FactoryBot.define do
     end
 
     trait :complete do
-      current_progress { 'Preview generated and published' }
+      current_progress { CommonInstitutionBuilder::VersionGeneration::PUBLISH_COMPLETE_TEXT }
     end
 
     trait :complete_error do

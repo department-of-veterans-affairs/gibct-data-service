@@ -84,7 +84,6 @@ RSpec.describe Version, type: :model do
         expect(version).to be_production
         expect(version).not_to be_preview
         expect(version).not_to be_latest_preview
-        expect(version).not_to be_publishable
       end
     end
 
@@ -100,7 +99,6 @@ RSpec.describe Version, type: :model do
         expect(version).not_to be_production
         expect(version).to be_preview
         expect(version).to be_latest_preview
-        expect(version).not_to be_publishable
       end
     end
   end
@@ -123,7 +121,6 @@ RSpec.describe Version, type: :model do
         expect(version).not_to be_production
         expect(version).to be_preview
         expect(version).to be_latest_preview
-        expect(version).to be_publishable
       end
     end
   end
