@@ -6,15 +6,24 @@ class AccreditationDateTimeConverter < BaseConverter
     return nil if value.blank?
 
     begin
-      return value.to_date if value.is_a?(DateTime)
+      date = nil
 
-      return value if value.is_a?(Date)
+      # rubocop:disable Style/EmptyCaseCondition
+      case
+      when value.is_a?(DateTime)
+        date = value.to_date
+      when value.is_a?(Date)
+        date = value
 
       # Accreditation Date format
-      date = DateTime.strptime(value, '%m/%d/%Y %H:%M:%S %p').to_date
-      return date if date.is_a?(Date)
+      when value.is_a?(String) && value.length > 10
+        date = DateTime.strptime(value, '%m/%d/%Y %H:%M:%S %p').to_date
+      when value.is_a?(String)
+        date = DateTime.strptime(value, '%Y-%m-%d').to_date
+      end
+      # rubocop:enable Style/EmptyCaseCondition
 
-      nil
+      date
     rescue ArgumentError
       nil
 
