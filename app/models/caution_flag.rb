@@ -31,4 +31,30 @@ class CautionFlag < ApplicationRecord
     sql = CautionFlag.send(:sanitize_sql, [str])
     CautionFlag.connection.execute(sql)
   end
+
+  def self.initialize_with_current(version_id)
+    message = 'Creating Caution Flag rows from current Caution Flags'
+    Rails.logger.info "*** #{Time.now.utc} #{message}"
+
+    UpdatePreviewGenerationStatusJob.perform_later(message)
+
+    timestamp = Time.now.utc.to_s(:db)
+    conn = ApplicationRecord.connection
+    columns = Array.new(InstitutionProgram.column_names)
+    columns.delete('id')
+    insert_columns = columns.dup
+    columns.delete('version_id')
+    columns.map!{ |cn| cn.eql?('created_at') ? conn.quote(timestamp) : cn }
+    columns.map!{ |cn| cn.eql?('updated_at') ? conn.quote(timestamp) : cn }
+    columns.map!{ |cn| cn.eql?('version_id') ? version.id.to_i : cn }
+
+    str = "INSERT INTO caution_flags (#{insert_columns.join(', ')}) "
+    str += "select new_i.id, #{version_id}, #{columns.join(', ')} "
+    str += 'from caution_flags inner join institutions old_i on caution_flags.institution_id = old_i.id '
+    str += "and old_i.version_id = #{Version.current_production.id}"
+    str += 'inner join institutions new_i on old_i.facility_code = new_i.facility_code '
+    str += "where institution_id = old_i.id and caution_flags.version_id = #{Version.current_production.id}"
+
+    CautionFlag.connection.insert(str) # rubocop:disable Rails/SkipsModelValidations
+  end
 end

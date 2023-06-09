@@ -161,10 +161,11 @@ Metrics/CyclomaticComplexity:
     - "app/controllers/dashboards_controller.rb"
     - "app/controllers/groups_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
-    - "app/validators/va_caution_flag_validator.rb"
+    - "app/models/institution_builder.rb"
     - "app/models/search_geocoder.rb"
-    - "lib/roo_helper/loader.rb"
+    - "app/validators/va_caution_flag_validator.rb"
     - "lib/common/client/base.rb"
+    - "lib/roo_helper/loader.rb"
 
 Metrics/ParameterLists:
   Exclude:
@@ -174,6 +175,7 @@ Metrics/PerceivedComplexity:
   Exclude:
     - "app/controllers/dashboards_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/models/institution_builder.rb"
     - "app/validators/va_caution_flag_validator.rb"
     - "lib/roo_helper/loader.rb"
 

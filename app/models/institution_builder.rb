@@ -29,47 +29,77 @@ module InstitutionBuilder
 
     def self.run_insertions(version)
       build_messages = {}
-      initialize_with_weams(version)
-      add_crosswalk(version.id)
-      add_sec103(version.id)
-      add_sva(version.id)
-      add_owner(version.id)
-      add_vsoc(version.id)
-      add_eight_key(version.id)
-      add_accreditation(version.id)
-      add_arf_gi_bill(version.id)
-      add_post_911_stats(version.id)
-      add_mou(version.id)
-      ScorecardBuilder.build(version.id)
-      IpedsBuilder.build_ic(version.id)
-      IpedsBuilder.build_hd(version.id)
-      IpedsBuilder.build_ic_ay(version.id)
-      IpedsBuilder.build_ic_py(version.id)
-      add_sec_702(version.id)
-      add_settlement(version.id)
-      add_hcm(version.id)
-      add_complaint(version.id)
-      add_outcome(version.id)
-      add_stem_offered(version.id)
-      add_yellow_ribbon_programs(version.id)
-      add_school_closure(version.id)
-      add_vet_tec_provider(version.id)
-      add_extension_campus_type(version.id)
-      add_sec109_closed_school(version.id)
-      build_zip_code_rates_from_weams(version.id)
-      build_institution_programs(version.id)
-      build_versioned_school_certifying_official(version.id)
-      SuspendedCautionFlags.build(version.id)
-      add_provider_type(version.id)
-      VrrapBuilder.build(version.id)
+      if @uploads_new.include?('Weam')
+        initialize_with_weams(version)
+      else
+        initialize_with_current_institutions(version)
+      end
+
+      add_crosswalk(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Crosswalk')
+      add_sec103(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Sec103')
+      add_sva(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Sva')
+      add_owner(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('InstitutionOwner')
+      add_vsoc(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Vsoc')
+      add_eight_key(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('EightKey')
+
+      if @uploads_new.include?('Weam') ||
+         @uploads_new.include?('AccreditationInstituteCampus') ||
+         @uploads_new.include?('AccreditationRecord') ||
+         @uploads_new.include?('AccreditationAction')
+        add_accreditation(version.id)
+      else
+        CautionFlag.initialize_with_current(version.id)
+      end
+
+      add_arf_gi_bill(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('ArfGiBill')
+      add_post_911_stats(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Post911Stat')
+      add_mou(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Mou')
+      ScorecardBuilder.build(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Scorecard')
+      IpedsBuilder.build_ic(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('IpedsIc')
+      IpedsBuilder.build_hd(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('IpedsHd')
+      IpedsBuilder.build_ic_ay(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('IpedsIcAy')
+      IpedsBuilder.build_ic_py(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('IpedsIcPy')
+      add_sec_702(version.id) if
+        @uploads_new.include?('Weam') ||
+        @uploads_new.include?('Sec702') ||
+        @uploads_new.include?('VaCautionFlag')
+      add_settlement(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('VaCautionFlag')
+      add_hcm(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Hcm')
+      add_complaint(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Complaint')
+      add_outcome(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Outcome')
+      add_stem_offered(version.id) if
+        @uploads_new.include?('Weam') ||
+        @uploads_new.include?('IpedsCipCode') ||
+        @uploads_new.include?('StemCipCode')
+      add_yellow_ribbon_programs(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('YellowRibbonProgramSource')
+      add_school_closure(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('VaCautionFlag')
+      add_vet_tec_provider(version.id) if @uploads_new.include?('Weam')
+      add_extension_campus_type(version.id) if @uploads_new.include?('Weam')
+      add_sec109_closed_school(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('Sec109ClosedSchool')
+      build_zip_code_rates_from_weams(version.id) if @uploads_new.include?('Weam')
+
+      if @uploads_new.include?('Weam') ||
+         @uploads_new.include?('Program') ||
+         @uploads_new.include?('EduProgram')
+        build_institution_programs(version.id)
+      else
+        initialize_with_current_institution_programs(version)
+      end
+
+      build_versioned_school_certifying_official(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('SchoolCertifyingOfficial')
+      SuspendedCautionFlags.build(version.id) if @uploads_new.include?('Weam')
+      add_provider_type(version.id) if @uploads_new.include?('Weam')
+      VrrapBuilder.build(version.id) if @uploads_new.include?('Weam') || @uploads_new.include?('VrrapProvider')
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
       unless initial_buildout?
-        update_longitude_and_latitude(version.id)
-        update_ungeocodable(version.id)
-        geocode_institutions(version)
+        if @uploads_new.include?('Weam')
+          update_longitude_and_latitude(version.id)
+          update_ungeocodable(version.id)
+          geocode_institutions(version)
+        end
       end
       geocode_using_csv_file if initial_buildout?
 
@@ -80,6 +110,10 @@ module InstitutionBuilder
       prev_gen_start = Time.now.utc
       version = Version.create!(production: false, user: user)
       build_messages = {}
+
+      # array of upload class names changed since last run, used to only process new uploads
+      @uploads_new = Upload.since_last_version.pluck('csv_type').uniq
+
       begin
         Institution.transaction do
           if staging?
@@ -122,7 +156,7 @@ module InstitutionBuilder
     end
 
     def self.initialize_with_weams(version)
-      log_info_status 'Starting creation of base Institution rows'
+      log_info_status 'Starting creation of base Institution rows from Weams'
 
       columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
       timestamp = Time.now.utc.to_s(:db)
@@ -151,6 +185,26 @@ module InstitutionBuilder
       sql = InstitutionProgram.send(:sanitize_sql, [delete_str, version.id, version.id])
 
       Institution.connection.execute(sql)
+    end
+
+    def self.initialize_with_current_institutions(version)
+      log_info_status 'Starting creation of base Institution rows from current institutions'
+
+      timestamp = Time.now.utc.to_s(:db)
+      conn = ApplicationRecord.connection
+      columns = Array.new(Institution.column_names)
+      columns.delete('id')
+      columns.map!{ |cn| cn.eql?('cross') ? '"cross"' : cn }
+      columns.map!{ |cn| cn.eql?('state') ? '"state"' : cn }
+      insert_columns = columns.dup
+      columns.map!{ |cn| cn.eql?('version') ? version.number.to_i : cn }
+      columns.map!{ |cn| cn.eql?('version_id') ? version.id.to_i : cn }
+      columns.map!{ |cn| cn.eql?('created_at') ? conn.quote(timestamp) : cn }
+      columns.map!{ |cn| cn.eql?('updated_at') ? conn.quote(timestamp) : cn }
+      str = "INSERT INTO institutions (#{insert_columns.join(', ')}) select #{columns.join(', ')} "
+      str += "from institutions where version_id = #{Version.current_production.id}"
+
+      Institution.connection.insert(str) # rubocop:disable Rails/SkipsModelValidations
     end
 
     def self.add_crosswalk(version_id)
@@ -808,6 +862,25 @@ module InstitutionBuilder
 
       sql = InstitutionProgram.send(:sanitize_sql, [str])
       InstitutionProgram.connection.execute(sql)
+    end
+
+    def self.initialize_with_current_institution_programs(version)
+      log_info_status 'Creating Institution Program rows from current institution_programs'
+
+      timestamp = Time.now.utc.to_s(:db)
+      conn = ApplicationRecord.connection
+      columns = Array.new(InstitutionProgram.column_names)
+      columns.delete('id')
+      insert_columns = columns.dup
+      columns.map!{ |cn| cn.eql?('created_at') ? conn.quote(timestamp) : cn }
+      columns.map!{ |cn| cn.eql?('updated_at') ? conn.quote(timestamp) : cn }
+      str = "INSERT INTO institution_programs (#{insert_columns.join(', ')}) select #{columns.join(', ')}, new_i.id "
+      str += "from institution_programs inner join institutions old_i on institution_programs.institution_id = old_i.id "
+      str += "and old_i.version_id = #{Version.current_production.id}"
+      str += "inner join institutions new_i on old_i.facility_code = new_i.facility_code "
+      str += "where institution_id = old_i.id "
+
+      Institution.connection.insert(str) # rubocop:disable Rails/SkipsModelValidations
     end
 
     def self.build_versioned_school_certifying_official(version_id)
