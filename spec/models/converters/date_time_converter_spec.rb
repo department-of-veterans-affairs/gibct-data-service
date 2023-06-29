@@ -14,7 +14,7 @@ RSpec.describe DateTimeConverter do
   end
 
   it 'returns date if date' do
-    expect(described_class.convert(Date.today)).to eq(Date.today)
+    expect(described_class.convert(Date.current)).to eq(Date.current)
   end
 
   it 'converts blank value to nil' do
