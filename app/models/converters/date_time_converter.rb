@@ -8,7 +8,9 @@ class DateTimeConverter < BaseConverter
     begin
       return value.to_date if value.instance_of?(DateTime)
 
-      Date.strptime(value.to_date, '%m/%d/%Y')
+      return value if value.instance_of?(Date)
+
+      Date.strptime(value, '%m/%d/%Y')
     rescue ArgumentError
       nil
     # for when you upload a spreadsheet with a date/time field to the databse with a date-only field, then export
