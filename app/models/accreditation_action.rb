@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AccreditationAction < ImportableRecord
+  include AccreditationFetchUtils
+
   belongs_to(:accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id,
                                               inverse_of: :accreditation_actions)
 
@@ -40,6 +42,8 @@ class AccreditationAction < ImportableRecord
     "'Renewal of Accreditation'",
     "'Stay Denial Pending Appeal'"
   ].freeze
+
+  API_SOURCE = 'https://ope.ed.gov/dapip/#/download-data-files'
 
   validates :dapip_id, presence: true
   validates :agency_id, presence: true

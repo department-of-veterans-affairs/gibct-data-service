@@ -67,11 +67,10 @@ class DashboardsController < ApplicationController
     elsif class_nm.present?
       csv = "#{class_nm}::API_SOURCE".safe_constantize || "#{class_nm} API"
       begin
-        api_upload = Upload.new(csv_type: class_nm, user: current_user, csv: csv, comment: "#{class_nm} API Request")
-        flash.notice = fetch_api_data(api_upload) if api_upload.save!
+        upload = upload_file(class_nm, csv)
       rescue StandardError => e
-        message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
-        api_upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+        message = Common::Exceptions::ExceptionHandler.new(e, upload&.csv_type).serialize_error
+        upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
 
         Rails.logger.error e
         flash.alert = message
@@ -119,5 +118,29 @@ class DashboardsController < ApplicationController
       pgsi = PreviewGenerationStatusInformation.last
       flash.notice = pgsi.current_progress
     end
+  end
+
+  def upload_file(class_nm, csv)
+    if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
+      klass = Object.const_get(class_nm)
+      if klass.download_accreditation_csv && klass.unzip_csv
+        upload = Upload.from_csv_type(params[:csv_type])
+        upload.user = current_user
+        file = "tmp/#{params[:csv_type]}s.csv"
+        file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
+
+        upload.csv = file
+        file_options = { liberal_parsing: upload.liberal_parsing,
+                         sheets: [{ klass: klass, skip_lines: 0,
+                                    clean_rows: upload.clean_rows }] }
+        klass.load_with_roo(file, file_options).first
+        upload.update(ok: true, completed_at: Time.now.utc.to_s(:db))
+        flash.notice = 'Successfully fetched & uploaded file' if upload.save!
+      end
+    else
+      upload = Upload.new(csv_type: class_nm, user: current_user, csv: csv, comment: "#{class_nm} API Request")
+      flash.notice = fetch_api_data(upload) if upload.save!
+    end
+    upload
   end
 end

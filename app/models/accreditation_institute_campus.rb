@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AccreditationInstituteCampus < ImportableRecord
+  include AccreditationFetchUtils
+
   self.table_name = 'accreditation_institute_campuses'
 
   has_many(:accreditation_records, primary_key: :dapip_id, foreign_key: 'dapip_id',
