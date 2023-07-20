@@ -177,6 +177,35 @@ RSpec.describe DashboardsController, type: :controller do
       get(:api_fetch, params: { csv_type: Scorecard.name })
       expect(flash.alert).to include(message)
     end
+
+    context 'when fetching Accreditation files which do not require an api key' do
+      before do
+        system('cp spec/fixtures/Accreditation/download.zip tmp')
+      end
+
+      it 'downloads a zip file from the edu website' do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(described_class).to receive(:download_accreditation_csv).and_return(true)
+        # rubocop:enable RSpec/AnyInstance
+
+        CSV_TYPES_NO_API_KEY_TABLE_NAMES.each do |klass_nm|
+          get(:api_fetch, params: { csv_type: klass_nm })
+          expect(File.exist?('tmp/download.zip')).to be true
+        end
+      end
+
+      it 'extracts the content of the zip file' do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(described_class).to receive(:download_accreditation_csv).and_return(true)
+        # rubocop:enable RSpec/AnyInstance
+
+        get(:api_fetch, params: { csv_type: CSV_TYPES_NO_API_KEY_TABLE_NAMES.first })
+
+        expect(File.exist?('tmp/AccreditationActions.csv')).to be true
+        expect(File.exist?('tmp/AccreditationRecords.csv')).to be true
+        expect(File.exist?('tmp/InstitutionCampus.csv')).to be true
+      end
+    end
   end
 
   describe 'GET #geocoding_issues' do

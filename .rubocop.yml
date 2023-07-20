@@ -113,6 +113,7 @@ Metrics/MethodLength:
     - "app/models/archiver.rb"
     - "app/models/caution_flag.rb"
     - "app/concerns/geocoder_logic.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/controllers/v0/institutions_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
     - "lib/roo_helper/loader.rb"
@@ -126,6 +127,7 @@ Metrics/ClassLength:
     - "app/models/ipeds_ic_ay.rb"
     - "app/models/ipeds_ic_py.rb"
     - "app/models/institution.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/controllers/groups_controller.rb"
     - "app/controllers/uploads_controller.rb"
     - "app/models/upload.rb"
@@ -139,6 +141,7 @@ Metrics/AbcSize:
   Max: 40
   Exclude:
     - "app/concerns/geocoder_logic.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/models/institution_builder.rb"
     - "lib/roo_helper/loader.rb"
     - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
