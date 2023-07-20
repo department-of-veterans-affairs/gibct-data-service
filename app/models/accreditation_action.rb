@@ -41,6 +41,8 @@ class AccreditationAction < ImportableRecord
     "'Stay Denial Pending Appeal'"
   ].freeze
 
+  API_SOURCE = 'https://ope.ed.gov/dapip/#/download-data-files'
+
   validates :dapip_id, presence: true
   validates :agency_id, presence: true
   validates :agency_name, presence: true

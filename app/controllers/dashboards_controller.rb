@@ -66,16 +66,7 @@ class DashboardsController < ApplicationController
       flash.alert = "#{params[:csv_type]} is already being fetched by another user"
     elsif class_nm.present?
       csv = "#{class_nm}::API_SOURCE".safe_constantize || "#{class_nm} API"
-      begin
-        api_upload = Upload.new(csv_type: class_nm, user: current_user, csv: csv, comment: "#{class_nm} API Request")
-        flash.notice = fetch_api_data(api_upload) if api_upload.save!
-      rescue StandardError => e
-        message = Common::Exceptions::ExceptionHandler.new(e, api_upload&.csv_type).serialize_error
-        api_upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
-
-        Rails.logger.error e
-        flash.alert = message
-      end
+      upload_file(class_nm, csv)
     else
       flash.alert = "#{params[:csv_type]} is not configured to fetch data from an api"
     end
@@ -114,10 +105,65 @@ class DashboardsController < ApplicationController
     end
   end
 
+  # :nocov:
   def flash_progress_if_needed
     if PreviewGenerationStatusInformation.exists?
       pgsi = PreviewGenerationStatusInformation.last
       flash.notice = pgsi.current_progress
     end
+  end
+  # :nocov:
+
+  def upload_file(class_nm, csv)
+    if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
+      klass = Object.const_get(class_nm)
+      if download_accreditation_csv && unzip_csv
+        upload = Upload.from_csv_type(params[:csv_type])
+        upload.user = current_user
+        file = "tmp/#{params[:csv_type]}s.csv"
+        file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
+
+        upload.csv = file
+        file_options = {
+          liberal_parsing: upload.liberal_parsing,
+          sheets: [{ klass: klass, skip_lines: 0, clean_rows: upload.clean_rows }]
+        }
+        klass.load_with_roo(file, file_options).first
+        upload.update(ok: true, completed_at: Time.now.utc.to_s(:db))
+        flash.notice = 'Successfully fetched & uploaded file' if upload.save!
+      end
+    else
+      upload = Upload.new(csv_type: class_nm, user: current_user, csv: csv, comment: "#{class_nm} API Request")
+      flash.notice = fetch_api_data(upload) if upload.save!
+    end
+  rescue StandardError => e
+    message = Common::Exceptions::ExceptionHandler.new(e, upload&.csv_type).serialize_error
+    upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+
+    Rails.logger.error e
+    flash.alert = message
+  end
+
+  # :nocov:
+  def download_accreditation_csv
+    _stdout, _stderr, status = Open3.capture3("curl -X POST \
+      https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles \
+      -H 'Content-Type: application/json' -d '{\"CSVChecked\":true,\"ExcelChecked\":false}' -o tmp/download.zip")
+    status.success?
+  end
+  # :nocov:
+
+  def unzip_csv
+    Zip::File.open('tmp/download.zip') do |zip_file|
+      zip_file.each do |f|
+        f_path = File.join('tmp', f.name)
+        FileUtils.mkdir_p(File.dirname(f_path))
+        File.delete(f_path) if File.exist?(f_path)
+        zip_file.extract(f, f_path)
+      end
+    end
+    true
+  rescue StandardError => _e
+    false
   end
 end
