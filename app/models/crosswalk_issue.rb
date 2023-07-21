@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CrosswalkIssue < ApplicationRecord
+  include RooHelper
+
   PARTIAL_MATCH_TYPE = 'PARTIAL_MATCH_TYPE'
   IPEDS_ORPHAN_TYPE = 'IPEDS_ORPHAN_TYPE'
 

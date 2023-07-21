@@ -59,6 +59,36 @@ class DashboardsController < ApplicationController
     log_error(e)
   end
 
+  def export_partials
+    respond_to do |format|
+      format.csv do
+        send_data CrosswalkIssue.export_partials(
+          CrosswalkIssue.includes(:crosswalk, :ipeds_hd, weam: :arf_gi_bill)
+                            .by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE)
+                            .order('arf_gi_bills.gibill desc nulls last, weams.institution, weams.facility_code')
+                            .pluck('arf_gi_bills.gibill', 'weams.institution', 'weams.facility_code', 'weams.cross', 
+                                   'weams.ope', 'ipeds_hds.cross', 'ipeds_hds.ope', 'crosswalks.cross', 'crosswalks.ope')
+        ), type: 'text/csv', filename: 'partials.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
+  def export_orphans
+    respond_to do |format|
+      format.csv do
+        send_data CrosswalkIssue.export_orphans(
+          CrosswalkIssue.includes(%i[weam crosswalk ipeds_hd])
+                            .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
+                            .order('ipeds_hds.institution').pluck('ipeds_hds.institution', 'ipeds_hds.cross', 'ipeds_hds.ope')
+        ), type: 'text/csv', filename: 'orphans.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
   def api_fetch
     class_nm = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
