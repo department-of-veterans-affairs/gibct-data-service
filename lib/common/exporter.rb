@@ -27,16 +27,14 @@ module Common
 
     def export_partials(partials)
       partials.prepend(
-        ['# GI Bill Students', 'Institution Name', 'Facility code', 'Weams IPEDS', 'Weams OPE', 'Ipeds IPEDS', 'Ipeds OPE',
-          'Crosswalk IPEDS', 'Crosswalk OPE']
+        ['# GI Bill Students', 'Institution Name', 'Facility code', 'Weams IPEDS', 'Weams OPE', 'Ipeds IPEDS',
+         'Ipeds OPE', 'Crosswalk IPEDS', 'Crosswalk OPE']
       )
       generate_csv(partials)
     end
 
     def export_orphans(orphans)
-      orphans.prepend(
-        ['Institution Name', 'IPEDS', 'OPE']
-      )
+      orphans.prepend(['Institution Name', 'IPEDS', 'OPE'])
       generate_csv(orphans)
     end
 

@@ -12,24 +12,38 @@ class CrosswalkIssue < ApplicationRecord
 
   scope :by_issue_type, ->(n) { where(issue_type: n) }
 
-  def resolved?
-    weam_ipeds_hd_match? && weam_crosswalk_match?
+  # class methods
+  def self.partials
+    includes(:crosswalk, :ipeds_hd, weam: :arf_gi_bill)
+      .by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE)
+      .order('arf_gi_bills.gibill desc nulls last, weams.institution, weams.facility_code')
+  end
+
+  def self.orphans
+    includes(%i[weam crosswalk ipeds_hd])
+      .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
+      .order('ipeds_hds.institution')
+  end
+
+  def self.export_and_pluck_orphans
+    orphans.pluck('ipeds_hds.institution, ipeds_hds.cross, ipeds_hds.ope')
+  end
+
+  def self.export_and_pluck_partials
+    partials.pluck(
+      'arf_gi_bills.gibill', 'weams.institution', 'weams.facility_code', 'weams.cross',
+      'weams.ope', 'ipeds_hds.cross', 'ipeds_hds.ope', 'crosswalks.cross', 'crosswalks.ope'
+    )
   end
 
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
     sql = <<-SQL
       INSERT INTO crosswalk_issues (
-        weam_id,
-        crosswalk_id,
-        ipeds_hd_id,
-        issue_type
+        weam_id, crosswalk_id, ipeds_hd_id, issue_type
       )
       SELECT
-        weams.id,
-        crosswalks.id,
-        ipeds_hds.id,
-        '#{PARTIAL_MATCH_TYPE}'
+        weams.id, crosswalks.id, ipeds_hds.id, '#{PARTIAL_MATCH_TYPE}'
       FROM weams
         LEFT OUTER JOIN ipeds_hds ON  weams.cross = ipeds_hds.cross
           OR weams.ope = ipeds_hds.ope
@@ -86,6 +100,11 @@ class CrosswalkIssue < ApplicationRecord
     InstitutionProgram.connection.execute(sql)
   end
   # rubocop:enable Metrics/MethodLength
+
+  # instance methods
+  def resolved?
+    weam_ipeds_hd_match? && weam_crosswalk_match?
+  end
 
   private
 
