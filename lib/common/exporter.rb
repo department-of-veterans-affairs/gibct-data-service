@@ -26,6 +26,12 @@ module Common
     end
 
     def export_partials(partials)
+      partials.each do |p|
+        p[4] = format_ope(p[4])
+        p[6] = format_ope(p[6])
+        p[8] = format_ope(p[8])
+      end
+
       partials.prepend(
         ['# GI Bill Students', 'Institution Name', 'Facility code', 'Weams IPEDS', 'Weams OPE', 'Ipeds IPEDS',
          'Ipeds OPE', 'Crosswalk IPEDS', 'Crosswalk OPE']
@@ -34,6 +40,7 @@ module Common
     end
 
     def export_orphans(orphans)
+      orphans.each { |o| o[2] = format_ope(o[2]) }
       orphans.prepend(['Institution Name', 'IPEDS', 'OPE'])
       generate_csv(orphans)
     end
@@ -91,6 +98,10 @@ module Common
       return "\"#{value}\"" if key == :ope && value.present?
 
       value
+    end
+
+    def format_ope(col)
+      "=\"#{col}\""
     end
   end
 end
