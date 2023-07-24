@@ -31,7 +31,7 @@ module Common
         p[6] = format_ope(p[6])
         p[8] = format_ope(p[8])
       end
-
+      
       partials.prepend(
         ['# GI Bill Students', 'Institution Name', 'Facility code', 'Weams IPEDS', 'Weams OPE', 'Ipeds IPEDS',
          'Ipeds OPE', 'Crosswalk IPEDS', 'Crosswalk OPE']
@@ -41,7 +41,6 @@ module Common
 
     def export_orphans(orphans)
       orphans.each { |o| o[2] = format_ope(o[2]) }
-
       orphans.prepend(['Institution Name', 'IPEDS', 'OPE'])
       generate_csv(orphans)
     end
