@@ -250,4 +250,42 @@ RSpec.describe DashboardsController, type: :controller do
       expect(get(:export_ungeocodables, params: { format: :xml })).to redirect_to(action: :index)
     end
   end
+
+  describe 'GET #export_orphans' do
+    login_user
+
+    it 'causes a CSV to be exported' do
+      allow(CrosswalkIssue).to receive(:export_orphans)
+      get(:export_orphans, params: { format: :csv })
+      expect(CrosswalkIssue).to have_received(:export_orphans)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_orphans, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="orphans.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_orphans, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
+
+  describe 'GET #export_partials' do
+    login_user
+
+    it 'causes a CSV to be exported' do
+      allow(CrosswalkIssue).to receive(:export_partials)
+      get(:export_partials, params: { format: :csv })
+      expect(CrosswalkIssue).to have_received(:export_partials)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_partials, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="partials.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_partials, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
 end

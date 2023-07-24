@@ -59,6 +59,28 @@ class DashboardsController < ApplicationController
     log_error(e)
   end
 
+  def export_partials
+    respond_to do |format|
+      format.csv do
+        send_data CrosswalkIssue.export_partials(CrosswalkIssue.export_and_pluck_partials),
+                  type: 'text/csv', filename: 'partials.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
+  def export_orphans
+    respond_to do |format|
+      format.csv do
+        send_data CrosswalkIssue.export_orphans(CrosswalkIssue.export_and_pluck_orphans),
+                  type: 'text/csv', filename: 'orphans.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
   def api_fetch
     class_nm = CSV_TYPES_HAS_API_TABLE_NAMES.find { |csv_type| csv_type == params[:csv_type] }
 
@@ -153,6 +175,8 @@ class DashboardsController < ApplicationController
   end
   # :nocov:
 
+  # This is a candidate for a utility class. Right now, this is the only place we needed it.
+  # If some other process needs it, it should probably be refactored to a utility class.
   def unzip_csv
     Zip::File.open('tmp/download.zip') do |zip_file|
       zip_file.each do |f|
