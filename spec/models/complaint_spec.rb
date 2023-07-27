@@ -29,10 +29,6 @@ RSpec.describe Complaint, type: :model do
       expect(complaint_bad_status).not_to be_valid
     end
 
-    it 'must have a valid closed_reason' do
-      expect(complaint_bad_reason).not_to be_valid
-    end
-
     it 'computes the ope6 from the ope' do
       expect(complaint.ope6).to eql(complaint.ope[1, 5])
     end

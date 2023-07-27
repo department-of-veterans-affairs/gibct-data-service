@@ -181,7 +181,7 @@ class DashboardsController < ApplicationController
     Zip::File.open('tmp/download.zip') do |zip_file|
       zip_file.each do |f|
         f_path = File.join('tmp', f.name)
-        FileUtils.mkdir_p(File.dirname(f_path))
+        FileUtils.mkdir_p(File.dirname(f_path)) unless File.exist?(File.dirname(f_path))
         File.delete(f_path) if File.exist?(f_path)
         zip_file.extract(f, f_path)
       end

@@ -17,7 +17,6 @@
 
 class Complaint < ImportableRecord
   STATUSES = %w[active closed pending reserved].freeze
-  CLOSED_REASONS = ['resolved', 'invalid', 'information only', 'no response', 'unresolved'].freeze
 
   # COMPLAINT_COLUMNS contain substrings in each complaint that identify the type of complaint. There may
   # be several types of complaints for each campus (facility code), and institution (ope6). FAC_CODE_SUMS map the
@@ -64,25 +63,23 @@ class Complaint < ImportableRecord
 
   CSV_CONVERTER_INFO = {
     'case_id' => { column: :case_id, converter: BaseConverter },
-    'level' => { column: :level, converter: BaseConverter },
+    'escalation_level' => { column: :level, converter: BaseConverter },
     'status' => { column: :status, converter: DowncaseConverter },
     'case_owner' => { column: :case_owner, converter: BaseConverter },
-    'school' => { column: :institution, converter: InstitutionConverter },
+    'school_name' => { column: :institution, converter: InstitutionConverter },
     'opeid' => { column: :ope, converter: OpeConverter },
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'school_city' => { column: :city, converter: BaseConverter },
-    'school_state' => { column: :state, converter: BaseConverter },
-    'submitted' => { column: :submitted, converter: BaseConverter },
-    'closed' => { column: :closed, converter: BaseConverter },
-    'closed_reason' => { column: :closed_reason, converter: DowncaseConverter },
-    'issues' => { column: :issues, converter: BaseConverter },
-    'education_benefits' => { column: :education_benefits, converter: BaseConverter }
+    'school_state' => { column: :state, converter: StateConverter },
+    'date/time_opened' => { column: :submitted, converter: DateTimeConverter },
+    'date_closed' => { column: :closed, converter: DateConverter },
+    'sub_status' => { column: :closed_reason, converter: DowncaseConverter },
+    'issue' => { column: :issues, converter: BaseConverter },
+    'va_education_program' => { column: :education_benefits, converter: BaseConverter }
   }.freeze
 
   validates :facility_code, presence: true
   validates :status, inclusion: { in: STATUSES }
-  validates :closed_reason, inclusion: { in: CLOSED_REASONS }, allow_blank: true
-
   after_initialize :derive_dependent_columns
 
   def derive_dependent_columns

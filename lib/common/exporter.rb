@@ -27,9 +27,7 @@ module Common
 
     def export_partials(partials)
       partials.each do |p|
-        p[4] = format_ope(p[4])
-        p[6] = format_ope(p[6])
-        p[8] = format_ope(p[8])
+        [4, 6, 8].each { |ii| p[ii] = format_ope(p[ii]) }
       end
 
       partials.prepend(
