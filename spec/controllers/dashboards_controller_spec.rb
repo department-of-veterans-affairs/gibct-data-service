@@ -288,4 +288,29 @@ RSpec.describe DashboardsController, type: :controller do
       expect(get(:export_partials, params: { format: :xml })).to redirect_to(action: :index)
     end
   end
+
+  describe 'GET #unlock_fetches' do
+    login_user
+
+    it 'redirects to the index page on completion' do
+      expect(get(:unlock_fetches, params: { format: :html })).to redirect_to(action: :index)
+    end
+
+    it 'unlocks all fetches' do
+      create(:upload, :failed_upload)
+      expect(Upload.locked_fetches_exist?).to eq(true)
+      get(:unlock_fetches, params: { format: :html })
+      expect(Upload.locked_fetches_exist?).to eq(false)
+      expect(flash[:notice]).to match(/All fetches have been unlocked/)
+    end
+
+    it 'flashes an error message if unlocking fails' do
+      allow(Upload).to receive(:unlock_fetches).and_return(false)
+      create(:upload, :failed_upload)
+      expect(Upload.locked_fetches_exist?).to eq(true)
+      get(:unlock_fetches, params: { format: :html })
+      expect(Upload.locked_fetches_exist?).to eq(true)
+      expect(flash[:alert]).to match(/Unlocking fetches failed/)
+    end
+  end
 end

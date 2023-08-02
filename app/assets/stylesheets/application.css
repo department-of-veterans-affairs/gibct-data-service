@@ -241,6 +241,11 @@ table.crosswalk-issues thead.sub th {
   background-color: #dd5050;
 }
 
+.dashboard-btn-aligned-right {
+  float: right;
+  margin-right: 50px;
+}
+
 .archives .even:not(:hover) td {
     background-color: #f3f3ff;
 }

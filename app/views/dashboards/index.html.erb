@@ -67,6 +67,9 @@
 
 <h2>Latest Uploads
   <%= link_to 'View Upload History', uploads_path, class: "btn dashboard-btn-info btn-xs", role: "button" %>
+  <% if locked_fetches_exist? %>
+    <%= link_to 'Enable locked Fetches', unlock_fetches_path, class: "btn dashboard-btn-info dashboard-btn-aligned-right btn-xs", role: "button" %>
+  <% end %>
 </h2>
 <div class="row row-space-6" id="latest_uploads">
   <div class="col-xs-12">
