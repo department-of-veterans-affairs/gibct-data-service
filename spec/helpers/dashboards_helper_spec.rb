@@ -104,4 +104,16 @@ RSpec.describe DashboardsHelper, type: :helper do
       expect(helper.preview_generation_completed?).to eq(true)
     end
   end
+
+  describe 'locked_fetches_exist?' do
+    it 'returns true if there are failed fetches' do
+      create(:upload, :failed_upload)
+      expect(helper.locked_fetches_exist?).to eq(true)
+    end
+
+    it 'returns false if there are failed fetches' do
+      create(:upload, :valid_upload)
+      expect(helper.locked_fetches_exist?).to eq(false)
+    end
+  end
 end

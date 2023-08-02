@@ -102,4 +102,20 @@ RSpec.describe Upload, type: :model do
       expect(upload.skip_lines).to eq(0)
     end
   end
+
+  describe 'failed fetches (which locks the fetch button)' do
+    before do
+      create(:upload, :failed_upload)
+    end
+
+    it 'returns true if there are locked fetches' do
+      expect(described_class.locked_fetches_exist?).to eq(true)
+    end
+
+    it '#unlock_fetches removes locked fetches' do
+      expect(described_class.locked_fetches_exist?).to eq(true)
+      described_class.unlock_fetches
+      expect(described_class.locked_fetches_exist?).to eq(false)
+    end
+  end
 end

@@ -100,6 +100,16 @@ class DashboardsController < ApplicationController
     @ungeocodables = Institution.ungeocodables
   end
 
+  def unlock_fetches
+    if Upload.unlock_fetches
+      flash.notice = 'All fetches have been unlocked'
+    else
+      flash.alert = 'Unlocking fetches failed'
+    end
+
+    redirect_to dashboards_path
+  end
+
   private
 
   def log_error(error)

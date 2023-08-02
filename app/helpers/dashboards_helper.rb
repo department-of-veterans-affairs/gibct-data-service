@@ -54,4 +54,8 @@ module DashboardsHelper
 
     completed
   end
+
+  def locked_fetches_exist?
+    Upload.locked_fetches_exist?
+  end
 end

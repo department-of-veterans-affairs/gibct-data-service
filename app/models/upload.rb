@@ -95,4 +95,12 @@ class Upload < ApplicationRecord
   def self.fetching_for?(csv_type)
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
   end
+
+  def self.unlock_fetches
+    where(ok: false).update(ok: true)
+  end
+
+  def self.locked_fetches_exist?
+    where(ok: false).any?
+  end
 end
