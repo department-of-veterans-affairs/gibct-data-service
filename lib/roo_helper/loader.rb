@@ -140,10 +140,8 @@ Rails.logger.info("#{Time.now}: done")
 Rails.logger.info("#{Time.now}: Starting file_headers")
       file_headers = if sheet_options[:no_headers]
                        sheet_klass::CSV_CONVERTER_INFO.keys
-                     elsif !sheet_klass.name.eql?('Scorecard')
-                       sheet.row(1 + sheet_options[:skip_lines]).compact
                      else
-                       sheet_klass::CSV_CONVERTER_INFO.keys.map { |h| h.upcase }
+                       sheet.row(1 + sheet_options[:skip_lines]).compact
                      end
 Rails.logger.info("#{Time.now}: Done")
       headers_mapping = {}
@@ -186,15 +184,24 @@ Rails.logger.info("***\n\n")
     end
 
     def scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options)
+      scorecard_headers = sheet_klass::CSV_CONVERTER_INFO.keys.map { |h| h.upcase }
+      scorecard_headers_count = sheet_klass::CSV_CONVERTER_INFO.keys.size
+      count = 0
       file_headers.each do |header|
         file_header = header.strip
 
+        next unless scorecard_headers.include?(file_header)
+
+        # this is the number of columns used in the scorecard table.
+        # There are over 3000 columns in the scorecard csv file. No need to process all of them.
+        break if count >= scorecard_headers_count
+
+        count += 1
         key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
         col_info = converter_info(sheet_klass, key)
         column = col_info.blank? ? file_header.downcase.to_sym : col_info[:column]
         headers_mapping[column] = file_header
       end
-
       headers_mapping
     end
 
