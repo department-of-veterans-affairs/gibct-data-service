@@ -46,10 +46,7 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
-Rails.logger.info("\n\n***")
-Rails.logger.info("#{Time.now}: Deleting Rows")
           sheet_klass.delete_all unless sheet_options[:multiple_files]
-Rails.logger.info("#{Time.now}: done")
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
                             else
@@ -137,26 +134,19 @@ Rails.logger.info("#{Time.now}: done")
     #
     # Uses file_options[:liberal_parsing] to strip quotes out
     def process_sheet(sheet_klass, sheet, sheet_options, file_options)
-Rails.logger.info("#{Time.now}: Starting file_headers")
       file_headers = if sheet_options[:no_headers]
                        sheet_klass::CSV_CONVERTER_INFO.keys
                      else
                        sheet.row(1 + sheet_options[:skip_lines]).compact
                      end
-Rails.logger.info("#{Time.now}: Done")
       headers_mapping = {}
-Rails.logger.info("#{Time.now}: Starting Headers Mapping")
       # create array of csv column headers
       # if there is an extra column in file use it's value for headers_mapping
       headers_mapping = scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options) if
         sheet_klass.name.eql?('Scorecard')
       headers_mapping = non_scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options) unless
         sheet_klass.name.eql?('Scorecard')
-Rails.logger.info("#{Time.now}: Done")
-Rails.logger.info("\n#{Time.now}: Starting sheet_rows")
       rows = sheet_rows(sheet, sheet_options, file_headers, headers_mapping)
-Rails.logger.info("#{Time.now}: done")
-Rails.logger.info("\n#{Time.now}: Starting parse_rows")
       results = parse_rows(sheet_klass, rows, sheet_options) do |row|
         result = {}
 
@@ -172,8 +162,7 @@ Rails.logger.info("\n#{Time.now}: Starting parse_rows")
 
         result
       end
-Rails.logger.info("#{Time.now}: done")
-Rails.logger.info("***\n\n")
+
       header_warning_messages = if sheet_options[:no_headers]
                                   []
                                 else
