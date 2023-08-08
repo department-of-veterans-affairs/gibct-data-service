@@ -47,7 +47,6 @@ module RooHelper
 
         sheet_klass.transaction do
           sheet_klass.delete_all unless sheet_options[:multiple_files]
-
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
                             else
@@ -141,19 +140,13 @@ module RooHelper
                        sheet.row(1 + sheet_options[:skip_lines]).compact
                      end
       headers_mapping = {}
-
       # create array of csv column headers
       # if there is an extra column in file use it's value for headers_mapping
-      file_headers.each do |header|
-        file_header = header.strip
-        key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
-        col_info = converter_info(sheet_klass, key)
-        column = col_info.blank? ? file_header.downcase.to_sym : col_info[:column]
-        headers_mapping[column] = file_header
-      end
-
+      headers_mapping = scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options) if
+        sheet_klass.name.eql?('Scorecard')
+      headers_mapping = non_scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options) unless
+        sheet_klass.name.eql?('Scorecard')
       rows = sheet_rows(sheet, sheet_options, file_headers, headers_mapping)
-
       results = parse_rows(sheet_klass, rows, sheet_options) do |row|
         result = {}
 
@@ -177,6 +170,39 @@ module RooHelper
                                 end
 
       { header_warnings: header_warning_messages, results: results }
+    end
+
+    def scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options)
+      scorecard_headers = sheet_klass::CSV_CONVERTER_INFO.keys.map { |h| h.upcase }
+      scorecard_headers_count = sheet_klass::CSV_CONVERTER_INFO.keys.size
+      count = 0
+      file_headers.each do |header|
+        file_header = header.strip
+
+        next unless scorecard_headers.include?(file_header)
+
+        # this is the number of columns used in the scorecard table.
+        # There are over 3000 columns in the scorecard csv file. No need to process all of them.
+        break if count >= scorecard_headers_count
+
+        count += 1
+        key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
+        col_info = converter_info(sheet_klass, key)
+        column = col_info.blank? ? file_header.downcase.to_sym : col_info[:column]
+        headers_mapping[column] = file_header
+      end
+      headers_mapping
+    end
+
+    def non_scorecard_header_mappings(file_headers, headers_mapping, sheet_klass, file_options)
+      file_headers.each do |header|
+        file_header = header.strip
+        key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
+        col_info = converter_info(sheet_klass, key)
+        column = col_info.blank? ? file_header.downcase.to_sym : col_info[:column]
+        headers_mapping[column] = file_header
+      end
+      headers_mapping
     end
 
     def converter_info(sheet_klass, header)
