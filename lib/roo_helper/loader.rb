@@ -179,7 +179,9 @@ module RooHelper
       file_headers.each do |header|
         file_header = header.strip
 
-        next unless scorecard_headers.include?(file_header)
+        next unless scorecard_headers.include?(file_header) ||
+                    scorecard_headers.include?(file_header.gsub(' ', '_')) ||
+                    scorecard_headers.include?(file_header.gsub(' ', '_').upcase)
 
         # this is the number of columns used in the scorecard table.
         # There are over 3000 columns in the scorecard csv file. No need to process all of them.
