@@ -62,6 +62,7 @@ module InstitutionBuilder
       SuspendedCautionFlags.build(version.id)
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
+      add_section1015(version.id)
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
@@ -1164,6 +1165,20 @@ module InstitutionBuilder
       SQL
       sql = InstitutionRating.send(:sanitize_sql, [str])
       InstitutionRating.connection.execute(sql)
+    end
+
+    def self.add_section1015(version_id)
+      log_info_status 'Updating Section1015 information'
+      str = <<-SQL
+        UPDATE institutions
+        SET approved = false
+        FROM section1015s
+        WHERE institutions.facility_code = section1015s.facility_code
+        AND institutions.version_id =  #{version_id}
+        AND section1015s.celo not in ('n', 'N');
+      SQL
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
     end
 
     def self.log_info_status(message)
