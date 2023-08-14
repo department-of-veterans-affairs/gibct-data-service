@@ -146,6 +146,14 @@ FactoryBot.define do
       ownership_name { 'test' }
     end
 
+    trait :section1015a do
+      facility_code { '1ZZZZZZZ' }
+    end
+
+    trait :section1015b do
+      facility_code { '2ZZZZZZZ' }
+    end
+
     trait :vet_tec_provider do
       institution { 'COLLEGE OF VET TEC PROVIDER' }
       institution_search { 'VET TEC PROVIDER' }

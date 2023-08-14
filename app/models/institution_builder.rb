@@ -1169,6 +1169,7 @@ module InstitutionBuilder
 
     def self.add_section1015(version_id)
       log_info_status 'Updating Section1015 information'
+
       str = <<-SQL
         UPDATE institutions
         SET approved = false
