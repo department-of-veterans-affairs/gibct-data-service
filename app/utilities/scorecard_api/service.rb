@@ -63,9 +63,15 @@ module ScorecardApi
     end
 
     def self.map_results(results)
+      idx = 0
       results.map do |result|
+        idx += 1
         scorecard = Scorecard.new
-        result.each_pair { |key, value| scorecard[api_mappings[key]] = value }
+        result.each_pair { |key, value|
+
+puts "key: #{key}, value: #{value}\n" if idx < 2
+           scorecard[api_mappings[key]] = value 
+        }
         scorecard.derive_dependent_columns
         scorecard
       end
