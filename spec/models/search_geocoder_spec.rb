@@ -196,8 +196,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geocoder.process_geocoder_address
 
       # addresses get combined into address[0], address[1] and address[2] behave as expected
-      expect(Institution.first.latitude.round(2)).to eq(39.0)
-      expect(Institution.first.longitude.round(2)).to be_between(-77.20, -77.15)
+      expect(Institution.first.latitude.round(2)).to eq(38.9890174.round(2))
+      expect(Institution.first.longitude.round(2)).to eq(-77.149411.round(2))
     end
 
     it 'geocodes foreign address in bad_address logic if unable to geocode by address lines' do
