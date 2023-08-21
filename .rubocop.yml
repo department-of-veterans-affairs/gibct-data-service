@@ -123,6 +123,7 @@ Metrics/MethodLength:
     - "lib/roo_helper/loader.rb"
     - "lib/seed_utils.rb"
     - "app/utilities/scorecard_api/service.rb"
+    - "app/models/converters/accreditation_date_time_converter.rb"
 
 Metrics/ClassLength:
   Exclude:
@@ -140,6 +141,7 @@ Metrics/ClassLength:
     - "app/models/institution_builder.rb"
     - "app/controllers/v1/institutions_controller.rb"
     - "app/serializers/institution_compare_serializer.rb"
+    - "app/utilities/scorecard_api/service.rb"
 
 Metrics/AbcSize:
   Max: 40
@@ -184,6 +186,7 @@ Metrics/PerceivedComplexity:
     - "app/controllers/v1/institutions_controller.rb"
     - "app/validators/va_caution_flag_validator.rb"
     - "lib/roo_helper/loader.rb"
+    - "app/models/converters/accreditation_date_time_converter.rb"
 
 # Don't worry about ambiguous blocks in RSpec
 # Official recommendation from rubocop team is to disable this rule for specs.
