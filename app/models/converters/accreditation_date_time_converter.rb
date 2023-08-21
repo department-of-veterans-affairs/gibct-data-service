@@ -17,7 +17,11 @@ class AccreditationDateTimeConverter < BaseConverter
 
       # Accreditation Date format
       when value.is_a?(String) && value.length > 10
-        date = DateTime.strptime(value, '%m/%d/%Y %H:%M:%S %p').to_date
+        begin
+          date = DateTime.strptime(value, '%m/%d/%Y %H:%M:%S %p').to_date
+        rescue ArgumentError
+          date = DateTime.strptime(value, '%m/%d/%Y %H:%M').to_date
+        end
       when value.is_a?(String)
         begin
           date = DateTime.strptime(value, '%Y-%m-%d').to_date

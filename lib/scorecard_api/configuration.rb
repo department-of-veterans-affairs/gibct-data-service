@@ -23,7 +23,6 @@ module ScorecardApi
         conn.response :json_parser
 
         conn.adapter Faraday.default_adapter
-
       end
     end
   end

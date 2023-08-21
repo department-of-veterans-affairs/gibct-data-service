@@ -103,7 +103,7 @@ module ScorecardApi
         'latest.student.demographics.race_ethnicity.two_or_more': :ugds_2mor,
         'latest.student.demographics.race_ethnicity.non_resident_alien': :ugds_nra,
         'latest.student.demographics.race_ethnicity.unknown': :ugds_unkn,
-        'latest.student.part_time_share': :pptug_ef,
+        'latest.student.part_time_share': :pptugi_ef,
         'school.operating': :curroper,
         'latest.cost.avg_net_price.public': :npt4_pub,
         'latest.cost.avg_net_price.private': :npt4_priv,
@@ -131,8 +131,7 @@ module ScorecardApi
         'latest.repayment.3_yr_repayment_suppressed.overall': :repayment_rate_all_students,
         'latest.completion.rate_suppressed.four_year': :c150_4_pooled_supp,
         'latest.completion.rate_suppressed.lt_four_year_150percent': :c150_l4_pooled_supp,
-        'school.alias': :alias
-      }.freeze
+        'school.alias': :alias }.freeze
     end
 
     def self.populate
@@ -160,18 +159,20 @@ module ScorecardApi
     def self.map_results(results)
       results.map do |result|
         scorecard = Scorecard.new
-        result.each_pair { |key, value|
+
+        result.each_pair do |key, value|
           key = restore_key_hyphen(key.to_s) if key.to_s.include?('latest.cost.net_price.public.by_income_level') ||
                                                 key.to_s.include?('latest.cost.net_price.private.by_income_level')
-          scorecard[api_mappings[key]] = value 
-        }
+          scorecard[api_mappings[key]] = value
+        end
+
         scorecard.derive_dependent_columns
         scorecard
       end
     end
 
     def self.restore_key_hyphen(key_string)
-      key_string.reverse.sub('_','-').reverse.to_sym
+      key_string.reverse.sub('_', '-').reverse.to_sym
     end
   end
 end
