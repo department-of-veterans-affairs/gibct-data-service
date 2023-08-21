@@ -103,7 +103,7 @@ module ScorecardApi
         'latest.student.demographics.race_ethnicity.two_or_more': :ugds_2mor,
         'latest.student.demographics.race_ethnicity.non_resident_alien': :ugds_nra,
         'latest.student.demographics.race_ethnicity.unknown': :ugds_unkn,
-        'latest.student.part_time_share': :pptugi_ef,
+        'latest.student.part_time_share': :pptug_ef,
         'school.operating': :curroper,
         'latest.cost.avg_net_price.public': :npt4_pub,
         'latest.cost.avg_net_price.private': :npt4_priv,
