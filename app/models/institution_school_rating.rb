@@ -4,7 +4,6 @@ class InstitutionSchoolRating < ImportableRecord
   # keys need an underscore instead of spaces or hyphens because the converter replaces them with underscores
   CSV_CONVERTER_INFO = {
     'survey_key' => { column: :survey_key, converter: UpcaseConverter },
-    'email' => { column: :email, converter: BaseConverter },
     'age' => { column: :age, converter: NumberConverter },
     'gender' => { column: :gender, converter: UpcaseConverter },
     'school' => { column: :school, converter: UpcaseConverter },
