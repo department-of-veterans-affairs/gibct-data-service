@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :institution_school_rating do
     survey_key { '20221219GIBILL018591TEST1' }
-    email { 'test@example.com' }
     age { '22' }
     gender { 'FEMALE' }
     school { 'UTAH VALLEY UNIVERSITY' }
