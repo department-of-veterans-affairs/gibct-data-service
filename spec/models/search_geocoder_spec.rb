@@ -5,6 +5,123 @@ require 'rails_helper'
 RSpec.describe SearchGeocoder, type: :model do
   let(:version) { create(:version, :preview) }
 
+  before do
+    Geocoder::configure(:lookup => :test)
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington Ave 1400 Washington Ave #123 Unit abc, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => [42.6840271, -73.82587727551194] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington Ave, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => [42.6840271, -73.82587727551194] }]
+    )
+
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington bdvd 122123d 1400 Washington Ave Unit abc, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => [42.6840271, -73.82587727551194] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington bdvd 122123d, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => [42.6840271, -73.82587727551194] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington Ave #123, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => [42.6840271, -73.82587727551194] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington bdvd 122123d, ATLANTA, GA, , USA',
+      [{ 'coordinates' => [33.7976469, -84.4159008] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'CASH OFFICE FIN SVCS UNIT 1 MARKET SQUARE, HESLINGTON YORK, , , UNITED KINGDOM',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'CASH OFFICE FIN SVCS, HESLINGTON YORK, , , UNITED KINGDOM',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'UNIT 1 MARKET SQUARE, HESLINGTON YORK, , , UNITED KINGDOM',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'HESLINGTON YORK, , ',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1000',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1015',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1016',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1017',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1018',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1019',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'institution 1020',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington Ave #123 1400 Washington Ave xwexewxwexwx Unit abc xwexwxwex, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington bdvd 122123d 1400 Washington Ave xwexewxwexwx Unit abc xwexwxwex, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington bdvd 122123d 1400 Washington Ave xwexewxwexwx Unit abc xwexwxwex, ATLANTA, GA, , USA',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'sunshine highway 1400 Washington Ave xwexewxwexwx Unit abc xwexwxwex, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'sunshine highway, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'ALBANY, NY, 12222',
+      [{ 'coordinates' => [42.6511674, -73.754968] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'sunshine highway 1400 Washington Ave NY 12222',
+      [{ 'coordinates' => [42.6511674, -73.754968] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '1400 Washington Ave xwexewxwexwx, ALBANY, NY, 12222, USA',
+      [{ 'coordinates' => nil }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'IT',
+      [{ 'coordinates' => [42.6384261, 12.674297] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      '8500 River Rd 7100 Whittier Blvd, Bethesda, MD, 20817, USA',
+      [{ 'coordinates' => [38.981725, -77.1297884] }]
+    )
+    Geocoder::Lookup::Test.add_stub(
+      'Via Giovanni Paolo I Via Giovanni Paolo I#123 Unit abc, SAlERNO, IT',
+      [{ 'coordinates' => [40.6150446, 15.0495566] }]
+    )
+  end
+
   describe '#process_geocoder_address' do
     it 'does not process without version' do
       institution = create :institution, :regular_address
@@ -196,8 +313,8 @@ RSpec.describe SearchGeocoder, type: :model do
       geocoder.process_geocoder_address
 
       # addresses get combined into address[0], address[1] and address[2] behave as expected
-      expect(Institution.first.latitude.round(2)).to eq(39.0)
-      expect(Institution.first.longitude.round(2)).to be_between(-77.20, -77.15)
+      expect(Institution.first.latitude.round(2)).to eq(38.98)
+      expect(Institution.first.longitude.round(2)).to eq(-77.13)
     end
 
     it 'geocodes foreign address in bad_address logic if unable to geocode by address lines' do
