@@ -6,6 +6,7 @@ RSpec.describe SearchGeocoder, type: :model do
   let(:version) { create(:version, :preview) }
 
   before do
+    # rubocop:disable Style/ColonMethodCall
     Geocoder::configure(:lookup => :test)
     Geocoder::Lookup::Test.add_stub(
       '1400 Washington Ave 1400 Washington Ave #123 Unit abc, ALBANY, NY, 12222, USA',
@@ -96,6 +97,7 @@ RSpec.describe SearchGeocoder, type: :model do
       'Via Giovanni Paolo I Via Giovanni Paolo I#123 Unit abc, SAlERNO, IT',
       [{ 'coordinates' => [40.6150446, 15.0495566] }]
     )
+    # rubocop:enable Style/ColonMethodCall
   end
 
   describe '#process_geocoder_address' do
