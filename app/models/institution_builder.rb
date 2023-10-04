@@ -156,8 +156,13 @@ module InstitutionBuilder
     def self.add_crosswalk(version_id)
       log_info_status 'Updating Crosswalk information'
 
+      # Weams should be the source of truth if it contains any Crosswalk data for
+      # the fields cross, ope & ope6 (derived from ope). Do not overrwrite with
+      # data from the crosswalks table.
       str = <<-SQL
         institutions.facility_code = crosswalks.facility_code
+        and institutions.cross is null
+        and institutions.ope   is null
       SQL
       add_columns_for_update(version_id, Crosswalk, str)
 

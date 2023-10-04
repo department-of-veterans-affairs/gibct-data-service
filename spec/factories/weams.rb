@@ -140,6 +140,7 @@ FactoryBot.define do
 
     trait :institution_builder do
       facility_code { '1ZZZZZZZ' }
+      ope {}
       poo_status { 'aprvd' }
       applicable_law_code { 'educational institution is approved for all chapters' }
       state { 'NY' }
@@ -148,6 +149,7 @@ FactoryBot.define do
     end
 
     trait :weam_builder do
+      ope {}
       poo_status { 'aprvd' }
       applicable_law_code { 'educational institution is approved for all chapters' }
       state { 'NY' }
