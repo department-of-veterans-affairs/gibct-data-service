@@ -23,6 +23,8 @@ class Weam < ImportableRecord
     'educational institution is approved for chapter 31 only'
   ].freeze
 
+  # vfep-847 Add cross, ope & ope6 to the list of columns used. cross is a postgresql
+  # keyword and must be escaped to work properly
   COLS_USED_IN_INSTITUTION = %i[
     facility_code institution city state zip
     high_school address_1 address_2 address_3
@@ -33,6 +35,7 @@ class Weam < ImportableRecord
     physical_city physical_state physical_zip physical_country
     dod_bah online_only distance_learning approved preferred_provider stem_indicator
     campus_type parent_facility_code_id institution_search in_state_tuition_information
+    ope ope6 "cross"
   ].freeze
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
