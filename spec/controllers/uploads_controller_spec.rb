@@ -152,13 +152,13 @@ RSpec.describe UploadsController, type: :controller do
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end
 
-      it 'formats an error message when some records do not validate' do
+      it 'formats an notice message when some records do not validate' do
         file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
         post(:create,
              params: {
                upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
              })
-        expect(flash[:danger]).to start_with('Failed to upload weam_invalid.csv: undefined method')
+        expect(flash[:warning].key?(:'The following rows should be checked: ')).to be true
       end
     end
 
