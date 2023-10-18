@@ -5,7 +5,8 @@ class FacilityCodeConverter < BaseConverter
   def self.convert(value)
     # rubocop:disable Style/IfUnlessModifier
     if value
-      value = super(value.to_s).gsub('-', '')
+      value = super(value.to_s)
+      value = value.gsub('-', '') if value
     end
     # rubocop:enable Style/IfUnlessModifier
     value.blank? ? nil : value.upcase.rjust(8, '0')
