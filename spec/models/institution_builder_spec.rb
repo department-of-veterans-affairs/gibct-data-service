@@ -87,6 +87,11 @@ RSpec.describe InstitutionBuilder, type: :model do
 
       it 'copies columns used by institutions' do
         Weam::COLS_USED_IN_INSTITUTION.each do |column|
+          # vfep-847 this will not be the case for cross, ope & ope6 as they
+          # added to the list of columns to pull in from weams and in this
+          # context they are nil and the values are supplied from crosswalk
+          next if %i[cross ope ope6].include?(column)
+
           expect(weam[column]).to eq(institution[column])
         end
       end
@@ -101,7 +106,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
-    describe 'when adding Crosswalk data' do
+    describe 'when adding Crosswalk data and weams does not populate cross & ope' do
       let(:institution) { institutions.find_by(facility_code: crosswalk.facility_code) }
       let(:crosswalk) { Crosswalk.first }
 
@@ -109,9 +114,29 @@ RSpec.describe InstitutionBuilder, type: :model do
         run_institution_builder(user)
       end
 
-      it 'copies columns used by institutions' do
+      it 'copies columns used by institutions when weams does not populate xwalk data' do
         Crosswalk::COLS_USED_IN_INSTITUTION.each do |column|
           expect(crosswalk[column]).to eq(institution[column])
+        end
+      end
+    end
+
+    describe 'when adding Crosswalk data and weams populates cross & ope' do
+      let(:institution) { institutions.find_by(facility_code: crosswalk.facility_code) }
+      let(:crosswalk) { Crosswalk.first }
+
+      before do
+        weam = Weam.first
+        # rubocop:disable Rails/SkipsModelValidations
+        weam.update_columns(cross: '2YYYYYYY', ope: '00380200')
+        # rubocop:enable Rails/SkipsModelValidations
+
+        run_institution_builder(user)
+      end
+
+      it 'copies columns used by institutions when weams does not populate xwalk data' do
+        Crosswalk::COLS_USED_IN_INSTITUTION.each do |column|
+          expect(crosswalk[column]).not_to eq(institution[column])
         end
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_10_160035) do
+ActiveRecord::Schema.define(version: 2023_10_18_160035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -424,7 +424,6 @@ ActiveRecord::Schema.define(version: 2023_08_10_160035) do
 
   create_table "institution_school_ratings", force: :cascade do |t|
     t.string "survey_key"
-    t.string "email"
     t.string "age"
     t.string "gender"
     t.string "school"

@@ -27,4 +27,8 @@ workers 3
 #
 worker_timeout 60
 
+if ENV['RACK_ENV'] == 'development'
+  worker_timeout 3600
+end
+
 preload_app!

@@ -142,7 +142,7 @@ class Scorecard < ImportableRecord
     'md_earn_wne_p10' => { column: :salary_all_students, converter: NumberConverter },
     'gt_25k_p6' => { column: :gt_25k_p6, converter: NumberConverter },
     'grad_debt_mdn_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
-    'grad_debt_mdn10yr_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
+    'grad_debt_mdn10yr_supp' => { column: :grad_debt_mdn10yr_supp, converter: NumberConverter },
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
     'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },

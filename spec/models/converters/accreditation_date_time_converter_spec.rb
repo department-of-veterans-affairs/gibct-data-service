@@ -7,10 +7,12 @@ RSpec.describe AccreditationDateTimeConverter do
 
   it 'converts timestamp strings to date' do
     expect(described_class.convert('4/17/2017 00:00:01 AM')).to eq(Date.parse('April 17, 2017'))
+    expect(described_class.convert('4/17/2017 00:00')).to eq(Date.parse('April 17, 2017'))
   end
 
   it 'converts date strings to date' do
     expect(described_class.convert('2017-04-17')).to eq(Date.parse('April 17, 2017'))
+    expect(described_class.convert('04/17/2017')).to eq(Date.parse('April 17, 2017'))
   end
 
   it 'converts datetimes to dates' do
