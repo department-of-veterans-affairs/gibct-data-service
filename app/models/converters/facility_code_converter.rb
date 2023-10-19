@@ -4,6 +4,7 @@
 class FacilityCodeConverter < BaseConverter
   def self.convert(value)
     value = super(value.to_s)
+    value = value.gsub('-', '') if value
     value.blank? ? nil : value.upcase.rjust(8, '0')
   end
 end
