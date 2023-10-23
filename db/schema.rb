@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_29_161752) do
+ActiveRecord::Schema.define(version: 2023_10_18_160035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -1617,6 +1617,20 @@ ActiveRecord::Schema.define(version: 2023_08_29_161752) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["state"], name: "index_sec702s_on_state", unique: true
+  end
+
+  create_table "section1015s", force: :cascade do |t|
+    t.string "facility_code", null: false
+    t.string "institution"
+    t.date "effective_date"
+    t.integer "active_students"
+    t.date "last_graduate"
+    t.string "celo"
+    t.string "weams_withdrawal_processed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["celo"], name: "index_section1015s_on_celo"
+    t.index ["facility_code"], name: "index_section1015s_on_facility_code"
   end
 
   create_table "sessions", id: :serial, force: :cascade do |t|

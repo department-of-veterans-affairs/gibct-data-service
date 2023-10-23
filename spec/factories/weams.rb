@@ -148,6 +148,15 @@ FactoryBot.define do
       institution_of_higher_learning_indicator { true }
     end
 
+    trait :institution_builder2 do
+      facility_code { '2ZZZZZZZ' }
+      poo_status { 'aprvd' }
+      applicable_law_code { 'educational institution is approved for all chapters' }
+      state { 'NY' }
+
+      institution_of_higher_learning_indicator { true }
+    end
+
     trait :weam_builder do
       ope {}
       poo_status { 'aprvd' }
