@@ -59,6 +59,18 @@ class DashboardsController < ApplicationController
     log_error(e)
   end
 
+  def export_unaccrediteds
+    respond_to do |format|
+      format.csv do
+        send_data Institution.export_unaccrediteds(
+          Institution.unaccrediteds.values
+        ), type: 'text/csv', filename: 'unaccrediteds.csv'
+      end
+    end
+  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
   def export_partials
     respond_to do |format|
       format.csv do
@@ -98,6 +110,10 @@ class DashboardsController < ApplicationController
 
   def geocoding_issues
     @ungeocodables = Institution.ungeocodables
+  end
+
+  def accreditation_issues
+    @unaccrediteds = Institution.unaccrediteds
   end
 
   def unlock_fetches

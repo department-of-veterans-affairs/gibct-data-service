@@ -32,7 +32,7 @@
       </div>
     </div>
   </div>
-    <div class="col col-xs-12 col-md-6 col-lg-3">
+  <div class="col col-xs-12 col-md-6 col-lg-3">
     <div class="panel panel-default">
       <div class="panel-heading">Geocoding</div>
       <div class="panel-body">
@@ -42,6 +42,22 @@
           <button class="btn dashboard-btn-success">
             View
             <span class="badge"><%= Institution.ungeocodable_count %></span>
+          </button>
+        <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col col-xs-12 col-md-6 col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">Accreditation</div>
+      <div class="panel-body">
+        <p>Institutions With No Accreditation</p>
+        <div>
+        <%= link_to dashboard_accreditation_issues_path do %>
+          <button class="btn dashboard-btn-success">
+            View
+            <span class="badge"><%= Institution.unaccredited_count %></span>
           </button>
         <% end %>
         </div>

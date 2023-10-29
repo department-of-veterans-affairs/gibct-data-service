@@ -1,0 +1,30 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <h2>
+      Institutions With No Accreditation
+      <%= link_to 'Export', dashboard_export_unaccrediteds_path,
+          class: "btn dashboard-btn-success btn-xs", role: "button" %>
+    </h2>
+    <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
+      <thead class="sub">
+        <th>Institution Name</th>
+        <th>Facility Code</th>
+        <th>OPE</th>
+        <th>Agency Name</th>
+        <th>AR End Date</th>
+      </thead>
+      <tbody>
+        <!-- rendering partials with collections doesn't play well with result sets from raw sql -->
+        <% @unaccrediteds.each do |unaccredited| %>
+          <tr class="<%= cycle('even', 'odd') -%>">
+            <td><%= unaccredited['institution'] %></td>
+            <td><%= unaccredited['facility_code'] %></td>
+            <td><%= unaccredited['ope'] %></td>
+            <td><%= unaccredited['agency_name'] %></td>
+            <td><%= unaccredited['accreditation_end_date'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
