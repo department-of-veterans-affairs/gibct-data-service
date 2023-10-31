@@ -25,6 +25,11 @@ module Common
       generate_csv(ungeocodables)
     end
 
+    def export_unaccrediteds(unaccrediteds)
+      unaccrediteds.prepend(['Institution Name', 'Facility Code', 'OPE', 'Agency Name', 'AR End Date'])
+      generate_csv(unaccrediteds)
+    end
+
     def export_partials(partials)
       partials.each do |p|
         [4, 6, 8].each { |ii| p[ii] = format_ope(p[ii]) }

@@ -20,7 +20,9 @@ Rails.application.routes.draw do
   get '/dashboards/export_ungeocodables' => 'dashboards#export_ungeocodables', as: :dashboard_export_ungeocodables, defaults: { format: 'csv' }
   get '/dashboards/export_orphans' => 'dashboards#export_orphans', as: :dashboard_export_orphans, defaults: { format: 'csv' }
   get '/dashboards/export_partials' => 'dashboards#export_partials', as: :dashboard_export_partials, defaults: { format: 'csv' }
+  get '/dashboards/export_unaccrediteds' => 'dashboards#export_unaccrediteds', as: :dashboard_export_unaccrediteds, defaults: { format: 'csv' }
   get '/dashboards/geocoding_issues' => 'dashboards#geocoding_issues', as: :dashboard_geocoding_issues
+  get '/dashboards/accreditation_issues' => 'dashboards#accreditation_issues', as: :dashboard_accreditation_issues
   get '/unlock_fetches' => 'dashboards#unlock_fetches', as: :unlock_fetches
 
   resources :uploads, except: [:new, :destroy, :edit, :update] do
