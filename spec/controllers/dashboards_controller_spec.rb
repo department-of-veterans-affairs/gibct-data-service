@@ -232,6 +232,32 @@ RSpec.describe DashboardsController, type: :controller do
     end
   end
 
+  describe 'GET #accreditation_issues' do
+    login_user
+
+    before do
+      create(:version, :production)
+      create(:institution, :accreditation_issue)
+      create(:institution, :with_accreditation)
+      create(:accreditation_institute_campus)
+      create(:accreditation_record)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Institution.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+
+      get(:accreditation_issues)
+    end
+
+    it 'contains one institution with an accreditation issue' do
+      expect(assigns(:unaccrediteds).count).to eq(1)
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+    end
+  end
+
   describe 'GET #export_ungeocodables' do
     login_user
 
@@ -248,6 +274,34 @@ RSpec.describe DashboardsController, type: :controller do
 
     it 'redirects to index on error' do
       expect(get(:export_ungeocodables, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
+
+  describe 'GET #export_unaccrediteds' do
+    login_user
+
+    before do
+      create(:version, :production)
+      create(:institution, :accreditation_issue)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Institution.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+
+    it 'causes a CSV to be exported' do
+      allow(Institution).to receive(:export_unaccrediteds)
+      get(:export_unaccrediteds, params: { format: :csv })
+      expect(Institution).to have_received(:export_unaccrediteds)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_unaccrediteds, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="unaccrediteds.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_unaccrediteds, params: { format: :xml })).to redirect_to(action: :index)
     end
   end
 

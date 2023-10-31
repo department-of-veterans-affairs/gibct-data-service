@@ -357,5 +357,19 @@ FactoryBot.define do
       latitude { nil }
       ungeocodable { true }
     end
+
+    # accreditation_type is nil
+    trait :accreditation_issue do
+      institution { 'ACME INC' }
+      ope { '00279100' }
+      ope6 { '02791' }
+    end
+
+    trait :with_accreditation do
+      institution { 'University of Toledo' }
+      ope { '00279100' }
+      ope6 { '02791' }
+      accreditation_type { 'regional' }
+    end
   end
 end

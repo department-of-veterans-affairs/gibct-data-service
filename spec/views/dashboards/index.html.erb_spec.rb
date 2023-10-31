@@ -4,9 +4,16 @@ require 'rails_helper'
 
 RSpec.describe 'dashboards/index', type: :view do
   before do # set the instance variables from the controller before the view is rendered or tests fail
+    create(:version, :production)
+    create(:version, :preview)
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_version
+  end
+
+  it 'shows a title for institutions with potential accreditation issues' do
+    render
+    expect(rendered).to match(/Institutions With No Accreditation/)
   end
 
   it 'does not show the button if there are no failed fetches' do

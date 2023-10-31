@@ -319,16 +319,16 @@ class Institution < ImportableRecord
     version = Version.current_production
 
     str = <<-SQL
-      SELECT institutions.institution, institutions.facility_code, institutions.ope, ars.agency_name, ars.accreditation_end_date 
-      FROM "institutions" 
-      INNER JOIN "versions" ON "versions"."id" = "institutions"."version_id" 
-      left join accreditation_institute_campuses aic on institutions.ope = aic.ope 
-      left outer join accreditation_records ars on aic.dapip_id = ars.dapip_id and ars.program_id = 1 
-      WHERE (campus_type != 'E' OR campus_type IS NULL) 
+      SELECT institutions.institution, institutions.facility_code, institutions.ope, ars.agency_name, ars.accreditation_end_date
+      FROM "institutions"
+      INNER JOIN "versions" ON "versions"."id" = "institutions"."version_id"
+      left join accreditation_institute_campuses aic on institutions.ope = aic.ope
+      left outer join accreditation_records ars on aic.dapip_id = ars.dapip_id and ars.program_id = 1
+      WHERE (campus_type != 'E' OR campus_type IS NULL)
       AND "institutions"."approved" = true
       AND "institutions"."version_id" = #{version.id}
-      AND (institutions.accreditation_type is NULL 
-      and institutions.ope is not NULL) 
+      AND (institutions.accreditation_type is NULL
+      and institutions.ope is not NULL)
       ORDER BY "institutions"."institution" ASC
     SQL
 
