@@ -316,6 +316,8 @@ class Institution < ImportableRecord
   end
 
   def self.unaccrediteds
+    return [] unless Version.current_production
+
     version = Version.current_production
 
     str = <<-SQL
