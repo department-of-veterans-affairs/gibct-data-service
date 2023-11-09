@@ -5,6 +5,18 @@
       <%= link_to 'Export', dashboard_export_unaccrediteds_path,
           class: "btn dashboard-btn-success btn-xs", role: "button" %>
     </h2>
+    <div>
+      Reasons for inclusion on this report:<br/>
+        - accreditation types are determined by joining Institutions to AccreditationInstituteCampuses on ope<br/>
+        - AccreditationInstituteCampuses are joined to AccreditationRecords on dapip_id<br/>
+        - the AccreditationRecord must not have an accreditation_end_date and have a program_id of 1<br/>
+        - the agency_name must contain one of the following keywords:<br/>
+           <% AccreditationRecord::ACCREDITATIONS.each_pair do |key, value| %>
+               <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= "#{key}: " %></b>
+               <%= "#{formatted_keywords(value.to_s)}" %><br/>
+           <% end %>
+        - if any of the above conditions are not met, the institution will appear on this report
+    </div><br/>
     <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
       <thead class="sub">
         <th>Institution Name</th>

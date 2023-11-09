@@ -58,4 +58,8 @@ module DashboardsHelper
   def locked_fetches_exist?
     Upload.locked_fetches_exist?
   end
+
+  def formatted_keywords(value)
+    value.gsub('[','').gsub(']','').gsub('/i','').gsub('/','')
+  end
 end
