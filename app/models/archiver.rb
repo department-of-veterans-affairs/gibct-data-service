@@ -12,6 +12,10 @@ module Archiver
   ].freeze
 
   def self.archive_previous_versions
+    # don't bother if nothing to archive. Also note that during the initial buildout, there is no previous version
+    # The below previous_version will exception out and cause all the work to be rolled back.
+    return unless Version.current_production && Version.previous_production
+
     production_version = Version.current_production.number
     previous_version = Version.previous_production.number
 
