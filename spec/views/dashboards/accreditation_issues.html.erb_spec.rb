@@ -25,6 +25,7 @@ RSpec.describe 'dashboards/accreditation_issues', type: :view do
     expect(rendered).to match(/OPE/)
     expect(rendered).to match(/Agency Name/)
     expect(rendered).to match(/AR End Date/)
+    expect(rendered).to match(/Reasons for inclusion on this report/)
   end
 
   it 'shows institutions with potential accreditation issues' do
