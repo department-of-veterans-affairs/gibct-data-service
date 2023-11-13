@@ -60,6 +60,6 @@ module DashboardsHelper
   end
 
   def formatted_keywords(value)
-    value.gsub('[','').gsub(']','').gsub('/i','').gsub('/','')
+    value.gsub('[', '').gsub(']', '').gsub('/i', '').gsub('/', '')
   end
 end
