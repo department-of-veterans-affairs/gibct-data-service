@@ -93,6 +93,9 @@ RSpec.configure do |config|
   config.after do
     DatabaseCleaner.clean
 
+  # After trying numerous hacks recommended by Google searches, this is the only
+  # hack we found that works and it was homegrown. None of the recommended fixes
+  # worked at all.
   rescue NoMethodError => e
     puts "\n\n*** DatabaseCleaner failed: #{e.message}, trying again ***\n\n"
     sleep(0.1)
