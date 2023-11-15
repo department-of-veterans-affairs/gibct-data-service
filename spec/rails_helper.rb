@@ -92,6 +92,11 @@ RSpec.configure do |config|
   # each test. (MPH)
   config.after do
     DatabaseCleaner.clean
+
+  rescue NoMethodError => e
+    puts "\n\n*** DatabaseCleaner failed: #{e.message}, trying again ***\n\n"
+    sleep(0.1)
+    DatabaseCleaner.clean
   end
 
   # RSpec Rails can automatically mix in different behaviours to your tests
