@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require_relative './shared_setup'
 
 RSpec.describe InstitutionBuilder, type: :model do
-  let(:user) { User.first }
-  let(:institutions) { Institution.where(version: Version.current_production) }
-  let(:factory_class) { InstitutionBuilder::Factory }
-
-  before do
-    create :user, email: 'fred@va.gov', password: 'fuggedabodit'
-    allow(VetsApi::Service).to receive(:feature_enabled?).and_return(false)
-    create(:version, :production)
-  end
+  include_context('with setup')
 
   describe '#run' do
     before do
