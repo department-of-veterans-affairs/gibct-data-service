@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  def controller_label_for_header
+    return controller.controller_name.humanize.singularize unless
+           controller.controller_name.eql?('accreditation_type_keywords')
+
+    'Accreditation keyword'
+  end
+
   def active_link?(path, method = 'GET')
     begin
       h = Rails.application.routes.recognize_path(path, method: method)

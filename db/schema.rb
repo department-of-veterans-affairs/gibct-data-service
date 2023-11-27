@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_18_160035) do
+ActiveRecord::Schema.define(version: 2023_11_21_083148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -71,10 +71,19 @@ ActiveRecord::Schema.define(version: 2023_10_18_160035) do
     t.string "department_description"
     t.date "accreditation_end_date"
     t.integer "ending_action_id"
-    t.string "accreditation_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "accreditation_type_keyword_id"
+    t.index ["accreditation_type_keyword_id"], name: "index_accreditation_records_on_accreditation_type_keyword_id"
     t.index ["dapip_id"], name: "index_accreditation_records_on_dapip_id"
+  end
+
+  create_table "accreditation_type_keywords", force: :cascade do |t|
+    t.string "accreditation_type"
+    t.string "keyword_match"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["accreditation_type", "keyword_match"], name: "index_type_and_keyword_match", unique: true
   end
 
   create_table "arf_gi_bills", id: :serial, force: :cascade do |t|
@@ -1956,6 +1965,7 @@ ActiveRecord::Schema.define(version: 2023_10_18_160035) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"

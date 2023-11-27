@@ -161,9 +161,10 @@ Metrics/ModuleLength:
 Metrics/BlockLength:
   Max: 40
   Exclude:
-    - "spec/**/*"
-    - "rakelib/**/*.rake"
     - "config/**/*.rb"
+    - "lib/tasks/**/*.rake"
+    - "rakelib/**/*.rake"
+    - "spec/**/*"
 
 Metrics/CyclomaticComplexity:
   Exclude:

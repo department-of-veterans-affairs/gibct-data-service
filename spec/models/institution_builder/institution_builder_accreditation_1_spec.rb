@@ -6,10 +6,14 @@ require_relative './shared_setup'
 RSpec.describe InstitutionBuilder, type: :model do
   include_context('with setup')
 
+  # creating accreditation_type_keyword data must be created before accreditation_records where
+  #   needed or tests will fail
+
   describe '#run' do
     before do
       create :weam, :institution_builder
       create :crosswalk, :institution_builder
+      create :accreditation_type_keyword
     end
 
     describe 'when adding Accreditation data' do
@@ -20,14 +24,13 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'only adds current accreditations' do
           create :accreditation_record
           described_class.run(user)
-
-          expect(institution.accreditation_type).not_to be_nil
+          expect(institution.accreditation_type).to eq('regional')
         end
 
         it 'does not add non-current accreditations (end date is not null)' do
+          # the keyword row is not really needed because we're testing end date logic but it's here for completeness
           create :accreditation_record_expired
           described_class.run(user)
-
           expect(institution.accreditation_type).to be_nil
         end
       end
@@ -36,14 +39,12 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'adds institutional accreditations' do
           create :accreditation_record
           described_class.run(user)
-
-          expect(institution.accreditation_type).not_to be_nil
+          expect(institution.accreditation_type).to eq('regional')
         end
 
         it 'does not add non-institutional accreditations (program id is not 1)' do
           create :accreditation_record, program_id: 2
           described_class.run(user)
-
           expect(institution.accreditation_type).to be_nil
         end
       end
@@ -56,7 +57,6 @@ RSpec.describe InstitutionBuilder, type: :model do
           # rubocop:enable Rails/SkipsModelValidations
           create :accreditation_record
           described_class.run(user)
-
           institution = Institution.first
           expect(institution.accreditation_type).to be_nil
         end
@@ -64,7 +64,6 @@ RSpec.describe InstitutionBuilder, type: :model do
         it 'does not add accreditations when there is no dapip_id match' do
           create :accreditation_record, dapip_id: -1
           described_class.run(user)
-
           institution = Institution.first
           expect(institution.accreditation_type).to be_nil
         end
