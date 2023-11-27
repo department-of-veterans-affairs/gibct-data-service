@@ -10,10 +10,13 @@
         - accreditation types are determined by joining Institutions to AccreditationInstituteCampuses on ope<br/>
         - AccreditationInstituteCampuses are joined to AccreditationRecords on dapip_id<br/>
         - the AccreditationRecord must not have an accreditation_end_date and have a program_id of 1<br/>
-        - the agency_name must contain one of the following keywords:<br/>
-           <% AccreditationRecord::ACCREDITATIONS.each_pair do |key, value| %>
-               <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= "#{key}: " %></b>
-               <%= "#{formatted_keywords(value.to_s)}" %><br/>
+        - the agency_name must contain one of the following keywords:<br/><br/>
+           <% AccreditationTypeKeyword::ACCREDITATION_TYPES.each do |accreditation_type| %>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <%= link_to 'Maintain', accreditation_type_keywords_path(accreditation_type: accreditation_type),
+                  class: "btn dashboard-btn-success btn-xs", role: "button" %>
+              <b><%= "#{accreditation_type}:" %></b>
+              <%= "#{formatted_keywords(accreditation_type)}" %><br/><br/>
            <% end %>
         - if any of the above conditions are not met, the institution will appear on this report
     </div><br/>

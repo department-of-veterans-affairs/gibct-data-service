@@ -1,0 +1,3 @@
+$('#new_accreditation_type_keyword').remove();
+$('#add-keyword-link').show();
+$('#keywords').append('<%= j render partial: 'keyword', locals: {accreditation_type_keyword: @accreditation_type_keyword} %>');

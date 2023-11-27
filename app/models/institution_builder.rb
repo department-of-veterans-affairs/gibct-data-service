@@ -236,21 +236,21 @@ module InstitutionBuilder
 
       # Set the `accreditation_type`
       str = <<-SQL
-        UPDATE institutions SET
-          accreditation_type = accreditation_records.accreditation_type
-        FROM accreditation_institute_campuses, accreditation_records
-        WHERE institutions.ope = accreditation_institute_campuses.ope
-          AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
-          AND institutions.ope IS NOT NULL
-          AND accreditation_records.accreditation_end_date IS NULL
-          AND accreditation_records.program_id = 1
-          AND institutions.version_id = #{version_id}
-          AND accreditation_records.accreditation_type = {{ACC_TYPE}};
+        UPDATE institutions
+           SET accreditation_type = accreditation_type_keywords.accreditation_type
+          FROM accreditation_institute_campuses
+             , accreditation_records
+             , accreditation_type_keywords
+         WHERE institutions.version_id = #{version_id}
+           AND institutions.ope IS NOT NULL
+           AND institutions.ope = accreditation_institute_campuses.ope
+           AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
+           AND accreditation_records.accreditation_end_date IS NULL
+           AND accreditation_records.program_id = 1
+           AND accreditation_records.accreditation_type_keyword_id = accreditation_type_keywords.id
       SQL
 
-      %w[hybrid national regional].each do |acc_type|
-        Institution.connection.update(str.gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
-      end
+      Institution.connection.update(str)
 
       where_clause = <<-SQL
           WHERE institutions.ope = accreditation_institute_campuses.ope

@@ -1,0 +1,20 @@
+<p><%= link_to 'Back', dashboard_accreditation_issues_path %></p>
+
+<h1>Keywords for <%= @accreditation_type %> accreditation</h1>
+
+<table>
+  <tbody id="keywords">
+    <% @accreditation_type_keywords.each do |accreditation_type_keyword| %>
+      <%= render partial: 'keyword', locals: {accreditation_type_keyword: accreditation_type_keyword} %>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= 
+  link_to 'Add Keyword', 
+    new_accreditation_type_keyword_path(accreditation_type: @accreditation_type = params[:accreditation_type]),
+      id: 'add-keyword-link',
+      remote: true 
+%>

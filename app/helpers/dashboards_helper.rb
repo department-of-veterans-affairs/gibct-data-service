@@ -59,7 +59,11 @@ module DashboardsHelper
     Upload.locked_fetches_exist?
   end
 
-  def formatted_keywords(value)
-    value.gsub('[', '').gsub(']', '').gsub('/i', '').gsub('/', '')
+  def formatted_keywords(accreditation_type)
+    AccreditationTypeKeyword
+      .where(accreditation_type: accreditation_type)
+      .order(:keyword_match)
+      .pluck(:keyword_match)
+      .join(', ')
   end
 end
