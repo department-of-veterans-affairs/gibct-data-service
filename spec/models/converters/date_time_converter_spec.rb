@@ -17,6 +17,10 @@ RSpec.describe DateTimeConverter do
     expect(described_class.convert(Date.current)).to eq(Date.current)
   end
 
+  it 'converts yyyy-mm-dd strings to dates' do
+    expect(described_class.convert('2017-04-17')).to eq(Date.parse('April 17, 2017'))
+  end
+
   it 'converts blank value to nil' do
     expect(described_class.convert('')).to be_nil
   end

@@ -5,8 +5,12 @@ require 'rails_helper'
 RSpec.describe DateConverter do
   subject { described_class }
 
-  it 'converts strings to dates' do
+  it 'converts m/d/yyyy strings to dates' do
     expect(described_class.convert('4/17/2017')).to eq(Date.parse('April 17, 2017'))
+  end
+
+  it 'converts yyyy-mm-dd strings to dates' do
+    expect(described_class.convert('2017-04-17')).to eq(Date.parse('April 17, 2017'))
   end
 
   it 'converts blank value to nil' do
