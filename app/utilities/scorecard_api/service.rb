@@ -135,11 +135,24 @@ module ScorecardApi
     end
 
     def self.populate
+      # This method is used by both ScorecardApi::Service and ScorecardDegreeProgramApi::Service
+      # that we know about. There could also be other services.
+      # The pagination does NOT work for the ScorecardDegreeProgramApi::Service but the entire
+      # result set is returned  with schools_api_call(0). Since the pagination is broken for it
+      # and we have all the data we need, we can skip retrieving the results with pagination and
+      # map the results we have.
       results = []
       response_body = schools_api_call(0) #  call for page 0 to get initial @total
       results.push(*response_body[:results])
-      number_of_pages = (response_body[:metadata][:total] / MAX_PAGE_SIZE).to_f.ceil
-      (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num)[:results]) }
+
+      # Rubocop is just wrong about this, it doesn't work if you remove the self.
+      # rubocop:disable Style/RedundantSelf
+      unless self.name.eql?('ScorecardDegreeProgramApi::Service')
+        number_of_pages = (response_body[:metadata][:total] / MAX_PAGE_SIZE).to_f.ceil
+        (1..number_of_pages).each { |page_num| results.push(*schools_api_call(page_num)[:results]) }
+      end
+      # rubocop:enable Style/RedundantSelf
+
       map_results(results)
     end
 
