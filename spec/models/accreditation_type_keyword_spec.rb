@@ -30,6 +30,19 @@ RSpec.describe AccreditationTypeKeyword, type: :model do
 
       expect(same_accreditation_type_keyword).not_to be_valid
     end
+
+    it 'is case insensitive when validating for uniqueness' do
+      accreditation_type_keyword.save
+      same_accreditation_type_keyword = accreditation_type_keyword.dup
+      same_accreditation_type_keyword.keyword_match.upcase!
+
+      expect(same_accreditation_type_keyword).not_to be_valid
+
+      same_accreditation_type_keyword = accreditation_type_keyword.dup
+      same_accreditation_type_keyword.keyword_match.capitalize!
+
+      expect(same_accreditation_type_keyword).not_to be_valid
+    end
   end
 
   describe 'when creating' do
@@ -39,6 +52,15 @@ RSpec.describe AccreditationTypeKeyword, type: :model do
       accreditation_type_keyword.save
 
       expect(described_class.count).to eq(1)
+    end
+
+    it 'saves the keyword_match downcased' do
+      accreditation_type_keyword.keyword_match.upcase!
+      accreditation_type_keyword.save
+
+      atk = described_class.first # Pull it from the database to be sure
+
+      expect(atk.keyword_match).to eq('middle')
     end
   end
 
