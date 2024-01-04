@@ -20,13 +20,29 @@ class CrosswalkIssue < ApplicationRecord
   end
 
   def self.orphans
-    includes(%i[weam crosswalk ipeds_hd])
+    joins('INNER JOIN ipeds_hds ON ipeds_hds.id = crosswalk_issues.ipeds_hd_id ' \
+      'LEFT JOIN weams ope_join ON ope_join.ope = ipeds_hds.ope ' \
+      'LEFT JOIN weams crs_join ON crs_join.cross = ipeds_hds.cross')
+      .select(
+        'ipeds_hds.institution, ' \
+        'ipeds_hds.addr as addr, ' \
+        'ipeds_hds.city as city, ' \
+        'ipeds_hds.state as state, ' \
+        'ipeds_hds.zip as zip, ' \
+        'ipeds_hds.cross as ipeds, ' \
+        'ipeds_hds.ope as ope, ' \
+        'crs_join.facility_code as c_facility_code, ' \
+        'ope_join.facility_code as o_facility_code '
+      )
       .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
       .order('ipeds_hds.institution')
   end
 
   def self.export_and_pluck_orphans
-    orphans.pluck('ipeds_hds.institution, ipeds_hds.cross, ipeds_hds.ope')
+    orphans.pluck(
+      'ipeds_hds.institution, addr, ipeds_hds.city, ipeds_hds.state, ipeds_hds.zip, ipeds_hds.cross, ipeds_hds.ope, ' \
+      'crs_join.facility_code, ope_join.facility_code'
+    )
   end
 
   def self.export_and_pluck_partials
@@ -36,6 +52,10 @@ class CrosswalkIssue < ApplicationRecord
     )
   end
 
+  # For orphans, we're creating crosswalk_issue rows where there's no
+  # crosswalk row for ipeds_hd. We try to match using ope and cross
+  # (ipeds). It also seems to be the case that in these circumstances,
+  # there's no weams row either.
   # rubocop:disable Metrics/MethodLength
   def self.rebuild
     sql = <<-SQL

@@ -30,6 +30,7 @@ module Common
       generate_csv(unaccrediteds)
     end
 
+    # Using format_ope for numeric values to preserve leading zeros
     def export_partials(partials)
       partials.each do |p|
         [4, 6, 8].each { |ii| p[ii] = format_ope(p[ii]) }
@@ -42,9 +43,20 @@ module Common
       generate_csv(partials)
     end
 
+    # Using format_ope for numeric values to preserve leading zeros
     def export_orphans(orphans)
-      orphans.each { |o| o[2] = format_ope(o[2]) }
-      orphans.prepend(['Institution Name', 'IPEDS', 'OPE'])
+      orphans.each do |o|
+        [2, 4, 6, 7, 8].each { |ii| o[ii] = format_ope(o[ii]) }
+      end
+
+      orphans.prepend(
+        ['Institution Name', 'Address', 'City', 'State', 'Zip', 'IPEDS', 'OPE', 'IPEDS Match', 'OPE Match']
+      )
+
+      orphans.prepend(
+        ['', '', '', '', '', 'IPEDS HD', '', 'Facility Code', '']
+      )
+
       generate_csv(orphans)
     end
 

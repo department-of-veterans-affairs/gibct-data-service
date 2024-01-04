@@ -7,13 +7,29 @@
     </h3>
     <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
       <thead class="system-header">
-        <th colspan="3">IPEDS HD</th>
+        <th colspan="9"></th>
+      </thead>
+      <thead class="sub">
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th colspan="2"><center>IPEDS HD</center></th>
+        <th colspan="2"><center>Facility Code</center></th>
       </thead>
       <thead class="sub">
         <th>Institution Name</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Zip</th>
         <th>IPEDS</th>
         <th>OPE</th>
+        <th>IPEDS Match</th>
+        <th>OPE Match</th>
       </thead>
+
       <tbody>
       <%= render partial: 'orphan_issues', collection: @issues, as: :issue %>
       </tbody>
