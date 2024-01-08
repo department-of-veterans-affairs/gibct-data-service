@@ -20,6 +20,7 @@ class CrosswalkIssue < ApplicationRecord
   end
 
   def self.orphans
+    # case statement is from most common to least common
     joins('INNER JOIN ipeds_hds ON ipeds_hds.id = crosswalk_issues.ipeds_hd_id ' \
       'LEFT JOIN weams ope_join ON ope_join.ope = ipeds_hds.ope ' \
       'LEFT JOIN weams crs_join ON crs_join.cross = ipeds_hds.cross')
@@ -31,18 +32,14 @@ class CrosswalkIssue < ApplicationRecord
         'ipeds_hds.zip as zip, ' \
         'ipeds_hds.cross as ipeds, ' \
         'ipeds_hds.ope as ope, ' \
-        'crs_join.facility_code as c_facility_code, ' \
-        'ope_join.facility_code as o_facility_code '
+        'coalesce(crs_join.facility_code, ope_join.facility_code) as facility_code, ' \
+        'case when crs_join.facility_code is null and ope_join.facility_code is null then null ' \
+        'when crs_join.facility_code is not null and ope_join.facility_code is not null then \'IPEDS & OPE\' ' \
+        'when crs_join.facility_code is not null and ope_join.facility_code is null then \'IPEDS\' ' \
+        'else \'OPE\' end as match_type'
       )
       .by_issue_type(CrosswalkIssue::IPEDS_ORPHAN_TYPE)
       .order('ipeds_hds.institution')
-  end
-
-  def self.export_and_pluck_orphans
-    orphans.pluck(
-      'ipeds_hds.institution, addr, ipeds_hds.city, ipeds_hds.state, ipeds_hds.zip, ipeds_hds.cross, ipeds_hds.ope, ' \
-      'crs_join.facility_code, ope_join.facility_code'
-    )
   end
 
   def self.export_and_pluck_partials

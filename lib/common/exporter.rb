@@ -45,19 +45,19 @@ module Common
 
     # Using format_ope for numeric values to preserve leading zeros
     def export_orphans(orphans)
+      orphans_array = []
       orphans.each do |o|
-        [2, 4, 6, 7, 8].each { |ii| o[ii] = format_ope(o[ii]) }
+        orphans_array << [
+          o.institution, o.addr, o.city, o.state, o.zip, format_ope(o.ipeds), format_ope(o.ope),
+          format_ope(o.facility_code), o.match_type
+        ]
       end
 
-      orphans.prepend(
-        ['Institution Name', 'Address', 'City', 'State', 'Zip', 'IPEDS', 'OPE', 'IPEDS Match', 'OPE Match']
+      orphans_array.prepend(
+        ['Institution Name', 'Address', 'City', 'State', 'Zip', 'IPEDS', 'OPE', 'Facility Cd', 'Match Type']
       )
 
-      orphans.prepend(
-        ['', '', '', '', '', 'IPEDS HD', '', 'Facility Code', '']
-      )
-
-      generate_csv(orphans)
+      generate_csv(orphans_array)
     end
 
     private
