@@ -85,7 +85,7 @@ class DashboardsController < ApplicationController
   def export_orphans
     respond_to do |format|
       format.csv do
-        send_data CrosswalkIssue.export_orphans(CrosswalkIssue.export_and_pluck_orphans),
+        send_data CrosswalkIssue.export_orphans(CrosswalkIssue.orphans),
                   type: 'text/csv', filename: 'orphans.csv'
       end
     end

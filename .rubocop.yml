@@ -127,6 +127,7 @@ Metrics/MethodLength:
 
 Metrics/ClassLength:
   Exclude:
+    - "app/models/crosswalk_issue.rb"
     - "app/models/scorecard.rb"
     - "app/models/ipeds_ic.rb"
     - "app/models/ipeds_ic_ay.rb"
