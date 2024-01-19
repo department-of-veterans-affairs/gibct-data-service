@@ -562,8 +562,8 @@ class Institution < ImportableRecord
       # checks text field for a state and country else uses the state/country in filter
       # added step that makes sure it won't return results where the state field is null
       if filter_args.first == 'name'
-        state_country_search = query['name'].split(',')
-        if state_country_search.length > 1
+        state_country_search = query['name'].split(',') if query['name'].present?
+        if state_country_search
           # tests cover this, but SimpleCov doesn't pick it up
           # :nocov:
           if state_country_search[1].present?
