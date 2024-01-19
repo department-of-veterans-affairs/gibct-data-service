@@ -40,6 +40,8 @@ class DashboardExporterImporter
       remove_existing_csv_file_for(table_name)
       download_csv_file_for(table_name)
     end
+
+    0
   end
 
   def upload_all_table_data
@@ -64,6 +66,7 @@ class DashboardExporterImporter
 
   private
 
+  # load_env is target enviroment for upload/download
   def set_url_variables_for_job(load_env)
     case load_env
     when 'l', 'local', 'localhost'
@@ -112,7 +115,7 @@ class DashboardExporterImporter
     button.click
 
     log_and_puts('    Waiting for download to complete...')
-    @bsess.wait_until(timeout: 300) do
+    @bsess.wait_until(timeout: TIMEOUT) do
       File.exist?("#{@download_dir}/#{table_name}.csv")
     end
     log_and_puts('    Completed')
