@@ -138,16 +138,34 @@ RSpec.describe UploadsController, type: :controller do
         expect do
           post :create,
                params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam'  }
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
                }
         end.to change(Weam, :count).by(2)
+      end
+
+      it 'sets multiple_files on the Upload row to false when not checked on the form' do
+        post :create,
+             params: { upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } }
+        # some goofiness with the column name multiple_files
+        expect(Upload.where(multiple_files: true).last).to be nil
+      end
+
+      it 'sets multiple_files on the Upload row to true when checked on the form' do
+        post :create,
+             params: {
+               upload: {
+                 upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', multiple_files: 'true'
+               }
+             }
+        # some goofiness with the column name multiple_files
+        expect(Upload.where(multiple_files: true).last).not_to be nil
       end
 
       it 'redirects to show' do
         expect(
           post(:create,
                params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam'  }
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
                })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end

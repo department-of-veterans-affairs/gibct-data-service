@@ -88,7 +88,9 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+    upload_params = params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment, :multiple_files)
+    upload_params[:multiple_files] = true if upload_params[:multiple_files].eql?('true')
+    @upload_params ||= upload_params
   end
 
   def load_file
@@ -102,7 +104,7 @@ class UploadsController < ApplicationController
     # because only a single set of results is returned
     file_options = { liberal_parsing: @upload.liberal_parsing,
                      sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i),
-                                clean_rows: @upload.clean_rows }] }
+                                clean_rows: @upload.clean_rows, multiple_files: @upload_params[:multiple_files] }] }
     data = klass.load_with_roo(file, file_options).first
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)

@@ -33,7 +33,6 @@ gem 'sentry-raven', '~> 2.9.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 1.0.5'
-
 # Mass importing of CSV data
 gem 'activerecord-import'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
@@ -87,9 +86,11 @@ group :development, :test do
   gem 'bundler-audit'
 
   # Testing tools
+  gem 'headless', '~> 2.3.1' # requires xvfb - used with Watir below
   gem 'json_matchers'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem 'watir', '~> 7.3'
 
   # Added to remove irb: context errors on rails c (MPH)
   gem 'guard-rspec', require: false
