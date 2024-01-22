@@ -15,12 +15,13 @@ class DashboardExporterImporter
 
   TIMEOUT = 600 # seconds
 
-  attr_accessor :headless, :bsess, :download_dir, :login_url, :dashboard_url, :import_prefix, :user, :pass
+  attr_accessor :headless, :bsess, :download_dir, :login_url, :dashboard_url, :import_prefix, :user, :pass, :eilogger
 
   def initialize(user, pass, load_env = nil)
     @user = user
     @pass = pass
 
+    set_logger
     set_url_variables_for_job(load_env)
 
     @download_dir = set_download_dir
@@ -65,6 +66,11 @@ class DashboardExporterImporter
   end
 
   private
+
+  def set_logger
+    logger_time = Time.now.getlocal.strftime('%Y%m%d_%H%M%S')
+    @eilogger = Logger.new(Rails.root.join('log', "export_import_#{logger_time}.log"))
+  end
 
   # load_env is target enviroment for upload/download
   def set_url_variables_for_job(load_env)
@@ -200,7 +206,7 @@ class DashboardExporterImporter
 
   def log_and_puts(msg)
     msg = "#{Time.now.getlocal} - #{msg}" if msg.size.positive?
-    Rails.logger.info(msg)
+    @eilogger.info(msg)
   end
   # :nocov:
 end
