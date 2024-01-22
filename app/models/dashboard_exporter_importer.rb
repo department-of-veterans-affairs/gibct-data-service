@@ -2,6 +2,7 @@
 
 # rubocop:disable Metrics/ClassLength
 class DashboardExporterImporter
+  # :nocov:
   LOCAL_URL = 'http://localhost:4000/user/sign_in'
   LOCAL_DASHBOARD = 'http://localhost:4000/dashboards'
   LOCAL_IMPORT_PREFIX = '/uploads/new/'
@@ -31,7 +32,6 @@ class DashboardExporterImporter
     login_to_dashboard
   end
 
-  # :nocov:
   def download_all_table_data
     CSV_TYPES_ALL_TABLES_CLASSES.each do |table_class|
       table_name = table_class.to_s
