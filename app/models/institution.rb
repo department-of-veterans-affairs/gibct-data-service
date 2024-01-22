@@ -568,15 +568,15 @@ class Institution < ImportableRecord
           # :nocov:
           if state_country_search[1].present?
             state = state_country_search[1].upcase.strip
-            filters << "state = '#{state}'"
-            filters << "physical_state = '#{state}'"
+            filters << "state = '#{state.gsub("'", "''")}'"
+            filters << "physical_state = '#{state.gsub("'", "''")}'"
             filters << 'state IS NOT NULL'
             filters << 'physical_state IS NOT NULL'
           end
           if state_country_search[2].present?
             country = state_country_search[2].upcase.strip
-            filters << "country = '#{country}'"
-            filters << "physical_country = '#{country}'"
+            filters << "country = '#{country.gsub("'", "''")}'"
+            filters << "physical_country = '#{country.gsub("'", "''")}'"
             filters << 'country IS NOT NULL'
             filters << 'physical_country IS NOT NULL'
           end
