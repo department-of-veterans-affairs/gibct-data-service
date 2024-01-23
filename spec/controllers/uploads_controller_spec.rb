@@ -147,18 +147,22 @@ RSpec.describe UploadsController, type: :controller do
         post :create,
              params: { upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } }
         # some goofiness with the column name multiple_files
-        expect(Upload.where(multiple_files: true).last).to be nil
+        expect(Upload.where(multiple_file_upload: true).last).to be nil
       end
 
-      it 'sets multiple_files on the Upload row to true when checked on the form' do
+      it 'sets multiple_file_upload on the Upload row to true when checked on the form' do
         post :create,
              params: {
                upload: {
-                 upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam', multiple_files: 'true'
+                 upload_file: upload_file,
+                 skip_lines: 0,
+                 comment: 'Test',
+                 csv_type: 'Weam',
+                 multiple_file_upload: 'true'
                }
              }
         # some goofiness with the column name multiple_files
-        expect(Upload.where(multiple_files: true).last).not_to be nil
+        expect(Upload.where(multiple_file_upload: true).last).not_to be nil
       end
 
       it 'redirects to show' do
