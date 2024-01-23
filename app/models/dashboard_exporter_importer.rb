@@ -53,7 +53,7 @@ class DashboardExporterImporter
       next if table_name.eql?('InstitutionSchoolRating')
       # This table has CORS issues loading to the staging server
       next if table_name.eql?('CipCode') && @login_url.eql?(STAGE_URL)
-
+  
       upload_csv_file_for(table_name)
     end
 
@@ -138,8 +138,8 @@ class DashboardExporterImporter
       split_weams_file
 
       %w[Weam1 Weam2 Weam3].each do |weam_file_name|
-        multiple_files = (weam_file_name.include?('Weam1') ? false : true)
-        upload_with_parameters('Weam', weam_file_name, multiple_files)
+        multiple_file_upload = (weam_file_name.include?('Weam1') ? false : true)
+        upload_with_parameters('Weam', weam_file_name, multiple_file_upload)
       end
     else
       upload_with_parameters(table_name, table_name, false)
@@ -148,7 +148,7 @@ class DashboardExporterImporter
     log_out_and_back_in(table_name)
   end
 
-  def upload_with_parameters(table_name, file_name, multiple_files = false)
+  def upload_with_parameters(table_name, file_name, multiple_file_upload = false)
     button = @bsess.link(role: 'button', href: "#{@import_prefix}#{table_name}", visible_text: 'Upload')
     button.click
 
@@ -159,7 +159,7 @@ class DashboardExporterImporter
       .text_field(id: 'upload_comment')
       .set("Uploaded on #{Time.now.getlocal} from Production export")
 
-    @bsess.checkbox(id: 'upload_multiple_files').check if multiple_files
+    @bsess.checkbox(id: 'upload_multiple_file_upload').check if multiple_file_upload
 
     @bsess.form(id: 'new_upload').submit
 
