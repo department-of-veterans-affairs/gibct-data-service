@@ -88,7 +88,10 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    upload_params = params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload)
+    upload_params = params.require(:upload).permit(
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+    )
+
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
     @upload_params ||= upload_params
   end

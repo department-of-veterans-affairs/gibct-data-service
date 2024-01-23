@@ -53,6 +53,7 @@ class DashboardExporterImporter
       next if table_name.eql?('InstitutionSchoolRating')
       # This table has CORS issues loading to the staging server
       next if table_name.eql?('CipCode') && @login_url.eql?(STAGE_URL)
+
       upload_csv_file_for(table_name)
     end
 
