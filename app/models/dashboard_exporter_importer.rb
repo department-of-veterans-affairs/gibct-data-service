@@ -53,7 +53,6 @@ class DashboardExporterImporter
       next if table_name.eql?('InstitutionSchoolRating')
       # This table has CORS issues loading to the staging server
       next if table_name.eql?('CipCode') && @login_url.eql?(STAGE_URL)
-  
       upload_csv_file_for(table_name)
     end
 
@@ -160,7 +159,6 @@ class DashboardExporterImporter
       .set("Uploaded on #{Time.now.getlocal} from Production export")
 
     @bsess.checkbox(id: 'upload_multiple_file_upload').check if multiple_file_upload
-
     @bsess.form(id: 'new_upload').submit
 
     if @bsess.link(text: 'View Dashboard').present?
