@@ -5,6 +5,9 @@ class YellowRibbonProgram < ApplicationRecord
 
   delegate :country, :insturl, to: :institution
   delegate :institution, to: :institution, prefix: :name_of
+  delegate :latitude, :longitude, :ungeocodable, to: :institution
+  delegate :online_all, :online_only, :distance_learning, :correspondence, to: :institution
+  delegate :student_veteran, :student_veteran_link, :student_vet_grp_ipeds, to: :institution
 
   validates :contribution_amount, numericality: true
   validates :degree_level, presence: true
