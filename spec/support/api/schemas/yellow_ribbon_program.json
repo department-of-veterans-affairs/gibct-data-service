@@ -39,16 +39,28 @@
             "properties": {
               "city": { "type": ["null", "string"] },
               "contribution_amount": { "type": ["null", "string"] },
+              "correspondence": { "type": ["null", "boolean"] },
               "country": { "type": ["null", "string"] },
               "degree_level": { "type": ["null", "string"] },
+              "distance_learning": { "type": ["null", "boolean"] },
               "division_professional_school": { "type": ["null", "string"] },
               "facility_code": { "type": ["null", "string"] },
               "institution_id": { "type": ["null", "integer"] },
               "insturl": { "type": ["null", "string"] },
+              "latitude": { "type": ["null", "number"] },
+              "longitude": { "type": ["null", "number"] },
               "name_of_institution": { "type": ["null", "string"] },
               "number_of_students": { "type": ["null", "integer"] },
+              "online_all": { "type": ["null", "boolean"] },
+              "online_only": { "type": ["null", "boolean"] },
               "state": { "type": ["null", "string"] },
-              "street_address": { "type": ["null", "string"] }
+              "street_address": { "type": ["null", "string"] },
+              "student_veteran": { "type": ["null", "boolean"] },
+              "student_vet_grp_ipeds": { "type": ["null", "boolean"] },
+              "student_veteran_link": { "type": ["null", "string"] },
+              "ungeocodable": { "type": ["null", "boolean"] },
+              "year_of_yr_participation": { "type": ["null", "string"] },
+              "zip": { "type": ["null", "string"] }
             }
           }
         },
