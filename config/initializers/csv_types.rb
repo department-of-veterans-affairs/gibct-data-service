@@ -3,7 +3,7 @@ CSV_TYPES_TABLES = [
   { klass: AccreditationInstituteCampus, required?: true, has_api?: true, no_api_key?: true },
   { klass: AccreditationRecord, required?: true, has_api?: true, no_api_key?: true },
   { klass: ArfGiBill, required?: true },
-  { klass: CipCode, required?: false },
+  { klass: CipCode, required?: false, no_upload?: true },
   { klass: Complaint, required?: true },
   { klass: Crosswalk, required?: true },
   { klass: EightKey, required?: true },
@@ -31,7 +31,7 @@ CSV_TYPES_TABLES = [
   { klass: Sec103, required?: false },
   { klass: VaCautionFlag, required?: false },
   { klass: Post911Stat, required?: false },
-  { klass: VrrapProvider, required?: false },
+  { klass: VrrapProvider, required?: false, no_upload?: true },
   { klass: InstitutionOwner, required?: false },
   { klass: InstitutionSchoolRating, required?: false },
   { klass: Section1015, required?: false }
@@ -39,4 +39,5 @@ CSV_TYPES_TABLES = [
 
 CSV_TYPES_HAS_API_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }.freeze
 CSV_TYPES_NO_API_KEY_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:no_api_key?] }.map { |table| table[:klass].name }.freeze
+CSV_TYPES_NO_UPLOAD_TABLE_NAMES = CSV_TYPES_TABLES.select { |table| table[:no_upload?] }.map { |table| table[:klass].name }.freeze
 CSV_TYPES_ALL_TABLES_CLASSES = CSV_TYPES_TABLES.map { |table| table[:klass] }.freeze
