@@ -45,6 +45,17 @@ namespace :utils do
     dei = DashboardExporterImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
     dei.upload_all_table_data
     dei.finalize
+    sleep(10)
+    dwi = DashboardWeamImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
+    dwi.upload_weam_csv_file
+    dwi.finalize
+  end
+
+  desc 'Import Weam spreadsheet used to generate versions to staging'
+  task import_weam_to_staging: :environment do
+    dwi = DashboardWeamImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
+    dwi.upload_weam_csv_file
+    dwi.finalize
   end
 
   # Note that the vets-api and gibct need to be running locally for this to work
@@ -53,5 +64,16 @@ namespace :utils do
     dei = DashboardExporterImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
     dei.upload_all_table_data
     dei.finalize
+    sleep(10)
+    dwi = DashboardWeamImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
+    dwi.upload_weam_csv_file
+    dwi.finalize
+  end
+
+  desc 'Import Weam spreadsheet used to generate versions to local development'
+  task import_weam_to_localhost: :environment do
+    dwi = DashboardWeamImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
+    dwi.upload_weam_csv_file
+    dwi.finalize
   end
 end

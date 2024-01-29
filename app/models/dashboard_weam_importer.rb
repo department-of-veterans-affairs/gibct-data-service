@@ -1,26 +1,29 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-class DashboardExporterImporter
+class DashboardWeamImporter
   # :nocov:
   LOCAL_URL = 'http://localhost:4000/user/sign_in'
   LOCAL_DASHBOARD = 'http://localhost:4000/dashboards'
   LOCAL_IMPORT_PREFIX = '/uploads/new/'
 
-  PROD_URL = 'https://www.va.gov/gids/user/sign_in'
-  EXPORT_PREFIX = '/gids/dashboards/export/'
-
   STAGE_URL = 'https://staging.va.gov/gids/user/sign_in'
   STAGE_DASHBOARD = 'https://staging.va.gov/gids/dashboards'
   STAGE_IMPORT_PREFIX = '/gids/uploads/new/'
 
-  TIMEOUT = 600 # seconds
+  TIMEOUT = 90 # seconds (it normally takes between 35 and 40 seconds)
 
-  attr_accessor :headless, :bsess, :download_dir, :login_url, :dashboard_url, :import_prefix, :user, :pass, :eilogger
+  WEAM_FILES = {
+    0 => 'Weam1', 1 => 'Weam2', 2 => 'Weam3', 3 => 'Weam4', 4 => 'Weam5', 5 => 'Weam6', 6 => 'Weam7'
+  }.freeze
+
+  attr_accessor :headless, :bsess, :download_dir, :login_url, :dashboard_url, :import_prefix, :user, :pass, :eilogger,
+                :workfiles
 
   def initialize(user, pass, load_env = nil)
     @user = user
     @pass = pass
+    @workfiles = Array.new(WEAM_FILES.size)
 
     set_logger
     set_url_variables_for_job(load_env)
@@ -32,52 +35,43 @@ class DashboardExporterImporter
     login_to_dashboard
   end
 
-  def download_all_table_data
-    CSV_TYPES_ALL_TABLES_CLASSES.each do |table_class|
-      table_name = table_class.to_s
-
-      next if table_name.eql?('InstitutionSchoolRating') # The table is not active yet
-
-      remove_existing_csv_file_for(table_name)
-      download_csv_file_for(table_name)
-    end
-
-    0
-  end
-
+  # rubocop:disable Metrics/MethodLength
   # rubocop:disable Lint/RescueException
-  def upload_all_table_data
-    CSV_TYPES_ALL_TABLES_CLASSES.each do |table_class|
-      table_name = table_class.to_s
+  def upload_weam_csv_file
+    log_and_puts('     Uploading CSV file for Weam.')
 
-      # The table is not active yet
-      next if table_name.eql?('InstitutionSchoolRating')
-      # This table has CORS issues loading to the staging server
-      next if table_name.eql?('CipCode') && @login_url.eql?(STAGE_URL)
-      # Weam  has it's own routine for uploading
-      next if table_name.eql?('Weam')
+    WEAM_FILES.each_value { |weam_file_name| remove_existing_csv_file_for(weam_file_name) }
 
+    split_weams_file
+
+    WEAM_FILES.each_value do |weam_file_name|
+      log_and_puts("       Starting processing for #{weam_file_name}")
+      multiple_file_upload = (weam_file_name.include?('Weam1') ? false : true)
       begin
-        upload_csv_file_for(table_name)
+        upload_with_parameters('Weam', weam_file_name, multiple_file_upload)
       rescue Exception => e
-        log_and_puts("       Error: #{e.message}...")
-        retry_upload_for(table_name)
+        log_and_puts("       Error trying to upload #{weam_file_name}: #{e.message}...")
+        log_and_puts('       Trying again in 10 seconds...')
+        sleep(10)
+        log_out_and_back_in(weam_file_name)
+        # If it fails on uploading the last file, you have to explicitly log back in.
+        # the log_out_and_back_in method skips logging in on the last file.
+        login_to_dashboard if file_name.eql?(WEAM_FILES.values.last)
+        begin
+          upload_with_parameters('Weam', weam_file_name, multiple_file_upload)
+        rescue Exception => e
+          log_and_puts("       Failed again #{e.message}...")
+          return 1
+        end
       end
+      log_and_puts("       Done processing for #{weam_file_name}")
+      log_out_and_back_in(weam_file_name)
     end
 
     0
-  end
-
-  def retry_upload_for(table_name)
-    sleep(10)
-    begin
-      log_out_and_back_in(table_name)
-      upload_csv_file_for(table_name)
-    rescue Exception => e
-      log_and_puts("       Failed again, #{e.message}, skipping...")
-    end
   end
   # rubocop:enable Lint/RescueException
+  # rubocop:enable Metrics/MethodLength
 
   def finalize
     @headless.destroy
@@ -88,9 +82,9 @@ class DashboardExporterImporter
 
   def set_logger
     logger_time = Time.now.getlocal.strftime('%Y%m%d_%H%M%S')
-    log_file_name = Rails.root.join('log', "export_import_#{logger_time}.log")
+    log_file_name = Rails.root.join('log', "import_weam_#{logger_time}.log")
     @eilogger = Logger.new(log_file_name)
-    log_and_puts("***** Starting export_import_#{logger_time} *****")
+    log_and_puts("***** Starting import_weam_#{logger_time} *****")
 
     # open a terminal and tail the log in it
     `gnome-terminal --title="Tail log #{logger_time}" -- bash -c "tail -f #{log_file_name}; exec bash -i"`
@@ -103,8 +97,6 @@ class DashboardExporterImporter
       @login_url = LOCAL_URL
       @dashboard_url = LOCAL_DASHBOARD
       @import_prefix = LOCAL_IMPORT_PREFIX
-    when 'production', 'prod', 'p'
-      @login_url = PROD_URL
     else
       @login_url = STAGE_URL
       @dashboard_url = STAGE_DASHBOARD
@@ -158,63 +150,69 @@ class DashboardExporterImporter
     File.delete("#{@download_dir}/#{table_name}.csv")
   end
 
-  def download_csv_file_for(table_name)
-    log_and_puts("  Downloading CSV file for #{table_name}")
-
-    button = @bsess.link(role: 'button', href: "#{EXPORT_PREFIX}#{table_name}", visible_text: 'Export')
-    button.click
-
-    log_and_puts('    Waiting for download to complete...')
-    @bsess.wait_until(timeout: TIMEOUT) do
-      File.exist?("#{@download_dir}/#{table_name}.csv")
-    end
-    log_and_puts('    Completed')
-
-    log_and_puts("\n")
-  end
-
-  def upload_csv_file_for(table_name)
-    log_and_puts("     Uploading CSV file for #{table_name}")
-    upload_with_parameters(table_name, 0)
-    log_out_and_back_in(table_name)
-  end
-
-  def upload_with_parameters(table_name, retry_count = 0)
-    log_and_puts("         Uploading #{table_name}")
+  def upload_with_parameters(table_name, file_name, multiple_file_upload = false)
+    log_and_puts("         Uploading #{file_name}")
     button = @bsess.link(role: 'button', href: "#{@import_prefix}#{table_name}", visible_text: 'Upload')
     button.click
 
     @bsess.text_field(id: 'upload_skip_lines').set(0)
-    @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name}.csv")
+    @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{file_name}.csv")
 
     @bsess
       .text_field(id: 'upload_comment')
       .set("Uploaded on #{Time.now.getlocal} from Production export")
 
+    @bsess.checkbox(id: 'upload_multiple_file_upload').check if multiple_file_upload
     @bsess.form(id: 'new_upload').submit
 
     if @bsess.link(text: 'View Dashboard').present?
-      log_and_puts("         Successfully uploaded #{table_name}")
+      log_and_puts("         Successfully uploaded #{file_name}")
       @bsess.link(text: 'View Dashboard').click
     else # retry once
       log_and_puts('    Could not find the dashboard link - most likely it failed')
       sleep(30)
       @bsess.goto(@dashboard_url)
-      return if retry_count.positive?
-
-      log_out_and_back_in(table_name)
-      upload_with_parameters(table_name, 1)
+      raise Net::ReadTimeout
     end
   end
 
-  def log_out_and_back_in(table_name)
+  # Weam has approx 75k lines, split into n files so that we don't run out of memory in Staging
+  def split_weams_file
+    WEAM_FILES.each_key do |file_number|
+      @workfiles[file_number] = File.open("#{@download_dir}/Weam#{file_number + 1}.csv", 'w')
+    end
+
+    lines_per_subfile = calculate_lines_per_subfile
+
+    File.open("#{@download_dir}/Weam.csv").each_with_index do |row, index|
+      if index.zero? # write the header row to each workfile
+        @workfiles.each_index { |idx| @workfiles[idx].write(row) }
+      else
+        @workfiles[index.div(lines_per_subfile)].write(row)
+      end
+    end
+
+    # rubocop:disable Style/SymbolProc
+    @workfiles.each { |file| file.close }
+    # rubocop:enable Style/SymbolProc
+  end
+
+  def calculate_lines_per_subfile
+    linecount = `wc -l < #{@download_dir}/Weam.csv`.to_i
+    # It's necessary to add some lines to the total count to account for the header row in each file
+    # Not doing this causes an array out of bounds error when trying to write to the last file
+    (linecount + WEAM_FILES.size).div(WEAM_FILES.size)
+  end
+
+  def log_out_and_back_in(file_name)
     log_and_puts('*** Logging out')
     @bsess.link(text: 'Log Out').click if @bsess.link(text: 'Log Out').present?
     @bsess = nil # close the browser session to free up memory
     log_and_puts ''
     sleep(5)
 
-    if table_name.eql?('Section1015') # last table in the array
+    # last file to upload - no need to log back in
+    if file_name.eql?(WEAM_FILES.values.last)
       log_and_puts('*** Finished uploading tables ***')
     else
       login_to_dashboard
