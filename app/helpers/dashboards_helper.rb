@@ -66,4 +66,8 @@ module DashboardsHelper
       .pluck(:keyword_match)
       .join(', ')
   end
+
+  def disable_upload?(upload)
+    CSV_TYPES_NO_UPLOAD_TABLE_NAMES.include?(upload.csv_type)
+  end
 end

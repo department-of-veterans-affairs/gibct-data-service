@@ -26,6 +26,18 @@ RSpec.describe 'CSV_TYPES' do
     end
   end
 
+  describe 'has_no_upload_table_names' do
+    it 'contains tables' do
+      CSV_TYPES_TABLES.each do |upload_type|
+        if upload_type[:no_upload?]
+          expect(CSV_TYPES_NO_UPLOAD_TABLE_NAMES).to include(klass_name(upload_type))
+        else
+          expect(CSV_TYPES_NO_UPLOAD_TABLE_NAMES).not_to include(klass_name(upload_type))
+        end
+      end
+    end
+  end
+
   describe 'fields checks' do
     CSV_TYPES_TABLES.each do |upload|
       it "#{klass_name(upload)} csv type config has_api? is a boolean" do
