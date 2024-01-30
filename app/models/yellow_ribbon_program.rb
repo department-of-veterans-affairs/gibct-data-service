@@ -3,11 +3,19 @@
 class YellowRibbonProgram < ApplicationRecord
   belongs_to :institution
 
-  delegate :country, :insturl, to: :institution
   delegate :institution, to: :institution, prefix: :name_of
-  delegate :latitude, :longitude, :ungeocodable, to: :institution
-  delegate :online_all, :online_only, :distance_learning, :correspondence, to: :institution
-  delegate :student_veteran, :student_veteran_link, :student_vet_grp_ipeds, to: :institution
+  delegate :correspondence,
+           :country,
+           :distance_learning,
+           :insturl,
+           :latitude,
+           :longitude,
+           :online_all,
+           :online_only,
+           :student_veteran,
+           :student_vet_grp_ipeds,
+           :student_veteran_link,
+           :ungeocodable, to: :institution
 
   validates :contribution_amount, numericality: true
   validates :degree_level, presence: true
