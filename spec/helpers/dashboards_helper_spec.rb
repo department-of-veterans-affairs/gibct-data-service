@@ -133,7 +133,7 @@ RSpec.describe DashboardsHelper, type: :helper do
 
   describe 'current_user_can_upload?' do
     before do
-      User.create(email: 'John.Doe@va.gov', password: 'alksdjfdsa!@#')
+      User.create(email: 'John.Doe@va.gov', password: Faker::Internet.password.to_s)
     end
 
     describe 'in non production mode' do
@@ -163,7 +163,7 @@ RSpec.describe DashboardsHelper, type: :helper do
         allow(Settings).to receive(:environment).and_return('vagov-staging')
 
         %w[noah gregg nfstern gpuhala].each do |user_email|
-          User.create(email: "#{user_email}@va.gov", password: 'alksdjfdsa!@#')
+          User.create(email: "#{user_email}@va.gov", password: Faker::Internet.password.to_s)
           allow(helper).to receive(:current_user).and_return(User.last)
           expect(helper.current_user_can_upload?).to eq(true)
         end
