@@ -154,7 +154,6 @@ RSpec.describe DashboardsHelper, type: :helper do
         allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
         allow(Settings).to receive(:environment).and_return('vagov-staging')
         allow(helper).to receive(:current_user).and_return(User.first)
-
         expect(helper.current_user_can_upload?).to eq(false)
       end
     end
