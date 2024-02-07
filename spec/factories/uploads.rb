@@ -72,5 +72,11 @@ FactoryBot.define do
       ok { false }
       completed_at { nil }
     end
+
+    trait :disabled_upload do
+      csv_type { CipCode.name }
+      csv { CipCode.name }
+      ok { true }
+    end
   end
 end

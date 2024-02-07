@@ -46,7 +46,7 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
-          sheet_klass.delete_all unless sheet_options[:multiple_files]
+          sheet_klass.in_batches.delete_all unless sheet_options[:multiple_files]
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
                             else

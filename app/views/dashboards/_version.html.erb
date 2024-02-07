@@ -1,5 +1,5 @@
 <tr class="<%= 'success' if version.production? %>">
-  <td><%= version.number %></td>
+  <td id='current-production-version'><%= version.number %></td>
   <td><%= version.uuid %></td>
   <td><%= version.user&.email %></td>
   <td><%= version.created_at&.to_formatted_s(:long_ordinal) %></td>
@@ -12,6 +12,10 @@
           class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <%= link_to 'Download Export CSV', dashboard_export_version_path(version.number),
           class: "btn dashboard-btn-warning btn-xs", role: "button" %>
+      <% if current_user_can_upload? %>
+        <%= link_to 'Upload', new_upload_path('Institution'),
+          class: "btn dashboard-btn-success btn-xs", role: "button" %>
+      <% end %>
     <% end %>
   </td>
 </tr>

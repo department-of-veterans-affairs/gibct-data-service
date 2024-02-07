@@ -31,7 +31,7 @@
 
 namespace :utils do
   desc 'Export from production and import to staging'
-  task default: %i[utils:export_csv_files_from_production utils:import_csv_files_to_staging]
+  task default: %i[utils:export_csv_files_from_production utils:import_all_to_staging]
 
   desc 'Export spreadsheets used to generate versions from production'
   task export_csv_files_from_production: :environment do
@@ -40,40 +40,56 @@ namespace :utils do
     dei.finalize
   end
 
-  desc 'Import spreadsheets used to generate versions to staging'
-  task import_csv_files_to_staging: :environment do
-    dei = DashboardExporterImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
-    dei.upload_all_table_data
-    dei.finalize
-    sleep(10)
-    dwi = DashboardWeamImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
-    dwi.upload_weam_csv_file
-    dwi.finalize
-  end
-
-  desc 'Import Weam spreadsheet used to generate versions to staging'
-  task import_weam_to_staging: :environment do
-    dwi = DashboardWeamImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
-    dwi.upload_weam_csv_file
-    dwi.finalize
-  end
-
   # Note that the vets-api and gibct need to be running locally for this to work
-  desc 'Import spreadsheets used to generate versions to local development'
-  task import_csv_files_to_localhost: :environment do
+  desc 'Import all csv files to localhost'
+  task import_all_to_localhost: %i[
+    utils:import_non_weam_csvs_to_localhost utils:import_weam_csv_to_localhost
+  ]
+
+  desc 'Import non Weam CSVs to localhost'
+  task import_non_weam_csvs_to_localhost: :environment do
     dei = DashboardExporterImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
     dei.upload_all_table_data
     dei.finalize
-    sleep(10)
+  end
+
+  desc 'Import the Weam CSV to localhost'
+  task import_weam_csv_to_localhost: :environment do
     dwi = DashboardWeamImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
     dwi.upload_weam_csv_file
     dwi.finalize
   end
 
-  desc 'Import Weam spreadsheet used to generate versions to local development'
-  task import_weam_to_localhost: :environment do
-    dwi = DashboardWeamImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
+  desc 'Import the Institution CSV to localhost'
+  task import_institution_csv_to_localhost: :environment do
+    dii = DashboardInstitutionImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
+    dii.upload_institution_csv_file
+    dii.finalize
+  end
+
+  desc 'Import all csv files to staging'
+  task import_all_to_staging: %i[
+    utils:import_non_weam_csvs_to_staging utils:import_weam_csv_to_staging
+  ]
+
+  desc 'Import non Weam CSVs to staging'
+  task import_non_weam_csvs_to_staging: :environment do
+    dei = DashboardExporterImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
+    dei.upload_all_table_data
+    dei.finalize
+  end
+
+  desc 'Import the Weam CSV to staging'
+  task import_weam_csv_to_staging: :environment do
+    dwi = DashboardWeamImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
     dwi.upload_weam_csv_file
     dwi.finalize
+  end
+
+  desc 'Import the Institution CSV to staging'
+  task import_institution_csv_to_staging: :environment do
+    dii = DashboardInstitutionImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
+    dii.upload_institution_csv_file
+    dii.finalize
   end
 end
