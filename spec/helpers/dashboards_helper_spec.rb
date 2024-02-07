@@ -157,5 +157,16 @@ RSpec.describe DashboardsHelper, type: :helper do
         expect(helper.current_user_can_upload?).to eq(false)
       end
     end
+
+    it 'returns true if the deployment environment is staging and it is noah or gregg' do
+      allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
+      allow(Settings).to receive(:environment).and_return('vagov-staging')
+
+      %w[noah gregg nfstern gpuhala].each do |user_email|
+        User.create(email: "#{user_email}@va.gov", password: Faker::Internet.password.to_s)
+        allow(helper).to receive(:current_user).and_return(User.last)
+        expect(helper.current_user_can_upload?).to eq(true)
+      end
+    end
   end
 end
