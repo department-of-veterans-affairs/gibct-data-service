@@ -162,7 +162,7 @@ RSpec.describe DashboardsHelper, type: :helper do
         allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
         allow(Settings).to receive(:environment).and_return('vagov-staging')
 
-        %w[noah gregg nfstern gpuhala].each do |user_email|
+        %w[noah gregg].each do |user_email|
           User.create(email: "#{user_email}@va.gov", password: Faker::Internet.password.to_s)
           allow(helper).to receive(:current_user).and_return(User.last)
           expect(helper.current_user_can_upload?).to eq(true)
