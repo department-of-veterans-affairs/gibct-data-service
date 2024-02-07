@@ -146,7 +146,7 @@ RSpec.describe DashboardsHelper, type: :helper do
     describe 'in production mode' do
       it 'returns false if the current environment is production' do
         allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
-
+        allow(helper).to receive(:current_user).and_return(User.first)
         expect(helper.current_user_can_upload?).to eq(false)
       end
 
