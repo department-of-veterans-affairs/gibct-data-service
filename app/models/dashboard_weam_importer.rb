@@ -145,4 +145,3 @@ class DashboardWeamImporter
   # :nocov:
 end
 # rubocop:enable Metrics/ClassLength
-

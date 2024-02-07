@@ -19,7 +19,7 @@ module DashboardWatir
 
     TIMEOUT = 180 # seconds
 
-    attr_accessor :headless, :bsess, :download_dir, :login_url, 
+    attr_accessor :headless, :bsess, :download_dir, :login_url,
                   :dashboard_url, :import_prefix, :user, :pass, :eilogger,
                   :workfiles
 
