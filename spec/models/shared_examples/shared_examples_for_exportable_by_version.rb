@@ -21,7 +21,9 @@ RSpec.shared_examples 'an exportable model by version' do
         rows[i].each.with_index do |value, j|
           header = Common::Shared.convert_csv_header(header_row[j])
           attributes[mapping[header][:column]] = value
+          attributes[mapping[header][:column]] = version if mapping[header][:column].eql? :version
         end
+
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
 

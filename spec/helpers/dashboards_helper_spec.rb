@@ -116,4 +116,58 @@ RSpec.describe DashboardsHelper, type: :helper do
       expect(helper.locked_fetches_exist?).to eq(false)
     end
   end
+
+  describe 'disable_upload?' do
+    it 'returns true if the upload is disabled' do
+      create(:upload, :disabled_upload)
+      upload = Upload.first
+      expect(helper.disable_upload?(upload)).to eq(true)
+    end
+
+    it 'returns false if the upload is not disabled' do
+      create(:upload)
+      upload = Upload.first
+      expect(helper.disable_upload?(upload)).to eq(false)
+    end
+  end
+
+  describe 'current_user_can_upload?' do
+    before do
+      User.create(email: 'John.Doe@va.gov', password: 'alksdjfdsa!@#')
+    end
+
+    describe 'in non production mode' do
+      it 'returns true if the current environment is not production' do
+        allow(helper).to receive(:current_user).and_return(User.first)
+        expect(helper.current_user_can_upload?).to eq(true)
+      end
+    end
+
+    describe 'in production mode' do
+      it 'returns false if the current environment is production' do
+        allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
+
+        expect(helper.current_user_can_upload?).to eq(false)
+      end
+
+      it 'returns false if the deployment environment is staging and it is not noah or gregg' do
+        allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
+        allow(Settings).to receive(:environment).and_return('vagov-staging')
+        allow(helper).to receive(:current_user).and_return(User.first)
+
+        expect(helper.current_user_can_upload?).to eq(false)
+      end
+
+      it 'returns true if the deployment environment is staging and it is noah or gregg' do
+        allow(ENV).to receive(:fetch).with('RAILS_ENV').and_return('production')
+        allow(Settings).to receive(:environment).and_return('vagov-staging')
+
+        %w[noah gregg nfstern gpuhala].each do |user_email|
+          User.create(email: "#{user_email}@va.gov", password: 'alksdjfdsa!@#')
+          allow(helper).to receive(:current_user).and_return(User.last)
+          expect(helper.current_user_can_upload?).to eq(true)
+        end
+      end
+    end
+  end
 end

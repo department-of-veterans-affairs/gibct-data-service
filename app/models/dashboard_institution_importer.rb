@@ -1,52 +1,59 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-class DashboardWeamImporter
+class DashboardInstitutionImporter
   # :nocov:
   include DashboardWatir
 
-  WEAM_FILES = {
-    0 => 'Weam1', 1 => 'Weam2', 2 => 'Weam3', 3 => 'Weam4', 4 => 'Weam5', 5 => 'Weam6', 6 => 'Weam7'
+  INSTITUTION_FILES = {
+    0 => 'InstitutionVersion_1', 1 => 'InstitutionVersion_2', 2 => 'InstitutionVersion_3',
+    3 => 'InstitutionVersion_4', 4 => 'InstitutionVersion_5', 5 => 'InstitutionVersion_6',
+    6 => 'InstitutionVersion_7', 7 => 'InstitutionVersion_8', 8 => 'InstitutionVersion_9',
+    9 => 'InstitutionVersion_10'
   }.freeze
+
+  attr_accessor :upload_version, :upload_version_id
 
   def initialize(user, pass, load_env = nil)
     common_initialize_watir(user, pass, load_env)
-    @workfiles = Array.new(WEAM_FILES.size)
+    @workfiles = Array.new(INSTITUTION_FILES.size)
   end
 
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Lint/RescueException
-  def upload_weam_csv_file
+  def upload_institution_csv_file
     login_to_dashboard
 
-    log_and_puts('     Uploading CSV file for Weam.')
+    set_upload_version_id
 
-    WEAM_FILES.each_value { |weam_file_name| remove_existing_csv_file_for(weam_file_name) }
+    log_and_puts('     Uploading CSV file for Institution.')
 
-    split_weams_file
+    INSTITUTION_FILES.each_value { |file_name| remove_existing_csv_file_for(file_name) }
 
-    WEAM_FILES.each_value do |weam_file_name|
-      log_and_puts("       Starting processing for #{weam_file_name}")
-      multiple_file_upload = (weam_file_name.include?('Weam1') ? false : true)
+    split_institutions_file
+
+    INSTITUTION_FILES.each_value do |file_name|
+      log_and_puts("       Starting processing for #{file_name}")
+      multiple_file_upload = (file_name.include?('Institution1') ? false : true)
       begin
-        upload_with_parameters('Weam', weam_file_name, multiple_file_upload)
+        upload_with_parameters('Institution', file_name, multiple_file_upload)
       rescue Exception => e
-        log_and_puts("       Error trying to upload #{weam_file_name}: #{e.message}...")
+        log_and_puts("       Error trying to upload #{file_name}: #{e.message}...")
         log_and_puts('       Trying again in 10 seconds...')
         sleep(10)
-        log_out_and_back_in(weam_file_name)
+        log_out_and_back_in(file_name)
         # If it fails on uploading the last file, you have to explicitly log back in.
         # the log_out_and_back_in method skips logging in on the last file.
-        login_to_dashboard if file_name.eql?(WEAM_FILES.values.last)
+        login_to_dashboard if file_name.eql?(INSTITUTION_FILES.values.last)
         begin
-          upload_with_parameters('Weam', weam_file_name, multiple_file_upload)
+          upload_with_parameters('Institution', file_name, multiple_file_upload)
         rescue Exception => e
           log_and_puts("       Failed again #{e.message}...")
           return 1
         end
       end
-      log_and_puts("       Done processing for #{weam_file_name}")
-      log_out_and_back_in(weam_file_name)
+      log_and_puts("       Done processing for #{file_name}")
+      log_out_and_back_in(file_name)
     end
 
     0
@@ -58,12 +65,17 @@ class DashboardWeamImporter
 
   def set_logger
     logger_time = Time.now.getlocal.strftime('%Y%m%d_%H%M%S')
-    log_file_name = Rails.root.join('log', "import_weam_#{logger_time}.log")
+    log_file_name = Rails.root.join('log', "import_institution_#{logger_time}.log")
     @eilogger = Logger.new(log_file_name)
-    log_and_puts("***** Starting import_weam_#{logger_time} *****")
+    log_and_puts("***** Starting import_institution_#{logger_time} *****")
 
     # open a terminal and tail the log in it
     `gnome-terminal --title="Tail log #{logger_time}" -- bash -c "tail -f #{log_file_name}; exec bash -i"`
+  end
+
+  def set_upload_version_id
+    @upload_version = @bsess.td(id: 'current-production-version').text.to_i
+    @upload_version_id = @bsess.hidden(id: 'VersionId').value.to_i
   end
 
   def remove_existing_csv_file_for(table_name)
@@ -101,31 +113,36 @@ class DashboardWeamImporter
   end
 
   # Weam has approx 75k lines, split into n files so that we don't run out of memory in Staging
-  def split_weams_file
-    WEAM_FILES.each_key do |file_number|
-      @workfiles[file_number] = File.open("#{@download_dir}/Weam#{file_number + 1}.csv", 'w')
+  def split_institutions_file
+    INSTITUTION_FILES.each_key do |file_number|
+      @workfiles[file_number] = File.open("#{@download_dir}/InstitutionVersion_#{file_number + 1}.csv", 'w')
     end
 
-    lines_per_subfile = calculate_lines_per_subfile
+    file = Dir.glob("#{download_dir}/institutions_version*.csv").last
+    lines_per_subfile = calculate_lines_per_subfile(file)
 
-    File.open("#{@download_dir}/Weam.csv").each_with_index do |row, index|
+    File.open(file).each_with_index do |row, index|
       if index.zero? # write the header row to each workfile
         @workfiles.each_index { |idx| @workfiles[idx].write(row) }
       else
-        @workfiles[index.div(lines_per_subfile)].write(row)
+        row_array = row.split(',')
+        row_array[0] = @upload_version
+        row_array[117] = @upload_version_id
+
+        @workfiles[index.div(lines_per_subfile)].write(row_array.join(','))
       end
     end
 
     # rubocop:disable Style/SymbolProc
-    @workfiles.each { |file| file.close }
+    @workfiles.each { |f| f.close }
     # rubocop:enable Style/SymbolProc
   end
 
-  def calculate_lines_per_subfile
-    linecount = `wc -l < #{@download_dir}/Weam.csv`.to_i
+  def calculate_lines_per_subfile(file)
+    linecount = `wc -l < #{file}`.to_i
     # It's necessary to add some lines to the total count to account for the header row in each file
     # Not doing this causes an array out of bounds error when trying to write to the last file
-    (linecount + WEAM_FILES.size).div(WEAM_FILES.size)
+    (linecount + INSTITUTION_FILES.size).div(INSTITUTION_FILES.size)
   end
 
   def log_out_and_back_in(file_name)
@@ -136,7 +153,7 @@ class DashboardWeamImporter
     sleep(5)
 
     # last file to upload - no need to log back in
-    if file_name.eql?(WEAM_FILES.values.last)
+    if file_name.eql?(INSTITUTION_FILES.values.last)
       log_and_puts('*** Finished uploading tables ***')
     else
       login_to_dashboard
@@ -145,4 +162,3 @@ class DashboardWeamImporter
   # :nocov:
 end
 # rubocop:enable Metrics/ClassLength
-
