@@ -10,10 +10,8 @@ class YellowRibbonProgram < ApplicationRecord
            :insturl,
            :latitude,
            :longitude,
-           :online_all,
            :online_only,
            :student_veteran,
-           :student_vet_grp_ipeds,
            :student_veteran_link,
            :ungeocodable, to: :institution
 

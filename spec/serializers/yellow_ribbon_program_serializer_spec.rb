@@ -65,10 +65,6 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
     expect(attributes['name_of_institution']).to eq(yellow_ribbon_program.name_of_institution)
   end
 
-  it 'online_all' do
-    expect(attributes['online_all']).to eq(yellow_ribbon_program.online_all)
-  end
-
   it 'online_only' do
     expect(attributes['online_only']).to eq(yellow_ribbon_program.online_only)
   end
@@ -83,10 +79,6 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
 
   it 'student_veteran' do
     expect(attributes['student_veteran']).to eq(yellow_ribbon_program.student_veteran)
-  end
-
-  it 'student_vet_grp_ipeds' do
-    expect(attributes['student_vet_grp_ipeds']).to eq(yellow_ribbon_program.student_vet_grp_ipeds)
   end
 
   it 'student_veteran_link' do
