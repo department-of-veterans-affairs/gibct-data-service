@@ -70,4 +70,19 @@ module DashboardsHelper
   def disable_upload?(upload)
     CSV_TYPES_NO_UPLOAD_TABLE_NAMES.include?(upload.csv_type)
   end
+
+  # rubocop:disable Metrics/CyclomaticComplexity
+  def current_user_can_upload?
+    return true if ENV.fetch('RAILS_ENV').eql?('test') || ENV.fetch('RAILS_ENV').eql?('development')
+
+    if staging?
+      return true if current_user.email.downcase.start_with?('nfstern')
+      return true if current_user.email.downcase.start_with?('noah')
+      return true if current_user.email.downcase.start_with?('gpuhala')
+      return true if current_user.email.downcase.start_with?('gregg')
+    end
+
+    false
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity
 end

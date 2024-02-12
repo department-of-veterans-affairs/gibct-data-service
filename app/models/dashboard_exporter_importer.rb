@@ -3,59 +3,43 @@
 # rubocop:disable Metrics/ClassLength
 class DashboardExporterImporter
   # :nocov:
-  LOCAL_URL = 'http://localhost:4000/user/sign_in'
-  LOCAL_DASHBOARD = 'http://localhost:4000/dashboards'
-  LOCAL_IMPORT_PREFIX = '/uploads/new/'
+  include DashboardWatir
 
-  PROD_URL = 'https://www.va.gov/gids/user/sign_in'
-  EXPORT_PREFIX = '/gids/dashboards/export/'
-
-  STAGE_URL = 'https://staging.va.gov/gids/user/sign_in'
-  STAGE_DASHBOARD = 'https://staging.va.gov/gids/dashboards'
-  STAGE_IMPORT_PREFIX = '/gids/uploads/new/'
-
-  TIMEOUT = 600 # seconds
-
-  attr_accessor :headless, :bsess, :download_dir, :login_url, :dashboard_url, :import_prefix, :user, :pass, :eilogger
+  TABLES_TO_SKIP = %w[CipCode InstitutionSchoolRating VrrapProvider Weam].freeze
 
   def initialize(user, pass, load_env = nil)
-    @user = user
-    @pass = pass
-
-    set_logger
-    set_url_variables_for_job(load_env)
-
-    @download_dir = set_download_dir
-    @headless = Headless.new
-    @headless.start
-
-    login_to_dashboard
+    common_initialize_watir(user, pass, load_env)
   end
 
   def download_all_table_data
+    login_to_dashboard
+
     CSV_TYPES_ALL_TABLES_CLASSES.each do |table_class|
       table_name = table_class.to_s
 
-      next if table_name.eql?('InstitutionSchoolRating') # The table is not active yet
+      next if TABLES_TO_SKIP.include? table_name
 
       remove_existing_csv_file_for(table_name)
       download_csv_file_for(table_name)
     end
+
+    # download institutions
+    remove_existing_csv_file_for('institutions_version')
+    download_csv_file_for('institutions_version')
 
     0
   end
 
   # rubocop:disable Lint/RescueException
   def upload_all_table_data
+    login_to_dashboard
+
     CSV_TYPES_ALL_TABLES_CLASSES.each do |table_class|
       table_name = table_class.to_s
 
-      # The table is not active yet
-      next if table_name.eql?('InstitutionSchoolRating')
-      # This table has CORS issues loading to the staging server
-      next if table_name.eql?('CipCode') && @login_url.eql?(STAGE_URL)
-      # Weam  has it's own routine for uploading
-      next if table_name.eql?('Weam')
+      next if TABLES_TO_SKIP.include? table_name
+      # Weam  has split files
+      next if table_name.include?('Weam')
 
       begin
         upload_csv_file_for(table_name)
@@ -79,11 +63,6 @@ class DashboardExporterImporter
   end
   # rubocop:enable Lint/RescueException
 
-  def finalize
-    @headless.destroy
-    log_and_puts('*** All done! You can close this terminal window. ***')
-  end
-
   private
 
   def set_logger
@@ -96,81 +75,52 @@ class DashboardExporterImporter
     `gnome-terminal --title="Tail log #{logger_time}" -- bash -c "tail -f #{log_file_name}; exec bash -i"`
   end
 
-  # load_env is target enviroment for upload/download
-  def set_url_variables_for_job(load_env)
-    case load_env
-    when 'l', 'local', 'localhost'
-      @login_url = LOCAL_URL
-      @dashboard_url = LOCAL_DASHBOARD
-      @import_prefix = LOCAL_IMPORT_PREFIX
-    when 'production', 'prod', 'p'
-      @login_url = PROD_URL
-    else
-      @login_url = STAGE_URL
-      @dashboard_url = STAGE_DASHBOARD
-      @import_prefix = STAGE_IMPORT_PREFIX
-    end
-  end
-
-  def set_download_dir
-    return ENV['HOME'] + '/Downloads' if ENV['RAILS_ENV'].nil? || ENV['RAILS_ENV'].eql?('development')
-
-    Rails.root.join('tmp')
-  end
-
-  # rubocop:disable Lint/RescueException
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Rails/Exit
-  def login_to_dashboard
-    log_and_puts('*** Logging in to the Dashboard ***')
-
-    begin
-      client = Selenium::WebDriver::Remote::Http::Default.new
-      client.read_timeout = TIMEOUT # seconds
-      @bsess = Watir::Browser.start(@login_url, http_client: client)
-    rescue Exception => e
-      log_and_puts("       Error trying to initiate browser session #{e.message}...")
-      log_and_puts('       Trying again in 10 seconds...')
-      sleep(10)
-      @bsess = nil
-      begin
-        client = Selenium::WebDriver::Remote::Http::Default.new
-        client.read_timeout = TIMEOUT # seconds
-        @bsess = Watir::Browser.start(@login_url, http_client: client)
-      rescue Exception => e
-        log_and_puts("       Failed again #{e.message}...")
-        exit 1
-      end
-    end
-    @bsess.text_field(id: 'user_email').set(@user)
-    @bsess.text_field(id: 'user_password').set(@pass)
-    @bsess.form(id: 'new_user').submit
-  end
-  # rubocop:enable Rails/Exit
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Lint/RescueException
-
   def remove_existing_csv_file_for(table_name)
     log_and_puts("  Removing existing CSV file for #{table_name}")
 
-    return unless File.exist?("#{@download_dir}/#{table_name}.csv")
+    if !table_name.eql?('institutions_version')
+      return unless File.exist?("#{@download_dir}/#{table_name}.csv")
 
-    File.delete("#{@download_dir}/#{table_name}.csv")
+      File.delete("#{@download_dir}/#{table_name}.csv")
+    else
+      institutions_files = Dir.glob("#{@download_dir}/#{table_name}*.csv")
+      return if institutions_files.empty?
+
+      institutions_files.each { |file| File.delete(file) }
+    end
   end
 
   def download_csv_file_for(table_name)
     log_and_puts("  Downloading CSV file for #{table_name}")
 
-    button = @bsess.link(role: 'button', href: "#{EXPORT_PREFIX}#{table_name}", visible_text: 'Export')
+    button = determine_button_for(table_name)
     button.click
 
     log_and_puts('    Waiting for download to complete...')
+
     @bsess.wait_until(timeout: TIMEOUT) do
-      File.exist?("#{@download_dir}/#{table_name}.csv")
+      check_exists_for(table_name)
     end
+
     log_and_puts('    Completed')
 
     log_and_puts("\n")
+  end
+
+  def determine_button_for(table_name)
+    unless table_name.include?('institutions_version')
+      return @bsess.link(role: 'button', href: "#{EXPORT_PREFIX}#{table_name}", visible_text: 'Export')
+    end
+
+    @bsess.link(role: 'button', visible_text: 'Download Export CSV')
+  end
+
+  def check_exists_for(table_name)
+    if !table_name.eql?('institutions_version')
+      File.exist?("#{@download_dir}/#{table_name}.csv")
+    else
+      !Dir.glob("#{download_dir}/#{table_name}*.csv").empty?
+    end
   end
 
   def upload_csv_file_for(table_name)
@@ -205,25 +155,6 @@ class DashboardExporterImporter
       log_out_and_back_in(table_name)
       upload_with_parameters(table_name, 1)
     end
-  end
-
-  def log_out_and_back_in(table_name)
-    log_and_puts('*** Logging out')
-    @bsess.link(text: 'Log Out').click if @bsess.link(text: 'Log Out').present?
-    @bsess = nil # close the browser session to free up memory
-    log_and_puts ''
-    sleep(5)
-
-    if table_name.eql?('Section1015') # last table in the array
-      log_and_puts('*** Finished uploading tables ***')
-    else
-      login_to_dashboard
-    end
-  end
-
-  def log_and_puts(msg)
-    msg = "#{Time.now.getlocal} - #{msg}" if msg.size.positive?
-    @eilogger.info(msg)
   end
   # :nocov:
 end

@@ -111,6 +111,7 @@ module Common
 
     def format(key, value)
       return "\"#{value}\"" if key == :ope && value.present?
+      return value.number if key == :version && value.present?
 
       value
     end
