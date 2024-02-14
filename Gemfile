@@ -47,7 +47,7 @@ gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.6'
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
+gem 'jquery-ui-rails', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails', branch: 'master'
 gem 'newrelic_rpm'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 
