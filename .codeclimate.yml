@@ -19,7 +19,7 @@ plugins:
   brakeman:
     enabled: true
   bundler-audit:
-    enabled: false
+    enabled: true
     config:
       ignore:
         - CVE-2024-26143
