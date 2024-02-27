@@ -20,8 +20,9 @@ plugins:
     enabled: true
   bundler-audit:
     enabled: true
-    exclude_fingerprints:
-    - 5d80bde618c0836393581d7c8eb9ca61600a255f
+    config:
+      ignore:
+        - CVS-2024-26143
 exclude_patterns:
   - 'config/'
   - 'db/'
