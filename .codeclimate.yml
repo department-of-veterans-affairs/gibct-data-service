@@ -22,7 +22,7 @@ plugins:
     enabled: true
     config:
       ignore:
-        - CVS-2024-26143
+        - CVE-2024-26143
 exclude_patterns:
   - 'config/'
   - 'db/'
