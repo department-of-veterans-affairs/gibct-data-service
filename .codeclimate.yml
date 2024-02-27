@@ -20,9 +20,6 @@ plugins:
     enabled: true
   bundler-audit:
     enabled: true
-    config:
-      ignore:
-        - CVE-2024-26143
 exclude_patterns:
   - 'config/'
   - 'db/'
