@@ -6,8 +6,8 @@ module Common
       generate(csv_headers)
     end
 
-    def export_by_version(number)
-      generate_version(csv_headers, number)
+    def export_by_version
+      generate_version(csv_headers)
     end
 
     # simple version that takes incoming array of arrays and creates a CSV object with it
@@ -85,11 +85,11 @@ module Common
       end
     end
 
-    def generate_version(csv_headers, number)
+    def generate_version(csv_headers)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         csv << csv_headers.values
 
-        klass == write_versioned_row(csv, csv_headers, number)
+        klass == write_versioned_row(csv, csv_headers)
       end
     end
 
@@ -99,11 +99,10 @@ module Common
       end
     end
 
-    def write_versioned_row(csv, csv_headers, number)
+    def write_versioned_row(csv, csv_headers)
       raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
 
-      klass.joins(:version)
-           .where('versions.number = ?', number)
+      klass.includes(:version)
            .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| record.respond_to?(k) == false ? nil : format(k, record.public_send(k)) }
       end

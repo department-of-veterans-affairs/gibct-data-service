@@ -10,7 +10,7 @@ ruby '3.2.2'
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 5.6.8'
-gem 'rails', '~> 6.1.7'
+gem 'rails', '~> 6.1.7.7'
 
 # Gems with special version/repo needs
 
@@ -56,7 +56,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'rainbow'
 
 # Use ActiveModel has_secure_password
-gem 'rack', '>= 2.2.3.1'
+gem 'rack', '>= 2.2.8.1'
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'ruby-saml'
 gem 'sitemap_generator'
