@@ -83,6 +83,8 @@ module InstitutionBuilder
       build_messages = {}
       begin
         Institution.transaction do
+          # to fix 'cancelling statement due to statement timeout' issue
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '120s';")
           if staging?
             # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
             # rubocop:disable Rails/SkipsModelValidations
