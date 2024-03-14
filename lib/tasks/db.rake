@@ -102,8 +102,10 @@ namespace :db do
   end
 
   def with_config
+    database_host = ActiveRecord::Base.connection_config[:host] || 'localhost'
+
     yield Rails.application.class.parent_name.underscore,
-          (ActiveRecord::Base.connection_config[:host] || 'localhost'),
+          database_host,
           ActiveRecord::Base.connection_config[:database],
           ActiveRecord::Base.connection_config[:username]
   end

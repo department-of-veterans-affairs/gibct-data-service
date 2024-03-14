@@ -7,7 +7,7 @@ class CautionFlag < ApplicationRecord
   }
 
   def self.build(version_id, cf_template, clause_sql)
-    timestamp = Time.now.utc.to_s(:db)
+    timestamp = Time.now.utc.to_fs(:db)
     conn = ApplicationRecord.connection
     insert_columns = %i[
       institution_id version_id source title description

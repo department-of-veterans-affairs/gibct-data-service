@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'roo_helper/loader'
 
 describe RooHelper::Loader do
   let(:edu_program) { EduProgram }

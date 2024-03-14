@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'roo_helper/shared'
+require 'roo_helper/loader'
 
 class ImportableRecord < ApplicationRecord
-  include RooHelper
+  include RooHelper::Loader
+  include RooHelper::Shared
 
   self.abstract_class = true
 

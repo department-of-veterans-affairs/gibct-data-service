@@ -12,18 +12,19 @@ FactoryBot.define do
     user
 
     csv_type { Weam.name }
-    completed_at { Time.now.utc.to_s(:db) }
+    completed_at { Time.now.utc.to_fs(:db) }
     sequence :comment do |n|
       "Upload test #{n}"
     end
 
     upload_file do
       unless no_upload
+        # rubocop:disable Rails/FilePath
         uf = Rack::Test::UploadedFile.new(
           "#{::Rails.root}/spec/fixtures/#{csv_name}",
           'text/csv'
         )
-
+        # rubocop:enable Rails/FilePath
         uf.rewind
         uf
       end

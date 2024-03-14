@@ -97,7 +97,7 @@ module InstitutionBuilder
           end
           build_messages = run_insertions(version)
 
-          version.update(production: true, completed_at: Time.now.utc.to_s(:db))
+          version.update(production: true, completed_at: Time.now.utc.to_fs(:db))
           GibctSiteMapper.new(ping: true) if production?
           Archiver.archive_previous_versions if Settings.archiver.archive
           log_info_status PUBLISH_COMPLETE_TEXT
@@ -126,7 +126,7 @@ module InstitutionBuilder
       log_info_status 'Starting creation of base Institution rows'
 
       columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
-      timestamp = Time.now.utc.to_s(:db)
+      timestamp = Time.now.utc.to_fs(:db)
       conn = ApplicationRecord.connection
 
       str = "INSERT INTO institutions (#{columns.join(', ')}, version, created_at, updated_at, version_id) "
@@ -296,7 +296,7 @@ module InstitutionBuilder
         #{where_clause}
       SQL
 
-      CautionFlag.build(version_id, AccreditationCautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::AccreditationCautionFlag, caution_flag_clause)
     end
 
     def self.add_arf_gi_bill(version_id)
@@ -367,7 +367,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
       SQL
 
-      CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::MouCautionFlag, caution_flag_clause)
     end
 
     # Updates institution table as well as creates caution_flags
@@ -418,7 +418,7 @@ module InstitutionBuilder
         #{where_conditions}
       SQL
 
-      CautionFlag.build(version_id, Sec702CautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::Sec702CautionFlag, caution_flag_clause)
     end
 
     # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
@@ -472,7 +472,7 @@ module InstitutionBuilder
 
       # Create Caution Flags
       log_info_status 'Creating Caution Flag rows'
-      timestamp = Time.now.utc.to_s(:db)
+      timestamp = Time.now.utc.to_fs(:db)
       conn = ApplicationRecord.connection
       insert_columns = %i[
         institution_id version_id source title description
@@ -580,7 +580,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
       SQL
 
-      CautionFlag.build(version_id, HcmCautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::HcmCautionFlag, caution_flag_clause)
     end
 
     def self.add_complaint(version_id)
@@ -680,7 +680,7 @@ module InstitutionBuilder
 
     def self.build_zip_code_rates_from_weams(version_id)
       log_info_status 'Creating Zip Code Rate information'
-      timestamp = Time.now.utc.to_s(:db)
+      timestamp = Time.now.utc.to_fs(:db)
       conn = ApplicationRecord.connection
 
       str = <<-SQL

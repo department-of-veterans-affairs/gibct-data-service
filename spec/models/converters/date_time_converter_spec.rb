@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DateTimeConverter do
+RSpec.describe Converters::DateTimeConverter do
   subject { described_class }
 
   it 'converts strings to date' do

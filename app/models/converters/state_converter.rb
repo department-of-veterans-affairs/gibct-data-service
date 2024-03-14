@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Checks and converts states and protectorates to standardized abbreviations.
-class StateConverter < BaseConverter
+class Converters::StateConverter < Converters::BaseConverter
   STATES = {
     'AK' => 'ALASKA', 'AL' => 'ALABAMA', 'AR' => 'ARKANSAS', 'AS' => 'AMERICAN SAMOA', 'AZ' => 'ARIZONA',
     'CA' => 'CALIFORNIA', 'CO' => 'COLORADO', 'CT' => 'CONNECTICUT',

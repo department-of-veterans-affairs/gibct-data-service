@@ -74,7 +74,7 @@ describe Common::Client::Base do
         .to raise_error(Common::Client::Errors::NotAuthenticated)
     end
 
-    context 'when rescuing Common::Exceptions::BackendServiceException' do
+    context 'when rescuing Common::Exceptions::External::BackendServiceException' do
       it 'raises Specs::Common::Client::ServiceException' do
         service = Specs::Common::Client::BackendServiceExceptionService.new
         expect { service.send(:request, :get, path) }
@@ -83,10 +83,10 @@ describe Common::Client::Base do
     end
 
     context 'when rescuing Timeout::Error, Faraday::TimeoutError' do
-      it 'raises Common::Exceptions::GatewayTimeout' do
+      it 'raises Common::Exceptions::External::GatewayTimeout' do
         service = Specs::Common::Client::TimeoutExceptionService.new
         expect { service.send(:request, :get, path) }
-          .to raise_error(Common::Exceptions::GatewayTimeout)
+          .to raise_error(Common::Exceptions::External::GatewayTimeout)
       end
     end
 

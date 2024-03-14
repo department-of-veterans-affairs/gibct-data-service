@@ -22,7 +22,7 @@ class UploadsController < ApplicationController
       alert_messages(data)
       data_results = data[:results]
 
-      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
 
@@ -49,9 +49,9 @@ class UploadsController < ApplicationController
   private
 
   def csv_requirements
-    @requirements = [RooHelper.valid_col_seps] + UploadRequirements.requirements_messages(klass)
+    @requirements = [RooHelper::Shared.valid_col_seps] + UploadTypes::UploadRequirements.requirements_messages(klass)
     @custom_batch_validator = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    @inclusion = UploadRequirements.validation_messages_inclusion(klass)
+    @inclusion = UploadTypes::UploadRequirements.validation_messages_inclusion(klass)
   end
 
   def alert_messages(data)

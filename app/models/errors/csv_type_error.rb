@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CsvTypeError < StandardError
+class Errors::CsvTypeError < StandardError
   attr_reader :csv_type
 
   def initialize(type)

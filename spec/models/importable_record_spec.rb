@@ -16,6 +16,9 @@ RSpec.describe ImportableRecord do
           expect(key).not_to include('-')
         end
       end
+
+      # the display_errors_with_row method is tested in the program_validator_spec and
+      # the weam_validator_spec.
     end
   end
 end

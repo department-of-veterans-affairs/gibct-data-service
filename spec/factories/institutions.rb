@@ -372,4 +372,19 @@ FactoryBot.define do
       accreditation_type { 'regional' }
     end
   end
+
+  trait :caution_flag_accreditation_issue do
+    after(:create) do |institution|
+      create(:caution_flag, :accreditation_issue, version_id: institution.version_id, institution_id: institution.id)
+    end
+  end
+
+  trait :with_dependent_children do
+    after(:create) do |institution|
+      create(:caution_flag, institution_id: institution.id, version_id: institution.version_id)
+      create(:institution_program, institution_id: institution.id)
+      create(:versioned_school_certifying_official, institution_id: institution.id)
+      create(:yellow_ribbon_program, institution_id: institution.id, version: institution.version_id)
+    end
+  end
 end

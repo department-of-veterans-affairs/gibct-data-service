@@ -62,7 +62,9 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
 
         it 'does not add accreditations when there is no dapip_id match' do
-          create :accreditation_record, dapip_id: -1
+          accreditation_record = create :accreditation_record
+          accreditation_record.dapip_id = -1
+          accreditation_record.save(validate: false) # Rails 7 is much more strict about validations
           described_class.run(user)
           institution = Institution.first
           expect(institution.accreditation_type).to be_nil

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Ope6Converter do
+RSpec.describe Converters::Ope6Converter do
   subject { described_class }
 
   it 'right justifies with leading 0s to 5 digits in length' do

@@ -5,7 +5,11 @@ require 'rails_helper'
 RSpec.describe CautionFlagSerializer, type: :serializer do
   subject { serialize(caution_flag, serializer_class: described_class) }
 
-  let(:caution_flag) { create :caution_flag, :accreditation_issue }
+  before do
+    create(:version, :prod_vsn_w_inst_accr_iss_caution_flag)
+  end
+
+  let(:caution_flag) { CautionFlag.last }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 

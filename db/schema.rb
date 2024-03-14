@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_22_235820) do
-
+ActiveRecord::Schema[7.0].define(version: 2024_02_20_182661) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -30,8 +29,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "justification_description"
     t.string "justification_other"
     t.date "end_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["dapip_id"], name: "index_accreditation_actions_on_dapip_id"
   end
 
@@ -50,8 +49,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "admin_email"
     t.string "fax"
     t.date "update_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["dapip_id"], name: "index_accreditation_institute_campuses_on_dapip_id"
     t.index ["ope"], name: "index_accreditation_institute_campuses_on_ope"
     t.index ["ope6"], name: "index_accreditation_institute_campuses_on_ope6"
@@ -71,8 +70,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "department_description"
     t.date "accreditation_end_date"
     t.integer "ending_action_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "accreditation_type_keyword_id"
     t.index ["accreditation_type_keyword_id"], name: "index_accreditation_records_on_accreditation_type_keyword_id"
     t.index ["dapip_id"], name: "index_accreditation_records_on_dapip_id"
@@ -81,8 +80,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
   create_table "accreditation_type_keywords", force: :cascade do |t|
     t.string "accreditation_type"
     t.string "keyword_match"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["accreditation_type", "keyword_match"], name: "index_type_and_keyword_match", unique: true
   end
 
@@ -94,16 +93,16 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "station"
     t.integer "count_of_adv_pay_students"
     t.integer "count_of_reg_students"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true
   end
 
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
     t.string "name"
     t.float "float_value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "description"
     t.index ["name"], name: "index_calculator_constants_on_name"
   end
@@ -113,8 +112,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "version_id"
     t.string "source"
     t.string "reason"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "title", default: "School engaged in misleading, deceptive, or erroneous practices"
     t.string "description", default: "VA has found that this school engaged in misleading, deceptive, or erroneous advertising, sales, or enrollment practices, and has taken action against it."
     t.string "link_text"
@@ -131,8 +130,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "interpolated_longitude_latitude"
     t.string "tiger_line_id"
     t.string "tiger_line_id_side"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "cip_codes", force: :cascade do |t|
@@ -175,8 +174,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "submitted"
     t.string "closed"
     t.string "education_benefits"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_complaints_on_facility_code"
     t.index ["ope6"], name: "index_complaints_on_ope6"
   end
@@ -200,8 +199,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "state"
     t.string "institution"
     t.string "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_crosswalks_on_cross"
     t.index ["facility_code"], name: "index_crosswalks_on_facility_code", unique: true
     t.index ["institution"], name: "index_crosswalks_on_institution"
@@ -235,8 +234,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "ope"
     t.string "ope6"
     t.string "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_eight_keys_on_cross"
     t.index ["institution"], name: "index_eight_keys_on_institution"
     t.index ["ope"], name: "index_eight_keys_on_ope"
@@ -253,8 +252,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "institution_type"
     t.string "hcm_type"
     t.string "hcm_reason"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["ope"], name: "index_hcms_on_ope"
     t.index ["ope6"], name: "index_hcms_on_ope6"
   end
@@ -263,8 +262,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "facility_code"
     t.string "cross"
     t.string "ope"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "institution_owners", force: :cascade do |t|
@@ -272,8 +271,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "institution_name"
     t.string "chief_officer"
     t.string "ownership_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
@@ -557,8 +556,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "complaints_jobs_by_ope_id_do_not_sum"
     t.integer "complaints_transcript_by_ope_id_do_not_sum"
     t.integer "complaints_other_by_ope_id_do_not_sum"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "f1sysnam"
     t.integer "f1syscod"
     t.string "ialias"
@@ -738,8 +737,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "complaints_jobs_by_ope_id_do_not_sum"
     t.integer "complaints_transcript_by_ope_id_do_not_sum"
     t.integer "complaints_other_by_ope_id_do_not_sum"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "f1sysnam"
     t.integer "f1syscod"
     t.string "ialias"
@@ -809,8 +808,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "cross", null: false
     t.string "cipcode"
     t.integer "ctotalt"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cipcode"], name: "index_ipeds_cip_codes_on_cipcode"
     t.index ["cross"], name: "index_ipeds_cip_codes_on_cross"
     t.index ["ctotalt"], name: "index_ipeds_cip_codes_on_ctotalt"
@@ -886,8 +885,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.float "latitude"
     t.integer "dfrcgid"
     t.integer "dfrcuscg"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_ipeds_hds_on_cross"
     t.index ["institution"], name: "index_ipeds_hds_on_institution"
     t.index ["ope"], name: "index_ipeds_hds_on_ope"
@@ -1129,8 +1128,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "chg9ay2"
     t.string "xchg9ay3"
     t.integer "chg9ay3"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_ipeds_ic_ays_on_cross"
   end
 
@@ -1261,8 +1260,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "prgmsr6"
     t.string "xmthcmp6"
     t.integer "mthcmp6"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_ipeds_ic_pies_on_cross"
   end
 
@@ -1380,8 +1379,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "dstnced3"
     t.integer "vet1"
     t.integer "vet9"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_ipeds_ics_on_cross"
   end
 
@@ -1397,8 +1396,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "state"
     t.string "institution_type"
     t.string "approval_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["ope"], name: "index_mous_on_ope"
     t.index ["ope6"], name: "index_mous_on_ope6"
   end
@@ -1413,8 +1412,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.float "transfer_out_rate_veteran"
     t.string "institution"
     t.string "school_level_va"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_outcomes_on_facility_code", unique: true
   end
 
@@ -1595,8 +1594,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.float "ug25abv"
     t.float "gt_25k_p6"
     t.float "grad_debt_mdn10yr_supp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "alias"
     t.float "latitude"
     t.float "longitude"
@@ -1623,8 +1622,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "state", null: false
     t.boolean "sec_702"
     t.string "state_full_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["state"], name: "index_sec702s_on_state", unique: true
   end
 
@@ -1636,8 +1635,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.date "last_graduate"
     t.string "celo"
     t.string "weams_withdrawal_processed"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["celo"], name: "index_section1015s_on_celo"
     t.index ["facility_code"], name: "index_section1015s_on_facility_code"
   end
@@ -1645,8 +1644,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
   create_table "sessions", id: :serial, force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
@@ -1655,8 +1654,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "two_digit_series"
     t.string "twentyten_cip_code"
     t.string "cip_code_title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["twentyten_cip_code"], name: "index_stem_cip_codes_on_twentyten_cip_code"
   end
 
@@ -1666,8 +1665,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "csv_type", null: false
     t.string "comment"
     t.binary "data", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["csv_type"], name: "index_storages_on_csv_type", unique: true
     t.index ["updated_at"], name: "index_storages_on_updated_at"
     t.index ["user_id"], name: "index_storages_on_user_id"
@@ -1683,8 +1682,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "ipeds_code"
     t.string "website"
     t.string "sva_yes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_svas_on_cross"
   end
 
@@ -1694,9 +1693,9 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "csv_type", null: false
     t.string "comment"
     t.boolean "ok", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "completed_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "completed_at", precision: nil
     t.boolean "multiple_file_upload", default: false
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
@@ -1707,15 +1706,15 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -1767,10 +1766,10 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.integer "user_id", null: false
     t.integer "number", null: false
     t.boolean "production", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.binary "uuid", null: false
-    t.datetime "completed_at"
+    t.datetime "completed_at", precision: nil
     t.boolean "geocoded", default: false
     t.index ["number"], name: "index_versions_on_number"
     t.index ["user_id"], name: "index_versions_on_user_id"
@@ -1790,8 +1789,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "vetsuccess_name"
     t.string "vetsuccess_email"
     t.string "institution"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_vsocs_on_facility_code", unique: true
   end
 
@@ -1824,8 +1823,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "cross"
     t.string "ope"
     t.string "ope6"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "approval_status"
     t.boolean "priority_enrollment"
     t.boolean "online_only"
@@ -1890,8 +1889,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "initials_yr_processor"
     t.string "year_of_yr_participation"
     t.text "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_yellow_ribbon_program_sources_on_facility_code"
   end
 
@@ -1902,8 +1901,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "division_professional_school"
     t.integer "number_of_students"
     t.decimal "contribution_amount", precision: 12, scale: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.date "amendment_date"
     t.string "campus"
     t.string "city"
@@ -1945,8 +1944,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "mha_name"
     t.float "mha_rate"
     t.float "mha_rate_grandfathered"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "version"
     t.bigint "version_id"
     t.index ["version", "zip_code"], name: "index_zipcode_rates_on_version_and_zip_code"
@@ -1959,8 +1958,8 @@ ActiveRecord::Schema.define(version: 2024_01_22_235820) do
     t.string "mha_name"
     t.float "mha_rate"
     t.float "mha_rate_grandfathered"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "version"
     t.bigint "version_id"
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"

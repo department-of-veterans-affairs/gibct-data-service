@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SchoolRatingConverter do
+RSpec.describe Converters::SchoolRatingConverter do
   it 'returns nil if value is nil' do
     expect(described_class.convert(nil)).to be_nil
   end

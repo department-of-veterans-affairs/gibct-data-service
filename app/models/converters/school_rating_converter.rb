@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolRatingConverter < BaseConverter
+class Converters::SchoolRatingConverter < Converters::BaseConverter
   def self.convert(value)
     # allow non-numeric values and let validation handle it
     return value unless value.is_a? Numeric
