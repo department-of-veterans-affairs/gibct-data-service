@@ -2,15 +2,16 @@
 
 require 'open3'
 require 'rainbow'
+require 'tasks/support/shell_command'
 
 desc 'shortcut to run all linting tools, at the same time.'
 task lint: :environment do
   puts 'running scss-lint...'
-  scss_result = Shellwords.run('scss-lint --color')
+  scss_result = ShellCommand.run('scss-lint --color')
 
   opts = ENV['CI'] ? '' : '--auto-correct'
   puts 'running rubocop...'
-  rubocop_result = Shellwords.run("rubocop #{opts} --color")
+  rubocop_result = ShellCommand.run("rubocop #{opts} --color")
 
   puts "\n"
   if scss_result && rubocop_result
