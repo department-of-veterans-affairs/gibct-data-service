@@ -84,7 +84,9 @@ class Institution < ImportableRecord
     'graduation_rate_veteran' => { column: :graduation_rate_veteran, converter: Converters::NumberConverter },
     'graduation_rate_all_students' => { column: :graduation_rate_all_students, converter: Converters::NumberConverter },
     'transfer_out_rate_veteran' => { column: :transfer_out_rate_veteran, converter: Converters::NumberConverter },
-    'transfer_out_rate_all_students' => { column: :transfer_out_rate_all_students, converter: Converters::NumberConverter },
+    'transfer_out_rate_all_students' => {
+      column: :transfer_out_rate_all_students, converter: Converters::NumberConverter
+    },
     'salary_all_students' => { column: :salary_all_students, converter: Converters::NumberConverter },
     'repayment_rate_all_students' => { column: :repayment_rate_all_students, converter: Converters::NumberConverter },
     'avg_stu_loan_debt' => { column: :avg_stu_loan_debt, converter: Converters::NumberConverter },
@@ -106,10 +108,18 @@ class Institution < ImportableRecord
     'school_closing_on' => { column: :school_closing_on, converter: Converters::DateConverter },
     'school_closing_message' => { column: :school_closing_message, converter: Converters::BaseConverter },
     'complaints_facility_code' => { column: :complaints_facility_code, converter: Converters::NumberConverter },
-    'complaints_financial_by_fac_code' => { column: :complaints_financial_by_fac_code, converter: Converters::NumberConverter },
-    'complaints_quality_by_fac_code' => { column: :complaints_quality_by_fac_code, converter: Converters::NumberConverter },
-    'complaints_refund_by_fac_code' => { column: :complaints_refund_by_fac_code, converter: Converters::NumberConverter },
-    'complaints_marketing_by_fac_code' => { column: :complaints_marketing_by_fac_code, converter: Converters::NumberConverter },
+    'complaints_financial_by_fac_code' => {
+      column: :complaints_financial_by_fac_code, converter: Converters::NumberConverter
+    },
+    'complaints_quality_by_fac_code' => {
+      column: :complaints_quality_by_fac_code, converter: Converters::NumberConverter
+    },
+    'complaints_refund_by_fac_code' => {
+      column: :complaints_refund_by_fac_code, converter: Converters::NumberConverter
+    },
+    'complaints_marketing_by_fac_code' => {
+      column: :complaints_marketing_by_fac_code, converter: Converters::NumberConverter
+    },
     'complaints_accreditation_by_fac_code' => {
       column: :complaints_accreditation_by_fac_code, converter: Converters::NumberConverter
     },
