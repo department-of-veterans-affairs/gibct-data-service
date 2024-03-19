@@ -42,6 +42,9 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
+  # https://guides.rubyonrails.org/active_storage_overview.html
+  # We are not uploading attachments such as images or videos. The default (local) 
+  # should be fine.
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
@@ -67,6 +70,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "gibct_data_service_production"
 
+  # We don't do any mailing from this application so the default (false) should be fine.
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -86,13 +90,14 @@ Rails.application.configure do
   # Use a different logger for distributed setups.
   # require "syslog/logger"
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
-    STDOUT.sync = config.autoflush_log
-    logger           = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
-  end
-
+  # Rails 7 update had this wrapped in an if clause checking to see if ENV["RAILS_LOG_TO_STDOUT"].present?
+  # We checked GIBCT production and this variable doesn't exist. We also checked vets-api and they
+  # removed the if wrapper around this. So we did too.
+  STDOUT.sync = config.autoflush_log
+  logger           = ActiveSupport::Logger.new(STDOUT)
+  logger.formatter = config.log_formatter
+  config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
