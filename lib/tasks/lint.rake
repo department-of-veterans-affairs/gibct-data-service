@@ -2,7 +2,6 @@
 
 require 'open3'
 require 'rainbow'
-require 'tasks/support/shell_command'
 
 desc 'shortcut to run all linting tools, at the same time.'
 task lint: :environment do
