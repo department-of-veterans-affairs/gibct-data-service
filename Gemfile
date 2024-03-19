@@ -10,7 +10,7 @@ ruby '3.2.2'
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 5.6.8'
-gem 'rails', '~> 7.0.8'
+gem 'rails', '~> 7.0.8.1'
 
 # Gems with special version/repo needs
 
