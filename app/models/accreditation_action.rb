@@ -5,17 +5,17 @@ class AccreditationAction < ImportableRecord
                                               inverse_of: :accreditation_actions)
 
   CSV_CONVERTER_INFO = {
-    'dapipid' => { column: :dapip_id, converter: NumberConverter },
-    'agencyid' => { column: :agency_id, converter: NumberConverter },
-    'agencyname' => { column: :agency_name, converter: InstitutionConverter },
-    'programid' => { column: :program_id, converter: NumberConverter },
-    'programname' => { column: :program_name, converter: BaseConverter },
-    'sequentialid' => { column: :sequential_id, converter: NumberConverter },
-    'actiondescription' => { column: :action_description, converter: BaseConverter },
-    'actiondate' => { column: :action_date, converter: AccreditationDateTimeConverter },
-    'justificationdescription' => { column: :justification_description, converter: BaseConverter },
-    'justificationother' => { column: :justification_other, converter: BaseConverter },
-    'enddate' => { column: :end_date, converter: BaseConverter }
+    'dapipid' => { column: :dapip_id, converter: Converters::NumberConverter },
+    'agencyid' => { column: :agency_id, converter: Converters::NumberConverter },
+    'agencyname' => { column: :agency_name, converter: Converters::InstitutionConverter },
+    'programid' => { column: :program_id, converter: Converters::NumberConverter },
+    'programname' => { column: :program_name, converter: Converters::BaseConverter },
+    'sequentialid' => { column: :sequential_id, converter: Converters::NumberConverter },
+    'actiondescription' => { column: :action_description, converter: Converters::BaseConverter },
+    'actiondate' => { column: :action_date, converter: Converters::AccreditationDateTimeConverter },
+    'justificationdescription' => { column: :justification_description, converter: Converters::BaseConverter },
+    'justificationother' => { column: :justification_other, converter: Converters::BaseConverter },
+    'enddate' => { column: :end_date, converter: Converters::BaseConverter }
   }.freeze
 
   PROBATIONARY_STATUSES = [

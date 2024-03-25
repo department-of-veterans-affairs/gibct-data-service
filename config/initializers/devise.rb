@@ -1,8 +1,11 @@
+# Needed for Rails 7 upgrade 
+require 'devise/mailer'
+
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
   config.mailer.class_eval do
-    include DefaultUrlOptions
+    Rails.application.config.action_mailer.default_url_options
   end
 
   # The secret key used by Devise. Devise uses this key to generate
@@ -266,4 +269,9 @@ Devise.setup do |config|
   # When using OmniAuth, Devise cannot automatically set OmniAuth path,
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
+
+  # Rails 7 upgrade addtions for Devise
+  # https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D
+  config.responder.error_status = :unprocessable_entity
+  config.responder.redirect_status = :see_other
 end

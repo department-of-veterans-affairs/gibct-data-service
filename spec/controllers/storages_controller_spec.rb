@@ -9,10 +9,9 @@ RSpec.describe StoragesController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'storages'
 
   def generate_csv_upload(name)
-    fixture_file_upload(
-      "#{::Rails.root}/spec/fixtures/#{name}",
-      'text/csv'
-    )
+    # rubocop:disable Rails/FilePath
+    fixture_file_upload("#{::Rails.root}/spec/fixtures/#{name}", 'text/csv')
+    # rubocop:enable Rails/FilePath
   end
 
   describe 'GET index' do

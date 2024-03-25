@@ -3,6 +3,7 @@
 module Common
   module Exceptions
     # Base error class all others inherit from
+
     class BaseError < StandardError
       def errors
         raise NotImplementedError, 'Subclass of Error must implement errors method'

@@ -6,9 +6,11 @@ RSpec.describe InstitutionProgram, type: :model do
   describe 'when validating' do
     subject(:institution_program) { create :institution_program, institution: institution }
 
-    let(:institution) { create :institution, :physical_address }
+    let(:version) { create :version, :production }
+    let(:institution) { build :institution, :physical_address }
 
     it 'has a valid factory' do
+      institution.version = version
       expect(institution_program).to be_valid
     end
   end

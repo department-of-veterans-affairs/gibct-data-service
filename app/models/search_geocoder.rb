@@ -61,7 +61,7 @@ class SearchGeocoder
 
   def parse_add_fields(res, field)
     string = "#{field}, #{res.city}, #{res.state}, #{res.zip}, #{res.country}"
-    return string if field.present?
+    string if field.present?
   end
 
   def parse_address(res, field)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ScorecardApi
-  class Configuration < Common::Client::Configuration::REST
+  class Configuration < Common::Client::Configuration::Rest
     self.read_timeout = Settings.scorecard.read_timeout || read_timeout
     self.open_timeout = Settings.scorecard.open_timeout || open_timeout
 

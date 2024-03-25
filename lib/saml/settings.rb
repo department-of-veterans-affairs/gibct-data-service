@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SAML
-  class Settings
+  class Saml::Settings
     class << self
       def settings
         idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new

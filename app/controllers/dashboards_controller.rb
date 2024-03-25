@@ -40,7 +40,7 @@ class DashboardsController < ApplicationController
                   filename: "institutions_version_#{params[:number]}.csv"
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -55,7 +55,7 @@ class DashboardsController < ApplicationController
         ), type: 'text/csv', filename: 'ungeocodables.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -67,7 +67,7 @@ class DashboardsController < ApplicationController
         ), type: 'text/csv', filename: 'unaccrediteds.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -78,7 +78,7 @@ class DashboardsController < ApplicationController
                   type: 'text/csv', filename: 'partials.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -89,7 +89,7 @@ class DashboardsController < ApplicationController
                   type: 'text/csv', filename: 'orphans.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -143,7 +143,7 @@ class DashboardsController < ApplicationController
   def fetch_api_data(api_upload)
     klass = api_upload.csv_type.constantize
     populated = klass.respond_to?(:populate) ? klass.populate : false
-    api_upload.update(ok: populated, completed_at: Time.now.utc.to_s(:db))
+    api_upload.update(ok: populated, completed_at: Time.now.utc.to_fs(:db))
 
     if populated
       message = "#{klass.name}::POPULATE_SUCCESS_MESSAGE".safe_constantize
@@ -177,7 +177,7 @@ class DashboardsController < ApplicationController
           sheets: [{ klass: klass, skip_lines: 0, clean_rows: upload.clean_rows }]
         }
         klass.load_with_roo(file, file_options).first
-        upload.update(ok: true, completed_at: Time.now.utc.to_s(:db))
+        upload.update(ok: true, completed_at: Time.now.utc.to_fs(:db))
         flash.notice = 'Successfully fetched & uploaded file' if upload.save!
       end
     else
@@ -186,7 +186,7 @@ class DashboardsController < ApplicationController
     end
   rescue StandardError => e
     message = Common::Exceptions::ExceptionHandler.new(e, upload&.csv_type).serialize_error
-    upload.update(ok: false, completed_at: Time.now.utc.to_s(:db), comment: message)
+    upload.update(ok: false, completed_at: Time.now.utc.to_fs(:db), comment: message)
 
     Rails.logger.error e
     flash.alert = message

@@ -18,6 +18,10 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     create(:institution, trait)
   end
 
+  # This test was passing in Rails 6.x but is failing in Rails 7.x. The issue
+  # appears to be related to the use of `belongs_to` in the controller not enforcing it's
+  # existence and allowing it to go through with a nil version_id. Rails 7 enforces this.
+  # had to add a default clause to the belongs_to association to make it work.
   context 'with version determination' do
     it 'uses a production version as a default' do
       create(:version, :production)

@@ -19,21 +19,25 @@ RSpec.describe Post911Stat, type: :model do
 
     it 'requires numeric tuition_and_fee_count' do
       expect(build(:post911_stat, tuition_and_fee_count: nil)).to be_valid
+      expect(build(:post911_stat, tuition_and_fee_count: '')).to be_valid
       expect(build(:post911_stat, tuition_and_fee_count: 'abc')).not_to be_valid
     end
 
     it 'requires numeric tuition_and_fee_total_amount' do
       expect(build(:post911_stat, tuition_and_fee_total_amount: nil)).to be_valid
+      expect(build(:post911_stat, tuition_and_fee_total_amount: '')).to be_valid
       expect(build(:post911_stat, tuition_and_fee_total_amount: 'abc')).not_to be_valid
     end
 
     it 'requires numeric yellow_ribbon_count' do
       expect(build(:post911_stat, yellow_ribbon_count: nil)).to be_valid
+      expect(build(:post911_stat, yellow_ribbon_count: '')).to be_valid
       expect(build(:post911_stat, yellow_ribbon_count: 'abc')).not_to be_valid
     end
 
     it 'requires numeric yellow_ribbon_total_amount' do
       expect(build(:post911_stat, yellow_ribbon_total_amount: nil)).to be_valid
+      expect(build(:post911_stat, yellow_ribbon_total_amount: '')).to be_valid
       expect(build(:post911_stat, yellow_ribbon_total_amount: 'abc')).not_to be_valid
     end
   end

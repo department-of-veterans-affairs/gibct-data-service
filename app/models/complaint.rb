@@ -13,8 +13,6 @@
 #
 # Whether or not a complaint is counted, it must have (1) a facility_code, (2) be closed, and (3) not be invalid.
 
-# frozen_string_literal: true
-
 class Complaint < ImportableRecord
   STATUSES = %w[active closed pending reserved].freeze
 
@@ -62,20 +60,20 @@ class Complaint < ImportableRecord
   }.freeze
 
   CSV_CONVERTER_INFO = {
-    'case_id' => { column: :case_id, converter: BaseConverter },
-    'escalation_level' => { column: :level, converter: BaseConverter },
-    'status' => { column: :status, converter: DowncaseConverter },
-    'case_owner' => { column: :case_owner, converter: BaseConverter },
-    'school_name' => { column: :institution, converter: InstitutionConverter },
-    'opeid' => { column: :ope, converter: OpeConverter },
-    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'school_city' => { column: :city, converter: BaseConverter },
-    'school_state' => { column: :state, converter: StateConverter },
-    'date/time_opened' => { column: :submitted, converter: DateTimeConverter },
-    'date_closed' => { column: :closed, converter: DateConverter },
-    'sub_status' => { column: :closed_reason, converter: DowncaseConverter },
-    'issue' => { column: :issues, converter: BaseConverter },
-    'va_education_program' => { column: :education_benefits, converter: BaseConverter }
+    'case_id' => { column: :case_id, converter: Converters::BaseConverter },
+    'escalation_level' => { column: :level, converter: Converters::BaseConverter },
+    'status' => { column: :status, converter: Converters::DowncaseConverter },
+    'case_owner' => { column: :case_owner, converter: Converters::BaseConverter },
+    'school_name' => { column: :institution, converter: Converters::InstitutionConverter },
+    'opeid' => { column: :ope, converter: Converters::OpeConverter },
+    'facility_code' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
+    'school_city' => { column: :city, converter: Converters::BaseConverter },
+    'school_state' => { column: :state, converter: Converters::StateConverter },
+    'date/time_opened' => { column: :submitted, converter: Converters::DateTimeConverter },
+    'date_closed' => { column: :closed, converter: Converters::DateConverter },
+    'sub_status' => { column: :closed_reason, converter: Converters::DowncaseConverter },
+    'issue' => { column: :issues, converter: Converters::BaseConverter },
+    'va_education_program' => { column: :education_benefits, converter: Converters::BaseConverter }
   }.freeze
 
   validates :facility_code, presence: true
@@ -83,7 +81,7 @@ class Complaint < ImportableRecord
   after_initialize :derive_dependent_columns
 
   def derive_dependent_columns
-    self.ope6 = Ope6Converter.convert(ope)
+    self.ope6 = Converters::Ope6Converter.convert(ope)
     set_facility_code_complaint if ok_to_sum?
   end
 

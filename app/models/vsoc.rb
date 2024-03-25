@@ -4,10 +4,10 @@ class Vsoc < ImportableRecord
   COLS_USED_IN_INSTITUTION = %i[vetsuccess_name vetsuccess_email].freeze
 
   CSV_CONVERTER_INFO = {
-    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution' => { column: :institution, converter: InstitutionConverter },
-    'vetsuccess_name' => { column: :vetsuccess_name, converter: BaseConverter },
-    'vetsuccess_email' => { column: :vetsuccess_email, converter: BaseConverter }
+    'facility_code' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
+    'institution' => { column: :institution, converter: Converters::InstitutionConverter },
+    'vetsuccess_name' => { column: :vetsuccess_name, converter: Converters::BaseConverter },
+    'vetsuccess_email' => { column: :vetsuccess_email, converter: Converters::BaseConverter }
   }.freeze
 
   validates :facility_code, presence: true

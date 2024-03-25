@@ -8,15 +8,15 @@ class Outcome < ImportableRecord
   ].freeze
 
   CSV_CONVERTER_INFO = {
-    'va_facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'va_facility_name' => { column: :institution, converter: InstitutionConverter },
-    'school_level_va' => { column: :school_level_va, converter: BaseConverter },
-    'retention_rate_veteran_ba' => { column: :retention_rate_veteran_ba, converter: NumberConverter },
-    'retention_rate_veteran_otb' => { column: :retention_rate_veteran_otb, converter: NumberConverter },
-    'persistance_rate_veteran_ba' => { column: :persistance_rate_veteran_ba, converter: NumberConverter },
-    'persistance_rate_veteran_otb' => { column: :persistance_rate_veteran_otb, converter: NumberConverter },
-    'graduation_rate_veteran' => { column: :graduation_rate_veteran, converter: NumberConverter },
-    'transfer_out_rate_veteran' => { column: :transfer_out_rate_veteran, converter: NumberConverter }
+    'va_facility_code' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
+    'va_facility_name' => { column: :institution, converter: Converters::InstitutionConverter },
+    'school_level_va' => { column: :school_level_va, converter: Converters::BaseConverter },
+    'retention_rate_veteran_ba' => { column: :retention_rate_veteran_ba, converter: Converters::NumberConverter },
+    'retention_rate_veteran_otb' => { column: :retention_rate_veteran_otb, converter: Converters::NumberConverter },
+    'persistance_rate_veteran_ba' => { column: :persistance_rate_veteran_ba, converter: Converters::NumberConverter },
+    'persistance_rate_veteran_otb' => { column: :persistance_rate_veteran_otb, converter: Converters::NumberConverter },
+    'graduation_rate_veteran' => { column: :graduation_rate_veteran, converter: Converters::NumberConverter },
+    'transfer_out_rate_veteran' => { column: :transfer_out_rate_veteran, converter: Converters::NumberConverter }
   }.freeze
 
   validates :facility_code, presence: true

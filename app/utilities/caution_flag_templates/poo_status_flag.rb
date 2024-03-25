@@ -2,7 +2,7 @@
 
 require_relative 'caution_flag_template'
 
-class PooStatusFlag < CautionFlagTemplate
+class CautionFlagTemplates::PooStatusFlag < CautionFlagTemplates::CautionFlagTemplate
   NAME = 'Poo_Status_Susp'
   TITLE = 'School may not be able to accept new GI Bill students'
   DESCRIPTION = 'This school currently doesn\'\'t meet the approval criteria for receiving GI Bill funds and has been '\

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe InstitutionConverter do
+RSpec.describe Converters::InstitutionConverter do
   subject { described_class }
 
   it 'converts lower case alphas to upper' do

@@ -11,6 +11,16 @@ RSpec.describe CrosswalkIssue, type: :model do
       )
     end
 
+    it 'has a valid factory' do
+      crosswalk_issue = build(:crosswalk_issue, :with_weam_match)
+      expect(crosswalk_issue).to be_valid
+    end
+
+    it 'errors if no parent is present' do
+      crosswalk_issue = build(:crosswalk_issue, :partial_match_type)
+      expect(crosswalk_issue).not_to be_valid
+    end
+
     def ignore_and_validate_delete_of_only_partial_match_issue
       issue = described_class.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).first
       ignore_issue(issue)
@@ -240,6 +250,20 @@ RSpec.describe CrosswalkIssue, type: :model do
         issue = create :crosswalk_issue, :with_weam_match
         expect(issue.resolved?).to eq(false)
       end
+    end
+  end
+
+  describe '#export_and_pluck_partials' do
+    it 'responds to #export_and_pluck_partials' do
+      expect(described_class).to respond_to(:export_and_pluck_partials)
+    end
+
+    it 'returns an array of partials' do
+      create(:crosswalk_issue, :with_weam_match, :with_ipeds_hd_match, :partial_match_type)
+
+      # Array of Arrays
+      expect(described_class.export_and_pluck_partials).to be_an(Array)
+      expect(described_class.export_and_pluck_partials[0]).to be_an(Array)
     end
   end
 end

@@ -7,9 +7,9 @@ RSpec.describe Institution, type: :model do
   it_behaves_like 'an exportable model by version'
 
   describe 'when validating' do
-    subject(:institution) { create :institution }
-
     it 'has a valid factory' do
+      version = create(:version, :preview)
+      institution = build :institution, version: version, version_id: version.id
       expect(institution).to be_valid
     end
   end
@@ -130,7 +130,11 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'institution_programs' do
-    let(:institution) { build :institution }
+    before do
+      create(:version, :preview)
+    end
+
+    let(:institution) { build :institution, version: Version.last, version_id: Version.last.id }
 
     def create_institution(institution, description)
       InstitutionProgram.create(institution: institution, description: description,
@@ -210,7 +214,8 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'includes the address fields if include_address is set' do
-        institution = create(:institution, physical_address_1: 'address_1')
+        version = create(:version, :production)
+        institution = create(:institution, physical_address_1: 'address_1', version_id: version.id, version: version)
         expect(described_class.search({ name: 'address_1', include_address: true }).take).to eq(institution)
         expect(described_class.search({ name: 'address_1' }).count).to eq(0)
       end

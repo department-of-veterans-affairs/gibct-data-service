@@ -34,7 +34,9 @@ module Common
       #     configuration MyConfiguration
       #   end
       #
-      class REST < Base
+      # Zeitwerk is very case sensitive, so REST shoudl be Rest and we alias it.
+      # https://stackoverflow.com/questions/7795809/class-alias-in-ruby
+      class Rest < Base
         self.request_types = %i[get put post delete].freeze
         self.base_request_headers = {
           'Accept' => 'application/json',
@@ -42,6 +44,8 @@ module Common
           'User-Agent' => user_agent
         }.freeze
       end
+      # Alias the class name to get around the Zeitwerk issue.
+      REST = Rest.freeze
     end
   end
 end

@@ -62,13 +62,15 @@ module Common
         ##
         # Creates a custom service exception with the same namespace as the implementing class.
         #
-        # @return Common::Exceptions::BackendServiceException exception with the class' namespace
+        # @return Common::Exceptions::External::BackendServiceException exception with the class' namespace
         #
         def service_exception
           if current_module.const_defined?('ServiceException')
             current_module.const_get('ServiceException')
           else
-            current_module.const_set('ServiceException', Class.new(Common::Exceptions::BackendServiceException))
+            current_module.const_set(
+              'ServiceException', Class.new(Common::Exceptions::External::BackendServiceException)
+            )
           end
         end
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BooleanConverter do
+RSpec.describe Converters::BooleanConverter do
   subject { described_class }
 
   it 'converts strings to booleans' do

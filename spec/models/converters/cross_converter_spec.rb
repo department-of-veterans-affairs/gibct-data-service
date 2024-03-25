@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe CrossConverter do
+RSpec.describe Converters::CrossConverter do
   subject { described_class }
 
   it 'returns nil if value is blank' do

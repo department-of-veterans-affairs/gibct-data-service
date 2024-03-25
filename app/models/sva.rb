@@ -2,14 +2,14 @@
 
 class Sva < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'id' => { column: :csv_id, converter: NumberConverter },
-    'school' => { column: :institution, converter: InstitutionConverter },
-    'city' => { column: :city, converter: BaseConverter },
-    'state' => { column: :state, converter: BaseConverter },
-    'ipeds_code' => { column: :ipeds_code, converter: BaseConverter },
-    'website' => { column: :student_veteran_link, converter: BaseConverter },
-    'ipeds_6' => { column: :cross, converter: CrossConverter },
-    'sva_yes' => { column: :sva_yes, converter: BaseConverter }
+    'id' => { column: :csv_id, converter: Converters::NumberConverter },
+    'school' => { column: :institution, converter: Converters::InstitutionConverter },
+    'city' => { column: :city, converter: Converters::BaseConverter },
+    'state' => { column: :state, converter: Converters::BaseConverter },
+    'ipeds_code' => { column: :ipeds_code, converter: Converters::BaseConverter },
+    'website' => { column: :student_veteran_link, converter: Converters::BaseConverter },
+    'ipeds_6' => { column: :cross, converter: Converters::CrossConverter },
+    'sva_yes' => { column: :sva_yes, converter: Converters::BaseConverter }
   }.freeze
 
   validates :cross, presence: true

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DateConverter do
+RSpec.describe Converters::DateConverter do
   subject { described_class }
 
   it 'converts m/d/yyyy strings to dates' do

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe AccreditationDateTimeConverter do
+RSpec.describe Converters::AccreditationDateTimeConverter do
   subject { described_class }
 
   it 'converts timestamp strings to date' do

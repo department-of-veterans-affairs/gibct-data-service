@@ -28,6 +28,12 @@ FactoryBot.define do
       ope { '88888888' }
     end
 
+    trait :with_crosswalk_issue do
+      after(:create) do |ci|
+        create(:crosswalk_issue, :partial_match_type, crosswalk_id: ci.id)
+      end
+    end
+
     initialize_with do
       new(facility_code: facility_code, ope: ope, cross: cross)
     end

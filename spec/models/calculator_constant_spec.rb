@@ -28,5 +28,9 @@ RSpec.describe CalculatorConstant, type: :model do
     it 'requires presence of name' do
       expect(build(:calculator_constant, name: nil)).not_to be_valid
     end
+
+    it 'requires presence of float value' do
+      expect(build(:calculator_constant, float_value: nil)).not_to be_valid
+    end
   end
 end

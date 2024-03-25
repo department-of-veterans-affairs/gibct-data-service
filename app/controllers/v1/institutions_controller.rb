@@ -2,7 +2,7 @@
 
 module V1
   class InstitutionsController < ApiController
-    include Facets
+    include Search::Facets
 
     # GET /v1/institutions/autocomplete?term=harv
     def autocomplete
@@ -88,7 +88,7 @@ module V1
     def show
       resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
-      raise Common::Exceptions::RecordNotFound, params[:id] unless resource
+      raise Common::Exceptions::Internal::RecordNotFound, params[:id] unless resource
 
       @links = { self: self_link }
       render json: resource, serializer: InstitutionProfileSerializer,

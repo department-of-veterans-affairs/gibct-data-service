@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DateTimeConverter < BaseConverter
+class Converters::DateTimeConverter < Converters::BaseConverter
   def self.convert(value)
     value = super(value)
     return nil if value.blank?

@@ -21,7 +21,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
       SQL
 
-      CautionFlag.build(version_id, PooStatusFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::PooStatusFlag, caution_flag_clause)
     end
   end
 end

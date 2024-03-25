@@ -2,15 +2,17 @@
 
 module Common
   module Exceptions
-    class FilterNotAllowed < BaseError
-      attr_reader :filter
+    module Internal
+      class FilterNotAllowed < BaseError
+        attr_reader :filter
 
-      def initialize(filter)
-        @filter = filter
-      end
+        def initialize(filter)
+          @filter = filter
+        end
 
-      def errors
-        Array(SerializableError.new(i18n_interpolated(detail: { filter: @filter })))
+        def errors
+          Array(SerializableError.new(i18n_interpolated(detail: { filter: @filter })))
+        end
       end
     end
   end

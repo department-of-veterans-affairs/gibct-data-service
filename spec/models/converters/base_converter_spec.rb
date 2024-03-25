@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BaseConverter do
+RSpec.describe Converters::BaseConverter do
   subject { described_class }
 
   context 'with strings containing a forbidden word or characters' do

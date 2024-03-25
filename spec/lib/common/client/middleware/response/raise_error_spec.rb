@@ -32,11 +32,11 @@ describe Common::Client::Middleware::Response::RaiseError do
     end
 
     describe '#raise_error!' do
-      it 'raises Common::Exceptions::BackendServiceException when status is between?(400,599)' do
+      it 'raises Common::Exceptions::External::BackendServiceException when status is between?(400,599)' do
         env[:status] = 404
 
         expect { raise_error_instance.on_complete(env) }
-          .to raise_error(Common::Exceptions::BackendServiceException)
+          .to raise_error(Common::Exceptions::External::BackendServiceException)
       end
 
       it 'raises BackendUnhandledException when status is not between?(400,599)' do

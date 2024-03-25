@@ -4,14 +4,14 @@ class Mou < ImportableRecord
   STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
 
   CSV_CONVERTER_INFO = {
-    'ope_id' => { column: :ope, converter: OpeConverter },
-    'institution_name' => { column: :institution, converter: InstitutionConverter },
-    'trade_name' => { column: :trade_name, converter: BaseConverter },
-    'city' => { column: :city, converter: BaseConverter },
-    'state' => { column: :state, converter: BaseConverter },
-    'institution_type' => { column: :institution_type, converter: BaseConverter },
-    'status' => { column: :status, converter: BaseConverter },
-    'approval_date' => { column: :approval_date, converter: BaseConverter }
+    'ope_id' => { column: :ope, converter: Converters::OpeConverter },
+    'institution_name' => { column: :institution, converter: Converters::InstitutionConverter },
+    'trade_name' => { column: :trade_name, converter: Converters::BaseConverter },
+    'city' => { column: :city, converter: Converters::BaseConverter },
+    'state' => { column: :state, converter: Converters::BaseConverter },
+    'institution_type' => { column: :institution_type, converter: Converters::BaseConverter },
+    'status' => { column: :status, converter: Converters::BaseConverter },
+    'approval_date' => { column: :approval_date, converter: Converters::BaseConverter }
   }.freeze
 
   validates :ope, :ope6, presence: true
@@ -21,7 +21,7 @@ class Mou < ImportableRecord
   def derive_dependent_columns
     self.dodmou = to_dodmou
     self.dod_status = to_dod_status
-    self.ope6 = Ope6Converter.convert(ope)
+    self.ope6 = Converters::Ope6Converter.convert(ope)
   end
 
   def to_dodmou

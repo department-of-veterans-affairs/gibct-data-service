@@ -54,9 +54,9 @@ class GroupsController < ApplicationController
 
   def upload_requirements(type)
     { type: type.name,
-      requirements: UploadRequirements.requirements_messages(type),
+      requirements: UploadTypes::UploadRequirements.requirements_messages(type),
       custom_batch_validator: "#{type.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize,
-      inclusion: UploadRequirements.validation_messages_inclusion(type) }
+      inclusion: UploadTypes::UploadRequirements.validation_messages_inclusion(type) }
   end
 
   def alert_messages(loaded_data)
@@ -113,7 +113,7 @@ class GroupsController < ApplicationController
                                .map { |data| data[:klass].name }
     error_msg = @group.comment + " There was no saved #{no_saved_data.join(', or ')} data."
 
-    @group.update(ok: ok, completed_at: Time.now.utc.to_s(:db), comment: (error_msg unless no_saved_data.none?))
+    @group.update(ok: ok, completed_at: Time.now.utc.to_fs(:db), comment: (error_msg unless no_saved_data.none?))
 
     raise(StandardError, error_msg + ' Please check the file or selected options.') unless no_saved_data.none?
   end

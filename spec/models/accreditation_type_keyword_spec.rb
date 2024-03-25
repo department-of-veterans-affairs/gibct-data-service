@@ -66,10 +66,12 @@ RSpec.describe AccreditationTypeKeyword, type: :model do
 
   describe 'when deleting' do
     let(:accreditation_type_keyword) { create :accreditation_type_keyword }
+    let(:accreditation_institute_campus) { create(:accreditation_institute_campus) }
     let(:accreditation_record) { build :accreditation_record }
 
     it 'nils the accreditation_type_keyword_id on accreditation records that reference it' do
       accreditation_record.accreditation_type_keyword = accreditation_type_keyword
+      accreditation_record.accreditation_institute_campus = accreditation_institute_campus
       accreditation_record.save
 
       # confirm it took

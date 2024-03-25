@@ -5,6 +5,8 @@ require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe AccreditationRecord, type: :model do
+  before { create(:accreditation_institute_campus) }
+
   it_behaves_like 'a loadable model', skip_lines: 0
   it_behaves_like 'an exportable model', skip_lines: 0
 
@@ -13,6 +15,31 @@ RSpec.describe AccreditationRecord, type: :model do
 
     it 'has a valid factory' do
       expect(accreditation_record).to be_valid
+    end
+
+    it 'is not valid without a dapip id' do
+      accreditation_record.dapip_id = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without an agency id' do
+      accreditation_record.agency_id = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without an agency name' do
+      accreditation_record.agency_name = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without a program id' do
+      accreditation_record.program_id = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without a program name' do
+      accreditation_record.program_name = nil
+      expect(accreditation_record).not_to be_valid
     end
   end
 

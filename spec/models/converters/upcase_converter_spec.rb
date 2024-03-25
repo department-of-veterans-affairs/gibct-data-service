@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe UpcaseConverter do
+RSpec.describe Converters::UpcaseConverter do
   subject { described_class }
 
   it 'Upcases strings' do

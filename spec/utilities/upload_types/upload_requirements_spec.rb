@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe UploadRequirements do
+RSpec.describe UploadTypes::UploadRequirements do
   def validations(csv_class, requirement_class)
     csv_class.validators
              .find { |requirements| requirements.instance_of?(requirement_class) }

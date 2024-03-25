@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BooleanConverter < BaseConverter
+class Converters::BooleanConverter < Converters::BaseConverter
   def self.convert(value)
     value = super(value)
 

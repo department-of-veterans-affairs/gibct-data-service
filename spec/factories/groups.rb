@@ -12,18 +12,19 @@ FactoryBot.define do
     user
 
     csv_type { 'Accreditation' }
-    completed_at { Time.now.utc.to_s(:db) }
+    completed_at { Time.now.utc.to_fs(:db) }
     sequence :comment do |n|
       "Upload test #{n}"
     end
 
     upload_file do
       unless no_upload
+        # rubocop:disable Rails/FilePath
         uf = Rack::Test::UploadedFile.new(
           "#{::Rails.root}/spec/fixtures/#{csv_name}",
           'application/vnd.ms-excel'
         )
-
+        # rubocop:enable Rails/FilePath
         uf.rewind
         uf
       end

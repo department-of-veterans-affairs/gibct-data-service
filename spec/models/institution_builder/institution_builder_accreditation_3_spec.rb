@@ -64,7 +64,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: AccreditationCautionFlag::NAME,
+                              source: CautionFlagTemplates::AccreditationCautionFlag::NAME,
                               version_id: Version.current_production.id })
                      .count).to be > 0
         end
@@ -75,7 +75,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: AccreditationCautionFlag::NAME,
+                              source: CautionFlagTemplates::AccreditationCautionFlag::NAME,
                               version_id: Version.current_production.id })
                      .count).to eq(0)
         end
@@ -86,7 +86,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           caution_flags = CautionFlag.where({ institution_id: institution.id,
-                                              source: AccreditationCautionFlag::NAME,
+                                              source: CautionFlagTemplates::AccreditationCautionFlag::NAME,
                                               version_id: Version.current_production.id }).count
           expect(caution_flags).to be > 0
           expect(institutions.find(institution.id).caution_flag_reason)

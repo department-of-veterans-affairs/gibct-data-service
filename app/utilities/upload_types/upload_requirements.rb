@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UploadRequirements
+class UploadTypes::UploadRequirements
   class << self
     def requirements_messages(type)
       [validation_messages_presence(type),

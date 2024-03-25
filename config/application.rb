@@ -8,17 +8,17 @@ Bundler.require(*Rails.groups)
 
 module GibctDataService
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Initialize configuration defaults for originally generated Rails version.
+    #  https://stackoverflow.com/questions/72110385/url-safe-csrf-tokens-are-now-the-default-warning
+    config.load_defaults 7.0
 
-    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
-    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Eastern Time (US & Canada)'
+    # Configuration for the application, engines, and railties goes here.
+    
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
 
-    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    # config.i18n.default_locale = :de
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
 
     # CORS configuration; see also cors_preflight route
     config.middleware.insert_before 0, Rack::Cors, logger: (-> { Rails.logger }) do
@@ -37,11 +37,17 @@ module GibctDataService
     # Bootstrap support.
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
-    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
-    config.autoload_paths += Dir["#{config.root}/lib/**/"]
-    config.autoload_paths += Dir["#{config.root}/app/utilities/**/"]
+    config.autoload_paths += Dir["#{config.root}/app/models"]
+    config.autoload_paths += Dir["#{config.root}/lib"]
+    config.eager_load_paths += Dir["#{config.root}/lib"]
+    config.autoload_paths += Dir["#{config.root}/app/utilities"]
 
     # YAML Defaults for CSV
     config.csv_defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+
+    # Rails 7 upgrade
+    # turn off warnings
+    # https://stackoverflow.com/questions/76347365/how-do-i-set-legacy-connection-handling-to-false-in-my-rails-application
+    config.active_record.legacy_connection_handling = false
   end
 end

@@ -111,11 +111,13 @@ RSpec.describe Complaint, type: :model do
       end
 
       it 'the institution receives the sums grouped by ope6' do
+        # rubocop:disable Rails/FindEach
         Institution.all.each do |institution|
           Complaint::OPE6_ROLL_UP_SUMS.each_key do |ope6_sum|
             expect(institution[ope6_sum]).to eq(5)
           end
         end
+        # rubocop:enable Rails/FindEach
       end
     end
   end

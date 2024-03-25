@@ -12,7 +12,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
   describe '.initialize' do
     context 'when initialized without a nil error' do
       it 'raises an exception' do
-        expect { described_class.new(nil, service) }.to raise_error(Common::Exceptions::ParameterMissing)
+        expect { described_class.new(nil, service) }.to raise_error(Common::Exceptions::Internal::ParameterMissing)
       end
     end
   end
@@ -27,8 +27,8 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
       end
     end
 
-    context 'with a Common::Exceptions::GatewayTimeout' do
-      let(:error) { Common::Exceptions::GatewayTimeout.new }
+    context 'with a Common::Exceptions::External::GatewayTimeout' do
+      let(:error) { Common::Exceptions::External::GatewayTimeout.new }
       let(:results) { described_class.new(error, service).serialize_error }
 
       it 'returns a serialized version of the error' do
@@ -37,7 +37,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
     end
 
     def server_error_exception
-      Common::Exceptions::BackendServiceException.new(
+      Common::Exceptions::External::BackendServiceException.new(
         'SCORECARD_503',
         { source: 'ScorecardApi::Client' },
         503,
@@ -45,7 +45,7 @@ RSpec.describe Common::Exceptions::ExceptionHandler do
       )
     end
 
-    context 'with a Common::Exceptions::BackendServiceException' do
+    context 'with a Common::Exceptions::External::BackendServiceException' do
       let(:error) { server_error_exception }
       let(:results) { described_class.new(error, service).serialize_error }
 

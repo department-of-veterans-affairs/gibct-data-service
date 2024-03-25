@@ -2,10 +2,10 @@
 
 class Sec702 < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'state' => { column: :state, converter: StateConverter },
-    'state_full_name' => { column: :state_full_name, converter: BaseConverter },
-    'sec702' => { column: :sec_702, converter: BooleanConverter }
+    'state' => { column: :state, converter: Converters::StateConverter },
+    'state_full_name' => { column: :state_full_name, converter: Converters::BaseConverter },
+    'sec702' => { column: :sec_702, converter: Converters::BooleanConverter }
   }.freeze
 
-  validates :state, inclusion: { in: StateConverter::STATES.keys }
+  validates :state, inclusion: { in: Converters::StateConverter::STATES.keys }
 end

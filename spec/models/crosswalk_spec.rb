@@ -23,4 +23,13 @@ RSpec.describe Crosswalk, type: :model do
       expect(crosswalk.ope6).to eql(crosswalk.ope[1, 5])
     end
   end
+
+  describe 'associations' do
+    it 'deletes crosswalk issues when deleted' do
+      crosswalk = create :crosswalk, :with_crosswalk_issue
+      expect do
+        crosswalk.destroy
+      end.to change(CrosswalkIssue, :count).by(-1)
+    end
+  end
 end

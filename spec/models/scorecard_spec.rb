@@ -22,7 +22,7 @@ RSpec.describe Scorecard, type: :model do
       expect(build(:scorecard, cross: nil)).not_to be_valid
     end
 
-    it 'will use either the c150_4_pooled_supp or the c150_l4_pooled_supp if only one is present' do
+    it 'uses either the c150_4_pooled_supp or the c150_l4_pooled_supp if only one is present' do
       expect(by_c150_4_pooled_supp.graduation_rate_all_students).to eq(by_c150_4_pooled_supp.c150_4_pooled_supp)
       expect(by_c150_l4_pooled_supp.graduation_rate_all_students).to eq(by_c150_l4_pooled_supp.c150_l4_pooled_supp)
     end

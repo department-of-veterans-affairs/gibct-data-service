@@ -2,7 +2,7 @@
 
 require_relative 'caution_flag_template'
 
-class HcmCautionFlag < CautionFlagTemplate
+class CautionFlagTemplates::HcmCautionFlag < CautionFlagTemplates::CautionFlagTemplate
   NAME = Hcm.name
   TITLE = 'School placed on Heightened Cash Monitoring'
   DESCRIPTION = 'The Department of Education has placed this '\

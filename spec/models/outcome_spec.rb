@@ -19,24 +19,72 @@ RSpec.describe Outcome, type: :model do
       expect(build(:outcome, facility_code: nil)).not_to be_valid
     end
 
+    it 'allows retention_rate_veteran_ba to have a non-numeric value of blank' do
+      expect(build(:outcome, retention_rate_veteran_ba: '')).to be_valid
+    end
+
+    it 'allows retention_rate_veteran_ba to have a non-numeric value of nil' do
+      expect(build(:outcome, retention_rate_veteran_ba: nil)).to be_valid
+    end
+
     it 'requires numeric retention_rate_veteran_ba' do
       expect(build(:outcome, retention_rate_veteran_ba: 'abc')).not_to be_valid
+    end
+
+    it 'allows retention_rate_veteran_otb to have a non-numeric value of blank' do
+      expect(build(:outcome, retention_rate_veteran_otb: '')).to be_valid
+    end
+
+    it 'allows retention_rate_veteran_otb to have a non-numeric value of nil' do
+      expect(build(:outcome, retention_rate_veteran_otb: nil)).to be_valid
     end
 
     it 'requires numeric retention_rate_veteran_otb' do
       expect(build(:outcome, retention_rate_veteran_otb: 'abc')).not_to be_valid
     end
 
+    it 'allows persistance_rate_veteran_ba to have a non-numeric value of blank' do
+      expect(build(:outcome, persistance_rate_veteran_ba: '')).to be_valid
+    end
+
+    it 'allows persistance_rate_veteran_ba to have a non-numeric value of nil' do
+      expect(build(:outcome, persistance_rate_veteran_ba: nil)).to be_valid
+    end
+
     it 'requires numeric persistance_rate_veteran_ba' do
       expect(build(:outcome, persistance_rate_veteran_ba: 'abc')).not_to be_valid
+    end
+
+    it 'allows persistance_rate_veteran_otb to have a non-numeric value of blank' do
+      expect(build(:outcome, persistance_rate_veteran_otb: '')).to be_valid
+    end
+
+    it 'allows persistance_rate_veteran_otb to have a non-numeric value of nil' do
+      expect(build(:outcome, persistance_rate_veteran_otb: nil)).to be_valid
     end
 
     it 'requires numeric persistance_rate_veteran_otb' do
       expect(build(:outcome, persistance_rate_veteran_otb: 'abc')).not_to be_valid
     end
 
+    it 'allows graduation_rate_veteran to have a non-numeric value of blank' do
+      expect(build(:outcome, graduation_rate_veteran: '')).to be_valid
+    end
+
+    it 'allows graduation_rate_veteran to have a non-numeric value of nil' do
+      expect(build(:outcome, graduation_rate_veteran: nil)).to be_valid
+    end
+
     it 'requires numeric graduation_rate_veteran' do
       expect(build(:outcome, graduation_rate_veteran: 'abc')).not_to be_valid
+    end
+
+    it 'allows transfer_out_rate_veteran to have a non-numeric value of blank' do
+      expect(build(:outcome, transfer_out_rate_veteran: '')).to be_valid
+    end
+
+    it 'allows transfer_out_rate_veteran to have a non-numeric value of nil' do
+      expect(build(:outcome, transfer_out_rate_veteran: nil)).to be_valid
     end
 
     it 'requires numeric transfer_out_rate_veteran' do

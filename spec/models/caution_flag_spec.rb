@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+# technically speaking, these  shouldn't be necessary, but the code coverage fails on
+# describe '#build' if they aren't included. Not sure why this is the case, but opted
+# not to mess with it.
 require_relative '../../app/utilities/caution_flag_templates/caution_flag_template'
 require_relative '../../app/utilities/caution_flag_templates/accreditation_caution_flag'
 require_relative '../../app/utilities/caution_flag_templates/hcm_caution_flag'
@@ -10,30 +13,33 @@ require_relative '../../app/utilities/caution_flag_templates/poo_status_flag'
 
 RSpec.describe CautionFlag, type: :model do
   describe 'when validating' do
-    subject(:caution_flag) { build :caution_flag, version_id: version.id }
-
-    let(:version) { build :version, :preview }
-
     it 'has a valid factory' do
+      create(:version, :preview, :with_institution)
+      caution_flag = build(:caution_flag, version_id: Version.last.id, institution_id: Institution.last.id)
       expect(caution_flag).to be_valid
     end
   end
 
   describe 'when using scope distinct_flags' do
     it 'has distinct caution flags' do
-      create_list :caution_flag, 3, :accreditation_issue
+      create(:version, :preview, :with_institution)
+      create_list :caution_flag,
+                  3,
+                  :accreditation_issue,
+                  version_id: Version.last.id,
+                  institution_id: Institution.last.id
 
       expect(described_class.distinct_flags.to_a.size).to eq(1)
     end
   end
 
   describe '#build' do
-    let(:version) { create :version, :production }
-    let(:institution) { create :institution, version_id: version.id }
+    let(:version) { create :version, :production, :with_institution }
+    let(:institution) { version.institutions.last }
 
     # can't check equals on several fields because of quotes being escaped for inserting
     # into SQL
-    CautionFlagTemplate.descendants.each do |template|
+    CautionFlagTemplates::CautionFlagTemplate.descendants.each do |template|
       context "when creating a flag with #{template.name} values" do
         before do
           clause_sql = <<-SQL

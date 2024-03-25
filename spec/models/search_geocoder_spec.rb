@@ -102,9 +102,7 @@ RSpec.describe SearchGeocoder, type: :model do
 
   describe '#process_geocoder_address' do
     it 'does not process without version' do
-      institution = create :institution, :regular_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      institution = build_and_create_institution(:regular_address)
       geo_search_results = described_class.new(nil)
       geo_search_results.process_geocoder_address
       expect(geo_search_results.results).to eq([])
@@ -114,9 +112,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'decrements the results after a successful geocode' do
-      institution = create :institution, :regular_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:regular_address)
       geo_search_results = described_class.new(version)
       expect(geo_search_results.results.count).to eq(Institution.count)
       geo_search_results.process_geocoder_address
@@ -124,10 +120,8 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates using address field' do
-      institution = create :institution, :regular_address
-      update_institution_name(institution)
+      institution = build_and_create_institution(:regular_address)
       institution.update(address_2: nil, address_3: nil)
-      update_version_and_id(institution, version)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
@@ -135,9 +129,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates using address_1 field' do
-      institution = create :institution, :regular_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:regular_address)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
@@ -145,9 +137,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates using address_2 field' do
-      institution = create :institution, :regular_address_2
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:regular_address_2)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
@@ -155,9 +145,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates bad address fields' do
-      institution = create :institution, :bad_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:bad_address)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
@@ -165,9 +153,8 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates bad address fields, can not find address' do
-      institution = create :institution, :bad_address
-      update_institution_name(institution)
-      institution.update(version: version, version_id: version.id, address_1: 'sunshine highway')
+      institution = build_and_create_institution(:bad_address)
+      institution.update(address_1: 'sunshine highway')
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6511674.round(2))
@@ -176,9 +163,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates bad address fields by name' do
-      institution = create :institution, :bad_address_with_name
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:bad_address_with_name)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6840271.round(2))
@@ -187,9 +172,7 @@ RSpec.describe SearchGeocoder, type: :model do
 
     it 'coordinates bad address fields by name with numbering' do
       # fixed flakey test
-      institution = create :institution, :bad_address_with_name_numbered
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:bad_address_with_name_numbered)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(1)).to eq(33.7976469.round(1))
@@ -197,9 +180,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates bad address fields, country' do
-      institution = create :institution, :regular_address_country
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution(:regular_address_country)
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_country
       expect(Institution.last.latitude.round(2)).to eq(40.6150446.round(2))
@@ -207,9 +188,8 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'updates coordinates bad address fields, country with state' do
-      institution = create :institution, :regular_address_country
-      update_institution_name(institution)
-      institution.update(version: version, version_id: version.id, state: 'NY')
+      institution = build_and_create_institution(:regular_address_country)
+      institution.update(state: 'NY')
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_country
       expect(Institution.last.latitude.round(2)).to eq(42.6384261.round(2))
@@ -217,9 +197,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'adds records to the progress table as it runs' do
-      institution = create :institution, :regular_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution :regular_address
       initial_progress_count = PreviewGenerationStatusInformation.count
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
@@ -229,9 +207,7 @@ RSpec.describe SearchGeocoder, type: :model do
 
     it 'sets the ungeocodable flag to true if it could not find the coordinates' do
       allow(Rails.logger).to receive(:info)
-      institution = create :institution, :regular_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      institution = build_and_create_institution(:regular_address)
       geo_search = described_class.new(version)
       geo_search.update_mismatch(institution, nil)
       expect(institution.ungeocodable).to be true
@@ -251,7 +227,7 @@ RSpec.describe SearchGeocoder, type: :model do
 
       def run_exception_test(geocoding_exception)
         allow(Rails.logger).to receive(:info)
-        create_institution
+        build_and_create_institution(:regular_address)
         geo_search = described_class.new(version)
         results = geo_search.send :geocode_addy, 'exception_test', geocoding_exception, 0
         expect(results[0]).to be_nil
@@ -259,22 +235,13 @@ RSpec.describe SearchGeocoder, type: :model do
 
         expect(Rails.logger).to have_received(:info).with(/Geocode/).at_least(:once)
       end
-
-      def create_institution
-        institution = create :institution, :regular_address
-        update_version_and_id(institution, version)
-        update_institution_name(institution)
-      end
     end
   end
 
   describe '#initialize' do
     it 'only includes current preview institutions with null long and lat' do
-      non_geocoded_institution = create :institution, :regular_address
-      update_institution_name(non_geocoded_institution)
-      update_version_and_id(non_geocoded_institution, version)
-      geocoded_institution = create :institution, :location
-      update_version_and_id(geocoded_institution, version)
+      non_geocoded_institution = build_and_create_institution :regular_address
+      geocoded_institution = build_and_create_institution :location
 
       geocoder = described_class.new(version)
       expect(geocoder.results.first.longitude).to be_nil
@@ -283,17 +250,10 @@ RSpec.describe SearchGeocoder, type: :model do
       expect(geocoder.results.ids).to include(non_geocoded_institution.id)
     end
 
-    def create_institution(trait, version)
-      institution = create :institution, trait
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
-      institution
-    end
-
     it 'by_address collection only includes country USA or nil' do
-      institution1 = create_institution(:physical_address, version)
-      institution2 = create_institution(:regular_address_country_nil, version)
-      institution3 = create_institution(:regular_address_country, version)
+      institution1 = build_and_create_institution(:physical_address)
+      institution2 = build_and_create_institution(:regular_address_country_nil)
+      institution3 = build_and_create_institution(:regular_address_country)
 
       geocoder = described_class.new(version)
       expect(geocoder.by_address.ids).to include(institution1.id)
@@ -302,9 +262,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'stops trying to geocode after a successful geocode match' do
-      institution = create :institution, :mixed_addresses
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution :mixed_addresses
       geocoder = described_class.new(version)
       geocoder.process_geocoder_address
 
@@ -314,9 +272,7 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'geocodes foreign address in bad_address logic if unable to geocode by address lines' do
-      institution = create :institution, :foreign_bad_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution :foreign_bad_address
       geocoder = described_class.new(version)
       geocoder.process_geocoder_address
       expect(Institution.first.longitude).not_to be_nil
@@ -324,19 +280,21 @@ RSpec.describe SearchGeocoder, type: :model do
     end
 
     it 'does not set bad_address flag for foreign institutions' do
-      institution = create :institution, :foreign_bad_address
-      update_institution_name(institution)
-      update_version_and_id(institution, version)
+      build_and_create_institution :foreign_bad_address
       geocoder = described_class.new(version)
       geocoder.process_geocoder_address
       expect(Institution.first.bad_address).not_to eq(true)
     end
   end
 
-  def update_version_and_id(institution, version)
+  # Rails 7 is enforcing that version must be present when instantiating an institution
+  def build_and_create_institution(trait)
+    institution = build :institution, trait
     institution.version = version
     institution.version_id = version.id
     institution.save
+    update_institution_name(institution)
+    institution
   end
 
   def update_institution_name(institution)

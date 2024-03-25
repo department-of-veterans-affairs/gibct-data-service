@@ -2,7 +2,7 @@
 
 module V0
   class YellowRibbonProgramsController < ApiController
-    include Facets
+    include Search::Facets
 
     # GET /v0/yellow_ribbon_programs
     # ?page=1
