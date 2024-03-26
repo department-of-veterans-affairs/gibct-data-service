@@ -97,7 +97,7 @@ group :development, :test do
 
   gem 'factory_bot_rails', '> 5'
 
-  gem 'capybara', '2.11.0'
+  gem 'capybara', '3.40.0'
   gem 'database_cleaner'
   gem 'faker', '~> 3.1', '>= 3.1.1'
   gem 'parallel_tests'
