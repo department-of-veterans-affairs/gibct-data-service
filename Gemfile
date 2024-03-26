@@ -15,7 +15,7 @@ gem 'rails', '~> 6.1.7.7'
 # Gems with special version/repo needs
 
 # JSON API
-gem 'active_model_serializers', '~> 0.10.4'
+gem 'active_model_serializers', '~> 0.10.14'
 
 gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
