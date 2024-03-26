@@ -19,7 +19,7 @@ gem 'active_model_serializers', '~> 0.10.4'
 
 gem 'bcrypt', '~> 3.1.7'
 # Use cancancan for authorization
-gem 'cancancan', '~> 1.13', '>= 1.13.1'
+gem 'cancancan', '~> 3.5'
 gem 'geocoder', '~> 1.3', '>= 1.3.7'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
