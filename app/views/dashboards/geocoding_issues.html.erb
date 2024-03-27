@@ -1,0 +1,27 @@
+<div class="row row-space-6" style="padding-bottom: 10px">
+  <div class="col-xs-12">
+    <h2>
+      Geocoding Issues
+      <%= link_to 'Export', dashboard_export_ungeocodables_path,
+          class: "btn dashboard-btn-success btn-xs", role: "button" %>
+    </h2>
+    <table class="table table-hover table-condensed table-bordered table-responsive crosswalk-issues">
+      <thead class="sub">
+        <th>Institution Name</th>
+        <th>Facility Code</th>
+        <th>Address 1</th>
+        <th>Address 2</th>
+        <th>Address 3</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Zip</th>
+        <th>Country</th>
+        <th>IPEDS</th>
+        <th>OPE</th>
+      </thead>
+      <tbody>
+      <%= render partial: 'geocoding_issues', collection: @ungeocodables, as: :ungeocodable %>
+      </tbody>
+    </table>
+  </div>
+</div>

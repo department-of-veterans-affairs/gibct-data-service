@@ -4,6 +4,8 @@ class AccreditationRecord < ImportableRecord
   belongs_to(:accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id,
                                               inverse_of: :accreditation_records)
 
+  belongs_to(:accreditation_type_keyword, inverse_of: :accreditation_records)
+
   CSV_CONVERTER_INFO = {
     'dapipid' => { column: :dapip_id, converter: NumberConverter },
     'agencyid' => { column: :agency_id, converter: NumberConverter },
@@ -20,42 +22,38 @@ class AccreditationRecord < ImportableRecord
     'endingactionid' => { column: :ending_action_id, converter: NumberConverter }
   }.freeze
 
-  # The ACCREDITATIONS hash maps accreditation types (Regional, National, or
-  # Hybrid) to substrings in the name of the accrediting body. So, for example,
-  # if the accrediting agency is the "New England Medical Association", then
-  # the accreditation is 'Regional'.
-  ACCREDITATIONS = {
-    'regional' => [/middle/i, /new england/i, /north central/i, /southern/i, /western/i,
-                   /higher learning commission/i, /wasc/i],
-    'national' => [/career schools/i, /continuing education/i, /independent colleges/i,
-                   /biblical/i, /occupational/i, /distance/i, /new york/i, /transnational/i],
-    'hybrid' => [/acupuncture/i, /nursing/i, /health education/i, /liberal/i, /legal/i,
-                 /funeral/i, /osteopathic/i, /pediatric/i, /theological/i, /massage/i, /radiologic/i,
-                 /midwifery/i, /montessori/i, /career arts/i, /design/i, /dance/i, /music/i,
-                 /theatre/i, /chiropractic/i]
-  }.freeze
-
   validates :dapip_id, presence: true
   validates :agency_id, presence: true
   validates :agency_name, presence: true
   validates :program_id, presence: true
   validates :program_name, presence: true
 
+  delegate :accreditation_type, to: :accreditation_type_keyword, allow_nil: true
+
   after_initialize :set_accreditation_type
+
+  def type_of_accreditation
+    accreditation_type_keyword&.accreditation_type
+  end
 
   private
 
   def set_accreditation_type
-    self.accreditation_type = to_accreditation_type
-  end
-
-  def to_accreditation_type
     return if agency_name.blank?
 
-    ACCREDITATIONS.each_pair do |type, regexp_array|
-      return type if regexp_array.find { |regexp| agency_name.match(regexp) }
+    # The order matters. regional, national, hybrid - stop at the first match.
+    AccreditationTypeKeyword::ACCREDITATION_TYPES.each do |accreditation_type|
+      find_accreditation_type(AccreditationTypeKeyword.where(accreditation_type: accreditation_type))
+      break if accreditation_type_keyword
     end
+  end
 
-    nil
+  def find_accreditation_type(accreditation_type_keywords)
+    accreditation_type_keywords.each do |atk|
+      next unless agency_name.downcase.include?(atk.keyword_match)
+
+      self.accreditation_type_keyword = atk
+      break
+    end
   end
 end

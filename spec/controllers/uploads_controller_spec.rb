@@ -76,7 +76,7 @@ RSpec.describe UploadsController, type: :controller do
 
     def requirements(csv_class, requirement_class)
       csv_class.validators
-               .find { |requirements| requirements.class == requirement_class }
+               .find { |requirements| requirements.instance_of?(requirement_class) }
     end
 
     def map_attributes(csv_class, requirement_class)
@@ -97,8 +97,8 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       it 'returns validates numericality messages' do
-        validations_of_str = 'current academic year va bah rate'
-        message = { message: 'These columns can only contain numeric values: ', value: [validations_of_str] }
+        validations_of_str = ['facility code', 'institution name', 'institution country']
+        message = { message: 'These columns must have a value: ', value: validations_of_str }
         expect(assigns(:requirements)).to include(message)
       end
 
@@ -138,16 +138,38 @@ RSpec.describe UploadsController, type: :controller do
         expect do
           post :create,
                params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam'  }
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
                }
         end.to change(Weam, :count).by(2)
+      end
+
+      it 'sets multiple_files on the Upload row to false when not checked on the form' do
+        post :create,
+             params: { upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } }
+        # some goofiness with the column name multiple_files
+        expect(Upload.where(multiple_file_upload: true).last).to be nil
+      end
+
+      it 'sets multiple_file_upload on the Upload row to true when checked on the form' do
+        post :create,
+             params: {
+               upload: {
+                 upload_file: upload_file,
+                 skip_lines: 0,
+                 comment: 'Test',
+                 csv_type: 'Weam',
+                 multiple_file_upload: 'true'
+               }
+             }
+        # some goofiness with the column name multiple_files
+        expect(Upload.where(multiple_file_upload: true).last).not_to be nil
       end
 
       it 'redirects to show' do
         expect(
           post(:create,
                params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam'  }
+                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
                })
         ).to redirect_to(action: :show, id: assigns(:upload).id)
       end

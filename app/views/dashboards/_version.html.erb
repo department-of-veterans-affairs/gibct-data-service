@@ -1,27 +1,20 @@
 <tr class="<%= 'success' if version.production? %>">
-  <td><%= version.number %></td>
+  <td id='current-production-version'><%= version.number %></td>
   <td><%= version.uuid %></td>
   <td><%= version.user&.email %></td>
   <td><%= version.created_at&.to_formatted_s(:long_ordinal) %></td>
   <td>
     <% if version.generating? %>
         <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
-        Reload page to refresh preview version status
+        Preview generation in progress, page will periodically refresh the status until complete
     <% else %>
       <%= link_to 'Show GIBCT', version.gibct_link, target: "_blank", rel: "noopener noreferrer",
           class: "btn dashboard-btn-success btn-xs", role: "button" %>
-      <%= link_to 'Show redesign', version.sandbox_link, target: "_blank", rel: "noopener noreferrer",
-          class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <%= link_to 'Download Export CSV', dashboard_export_version_path(version.number),
           class: "btn dashboard-btn-warning btn-xs", role: "button" %>
-      <% if version.publishable? %>
-        <%= link_to 'Publish to Production', dashboard_push_path, method: :post,
-            data: { confirm: "Are you sure you wish to publish preview version #{version.number} to production?" },
-            class: "btn dashboard-btn-danger btn-xs",
-            role: "button",
-            id: "version_publish" %>
-      <% elsif version.preview? %>
-          <a class="btn dashboard-btn-danger btn-xs" disabled role="button">Publish to Production</a>
+      <% if current_user_can_upload? %>
+        <%= link_to 'Upload', new_upload_path('Institution'),
+          class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <% end %>
     <% end %>
   </td>

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'simplecov'
+require 'simplecov/single_file'
 SimpleCov.start do
   SimpleCov.minimum_coverage_by_file 90
 

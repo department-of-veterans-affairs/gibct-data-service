@@ -11,7 +11,7 @@ class ImportableRecord < ApplicationRecord
     return '' if errors.messages.empty?
 
     row = errors[:row].first.to_s
-    keys = errors.keys - [:row]
+    keys = errors.attribute_names - [:row]
 
     "Row #{row.presence || 'N/A'} : " + keys.map do |key|
       message = key.to_s == 'base' ? '' : "#{key} : "

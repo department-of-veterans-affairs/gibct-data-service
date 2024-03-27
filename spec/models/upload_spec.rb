@@ -83,17 +83,15 @@ RSpec.describe Upload, type: :model do
     end
 
     it 'returns all uploads if preview is blank' do
-      expect(described_class.since_last_preview_version.any?).to eq(true)
+      expect(described_class.since_last_version.any?).to eq(true)
     end
 
-    it 'returns uploads after preview' do
-      create :version, :preview
+    it 'returns uploads since the last version was generated' do
       described_class.where(csv_type: 'Weam')[1].update(ok: true)
-      create :version, :production, number: Version.current_preview.number
-      create :version, :preview
+      create :version, :production
       described_class.where(csv_type: 'Crosswalk')[1].update(ok: true)
-      expect(described_class.since_last_preview_version.map(&:csv_type)).to include('Crosswalk')
-      expect(described_class.since_last_preview_version.map(&:csv_type)).not_to include('Weam')
+      expect(described_class.since_last_version.map(&:csv_type)).to include('Crosswalk')
+      expect(described_class.since_last_version.map(&:csv_type)).not_to include('Weam')
     end
   end
 
@@ -102,6 +100,22 @@ RSpec.describe Upload, type: :model do
       upload = described_class.from_csv_type(Weam.name)
       expect(upload.csv_type).to eq(Weam.name)
       expect(upload.skip_lines).to eq(0)
+    end
+  end
+
+  describe 'failed fetches (which locks the fetch button)' do
+    before do
+      create(:upload, :failed_upload)
+    end
+
+    it 'returns true if there are locked fetches' do
+      expect(described_class.locked_fetches_exist?).to eq(true)
+    end
+
+    it '#unlock_fetches removes locked fetches' do
+      expect(described_class.locked_fetches_exist?).to eq(true)
+      described_class.unlock_fetches
+      expect(described_class.locked_fetches_exist?).to eq(false)
     end
   end
 end

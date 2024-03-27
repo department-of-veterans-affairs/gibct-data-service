@@ -23,7 +23,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name, CensusLatLong.name].include?(csv_type)
+    return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -50,7 +50,7 @@ class Upload < ApplicationRecord
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES
                 else
-                  [*UPLOAD_TYPES_ALL_NAMES, CensusLatLong.name]
+                  [*UPLOAD_TYPES_ALL_NAMES]
                 end
 
     Upload.select('DISTINCT ON("csv_type") *')
@@ -77,12 +77,12 @@ class Upload < ApplicationRecord
     uploads.sort_by { |upload| upload.csv_type.downcase }
   end
 
-  def self.since_last_preview_version
-    last_preview = Version.current_preview || Version.current_production
+  def self.since_last_version
+    last_version = Version.current_production
 
-    return Upload.last_uploads if last_preview.blank?
+    return Upload.last_uploads if last_version.blank?
 
-    Upload.last_uploads.where('updated_at > ?', last_preview.updated_at)
+    Upload.last_uploads.where('updated_at > ?', last_version.updated_at)
   end
 
   def self.from_csv_type(csv_type)
@@ -94,5 +94,13 @@ class Upload < ApplicationRecord
 
   def self.fetching_for?(csv_type)
     Upload.where(ok: false, completed_at: nil, csv_type: csv_type).any?
+  end
+
+  def self.unlock_fetches
+    where(ok: false).update(ok: true)
+  end
+
+  def self.locked_fetches_exist?
+    where(ok: false).any?
   end
 end

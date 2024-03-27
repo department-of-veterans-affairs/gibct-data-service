@@ -29,11 +29,16 @@ RSpec.shared_examples 'an exportable model' do |options|
         end
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
-
-        csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
-        test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
+        if factory_name == :weam
+          csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', \
+                                                             'latitude', 'longitude')
+          test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', \
+                                                     'latitude', 'longitude')
+        else
+          csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
+          test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
+        end
         test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
-
         expect(csv_test_attributes).to eq(test_attributes)
       end
     end

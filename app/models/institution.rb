@@ -36,6 +36,7 @@ class Institution < ImportableRecord
 
   MILE_METER_CONVERSION_RATE = 1609.34
 
+  # If columns need to be added, add them at the end to preserve upload integrity to other processes.
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -104,7 +105,6 @@ class Institution < ImportableRecord
     'school_closing' => { column: :school_closing, converter: BooleanConverter },
     'school_closing_on' => { column: :school_closing_on, converter: DateConverter },
     'school_closing_message' => { column: :school_closing_message, converter: BaseConverter },
-    'closure109' => { column: :closure109, converter: BooleanConverter },
     'complaints_facility_code' => { column: :complaints_facility_code, converter: NumberConverter },
     'complaints_financial_by_fac_code' => { column: :complaints_financial_by_fac_code, converter: NumberConverter },
     'complaints_quality_by_fac_code' => { column: :complaints_quality_by_fac_code, converter: NumberConverter },
@@ -172,16 +172,68 @@ class Institution < ImportableRecord
     'employer_provider' => { column: :employer_provider, converter: BooleanConverter },
     'school_provider' => { column: :school_provider, converter: BooleanConverter },
     'in_state_tuition_information' => { column: :in_state_tuition_information, converter: BaseConverter },
-    'vrrap_provider' => { column: :vrrap, converter: BooleanConverter }
+    'vrrap_provider' => { column: :vrrap, converter: BooleanConverter },
+    'ownership_name' => { column: :ownership_name, converter: BaseConverter },
+
+    # The following columns were not initially included in the CSV export and have been added at the end for
+    # completeness. If more columns are added to the CSV export in the future, they should be added here.
+    # The primary user (Brian Grubb) uses the export for an import to another process and order matters.
+    'version' => { column: :version, converter: NumberConverter },
+    'approval_status' => { column: :approval_status, converter: BaseConverter },
+    'stem_offered' => { column: :stem_offered, converter: BooleanConverter },
+    'priority_enrollment' => { column: :priority_enrollment, converter: BooleanConverter },
+    'online_only' => { column: :online_only, converter: BooleanConverter },
+    'independent_study' => { column: :independent_study, converter: BooleanConverter },
+    'distance_learning' => { column: :distance_learning, converter: BooleanConverter },
+    'address_1' => { column: :address_1, converter: BaseConverter },
+    'address_2' => { column: :address_2, converter: BaseConverter },
+    'address_3' => { column: :address_3, converter: BaseConverter },
+    'physical_address_1' => { column: :physical_address_1, converter: BaseConverter },
+    'physical_address_2' => { column: :physical_address_2, converter: BaseConverter },
+    'physical_address_3' => { column: :physical_address_3, converter: BaseConverter },
+    'physical_city' => { column: :physical_city, converter: BaseConverter },
+    'physical_state' => { column: :physical_state, converter: BaseConverter },
+    'physical_zip' => { column: :physical_zip, converter: BaseConverter },
+    'physical_country' => { column: :physical_country, converter: BaseConverter },
+    'dod_bah' => { column: :dod_bah, converter: NumberConverter },
+    'vet_tec_provider' => { column: :vet_tec_provider, converter: BooleanConverter },
+    'closure109' => { column: :closure109, converter: BooleanConverter },
+    'preferred_provider' => { column: :preferred_provider, converter: BooleanConverter },
+    'stem_indicator' => { column: :stem_indicator, converter: BooleanConverter },
+    'campus_type' => { column: :campus_type, converter: BaseConverter },
+    'parent_facility_code_id' => { column: :parent_facility_code_id, converter: BaseConverter },
+    'version_id' => { column: :version_id, converter: NumberConverter },
+    'hbcu' => { column: :hbcu, converter: NumberConverter },
+    'hcm2' => { column: :hcm2, converter: NumberConverter },
+    'menonly' => { column: :menonly, converter: NumberConverter },
+    'pctfloan' => { column: :pctfloan, converter: NumberConverter },
+    'relaffil' => { column: :relaffil, converter: NumberConverter },
+    'womenonly' => { column: :womenonly, converter: NumberConverter },
+    'institution_search' => { column: :institution_search, converter: BaseConverter },
+    'rating_count' => { column: :rating_count, converter: NumberConverter },
+    'rating_average' => { column: :rating_average, converter: NumberConverter },
+    'section_103_message' => { column: :section_103_message, converter: BaseConverter },
+    'bad_address' => { column: :bad_address, converter: BooleanConverter },
+    'high_school' => { column: :high_school, converter: BooleanConverter },
+    'chief_officer' => { column: :chief_officer, converter: BaseConverter },
+    'hsi' => { column: :hsi, converter: NumberConverter },
+    'nanti' => { column: :nanti, converter: NumberConverter },
+    'annhi' => { column: :annhi, converter: NumberConverter },
+    'aanapii' => { column: :aanapii, converter: NumberConverter },
+    'pbi' => { column: :pbi, converter: NumberConverter },
+    'tribal' => { column: :tribal, converter: NumberConverter },
+    'ungeocodable' => { column: :ungeocodable, converter: BooleanConverter }
   }.freeze
 
   attribute :distance
 
   has_many :caution_flags, -> { distinct_flags }, inverse_of: :institution, dependent: :destroy
   has_many :institution_programs, -> { order(:description) }, inverse_of: :institution, dependent: :nullify
-  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' }, inverse_of: :institution
+  has_many :versioned_school_certifying_officials, -> { order 'priority, last_name' },
+           inverse_of: :institution, dependent: nil
+
   has_many :yellow_ribbon_programs, dependent: :destroy
-  has_many :institution_category_ratings, dependent: :destroy
+  has_one  :institution_rating, dependent: :destroy
   belongs_to :version
 
   self.per_page = 10
@@ -277,7 +329,7 @@ class Institution < ImportableRecord
   # i.e. Charleston, SC
   def self.city_state_search_term?(search_term)
     if search_term.present?
-      /[a-zA-Z]+\,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
+      /[a-zA-Z]+,+ +[a-zA-Z][a-zA-Z]/.match(search_term) &&
         VetsJsonSchema::CONSTANTS['usaStates'].include?(search_term.upcase.scan(/[^, ]*$/).first.to_s)
     end
   end
@@ -293,6 +345,45 @@ class Institution < ImportableRecord
     escaped_term = search_term.clone
     %w[( ) + [ ]].each { |ec| escaped_term = escaped_term.gsub(ec.to_s, "\\#{ec}") }
     escaped_term
+  end
+
+  def self.filter_high_school
+    where(high_school: nil)
+  end
+
+  def self.ungeocodable_count
+    ungeocodables.count
+  end
+
+  def self.ungeocodables
+    version = Version.current_production
+    approved_institutions(version).where(latitude: nil, longitude: nil, ungeocodable: true).order(:institution)
+  end
+
+  def self.unaccredited_count
+    unaccrediteds.count
+  end
+
+  def self.unaccrediteds
+    return [] unless Version.current_production
+
+    version = Version.current_production
+
+    str = <<-SQL
+      SELECT institutions.institution, institutions.facility_code, institutions.ope, ars.agency_name, ars.accreditation_end_date
+      FROM "institutions"
+      INNER JOIN "versions" ON "versions"."id" = "institutions"."version_id"
+      left join accreditation_institute_campuses aic on institutions.ope = aic.ope
+      left outer join accreditation_records ars on aic.dapip_id = ars.dapip_id and ars.program_id = 1
+      WHERE (campus_type != 'E' OR campus_type IS NULL)
+      AND "institutions"."approved" = true
+      AND "institutions"."version_id" = #{version.id}
+      AND (institutions.accreditation_type is NULL
+      and institutions.ope is not NULL)
+      ORDER BY "institutions"."institution" ASC
+    SQL
+
+    ApplicationRecord.connection.execute(ApplicationRecord.sanitize_sql(str))
   end
 
   #
@@ -317,10 +408,6 @@ class Institution < ImportableRecord
     approved_institutions(version).where(vet_tec_provider: false)
   }
 
-  scope :missing_lat_long, lambda { |version|
-    approved_institutions(version).where(latitude: nil).or(approved_institutions(version).where(longitude: nil))
-  }
-
   #
   # V0
   #
@@ -333,12 +420,10 @@ class Institution < ImportableRecord
     zipcode_physical = production? ? 'zip' : 'physical_zip'
     country_physical = production? ? 'country' : 'physical_country'
     address_physical = production? ? 'address' : 'physical_address'
-
     search_term = query[:name]
     include_address = query[:include_address] || false
 
     clause = ['facility_code = :upper_search_term']
-
     processed = institution_search_term(search_term)
     processed_search_term = processed[:search_term]
     excluded_only = processed[:excluded_only]
@@ -349,7 +434,6 @@ class Institution < ImportableRecord
       clause <<  'institution_search % :institution_search_term'
       clause <<  'institution_search LIKE UPPER(:institution_search_term)'
     end
-
     clause << "UPPER(#{city_physical}) = :upper_search_term"
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
     clause << "#{zipcode_physical} = :search_term"
@@ -362,11 +446,11 @@ class Institution < ImportableRecord
     end
 
     where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       upper_search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%",
-                                       lower_contains_term: "%#{search_term.downcase}%",
-                                       search_term: search_term.to_s,
-                                       institution_search_term: "%#{processed_search_term}%"]))
+                                       { upper_search_term: search_term.upcase,
+                                         upper_contains_term: "%#{search_term.upcase}%",
+                                         lower_contains_term: "%#{search_term.downcase}%",
+                                         search_term: search_term.to_s,
+                                         institution_search_term: "%#{processed_search_term}%" }]))
   }
 
   # Orders institutions by
@@ -423,15 +507,15 @@ class Institution < ImportableRecord
     regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
-                                                                  search_term: search_term,
-                                                                  upper_search_term: search_term.upcase,
-                                                                  upper_starts_with_term: "#{search_term.upcase}%",
-                                                                  upper_contains_term: "%#{search_term.upcase}%",
-                                                                  alias_modifier: alias_modifier,
-                                                                  gibill_modifier: gibill_modifier,
-                                                                  max_gibill: max_gibill,
-                                                                  institution_search_term: institution_search_term,
-                                                                  regexp_exists_as_word: regexp_exists_as_word])
+                                                                  { search_term: search_term,
+                                                                    upper_search_term: search_term.upcase,
+                                                                    upper_starts_with_term: "#{search_term.upcase}%",
+                                                                    upper_contains_term: "%#{search_term.upcase}%",
+                                                                    alias_modifier: alias_modifier,
+                                                                    gibill_modifier: gibill_modifier,
+                                                                    max_gibill: max_gibill,
+                                                                    institution_search_term: institution_search_term,
+                                                                    regexp_exists_as_word: regexp_exists_as_word }])
 
     order(Arel.sql(sanitized_order_by))
   }
@@ -442,7 +526,7 @@ class Institution < ImportableRecord
     order_by << '(COALESCE(gibill, 0)/CAST(:max_gibill as FLOAT))' if max_gibill.nonzero?
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
-                                                                  max_gibill: max_gibill])
+                                                                  { max_gibill: max_gibill }])
 
     order(Arel.sql(sanitized_order_by))
   }
@@ -496,18 +580,18 @@ class Institution < ImportableRecord
     clause << 'UPPER(ialias) LIKE :upper_contains_term'
 
     where(sanitize_sql_for_conditions([clause.join(' OR '),
-                                       upper_search_term: search_term.upcase,
-                                       upper_contains_term: "%#{search_term.upcase}%",
-                                       institution_search_term: "%#{processed_search_term}%"]))
+                                       { upper_search_term: search_term.upcase,
+                                         upper_contains_term: "%#{search_term.upcase}%",
+                                         institution_search_term: "%#{processed_search_term}%" }]))
   }
 
   # rubocop:disable Metrics/BlockLength
   scope :filter_result_v1, lambda { |query|
     filters = []
-
     # ['column name', 'query param name']
     [
       ['country'],
+      ['name'],
       ['state'],
       # following are only present if including schools in results
       ['student_veteran'], # boolean
@@ -523,9 +607,39 @@ class Institution < ImportableRecord
                else
                  "= '#{param_value}'"
                end
-      filters << "#{filter_args.first} #{clause}"
-    end
 
+      # checks text field for a state and country else uses the state/country in filter
+      # added step that makes sure it won't return results where the state field is null
+      if filter_args.first == 'name'
+        state_country_search = query['name'].split(',') if query['name'].present?
+        if state_country_search
+          # tests cover this, but SimpleCov doesn't pick it up
+          # :nocov:
+          if state_country_search[1].present?
+            state = state_country_search[1].upcase.strip
+            filters << "state = '#{state.gsub("'", "''")}'"
+            filters << "physical_state = '#{state.gsub("'", "''")}'"
+            filters << 'state IS NOT NULL'
+            filters << 'physical_state IS NOT NULL'
+          end
+          if state_country_search[2].present?
+            country = state_country_search[2].upcase.strip
+            filters << "country = '#{country.gsub("'", "''")}'"
+            filters << "physical_country = '#{country.gsub("'", "''")}'"
+            filters << 'country IS NOT NULL'
+            filters << 'physical_country IS NOT NULL'
+          end
+          # :nocov:
+        end
+      else
+        filters << "#{filter_args.first} #{clause}"
+        if filter_args.first == 'state' || filter_args.first == 'country'
+          filters << "physical_#{filter_args.first} #{clause}"
+          filters << "#{filter_args.first} IS NOT NULL"
+          filters << "physical_#{filter_args.first} IS NOT NULL"
+        end
+      end
+    end
     # default state is checked in frontend so these will only be present if their corresponding boxes are unchecked
     exclude_schools = query.key?(:exclude_schools)
     exclude_employers = query.key?(:exclude_employers)
@@ -535,12 +649,7 @@ class Institution < ImportableRecord
     unless exclude_schools
       filters << 'institution_type_name NOT IN (:excludedTypes)' if query.key?(:excluded_school_types)
       filters << '(caution_flag IS NULL OR caution_flag IS FALSE)' if query.key?(:exclude_caution_flags)
-
-      if query.key?(:special_mission)
-        special_mission = query[:special_mission]
-        filters << 'relaffil IS NOT NULL' if special_mission == 'relaffil'
-        filters << "#{special_mission} = 1" unless special_mission == 'relaffil'
-      end
+      filters << set_special_mission_filters(query) if query.keys.find { |e| /special_mission/ =~ e }
     end
 
     # Cannot have preferred_provider checked when excluding vet_tec_providers
@@ -562,10 +671,26 @@ class Institution < ImportableRecord
     filters << 'vet_tec_provider IS FALSE' if exclude_vettec
 
     sanitized_clause = Institution.sanitize_sql_for_conditions([filters.join(' AND '),
-                                                                excludedTypes: query[:excluded_school_types]])
+                                                                { excludedTypes: query[:excluded_school_types] }])
 
     where(Arel.sql(sanitized_clause))
   }
+
+  def self.set_special_mission_filters(query)
+    filt = []
+    query.each_key do |k|
+      next unless k.include?('special_mission')
+
+      v = query[k]
+      next unless v.eql?('true')
+
+      str = k.sub('special_mission_', '')
+      filt << 'relaffil is not null' if str.eql?('relaffil')
+      filt << str + ' = 1' unless str.eql?('relaffil')
+    end
+
+    '(' + filt.join(' OR ') + ')'
+  end
 
   # rubocop:enable Metrics/BlockLength
   # Orders institutions by
@@ -618,14 +743,14 @@ class Institution < ImportableRecord
     regexp_exists_as_word = "\\y#{postgres_regex_escape(search_term)}\\y"
 
     sanitized_order_by = Institution.sanitize_sql_for_conditions([order_by.join(','),
-                                                                  search_term: search_term,
-                                                                  upper_search_term: search_term.upcase,
-                                                                  upper_starts_with_term: "#{search_term.upcase}%",
-                                                                  alias_modifier: alias_modifier,
-                                                                  gibill_modifier: gibill_modifier,
-                                                                  max_gibill: max_gibill,
-                                                                  institution_search_term: institution_search_term,
-                                                                  regexp_exists_as_word: regexp_exists_as_word])
+                                                                  { search_term: search_term,
+                                                                    upper_search_term: search_term.upcase,
+                                                                    upper_starts_with_term: "#{search_term.upcase}%",
+                                                                    alias_modifier: alias_modifier,
+                                                                    gibill_modifier: gibill_modifier,
+                                                                    max_gibill: max_gibill,
+                                                                    institution_search_term: institution_search_term,
+                                                                    regexp_exists_as_word: regexp_exists_as_word }])
 
     order(Arel.sql(sanitized_order_by))
   }
@@ -646,10 +771,10 @@ class Institution < ImportableRecord
     clause = ['institutions.*', distance_column]
 
     select(sanitize_sql_for_conditions([clause.join(','),
-                                        table_name: table_name,
-                                        latitude: latitude,
-                                        longitude: longitude,
-                                        conversion_rate: MILE_METER_CONVERSION_RATE]))
+                                        { table_name: table_name,
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                          conversion_rate: MILE_METER_CONVERSION_RATE }]))
   }
 
   scope :location_search, lambda { |query|
@@ -664,10 +789,10 @@ class Institution < ImportableRecord
     # rubocop:enable Layout/LineLength
 
     where(sanitize_sql_for_conditions([clause,
-                                       latitude: latitude,
-                                       longitude: longitude,
-                                       conversion_rate: MILE_METER_CONVERSION_RATE,
-                                       distance: distance]))
+                                       { latitude: latitude,
+                                         longitude: longitude,
+                                         conversion_rate: MILE_METER_CONVERSION_RATE,
+                                         distance: distance }]))
   }
 
   scope :location_order, lambda {

@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_16_092600) do
+ActiveRecord::Schema.define(version: 2024_01_22_235820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
@@ -71,10 +71,19 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.string "department_description"
     t.date "accreditation_end_date"
     t.integer "ending_action_id"
-    t.string "accreditation_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "accreditation_type_keyword_id"
+    t.index ["accreditation_type_keyword_id"], name: "index_accreditation_records_on_accreditation_type_keyword_id"
     t.index ["dapip_id"], name: "index_accreditation_records_on_dapip_id"
+  end
+
+  create_table "accreditation_type_keywords", force: :cascade do |t|
+    t.string "accreditation_type"
+    t.string "keyword_match"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["accreditation_type", "keyword_match"], name: "index_type_and_keyword_match", unique: true
   end
 
   create_table "arf_gi_bills", id: :serial, force: :cascade do |t|
@@ -258,31 +267,13 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "institution_category_ratings", force: :cascade do |t|
-    t.string "category_name", null: false
-    t.float "average_rating"
-    t.integer "total_count"
-    t.integer "rated5_count"
-    t.integer "rated4_count"
-    t.integer "rated3_count"
-    t.integer "rated2_count"
-    t.integer "rated1_count"
-    t.integer "na_count"
-    t.bigint "institution_id", null: false
-    t.index ["institution_id"], name: "index_institution_category_ratings_on_institution_id"
-  end
-
-  create_table "institution_category_ratings_archives", force: :cascade do |t|
-    t.string "category_name", null: false
-    t.float "average_rating"
-    t.integer "total_count"
-    t.integer "rated5_count"
-    t.integer "rated4_count"
-    t.integer "rated3_count"
-    t.integer "rated2_count"
-    t.integer "rated1_count"
-    t.integer "na_count"
-    t.bigint "institution_id", null: false
+  create_table "institution_owners", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "institution_name"
+    t.string "chief_officer"
+    t.string "ownership_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "institution_programs", id: :serial, force: :cascade do |t|
@@ -335,6 +326,146 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.integer "institution_id"
     t.index ["description", "version"], name: "index_institution_programs_archives"
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
+  end
+
+  create_table "institution_ratings", force: :cascade do |t|
+    t.integer "institution_id"
+    t.decimal "q1_avg", precision: 2, scale: 1
+    t.integer "q1_count"
+    t.decimal "q2_avg", precision: 2, scale: 1
+    t.integer "q2_count"
+    t.decimal "q3_avg", precision: 2, scale: 1
+    t.integer "q3_count"
+    t.decimal "q4_avg", precision: 2, scale: 1
+    t.integer "q4_count"
+    t.decimal "q5_avg", precision: 2, scale: 1
+    t.integer "q5_count"
+    t.decimal "q7_avg", precision: 2, scale: 1
+    t.integer "q7_count"
+    t.decimal "q8_avg", precision: 2, scale: 1
+    t.integer "q8_count"
+    t.decimal "q9_avg", precision: 2, scale: 1
+    t.integer "q9_count"
+    t.decimal "q10_avg", precision: 2, scale: 1
+    t.integer "q10_count"
+    t.decimal "q11_avg", precision: 2, scale: 1
+    t.integer "q11_count"
+    t.decimal "q12_avg", precision: 2, scale: 1
+    t.integer "q12_count"
+    t.decimal "q13_avg", precision: 2, scale: 1
+    t.integer "q13_count"
+    t.decimal "q14_avg", precision: 2, scale: 1
+    t.integer "q14_count"
+    t.decimal "q15_avg", precision: 2, scale: 1
+    t.integer "q15_count"
+    t.decimal "q16_avg", precision: 2, scale: 1
+    t.integer "q16_count"
+    t.decimal "q17_avg", precision: 2, scale: 1
+    t.integer "q17_count"
+    t.decimal "q18_avg", precision: 2, scale: 1
+    t.integer "q18_count"
+    t.decimal "q19_avg", precision: 2, scale: 1
+    t.integer "q19_count"
+    t.decimal "q20_avg", precision: 2, scale: 1
+    t.integer "q20_count"
+    t.decimal "m1_avg", precision: 2, scale: 1
+    t.decimal "m2_avg", precision: 2, scale: 1
+    t.decimal "m3_avg", precision: 2, scale: 1
+    t.decimal "m4_avg", precision: 2, scale: 1
+    t.decimal "m5_avg", precision: 2, scale: 1
+    t.decimal "m6_avg", precision: 2, scale: 1
+    t.decimal "m7_avg", precision: 2, scale: 1
+    t.decimal "overall_avg", precision: 2, scale: 1
+    t.integer "institution_rating_count"
+    t.index ["institution_id"], name: "index_institution_ratings_on_institution_id", unique: true
+  end
+
+  create_table "institution_ratings_archives", force: :cascade do |t|
+    t.integer "institution_id"
+    t.decimal "q1_avg", precision: 2, scale: 1
+    t.integer "q1_count"
+    t.decimal "q2_avg", precision: 2, scale: 1
+    t.integer "q2_count"
+    t.decimal "q3_avg", precision: 2, scale: 1
+    t.integer "q3_count"
+    t.decimal "q4_avg", precision: 2, scale: 1
+    t.integer "q4_count"
+    t.decimal "q5_avg", precision: 2, scale: 1
+    t.integer "q5_count"
+    t.decimal "q7_avg", precision: 2, scale: 1
+    t.integer "q7_count"
+    t.decimal "q8_avg", precision: 2, scale: 1
+    t.integer "q8_count"
+    t.decimal "q9_avg", precision: 2, scale: 1
+    t.integer "q9_count"
+    t.decimal "q10_avg", precision: 2, scale: 1
+    t.integer "q10_count"
+    t.decimal "q11_avg", precision: 2, scale: 1
+    t.integer "q11_count"
+    t.decimal "q12_avg", precision: 2, scale: 1
+    t.integer "q12_count"
+    t.decimal "q13_avg", precision: 2, scale: 1
+    t.integer "q13_count"
+    t.decimal "q14_avg", precision: 2, scale: 1
+    t.integer "q14_count"
+    t.decimal "q15_avg", precision: 2, scale: 1
+    t.integer "q15_count"
+    t.decimal "q16_avg", precision: 2, scale: 1
+    t.integer "q16_count"
+    t.decimal "q17_avg", precision: 2, scale: 1
+    t.integer "q17_count"
+    t.decimal "q18_avg", precision: 2, scale: 1
+    t.integer "q18_count"
+    t.decimal "q19_avg", precision: 2, scale: 1
+    t.integer "q19_count"
+    t.decimal "q20_avg", precision: 2, scale: 1
+    t.integer "q20_count"
+    t.decimal "m1_avg", precision: 2, scale: 1
+    t.decimal "m2_avg", precision: 2, scale: 1
+    t.decimal "m3_avg", precision: 2, scale: 1
+    t.decimal "m4_avg", precision: 2, scale: 1
+    t.decimal "m5_avg", precision: 2, scale: 1
+    t.decimal "m6_avg", precision: 2, scale: 1
+    t.decimal "m7_avg", precision: 2, scale: 1
+    t.decimal "overall_avg", precision: 2, scale: 1
+    t.integer "institution_rating_count"
+  end
+
+  create_table "institution_school_ratings", force: :cascade do |t|
+    t.string "survey_key"
+    t.string "age"
+    t.string "gender"
+    t.string "school"
+    t.string "facility_code"
+    t.string "degree"
+    t.date "graduation_date"
+    t.string "benefit_program"
+    t.string "enrollment_type"
+    t.string "monthly_payment_benefit"
+    t.string "payee_number"
+    t.string "objective_code"
+    t.date "response_date"
+    t.date "sent_date"
+    t.integer "q1"
+    t.integer "q2"
+    t.integer "q3"
+    t.integer "q4"
+    t.integer "q5"
+    t.string "q6"
+    t.integer "q7"
+    t.integer "q8"
+    t.integer "q9"
+    t.integer "q10"
+    t.integer "q11"
+    t.integer "q12"
+    t.integer "q13"
+    t.integer "q14"
+    t.integer "q15"
+    t.integer "q16"
+    t.integer "q17"
+    t.integer "q18"
+    t.integer "q19"
+    t.integer "q20"
   end
 
   create_table "institutions", id: :serial, force: :cascade do |t|
@@ -463,7 +594,6 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.boolean "solely_requires_coe"
     t.boolean "requires_coe_and_criteria"
     t.integer "count_of_caution_flags", default: 0
-    t.string "section_103_message"
     t.string "poo_status"
     t.integer "hbcu"
     t.integer "hcm2"
@@ -480,6 +610,18 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.boolean "school_provider"
     t.string "in_state_tuition_information"
     t.boolean "vrrap"
+    t.string "section_103_message", default: "no"
+    t.boolean "bad_address", default: false
+    t.boolean "high_school", default: false
+    t.string "chief_officer"
+    t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
+    t.boolean "ungeocodable", default: false
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
@@ -650,6 +792,17 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.boolean "school_provider"
     t.string "in_state_tuition_information"
     t.boolean "vrrap"
+    t.boolean "bad_address", default: false
+    t.boolean "high_school", default: false
+    t.string "chief_officer"
+    t.string "ownership_name"
+    t.integer "hsi"
+    t.integer "nanti"
+    t.integer "annhi"
+    t.integer "aanapii"
+    t.integer "pbi"
+    t.integer "tribal"
+    t.boolean "ungeocodable"
   end
 
   create_table "ipeds_cip_codes", id: :serial, force: :cascade do |t|
@@ -1276,6 +1429,10 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.index ["facility_code"], name: "index_post911_stats_on_facility_code"
   end
 
+  create_table "preview_generation_status_informations", force: :cascade do |t|
+    t.string "current_progress"
+  end
+
   create_table "programs", id: :serial, force: :cascade do |t|
     t.string "facility_code", limit: 8, null: false
     t.string "institution_name", limit: 80, null: false
@@ -1301,19 +1458,6 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.string "phone_extension"
     t.string "email"
     t.index ["facility_code"], name: "index_school_certifying_officials_on_facility_code"
-  end
-
-  create_table "school_ratings", force: :cascade do |t|
-    t.string "rater_id", null: false
-    t.string "facility_code", null: false
-    t.integer "overall_experience"
-    t.integer "quality_of_classes"
-    t.integer "online_instruction"
-    t.integer "job_preparation"
-    t.integer "gi_bill_support"
-    t.integer "veteran_community"
-    t.integer "marketing_practices"
-    t.datetime "rated_at", null: false
   end
 
   create_table "scorecard_degree_programs", force: :cascade do |t|
@@ -1484,6 +1628,20 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.index ["state"], name: "index_sec702s_on_state", unique: true
   end
 
+  create_table "section1015s", force: :cascade do |t|
+    t.string "facility_code", null: false
+    t.string "institution"
+    t.date "effective_date"
+    t.integer "active_students"
+    t.date "last_graduate"
+    t.string "celo"
+    t.string "weams_withdrawal_processed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["celo"], name: "index_section1015s_on_celo"
+    t.index ["facility_code"], name: "index_section1015s_on_facility_code"
+  end
+
   create_table "sessions", id: :serial, force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
@@ -1539,6 +1697,7 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "completed_at"
+    t.boolean "multiple_file_upload", default: false
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"
@@ -1612,6 +1771,7 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.datetime "updated_at", null: false
     t.binary "uuid", null: false
     t.datetime "completed_at"
+    t.boolean "geocoded", default: false
     t.index ["number"], name: "index_versions_on_number"
     t.index ["user_id"], name: "index_versions_on_user_id"
     t.index ["uuid"], name: "index_versions_on_uuid", unique: true
@@ -1686,6 +1846,7 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.integer "csv_row"
     t.string "institution_search"
     t.string "in_state_tuition_information"
+    t.boolean "high_school", default: false
     t.index ["cross"], name: "index_weams_on_cross"
     t.index ["facility_code"], name: "index_weams_on_facility_code"
     t.index ["institution"], name: "index_weams_on_institution"
@@ -1805,11 +1966,13 @@ ActiveRecord::Schema.define(version: 2021_07_16_092600) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
+  add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
   add_foreign_key "crosswalk_issues", "ipeds_hds"
   add_foreign_key "crosswalk_issues", "weams"
+  add_foreign_key "institution_ratings", "institutions"
   add_foreign_key "institutions", "versions"
   add_foreign_key "versioned_school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"

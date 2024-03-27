@@ -65,5 +65,18 @@ FactoryBot.define do
       csv_name { 'census_lat_long.csv' }
       ok { true }
     end
+
+    trait :failed_upload do
+      csv_type { Scorecard.name }
+      csv { Scorecard.name }
+      ok { false }
+      completed_at { nil }
+    end
+
+    trait :disabled_upload do
+      csv_type { CipCode.name }
+      csv { CipCode.name }
+      ok { true }
+    end
   end
 end

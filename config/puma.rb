@@ -25,6 +25,8 @@ workers 3
 # the given timeout. If not the worker process will be restarted. Default
 # value is 60 seconds.
 #
-worker_timeout 60
+
+worker_timeout(60)
+worker_timeout(3600) if ENV['RAILS_ENV'].eql?('development')
 
 preload_app!

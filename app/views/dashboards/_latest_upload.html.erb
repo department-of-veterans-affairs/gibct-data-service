@@ -1,6 +1,4 @@
-<% if hide_upload_type(upload.csv_type) %>
-<%else %>
-  <tr id="row_<%=upload.csv_type%>"
+<tr id="row_<%=upload.csv_type%>"
       class="<%= latest_upload_class(upload) %>"
       title="<%= latest_upload_title(upload) %>">
     <td><%= upload.csv_type %></td>
@@ -19,11 +17,21 @@
       <% end %>
 
       <% if GROUP_FILE_TYPES_NAMES.include?(upload.csv_type) %>
-        <%= link_to 'Upload', new_group_path(upload.csv_type),
-                    class: "btn dashboard-btn-success btn-xs", role: "button" %>
+        <% if disable_upload?(upload) %>
+          <span class="btn dashboard-btn-success btn-xs disabled">Upload</span>
+        <% else %>
+          <%= link_to 'Upload', new_group_path(upload.csv_type),
+                  class: "btn dashboard-btn-success btn-xs", 
+                  role: "button" %>
+        <% end %>          
       <% else %>
-        <%= link_to 'Upload', new_upload_path(upload.csv_type),
-                    class: "btn dashboard-btn-success btn-xs", role: "button" %>
+        <% if disable_upload?(upload) %>
+          <span class="btn dashboard-btn-success btn-xs disabled">Upload</span>
+        <% else %>
+          <%= link_to 'Upload', new_upload_path(upload.csv_type),
+                  class: "btn dashboard-btn-success btn-xs", 
+                  role: "button" %>
+        <% end %>            
       <% end %>
 
       <% if upload.ok? %>
@@ -36,4 +44,3 @@
       <% end %>
     </td>
   </tr>
-<%end %>

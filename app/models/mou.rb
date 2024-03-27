@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Mou < ImportableRecord
-  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i.freeze
+  STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
 
   CSV_CONVERTER_INFO = {
     'ope_id' => { column: :ope, converter: OpeConverter },

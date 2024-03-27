@@ -70,8 +70,8 @@ RSpec.configure do |config|
   end
 
   # Run each test in a transaction
-  config.before do
-    DatabaseCleaner.strategy = :transaction
+  config.before do |example|
+    DatabaseCleaner.strategy = example.metadata[:strategy] || :transaction
   end
 
   # Only runs before examples which have been flagged :js => true.
@@ -91,6 +91,14 @@ RSpec.configure do |config|
   # Cause database_cleaner to clean database with selected strategy after
   # each test. (MPH)
   config.after do
+    DatabaseCleaner.clean
+
+  # After trying numerous hacks recommended by Google searches, this is the only
+  # hack we found that works and it was homegrown. None of the recommended fixes
+  # worked at all.
+  rescue NoMethodError => e
+    puts "\n\n*** DatabaseCleaner failed: #{e.message}, trying again ***\n\n"
+    sleep(0.1)
     DatabaseCleaner.clean
   end
 

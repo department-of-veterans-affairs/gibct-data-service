@@ -58,21 +58,20 @@ RSpec.describe DashboardsController, type: :controller do
       CSV_TYPES_ALL_TABLES_CLASSES.each do |klass|
         load_table(klass)
       end
+      create(:version, :production)
     end
 
-    it 'builds a new institutions table and returns the version when successful' do
+    it 'Redirects to the dashboard' do
       post(:build)
 
-      expect(assigns(:version)).not_to be_nil
-      expect(Institution.count).to be_positive
+      expect(response).to have_http_status(:redirect)
+      expect(response).to redirect_to('/dashboards')
     end
 
-    it 'does not change the institutions table when not successful' do
-      allow(InstitutionBuilder::Factory).to receive(:add_crosswalk).and_raise(StandardError, 'BOOM!')
+    it 'Initiates a background job to generate the preview & geocode' do
+      initial_progress_count = PreviewGenerationStatusInformation.count
       post(:build)
-
-      expect(assigns(:error_msg)).to eq('BOOM!')
-      expect(Institution.count).to be_zero
+      expect(PreviewGenerationStatusInformation.count).to be > initial_progress_count
     end
   end
 
@@ -143,47 +142,6 @@ RSpec.describe DashboardsController, type: :controller do
     end
   end
 
-  describe 'GET push' do
-    before do
-      allow(Archiver).to receive(:archive_previous_versions).and_return(nil)
-    end
-
-    login_user
-
-    context 'with no existing preview records' do
-      it 'returns an error message' do
-        post(:push)
-        expect(flash.alert).to eq('No preview version available')
-        expect(Version.current_production).to be_blank
-      end
-    end
-
-    describe 'with existing preview records' do
-      before do
-        create :version
-      end
-
-      context 'when successful' do
-        it 'sets the new production version' do
-          SiteMapperHelper.silence do
-            current_preview = Version.current_preview
-            expect(Version.current_production).to eq(nil)
-            post(:push)
-            expect(Version.current_production.production).to eq(true)
-            expect(Version.current_production).to eq(current_preview)
-          end
-        end
-
-        it 'updates production data' do
-          SiteMapperHelper.silence do
-            post(:push)
-          end
-          expect(flash.notice).to eq('Production data updated')
-        end
-      end
-    end
-  end
-
   describe 'GET api_fetch' do
     login_user
 
@@ -218,6 +176,195 @@ RSpec.describe DashboardsController, type: :controller do
       create :upload, :scorecard_in_progress
       get(:api_fetch, params: { csv_type: Scorecard.name })
       expect(flash.alert).to include(message)
+    end
+
+    context 'when fetching Accreditation files which do not require an api key' do
+      before do
+        system('cp spec/fixtures/Accreditation/download.zip tmp')
+      end
+
+      it 'downloads a zip file from the edu website' do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(described_class).to receive(:download_accreditation_csv).and_return(true)
+        # rubocop:enable RSpec/AnyInstance
+
+        CSV_TYPES_NO_API_KEY_TABLE_NAMES.each do |klass_nm|
+          get(:api_fetch, params: { csv_type: klass_nm })
+          expect(File.exist?('tmp/download.zip')).to be true
+        end
+      end
+
+      it 'extracts the content of the zip file' do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(described_class).to receive(:download_accreditation_csv).and_return(true)
+        # rubocop:enable RSpec/AnyInstance
+
+        get(:api_fetch, params: { csv_type: CSV_TYPES_NO_API_KEY_TABLE_NAMES.first })
+
+        expect(File.exist?('tmp/AccreditationActions.csv')).to be true
+        expect(File.exist?('tmp/AccreditationRecords.csv')).to be true
+        expect(File.exist?('tmp/InstitutionCampus.csv')).to be true
+      end
+    end
+  end
+
+  describe 'GET #geocoding_issues' do
+    login_user
+
+    before do
+      create(:version, :production)
+      create(:institution, :location, :lat_long)
+      create(:institution, :foreign_bad_address, :ungeocodable)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Institution.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+
+      get(:geocoding_issues)
+    end
+
+    it 'contains one ungeocodable institution' do
+      expect(assigns(:ungeocodables).length).to eq(1)
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe 'GET #accreditation_issues' do
+    login_user
+
+    before do
+      create(:version, :production)
+      create(:institution, :accreditation_issue)
+      create(:institution, :with_accreditation)
+      create(:accreditation_institute_campus)
+      create(:accreditation_record)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Institution.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+
+      get(:accreditation_issues)
+    end
+
+    it 'contains one institution with an accreditation issue' do
+      expect(assigns(:unaccrediteds).count).to eq(1)
+    end
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe 'GET #export_ungeocodables' do
+    login_user
+
+    it 'causes a CSV to be exported' do
+      allow(Institution).to receive(:export_ungeocodables)
+      get(:export_ungeocodables, params: { format: :csv })
+      expect(Institution).to have_received(:export_ungeocodables)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_ungeocodables, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="ungeocodables.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_ungeocodables, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
+
+  describe 'GET #export_unaccrediteds' do
+    login_user
+
+    before do
+      create(:version, :production)
+      create(:institution, :accreditation_issue)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Institution.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+
+    it 'causes a CSV to be exported' do
+      allow(Institution).to receive(:export_unaccrediteds)
+      get(:export_unaccrediteds, params: { format: :csv })
+      expect(Institution).to have_received(:export_unaccrediteds)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_unaccrediteds, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="unaccrediteds.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_unaccrediteds, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
+
+  describe 'GET #export_orphans' do
+    login_user
+
+    it 'causes a CSV to be exported' do
+      allow(CrosswalkIssue).to receive(:export_orphans)
+      get(:export_orphans, params: { format: :csv })
+      expect(CrosswalkIssue).to have_received(:export_orphans)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_orphans, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="orphans.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_orphans, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
+
+  describe 'GET #export_partials' do
+    login_user
+
+    it 'causes a CSV to be exported' do
+      allow(CrosswalkIssue).to receive(:export_partials)
+      get(:export_partials, params: { format: :csv })
+      expect(CrosswalkIssue).to have_received(:export_partials)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export_partials, params: { format: :csv })
+      expect(response.headers['Content-Disposition']).to include('filename="partials.csv"')
+    end
+
+    it 'redirects to index on error' do
+      expect(get(:export_partials, params: { format: :xml })).to redirect_to(action: :index)
+    end
+  end
+
+  describe 'GET #unlock_fetches' do
+    login_user
+
+    it 'redirects to the index page on completion' do
+      expect(get(:unlock_fetches, params: { format: :html })).to redirect_to(action: :index)
+    end
+
+    it 'unlocks all fetches' do
+      create(:upload, :failed_upload)
+      expect(Upload.locked_fetches_exist?).to eq(true)
+      get(:unlock_fetches, params: { format: :html })
+      expect(Upload.locked_fetches_exist?).to eq(false)
+      expect(flash[:notice]).to match(/All fetches have been unlocked/)
+    end
+
+    it 'flashes an error message if unlocking fails' do
+      allow(Upload).to receive(:unlock_fetches).and_return(false)
+      create(:upload, :failed_upload)
+      expect(Upload.locked_fetches_exist?).to eq(true)
+      get(:unlock_fetches, params: { format: :html })
+      expect(Upload.locked_fetches_exist?).to eq(true)
+      expect(flash[:alert]).to match(/Unlocking fetches failed/)
     end
   end
 end

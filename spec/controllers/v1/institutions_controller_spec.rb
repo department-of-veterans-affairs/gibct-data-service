@@ -113,7 +113,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       get(:autocomplete, params: { term: 'harv', exclude_caution_flags: true })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('autocomplete')
     end
 
@@ -149,7 +149,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'filters by country' do
       institution = create(:institution, :start_like_harv, :production_version)
-      create(:institution, :start_like_harv, :production_version, country: 'CAN')
+      create(:institution, :start_like_harv, :production_version, country: 'CAN', physical_country: 'CAN')
       get(:autocomplete, params: { term: 'harv', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
@@ -159,7 +159,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'filters by state' do
       institution = create(:institution, :start_like_harv, :production_version)
-      create(:institution, :start_like_harv, :production_version, state: 'MD')
+      create(:institution, :start_like_harv, :production_version, state: 'MD', physical_state: 'MD')
       get(:autocomplete, params: { term: 'harv', state: 'ma' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
@@ -304,28 +304,28 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       get(:index, params: { name: 'acme' })
 
       expect(JSON.parse(response.body)['data'].count).to eq(2)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filter by uppercase country returns results' do
       get(:index, params: { name: 'institution', country: 'USA' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filter by lowercase country returns results' do
       get(:index, params: { name: 'institution', country: 'usa' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
     it 'filter by uppercase state returns results' do
       get(:index, params: { state: 'NY' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
@@ -351,7 +351,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     it 'filter by lowercase state returns results' do
       get(:index, params: { state: 'ny' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 

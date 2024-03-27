@@ -14,11 +14,9 @@ module InstitutionBuilder
 
     def self.build_hd(version_id)
       str = <<-SQL
-        UPDATE institutions SET #{columns_for_update(IpedsHd)}, longitude = ipeds_hds.longitud
+        UPDATE institutions SET #{columns_for_update(IpedsHd)}
         FROM ipeds_hds
         WHERE institutions.cross = ipeds_hds.cross
-        AND ipeds_hds.latitude BETWEEN -90 AND 90
-        AND ipeds_hds.longitud BETWEEN -180 AND 180
         AND institutions.version_id = #{version_id}
       SQL
 

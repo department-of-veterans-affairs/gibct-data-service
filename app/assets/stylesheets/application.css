@@ -24,7 +24,7 @@
   src: url('/assets/glyphicons-halflings-regular.eot?#iefix')
       format('embedded-opentype'),
     url('/assets/glyphicons-halflings-regular.woff') format('woff'),
-    url('/assets/glyphicons-halflings-regular.ttf") format("truetype'),
+    url('/assets/glyphicons-halflings-regular.ttf') format('truetype'),
     url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular')
       format('svg');
 }
@@ -239,6 +239,11 @@ table.crosswalk-issues thead.sub th {
 .dashboard-btn-danger:hover {
   color: #ffffff !important;
   background-color: #dd5050;
+}
+
+.dashboard-btn-aligned-right {
+  float: right;
+  margin-right: 50px;
 }
 
 .archives .even:not(:hover) td {

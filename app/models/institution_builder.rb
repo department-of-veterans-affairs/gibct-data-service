@@ -24,6 +24,7 @@ module InstitutionBuilder
   end
 
   class Factory
+    include CommonInstitutionBuilder::VersionGeneration
     extend Common
 
     def self.run_insertions(version)
@@ -32,6 +33,7 @@ module InstitutionBuilder
       add_crosswalk(version.id)
       add_sec103(version.id)
       add_sva(version.id)
+      add_owner(version.id)
       add_vsoc(version.id)
       add_eight_key(version.id)
       add_accreditation(version.id)
@@ -57,55 +59,74 @@ module InstitutionBuilder
       build_zip_code_rates_from_weams(version.id)
       build_institution_programs(version.id)
       build_versioned_school_certifying_official(version.id)
-      ScorecardBuilder.add_lat_lon_from_scorecard(version.id)
       SuspendedCautionFlags.build(version.id)
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
-      build_messages[CensusLatLong.name] = LatLongBuilder.build(version.id)
+      add_section1015(version.id)
+
+      rate_institutions(version.id) if
+        ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+
+      unless initial_buildout?
+        update_longitude_and_latitude(version.id)
+        update_ungeocodable(version.id)
+        geocode_institutions(version)
+      end
+      geocode_using_csv_file if initial_buildout?
 
       build_messages.filter { |_k, v| v.present? }
     end
 
     def self.run(user)
-      error_msg = nil
+      prev_gen_start = Time.now.utc
       version = Version.create!(production: false, user: user)
       build_messages = {}
       begin
         Institution.transaction do
-          build_messages = run_insertions(version)
-        end
-
-        if VetsApi::Service.feature_enabled?('gibct_school_ratings')
-          Institution.transaction do
-            RatingsBuilder.build(version.id)
+          # to fix 'cancelling statement due to statement timeout' issue
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '120s';")
+          if staging?
+            # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
+            # rubocop:disable Rails/SkipsModelValidations
+            Institution.in_batches.update_all(
+              accredited: nil,
+              accreditation_type: nil,
+              accreditation_status: nil,
+              caution_flag: nil,
+              caution_flag_reason: nil
+            )
+            # rubocop:enable Rails/SkipsModelValidations
           end
+          build_messages = run_insertions(version)
+
+          version.update(production: true, completed_at: Time.now.utc.to_s(:db))
+          GibctSiteMapper.new(ping: true) if production?
+          Archiver.archive_previous_versions if Settings.archiver.archive
+          log_info_status PUBLISH_COMPLETE_TEXT
         end
-
-        version.update(completed_at: Time.now.utc.to_s(:db))
-
-        notice = 'Institution build was successful'
-        success = true
       rescue ActiveRecord::StatementInvalid => e
         notice = 'There was an error occurring at the database level'
+        log_info_status notice
         error_msg = e.message
         Rails.logger.error "#{notice}: #{error_msg}"
-
-        success = false
+        version.delete
       rescue StandardError => e
         notice = 'There was an error of unexpected origin'
+        log_info_status notice
         error_msg = e.message
         Rails.logger.error "#{notice}: #{error_msg}"
-
-        success = false
+        version.delete
       end
+      prev_gen_end = Time.now.utc
 
-      version.delete unless success
-
-      { version: Version.current_preview, error_msg: error_msg,
-        notice: notice, success: success, messages: build_messages }
+      Rails.logger.info "\n\n\n"
+      Rails.logger.info "*** Preview Generation Beg: #{prev_gen_start}"
+      Rails.logger.info "*** Preview Generation End: #{prev_gen_end}\n\n\n"
     end
 
     def self.initialize_with_weams(version)
+      log_info_status 'Starting creation of base Institution rows'
+
       columns = Weam::COLS_USED_IN_INSTITUTION.map(&:to_s)
       timestamp = Time.now.utc.to_s(:db)
       conn = ApplicationRecord.connection
@@ -114,12 +135,15 @@ module InstitutionBuilder
       str += Weam
              .select(columns)
              .select("#{version.number.to_i} as version")
+             .select("#{version.number.to_i} as version")
              .select("#{conn.quote(timestamp)} as created_at")
              .select("#{conn.quote(timestamp)} as updated_at")
              .select('v.id as version_id')
              .to_sql
       str += "INNER JOIN versions v ON v.number = #{version.number}"
-      Institution.connection.insert(str)
+
+      Institution.connection.insert(str) # rubocop:disable Rails/SkipsModelValidations
+      log_info_status 'Deleting duplicates'
 
       # remove duplicates
       delete_str = <<-SQL
@@ -133,13 +157,24 @@ module InstitutionBuilder
     end
 
     def self.add_crosswalk(version_id)
+      log_info_status 'Updating Crosswalk information'
+
+      # Weams should be the source of truth if it contains any Crosswalk data for
+      # the fields cross, ope & ope6 (derived from ope). Do not overrwrite with
+      # data from the crosswalks table.
       str = <<-SQL
         institutions.facility_code = crosswalks.facility_code
+        and institutions.cross is null
+        and institutions.ope   is null
       SQL
       add_columns_for_update(version_id, Crosswalk, str)
+
+      log_info_status 'Complete'
     end
 
     def self.add_sec109_closed_school(version_id)
+      log_info_status 'Updating Sec109 information'
+
       str = <<-SQL
         institutions.facility_code = sec109_closed_schools.facility_code
       SQL
@@ -148,6 +183,8 @@ module InstitutionBuilder
     end
 
     def self.add_sva(version_id)
+      log_info_status 'Updating SVA information'
+
       str = <<-SQL
         UPDATE institutions SET
           student_veteran = TRUE, student_veteran_link = svas.student_veteran_link
@@ -159,6 +196,15 @@ module InstitutionBuilder
       Institution.connection.update(str)
     end
 
+    def self.add_owner(version_id)
+      log_info_status 'Updating owner information'
+
+      str = <<-SQL
+        institutions.facility_code = institution_owners.facility_code
+      SQL
+      add_columns_for_update(version_id, InstitutionOwner, str)
+    end
+
     def self.add_vsoc(version_id)
       str = <<-SQL
         institutions.facility_code = vsocs.facility_code
@@ -167,6 +213,8 @@ module InstitutionBuilder
     end
 
     def self.add_eight_key(version_id)
+      log_info_status 'Updating Eight Key information'
+
       str = <<-SQL
         UPDATE institutions SET eight_keys = TRUE
         FROM eight_keys
@@ -186,23 +234,25 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_accreditation(version_id)
+      log_info_status 'Updating Accredation type'
+
       # Set the `accreditation_type`
       str = <<-SQL
-        UPDATE institutions SET
-          accreditation_type = accreditation_records.accreditation_type
-        FROM accreditation_institute_campuses, accreditation_records
-        WHERE institutions.ope = accreditation_institute_campuses.ope
-          AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
-          AND institutions.ope IS NOT NULL
-          AND accreditation_records.accreditation_end_date IS NULL
-          AND accreditation_records.program_id = 1
-          AND institutions.version_id = #{version_id}
-          AND accreditation_records.accreditation_type = {{ACC_TYPE}};
+        UPDATE institutions
+           SET accreditation_type = accreditation_type_keywords.accreditation_type
+          FROM accreditation_institute_campuses
+             , accreditation_records
+             , accreditation_type_keywords
+         WHERE institutions.version_id = #{version_id}
+           AND institutions.ope IS NOT NULL
+           AND institutions.ope = accreditation_institute_campuses.ope
+           AND accreditation_institute_campuses.dapip_id = accreditation_records.dapip_id
+           AND accreditation_records.accreditation_end_date IS NULL
+           AND accreditation_records.program_id = 1
+           AND accreditation_records.accreditation_type_keyword_id = accreditation_type_keywords.id
       SQL
 
-      %w[hybrid national regional].each do |acc_type|
-        Institution.connection.update(str.gsub('{{ACC_TYPE}}', "'#{acc_type}'"))
-      end
+      Institution.connection.update(str)
 
       where_clause = <<-SQL
           WHERE institutions.ope = accreditation_institute_campuses.ope
@@ -229,6 +279,7 @@ module InstitutionBuilder
       SQL
 
       # Set the `accreditation_status`
+      log_info_status 'Updating Accredation status'
       str = <<-SQL
         UPDATE institutions
         SET accreditation_status = aa.action_description,
@@ -241,6 +292,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
 
       # Create `caution_flags` rows
+      log_info_status 'Building Caution Flag 1'
       caution_flag_clause = <<-SQL
         FROM accreditation_institute_campuses, accreditation_actions aa, institutions
         #{where_clause}
@@ -250,6 +302,7 @@ module InstitutionBuilder
     end
 
     def self.add_arf_gi_bill(version_id)
+      log_info_status 'Updating Arf GI Bill information'
       str = <<-SQL
         UPDATE institutions SET gibill = arf_gi_bills.gibill
         FROM arf_gi_bills
@@ -261,6 +314,7 @@ module InstitutionBuilder
     end
 
     def self.add_post_911_stats(version_id)
+      log_info_status 'Updating Post 911 Stats information'
       str = <<-SQL
         UPDATE institutions SET
           p911_recipients = tuition_and_fee_count,
@@ -280,6 +334,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_mou(version_id)
+      log_info_status 'Updating MOU information'
       str = <<-SQL
         UPDATE institutions SET
           dodmou = mous.dodmou,
@@ -291,6 +346,7 @@ module InstitutionBuilder
 
       Institution.connection.update(str)
 
+      log_info_status 'Updating Caution Flag Reason'
       str = <<-SQL
         UPDATE institutions SET
           caution_flag_reason = concat_ws(', ', caution_flag_reason, reasons_list.reason)
@@ -303,6 +359,7 @@ module InstitutionBuilder
 
       Institution.connection.update(str)
 
+      log_info_status 'Building Caution Flag 2'
       caution_flag_clause = <<-SQL
         FROM institutions, (
           SELECT distinct(ope) FROM mous
@@ -328,6 +385,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_sec_702(version_id)
+      log_info_status 'Updating Sec 702 information'
       where_conditions = <<-SQL
           AND institutions.institution_type_name = 'PUBLIC'
           AND institutions.version_id = #{version_id}
@@ -355,6 +413,7 @@ module InstitutionBuilder
 
       Institution.connection.update(str)
 
+      log_info_status 'Creating Caution Flag rows 3'
       caution_flag_clause = <<-SQL
         FROM institutions
         WHERE NOT institutions.sec_702
@@ -372,6 +431,7 @@ module InstitutionBuilder
     def self.add_settlement(version_id)
       # Update institutions table for "Download Data on All Schools (Excel)"
       # Update all institutions without an IPEDs value
+      log_info_status 'Updating Settlement information'
       str = <<-SQL
         UPDATE institutions SET
           caution_flag = TRUE,
@@ -392,6 +452,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
 
       # Update all institutions with an IPEDs value
+      log_info_status 'Updating IPED Caution Flag information'
       str = <<-SQL
         UPDATE institutions SET
           caution_flag = TRUE,
@@ -412,6 +473,7 @@ module InstitutionBuilder
       Institution.connection.update(str)
 
       # Create Caution Flags
+      log_info_status 'Creating Caution Flag rows'
       timestamp = Time.now.utc.to_s(:db)
       conn = ApplicationRecord.connection
       insert_columns = %i[
@@ -456,6 +518,7 @@ module InstitutionBuilder
       CautionFlag.connection.execute(sql)
 
       # Update all institutions with an IPEDs value
+      log_info_status 'Creating IPEDs Caution Flag rows'
       str = <<-SQL
             INSERT INTO caution_flags (#{insert_columns.join(' , ')})
             SELECT institutions.id,
@@ -493,6 +556,7 @@ module InstitutionBuilder
     # Updating caution_flag and caution_flag_reason are needed for usage by the link
     # "Download Data on All Schools (Excel)" at https://www.va.gov/gi-bill-comparison-tool/
     def self.add_hcm(version_id)
+      log_info_status 'Updating HCM Caution Flag information'
       hcm_list = <<-SQL
         (SELECT ope,
             array_to_string(array_agg(distinct('Heightened Cash Monitoring (' || hcm_reason || ')')), ', ') AS reasons
@@ -528,6 +592,7 @@ module InstitutionBuilder
     end
 
     def self.add_outcome(version_id)
+      log_info_status 'Updating Outcome information'
       str = <<-SQL
         institutions.facility_code = outcomes.facility_code
       SQL
@@ -535,6 +600,7 @@ module InstitutionBuilder
     end
 
     def self.add_stem_offered(version_id)
+      log_info_status 'Updating Stem offered information'
       str = <<-SQL
         UPDATE institutions SET stem_offered=true
         FROM ipeds_cip_codes, stem_cip_codes
@@ -549,6 +615,7 @@ module InstitutionBuilder
     end
 
     def self.add_yellow_ribbon_programs(version_id)
+      log_info_status 'Creating Yellow Ribbon Program rows'
       str = <<-SQL
         INSERT INTO yellow_ribbon_programs
           (version, institution_id, degree_level, division_professional_school,
@@ -588,6 +655,7 @@ module InstitutionBuilder
     end
 
     def self.add_school_closure(version_id)
+      log_info_status 'Updating School Closure information'
       str = <<-SQL
         UPDATE institutions SET
           school_closing = TRUE,
@@ -602,6 +670,7 @@ module InstitutionBuilder
     end
 
     def self.add_vet_tec_provider(version_id)
+      log_info_status 'Updating Vet Tec information'
       str = <<-SQL
       UPDATE institutions SET vet_tec_provider = TRUE
         from versions
@@ -612,6 +681,7 @@ module InstitutionBuilder
     end
 
     def self.build_zip_code_rates_from_weams(version_id)
+      log_info_status 'Creating Zip Code Rate information'
       timestamp = Time.now.utc.to_s(:db)
       conn = ApplicationRecord.connection
 
@@ -646,6 +716,7 @@ module InstitutionBuilder
     end
 
     def self.add_extension_campus_type(version_id)
+      log_info_status 'Updating Campus Type information'
       str = <<-SQL
       UPDATE institutions SET campus_type = 'E'
       FROM versions
@@ -657,29 +728,20 @@ module InstitutionBuilder
     end
 
     def self.add_sec103(version_id)
-      ihl_prefixes = Institution::IHL_FACILITY_CODE_PREFIXES.map { |prefix| "'#{prefix}'" }.join(', ')
+      log_info_status 'Updating Sec103 information'
       str = <<-SQL
-        -- set default message for IHL institutions
-        UPDATE institutions SET section_103_message = '#{Institution::DEFAULT_IHL_SECTION_103_MESSAGE}'
-        FROM weams
-        WHERE weams.facility_code = institutions.facility_code
-          AND SUBSTRING(weams.facility_code, 1, 2) IN(#{ihl_prefixes})
-          AND institutions.version_id = #{version_id};
-
-        -- set message based on sec103s
+       -- set message based on sec103s
         UPDATE institutions SET #{columns_for_update(Sec103)},
           section_103_message = CASE
-            WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = false
-              AND (sec103s.requires_coe_and_criteria = true OR sec103s.requires_coe_and_criteria IS NULL) THEN
-              'Requires Certificate of Eligibility (COE) and additional criteria'
-            WHEN sec103s.complies_with_sec_103 = true AND sec103s.solely_requires_coe = true THEN
-              'Requires Certificate of Eligibility (COE)'
+            WHEN sec103s.complies_with_sec_103 = true THEN
+              'Yes'
+            WHEN sec103s.complies_with_sec_103 = false THEN
+              'No'
             ELSE institutions.section_103_message END,
           approved = CASE
             WHEN sec103s.complies_with_sec_103 = false THEN FALSE
             ELSE institutions.approved END
         FROM sec103s INNER JOIN weams ON weams.facility_code = sec103s.facility_code
-            AND SUBSTRING(weams.facility_code, 1, 2) IN(#{ihl_prefixes})
         WHERE institutions.facility_code = sec103s.facility_code AND institutions.version_id = #{version_id};
       SQL
 
@@ -689,6 +751,7 @@ module InstitutionBuilder
     # edu_programs.length_in_weeks is being used twice because
     # it is a short term fix to an issue that they aren't sure how we should fix
     def self.build_institution_programs(version_id)
+      log_info_status 'Creating Institution Program rows'
       str = <<-SQL
         INSERT INTO institution_programs (
           program_type,
@@ -756,6 +819,7 @@ module InstitutionBuilder
     end
 
     def self.build_versioned_school_certifying_official(version_id)
+      log_info_status 'Creating Versioned School Certifying Officials rows'
       valid_priorities = SchoolCertifyingOfficial::VALID_PRIORITY_VALUES.map { |value| "'#{value}'" }.join(', ')
       str = <<-SQL
         INSERT INTO versioned_school_certifying_officials(
@@ -792,6 +856,7 @@ module InstitutionBuilder
     end
 
     def self.add_provider_type(version_id)
+      log_info_status 'Updating Provider Type information'
       str = <<-SQL
         UPDATE institutions SET
           school_provider = CASE WHEN institution_type_name IN (:schools) AND vet_tec_provider IS FALSE THEN TRUE ELSE FALSE END,
@@ -800,8 +865,334 @@ module InstitutionBuilder
       SQL
 
       Institution.connection.update(Institution.sanitize_sql_for_conditions([str,
-                                                                             employer: Institution::EMPLOYER,
-                                                                             schools: Institution::SCHOOLS]))
+                                                                             { employer: Institution::EMPLOYER,
+                                                                               schools: Institution::SCHOOLS }]))
+    end
+
+    def self.initial_buildout?
+      production_version_id = Version.current_production.id if Version.current_production
+      production_version_id.nil?
+    end
+
+    def self.geocode_using_csv_file
+      PerformInsitutionTablesMaintenanceJob.perform_later unless production?
+      sleep 120 # Give the vacuuming a chancd to more or less complete
+      CSV.foreach('sample_csvs/institution_long_lat_ung.csv', headers: true, col_sep: ',') do |row|
+        Institution.where(
+          facility_code: row['facility_code']
+        ).update(
+          longitude: row['longitude'], latitude: row['latitude'], ungeocodable: row['ungeocodable']
+        )
+      end
+    end
+
+    # Pull forward into the current version the long/lat data for approved
+    # institutions where the addy hasn't changed.
+    def self.update_longitude_and_latitude(version_id)
+      log_info_status 'Updating Longitude & Latitude information'
+      # get current version id
+      current_version_id = Version.current_production.id
+
+      str = <<-SQL
+        UPDATE institutions i SET
+          latitude = prod_i.latitude,
+          longitude = prod_i.longitude
+        FROM (
+          SELECT longitude, latitude, physical_address_1, physical_address_2, physical_address_3, physical_city, physical_state, physical_country, physical_zip, facility_code
+          FROM institutions
+          WHERE version_id = #{current_version_id}
+          AND longitude IS NOT NULL
+          AND latitude IS NOT NULL
+          AND approved IS TRUE
+          ) prod_i
+        WHERE (i.latitude IS NULL AND i.longitude IS NULL)
+
+        AND (i.physical_address_1 = prod_i.physical_address_1
+            or (i.physical_address_1 is null and prod_i.physical_address_1 is null)
+            )
+
+        AND (i.physical_address_2 = prod_i.physical_address_2
+            or (i.physical_address_2 is null and prod_i.physical_address_2 is null)
+            )
+
+        AND (i.physical_address_3 = prod_i.physical_address_3
+            or (i.physical_address_3 is null and prod_i.physical_address_3 is null)
+            )
+
+        AND (i.physical_city = prod_i.physical_city
+            or (i.physical_city is null and prod_i.physical_city is null)
+            )
+
+        AND (i.physical_state = prod_i.physical_state
+            or (i.physical_state is null and prod_i.physical_state is null)
+            )
+
+        AND (i.physical_zip = prod_i.physical_zip
+            or (i.physical_zip is null and prod_i.physical_zip is null)
+            )
+
+        AND i.physical_country = prod_i.physical_country
+        AND i.facility_code = prod_i.facility_code
+        AND i.version_id = #{version_id}
+        AND i.approved IS TRUE
+      SQL
+
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
+    end
+
+    # set the ungeocodable flag to true if it was ungeocodable and the addy has
+    # not changed
+    def self.update_ungeocodable(version_id)
+      log_info_status 'Updating Ungeocodable flag'
+      # get current version id
+      current_version_id = Version.current_production.id
+
+      str = <<-SQL
+        UPDATE institutions i SET
+          ungeocodable = true
+        FROM (
+          SELECT physical_address_1, physical_address_2, physical_address_3
+               , physical_city, physical_state, physical_country, physical_zip
+               , facility_code
+            FROM institutions
+           WHERE version_id = #{current_version_id}
+             AND longitude    IS NULL
+             AND latitude     IS NULL
+             AND approved     IS TRUE
+             AND ungeocodable IS TRUE
+          ) prod_i
+        WHERE (i.latitude IS NULL AND i.longitude IS NULL)
+
+          AND (i.physical_address_1 = prod_i.physical_address_1
+              or (i.physical_address_1 is null and prod_i.physical_address_1 is null))
+
+          AND (i.physical_address_2 = prod_i.physical_address_2
+              or (i.physical_address_2 is null and prod_i.physical_address_2 is null))
+
+          AND (i.physical_address_3 = prod_i.physical_address_3
+              or (i.physical_address_3 is null and prod_i.physical_address_3 is null))
+
+          AND (i.physical_city = prod_i.physical_city
+              or (i.physical_city is null and prod_i.physical_city is null))
+
+          AND (i.physical_state = prod_i.physical_state
+              or (i.physical_state is null and prod_i.physical_state is null))
+
+          AND (i.physical_zip = prod_i.physical_zip
+              or (i.physical_zip is null and prod_i.physical_zip is null))
+
+          AND i.physical_country = prod_i.physical_country
+          AND i.facility_code    = prod_i.facility_code
+          AND i.version_id       = #{version_id}
+
+          AND i.approved IS TRUE
+      SQL
+
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
+    end
+
+    def self.geocode_institutions(version)
+      start = Time.now.utc
+      log_info_status 'Geocoding...'
+      search_geocoder = SearchGeocoder.new(version)
+      search_geocoder.process_geocoder_address if !Rails.env.eql?('test') && search_geocoder.by_address.present?
+      version.update(geocoded: true)
+      finish = Time.now.utc
+      Rails.logger.info "\n\n\n"
+      Rails.logger.info "*** Goecoding Beg: #{start}"
+      Rails.logger.info "*** Geocoding End: #{finish}\n\n\n"
+    end
+
+    def self.delete_institution_data(pp_id, min_inst_id, max_inst_id)
+      [CautionFlag, VersionedSchoolCertifyingOfficial, InstitutionProgram,
+       YellowRibbonProgram, InstitutionRating].each do |klass|
+        log_info_status "deleting prior unpublished preview #{klass.name} data"
+        klass
+          .where('institution_id between ? and ?', min_inst_id, max_inst_id).in_batches.delete_all
+      end
+
+      log_info_status 'deleting prior preview Insititution data'
+      Institution.where(version_id: pp_id).in_batches.delete_all
+      log_info_status 'deleting prior preview ZipcodeRate data'
+      ZipcodeRate.where(version_id: pp_id).in_batches.delete_all
+    end
+
+    def self.rate_institutions(version_id)
+      log_info_status 'Creating Institution Rating rows'
+
+      str = <<-SQL
+
+      insert into institution_ratings(
+        institution_id, q1_avg, q1_count, q2_avg, q2_count, q3_avg, q3_count, q4_avg, q4_count, q5_avg, q5_count, q7_avg, q7_count, q8_avg, q8_count,
+        q9_avg, q9_count, q10_avg, q10_count, q11_avg, q11_count, q12_avg, q12_count, q13_avg, q13_count, q14_avg, q14_count, m1_avg,
+        m2_avg, m3_avg, m4_avg, overall_avg, institution_rating_count
+      )
+        select institutions.id
+              ,case when q1_weighted_count = 0 then 0 else round(q1_weighted_count/q1_count::numeric,1) end as q1_avg, q1_count
+              ,case when q2_weighted_count = 0 then 0 else round(q2_weighted_count/q2_count::numeric,1) end as q2_avg, q2_count
+              ,case when q3_weighted_count = 0 then 0 else round(q3_weighted_count/q3_count::numeric,1) end as q3_avg, q3_count
+              ,case when q4_weighted_count = 0 then 0 else round(q4_weighted_count/q4_count::numeric,1) end as q4_avg, q4_count
+              ,case when q5_weighted_count = 0 then 0 else round(q5_weighted_count/q5_count::numeric,1) end as q5_avg, q5_count
+              ,case when q7_weighted_count = 0 then 0 else round(q7_weighted_count/q7_count::numeric,1) end as q7_avg, q7_count
+              ,case when q8_weighted_count = 0 then 0 else round(q8_weighted_count/q8_count::numeric,1) end as q8_avg, q8_count
+              ,case when q9_weighted_count = 0 then 0 else round(q9_weighted_count/q9_count::numeric,1) end as q9_avg, q9_count
+              ,case when q10_weighted_count = 0 then 0 else round(q10_weighted_count/q10_count::numeric,1) end as q10_avg, q10_count
+              ,case when q11_weighted_count = 0 then 0 else round(q11_weighted_count/q11_count::numeric,1) end as q11_avg, q11_count
+              ,case when q12_weighted_count = 0 then 0 else round(q12_weighted_count/q12_count::numeric,1) end as q12_avg, q12_count
+              ,case when q13_weighted_count = 0 then 0 else round(q13_weighted_count/q13_count::numeric,1) end as q13_avg, q13_count
+              ,case when q14_weighted_count = 0 then 0 else round(q14_weighted_count/q14_count::numeric,1) end as q14_avg, q14_count
+              ,case when q1_count = 0 and q2_count = 0 and q3_count = 0 and q4_count = 0 and q5_count = 0 then 0
+               else
+                 round(
+                 (q1_weighted_count::numeric / m1_count) +
+                 (q2_weighted_count::numeric / m1_count) +
+                 (q3_weighted_count::numeric / m1_count) +
+                 (q4_weighted_count::numeric / m1_count) +
+                 (q5_weighted_count::numeric / m1_count)
+                 ,1)
+               end as m1_avg
+
+               ,case when q7_count = 0 and q8_count = 0 and q9_count = 0 and q10_count = 0 then 0
+               else
+                 round(
+                 (q7_weighted_count::numeric  / m2_count) +
+                 (q8_weighted_count::numeric  / m2_count) +
+                 (q9_weighted_count::numeric  / m2_count) +
+                 (q10_weighted_count::numeric / m2_count)
+                 ,1)
+               end as m2_avg
+
+               ,case when q11_count = 0 and q12_count = 0 then 0
+               else
+                round(
+                 (q11_weighted_count::numeric / m3_count) +
+                 (q12_weighted_count::numeric / m3_count)
+                ,1)
+               end as m3_avg
+
+               ,case when q13_count = 0 and q14_count = 0 then 0
+               else
+                round(
+                 (q13_weighted_count::numeric / m4_count) +
+                 (q14_weighted_count::numeric / m4_count)
+                ,1)
+               end as m4_avg
+               ,
+              round(
+               ((q1_weighted_count::numeric / overall_count)
+               +(q2_weighted_count::numeric / overall_count)
+               +(q3_weighted_count::numeric / overall_count)
+               +(q4_weighted_count::numeric / overall_count)
+               +(q5_weighted_count::numeric / overall_count)
+               +(q7_weighted_count::numeric / overall_count)
+               +(q8_weighted_count::numeric / overall_count)
+               +(q9_weighted_count::numeric / overall_count)
+               +(q10_weighted_count::numeric / overall_count)
+               +(q11_weighted_count::numeric / overall_count)
+               +(q12_weighted_count::numeric / overall_count)
+               +(q13_weighted_count::numeric / overall_count)
+               +(q14_weighted_count::numeric / overall_count))
+              ,1) as overall_average
+              ,institution_rating_count
+         from (
+                  select facility_code
+                  ,sum(case when q1 is null or q1 <= 0 then 0 else 1 end) as q1_count
+                  ,sum(case when q1 is null or q1 <= 0 then 0 when q1 > 4 then 4 else q1 end) as q1_weighted_count
+                  ,sum(case when q2 is null or q2 <= 0 then 0 else 1 end) as q2_count
+                  ,sum(case when q2 is null or q2 <= 0 then 0 when q2 > 4 then 4 else q2 end) as q2_weighted_count
+                  ,sum(case when q3 is null or q3 <= 0 then 0 else 1 end) as q3_count
+                  ,sum(case when q3 is null or q3 <= 0 then 0 when q3 > 4 then 4 else q3 end) as q3_weighted_count
+                  ,sum(case when q4 is null or q4 <= 0 then 0 else 1 end) as q4_count
+                  ,sum(case when q4 is null or q4 <= 0 then 0 when q4 > 4 then 4 else q4 end) as q4_weighted_count
+                  ,sum(case when q5 is null or q5 <= 0 then 0 else 1 end) as q5_count
+                  ,sum(case when q5 is null or q5 <= 0 then 0 when q5 > 4 then 4 else q5 end) as q5_weighted_count
+                  ,sum(case when q7 is null or q7 <= 0 then 0 else 1 end) as q7_count
+                  ,sum(case when q7 is null or q7 <= 0 then 0 when q7 > 4 then 4 else q7 end) as q7_weighted_count
+                  ,sum(case when q8 is null or q8 <= 0 then 0 else 1 end) as q8_count
+                  ,sum(case when q8 is null or q8 <= 0 then 0 when q8 > 4 then 4 else q8 end) as q8_weighted_count
+                  ,sum(case when q9 is null or q9 <= 0 then 0 else 1 end) as q9_count
+                  ,sum(case when q9 is null or q9 <= 0 then 0 when q9 > 4 then 4 else q9 end) as q9_weighted_count
+                  ,sum(case when q10 is null or q10 <= 0 then 0 else 1 end) as q10_count
+                  ,sum(case when q10 is null or q10 <= 0 then 0 when q10 > 4 then 4 else q10 end) as q10_weighted_count
+                  ,sum(case when q11 is null or q11 <= 0 then 0 else 1 end) as q11_count
+                  ,sum(case when q11 is null or q11 <= 0 then 0 when q11 > 4 then 4 else q11 end) as q11_weighted_count
+                  ,sum(case when q12 is null or q12 <= 0 then 0 else 1 end) as q12_count
+                  ,sum(case when q12 is null or q12 <= 0 then 0 when q12 > 4 then 4 else q12 end) as q12_weighted_count
+                  ,sum(case when q13 is null or q13 <= 0 then 0 else 1 end) as q13_count
+                  ,sum(case when q13 is null or q13 <= 0 then 0 when q13 > 4 then 4 else q13 end) as q13_weighted_count
+                  ,sum(case when q14 is null or q14 <= 0 then 0 else 1 end) as q14_count
+                  ,sum(case when q14 is null or q14 <= 0 then 0 when q14 > 4 then 4 else q14 end) as q14_weighted_count
+
+                  ,sum(
+                    (case when q1 is null or q1 <= 0 then 0 else 1 end) +
+                    (case when q2 is null or q2 <= 0 then 0 else 1 end) +
+                    (case when q3 is null or q3 <= 0 then 0 else 1 end) +
+                    (case when q4 is null or q4 <= 0 then 0 else 1 end) +
+                    (case when q5 is null or q5 <= 0 then 0 else 1 end)
+             ) as m1_count
+            ,sum(
+              (case when q7 is null or q7 <= 0 then 0 else 1 end) +
+              (case when q8 is null or q8 <= 0 then 0 else 1 end) +
+              (case when q9 is null or q9 <= 0 then 0 else 1 end) +
+              (case when q10 is null or q10 <= 0 then 0 else 1 end)
+             ) as m2_count
+
+            ,sum(
+              (case when q11 is null or q11 <= 0 then 0 else 1 end) +
+              (case when q12 is null or q12 <= 0 then 0 else 1 end)
+             ) as m3_count
+
+            ,sum(
+              (case when q13 is null or q13 <= 0 then 0 else 1 end) +
+              (case when q14 is null or q14 <= 0 then 0 else 1 end)
+             ) as m4_count
+
+            ,sum(
+              (case when q1 is null or q1 <= 0 then 0 else 1 end) +
+              (case when q2 is null or q2 <= 0 then 0 else 1 end) +
+              (case when q3 is null or q3 <= 0 then 0 else 1 end) +
+              (case when q4 is null or q4 <= 0 then 0 else 1 end) +
+              (case when q5 is null or q5 <= 0 then 0 else 1 end) +
+              (case when q7 is null or q7 <= 0 then 0 else 1 end) +
+              (case when q8 is null or q8 <= 0 then 0 else 1 end) +
+              (case when q9 is null or q9 <= 0 then 0 else 1 end) +
+              (case when q10 is null or q10 <= 0 then 0 else 1 end) +
+              (case when q11 is null or q11 <= 0 then 0 else 1 end) +
+              (case when q12 is null or q12 <= 0 then 0 else 1 end) +
+              (case when q13 is null or q13 <= 0 then 0 else 1 end) +
+              (case when q14 is null or q14 <= 0 then 0 else 1 end)
+             ) as overall_count
+
+             ,count(*) as institution_rating_count
+             from institution_school_ratings
+             group by facility_code
+             ) as facility_ratings inner join institutions on facility_ratings.facility_code = institutions.facility_code and institutions.version_id = #{version_id}
+      SQL
+      sql = InstitutionRating.send(:sanitize_sql, [str])
+      InstitutionRating.connection.execute(sql)
+    end
+
+    def self.add_section1015(version_id)
+      log_info_status 'Updating Section1015 information'
+
+      str = <<-SQL
+        UPDATE institutions
+        SET approved = false
+        FROM section1015s
+        WHERE institutions.facility_code = section1015s.facility_code
+        AND institutions.version_id =  #{version_id}
+        AND section1015s.celo not in ('n', 'N');
+      SQL
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
+    end
+
+    def self.log_info_status(message)
+      Rails.logger.info "*** #{Time.now.utc} #{message}"
+
+      UpdatePreviewGenerationStatusJob.perform_later(message)
     end
   end
 end

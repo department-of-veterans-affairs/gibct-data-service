@@ -3,14 +3,14 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:2.6.6-slim-stretch AS base
+FROM ruby:3.2.2-slim-buster AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl libpq-dev dumb-init shared-mime-info
+    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
@@ -40,13 +40,14 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.2.11'
+ENV BUNDLER_VERSION='2.4.10'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN bundle exec whenever --update-crontab
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
@@ -60,7 +61,7 @@ FROM base AS k8s
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
-RUN curl http://aia.pki.va.gov/PKI/AIA/VA/VA-Internal-S2-RCA1-v1.cer > VA.cer && openssl x509 -inform der -in VA.cer -out VA.pem && mv VA.pem /usr/local/share/ca-certificates/VA.crt && update-ca-certificates
+
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 USER gi-bill-data-service
@@ -77,6 +78,13 @@ FROM base AS production
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+
+RUN whoami
+
+# Download VA Certs
+COPY ./import-va-certs.sh .
+RUN ./import-va-certs.sh
+
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 USER gi-bill-data-service

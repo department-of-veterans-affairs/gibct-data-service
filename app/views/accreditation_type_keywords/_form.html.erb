@@ -1,0 +1,22 @@
+<%= form_for @accreditation_type_keyword, remote: true do |form| %>
+  <div class="field">
+    <%= form.hidden_field :accreditation_type, value: @accreditation_type %>
+  </div>
+
+
+  <div>
+    <%= form.label :keyword %>
+    <%= form.text_field :keyword_match %>
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+  
+  <% if @accreditation_type_keyword.errors.any? %>
+    <div>
+      <ul>
+        <% @accreditation_type_keyword.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

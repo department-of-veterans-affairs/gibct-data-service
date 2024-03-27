@@ -10,6 +10,7 @@ class ApiController < ApplicationController
 
   private
 
+  # :nocov:
   def page
     Integer(params[:page] || '1')
   rescue ArgumentError
@@ -21,6 +22,7 @@ class ApiController < ApplicationController
   rescue ArgumentError
     nil
   end
+  # :nocov:
 
   # Newest production data version assumed when version param is undefined
   def resolve_version

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module DashboardsHelper
+  include CommonInstitutionBuilder::VersionGeneration
+
   def latest_upload_class(upload)
     return '' if upload.ok?
     return 'danger' if UPLOAD_TYPES_REQUIRED_NAMES.include?(upload.csv_type)
@@ -16,29 +18,71 @@ module DashboardsHelper
   end
 
   def can_generate_preview(preview_versions)
-    'disabled' if preview_versions[0]&.generating?
+    return 'disabled' if preview_versions[0]&.generating?
+
+    # We also want to disable while publishing is in progress
+    pgsi = PreviewGenerationStatusInformation.last
+    return 'disabled' unless
+      pgsi.nil? ||
+      pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
+      pgsi.current_progress.start_with?('There was an error')
   end
 
   def cannot_fetch_api(csv_type)
     Upload.fetching_for?(csv_type)
   end
 
-  # In production Hide upload types that are disabled via boolean property not_prod_ready?
-  #
-  # If an upload type has a feature_flag String property check if enabled
-  def hide_upload_type(csv_type)
-    return true if production? && UPLOAD_TYPES_NO_PROD_NAMES.include?(csv_type)
-
-    upload_type = UPLOAD_TYPES.select do |upload|
-      name = if upload[:klass].is_a? String
-               upload[:klass]
-             else
-               upload[:klass].name
-             end
-
-      name == csv_type && upload[:feature_flag].present?
-    end.first
-
-    upload_type.present? && !VetsApi::Service.feature_enabled?(upload_type[:feature_flag])
+  def preview_generation_started?
+    PreviewGenerationStatusInformation.exists?
   end
+
+  def preview_generation_completed?
+    return unless preview_generation_started?
+
+    completed = false
+
+    pgsi = PreviewGenerationStatusInformation.last
+    if pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
+       pgsi.current_progress.start_with?('There was an error')
+      completed = true
+      PreviewGenerationStatusInformation.delete_all
+      # maintain the indexes and tables in the local, dev & staging envs.
+      # The production env times out and periodic maintenance should be run
+      # in production anyway.
+      PerformInsitutionTablesMaintenanceJob.perform_later unless production?
+    end
+
+    completed
+  end
+
+  def locked_fetches_exist?
+    Upload.locked_fetches_exist?
+  end
+
+  def formatted_keywords(accreditation_type)
+    AccreditationTypeKeyword
+      .where(accreditation_type: accreditation_type)
+      .order(:keyword_match)
+      .pluck(:keyword_match)
+      .join(', ')
+  end
+
+  def disable_upload?(upload)
+    CSV_TYPES_NO_UPLOAD_TABLE_NAMES.include?(upload.csv_type)
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity
+  def current_user_can_upload?
+    return true if ENV.fetch('RAILS_ENV').eql?('test') || ENV.fetch('RAILS_ENV').eql?('development')
+
+    if staging?
+      return true if current_user.email.downcase.start_with?('nfstern')
+      return true if current_user.email.downcase.start_with?('noah')
+      return true if current_user.email.downcase.start_with?('gpuhala')
+      return true if current_user.email.downcase.start_with?('gregg')
+    end
+
+    false
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity
 end

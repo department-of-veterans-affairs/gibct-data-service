@@ -140,6 +140,16 @@ FactoryBot.define do
 
     trait :institution_builder do
       facility_code { '1ZZZZZZZ' }
+      ope {}
+      poo_status { 'aprvd' }
+      applicable_law_code { 'educational institution is approved for all chapters' }
+      state { 'NY' }
+
+      institution_of_higher_learning_indicator { true }
+    end
+
+    trait :institution_builder2 do
+      facility_code { '2ZZZZZZZ' }
       poo_status { 'aprvd' }
       applicable_law_code { 'educational institution is approved for all chapters' }
       state { 'NY' }
@@ -148,6 +158,7 @@ FactoryBot.define do
     end
 
     trait :weam_builder do
+      ope {}
       poo_status { 'aprvd' }
       applicable_law_code { 'educational institution is approved for all chapters' }
       state { 'NY' }
@@ -179,6 +190,7 @@ FactoryBot.define do
       physical_address_3 { 'Unit abc' }
       physical_city { 'CHICAGO' }
       physical_state { 'IL' }
+      physical_zip { '12345' }
       physical_country { 'USA' }
     end
 
@@ -206,6 +218,10 @@ FactoryBot.define do
       address_3 { nil }
       city { nil }
       state { nil }
+    end
+
+    trait :approved_institution do
+      approved { true }
     end
 
     initialize_with do

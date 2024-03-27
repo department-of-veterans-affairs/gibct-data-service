@@ -18,22 +18,22 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-     data = load_file
-     alert_messages(data)
-     data_results = data[:results]
+      data = load_file
+      alert_messages(data)
+      data_results = data[:results]
 
-     @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
-     error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-     raise(StandardError, error_msg) unless @upload.ok?
+      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+      error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
+      raise(StandardError, error_msg) unless @upload.ok?
 
-     redirect_to @upload
+      redirect_to @upload
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
       @extensions = Settings.roo_upload.extensions.single.join(', ')
       csv_requirements if @upload.csv_type_check?
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
       render :new
-   end
+    end
   end
 
   def show
@@ -88,7 +88,12 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    @upload_params ||= params.require(:upload).permit(:csv_type, :skip_lines, :upload_file, :comment)
+    upload_params = params.require(:upload).permit(
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+    )
+
+    upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
+    @upload_params ||= upload_params
   end
 
   def load_file
@@ -102,7 +107,8 @@ class UploadsController < ApplicationController
     # because only a single set of results is returned
     file_options = { liberal_parsing: @upload.liberal_parsing,
                      sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i),
-                                clean_rows: @upload.clean_rows }] }
+                                clean_rows: @upload.clean_rows,
+                                multiple_files: @upload_params[:multiple_file_upload] }] }
     data = klass.load_with_roo(file, file_options).first
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)

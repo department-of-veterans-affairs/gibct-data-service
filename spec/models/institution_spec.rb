@@ -167,6 +167,43 @@ RSpec.describe Institution, type: :model do
       end
     end
 
+    context 'with filter v1 scope' do
+      it 'filters on state only if only a state is provided in the name' do
+        create(:version, :production)
+        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        query = { 'name' => 'Hampton', 'state' => 'NY' }
+        expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(2)
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_state')
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).not_to include('physical_country')
+      end
+    end
+
+    context 'with filter v1 scope without country' do
+      it 'filters on state only if only a state is provided in the name' do
+        create(:version, :production)
+        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        query = { 'name' => 'Hampton', 'state' => 'NY', 'country' => 'USA' }
+        expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(1)
+        expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_country')
+      end
+    end
+
+    context 'with special mission filters' do
+      it 'applies special mission filters except relaffil if applicable' do
+        query = { 'special_mission_hbcu' => 'true' }
+        expect(described_class.set_special_mission_filters(query))
+          .to include('hbcu = 1')
+      end
+
+      it 'applies relaffil special mission filter if applicable' do
+        query = { 'special_mission_relaffil' => 'true' }
+        expect(described_class.set_special_mission_filters(query))
+          .to include('relaffil is not null')
+      end
+    end
+
     context 'with search scope' do
       it 'returns nil if no search term is provided' do
         expect(described_class.search(nil)).to be_empty
@@ -259,6 +296,14 @@ RSpec.describe Institution, type: :model do
       expect(results.count).to eq(1)
     end
 
+    it 'excludes high schools when filtering them out' do
+      create(:version, :production)
+      create(:institution, version_id: Version.current_production.id)
+      create(:institution, :high_school_institution, version_id: Version.current_production.id)
+      results = described_class.filter_high_school
+      expect(results.count).to eq(0)
+    end
+
     describe '#institution_search_term' do
       it 'removes common words and characters' do
         common_words_characters = (Settings.search.common_word_list + Settings.search.common_character_list).join(' ')
@@ -291,6 +336,34 @@ RSpec.describe Institution, type: :model do
         expect(processed_search_term).to eq('maryland   land')
         expect(excluded_only).to be_falsey
       end
+    end
+  end
+
+  describe 'physical_address' do
+    let(:institution) { build :institution }
+
+    it 'returns physical_address' do
+      expect(institution.physical_address).to eq(nil)
+    end
+  end
+
+  context 'when reporting on ungeocodables' do
+    before do
+      create(:version, :production)
+      create(:institution, :location, :lat_long)
+      create(:institution, :foreign_bad_address, :ungeocodable)
+
+      # rubocop:disable Rails/SkipsModelValidations
+      described_class.update_all version_id: Version.first.id
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+
+    it 'returns ungeocodable institutions for #ungeocodables' do
+      expect(described_class.ungeocodables.size).to eq(1)
+    end
+
+    it 'returns a count of ungeocodable institutions for #ungeocodable_count' do
+      expect(described_class.ungeocodable_count).to eq(1)
     end
   end
 end

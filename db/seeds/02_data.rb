@@ -19,8 +19,8 @@ if ENV['CI'].blank?
   puts 'Deleting old institution programs'
   InstitutionProgram.delete_all
 
-  puts 'Deleting old institution category ratings'
-  InstitutionCategoryRating.delete_all
+  puts 'Deleting old institution ratings'
+  InstitutionRating.delete_all
 
   puts 'Deleting old zipcode rates'
   ZipcodeRate.delete_all
@@ -34,7 +34,7 @@ if ENV['CI'].blank?
   puts 'Deleting old versions'
   Version.delete_all
 
-  puts 'Loading CSVs. Why not do some calf raises while you wait? ...' 
+  puts 'Loading CSVs. Why not do some calf raises while you wait? ...'
   SeedUtils.seed_tables_with_group('Accreditation', user)
   SeedUtils.seed_table_with_upload(AccreditationAction, user)
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
@@ -47,6 +47,7 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(EightKey, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(EduProgram, user)
   SeedUtils.seed_table_with_upload(Hcm, user, skip_lines: 0)
+  SeedUtils.seed_table_with_upload(InstitutionSchoolRating, user)
   SeedUtils.seed_table_with_upload(IpedsCipCode, user)
   SeedUtils.seed_table_with_upload(IpedsHd, user)
   SeedUtils.seed_table_with_upload(IpedsIc, user)
@@ -57,7 +58,6 @@ if ENV['CI'].blank?
   SeedUtils.seed_table_with_upload(Post911Stat, user)
   SeedUtils.seed_table_with_upload(Program, user)
   SeedUtils.seed_table_with_upload(SchoolCertifyingOfficial, user)
-  SeedUtils.seed_table_with_upload(SchoolRating, user)
   SeedUtils.seed_table_with_upload(Scorecard, user)
   SeedUtils.seed_table_with_upload(ScorecardDegreeProgram, user)
   SeedUtils.seed_table_with_upload(Sec103, user)

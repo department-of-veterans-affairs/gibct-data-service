@@ -31,6 +31,10 @@ Style/Documentation:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Style/SymbolProc:
+  Exclude:
+    - "lib/roo_helper/loader.rb"  
+
 # This cop forces you to put a return at the beginning of a block of code rather than having an if statement
 # whose body carries to the end of the function. For example:
 #
@@ -61,6 +65,18 @@ Style/HashTransformKeys:
 Style/HashTransformValues:
   Enabled: true
 
+Style/HashSyntax:
+  Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/SingleArgumentDig:
+  Enabled: false
+
 Layout/LineLength:
   Max: 120
   Exclude:
@@ -76,10 +92,14 @@ Layout/LineLength:
     - "spec/controllers/v1/institutions_controller_spec.rb"
     - "spec/models/institution_spec.rb"
     - "spec/factories/institution_programs.rb"
+    - "app/models/institution_school_rating.rb"
     
 
 # removing rule because get_session implies HTTP GET, and informs method
 Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/VariableNumber:
   Enabled: false
 
 Rails:
@@ -87,6 +107,7 @@ Rails:
 
 Rails/Output:
   Exclude:
+    - "app/models/db_cleanup.rb"
     - "lib/**/*.rb"
 
 Metrics/MethodLength:
@@ -95,20 +116,24 @@ Metrics/MethodLength:
     - "app/models/institution_builder.rb"
     - "app/models/archiver.rb"
     - "app/models/caution_flag.rb"
+    - "app/concerns/geocoder_logic.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/controllers/v0/institutions_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
     - "lib/roo_helper/loader.rb"
     - "lib/seed_utils.rb"
     - "app/utilities/scorecard_api/service.rb"
-    - "app/utilities/institution_builder/ratings_builder.rb"
+    - "app/models/converters/accreditation_date_time_converter.rb"
 
 Metrics/ClassLength:
   Exclude:
+    - "app/models/crosswalk_issue.rb"
     - "app/models/scorecard.rb"
     - "app/models/ipeds_ic.rb"
     - "app/models/ipeds_ic_ay.rb"
     - "app/models/ipeds_ic_py.rb"
     - "app/models/institution.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/controllers/groups_controller.rb"
     - "app/controllers/uploads_controller.rb"
     - "app/models/upload.rb"
@@ -117,37 +142,53 @@ Metrics/ClassLength:
     - "app/models/institution_builder.rb"
     - "app/controllers/v1/institutions_controller.rb"
     - "app/serializers/institution_compare_serializer.rb"
-    - "app/utilities/institution_builder/ratings_builder.rb"
+    - "app/utilities/scorecard_api/service.rb"
 
 Metrics/AbcSize:
   Max: 40
   Exclude:
-    - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
+    - "app/concerns/geocoder_logic.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/models/institution_builder.rb"
+    - "lib/roo_helper/loader.rb"
+    - "spec/models/shared_examples/shared_examples_for_archivable_by_version_id.rb"
 
 Metrics/ModuleLength:
   Exclude:
+    - "app/concerns/geocoder_logic.rb"
     - "app/models/institution_builder.rb"
     - "lib/roo_helper/loader.rb"
 
 Metrics/BlockLength:
   Max: 40
   Exclude:
-    - "spec/**/*"
-    - "rakelib/**/*.rake"
     - "config/**/*.rb"
+    - "lib/tasks/**/*.rake"
+    - "rakelib/**/*.rake"
+    - "spec/**/*"
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - "app/validators/va_caution_flag_validator.rb"
+    - "app/controllers/dashboards_controller.rb"
+    - "app/controllers/groups_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/models/converters/accreditation_date_time_converter.rb"
+    - "app/validators/va_caution_flag_validator.rb"
+    - "app/models/search_geocoder.rb"
     - "lib/roo_helper/loader.rb"
-    
+    - "lib/common/client/base.rb"
+
+Metrics/ParameterLists:
+  Exclude:
+    - "lib/common/exceptions/external/backend_service_exception.rb"
+
 Metrics/PerceivedComplexity:
   Exclude:
-    - "app/validators/va_caution_flag_validator.rb"
+    - "app/controllers/dashboards_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"
+    - "app/validators/va_caution_flag_validator.rb"
     - "lib/roo_helper/loader.rb"
+    - "app/models/converters/accreditation_date_time_converter.rb"
 
 # Don't worry about ambiguous blocks in RSpec
 # Official recommendation from rubocop team is to disable this rule for specs.
@@ -163,6 +204,9 @@ Naming/FileName:
 Lint/BooleanSymbol:
   Exclude:
     - "app/controllers/v0/institutions_controller.rb"
+
+Lint/MissingSuper:
+  Enabled: false
 
 Rails/HasManyOrHasOneDependent:
   Exclude:
@@ -190,10 +234,9 @@ RSpec/DescribeClass:
     - "spec/utilities/caution_flags/caution_flag_template_spec.rb"
 
 RSpec/ExampleLength:
-  Max: 8
+  Max: 15
   Exclude:
-    - "spec/models/institution_program_spec.rb"
-    - "spec/models/institution_builder_spec.rb"
+    - "spec/models/institution_builder/*.rb"
 
 # Determined to be too benign and/or numerous to justify changing
 RSpec/LeakyConstantDeclaration:
@@ -205,6 +248,9 @@ RSpec/NestedGroups:
 # Determined to be too benign and/or numerous to justify changing
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
 
 # Added in v0.81
 Lint/RaiseException:

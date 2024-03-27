@@ -11,7 +11,7 @@ RSpec.describe ApplicationController, type: :controller do
     context 'with user logged in' do
       before do
         session[:user_id] = user.id
-        controller.stub(:current_user) { user }
+        allow(controller).to receive(:current_user).and_return(user)
       end
 
       it 'home redirects to dashboards path' do

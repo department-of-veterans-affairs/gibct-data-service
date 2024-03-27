@@ -66,8 +66,18 @@ class InstitutionSerializer < ActiveModel::Serializer
   attribute :pctfloan
   attribute :relaffil
   attribute :womenonly
+  attribute :hsi
+  attribute :nanti
+  attribute :annhi
+  attribute :aanapii
+  attribute :pbi
+  attribute :tribal
   attribute :rating_count
   attribute :rating_average
+
+  if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+    attribute :institution_rating
+  end
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }

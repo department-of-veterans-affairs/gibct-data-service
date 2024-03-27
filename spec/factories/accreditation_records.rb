@@ -18,6 +18,22 @@ FactoryBot.define do
       accreditation_end_date { '2000-01-01' }
     end
 
+    factory :regional_accreditation_type do
+      agency_name { 'NORTHWEST COMMISSION ON COLLEGES AND UNIVERSITIES' }
+    end
+
+    factory :national_accreditation_type do
+      agency_name { 'ACCREDITING COMMISSION OF CAREER SCHOOLS AND COLLEGES' }
+    end
+
+    factory :hybrid_accreditation_type do
+      agency_name { 'MIDWIFERY EDUCATION ACCREDITATION COUNCIL' }
+    end
+
+    factory :nil_accreditation_type do
+      agency_name { 'TRUMP U' }
+    end
+
     initialize_with do
       new(attributes)
     end

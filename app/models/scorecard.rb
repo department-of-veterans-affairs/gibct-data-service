@@ -20,6 +20,7 @@ class Scorecard < ImportableRecord
     graduation_rate_all_students salary_all_students
     repayment_rate_all_students avg_stu_loan_debt
     hbcu menonly womenonly relaffil hcm2 pctfloan
+    hsi nanti annhi aanapii pbi tribal
   ].freeze
 
   CSV_CONVERTER_INFO = {
@@ -141,16 +142,16 @@ class Scorecard < ImportableRecord
     'md_earn_wne_p10' => { column: :salary_all_students, converter: NumberConverter },
     'gt_25k_p6' => { column: :gt_25k_p6, converter: NumberConverter },
     'grad_debt_mdn_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
-    'grad_debt_mdn10yr_supp' => { column: :avg_stu_loan_debt, converter: NumberConverter },
+    'grad_debt_mdn10yr_supp' => { column: :grad_debt_mdn10yr_supp, converter: NumberConverter },
     'rpy_3yr_rt_supp' => { column: :repayment_rate_all_students, converter: NumberConverter },
     'c150_4_pooled_supp' => { column: :c150_4_pooled_supp, converter: NumberConverter },
     'c150_l4_pooled_supp' => { column: :c150_l4_pooled_supp, converter: NumberConverter },
-    'alias' => { column: :alias, converter: BaseConverter },
-    'latitude' => { column: :latitude, converter: NumberConverter },
-    'longitude' => { column: :longitude, converter: NumberConverter }
+    'alias' => { column: :alias, converter: BaseConverter }
   }.freeze
 
   after_initialize :derive_dependent_columns
+
+  self.ignored_columns = %w[longitude latitude]
 
   POPULATE_SUCCESS_MESSAGE = 'Scorecard CSV table populated from https://collegescorecard.ed.gov/data/'
   API_SOURCE = 'https://collegescorecard.ed.gov/data/'

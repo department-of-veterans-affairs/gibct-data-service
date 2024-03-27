@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+# TODO: refactor line #6 when we write new ratings code
 module Archiver
   ARCHIVE_TYPES = [
-    { source: InstitutionCategoryRating, archive: InstitutionCategoryRatingsArchive },
+    { source: InstitutionRating, archive: InstitutionRatingsArchive },
     { source: InstitutionProgram, archive: InstitutionProgramsArchive },
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
@@ -11,11 +12,23 @@ module Archiver
   ].freeze
 
   def self.archive_previous_versions
+    # don't bother if nothing to archive. Also note that during the initial buildout, there is no previous version
+    # The below previous_version will exception out and cause all the work to be rolled back.
+    return unless Version.current_production && Version.previous_production
+
     production_version = Version.current_production.number
     previous_version = Version.previous_production.number
 
+    Rails.logger.info "\n\n\n*** Starting Archive process"
+    Rails.logger.info 'Getting default timeout parameter'
+    get_timeout_parameter
+
     begin
       ApplicationRecord.transaction do
+        Rails.logger.info 'Inside transaction, setting local default timeout parameter'
+        ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600000'")
+        get_timeout_parameter
+
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
           source = if archivable[:source].has_attribute?(:institution_id)
@@ -23,7 +36,8 @@ module Archiver
                    else
                      archivable[:source].joins(:version)
                    end
-          source.where('number >= ? AND number <?', previous_version, production_version).delete_all
+
+          source.where('number >= ? AND number <?', previous_version, production_version).in_batches.delete_all
         end
       end
     rescue ActiveRecord::StatementInvalid => e
@@ -33,15 +47,22 @@ module Archiver
       notice = 'There was an error of unexpected origin'
       process_exception(notice, e, production_version, previous_version)
     end
+
+    Rails.logger.info 'Done archiving, getting default timeout parameter'
+    get_timeout_parameter
+    Rails.logger.info "*** End of Archiving process\n\n\n"
   end
 
   def self.create_archives(source, archive, previous_version, production_version)
     return if archive.blank?
 
-    str = <<~SQL
-      INSERT INTO #{archive.table_name}
-      SELECT s.* FROM #{source.table_name} s
-    SQL
+    UpdatePreviewGenerationStatusJob.perform_later("archiving #{source.table_name}")
+
+    cols = archive.column_names
+    insert_cols = (cols.map { |col| '"' + col + '"' }).join(', ')
+    select_cols = (cols.map { |col| 's.' + col }).join(', ')
+
+    str = "INSERT INTO #{archive.table_name}(#{insert_cols}) SELECT #{select_cols} FROM #{source.table_name} s "
     str += source.has_attribute?(:institution_id) ? 'JOIN institutions i ON s.institution_id = i.id JOIN versions v ON i.version_id = v.id' : 'JOIN versions v ON s.version_id = v.id'
     str += ' WHERE v.number >= ? AND v.number < ?;'
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
@@ -55,5 +76,11 @@ module Archiver
     )
     Raven.capture_exception(exception) if ENV['SENTRY_DSN'].present?
     Rails.logger.error "#{notice}: #{exception.message}"
+  end
+
+  def self.get_timeout_parameter
+    get_timeout_sql = "select setting from pg_settings where name = 'statement_timeout'"
+    timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
+    Rails.logger.info "timeout parameter is currently: #{timeout_result['setting']}"
   end
 end

@@ -22,6 +22,12 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :menonly
   attribute :womenonly
   attribute :relaffil
+  attribute :hsi
+  attribute :nanti
+  attribute :annhi
+  attribute :aanapii
+  attribute :pbi
+  attribute :tribal
   attribute :preferred_provider
   attribute :dod_bah
   attribute :bah
@@ -86,10 +92,15 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :section_103_message
   attribute :hcm2
   attribute :pctfloan
-  attribute :institution_category_ratings
+
+  if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
+    attribute :institution_rating
+  end
+
   attribute :school_provider
   attribute :vet_tec_provider
   attribute :employer_provider
+  attribute :ownership_name
 
   def yellow_ribbon_programs
     object.yellow_ribbon_programs.map do |yrp|

@@ -32,6 +32,8 @@ module V1
                            .filter_result_v1(@query)
                            .search_order_v1(@query, max_gibill).page(page)
 
+      results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
+
       @meta = {
         version: @version,
         count: results.count,
@@ -50,6 +52,8 @@ module V1
 
       location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
       results = location_results.location_select(@query).location_order
+
+      results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
         version: @version,
@@ -153,7 +157,14 @@ module V1
         womenonly: boolean_facet,
         hbcu: boolean_facet,
         relaffil: results.filter_count(:relaffil),
-        vet_tec_provider: boolean_facet
+        hsi: boolean_facet,
+        nanti: boolean_facet,
+        annhi: boolean_facet,
+        aanapii: boolean_facet,
+        pbi: boolean_facet,
+        tribal: boolean_facet,
+        vet_tec_provider: boolean_facet,
+        section_103_message: boolean_facet
       }
 
       add_active_search_facets(result)

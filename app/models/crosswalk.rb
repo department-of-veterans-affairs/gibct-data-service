@@ -17,6 +17,7 @@ class Crosswalk < ImportableRecord
   validates :facility_code, presence: true
   after_initialize :derive_dependent_columns
 
+  # Instance methods
   def derive_dependent_columns
     self.ope6 = Ope6Converter.convert(ope)
   end

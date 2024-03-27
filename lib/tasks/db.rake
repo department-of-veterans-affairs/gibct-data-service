@@ -2,8 +2,25 @@
 
 require 'fileutils'
 
+SUFFIXES = {
+  'c' => 'dump',
+  'd' => 'dir',
+  'p' => 'sql',
+  't' => 'tar'
+}.freeze
+
 # rubocop:disable Metrics/BlockLength
 namespace :db do
+  desc 'Vacuum and Analyze Institution tables used in generating previews'
+  task vac_and_analyze_prev_tables: :environment do
+    DbCleanup.vacuum_and_analyze_preview_tables
+  end
+
+  desc 'Delete a broken preview'
+  task :delete_broken_preview, [:version_id] => :environment do |_t, args|
+    DbCleanup.delete_broken_preview(args.version_id)
+  end
+
   desc 'Dumps the database to backups'
   task dump: :environment do
     dump_fmt = 'c' # or 'p', 't', 'd'
@@ -21,7 +38,7 @@ namespace :db do
   desc 'Show the existing database backups'
   task list: :environment do
     backup_dir = backup_directory
-    puts backup_dir.to_s
+    puts backup_dir
     exec "/bin/ls -lt #{backup_dir}"
   end
 
@@ -63,12 +80,7 @@ namespace :db do
   private
 
   def suffix_for_format(suffix)
-    case suffix
-    when 'c' then 'dump'
-    when 'p' then 'sql'
-    when 't' then 'tar'
-    when 'd' then 'dir'
-    end
+    SUFFIXES[suffix]
   end
 
   def format_for_file(file)

@@ -23,7 +23,7 @@ class CalculatorConstantsController < ApplicationController
     constant_fields = CalculatorConstant.where(name: submitted_constants.keys)
     constant_fields.each do |constant|
       submitted_value = submitted_constants[constant.name]
-      if submitted_value.to_f != constant.float_value
+      if submitted_value.to_d != constant.float_value.to_d
         constant.update(float_value: submitted_value)
         updated_fields.push(constant.name)
       end

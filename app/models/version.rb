@@ -29,6 +29,8 @@ class Version < ApplicationRecord
     Version.production.newest.second
   end
 
+  # We want to keep this method because the version is not status 'production' until
+  # all steps are successfully completed.
   def self.current_preview
     cp = preview.newest
     cp = cp.where('created_at > ?', current_production.created_at) if current_production
@@ -37,10 +39,6 @@ class Version < ApplicationRecord
 
   def self.latest
     Version.newest.first
-  end
-
-  def self.previews_exist?
-    Version.newest.first.preview?
   end
 
   def self.archived
@@ -56,10 +54,6 @@ class Version < ApplicationRecord
 
   def generating?
     preview? && completed_at.nil?
-  end
-
-  def publishable?
-    !generating? && number > Version.production.maximum(:number)
   end
 
   def current_preview?
