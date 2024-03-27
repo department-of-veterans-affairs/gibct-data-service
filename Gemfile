@@ -32,7 +32,7 @@ gem 'rubyzip', '~> 2.3'
 gem 'sentry-raven', '~> 2.9.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
-gem 'virtus', '~> 1.0.5'
+gem 'virtus', '~> 2.0.0'
 # Mass importing of CSV data
 gem 'activerecord-import'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
