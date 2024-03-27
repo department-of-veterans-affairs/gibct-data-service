@@ -17,7 +17,7 @@ gem 'rails', '~> 6.1.7.7'
 # JSON API
 gem 'active_model_serializers', '~> 0.10.14'
 
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.20'
 # Use cancancan for authorization
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'geocoder', '~> 1.3', '>= 1.3.7'
