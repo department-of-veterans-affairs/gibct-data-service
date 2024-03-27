@@ -9,7 +9,7 @@ ruby '3.2.2'
 # Application server: Puma
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '~> 5.6.8'
+gem 'puma', '~> 6.4.2'
 gem 'rails', '~> 6.1.7.7'
 
 # Gems with special version/repo needs
@@ -17,7 +17,7 @@ gem 'rails', '~> 6.1.7.7'
 # JSON API
 gem 'active_model_serializers', '~> 0.10.14'
 
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.20'
 # Use cancancan for authorization
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'geocoder', '~> 1.3', '>= 1.3.7'
@@ -32,7 +32,7 @@ gem 'rubyzip', '~> 2.3'
 gem 'sentry-raven', '~> 2.9.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
-gem 'virtus', '~> 1.0.5'
+gem 'virtus', '~> 2.0.0'
 # Mass importing of CSV data
 gem 'activerecord-import'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
@@ -108,7 +108,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0', platforms: :ruby
+  gem 'web-console', '~> 4.2', platforms: :ruby
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', platforms: :ruby
