@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.2.2-slim-buster AS base
+FROM ruby:3.3.0-slim-bullseye AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
@@ -82,8 +82,8 @@ ENV PATH="/usr/local/bundle/bin:${PATH}"
 RUN whoami
 
 # Download VA Certs
-COPY ./import-va-certs.sh .
-RUN ./import-va-certs.sh
+# COPY ./import-va-certs.sh .
+# RUN ./import-va-certs.sh
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
