@@ -53,7 +53,7 @@ RSpec.describe ArchivesController, type: :controller do
       csv_type = InstitutionsArchive.name
       number = 2
       filename = "#{csv_type}_version_#{number}.csv"
-      get(:export, params: { csv_type: csv_type, number: number, format: :csv, export_all: 'true'})
+      get(:export, params: { csv_type: csv_type, number: number, format: :csv, export_all: 'true' })
       expect(response.headers['Content-Disposition']).to include("filename=\"#{filename}\"")
     end
 
