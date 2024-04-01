@@ -35,7 +35,7 @@ class DashboardsController < ApplicationController
   def export_version
     respond_to do |format|
       format.csv do
-        send_data Institution.export_by_version,
+        send_data Institution.export_by_version(params[:export_all]),
                   type: 'text/csv',
                   filename: "institutions_version_#{params[:number]}.csv"
       end

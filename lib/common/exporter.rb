@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
 module Common
+  # rubocop:disable Metrics/ModuleLength
   module Exporter
     def export
       generate(csv_headers)
     end
 
-    def export_by_version
-      generate_version(csv_headers)
+    def export_by_version(export_all)
+      # every other model uses csv_headers. We don't want to muck that up for them.
+      if export_all
+        generate_version(csv_headers_for_all_institution_columns)
+      else
+        generate_version(csv_headers)
+      end
     end
 
     # simple version that takes incoming array of arrays and creates a CSV object with it
@@ -77,6 +83,17 @@ module Common
       csv_headers
     end
 
+    def csv_headers_for_all_institution_columns
+      csv_headers = {}
+
+      klass::CSV_CONVERTER_INFO2.each_pair do |csv_column, info|
+        key = info[:column]
+        csv_headers[key] = Common::Shared.display_csv_header(csv_column)
+      end
+
+      csv_headers
+    end
+
     def generate(csv_headers)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         csv << csv_headers.values
@@ -119,4 +136,5 @@ module Common
       "=\"#{col}\""
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end
