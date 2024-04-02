@@ -16,6 +16,8 @@
         <%= link_to 'Upload', new_upload_path('Institution'),
           class: "btn dashboard-btn-success btn-xs", role: "button" %>
       <% end %>
+      <%= link_to 'Export All', dashboard_export_version_path(number: version.number, export_all:true),
+          class: "btn dashboard-btn-warning btn-xs", role: "button" %>
     <% end %>
   </td>
 </tr>

@@ -22,7 +22,7 @@ module DashboardsHelper
 
     # We also want to disable while publishing is in progress
     pgsi = PreviewGenerationStatusInformation.last
-    return 'disabled' unless
+    'disabled' unless
       pgsi.nil? ||
       pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
       pgsi.current_progress.start_with?('There was an error')
