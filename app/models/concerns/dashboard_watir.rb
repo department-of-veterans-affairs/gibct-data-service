@@ -4,20 +4,19 @@ module DashboardWatir
   extend ActiveSupport::Concern
 
   # rubocop:disable Metrics/BlockLength
-  # rubocop:disable Lint/ConstantDefinitionInBlock
   included do
-    LOCAL_URL = 'http://localhost:4000/user/sign_in'
-    LOCAL_DASHBOARD = 'http://localhost:4000/dashboards'
-    LOCAL_IMPORT_PREFIX = '/uploads/new/'
+    LOCAL_URL ||= 'http://localhost:4000/user/sign_in'
+    LOCAL_DASHBOARD ||= 'http://localhost:4000/dashboards'
+    LOCAL_IMPORT_PREFIX ||= '/uploads/new/'
 
-    PROD_URL = 'https://www.va.gov/gids/user/sign_in'
-    EXPORT_PREFIX = '/gids/dashboards/export/'
+    PROD_URL ||= 'https://www.va.gov/gids/user/sign_in'
+    EXPORT_PREFIX ||= '/gids/dashboards/export/'
 
-    STAGE_URL = 'https://staging.va.gov/gids/user/sign_in'
-    STAGE_DASHBOARD = 'https://staging.va.gov/gids/dashboards'
-    STAGE_IMPORT_PREFIX = '/gids/uploads/new/'
+    STAGE_URL ||= 'https://staging.va.gov/gids/user/sign_in'
+    STAGE_DASHBOARD ||= 'https://staging.va.gov/gids/dashboards'
+    STAGE_IMPORT_PREFIX ||= '/gids/uploads/new/'
 
-    TIMEOUT = 180 # seconds
+    TIMEOUT ||= 180 # seconds
 
     attr_accessor :headless, :bsess, :download_dir, :login_url,
                   :dashboard_url, :import_prefix, :user, :pass, :eilogger,
@@ -115,6 +114,5 @@ module DashboardWatir
       @eilogger.info(msg)
     end
   end
-  # rubocop:enable Lint/ConstantDefinitionInBlock
   # rubocop:enable Metrics/BlockLength
 end

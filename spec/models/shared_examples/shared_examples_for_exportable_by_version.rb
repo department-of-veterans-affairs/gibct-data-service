@@ -37,11 +37,26 @@ RSpec.shared_examples 'an exportable model by version' do
       end
     end
 
-    it 'creates a string representation of a csv_file' do
-      rows = described_class.export_by_version.split("\n")
-      header_row = rows.shift.split(default_options[:col_sep]).map(&:downcase)
-      rows = CSV.parse(rows.join("\n"), col_sep: default_options[:col_sep])
-      check_attributes_from_records(rows, header_row)
+    describe 'when default exporting' do
+      it 'creates a string representation of a csv_file' do
+        rows = described_class.export_by_version(nil).split("\n")
+        header_row = rows.shift.split(default_options[:col_sep]).map(&:downcase)
+        rows = CSV.parse(rows.join("\n"), col_sep: default_options[:col_sep])
+        check_attributes_from_records(rows, header_row)
+        expect(header_row.size).to eq 105
+      end
+    end
+
+    describe 'when exporting all columns' do
+      let(:mapping) { described_class::CSV_CONVERTER_INFO2 }
+
+      it 'creates a string representation of a csv_file' do
+        rows = described_class.export_by_version(true).split("\n")
+        header_row = rows.shift.split(default_options[:col_sep]).map(&:downcase)
+        rows = CSV.parse(rows.join("\n"), col_sep: default_options[:col_sep])
+        check_attributes_from_records(rows, header_row)
+        expect(header_row.size).to eq 149
+      end
     end
   end
 end

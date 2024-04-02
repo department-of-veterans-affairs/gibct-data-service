@@ -36,7 +36,8 @@ class Institution < ImportableRecord
 
   MILE_METER_CONVERSION_RATE = 1609.34
 
-  # If columns need to be added, add them at the end to preserve upload integrity to other processes.
+  # Do not change the order of these attributes or add columns. This is used to upload to
+  # another system.
   CSV_CONVERTER_INFO = {
     'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
     'institution' => { column: :institution, converter: InstitutionConverter },
@@ -105,6 +106,7 @@ class Institution < ImportableRecord
     'school_closing' => { column: :school_closing, converter: BooleanConverter },
     'school_closing_on' => { column: :school_closing_on, converter: DateConverter },
     'school_closing_message' => { column: :school_closing_message, converter: BaseConverter },
+    'closure109' => { column: :closure109, converter: BooleanConverter },
     'complaints_facility_code' => { column: :complaints_facility_code, converter: NumberConverter },
     'complaints_financial_by_fac_code' => { column: :complaints_financial_by_fac_code, converter: NumberConverter },
     'complaints_quality_by_fac_code' => { column: :complaints_quality_by_fac_code, converter: NumberConverter },
@@ -173,11 +175,12 @@ class Institution < ImportableRecord
     'school_provider' => { column: :school_provider, converter: BooleanConverter },
     'in_state_tuition_information' => { column: :in_state_tuition_information, converter: BaseConverter },
     'vrrap_provider' => { column: :vrrap, converter: BooleanConverter },
-    'ownership_name' => { column: :ownership_name, converter: BaseConverter },
+    'ownership_name' => { column: :ownership_name, converter: BaseConverter }
+  }.freeze
 
-    # The following columns were not initially included in the CSV export and have been added at the end for
-    # completeness. If more columns are added to the CSV export in the future, they should be added here.
-    # The primary user (Brian Grubb) uses the export for an import to another process and order matters.
+  # Used for full export of institution rows with all columns.
+  # rubocop:disable Layout/FirstHashElementIndentation
+  CSV_CONVERTER_INFO2 = CSV_CONVERTER_INFO.merge({
     'version' => { column: :version, converter: NumberConverter },
     'approval_status' => { column: :approval_status, converter: BaseConverter },
     'stem_offered' => { column: :stem_offered, converter: BooleanConverter },
@@ -223,7 +226,8 @@ class Institution < ImportableRecord
     'pbi' => { column: :pbi, converter: NumberConverter },
     'tribal' => { column: :tribal, converter: NumberConverter },
     'ungeocodable' => { column: :ungeocodable, converter: BooleanConverter }
-  }.freeze
+  }).freeze
+  # rubocop:enable Layout/FirstHashElementIndentation
 
   attribute :distance
 
