@@ -39,6 +39,6 @@ services:
       - postgres
     links:
       - postgres
-    command: bash --login -c "bundle exec rails s"
+    command: bash --login -c "bundle exec rails s --binding 0.0.0.0"
 volumes:
   dev_bundle:
