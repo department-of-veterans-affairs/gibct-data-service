@@ -41,5 +41,3 @@ services:
       - postgres
     links:
       - postgres
-volumes:
-  dev_bundle:
