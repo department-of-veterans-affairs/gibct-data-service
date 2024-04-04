@@ -24,7 +24,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config
+    apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -50,6 +50,11 @@ RUN apt-get update -qq && \
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
+
+# TODO
+# Download VA Certs
+# COPY ./import-va-certs.sh .
+# RUN ./import-va-certs.sh
 
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --gid $USER_ID gi-bill-data-service && \
