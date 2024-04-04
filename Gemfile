@@ -26,7 +26,7 @@ gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
 gem 'nokogiri', '~> 1.16.3'
 gem 'pg'
-gem 'roo', '~> 2.8'
+gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
 gem 'rubyzip', '~> 2.3'
 gem 'sentry-raven', '~> 2.13.0'
