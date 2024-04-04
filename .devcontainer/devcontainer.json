@@ -14,7 +14,7 @@
     "CAPYBARA_SERVER_PORT": "45678",
     "SELENIUM_HOST": "selenium",
     "REDIS_URL": "redis://redis:6379/1",
-    "DB_HOST": "postgres"
+    "DATABASE_URL": "postgres://postgres:password@postgres:5432/gibct-data-service_development?pool=4"
   },
 
   "forwardPorts": [3000],
