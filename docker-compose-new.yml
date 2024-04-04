@@ -13,6 +13,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-new
+      args:
+        RAILS_ENV: "development"
+        BUNDLE_WITHOUT: ""
     image: "gibct-new:${DOCKER_IMAGE:-latest}"
     volumes:
       - ".:/srv/gi-bill-data-service/src/:cached"
@@ -39,6 +42,5 @@ services:
       - postgres
     links:
       - postgres
-    command: bash --login -c "bundle exec rails s --binding 0.0.0.0"
 volumes:
   dev_bundle:
