@@ -226,7 +226,7 @@ GEM
       libv8-node (~> 18.19.0.0)
     minitest (5.22.3)
     multi_json (1.15.0)
-    multipart-post (2.3.0)
+    multipart-post (2.4.0)
     nenv (0.3.0)
     net-imap (0.4.10)
       date
@@ -391,7 +391,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sentry-raven (2.9.0)
+    sentry-raven (2.13.0)
       faraday (>= 0.7.6, < 1.0)
     shellany (0.0.1)
     simplecov (0.22.0)
@@ -509,7 +509,7 @@ DEPENDENCIES
   rubyzip (~> 2.3)
   sass-rails (= 6.0)
   scss_lint
-  sentry-raven (~> 2.9.0)
+  sentry-raven (~> 2.13.0)
   simplecov
   simplecov-single_file
   sitemap_generator
