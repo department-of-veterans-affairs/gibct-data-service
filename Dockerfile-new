@@ -9,7 +9,7 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim-bullseye as base
 WORKDIR /rails
 
 # Set default (production) values. Override ex: --build-arg="RAILS_ENV='development'"
-ARG RAILS_ENV="development" \
+ARG RAILS_ENV="production" \
     BUNDLE_WITHOUT="development" \
     USER_ID=309
 
@@ -28,7 +28,7 @@ RUN apt-get update -qq && \
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN echo "${BUNDLE_APP_CONFIG}"
+
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
@@ -57,10 +57,9 @@ RUN groupadd --gid $USER_ID gi-bill-data-service && \
     chown -R gi-bill-data-service:gi-bill-data-service .
 USER gi-bill-data-service:gi-bill-data-service
 
-# RUN echo "${BUNDLE_APP_CONFIG}"
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint-new"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD tail -f /dev/null
+CMD ["./bin/rails", "server", "--binding", "0.0.0.0"]

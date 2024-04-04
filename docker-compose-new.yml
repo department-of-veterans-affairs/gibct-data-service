@@ -19,7 +19,6 @@ services:
     image: "gibct-new:${DOCKER_IMAGE:-latest}"
     volumes:
       - ".:/srv/gi-bill-data-service/src/:cached"
-      - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000
     environment:
