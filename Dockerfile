@@ -82,7 +82,7 @@ RUN whoami
 
 # Install fwdproxy.crt into trust store
 # Relies on update-ca-certificates being run in following step
-COPY config/ca-trust/*.crt /usr/local/share/ca-certificates/
+# COPY config/ca-trust/*.crt /usr/local/share/ca-certificates/
 
 # Download VA Certs
 COPY ./import-va-certs.sh .
