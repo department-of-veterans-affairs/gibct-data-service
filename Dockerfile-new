@@ -36,6 +36,9 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+# Don't include /sample_csvs in production 
+RUN if [ "$RAILS_ENV" = "production" ]; then rm -rf ./sample_csvs; fi
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
