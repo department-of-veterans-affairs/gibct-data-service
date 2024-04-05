@@ -61,7 +61,6 @@ gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'ruby-saml'
 gem 'sitemap_generator'
 gem 'strong_migrations'
-gem 'whenever', require: false
 gem 'will_paginate'
 
 group :production do
