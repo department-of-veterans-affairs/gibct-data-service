@@ -121,7 +121,6 @@ GEM
     case_transform (0.2)
       activesupport
     cgi (0.4.1)
-    chronic (0.10.2)
     coderay (1.1.3)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -447,8 +446,6 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    whenever (1.0.0)
-      chronic (>= 0.6.3)
     will_paginate (4.0.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
@@ -522,7 +519,6 @@ DEPENDENCIES
   virtus (~> 2.0.0)
   watir (~> 7.3)
   web-console (~> 4.2)
-  whenever
   will_paginate
 
 RUBY VERSION
