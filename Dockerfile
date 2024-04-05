@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.2.2-slim-buster AS base
+FROM ruby:3.3.0-slim-bullseye AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
@@ -79,6 +79,10 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 RUN whoami
+
+# Install fwdproxy.crt into trust store
+# Relies on update-ca-certificates being run in following step
+COPY config/ca-trust/*.crt /usr/local/share/ca-certificates/
 
 # Download VA Certs
 COPY ./import-va-certs.sh .

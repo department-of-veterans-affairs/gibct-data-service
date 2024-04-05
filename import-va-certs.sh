@@ -1,10 +1,13 @@
 #!/bin/sh
 
+# set -euo pipefail
+
 (
     cd /usr/local/share/ca-certificates/
     
     wget \
         --level=1 \
+        --quiet \
         --recursive \
         --no-parent \
         --no-host-directories \
