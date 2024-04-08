@@ -26,10 +26,10 @@ gem 'json', '>= 2.3.0'
 # Use postgresql as the database for Active Record
 gem 'nokogiri', '~> 1.16.3'
 gem 'pg'
-gem 'roo', '~> 2.8'
+gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
 gem 'rubyzip', '~> 2.3'
-gem 'sentry-raven', '~> 2.9.0'
+gem 'sentry-raven', '~> 2.13.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
@@ -61,7 +61,6 @@ gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'ruby-saml'
 gem 'sitemap_generator'
 gem 'strong_migrations'
-gem 'whenever', require: false
 gem 'will_paginate'
 
 group :production do
