@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Group < Upload
-  include RooHelper
+  include RooHelper::Loader
+  include RooHelper::Shared
 
   attr_accessor :sheet_type_list, :group_config
 

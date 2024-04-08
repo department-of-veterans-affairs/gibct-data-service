@@ -13,7 +13,7 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
 
     before do
       create_list :crosswalk_issue, 3, :partial_match_type, :with_weam_match
-      create_list :crosswalk_issue, 2, :ipeds_orphan_type
+      create_list :crosswalk_issue, 2, :ipeds_orphan_type, :with_weam_match
       get(:partials)
     end
 
@@ -261,8 +261,8 @@ RSpec.describe CrosswalkIssuesController, type: :controller do
     login_user
 
     before do
-      create_list :crosswalk_issue, 3, :partial_match_type
-      create_list :crosswalk_issue, 2, :ipeds_orphan_type
+      create_list :crosswalk_issue, 3, :partial_match_type, :with_weam_match
+      create_list :crosswalk_issue, 2, :ipeds_orphan_type, :with_weam_match
       get(:orphans)
     end
 

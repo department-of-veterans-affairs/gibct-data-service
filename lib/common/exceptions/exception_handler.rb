@@ -38,7 +38,7 @@ module Common
       private
 
       def validate!(error)
-        raise Common::Exceptions::ParameterMissing.new('error'), 'error' if error.blank?
+        raise Common::Exceptions::Internal::ParameterMissing.new('error'), 'error' if error.blank?
 
         error
       end

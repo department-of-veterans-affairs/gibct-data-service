@@ -7,8 +7,7 @@ RSpec.describe DbCleanup, type: :model do
 
   describe '#delete_broken_preview' do
     it 'removes all dependant version preview data' do
-      institution = create :institution, :regular_address
-      institution.update(version: version, version_id: version.id)
+      create :institution, :regular_address, version: version, version_id: version.id
 
       # This seems necessary to overcome RSpec's wrapping things
       # in transactions and Postgresql does not like wrapping

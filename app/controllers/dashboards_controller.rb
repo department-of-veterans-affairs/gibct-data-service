@@ -40,7 +40,7 @@ class DashboardsController < ApplicationController
                   filename: "institutions_version_#{params[:number]}.csv"
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -55,7 +55,7 @@ class DashboardsController < ApplicationController
         ), type: 'text/csv', filename: 'ungeocodables.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -67,7 +67,7 @@ class DashboardsController < ApplicationController
         ), type: 'text/csv', filename: 'unaccrediteds.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -78,7 +78,7 @@ class DashboardsController < ApplicationController
                   type: 'text/csv', filename: 'partials.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 
@@ -89,7 +89,7 @@ class DashboardsController < ApplicationController
                   type: 'text/csv', filename: 'orphans.csv'
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat => e
     log_error(e)
   end
 

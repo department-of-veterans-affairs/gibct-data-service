@@ -7,9 +7,9 @@ RSpec.describe Institution, type: :model do
   it_behaves_like 'an exportable model by version'
 
   describe 'when validating' do
-    subject(:institution) { create :institution }
-
     it 'has a valid factory' do
+      version = create(:version, :preview)
+      institution = build :institution, version: version, version_id: version.id
       expect(institution).to be_valid
     end
   end
@@ -130,7 +130,11 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'institution_programs' do
-    let(:institution) { build :institution }
+    before do
+      create(:version, :preview)
+    end
+
+    let(:institution) { build :institution, version: Version.last, version_id: Version.last.id }
 
     def create_institution(institution, description)
       InstitutionProgram.create(institution: institution, description: description,
@@ -210,7 +214,8 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'includes the address fields if include_address is set' do
-        institution = create(:institution, physical_address_1: 'address_1')
+        version = create(:version, :production)
+        institution = create(:institution, physical_address_1: 'address_1', version_id: version.id, version: version)
         expect(described_class.search({ name: 'address_1', include_address: true }).take).to eq(institution)
         expect(described_class.search({ name: 'address_1' }).count).to eq(0)
       end
@@ -227,7 +232,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'ialias exact match' do
-        institution = create(:institution, :mit)
+        institution = create(:institution, :mit, version_id: Version.current_production.id)
         search_term = institution.ialias
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -235,7 +240,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'ialias contains the search term as a word' do
-        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
+        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH', version_id: Version.current_production.id)
         search_term = 'KU'
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -244,7 +249,13 @@ RSpec.describe Institution, type: :model do
 
       ['!', '$', '(', ')', '*', '+', '.', ':', '<', '=', '>', '?', '[', ']', '^', '{', '|', '}', '-', "'"].each do |postgresql_regex_char|
         it "institution matches with postgresql regex special character \"#{postgresql_regex_char}\" in search term" do
-          create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: "KANSAS#{postgresql_regex_char} UNIVERSITY NORTH")
+          create(
+            :institution,
+            ialias: 'KU | KANSAS UNIVERSITY',
+            institution: "KANSAS#{postgresql_regex_char} UNIVERSITY NORTH",
+            version_id: Version.current_production.id
+          )
+
           search_term = "KANSAS#{postgresql_regex_char}"
           query = { name: search_term }
           results = described_class.search(query).search_order(query)
@@ -253,7 +264,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'institution exact match' do
-        institution = create(:institution, :mit)
+        institution = create(:institution, :mit, version_id: Version.current_production.id)
         search_term = institution.institution
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -261,7 +272,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'city exact match' do
-        institution = create(:institution, :mit)
+        institution = create(:institution, :mit, version_id: Version.current_production.id)
         search_term = institution.physical_city
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -269,8 +280,8 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'gibill value' do
-        create(:institution, :mit, gibill: 1)
-        institution = create(:institution, :mit)
+        create(:institution, :mit, gibill: 1, version_id: Version.current_production.id)
+        institution = create(:institution, :mit, version_id: Version.current_production.id)
         max_gibill = described_class.maximum(:gibill)
         query = { name: institution.institution }
         results = described_class.search(query).search_order(query, max_gibill)
@@ -350,8 +361,8 @@ RSpec.describe Institution, type: :model do
   context 'when reporting on ungeocodables' do
     before do
       create(:version, :production)
-      create(:institution, :location, :lat_long)
-      create(:institution, :foreign_bad_address, :ungeocodable)
+      create(:institution, :location, :lat_long, version_id: Version.current_production.id)
+      create(:institution, :foreign_bad_address, :ungeocodable, version_id: Version.current_production.id)
 
       # rubocop:disable Rails/SkipsModelValidations
       described_class.update_all version_id: Version.first.id

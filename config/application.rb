@@ -8,6 +8,8 @@ Bundler.require(*Rails.groups)
 
 module GibctDataService
   class Application < Rails::Application
+    config.load_defaults '6.0' # enables zeitwerk mode in CRuby
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -37,9 +39,8 @@ module GibctDataService
     # Bootstrap support.
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
-    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
-    config.autoload_paths += Dir["#{config.root}/lib/**/"]
-    config.autoload_paths += Dir["#{config.root}/app/utilities/**/"]
+    config.autoload_paths += Dir["#{config.root}/lib"]
+    config.eager_load_paths += Dir["#{config.root}/lib"]
 
     # YAML Defaults for CSV
     config.csv_defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))

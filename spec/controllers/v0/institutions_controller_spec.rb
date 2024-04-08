@@ -20,8 +20,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
 
   context 'with version determination' do
     it 'uses a production version as a default' do
-      create(:version, :production)
-      create(:institution, :contains_harv)
+      v = create(:version, :production)
+      create(:institution, :contains_harv, version_id: v.id)
       get(:index)
       expect_response_match_schema('institutions')
     end
@@ -31,8 +31,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'accepts invalid version parameter and returns production data' do
-      create(:version, :production)
-      create(:institution, :contains_harv)
+      v = create(:version, :production)
+      create(:institution, :contains_harv, version_id: v.id)
       get(:index, params: { version: 'invalid_data' })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institutions')
@@ -74,7 +74,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'returns empty collection on missing term parameter' do
-      create(:institution, :start_like_harv)
+      v = create(:version, :production)
+      create(:institution, :start_like_harv, version_id: v.id)
       get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.media_type).to eq('application/json')
@@ -82,7 +83,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'does not return results for non-approved institutions' do
-      create(:institution, :start_like_harv, approved: false)
+      v = create(:version, :production)
+      create(:institution, :start_like_harv, approved: false, version_id: v.id)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.media_type).to eq('application/json')
@@ -100,7 +102,8 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     end
 
     it 'excludes vet_tec_provider institutions' do
-      create(:institution, :vet_tec_provider, :start_like_harv)
+      v = create(:version, :production)
+      create(:institution, :vet_tec_provider, :start_like_harv, version_id: v.id)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.media_type).to eq('application/json')

@@ -5,7 +5,13 @@ require 'rails_helper'
 RSpec.describe CautionFlagSerializer, type: :serializer do
   subject { serialize(caution_flag, serializer_class: described_class) }
 
-  let(:caution_flag) { create :caution_flag, :accreditation_issue }
+  let (:preview_version) { create :version, :preview }
+  let (:institution) { create :institution, version_id: preview_version.id }
+
+  # rubocop:disable Layout/LineLength
+  let(:caution_flag) { create :caution_flag, :accreditation_issue, institution_id: institution.id, version_id: preview_version.id }
+  # rubocop:enable Layout/LineLength
+
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 

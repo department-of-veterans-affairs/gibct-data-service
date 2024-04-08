@@ -5,12 +5,13 @@ require 'rails_helper'
 RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
   subject { serialize(yellow_ribbon_program, serializer_class: described_class) }
 
-  let(:yellow_ribbon_program) { create :yellow_ribbon_program }
+  let(:yellow_ribbon_program) { create :yellow_ribbon_program, institution_id: Institution.last.id }
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 
   before do
-    create(:version, :production)
+    v = create(:version, :production)
+    create(:institution, version_id: v.id)
   end
 
   it 'city' do

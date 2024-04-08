@@ -5,9 +5,10 @@ require 'rails_helper'
 RSpec.describe V0::InstitutionProgramsController, type: :controller do
   context 'when determining version' do
     it 'uses a production version as a default' do
-      create(:version, :production)
+      v = create(:version, :production)
       create(:version, :preview)
-      create(:institution_program, :contains_harv)
+      i = create(:institution, version_id: v.id)
+      create(:institution_program, :contains_harv, institution_id: i.id)
       get(:index)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -16,8 +17,9 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'accepts invalid version parameter and returns production data' do
-      create(:version, :production)
-      create(:institution_program, :contains_harv)
+      v = create(:version, :production)
+      i = create(:institution, version_id: v.id)
+      create(:institution_program, :contains_harv, institution_id: i.id)
       get(:index, params: { version: 'invalid_data' })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -28,7 +30,8 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
       v = create(:version, :preview)
-      create(:institution_program, :contains_harv, version: Version.current_preview.number)
+      i = create(:institution, version_id: v.id)
+      create(:institution_program, :contains_harv, institution_id: i.id)
       get(:index, params: { version: v.uuid })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')

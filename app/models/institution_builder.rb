@@ -98,7 +98,6 @@ module InstitutionBuilder
             # rubocop:enable Rails/SkipsModelValidations
           end
           build_messages = run_insertions(version)
-
           version.update(production: true, completed_at: Time.now.utc.to_s(:db))
           GibctSiteMapper.new(ping: true) if production?
           Archiver.archive_previous_versions if Settings.archiver.archive
@@ -298,7 +297,7 @@ module InstitutionBuilder
         #{where_clause}
       SQL
 
-      CautionFlag.build(version_id, AccreditationCautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::AccreditationCautionFlag, caution_flag_clause)
     end
 
     def self.add_arf_gi_bill(version_id)
@@ -369,7 +368,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
       SQL
 
-      CautionFlag.build(version_id, MouCautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::MouCautionFlag, caution_flag_clause)
     end
 
     # Updates institution table as well as creates caution_flags
@@ -420,7 +419,7 @@ module InstitutionBuilder
         #{where_conditions}
       SQL
 
-      CautionFlag.build(version_id, Sec702CautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::Sec702CautionFlag, caution_flag_clause)
     end
 
     # Sets caution flags and caution flag reasons if the corresponding approved school (by IPEDs id)
@@ -582,7 +581,7 @@ module InstitutionBuilder
         AND institutions.version_id = #{version_id}
       SQL
 
-      CautionFlag.build(version_id, HcmCautionFlag, caution_flag_clause)
+      CautionFlag.build(version_id, CautionFlagTemplates::HcmCautionFlag, caution_flag_clause)
     end
 
     def self.add_complaint(version_id)

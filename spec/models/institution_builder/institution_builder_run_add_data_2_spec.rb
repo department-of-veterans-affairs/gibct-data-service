@@ -132,7 +132,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
           institution = institutions.find_by(facility_code: weam_row.facility_code)
           expect(CautionFlag
-                     .where({ source: Sec702CautionFlag::NAME,
+                     .where({ source: CautionFlagTemplates::Sec702CautionFlag::NAME,
                               institution_id: institution.id,
                               version_id: Version.current_production.id })
                      .count).to be > 0
@@ -145,7 +145,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
 
           institution = institutions.find_by(facility_code: weam_row.facility_code)
-          expect(CautionFlag.where({ source: Sec702CautionFlag::NAME, institution_id: institution.id,
+          expect(CautionFlag.where({ source: CautionFlagTemplates::Sec702CautionFlag::NAME, institution_id: institution.id,
                                      version_id: Version.current_production.id }).count).to be > 0
         end
       end
@@ -210,7 +210,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           described_class.run(user)
           expect(CautionFlag
                      .where({ institution_id: institution.id,
-                              source: HcmCautionFlag::NAME,
+                              source: CautionFlagTemplates::HcmCautionFlag::NAME,
                               version_id: Version.current_production.id })
                      .count).to be > 0
         end
@@ -221,7 +221,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :hcm, :institution_builder
           described_class.run(user)
           caution_flags = CautionFlag.where({ institution_id: institution.id,
-                                              source: HcmCautionFlag::NAME,
+                                              source: CautionFlagTemplates::HcmCautionFlag::NAME,
                                               version_id: Version.current_production.id }).count
 
           expect(caution_flags).to be > 0
@@ -233,7 +233,7 @@ RSpec.describe InstitutionBuilder, type: :model do
           create :hcm, :institution_builder
           create :hcm, :institution_builder, hcm_reason: 'another reason'
           described_class.run(user)
-          caution_flags = CautionFlag.where({ institution_id: institution.id, source: HcmCautionFlag::NAME,
+          caution_flags = CautionFlag.where({ institution_id: institution.id, source: CautionFlagTemplates::HcmCautionFlag::NAME,
                                               version_id: Version.current_production.id }).count
           expect(caution_flags).to be > 0
           expect(institutions.find(institution.id).caution_flag_reason)

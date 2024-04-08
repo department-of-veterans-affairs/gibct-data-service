@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DowncaseConverter do
+RSpec.describe Converters::DowncaseConverter do
   subject { described_class }
 
   it 'Downcases strings' do

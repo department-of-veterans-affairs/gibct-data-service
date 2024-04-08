@@ -12,5 +12,11 @@ FactoryBot.define do
     trait :preview do
       production { false }
     end
+
+    trait :with_institution do
+      after(:create) do |version|
+        create(:institution, version_id: version.id, version: version)
+      end
+    end
   end
 end

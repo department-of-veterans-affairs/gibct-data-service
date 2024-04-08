@@ -212,9 +212,9 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      create(:version, :production)
-      create(:institution, :location, :lat_long)
-      create(:institution, :foreign_bad_address, :ungeocodable)
+      v = create(:version, :production)
+      create(:institution, :location, :lat_long, version_id: v.id)
+      create(:institution, :foreign_bad_address, :ungeocodable, version_id: v.id)
 
       # rubocop:disable Rails/SkipsModelValidations
       Institution.update_all version_id: Version.first.id
@@ -236,15 +236,13 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      create(:version, :production)
-      create(:institution, :accreditation_issue)
-      create(:institution, :with_accreditation)
+      v = create(:version, :production)
+      # The institution(s) and accreditation_institute_campus records are
+      # linked by ope & ope6 in the factories
+      create(:institution, :accreditation_issue, version_id: v.id)
+      create(:institution, :with_accreditation, version_id: v.id)
       create(:accreditation_institute_campus)
       create(:accreditation_record)
-
-      # rubocop:disable Rails/SkipsModelValidations
-      Institution.update_all version_id: Version.first.id
-      # rubocop:enable Rails/SkipsModelValidations
 
       get(:accreditation_issues)
     end
@@ -281,12 +279,8 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      create(:version, :production)
-      create(:institution, :accreditation_issue)
-
-      # rubocop:disable Rails/SkipsModelValidations
-      Institution.update_all version_id: Version.first.id
-      # rubocop:enable Rails/SkipsModelValidations
+      v = create(:version, :production)
+      create(:institution, :accreditation_issue, version_id: v.id)
     end
 
     it 'causes a CSV to be exported' do

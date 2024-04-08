@@ -8,7 +8,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
   describe 'when calculating category ratings' do
     let(:production_version) { Version.current_production }
-    let(:institution) { create(:institution, :physical_address) }
+    let(:institution) { create(:institution, :physical_address, version_id: production_version.id) }
 
     before do
       weam = create(:weam, :physical_address, :approved_institution)

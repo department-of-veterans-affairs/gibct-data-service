@@ -29,7 +29,7 @@ class ApiController < ApplicationController
     v = params[:version]
     @version = (v.present? && Version.find_by(uuid: v)) || Version.current_production
 
-    raise Common::Exceptions::InvalidFieldValue, "Version #{v} not found" unless @version.try(:number)
+    raise Common::Exceptions::Internal::InvalidFieldValue, "Version #{v} not found" unless @version.try(:number)
   end
 
   def self_link
@@ -42,14 +42,14 @@ class ApiController < ApplicationController
     va_exception =
       case exception
       when ActionController::ParameterMissing
-        Common::Exceptions::ParameterMissing.new(exception.param)
+        Common::Exceptions::Internal::ParameterMissing.new(exception.param)
       when Common::Exceptions::BaseError
         exception
       else
-        Common::Exceptions::InternalServerError.new(exception)
+        Common::Exceptions::Internal::InternalServerError.new(exception)
       end
 
-    headers['WWW-Authenticate'] = 'Token realm="Application"' if va_exception.is_a?(Common::Exceptions::Unauthorized)
+    headers['WWW-Authenticate'] = 'Token realm="Application"' if va_exception.is_a?(Common::Exceptions::Internal::Unauthorized)
     render json: { errors: va_exception.errors }, status: va_exception.status_code
   end
 

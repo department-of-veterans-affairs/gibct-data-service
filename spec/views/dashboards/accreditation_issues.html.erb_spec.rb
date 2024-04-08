@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'dashboards/accreditation_issues', type: :view do
   before do # set the instance variables from the controller before the view is rendered or tests fail
-    create(:version, :production)
-    create(:institution, :accreditation_issue)
-    create(:institution, :with_accreditation)
+    v = create(:version, :production)
+    create(:institution, :accreditation_issue, version_id: v.id)
+    create(:institution, :with_accreditation, version_id: v.id)
     create(:accreditation_institute_campus)
     create(:accreditation_record)
 

@@ -18,7 +18,7 @@ class ArchivesController < ApplicationController
                   filename: "#{params[:csv_type]}_version_#{params[:number]}.csv"
       end
     end
-  rescue ArgumentError, Common::Exceptions::RecordNotFound, ActionController::UnknownFormat, MissingAttributeError => e
+  rescue ArgumentError, Common::Exceptions::Internal::RecordNotFound, ActionController::UnknownFormat, MissingAttributeError => e
     Rails.logger.error e.message
     redirect_to archives_path, alert: e.message
   end
