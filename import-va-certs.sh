@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# set -euo pipefail
-
 (
     cd /usr/local/share/ca-certificates/
     
