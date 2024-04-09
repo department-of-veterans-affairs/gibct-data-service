@@ -40,7 +40,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.4.10'
+ENV BUNDLER_VERSION='2.5.7'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
