@@ -10,7 +10,7 @@ SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron
+    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
@@ -79,10 +79,6 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 RUN whoami
-
-# Install fwdproxy.crt into trust store
-# Relies on update-ca-certificates being run in following step
-# COPY config/ca-trust/*.crt /usr/local/share/ca-certificates/
 
 # Download VA Certs
 COPY ./import-va-certs.sh .
