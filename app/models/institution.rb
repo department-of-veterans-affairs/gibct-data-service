@@ -768,9 +768,7 @@ class Institution < ImportableRecord
 
     latitude = query[:latitude]
     longitude = query[:longitude]
-    # rubocop:disable Layout/LineLength
     distance_column = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate distance'
-    # rubocop:enable Layout/LineLength
 
     clause = ['institutions.*', distance_column]
 
@@ -788,9 +786,7 @@ class Institution < ImportableRecord
     longitude = query[:longitude]
     distance = query[:distance] || 50
 
-    # rubocop:disable Layout/LineLength
     clause = 'earth_distance(ll_to_earth(:latitude,:longitude), ll_to_earth(latitude, longitude))/:conversion_rate <= :distance'
-    # rubocop:enable Layout/LineLength
 
     where(sanitize_sql_for_conditions([clause,
                                        { latitude: latitude,

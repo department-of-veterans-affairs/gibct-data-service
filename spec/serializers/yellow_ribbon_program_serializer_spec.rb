@@ -9,10 +9,7 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
   let(:data) { JSON.parse(subject)['data'] }
   let(:attributes) { data['attributes'] }
 
-  before do
-    v = create(:version, :production)
-    create(:institution, version_id: v.id)
-  end
+  before { create(:version, :production, :with_institution) }
 
   it 'city' do
     expect(attributes['city']).to eq(yellow_ribbon_program.city)

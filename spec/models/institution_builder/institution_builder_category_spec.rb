@@ -7,8 +7,7 @@ RSpec.describe InstitutionBuilder, type: :model do
   include_context('with setup')
 
   describe 'when calculating category ratings' do
-    let(:production_version) { Version.current_production }
-    let(:institution) { create(:institution, :physical_address, version_id: production_version.id) }
+    let(:institution) { create(:institution, :physical_address, :production_version) }
 
     before do
       weam = create(:weam, :physical_address, :approved_institution)
@@ -16,7 +15,6 @@ RSpec.describe InstitutionBuilder, type: :model do
       weam.save(validate: false)
       create :institution_school_rating
       create :institution_school_rating, :second_rating
-      institution.version = production_version
       institution.facility_code = '11913105'
       institution.save
     end

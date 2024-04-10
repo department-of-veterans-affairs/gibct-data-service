@@ -3,11 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe DbCleanup, type: :model do
-  let(:version) { create(:version, :preview) }
-
   describe '#delete_broken_preview' do
     it 'removes all dependant version preview data' do
-      create :institution, :regular_address, version: version, version_id: version.id
+      version = create(:version, :preview, :with_institution_regular_address)
 
       # This seems necessary to overcome RSpec's wrapping things
       # in transactions and Postgresql does not like wrapping

@@ -7,14 +7,12 @@ RSpec.describe InstitutionBuilder, type: :model do
   include_context('with setup')
 
   describe '#run - with geocoding and updating geocoding from production' do
-    let(:production_version) { Version.current_production }
-    let(:institution) { create(:institution, :physical_address, version_id: production_version.id) }
+    let(:institution) { create(:institution, :physical_address, :production_version) }
 
     before do
       weam = create(:weam, :physical_address, :approved_institution)
       weam.facility_code = '12345'
       weam.save(validate: false)
-      institution.version = production_version
       institution.facility_code = '12345'
     end
 

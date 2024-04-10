@@ -212,14 +212,7 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      v = create(:version, :production)
-      create(:institution, :location, :lat_long, version_id: v.id)
-      create(:institution, :foreign_bad_address, :ungeocodable, version_id: v.id)
-
-      # rubocop:disable Rails/SkipsModelValidations
-      Institution.update_all version_id: Version.first.id
-      # rubocop:enable Rails/SkipsModelValidations
-
+      create(:version, :production, :with_ungecodable_foreign_institution, :with_geocoded_institution)
       get(:geocoding_issues)
     end
 
@@ -236,11 +229,9 @@ RSpec.describe DashboardsController, type: :controller do
     login_user
 
     before do
-      v = create(:version, :production)
+      create(:version, :production, :with_institution_accreditation_issue, :with_accredited_institution)
       # The institution(s) and accreditation_institute_campus records are
       # linked by ope & ope6 in the factories
-      create(:institution, :accreditation_issue, version_id: v.id)
-      create(:institution, :with_accreditation, version_id: v.id)
       create(:accreditation_institute_campus)
       create(:accreditation_record)
 
@@ -278,10 +269,7 @@ RSpec.describe DashboardsController, type: :controller do
   describe 'GET #export_unaccrediteds' do
     login_user
 
-    before do
-      v = create(:version, :production)
-      create(:institution, :accreditation_issue, version_id: v.id)
-    end
+    before { create(:version, :production, :with_institution_accreditation_issue) }
 
     it 'causes a CSV to be exported' do
       allow(Institution).to receive(:export_unaccrediteds)
