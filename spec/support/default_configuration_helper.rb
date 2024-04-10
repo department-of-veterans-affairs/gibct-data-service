@@ -5,7 +5,7 @@ require 'common/client/configuration/rest'
 module Specs
   module Common
     module Client
-      class DefaultConfiguration < ::Common::Client::Configuration::REST
+      class DefaultConfiguration < ::Common::Client::Configuration::Rest
         def connection
           @connection ||= Faraday.new(base_path) do |faraday|
             faraday.use Faraday::Response::RaiseError unless adapter_only

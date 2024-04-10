@@ -7,7 +7,14 @@ RSpec.shared_examples 'a loadable model' do |options|
 
   before do
     create :user
-    create_list factory_name, 5
+    if factory_name.eql?(:arf_gi_bill)
+      5.times do
+        weam = create :weam
+        create(:arf_gi_bill, facility_code: weam.facility_code)
+      end
+    else
+      create_list factory_name, 5
+    end
   end
 
   describe 'when loading' do

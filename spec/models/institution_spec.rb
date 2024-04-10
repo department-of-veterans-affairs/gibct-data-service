@@ -7,9 +7,9 @@ RSpec.describe Institution, type: :model do
   it_behaves_like 'an exportable model by version'
 
   describe 'when validating' do
-    subject(:institution) { create :institution }
-
     it 'has a valid factory' do
+      version = create(:version, :preview)
+      institution = build :institution, version: version, version_id: version.id
       expect(institution).to be_valid
     end
   end
@@ -130,11 +130,13 @@ RSpec.describe Institution, type: :model do
   end
 
   describe 'institution_programs' do
-    let(:institution) { build :institution }
+    before { create(:version, :preview) }
+
+    let(:institution) { build :institution, :preview_version }
 
     def create_institution(institution, description)
       InstitutionProgram.create(institution: institution, description: description,
-                                version: institution.version, facility_code: institution.facility_code)
+                                facility_code: institution.facility_code)
     end
 
     it 'returns versioned institution programs' do
@@ -170,8 +172,8 @@ RSpec.describe Institution, type: :model do
     context 'with filter v1 scope' do
       it 'filters on state only if only a state is provided in the name' do
         create(:version, :production)
-        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
-        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_country, :production_version)
+        create(:institution, :in_nyc_state_only, :production_version)
         query = { 'name' => 'Hampton', 'state' => 'NY' }
         expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(2)
         expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_state')
@@ -182,8 +184,8 @@ RSpec.describe Institution, type: :model do
     context 'with filter v1 scope without country' do
       it 'filters on state only if only a state is provided in the name' do
         create(:version, :production)
-        create(:institution, :in_nyc_state_country, version_id: Version.current_production.id)
-        create(:institution, :in_nyc_state_only, version_id: Version.current_production.id)
+        create(:institution, :in_nyc_state_country, :production_version)
+        create(:institution, :in_nyc_state_only, :production_version)
         query = { 'name' => 'Hampton', 'state' => 'NY', 'country' => 'USA' }
         expect(described_class.search_v1(query).filter_result_v1(query).count).to eq(1)
         expect(described_class.search_v1(query).filter_result_v1(query).to_sql).to include('physical_country')
@@ -210,7 +212,8 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'includes the address fields if include_address is set' do
-        institution = create(:institution, physical_address_1: 'address_1')
+        create(:version, :production)
+        institution = create(:institution, :production_version, physical_address_1: 'address_1')
         expect(described_class.search({ name: 'address_1', include_address: true }).take).to eq(institution)
         expect(described_class.search({ name: 'address_1' }).count).to eq(0)
       end
@@ -219,15 +222,15 @@ RSpec.describe Institution, type: :model do
     context 'with search order sorts ' do
       before do
         create(:version, :production)
-        create_list(:institution, 2, :in_nyc, version_id: Version.current_production.id)
-        create(:institution, :in_chicago, online_only: true, version_id: Version.current_production.id)
-        create(:institution, :in_new_rochelle, distance_learning: true, version_id: Version.current_production.id)
+        create_list(:institution, 2, :in_nyc, :production_version)
+        create(:institution, :production_version, :in_chicago, online_only: true)
+        create(:institution, :production_version, :in_new_rochelle, distance_learning: true)
         # adding a non approved institutions row
-        create(:institution, :contains_harv, approved: false, version_id: Version.current_production.id)
+        create(:institution, :production_version, :contains_harv, approved: false)
       end
 
       it 'ialias exact match' do
-        institution = create(:institution, :mit)
+        institution = create(:institution, :production_version, :mit)
         search_term = institution.ialias
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -235,7 +238,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'ialias contains the search term as a word' do
-        create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
+        create(:institution, :production_version, ialias: 'KU | KANSAS UNIVERSITY', institution: 'KANSAS UNIVERSITY NORTH')
         search_term = 'KU'
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -244,7 +247,13 @@ RSpec.describe Institution, type: :model do
 
       ['!', '$', '(', ')', '*', '+', '.', ':', '<', '=', '>', '?', '[', ']', '^', '{', '|', '}', '-', "'"].each do |postgresql_regex_char|
         it "institution matches with postgresql regex special character \"#{postgresql_regex_char}\" in search term" do
-          create(:institution, ialias: 'KU | KANSAS UNIVERSITY', institution: "KANSAS#{postgresql_regex_char} UNIVERSITY NORTH")
+          create(
+            :institution,
+            :production_version,
+            ialias: 'KU | KANSAS UNIVERSITY',
+            institution: "KANSAS#{postgresql_regex_char} UNIVERSITY NORTH"
+          )
+
           search_term = "KANSAS#{postgresql_regex_char}"
           query = { name: search_term }
           results = described_class.search(query).search_order(query)
@@ -253,7 +262,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'institution exact match' do
-        institution = create(:institution, :mit)
+        institution = create(:institution, :production_version, :mit)
         search_term = institution.institution
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -261,7 +270,7 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'city exact match' do
-        institution = create(:institution, :mit)
+        institution = create(:institution, :production_version, :mit)
         search_term = institution.physical_city
         query = { name: search_term }
         results = described_class.search(query).search_order(query)
@@ -269,8 +278,8 @@ RSpec.describe Institution, type: :model do
       end
 
       it 'gibill value' do
-        create(:institution, :mit, gibill: 1)
-        institution = create(:institution, :mit)
+        create(:institution, :production_version, :mit, gibill: 1)
+        institution = create(:institution, :production_version, :mit)
         max_gibill = described_class.maximum(:gibill)
         query = { name: institution.institution }
         results = described_class.search(query).search_order(query, max_gibill)
@@ -280,17 +289,17 @@ RSpec.describe Institution, type: :model do
 
     it 'approved institutions' do
       create(:version, :production)
-      create(:institution, version_id: Version.current_production.id)
-      create(:institution, approved: false, version_id: Version.current_production.id)
+      create(:institution, :production_version)
+      create(:institution, :production_version, approved: false)
       results = described_class.approved_institutions(Version.current_production)
       expect(results.count).to eq(1)
     end
 
     it 'non vet tec institutions' do
       create(:version, :production)
-      create(:institution, version_id: Version.current_production.id)
-      create(:institution, approved: false, version_id: Version.current_production.id)
-      create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+      create(:institution, :production_version)
+      create(:institution, :production_version, approved: false)
+      create(:institution, :production_version, :vet_tec_provider)
 
       results = described_class.non_vet_tec_institutions(Version.current_production)
       expect(results.count).to eq(1)
@@ -298,8 +307,8 @@ RSpec.describe Institution, type: :model do
 
     it 'excludes high schools when filtering them out' do
       create(:version, :production)
-      create(:institution, version_id: Version.current_production.id)
-      create(:institution, :high_school_institution, version_id: Version.current_production.id)
+      create(:institution, :production_version)
+      create(:institution, :production_version, :high_school_institution)
       results = described_class.filter_high_school
       expect(results.count).to eq(0)
     end
@@ -350,8 +359,8 @@ RSpec.describe Institution, type: :model do
   context 'when reporting on ungeocodables' do
     before do
       create(:version, :production)
-      create(:institution, :location, :lat_long)
-      create(:institution, :foreign_bad_address, :ungeocodable)
+      create(:institution, :production_version, :location, :lat_long)
+      create(:institution, :production_version, :foreign_bad_address, :ungeocodable)
 
       # rubocop:disable Rails/SkipsModelValidations
       described_class.update_all version_id: Version.first.id

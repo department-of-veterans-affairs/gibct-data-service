@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe StateConverter do
+RSpec.describe Converters::StateConverter do
   subject { described_class }
 
   it 'converts long state names to upcased abbreviations' do

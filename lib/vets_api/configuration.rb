@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module VetsApi
-  class Configuration < Common::Client::Configuration::REST
+  class Configuration < Common::Client::Configuration::Rest
     self.read_timeout = Settings.vets_api&.read_timeout || read_timeout
     self.open_timeout = Settings.vets_api&.open_timeout || open_timeout
 

@@ -2,7 +2,7 @@
 
 module V0
   class InstitutionProgramsController < ApiController
-    include Facets
+    include Search::Facets
 
     # GET /v0/institution_programs/autocomplete?term=harv
     def autocomplete
