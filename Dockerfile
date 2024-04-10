@@ -3,14 +3,14 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.2.2-slim-buster AS base
+FROM ruby:3.3.0-slim-bullseye AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron
+    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
@@ -40,7 +40,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.4.10'
+ENV BUNDLER_VERSION='2.5.7'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
