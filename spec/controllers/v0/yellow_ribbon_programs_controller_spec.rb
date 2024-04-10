@@ -3,20 +3,30 @@
 require 'rails_helper'
 
 RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
+  def create_prod_version_and_institution
+    create(:version, :production, :with_institution)
+    [Version.last, Institution.last]
+  end
+
+  def create_previw_version_and_institution
+    create(:version, :preview, :with_institution)
+    [Version.last, Institution.last]
+  end
+
   context 'when determining version' do
     it 'uses a production version as a default' do
-      production = create(:version, :production)
-      preview = create(:version, :preview)
-      create(:yellow_ribbon_program, version: production.number)
-      create(:yellow_ribbon_program, version: preview.number)
+      v1, i1 = create_prod_version_and_institution
+      v2, i2 = create_previw_version_and_institution
+      create(:yellow_ribbon_program, version: v1.number, institution_id: i1.id)
+      create(:yellow_ribbon_program, version: v2.number, institution_id: i2.id)
       get(:index)
       body = JSON.parse response.body
       expect(body['data'].count).to eq(1)
     end
 
     it 'accepts invalid version parameter and returns production data' do
-      create(:version, :production)
-      create(:yellow_ribbon_program)
+      v, i = create_prod_version_and_institution
+      create(:yellow_ribbon_program, version: v.number, institution_id: i.id)
       get(:index, params: { version: 'invalid_data' })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('yellow_ribbon_program')
@@ -27,9 +37,9 @@ RSpec.describe V0::YellowRibbonProgramsController, type: :controller do
 
   context 'when searching' do
     before do
-      version = create(:version, :production)
-      create_list(:yellow_ribbon_program, 3, version: version.number)
-      create(:yellow_ribbon_program, :in_florence, version: version.number)
+      v, i = create_prod_version_and_institution
+      create_list(:yellow_ribbon_program, 3, version: v.number, institution_id: i.id)
+      create(:yellow_ribbon_program, :in_florence, version: v.number, institution_id: i.id)
     end
 
     it 'search returns results' do

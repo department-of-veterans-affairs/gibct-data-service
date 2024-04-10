@@ -8,7 +8,8 @@ require_relative '../../../app/utilities/caution_flag_templates/sec702_caution_f
 require_relative '../../../app/utilities/caution_flag_templates/mou_caution_flag'
 require_relative '../../../app/utilities/caution_flag_templates/poo_status_flag'
 
-RSpec.describe CautionFlagTemplate do
+# rubocop:disable RSpec/FilePath
+RSpec.describe CautionFlagTemplates::CautionFlagTemplate do
   describe 'as a parent class' do
     described_class.descendants.each do |template|
       it "requires #{template.name} templates to define required constants" do
@@ -19,3 +20,4 @@ RSpec.describe CautionFlagTemplate do
     end
   end
 end
+# rubocop:enable RSpec/FilePath

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DateTimeConverter < BaseConverter
+class Converters::DateTimeConverter < Converters::BaseConverter
   def self.convert(value)
     value = super(value)
     return nil if value.blank?
@@ -10,7 +10,7 @@ class DateTimeConverter < BaseConverter
 
       return value if value.instance_of?(Date)
 
-      # Added this here because you can't dynamically decide to use the DateConverter or DateTimeConverter.
+      # Added this here because you can't dynamically decide to use the Converters::DateConverter or DateTimeConverter.
       # It is declared as part of the model's upload. There's a situation with the complaint model where the
       # initial upload type is a date/time but when an export is performed, it gets exported as a date. The upload
       # of the exxport is a string of the form "yyyy-mm-dd". We have to be able to handle this situation.

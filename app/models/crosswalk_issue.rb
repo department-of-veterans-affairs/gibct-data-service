@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 class CrosswalkIssue < ApplicationRecord
-  include RooHelper
+  include RooHelper::Shared
 
   PARTIAL_MATCH_TYPE = 'PARTIAL_MATCH_TYPE'
   IPEDS_ORPHAN_TYPE = 'IPEDS_ORPHAN_TYPE'
 
-  belongs_to :crosswalk
-  belongs_to :ipeds_hd
-  belongs_to :weam
+  belongs_to :crosswalk, optional: true
+  belongs_to :ipeds_hd, optional: true
+  belongs_to :weam, optional: true
+
+  validate :at_least_one_parent_is_set
 
   scope :by_issue_type, ->(n) { where(issue_type: n) }
 
@@ -133,5 +135,11 @@ class CrosswalkIssue < ApplicationRecord
   def weam_crosswalk_match?
     weam.present? && crosswalk.present? &&
       weam.cross == crosswalk.cross && weam.ope == crosswalk.ope
+  end
+
+  def at_least_one_parent_is_set
+    return if weam_id.present? || ipeds_hd_id.present? || crosswalk_id.present?
+
+    errors.add :base, :invalid, message: 'At least one weam or iped or crosswalk must be set'
   end
 end

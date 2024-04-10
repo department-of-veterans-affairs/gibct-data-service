@@ -4,13 +4,13 @@ class Crosswalk < ImportableRecord
   COLS_USED_IN_INSTITUTION = %i[ope cross ope6].freeze
 
   CSV_CONVERTER_INFO = {
-    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution_name' => { column: :institution, converter: InstitutionConverter },
-    'city' => { column: :city, converter: BaseConverter },
-    'state' => { column: :state, converter: BaseConverter },
-    'ipeds' => { column: :cross, converter: CrossConverter },
-    'ope' => { column: :ope, converter: OpeConverter },
-    'notes' => { column: :notes, converter: BaseConverter }
+    'facility_code' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
+    'institution_name' => { column: :institution, converter: Converters::InstitutionConverter },
+    'city' => { column: :city, converter: Converters::BaseConverter },
+    'state' => { column: :state, converter: Converters::BaseConverter },
+    'ipeds' => { column: :cross, converter: Converters::CrossConverter },
+    'ope' => { column: :ope, converter: Converters::OpeConverter },
+    'notes' => { column: :notes, converter: Converters::BaseConverter }
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
@@ -19,6 +19,6 @@ class Crosswalk < ImportableRecord
 
   # Instance methods
   def derive_dependent_columns
-    self.ope6 = Ope6Converter.convert(ope)
+    self.ope6 = Converters::Ope6Converter.convert(ope)
   end
 end

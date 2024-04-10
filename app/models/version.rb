@@ -88,9 +88,7 @@ class Version < ApplicationRecord
   private
 
   def check_version
-    if number.present? && Version.find_by(number: number).nil?
-      errors.add(:number, "Version number #{number} doesn't exist")
-    end
+    errors.add(:number, "Version number #{number} doesn't exist") if number.present? && Version.find_by(number: number).nil?
     true
   end
 

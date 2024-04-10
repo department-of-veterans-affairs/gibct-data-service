@@ -5,9 +5,7 @@ require 'rails_helper'
 RSpec.describe V0::InstitutionProgramsController, type: :controller do
   context 'when determining version' do
     it 'uses a production version as a default' do
-      create(:version, :production)
-      create(:version, :preview)
-      create(:institution_program, :contains_harv)
+      create(:version, :production, :with_institution_that_contains_harv)
       get(:index)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -16,8 +14,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
     end
 
     it 'accepts invalid version parameter and returns production data' do
-      create(:version, :production)
-      create(:institution_program, :contains_harv)
+      create(:version, :production, :with_institution_that_contains_harv)
       get(:index, params: { version: 'invalid_data' })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -27,8 +24,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
 
     it 'accepts version number as a version parameter and returns preview data' do
       create(:version, :production)
-      v = create(:version, :preview)
-      create(:institution_program, :contains_harv, version: Version.current_preview.number)
+      v = create(:version, :preview, :with_institution_that_contains_harv)
       get(:index, params: { version: v.uuid })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_programs')
@@ -38,10 +34,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
   end
 
   context 'when autocomplete' do
-    before do
-      create(:version, :production)
-      create(:institution, version_id: Version.last.id)
-    end
+    before { create(:version, :production, :with_institution) }
 
     it 'returns collection of matches' do
       create_list(:institution_program, 2, :start_like_harv, :last_version)

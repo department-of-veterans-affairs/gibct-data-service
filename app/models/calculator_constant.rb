@@ -2,9 +2,9 @@
 
 class CalculatorConstant < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'name' => { column: :name, converter: UpcaseConverter },
-    'value' => { column: :float_value, converter: NumberConverter },
-    'description' => { column: :description, converter: BaseConverter }
+    'name' => { column: :name, converter: Converters::UpcaseConverter },
+    'value' => { column: :float_value, converter: Converters::NumberConverter },
+    'description' => { column: :description, converter: Converters::BaseConverter }
   }.freeze
 
   default_scope { order('name') }

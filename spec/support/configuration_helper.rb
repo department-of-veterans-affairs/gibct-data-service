@@ -16,7 +16,7 @@ module Specs
 
       class BackendServiceExceptionConfiguration < DefaultConfiguration
         def connection
-          raise ::Common::Exceptions::BackendServiceException, 'TEST404'
+          raise ::Common::Exceptions::External::BackendServiceException, 'TEST404'
         end
       end
 

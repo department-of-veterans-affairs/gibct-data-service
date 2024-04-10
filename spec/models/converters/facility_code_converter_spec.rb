@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe FacilityCodeConverter do
+RSpec.describe Converters::FacilityCodeConverter do
   subject { described_class }
 
   it 'converts lower case alphas to upper' do

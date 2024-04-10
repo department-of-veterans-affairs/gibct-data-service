@@ -93,9 +93,7 @@ class InstitutionCompareSerializer < ActiveModel::Serializer
   attribute :hcm2
   attribute :pctfloan
 
-  if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
-    attribute :institution_rating
-  end
+  attribute :institution_rating if ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
   attribute :school_provider
   attribute :vet_tec_provider
