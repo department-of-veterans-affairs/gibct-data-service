@@ -2,15 +2,15 @@
 
 class VaCautionFlag < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'id' => { column: :facility_code, converter: FacilityCodeConverter },
-    'instnm' => { column: :institution_name, converter: InstitutionConverter },
-    'school_system_name' => { column: :school_system_name, converter: BaseConverter },
-    'settlement_title' => { column: :settlement_title, converter: BaseConverter },
-    'settlement_description' => { column: :settlement_description, converter: BaseConverter },
-    'settlement_date' => { column: :settlement_date, converter: BaseConverter },
-    'settlement_link' => { column: :settlement_link, converter: BaseConverter },
-    'school_closing_date' => { column: :school_closing_date, converter: BaseConverter },
-    'sec_702' => { column: :sec_702, converter: BooleanConverter }
+    'id' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
+    'instnm' => { column: :institution_name, converter: Converters::InstitutionConverter },
+    'school_system_name' => { column: :school_system_name, converter: Converters::BaseConverter },
+    'settlement_title' => { column: :settlement_title, converter: Converters::BaseConverter },
+    'settlement_description' => { column: :settlement_description, converter: Converters::BaseConverter },
+    'settlement_date' => { column: :settlement_date, converter: Converters::BaseConverter },
+    'settlement_link' => { column: :settlement_link, converter: Converters::BaseConverter },
+    'school_closing_date' => { column: :school_closing_date, converter: Converters::BaseConverter },
+    'sec_702' => { column: :sec_702, converter: Converters::BooleanConverter }
   }.freeze
 
   validates :facility_code, presence: true

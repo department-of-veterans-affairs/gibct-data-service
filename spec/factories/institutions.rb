@@ -111,6 +111,10 @@ FactoryBot.define do
       physical_state { 'MA' }
       physical_country { 'USA' }
       ownership_name { 'test' }
+
+      after(:create) do |institution|
+        create(:institution_program, :start_like_harv, institution_id: institution.id)
+      end
     end
 
     trait :contains_harv do
@@ -121,6 +125,10 @@ FactoryBot.define do
       physical_state { 'MA' }
       physical_country { 'USA' }
       ownership_name { 'test' }
+
+      after(:create) do |institution|
+        create(:institution_program, :contains_harv, institution_id: institution.id)
+      end
     end
 
     trait :ca_employer do
@@ -290,6 +298,10 @@ FactoryBot.define do
 
     trait :production_version do
       version_id { Version.current_production.id }
+    end
+
+    trait :preview_version do
+      version_id { Version.current_preview.id }
     end
 
     trait :mit do

@@ -34,7 +34,7 @@ module Common
       #     configuration MyConfiguration
       #   end
       #
-      class REST < Base
+      class Rest < Base
         self.request_types = %i[get put post delete].freeze
         self.base_request_headers = {
           'Accept' => 'application/json',

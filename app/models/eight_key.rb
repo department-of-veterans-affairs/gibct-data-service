@@ -2,12 +2,12 @@
 
 class EightKey < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'institution_of_higher_education' => { column: :institution, converter: InstitutionConverter },
-    'city' => { column: :city, converter: BaseConverter },
-    'state' => { column: :state, converter: BaseConverter },
-    'opeid' => { column: :ope, converter: OpeConverter },
-    'ipeds_id' => { column: :cross, converter: CrossConverter },
-    'notes' => { column: :notes, converter: BaseConverter }
+    'institution_of_higher_education' => { column: :institution, converter: Converters::InstitutionConverter },
+    'city' => { column: :city, converter: Converters::BaseConverter },
+    'state' => { column: :state, converter: Converters::BaseConverter },
+    'opeid' => { column: :ope, converter: Converters::OpeConverter },
+    'ipeds_id' => { column: :cross, converter: Converters::CrossConverter },
+    'notes' => { column: :notes, converter: Converters::BaseConverter }
   }.freeze
 
   validate :ope_or_cross
@@ -25,6 +25,6 @@ class EightKey < ImportableRecord
   end
 
   def derive_dependent_columns
-    self.ope6 = Ope6Converter.convert(ope)
+    self.ope6 = Converters::Ope6Converter.convert(ope)
   end
 end

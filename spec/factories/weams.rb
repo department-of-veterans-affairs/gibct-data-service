@@ -179,9 +179,12 @@ FactoryBot.define do
     end
 
     trait :arf_gi_bill do
-      arf_gi_bill { create(:arf_gi_bill, facility_code: facility_code) }
       city { 'Test' }
       state { 'TN' }
+
+      after(:create) do |weam|
+        create(:arf_gi_bill, facility_code: weam.facility_code)
+      end
     end
 
     trait :physical_address do

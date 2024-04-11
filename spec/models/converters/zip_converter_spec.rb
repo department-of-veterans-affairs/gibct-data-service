@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ZipConverter do
+RSpec.describe Converters::ZipConverter do
   subject { described_class }
 
   it 'right justifies with leading 0s to 5 characters in length' do

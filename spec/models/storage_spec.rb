@@ -67,7 +67,9 @@ RSpec.describe Storage, type: :model do
 
     it 'requires a user' do
       params[:user] = nil
-      expect(described_class.find_and_update(params).errors.full_messages).to eq(["User can't be blank"])
+      expect(
+        described_class.find_and_update(params).errors.full_messages
+      ).to eq(['User must exist', "User can't be blank"])
     end
 
     it 'requires an upload_file' do

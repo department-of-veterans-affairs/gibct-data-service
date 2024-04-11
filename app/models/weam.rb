@@ -40,48 +40,48 @@ class Weam < ImportableRecord
 
   # Used by loadable and (TODO) will be used with added include: true|false when building data.csv
   CSV_CONVERTER_INFO = {
-    'facility_code' => { column: :facility_code, converter: FacilityCodeConverter },
-    'institution_name' => { column: :institution, converter: InstitutionConverter },
-    'address_1' => { column: :address_1, converter: BaseConverter },
-    'address_2' => { column: :address_2, converter: BaseConverter },
-    'address_3' => { column: :address_3, converter: BaseConverter },
-    'institution_city' => { column: :city, converter: UpcaseConverter },
-    'institution_state' => { column: :state, converter: StateConverter },
-    'institution_zip_code' => { column: :zip, converter: ZipConverter },
-    'institution_country' => { column: :country, converter: UpcaseConverter },
-    'accredited' => { column: :accredited, converter: BooleanConverter },
-    'current_academic_year_va_bah_rate' => { column: :bah, converter: NumberConverter },
-    'principles_of_excellence' => { column: :poe, converter: BooleanConverter },
-    'current_academic_year_yellow_ribbon' => { column: :yr, converter: BooleanConverter },
-    'poo_status' => { column: :poo_status, converter: BaseConverter },
-    'applicable_law_code' => { column: :applicable_law_code, converter: BaseConverter },
+    'facility_code' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
+    'institution_name' => { column: :institution, converter: Converters::InstitutionConverter },
+    'address_1' => { column: :address_1, converter: Converters::BaseConverter },
+    'address_2' => { column: :address_2, converter: Converters::BaseConverter },
+    'address_3' => { column: :address_3, converter: Converters::BaseConverter },
+    'institution_city' => { column: :city, converter: Converters::UpcaseConverter },
+    'institution_state' => { column: :state, converter: Converters::StateConverter },
+    'institution_zip_code' => { column: :zip, converter: Converters::ZipConverter },
+    'institution_country' => { column: :country, converter: Converters::UpcaseConverter },
+    'accredited' => { column: :accredited, converter: Converters::BooleanConverter },
+    'current_academic_year_va_bah_rate' => { column: :bah, converter: Converters::NumberConverter },
+    'principles_of_excellence' => { column: :poe, converter: Converters::BooleanConverter },
+    'current_academic_year_yellow_ribbon' => { column: :yr, converter: Converters::BooleanConverter },
+    'poo_status' => { column: :poo_status, converter: Converters::BaseConverter },
+    'applicable_law_code' => { column: :applicable_law_code, converter: Converters::BaseConverter },
     'institution_of_higher_learning_indicator' => {
-      column: :institution_of_higher_learning_indicator, converter: BooleanConverter
+      column: :institution_of_higher_learning_indicator, converter: Converters::BooleanConverter
     },
-    'ojt_indicator' => { column: :ojt_indicator, converter: BooleanConverter },
-    'correspondence_indicator' => { column: :correspondence_indicator, converter: BooleanConverter },
-    'flight_indicator' => { column: :flight_indicator, converter: BooleanConverter },
-    'non_college_degree_indicator' => { column: :non_college_degree_indicator, converter: BooleanConverter },
-    'ipeds' => { column: :cross, converter: CrossConverter },
-    'ope' => { column: :ope, converter: OpeConverter },
-    'independent_study' => { column: :independent_study, converter: BooleanConverter },
-    'physical_address_1' => { column: :physical_address_1, converter: BaseConverter },
-    'physical_address_2' => { column: :physical_address_2, converter: BaseConverter },
-    'physical_address_3' => { column: :physical_address_3, converter: BaseConverter },
-    'physical_institution_city' => { column: :physical_city, converter: UpcaseConverter },
-    'physical_institution_state' => { column: :physical_state, converter: StateConverter },
-    'physical_institution_zip_code' => { column: :physical_zip, converter: ZipConverter },
-    'physical_institution_country' => { column: :physical_country, converter: UpcaseConverter },
-    'current_academic_year_dod_bah_rate' => { column: :dod_bah, converter: NumberConverter },
-    'online_only' => { column: :online_only, converter: BooleanConverter },
-    'distance_learning' => { column: :distance_learning, converter: BooleanConverter },
-    'priority_enrollment' => { column: :priority_enrollment, converter: BooleanConverter },
-    'preferred_provider' => { column: :preferred_provider, converter: BooleanConverter },
-    'stem_indicator' => { column: :stem_indicator, converter: BooleanConverter },
-    'campus_indicator' => { column: :campus_type, converter: BaseConverter },
-    'parent_facility_code' => { column: :parent_facility_code_id, converter: BaseConverter },
-    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: BaseConverter },
-    'high_school' => { column: :high_school, converter: BooleanConverter }
+    'ojt_indicator' => { column: :ojt_indicator, converter: Converters::BooleanConverter },
+    'correspondence_indicator' => { column: :correspondence_indicator, converter: Converters::BooleanConverter },
+    'flight_indicator' => { column: :flight_indicator, converter: Converters::BooleanConverter },
+    'non_college_degree_indicator' => { column: :non_college_degree_indicator, converter: Converters::BooleanConverter },
+    'ipeds' => { column: :cross, converter: Converters::CrossConverter },
+    'ope' => { column: :ope, converter: Converters::OpeConverter },
+    'independent_study' => { column: :independent_study, converter: Converters::BooleanConverter },
+    'physical_address_1' => { column: :physical_address_1, converter: Converters::BaseConverter },
+    'physical_address_2' => { column: :physical_address_2, converter: Converters::BaseConverter },
+    'physical_address_3' => { column: :physical_address_3, converter: Converters::BaseConverter },
+    'physical_institution_city' => { column: :physical_city, converter: Converters::UpcaseConverter },
+    'physical_institution_state' => { column: :physical_state, converter: Converters::StateConverter },
+    'physical_institution_zip_code' => { column: :physical_zip, converter: Converters::ZipConverter },
+    'physical_institution_country' => { column: :physical_country, converter: Converters::UpcaseConverter },
+    'current_academic_year_dod_bah_rate' => { column: :dod_bah, converter: Converters::NumberConverter },
+    'online_only' => { column: :online_only, converter: Converters::BooleanConverter },
+    'distance_learning' => { column: :distance_learning, converter: Converters::BooleanConverter },
+    'priority_enrollment' => { column: :priority_enrollment, converter: Converters::BooleanConverter },
+    'preferred_provider' => { column: :preferred_provider, converter: Converters::BooleanConverter },
+    'stem_indicator' => { column: :stem_indicator, converter: Converters::BooleanConverter },
+    'campus_indicator' => { column: :campus_type, converter: Converters::BaseConverter },
+    'parent_facility_code' => { column: :parent_facility_code_id, converter: Converters::BaseConverter },
+    'in_state_tuition_url' => { column: :in_state_tuition_information, converter: Converters::BaseConverter },
+    'high_school' => { column: :high_school, converter: Converters::BooleanConverter }
   }.freeze
 
   has_many :crosswalk_issue, dependent: :delete_all
@@ -107,7 +107,7 @@ class Weam < ImportableRecord
     self.flight = flight?
     self.correspondence = correspondence?
     self.approved = approved?
-    self.ope6 = Ope6Converter.convert(ope)
+    self.ope6 = Converters::Ope6Converter.convert(ope)
     self.institution_search = Institution.institution_search_term(institution)[:search_term]
   end
 

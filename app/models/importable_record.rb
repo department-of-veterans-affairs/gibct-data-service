@@ -3,7 +3,8 @@
 require 'roo_helper/shared'
 
 class ImportableRecord < ApplicationRecord
-  include RooHelper
+  include RooHelper::Loader
+  include RooHelper::Shared
 
   self.abstract_class = true
 

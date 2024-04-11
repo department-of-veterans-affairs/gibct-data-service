@@ -8,8 +8,8 @@ RSpec.describe InstitutionBuilder, type: :model do
 
   describe 'when processing section 1015s' do
     let(:production_version) { Version.current_production }
-    let(:institution1) { create(:institution, :section1015a) }
-    let(:institution2) { create(:institution, :section1015b) }
+    let(:institution1) { create(:institution, :section1015a, version_id: production_version.id) }
+    let(:institution2) { create(:institution, :section1015b, version_id: production_version.id) }
 
     before do
       create(:weam, :institution_builder, :approved_institution)

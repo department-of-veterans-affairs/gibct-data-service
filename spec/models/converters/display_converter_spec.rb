@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DisplayConverter do
+RSpec.describe Converters::DisplayConverter do
   subject { described_class }
 
   it 'capitalizes letters separated by spaces' do

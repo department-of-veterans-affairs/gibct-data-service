@@ -20,8 +20,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
   context 'with version determination' do
     it 'uses a production version as a default' do
-      create(:version, :production)
-      create(:institution, :contains_harv)
+      create(:version, :production, :with_institution_that_contains_harv)
       get(:index)
       expect_response_match_schema('institution_search_results')
     end
@@ -31,8 +30,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'accepts invalid version parameter and returns production data' do
-      create(:version, :production)
-      create(:institution, :contains_harv)
+      create(:version, :production, :with_institution_that_contains_harv)
       get(:index, params: { version: 'invalid_data' })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
@@ -41,9 +39,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'accepts version number as a version parameter and returns preview data' do
-      create(:version, :production)
+      create(:version, :production, :with_institution_that_contains_harv)
       v = create(:version, :preview)
-      create(:institution, :contains_harv, :production_version)
       get(:index, params: { version: v.uuid })
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
@@ -74,7 +71,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'returns empty collection on missing term parameter' do
-      create(:institution, :start_like_harv)
+      create(:version, :production, :with_institution_that_starts_like_harv)
       get(:autocomplete)
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.media_type).to eq('application/json')
@@ -82,7 +79,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'does not return results for non-approved institutions' do
-      create(:institution, :start_like_harv, approved: false)
+      create(:institution, :production_version, :start_like_harv, approved: false)
       get(:autocomplete, params: { term: 'harv' })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
       expect(response.media_type).to eq('application/json')
@@ -222,11 +219,11 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     before do
       create(:version, :production)
-      create_list(:institution, 2, :in_nyc, version_id: Version.current_production.id)
-      create(:institution, :in_chicago, online_only: true, version_id: Version.current_production.id)
-      create(:institution, :in_new_rochelle, distance_learning: true, version_id: Version.current_production.id)
+      create_list(:institution, 2, :in_nyc, :production_version)
+      create(:institution, :production_version, :in_chicago, online_only: true)
+      create(:institution, :production_version, :in_new_rochelle, distance_learning: true)
       # adding a non approved institutions row
-      create(:institution, :contains_harv, approved: false, version_id: Version.current_production.id)
+      create(:institution, :production_version, :contains_harv, approved: false)
     end
 
     it 'search returns results' do
@@ -237,7 +234,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns results matching name' do
-      create(:institution, :uchicago, version_id: Version.current_production.id)
+      create(:institution, :uchicago, :production_version)
       get(:index, params: { name: 'UNIVERSITY OF CHICAGO - NOT IN CHICAGO' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
@@ -245,8 +242,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns results fuzzy-matching name' do
-      create(:institution, :independent_study, version_id: Version.current_production.id)
-      create(:institution, :uchicago, version_id: Version.current_production.id)
+      create(:institution, :independent_study, :production_version)
+      create(:institution, :uchicago, :production_version)
       get(:index, params: { name: 'UNIVERSITY OF NDEPENDENT STUDY' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
@@ -254,8 +251,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns results fuzzy-matching with exact match name' do
-      first = create(:institution, :independent_study, version_id: Version.current_production.id)
-      create(:institution, :uchicago, version_id: Version.current_production.id)
+      first = create(:institution, :independent_study, :production_version)
+      create(:institution, :uchicago, :production_version)
       get(:index, params: { name: 'UNIVERSITY OF INDEPENDENT STUDY' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(JSON.parse(response.body)['data'][0]['attributes']['name']).to eq(first.institution)
@@ -264,10 +261,9 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns results correctly ordered results' do
-      create(:institution, institution: 'HARVAR', institution_search: 'HARVAR', gibill: 1,
-                           version_id: Version.current_production.id)
-      first = create(:institution, institution: 'HARVARDY', institution_search: 'HARVARDY',
-                                   gibill: 100, version_id: Version.current_production.id)
+      create(:institution, :production_version, institution: 'HARVAR', institution_search: 'HARVAR', gibill: 1)
+      first = create(:institution, :production_version,
+                     institution: 'HARVARDY', institution_search: 'HARVARDY', gibill: 100)
       get(:index, params: { name: 'HARVARD' })
       expect(JSON.parse(response.body)['data'][0]['attributes']['name']).to eq(first.institution)
       expect(response.media_type).to eq('application/json')
@@ -275,7 +271,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns results alias' do
-      create(:institution, :independent_study, ialias: 'UIS', version_id: Version.current_production.id)
+      create(:institution, :production_version, :independent_study, ialias: 'UIS')
       get(:index, params: { name: 'uis' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
@@ -290,7 +286,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search with space returns results' do
-      create(:institution, institution_search: 'with space', version_id: Version.current_production.id)
+      create(:institution, :production_version, institution_search: 'with space')
       get(:index, params: { name: 'with space' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
@@ -298,9 +294,9 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'do not return results for extension institutions' do
-      create(:institution, :ca_employer, version_id: Version.current_production.id)
-      create(:institution, :ca_employer, campus_type: 'E', version_id: Version.current_production.id)
-      create(:institution, :ca_employer, campus_type: 'Y', version_id: Version.current_production.id)
+      create(:institution, :production_version, :ca_employer)
+      create(:institution, :production_version, :ca_employer, campus_type: 'E')
+      create(:institution, :production_version, :ca_employer, campus_type: 'Y')
       get(:index, params: { name: 'acme' })
 
       expect(JSON.parse(response.body)['data'].count).to eq(2)
@@ -330,20 +326,20 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'includes vet_tec_provider institutions' do
-      vet_tec = create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+      vet_tec = create(:institution, :production_version, :vet_tec_provider)
       get(:index, params: { name: 'vet tec' })
       expect(JSON.parse(response.body)['data'][0]['attributes']['facility_code']).to eq(vet_tec.facility_code)
     end
 
     it 'excludes vet_tec_provider institutions' do
-      create(:institution, :vet_tec_provider, version_id: Version.current_production.id)
+      create(:institution, :production_version, :vet_tec_provider)
       get(:index, params: { name: 'vet tec', exclude_vettec: true })
       expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
 
     it 'filters by preferred_provider' do
-      create(:institution, :in_nyc, version_id: Version.current_production.id)
-      create(:institution, :preferred_provider, version_id: Version.current_production.id)
+      create(:institution, :production_version, :in_nyc)
+      create(:institution, :production_version, :preferred_provider)
       get(:index, params: { exclude_schools: true, exclude_employers: true, preferred_provider: true })
       expect(JSON.parse(response.body)['data'].map { |a| a['attributes']['preferred_provider'] }).to all(eq(true))
     end
@@ -383,7 +379,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns location results' do
-      create(:institution, :location, version_id: Version.current_production.id)
+      create(:institution, :production_version, :location)
       get(:location, params: { latitude: '32.7876', longitude: '-79.9403', distance: '50', tab: 'location' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
@@ -397,9 +393,9 @@ RSpec.describe V1::InstitutionsController, type: :controller do
     end
 
     it 'search returns compare results' do
-      i1 = create(:institution, version_id: Version.current_production.id)
-      i2 = create(:institution, version_id: Version.current_production.id)
-      i3 = create(:institution, version_id: Version.current_production.id)
+      i1 = create(:institution, :production_version)
+      i2 = create(:institution, :production_version)
+      i3 = create(:institution, :production_version)
       get(:facility_codes, params: { facility_codes: [i1.facility_code, i2.facility_code, i3.facility_code] })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
       expect(response.media_type).to eq('application/json')
@@ -444,9 +440,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
   end
 
   context 'with institution profile' do
-    before do
-      create(:version, :production)
-    end
+    before { create(:version, :production) }
 
     it 'returns profile details' do
       school = create(:institution, :in_chicago, :production_version)
@@ -471,9 +465,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
   end
 
   context 'with institution children' do
-    before do
-      create(:version, :production)
-    end
+    before { create(:version, :production) }
 
     it 'returns institution children' do
       school = create(:institution, :in_chicago, :production_version)
