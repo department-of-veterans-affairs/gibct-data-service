@@ -21,6 +21,10 @@ ENV RAILS_ENV=$RAILS_ENV \
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
+# Create group and nonroot user
+RUN groupadd --gid $USER_ID gi-bill-data-service && \
+    useradd --uid $USER_ID --gid gi-bill-data-service --create-home --shell /bin/bash gi-bill-data-service
+
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config
@@ -32,8 +36,8 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Copy application code
-COPY . .
+# Copy application code, changing ownership to nonroot user/group
+COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 
 # Don't include /sample_csvs in production 
 RUN if [ "$RAILS_ENV" = "production" ]; then rm -rf ./sample_csvs; fi
@@ -61,10 +65,6 @@ COPY --from=build /rails /rails
 #     /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh
 # WORKDIR /srv/gi-bill-data-service/src
 
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --gid $USER_ID gi-bill-data-service && \
-    useradd --uid $USER_ID --gid gi-bill-data-service --create-home --shell /bin/bash gi-bill-data-service && \
-    chown -R gi-bill-data-service:gi-bill-data-service db log tmp
 USER gi-bill-data-service:gi-bill-data-service
 
 # Entrypoint prepares the database.
