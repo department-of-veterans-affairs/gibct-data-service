@@ -98,6 +98,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    base64 (0.2.0)
     bcrypt (3.1.20)
     bigdecimal (3.1.7)
     bindex (0.8.1)
@@ -128,6 +129,7 @@ GEM
     config (5.4.0)
       deep_merge (~> 1.2, >= 1.2.1)
     crass (1.0.6)
+    csv (3.3.0)
     database_cleaner (2.0.2)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.1.0)
@@ -146,6 +148,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
     docile (1.4.0)
+    drb (2.2.1)
     erubi (1.12.0)
     execjs (2.8.1)
     factory_bot (6.4.6)
@@ -228,6 +231,7 @@ GEM
     minitest (5.22.3)
     multi_json (1.15.0)
     multipart-post (2.4.0)
+    mutex_m (0.2.0)
     nenv (0.3.0)
     net-imap (0.4.10)
       date
@@ -466,6 +470,7 @@ DEPENDENCIES
   active_model_serializers (~> 0.10.14)
   activerecord-import
   activerecord-session_store
+  base64 (~> 0.2.0)
   bcrypt (~> 3.1.20)
   brakeman
   bundler-audit
@@ -473,8 +478,10 @@ DEPENDENCIES
   cancancan (~> 1.13, >= 1.13.1)
   capybara (= 3.40.0)
   config
+  csv (~> 3.3)
   database_cleaner
   devise
+  drb (~> 2.2, >= 2.2.1)
   factory_bot_rails (> 5)
   faker (~> 3.3)
   faraday
@@ -491,6 +498,7 @@ DEPENDENCIES
   json_matchers
   libv8-node (= 18.19.0.0)
   mini_racer
+  mutex_m (~> 0.2.0)
   newrelic_rpm
   nokogiri (~> 1.16.3)
   oj
