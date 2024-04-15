@@ -23,7 +23,7 @@ gem 'bcrypt', '~> 3.1.20'
 gem 'cancancan', '~> 1.13', '>= 1.13.1'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
 gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
-gem 'geocoder', '~> 1.3', '>= 1.3.7'
+gem 'geocoder', '~> 1.8'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 gem 'mutex_m', '~> 0.2.0' # ruby 3.4.0 warning said to add
