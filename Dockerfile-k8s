@@ -18,12 +18,12 @@ ENV RAILS_ENV=$RAILS_ENV \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT=$BUNDLE_WITHOUT
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
 # Create group and nonroot user
 RUN groupadd --gid $USER_ID gi-bill-data-service && \
     useradd --uid $USER_ID --gid gi-bill-data-service --create-home --shell /bin/bash gi-bill-data-service
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
@@ -54,8 +54,8 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
+COPY --from=build --chown=gi-bill-data-service:gi-bill-data-service /usr/local/bundle /usr/local/bundle
+COPY --from=build --chown=gi-bill-data-service:gi-bill-data-service /rails /rails
 
 # TODO - maybe perform in Base layer?
 # Clone platform-va-ca-certificate and copy certs
