@@ -168,7 +168,7 @@ GEM
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
     formatador (1.1.0)
-    geocoder (1.8.1)
+    geocoder (1.8.2)
     globalid (1.2.1)
       activesupport (>= 6.1)
     govdelivery-tms (2.8.4)
@@ -488,7 +488,7 @@ DEPENDENCIES
   faraday_middleware
   figaro
   font-awesome-rails (= 4.7.0.8)
-  geocoder (~> 1.3, >= 1.3.7)
+  geocoder (~> 1.8)
   govdelivery-tms (= 2.8.4)
   guard-rspec
   headless (~> 2.3.1)
