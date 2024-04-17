@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.3.0-slim-bullseye AS base
+FROM ruby:3.3.0-slim-bookworm AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]

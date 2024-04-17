@@ -54,9 +54,9 @@ class GroupsController < ApplicationController
 
   def upload_requirements(type)
     { type: type.name,
-      requirements: UploadRequirements.requirements_messages(type),
+      requirements: UploadTypes::UploadRequirements.requirements_messages(type),
       custom_batch_validator: "#{type.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize,
-      inclusion: UploadRequirements.validation_messages_inclusion(type) }
+      inclusion: UploadTypes::UploadRequirements.validation_messages_inclusion(type) }
   end
 
   def alert_messages(loaded_data)

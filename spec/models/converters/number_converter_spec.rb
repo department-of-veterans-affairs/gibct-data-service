@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NumberConverter do
+RSpec.describe Converters::NumberConverter do
   subject { described_class }
 
   it 'strips $, +, and commas from number strings' do

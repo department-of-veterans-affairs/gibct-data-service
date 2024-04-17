@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'common/loader'
+
 module RooHelper
   module Loader
     include Common::Loader
@@ -155,7 +157,7 @@ module RooHelper
           file_header = file_options[:liberal_parsing] ? headers_mapping[key].gsub('"', '').strip : headers_mapping[key]
           info = converter_info(sheet_klass, file_header)
           if info.present?
-            converter = info[:converter] || BaseConverter
+            converter = info[:converter] || Converters::BaseConverter
             result[key] = converter.convert(value)
           end
         end
@@ -262,7 +264,7 @@ module RooHelper
       first_line = csv.readline
       col_sep = Settings.csv_upload.column_separators
                         .find { |column_separator| first_line.include?(column_separator) }
-      valid_col_seps_msg = RooHelper.valid_col_seps[:value].map { |cs| "\"#{cs}\"" }.join(' and ')
+      valid_col_seps_msg = RooHelper::Shared.valid_col_seps[:value].map { |cs| "\"#{cs}\"" }.join(' and ')
       error_message = "Unable to determine column separators, valid separators equal #{valid_col_seps_msg}"
       raise(StandardError, error_message) if col_sep.blank?
 
@@ -294,7 +296,7 @@ module RooHelper
         headers.each_with_index do |header, h_index|
           info = converter_info(sheet_klass, header)
           if info.present?
-            converter = info[:converter] || BaseConverter
+            converter = info[:converter] || Converters::BaseConverter
             result[info[:column]] = converter.convert(values[h_index])
           end
         end

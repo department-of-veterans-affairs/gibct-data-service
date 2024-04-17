@@ -4,22 +4,23 @@ class AccreditationRecord < ImportableRecord
   belongs_to(:accreditation_institute_campus, foreign_key: 'dapip_id', primary_key: :dapip_id,
                                               inverse_of: :accreditation_records)
 
-  belongs_to(:accreditation_type_keyword, inverse_of: :accreditation_records)
+  # records may not have an accreditation_type_keyword
+  belongs_to(:accreditation_type_keyword, inverse_of: :accreditation_records, optional: true)
 
   CSV_CONVERTER_INFO = {
-    'dapipid' => { column: :dapip_id, converter: NumberConverter },
-    'agencyid' => { column: :agency_id, converter: NumberConverter },
-    'agencyname' => { column: :agency_name, converter: InstitutionConverter },
-    'programid' => { column: :program_id, converter: NumberConverter },
-    'programname' => { column: :program_name, converter: BaseConverter },
-    'sequentialid' => { column: :sequential_id, converter: NumberConverter },
-    'initialdateflag' => { column: :initial_date_flag, converter: BaseConverter },
-    'accreditationdate' => { column: :accreditation_date, converter: DateConverter },
-    'accreditationstatus' => { column: :accreditation_status, converter: BaseConverter },
-    'reviewdate' => { column: :review_date, converter: DateConverter },
-    'departmentdescription' => { column: :department_description, converter: BaseConverter },
-    'accreditationenddate' => { column: :accreditation_end_date, converter: DateConverter },
-    'endingactionid' => { column: :ending_action_id, converter: NumberConverter }
+    'dapipid' => { column: :dapip_id, converter: Converters::NumberConverter },
+    'agencyid' => { column: :agency_id, converter: Converters::NumberConverter },
+    'agencyname' => { column: :agency_name, converter: Converters::InstitutionConverter },
+    'programid' => { column: :program_id, converter: Converters::NumberConverter },
+    'programname' => { column: :program_name, converter: Converters::BaseConverter },
+    'sequentialid' => { column: :sequential_id, converter: Converters::NumberConverter },
+    'initialdateflag' => { column: :initial_date_flag, converter: Converters::BaseConverter },
+    'accreditationdate' => { column: :accreditation_date, converter: Converters::DateConverter },
+    'accreditationstatus' => { column: :accreditation_status, converter: Converters::BaseConverter },
+    'reviewdate' => { column: :review_date, converter: Converters::DateConverter },
+    'departmentdescription' => { column: :department_description, converter: Converters::BaseConverter },
+    'accreditationenddate' => { column: :accreditation_end_date, converter: Converters::DateConverter },
+    'endingactionid' => { column: :ending_action_id, converter: Converters::NumberConverter }
   }.freeze
 
   validates :dapip_id, presence: true

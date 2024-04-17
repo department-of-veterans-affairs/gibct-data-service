@@ -49,9 +49,9 @@ class UploadsController < ApplicationController
   private
 
   def csv_requirements
-    @requirements = [RooHelper.valid_col_seps] + UploadRequirements.requirements_messages(klass)
+    @requirements = [RooHelper::Shared.valid_col_seps] + UploadTypes::UploadRequirements.requirements_messages(klass)
     @custom_batch_validator = "#{klass.name}Validator::REQUIREMENT_DESCRIPTIONS".safe_constantize
-    @inclusion = UploadRequirements.validation_messages_inclusion(klass)
+    @inclusion = UploadTypes::UploadRequirements.validation_messages_inclusion(klass)
   end
 
   def alert_messages(data)

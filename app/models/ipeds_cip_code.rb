@@ -2,9 +2,9 @@
 
 class IpedsCipCode < ImportableRecord
   CSV_CONVERTER_INFO = {
-    'unitid' => { column: :cross, converter: CrossConverter },
-    'cipcode' => { column: :cipcode, converter: BaseConverter },
-    'ctotalt' => { column: :ctotalt, converter: NumberConverter }
+    'unitid' => { column: :cross, converter: Converters::CrossConverter },
+    'cipcode' => { column: :cipcode, converter: Converters::BaseConverter },
+    'ctotalt' => { column: :ctotalt, converter: Converters::NumberConverter }
   }.freeze
 
   validates :cross, presence: true

@@ -78,7 +78,7 @@ Style/SingleArgumentDig:
   Enabled: false
 
 Layout/LineLength:
-  Max: 120
+  Max: 135
   Exclude:
     - "app/controllers/v0/institutions_controller.rb"
     - "app/controllers/v1/institutions_controller.rb"

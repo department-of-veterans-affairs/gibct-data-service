@@ -15,7 +15,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     def unauthorized
-      raise Common::Exceptions::Unauthorized
+      raise Common::Exceptions::Internal::Unauthorized
     end
   end
 
