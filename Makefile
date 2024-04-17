@@ -1,5 +1,7 @@
 $stdout.sync = true
 
+# Specify arg by appending to command:
+# $ make build env=dev
 ifdef env
     ENV_ARG  := $(env)
 else
@@ -34,7 +36,11 @@ console:
 
 .PHONY: db
 db:
+ifeq ($(ENV_ARG), dev)
 	@$(BASH_DEV) "bin/rails db:setup db:migrate"
+else
+	@$(BASH_TEST) "bin/rails db:setup db:migrate"
+endif
 
 .PHONY: guard
 guard: db
@@ -49,7 +55,8 @@ security: db
 	@$(BASH_DEV) "bin/rails security"
 
 .PHONY: spec
-spec: db
+spec: 
+	@$(MAKE) db ENV_ARG=$(ENV_ARG)
 ifeq ($(ENV_ARG), dev)
 	@$(BASH_DEV) "bin/rails spec"
 else
