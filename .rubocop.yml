@@ -214,7 +214,7 @@ Rails/HasManyOrHasOneDependent:
 
 # the default style recently changed, but it's not worth changing
 Rails/FilePath:
-  EnforcedStyle: arguments
+  Enabled: false
 
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
