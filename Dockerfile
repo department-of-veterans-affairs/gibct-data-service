@@ -45,6 +45,15 @@ ENV BUNDLER_VERSION='2.5.7'
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
+
+# Clone platform-va-ca-certificate and copy certs
+WORKDIR /srv
+RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
+    cp platform-va-ca-certificate/VA*.cer /tmp && \
+    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh
+
+WORKDIR /srv/gi-bill-data-service/src
+
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 ENV PATH="/usr/local/bundle/bin:${PATH}"
@@ -79,14 +88,6 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 RUN whoami
-
-# Clone platform-va-ca-certificate and copy certs
-WORKDIR /srv
-RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
-    cp platform-va-ca-certificate/VA*.cer /tmp && \
-    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh
-
-WORKDIR /srv/gi-bill-data-service/src
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
