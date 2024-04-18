@@ -36,6 +36,10 @@ RUN gem install bundler:${BUNDLER_VERSION} --no-document
 COPY Gemfile Gemfile.lock ./
 
 RUN bundle install && \
+    # Add bundler (required for bundle-audit)
+    bundle binstubs bundler --force --path "${BUNDLE_PATH}/bin" && \
+    # Add binstubs for `bundle-audit`, `rails console`, `rspec`, `rake ci`, etc
+    bundle binstubs bundler-audit railties rspec-core rake --path "${BUNDLE_PATH}/bin" && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
@@ -53,7 +57,7 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client nodejs && \
+    apt-get install --no-install-recommends -y git curl libvips postgresql-client nodejs && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
