@@ -28,7 +28,7 @@ gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'json', '>= 2.3.0'
 gem 'mutex_m', '~> 0.2.0' # ruby 3.4.0 warning said to add
 # Use postgresql as the database for Active Record
-gem 'nokogiri', '~> 1.16.3'
+gem 'nokogiri', '~> 1.16.4'
 gem 'pg'
 gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
