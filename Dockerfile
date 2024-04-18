@@ -13,7 +13,7 @@ WORKDIR /rails
 ARG USER_ID=309
 
 RUN groupadd -g $USER_ID gi-bill-data-service && \
-    useradd -u $USER_ID -g gi-bill-data-service gi-bill-data-service --create-home --shell /bin/bash gi-bill-data-service
+    useradd -u $USER_ID -g gi-bill-data-service --create-home --shell /bin/bash gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
     build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
