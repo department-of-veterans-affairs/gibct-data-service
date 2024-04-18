@@ -42,6 +42,7 @@ gem 'activerecord-import'
 # Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
 gem 'activerecord-session_store'
 
+gem 'bootsnap', require: false
 gem 'config'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 
