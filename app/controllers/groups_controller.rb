@@ -113,7 +113,7 @@ class GroupsController < ApplicationController
                                .map { |data| data[:klass].name }
     error_msg = @group.comment + " There was no saved #{no_saved_data.join(', or ')} data."
 
-    @group.update(ok: ok, completed_at: Time.now.utc.to_s(:db), comment: (error_msg unless no_saved_data.none?))
+    @group.update(ok: ok, completed_at: Time.now.utc.to_fs(:db), comment: (error_msg unless no_saved_data.none?))
 
     raise(StandardError, error_msg + ' Please check the file or selected options.') unless no_saved_data.none?
   end
