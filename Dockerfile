@@ -17,6 +17,8 @@ RUN groupadd -g $USER_ID gi-bill-data-service && \
 RUN apt-get update -qq && apt-get install -y \
     build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
+RUN chown -R gi-bill-data-service:gi-bill-data-service /rails
+
 ###
 # development
 #
