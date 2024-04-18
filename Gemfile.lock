@@ -102,6 +102,8 @@ GEM
     bcrypt (3.1.20)
     bigdecimal (3.1.7)
     bindex (0.8.1)
+    bootsnap (1.18.3)
+      msgpack (~> 1.2)
     brakeman (6.1.2)
       racc
     builder (3.2.4)
@@ -229,6 +231,7 @@ GEM
     mini_racer (0.9.0)
       libv8-node (~> 18.19.0.0)
     minitest (5.22.3)
+    msgpack (1.7.2)
     multi_json (1.15.0)
     multipart-post (2.4.0)
     mutex_m (0.2.0)
@@ -473,6 +476,7 @@ DEPENDENCIES
   activerecord-session_store
   base64 (~> 0.2.0)
   bcrypt (~> 3.1.20)
+  bootsnap
   brakeman
   bundler-audit
   byebug
