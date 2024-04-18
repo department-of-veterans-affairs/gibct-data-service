@@ -45,6 +45,7 @@ RUN bundle install && \
 
 # Copy application code, changing ownership to nonroot user/group
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
+RUN mkdir -p /rails/coverage && chown gi-bill-data-service:gi-bill-data-service /rails/coverage
 
 # Don't include /sample_csvs in production 
 RUN if [ "$RAILS_ENV" = "production" ]; then rm -rf ./sample_csvs; fi
