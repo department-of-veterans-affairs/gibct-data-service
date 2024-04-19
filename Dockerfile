@@ -81,9 +81,14 @@ FROM base AS production
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-# Download VA Certs
-COPY ./import-va-certs.sh .
-RUN ./import-va-certs.sh
+# Clone platform-va-ca-certificate and copy certs
+WORKDIR /tmp
+RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
+    cp platform-va-ca-certificate/VA*.cer . && \
+    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
+    rm -rf /tmp/*
+
+WORKDIR /rails
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /rails /rails
