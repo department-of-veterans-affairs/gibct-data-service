@@ -8,7 +8,7 @@ ARG RUBY_VERSION=3.3.0
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim-bookworm as base
 
 # Rails app lives here
-WORKDIR /rails
+WORKDIR /app
 
 ARG USER_ID=309
 
@@ -17,7 +17,7 @@ RUN groupadd -g $USER_ID gi-bill-data-service && \
 RUN apt-get update -qq && apt-get install -y \
     build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
-RUN chown -R gi-bill-data-service:gi-bill-data-service /rails
+RUN chown -R gi-bill-data-service:gi-bill-data-service /app
 
 ###
 # development
@@ -65,7 +65,7 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
-COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /rails /rails
+COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /app /app
 USER gi-bill-data-service
 
 ENTRYPOINT ["bash", "-c"]
@@ -88,10 +88,10 @@ RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platfo
     /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
     rm -rf /tmp/*
 
-WORKDIR /rails
+WORKDIR /app
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
-COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /rails /rails
+COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /app /app
 USER gi-bill-data-service
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
