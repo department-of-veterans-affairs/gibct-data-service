@@ -14,13 +14,6 @@ RUN apt-get update -qq && apt-get install -y \
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
-
-# Clone platform-va-ca-certificate and copy certs
-WORKDIR /srv
-RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
-    cp platform-va-ca-certificate/VA*.cer /tmp && \
-    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh
-
 WORKDIR /srv/gi-bill-data-service/src
 
 ###
@@ -86,6 +79,15 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 RUN whoami
+
+# Clone platform-va-ca-certificate and copy certs
+WORKDIR /tmp
+RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
+    cp platform-va-ca-certificate/VA*.cer . && \
+    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
+    rm -rf /tmp/*
+
+WORKDIR /srv/gi-bill-data-service/src
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
