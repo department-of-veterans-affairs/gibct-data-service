@@ -73,7 +73,7 @@ RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platfo
     /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
     rm -rf /tmp/*
 
-WORKDIR /srv/gi-bill-data-service/src
+WORKDIR /app
 
 USER gi-bill-data-service:gi-bill-data-service
 
