@@ -68,8 +68,6 @@ gem 'sitemap_generator'
 gem 'strong_migrations'
 gem 'will_paginate'
 
-gem 'bootsnap', require: false
-
 group :production do
   gem 'sass-rails', '6.0'
 end
