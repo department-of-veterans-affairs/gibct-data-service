@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.3.0-slim-bookworm AS base
+FROM ruby:3.3.1-slim-bookworm AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
@@ -40,7 +40,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.5.7'
+ENV BUNDLER_VERSION='2.5.9'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
