@@ -10,7 +10,7 @@ ruby '3.3.0'
 # Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
 # Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
 gem 'puma', '~> 6.4.2'
-gem 'rails', '~> 6.1.7.7'
+gem 'rails', '~> 7.0.8.1'
 
 # Gems with special version/repo needs
 
@@ -44,6 +44,7 @@ gem 'activerecord-session_store'
 
 gem 'bootsnap', require: false
 gem 'config'
+gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 
 # Use devise for authentication
 gem 'devise'
@@ -116,8 +117,4 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', platforms: :ruby
-
-  # Include the IANA Time Zone Database on Windows, where Windows doens't ship with a timezone database.
-  # POSIX systems should have this already, so we're not going to bring it in on other platforms
-  gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 end
