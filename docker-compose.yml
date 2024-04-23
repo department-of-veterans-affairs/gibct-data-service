@@ -15,7 +15,7 @@ services:
       target: development
     image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
-      - ".:/srv/gi-bill-data-service/src/:cached"
+      - ".:/app/:cached"
       - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000

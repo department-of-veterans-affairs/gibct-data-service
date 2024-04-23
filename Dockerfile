@@ -3,18 +3,21 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.3.0-slim-bookworm AS base
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+ARG RUBY_VERSION=3.3.0
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim-bookworm as base
 
-ARG userid=309
-SHELL ["/bin/bash", "-c"]
-RUN groupadd -g $userid -r gi-bill-data-service && \
-    useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
+# Rails app lives here
+WORKDIR /app
+
+ARG USER_ID=309
+
+RUN groupadd -g $USER_ID gi-bill-data-service && \
+    useradd -u $USER_ID -g gi-bill-data-service --create-home --shell /bin/bash gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
     build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
-RUN mkdir -p /srv/gi-bill-data-service/src && \
-    chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
-WORKDIR /srv/gi-bill-data-service/src
+RUN chown -R gi-bill-data-service:gi-bill-data-service /app
 
 ###
 # development
@@ -62,7 +65,7 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
-COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
+COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /app /app
 USER gi-bill-data-service
 
 ENTRYPOINT ["bash", "-c"]
@@ -78,8 +81,6 @@ FROM base AS production
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-RUN whoami
-
 # Clone platform-va-ca-certificate and copy certs
 WORKDIR /tmp
 RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
@@ -87,10 +88,10 @@ RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platfo
     /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
     rm -rf /tmp/*
 
-WORKDIR /srv/gi-bill-data-service/src
+WORKDIR /app
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
-COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
+COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /app /app
 USER gi-bill-data-service
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
