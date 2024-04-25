@@ -9,7 +9,7 @@ Rails.application.config.to_prepare do
     { klass: Crosswalk, required?: true },
     { klass: EightKey, required?: true },
     { klass: Hcm, required?: true },
-    { klass: IpedsHd, required?: true },
+    { klass: IpedsHd, required?: true, has_api?: true, no_api_key?: true },
     { klass: IpedsIcAy, required?: true },
     { klass: IpedsIcPy, required?: true },
     { klass: IpedsIc, required?: true },

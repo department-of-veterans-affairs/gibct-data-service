@@ -17,6 +17,9 @@ Mou:
 Hcm:
   skip_lines: 2
 
+IpedsHd:
+  liberal_parsing: true
+
 Complaint:
   skip_lines: 7
 

@@ -73,7 +73,7 @@ class IpedsHd < ImportableRecord
     'dfrcuscg' => { column: :dfrcuscg, converter: Converters::BaseConverter }
   }.freeze
 
-  has_many :crosswalk_issue, dependent: :delete_all
+  has_many :crosswalk_issues, dependent: :destroy
   validates :cross, presence: true
 
   self.ignored_columns = %w[longitud latitude]
