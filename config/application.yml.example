@@ -1,7 +1,11 @@
-ADMIN_EMAIL: 'something...'
-ADMIN_PW: 'something...'
+ADMIN_EMAIL: 'admin@example.com'
+ADMIN_PW: 'password'
+DEPLOYMENT_ENV: 'vagov-dev'
 SECRET_KEY_BASE: 'something ...'
 LINK_HOST: 'http://localhost:3000' # https://api.va.gov
+GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
+GOVDELIVERY_TOKEN: 'abc123'
+GOVDELIVERY_STAGING_SERVICE: 'false'
 GIBCT_URL: 'http://localhost:3002/gi-bill-comparison-tool'
 SANDBOX_URL: 'http://localhost:3001/gi-bill-comparison-tool-sandbox'
 

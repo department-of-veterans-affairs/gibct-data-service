@@ -22,7 +22,7 @@ class UploadsController < ApplicationController
       alert_messages(data)
       data_results = data[:results]
 
-      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_s(:db))
+      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
 

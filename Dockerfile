@@ -3,7 +3,7 @@
 #
 # shared build/settings for all child images
 ###
-FROM ruby:3.3.0-slim-bookworm AS base
+FROM ruby:3.3.1-slim-bookworm AS base
 
 ARG userid=309
 SHELL ["/bin/bash", "-c"]
@@ -40,7 +40,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.5.7'
+ENV BUNDLER_VERSION='2.5.9'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
@@ -80,9 +80,14 @@ ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 RUN whoami
 
-# Download VA Certs
-COPY ./import-va-certs.sh .
-RUN ./import-va-certs.sh
+# Clone platform-va-ca-certificate and copy certs
+WORKDIR /tmp
+RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
+    cp platform-va-ca-certificate/VA*.cer . && \
+    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
+    rm -rf /tmp/*
+
+WORKDIR /srv/gi-bill-data-service/src
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./

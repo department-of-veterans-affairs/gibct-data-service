@@ -12,7 +12,7 @@ FactoryBot.define do
     user
 
     csv_type { Weam.name }
-    completed_at { Time.now.utc.to_s(:db) }
+    completed_at { Time.now.utc.to_fs(:db) }
     sequence :comment do |n|
       "Upload test #{n}"
     end
