@@ -9,14 +9,14 @@ describe Common::Client::Middleware::Response::JsonParser do
     it 'sets env.body to empty string when matching WHITESPACE_REGEX' do
       env = Faraday::Env.new
       env[:response_headers] = { 'content-type' => 'json' }
-      env[:body] = '   '
+      env[:response_body] = '   '
       expect(json_parser_instance.on_complete(env)).to eq('')
     end
 
     it 'does not parse env.body when env.status is an UNPARSABLE_STATUS_CODES' do
       env = Faraday::Env.new
       env[:response_headers] = { 'content-type' => 'json' }
-      env[:body] = {}
+      env[:response_body] = {}
       env[:status] = 204
       expect(json_parser_instance.on_complete(env)).to be_nil
     end
@@ -25,7 +25,7 @@ describe Common::Client::Middleware::Response::JsonParser do
     it 'parses env.body when env.status is not an UNPARSABLE_STATUS_CODES' do
       env = Faraday::Env.new
       env[:response_headers] = { 'content-type' => 'json' }
-      env[:body] = '{"metadata": {"total": 7112, "page": 71, "per_page": 100}}'
+      env[:response_body] = '{"metadata": {"total": 7112, "page": 71, "per_page": 100}}'
       env[:status] = 200
 
       json_object = { "metadata" => { "total" => 7112, "page" => 71, "per_page" => 100 } }

@@ -10,10 +10,10 @@ module Common
 
           def on_complete(env)
             if env.response_headers['content-type']&.match?(/\bjson/)
-              if !env.body.empty? && body_is_whitespace?(env.body)
-                env.body = ''
+              if env.response_body.nil? || (!env.response_body.empty? && body_is_whitespace?(env.response_body))
+                env.response_body = ''
               else
-                env.body = parse(env.body) unless UNPARSABLE_STATUS_CODES.include?(env[:status])
+                env.response_body = parse(env.response_body) unless UNPARSABLE_STATUS_CODES.include?(env[:status])
               end
             end
           end
