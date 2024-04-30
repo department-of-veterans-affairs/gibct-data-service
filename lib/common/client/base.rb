@@ -64,7 +64,9 @@ module Common
         send(method, path, params || {}, headers || {}, options || {})
       end
 
-      def request(method, path, params = {}, headers = {}, options = {}) # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/PerceivedComplexity
+      def request(method, path, params = {}, headers = {}, options = {})
         sanitize_headers!(method, path, params, headers)
         raise_not_authenticated if headers.keys.include?('Token') && headers['Token'].blank?
         connection.send(method.to_sym, path, params) do |request|
@@ -79,18 +81,15 @@ module Common
       rescue Timeout::Error, Faraday::TimeoutError
         Raven.extra_context(service_name: config.service_name, url: config.base_path)
         raise Common::Exceptions::External::GatewayTimeout
-      rescue Faraday::ClientError => e
-        error_class = case e
-                      when Faraday::ParsingError
-                        Common::Client::Errors::ParsingError
-                      else
-                        Common::Client::Errors::ClientError
-                      end
-
+      rescue Faraday::ParsingError => e
         response_hash = e.response&.to_hash
-        client_error = error_class.new(e.message, response_hash&.dig(:status), response_hash&.dig(:body))
-        raise client_error
+        raise Common::Client::Errors::ParsingError.new(e.message, response_hash&.dig(:status), response_hash&.dig(:body))
+      rescue Faraday::ClientError => e
+        response_hash = e.response&.to_hash
+        raise Common::Client::Errors::ClientError.new(e.message, response_hash&.dig(:status), response_hash&.dig(:body))
       end
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/PerceivedComplexity
 
       def sanitize_headers!(_method, _path, _params, headers)
         headers.transform_keys!(&:to_s)
