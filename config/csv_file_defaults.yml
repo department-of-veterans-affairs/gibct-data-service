@@ -20,6 +20,9 @@ Hcm:
 IpedsHd:
   liberal_parsing: true
 
+IpedsIcAy:
+  liberal_parsing: true
+
 Complaint:
   skip_lines: 7
 

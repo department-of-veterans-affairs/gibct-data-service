@@ -171,6 +171,7 @@ class DashboardsController < ApplicationController
         file = "tmp/#{params[:csv_type]}s.csv"
         file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
         file = 'tmp/hd2022.csv' if class_nm.eql?('IpedsHd')
+        file = 'tmp/ic2022_ay.csv' if class_nm.eql?('IpedsIcAy')
 
         upload.csv = file
         file_options = {
@@ -206,6 +207,11 @@ class DashboardsController < ApplicationController
       _stdout, _stderr, status = Open3.capture3("curl -X GET \
       https://nces.ed.gov/ipeds/datacenter/data/HD2022.zip \
         -H 'Content-Type: application/json' -o tmp/download.zip")
+    when klass.name.eql?('IpedsIcAy')
+      _stdout, _stderr, status = Open3.capture3("curl -X GET \
+      https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip \
+        -H 'Content-Type: application/json' -o tmp/download.zip")
+  
     end
     # rubocop:enable Style/EmptyCaseCondition
     status.success?
