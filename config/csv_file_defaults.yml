@@ -23,6 +23,12 @@ IpedsHd:
 IpedsIcAy:
   liberal_parsing: true
 
+IpedsIcPy:
+  liberal_parsing: true
+
+IpedsIc:
+  liberal_parsing: true
+
 Complaint:
   skip_lines: 7
 
