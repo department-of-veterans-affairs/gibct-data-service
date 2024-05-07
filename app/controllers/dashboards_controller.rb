@@ -165,11 +165,15 @@ class DashboardsController < ApplicationController
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
-      if download_accreditation_csv && unzip_csv
+      if download_csv(klass) && unzip_csv
         upload = Upload.from_csv_type(params[:csv_type])
         upload.user = current_user
         file = "tmp/#{params[:csv_type]}s.csv"
         file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
+        file = 'tmp/hd2022.csv' if class_nm.eql?('IpedsHd')
+        file = 'tmp/ic2022_ay.csv' if class_nm.eql?('IpedsIcAy')
+        file = 'tmp/ic2022_py.csv' if class_nm.eql?('IpedsIcPy')
+        file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
 
         upload.csv = file
         file_options = {
@@ -193,10 +197,33 @@ class DashboardsController < ApplicationController
   end
 
   # :nocov:
-  def download_accreditation_csv
-    _stdout, _stderr, status = Open3.capture3("curl -X POST \
-      https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles \
-      -H 'Content-Type: application/json' -d '{\"CSVChecked\":true,\"ExcelChecked\":false}' -o tmp/download.zip")
+  def download_csv(klass)
+    # rubocop:disable Style/EmptyCaseCondition
+    # the most recent IPED data files are from 2022. This should be checked periodically.
+    case
+    when klass.name.start_with?('Accreditation')
+      _stdout, _stderr, status = Open3.capture3("curl -X POST \
+        https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles \
+        -H 'Content-Type: application/json' -d '{\"CSVChecked\":true,\"ExcelChecked\":false}' -o tmp/download.zip")
+    when klass.name.eql?('IpedsHd')
+      _stdout, _stderr, status = Open3.capture3("curl -X GET \
+      https://nces.ed.gov/ipeds/datacenter/data/HD2022.zip \
+        -H 'Content-Type: application/json' -o tmp/download.zip")
+    when klass.name.eql?('IpedsIcAy')
+      _stdout, _stderr, status = Open3.capture3("curl -X GET \
+      https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip \
+        -H 'Content-Type: application/json' -o tmp/download.zip")
+    when klass.name.eql?('IpedsIcPy')
+      _stdout, _stderr, status = Open3.capture3("curl -X GET \
+      https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip \
+        -H 'Content-Type: application/json' -o tmp/download.zip")
+    when klass.name.eql?('IpedsIc')
+      _stdout, _stderr, status = Open3.capture3("curl -X GET \
+      https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip \
+        -H 'Content-Type: application/json' -o tmp/download.zip")
+
+    end
+    # rubocop:enable Style/EmptyCaseCondition
     status.success?
   end
   # :nocov:
