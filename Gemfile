@@ -2,71 +2,49 @@
 
 source 'https://rubygems.org'
 
-ruby '3.3.1'
-
-# Anchored versions, do not change
-
-# Application server: Puma
-# Puma was chosen because it handles load of 40+ concurrent users better than Unicorn and Passenger
-# Discussion: https://github.com/18F/college-choice/issues/597#issuecomment-139034834
-gem 'puma', '~> 6.4.2'
 gem 'rails', '~> 7.0.8.1'
 
-# Gems with special version/repo needs
-
-# JSON API
-gem 'active_model_serializers', '~> 0.10.14'
-
+gem 'active_model_serializers', '~> 0.10.14' # JSON API
+gem 'activerecord-import' # Mass importing of CSV data
+gem 'activerecord-session_store' # Switch to AR session storage in case of failure pushing to GIBCT
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'bcrypt', '~> 3.1.20'
-# Use cancancan for authorization
-gem 'cancancan', '~> 1.13', '>= 1.13.1'
-gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
-gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
-gem 'geocoder', '~> 1.8'
-gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
-gem 'json', '>= 2.3.0'
-gem 'mutex_m', '~> 0.2.0' # ruby 3.4.0 warning said to add
-# Use postgresql as the database for Active Record
-gem 'nokogiri', '~> 1.16.3'
-gem 'pg'
-gem 'roo', '~> 2.10'
-gem 'roo-xls', '~> 1.2'
-gem 'rubyzip', '~> 2.3'
-gem 'sentry-raven', '~> 3.1.2'
-gem 'uglifier', '>= 1.3.0'
-gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
-gem 'virtus', '~> 2.0.0'
-# Mass importing of CSV data
-gem 'activerecord-import'
-# Switch from cookie based storage to AR storage in case of failure pushing to GIBCT
-gem 'activerecord-session_store'
-
 gem 'bootsnap', require: false
+gem 'cancancan', '~> 1.13', '>= 1.13.1' # Use cancancan for authorization
 gem 'config'
-gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
-
-# Use devise for authentication
-gem 'devise'
+gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
+gem 'devise' # Use devise for authentication
+gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.8'
+gem 'geocoder', '~> 1.8'
+gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'jquery-rails'
 gem 'jquery-ui-rails', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails', branch: 'master'
+gem 'json', '>= 2.3.0'
+gem 'mutex_m', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'newrelic_rpm'
+gem 'nokogiri', '~> 1.16.3'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
-
-# CORS
-gem 'rack-cors', require: 'rack/cors'
-gem 'rainbow'
-
-# Use ActiveModel has_secure_password
+gem 'pg' # Use postgresql as the database for Active Record
+gem 'puma', '~> 6.4.2'
 gem 'rack', '>= 2.2.8.1'
+gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
+gem 'rainbow'
+gem 'roo', '~> 2.10'
+gem 'roo-xls', '~> 1.2'
 gem 'ruby-saml'
+gem 'rubyzip', '~> 2.3'
+gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
+gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
+gem 'uglifier', '>= 1.3.0'
+gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
+gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'
 
 group :production do
@@ -74,8 +52,7 @@ group :production do
 end
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem 'byebug' # Call 'byebug' anywhere in the code to get a debugger console
   gem 'pry-nav'
 
   # Linters
