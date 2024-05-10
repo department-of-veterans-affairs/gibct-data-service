@@ -30,6 +30,7 @@ RSpec.shared_examples 'a loadable model' do |options|
                                 clean_rows: load_options[:clean_rows] }] }
 
     context "with an error-free #{file_ext} file" do
+
       it 'deletes the old table content' do
         expect { described_class.load_with_roo(csv_file, file_options) }
           .to change(described_class, :count).from(5).to(2)
