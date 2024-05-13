@@ -20,6 +20,13 @@ FactoryBot.define do
       ope { '88888888' }
     end
 
+    trait :with_address do
+      addr { '123 Main St.' }
+      city { 'San Francisco' }
+      state { 'CA' }
+      zip { '94107' }
+    end
+
     initialize_with do
       new(
         cross: cross, vet_tuition_policy_url: vet_tuition_policy_url,
