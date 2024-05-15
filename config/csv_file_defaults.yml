@@ -16,6 +16,7 @@ Mou:
 
 Hcm:
   skip_lines: 2
+  liberal_parsing: true
 
 IpedsHd:
   liberal_parsing: true

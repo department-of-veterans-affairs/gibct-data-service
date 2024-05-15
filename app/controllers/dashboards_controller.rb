@@ -165,20 +165,30 @@ class DashboardsController < ApplicationController
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
-      if download_csv(klass) && unzip_csv
-        upload = Upload.from_csv_type(params[:csv_type])
-        upload.user = current_user
-        file = "tmp/#{params[:csv_type]}s.csv"
-        file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
-        file = 'tmp/hd2022.csv' if class_nm.eql?('IpedsHd')
-        file = 'tmp/ic2022_ay.csv' if class_nm.eql?('IpedsIcAy')
-        file = 'tmp/ic2022_py.csv' if class_nm.eql?('IpedsIcPy')
-        file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
+      if download_csv(klass)
+        if klass.name.eql?('Hcm')
+          upload = Upload.from_csv_type(params[:csv_type])
+          upload.user = current_user
+          file = 'tmp/hcm.xlsx'
+          skipline=2
+        else
+          if unzip_csv
+            upload = Upload.from_csv_type(params[:csv_type])
+            upload.user = current_user
+            file = "tmp/#{params[:csv_type]}s.csv"
+            file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
+            file = 'tmp/hd2022.csv' if class_nm.eql?('IpedsHd')
+            file = 'tmp/ic2022_ay.csv' if class_nm.eql?('IpedsIcAy')
+            file = 'tmp/ic2022_py.csv' if class_nm.eql?('IpedsIcPy')
+            file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
+            skipline=0
+          end
+        end
 
         upload.csv = file
         file_options = {
           liberal_parsing: upload.liberal_parsing,
-          sheets: [{ klass: klass, skip_lines: 0, clean_rows: upload.clean_rows }]
+          sheets: [{ klass: klass, skip_lines: skipline, clean_rows: upload.clean_rows }]
         }
         klass.load_with_roo(file, file_options).first
         upload.update(ok: true, completed_at: Time.now.utc.to_fs(:db))
@@ -200,6 +210,7 @@ class DashboardsController < ApplicationController
   def download_csv(klass)
     # rubocop:disable Style/EmptyCaseCondition
     # the most recent IPED data files are from 2022. This should be checked periodically.
+    # the most recent Hcm data files are from 2020.  This should be checked periodically.
     case
     when klass.name.start_with?('Accreditation')
       _stdout, _stderr, status = Open3.capture3("curl -X POST \
@@ -221,6 +232,10 @@ class DashboardsController < ApplicationController
       _stdout, _stderr, status = Open3.capture3("curl -X GET \
       https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip \
         -H 'Content-Type: application/json' -o tmp/download.zip")
+    when klass.name.eql?('Hcm')
+      _stdout, _stderr, status = Open3.capture3('curl -o tmp/hcm.xlsx \
+      -H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0" \
+      https://studentaid.gov/sites/default/files/Schools-on-HCM-December2023.xlsx')
 
     end
     # rubocop:enable Style/EmptyCaseCondition
