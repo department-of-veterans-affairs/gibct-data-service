@@ -6,7 +6,7 @@ class EightKey < ImportableRecord
     'city' => { column: :city, converter: Converters::BaseConverter },
     'state' => { column: :state, converter: Converters::BaseConverter },
     'opeid' => { column: :ope, converter: Converters::OpeConverter },
-    'ipeds_id' => { column: :cross, converter: Converters::CrossConverter },
+    'ipedsid' => { column: :cross, converter: Converters::CrossConverter },
     'notes' => { column: :notes, converter: Converters::BaseConverter }
   }.freeze
 

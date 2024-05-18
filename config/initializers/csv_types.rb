@@ -7,7 +7,7 @@ Rails.application.config.to_prepare do
     { klass: CipCode, required?: false, no_upload?: true },
     { klass: Complaint, required?: true },
     { klass: Crosswalk, required?: true },
-    { klass: EightKey, required?: true },
+    { klass: EightKey, required?: true, has_api?: true, no_api_key?: true },
     { klass: Hcm, required?: true, has_api?: true, no_api_key?: true },
     { klass: IpedsHd, required?: true, has_api?: true, no_api_key?: true },
     { klass: IpedsIcAy, required?: true, has_api?: true, no_api_key?: true },
