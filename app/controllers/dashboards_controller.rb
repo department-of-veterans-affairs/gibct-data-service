@@ -161,28 +161,6 @@ class DashboardsController < ApplicationController
     end
   end
   # :nocov:
-  
-  def convert_xls_to_csv(xls_path, csv_path)
-    book = Spreadsheet.open(xls_path)
-    sheet = book.worksheet(0)  # Assuming the 'opeid' is in the first sheet
-  
-    CSV.open(csv_path, "wb") do |csv|
-      sheet.each do |row|
-        formatted_row = row.to_a.map do |cell|
-          cell_value = cell.is_a?(Float) ? format("%.0f", cell) : cell.to_s.strip
-          # Apply zero-padding for 'opeid' if necessary
-          if cell_value =~ /^\d+$/ && cell_value.length <= 8
-            # Format the number to be exactly eight digits
-            formatted_number = cell_value.rjust(8, '0')
-            formatted_number
-          else
-            cell_value
-          end
-        end
-        csv << formatted_row
-      end
-    end
-  end
 
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
@@ -198,7 +176,7 @@ class DashboardsController < ApplicationController
         file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
         file = 'tmp/hcm.xlsx' if klass.name.eql?('Hcm')
         file = 'tmp/eight_key.xls' if klass.name.eql?('EightKey')
-        convert_xls_to_csv(file,'tmp/eight_key.csv') if klass.name.eql?('EightKey')
+        convert_xls_to_csv(file, 'tmp/eight_key.csv') if klass.name.eql?('EightKey')
         file = 'tmp/eight_key.csv' if klass.name.eql?('EightKey')
         skipline = 0
         skipline = 2 if klass.name.eql?('Hcm')
@@ -282,5 +260,27 @@ class DashboardsController < ApplicationController
     true
   rescue StandardError => _e
     false
+  end
+
+  def convert_xls_to_csv(xls_path, csv_path)
+    book = Spreadsheet.open(xls_path)
+    sheet = book.worksheet(0) # Assuming the 'opeid' is in the first sheet
+
+    CSV.open(csv_path, 'wb') do |csv|
+      sheet.each do |row|
+        formatted_row = row.to_a.map do |cell|
+          cell_value = cell.is_a?(Float) ? format('%.0f', cell) : cell.to_s.strip
+          # Apply zero-padding for 'opeid' if necessary
+          if cell_value =~ /^\d+$/ && cell_value.length <= 8
+            # Format the number to be exactly eight digits
+            formatted_number = cell_value.rjust(8, '0')
+            formatted_number
+          else
+            cell_value
+          end
+        end
+        csv << formatted_row
+      end
+    end
   end
 end
