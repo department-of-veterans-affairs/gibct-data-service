@@ -1,7 +1,9 @@
 {
   "name": "gibct-data-service",
-  "dockerComposeFile": "compose.yaml",
-  "service": "rails-app",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker": {},
@@ -27,7 +29,5 @@
   },
   "forwardPorts": [
     3000
-  ],
-  "onCreateCommand": "bin/setup",
-  "postCreateCommand": "bin/setup"
+  ]
 }
