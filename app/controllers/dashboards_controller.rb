@@ -165,7 +165,8 @@ class DashboardsController < ApplicationController
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
-      if download_csv(klass) && unzip_csv
+      # added klass to unzip_csv as sometimes the download does not need unzipped
+      if download_csv(klass) && unzip_csv(klass)
         upload = Upload.from_csv_type(params[:csv_type])
         upload.user = current_user
         file = "tmp/#{params[:csv_type]}s.csv"
@@ -174,11 +175,19 @@ class DashboardsController < ApplicationController
         file = 'tmp/ic2022_ay.csv' if class_nm.eql?('IpedsIcAy')
         file = 'tmp/ic2022_py.csv' if class_nm.eql?('IpedsIcPy')
         file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
+        file = 'tmp/hcm.xlsx' if klass.name.eql?('Hcm')
+        if klass.name.eql?('EightKey')
+          file = 'tmp/eight_key.xls'
+          convert_xls_to_csv(file, 'tmp/eight_key.csv')
+          file = 'tmp/eight_key.csv'
+        end
+        skipline = 0
+        skipline = 2 if klass.name.eql?('Hcm')
 
         upload.csv = file
         file_options = {
           liberal_parsing: upload.liberal_parsing,
-          sheets: [{ klass: klass, skip_lines: 0, clean_rows: upload.clean_rows }]
+          sheets: [{ klass: klass, skip_lines: skipline, clean_rows: upload.clean_rows }]
         }
         klass.load_with_roo(file, file_options).first
         upload.update(ok: true, completed_at: Time.now.utc.to_fs(:db))
@@ -200,6 +209,7 @@ class DashboardsController < ApplicationController
   def download_csv(klass)
     # rubocop:disable Style/EmptyCaseCondition
     # the most recent IPED data files are from 2022. This should be checked periodically.
+    # the most recent Hcm data files are from 2020.  This should be checked periodically.
     case
     when klass.name.start_with?('Accreditation')
       _stdout, _stderr, status = Open3.capture3("curl -X POST \
@@ -221,6 +231,14 @@ class DashboardsController < ApplicationController
       _stdout, _stderr, status = Open3.capture3("curl -X GET \
       https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip \
         -H 'Content-Type: application/json' -o tmp/download.zip")
+    when klass.name.eql?('Hcm') # without User-Agent server blocks download
+      _stdout, _stderr, status = Open3.capture3('curl -o tmp/hcm.xlsx \
+      -H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0" \
+      https://studentaid.gov/sites/default/files/Schools-on-HCM-December2023.xlsx')
+    when klass.name.eql?('EightKey')
+      _stdout, _stderr, status = Open3.capture3("curl -X GET \
+      https://www2.ed.gov/documents/military/8-keys-sites.xls \
+        -H 'Content-Type: application/json' -o tmp/eight_key.xls")
 
     end
     # rubocop:enable Style/EmptyCaseCondition
@@ -230,7 +248,10 @@ class DashboardsController < ApplicationController
 
   # This is a candidate for a utility class. Right now, this is the only place we needed it.
   # If some other process needs it, it should probably be refactored to a utility class.
-  def unzip_csv
+  def unzip_csv(klass)
+    # Some downloads do are not a zip file, so return true
+    return true if klass.name.eql?('Hcm') || klass.name.eql?('EightKey')
+
     Zip::File.open('tmp/download.zip') do |zip_file|
       zip_file.each do |f|
         f_path = File.join('tmp', f.name)
@@ -242,5 +263,27 @@ class DashboardsController < ApplicationController
     true
   rescue StandardError => _e
     false
+  end
+
+  def convert_xls_to_csv(xls_path, csv_path)
+    book = Spreadsheet.open(xls_path)
+    sheet = book.worksheet(0) # Assuming the 'opeid' is in the first sheet
+
+    CSV.open(csv_path, 'wb') do |csv|
+      sheet.each do |row|
+        formatted_row = row.to_a.map do |cell|
+          cell_value = cell.is_a?(Float) ? format('%.0f', cell) : cell.to_s.strip
+          # Apply zero-padding for 'opeid' if necessary
+          if cell_value =~ /^\d+$/ && cell_value.length <= 8
+            # Format the number to be exactly eight digits
+            formatted_number = cell_value.rjust(8, '0')
+            formatted_number
+          else
+            cell_value
+          end
+        end
+        csv << formatted_row
+      end
+    end
   end
 end

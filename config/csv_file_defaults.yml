@@ -9,13 +9,15 @@ CipCode:
   liberal_parsing: true
 
 EightKey:
-  skip_lines: 1
+  skip_lines: 0
+  liberal_parsing: true
 
 Mou:
   skip_lines: 1
 
 Hcm:
   skip_lines: 2
+  liberal_parsing: true
 
 IpedsHd:
   liberal_parsing: true
