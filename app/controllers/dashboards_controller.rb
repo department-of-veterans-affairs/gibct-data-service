@@ -165,6 +165,7 @@ class DashboardsController < ApplicationController
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
+      # added klass to unzip_csv as sometimes the download does not need unzipped
       if download_csv(klass) && unzip_csv(klass)
         upload = Upload.from_csv_type(params[:csv_type])
         upload.user = current_user
