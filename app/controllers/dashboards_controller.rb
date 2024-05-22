@@ -176,9 +176,11 @@ class DashboardsController < ApplicationController
         file = 'tmp/ic2022_py.csv' if class_nm.eql?('IpedsIcPy')
         file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
         file = 'tmp/hcm.xlsx' if klass.name.eql?('Hcm')
-        file = 'tmp/eight_key.xls' if klass.name.eql?('EightKey')
-        convert_xls_to_csv(file, 'tmp/eight_key.csv') if klass.name.eql?('EightKey')
-        file = 'tmp/eight_key.csv' if klass.name.eql?('EightKey')
+        if klass.name.eql?('EightKey')
+          file = 'tmp/eight_key.xls'
+          convert_xls_to_csv(file, 'tmp/eight_key.csv')
+          file = 'tmp/eight_key.csv'
+        end
         skipline = 0
         skipline = 2 if klass.name.eql?('Hcm')
 
