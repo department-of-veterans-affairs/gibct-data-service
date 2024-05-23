@@ -16,6 +16,31 @@ RSpec.describe AccreditationRecord, type: :model do
     it 'has a valid factory' do
       expect(accreditation_record).to be_valid
     end
+
+    it 'is not valid without a dapip id' do
+      accreditation_record.dapip_id = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without an agency id' do
+      accreditation_record.agency_id = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without an agency name' do
+      accreditation_record.agency_name = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without a program id' do
+      accreditation_record.program_id = nil
+      expect(accreditation_record).not_to be_valid
+    end
+
+    it 'is not valid without a program name' do
+      accreditation_record.program_name = nil
+      expect(accreditation_record).not_to be_valid
+    end
   end
 
   describe 'it sets the accreditation type depending on the agency name' do

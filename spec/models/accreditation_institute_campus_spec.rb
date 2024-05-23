@@ -15,6 +15,11 @@ RSpec.describe AccreditationInstituteCampus, type: :model do
       expect(accreditation_institute_campus).to be_valid
     end
 
+    it 'is not valid without a dapip id' do
+      accreditation_institute_campus.dapip_id = nil
+      expect(accreditation_institute_campus).not_to be_valid
+    end
+
     it 'computes the ope6 from ope' do
       expect(accreditation_institute_campus.ope6).to eq(accreditation_institute_campus.ope[1, 5])
     end
