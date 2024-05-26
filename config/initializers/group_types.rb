@@ -1,5 +1,5 @@
 Rails.application.config.to_prepare do
-  GROUP_FILE_TYPES = [
+  GROUP_FILE_TYPES ||= [
       {
           klass: 'Accreditation',
           required?: true,
@@ -11,5 +11,5 @@ Rails.application.config.to_prepare do
       },
   ].freeze
 
-  GROUP_FILE_TYPES_NAMES = GROUP_FILE_TYPES.map { |g| g[:klass] }.freeze
+  GROUP_FILE_TYPES_NAMES ||= GROUP_FILE_TYPES.map { |g| g[:klass] }.freeze
 end

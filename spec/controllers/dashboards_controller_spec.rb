@@ -185,7 +185,7 @@ RSpec.describe DashboardsController, type: :controller do
 
       it 'downloads a zip file from the edu website' do
         # rubocop:disable RSpec/AnyInstance
-        allow_any_instance_of(described_class).to receive(:download_csv).and_return(true)
+        allow_any_instance_of(NoKeyApis::NoKeyApiDownloader).to receive(:download_csv).and_return(true)
         # rubocop:enable RSpec/AnyInstance
 
         CSV_TYPES_NO_API_KEY_TABLE_NAMES.each do |klass_nm|
@@ -196,7 +196,7 @@ RSpec.describe DashboardsController, type: :controller do
 
       it 'extracts the content of the zip file' do
         # rubocop:disable RSpec/AnyInstance
-        allow_any_instance_of(described_class).to receive(:download_csv).and_return(true)
+        allow_any_instance_of(NoKeyApis::NoKeyApiDownloader).to receive(:download_csv).and_return(true)
         # rubocop:enable RSpec/AnyInstance
 
         get(:api_fetch, params: { csv_type: CSV_TYPES_NO_API_KEY_TABLE_NAMES.first })
