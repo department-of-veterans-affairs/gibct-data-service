@@ -1,6 +1,6 @@
-require File.expand_path('../boot', __FILE__)
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -8,7 +8,12 @@ Bundler.require(*Rails.groups)
 
 module GibctDataService
   class Application < Rails::Application
-    config.load_defaults '7.0' # enables zeitwerk mode in CRuby
+    config.load_defaults "7.0" # enables zeitwerk mode in CRuby
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w(assets tasks))
 
     # Configuration for the application, engines, and railties goes here.
     # These settings can be overridden in specific environments using the files
@@ -42,6 +47,7 @@ module GibctDataService
 
     # Rails 7 upgrade - turn off warnings
     # https://stackoverflow.com/questions/76347365/how-do-i-set-legacy-connection-handling-to-false-in-my-rails-application
-    config.active_record.legacy_connection_handling = false
+    # the legacy_connection_handling configuration option, which was deprecated in Rails 7.0 and removed in Rails 7.1
+    # config.active_record.legacy_connection_handling = false
   end
 end
