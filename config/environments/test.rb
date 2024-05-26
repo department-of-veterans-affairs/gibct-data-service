@@ -12,6 +12,10 @@ Rails.application.configure do
   # this probably isn't necessary. It's a good idea to do in a continuous integration
   # system, or in some way before deploying your code.
   config.eager_load = ENV["CI"].present?
+
+  # only solution found to solve database_cleaner errors after upgrade to Rails 7.1.3 (from 7.0.8) 
+  # per nblezer comment in https://github.com/rspec/rspec-rails/issues/2697
+  config.active_job.queue_adapter = :test
   
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true

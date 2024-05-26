@@ -42,6 +42,9 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+  # needed for perform_enqueued_jobs used in search_geocoder_spec
+  config.include ActiveJob::TestHelper
+
   # Adding capybara DSL to rspec
   config.include Capybara::DSL
   config.include FixAll
@@ -52,7 +55,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = false
+  #config.use_transactional_fixtures = false
 
   # Allow short form of FactoryBot calls.
   config.include FactoryBot::Syntax::Methods
