@@ -1,6 +1,6 @@
-require_relative "boot"
+require_relative 'boot'
 
-require "rails/all"
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -8,7 +8,7 @@ Bundler.require(*Rails.groups)
 
 module GibctDataService
   class Application < Rails::Application
-    config.load_defaults "7.0" # enables zeitwerk mode in CRuby
+    config.load_defaults '7.0' # enables zeitwerk mode in CRuby
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
