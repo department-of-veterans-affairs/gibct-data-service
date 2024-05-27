@@ -54,11 +54,12 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
 
   describe '#download_csv' do
     it 'calls Open3 to run the curl command and download the file' do
-      # rubocop:disable RSpec/AnyInstance
-      allow_any_instance_of(Open3).to receive(:capture3).and_return(['', '', true])
-      # rubocop:enable RSpec/AnyInstance
-
       nkad = described_class.new('Hcm')
+
+      allow(Open3)
+        .to receive(:capture3)
+        .and_return(Open3.capture3('date')) # how to mock Process::Status? Just run a simple command instead
+
       expect(nkad.download_csv).to be true
     end
   end
