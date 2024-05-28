@@ -36,12 +36,12 @@ module  NoKeyApis
     end
 
     def download_csv
-      _stdout, _stderr, status = Open3.capture3(@curl_command)
-      puts "\n\n\n***"
-      puts "_stdout #{_stdout}"
-      puts "_stderr #{_stderr}"
-      puts "status #{status}"
-      puts "***\n\n\n"
+      stdout, stderr, status = Open3.capture3(@curl_command)
+      logger.debug "\n\n\n***"
+      logger.debug "_stdout #{stdout}"
+      logger.debug "_stderr #{stderr}"
+      logger.debug "status #{status}"
+      logger.debug "***\n\n\n"
       status.success?
     end
 
