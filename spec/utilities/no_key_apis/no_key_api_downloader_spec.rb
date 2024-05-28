@@ -11,7 +11,6 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
     %w[Accreditation AccreditationAction AccreditationInstituteCampus AccreditationRecord].each do |class_nm|
       it "sets the accreditation curl command correctly for #{class_nm}" do
         nkad = described_class.new(class_nm)
-        puts "      #{nkad.curl_command}"
         expect(nkad.class_nm).to eq(class_nm)
         expect(nkad.curl_command).to include('tmp/download.zip')
         expect(nkad.curl_command).to include('-X POST')
@@ -22,7 +21,6 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
 
     it 'sets the curl command correctly for EightKey' do
       nkad = described_class.new('EightKey')
-      puts "      #{nkad.curl_command}"
       expect(nkad.class_nm).to eq('EightKey')
       expect(nkad.curl_command).to include('-X GET')
       expect(nkad.curl_command).to include('tmp/eight_key.xls')
@@ -33,7 +31,6 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
     %w[IpedsHd IpedsIc IpedsIcAy IpedsIcPy].each do |class_nm|
       it "sets the ipeds curl command correctly for #{class_nm}" do
         nkad = described_class.new(class_nm)
-        puts "      #{nkad.curl_command}"
         expect(nkad.class_nm).to eq(class_nm)
         expect(nkad.curl_command).to include('tmp/download.zip')
         expect(nkad.curl_command).to include('-X GET')
@@ -44,9 +41,10 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
 
     it 'sets the curl command correctly for Hcm' do
       nkad = described_class.new('Hcm')
-      puts "      #{nkad.curl_command}"
       expect(nkad.class_nm).to eq('Hcm')
       expect(nkad.curl_command).to include('tmp/hcm.xlsx')
+      expect(nkad.curl_command)
+        .to include('-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"')
       expect(nkad.curl_command).to include('https://studentaid.gov/sites/default/files/Schools-on-HCM-December2023.xlsx')
       expect(nkad.curl_command).not_to include('-d')
     end
