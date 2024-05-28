@@ -58,7 +58,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
 
       allow(Open3)
         .to receive(:capture3)
-        .and_return(Open3.capture3('date')) # how to mock Process::Status? Just run a simple command instead
+        .and_return(Open3.capture3('ls')) # how to mock Process::Status? Just run a simple command instead
 
       expect(nkad.download_csv).to be true
     end
