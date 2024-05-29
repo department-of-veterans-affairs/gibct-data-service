@@ -37,9 +37,6 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 # use --target=builder to stop here
 # this stage copies the app and is used for running tests/lints/stuff
 # usually run via the docker-compose.test.yml
-#
-# Not sure why, but all of a sudden the tmp folder started misbehaving and having the wrong permissions which
-# was causing several tests to fail
 ###
 FROM development AS builder
 
