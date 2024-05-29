@@ -17,14 +17,14 @@ RSpec.describe ZipFileUtils::Unzipper do
 
   describe '#unzip_the_file' do
     it 'returns true when successfully unzipping a file' do
-      system('rm tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
-      system('rm tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
-      system('cp spec/fixtures/download_hcm.zip tmp/download_hcm.zip')
+      File.delete('tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
+      File.delete('tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
+      FileUtils.cp('spec/fixtures/download_hcm.zip', 'tmp/download_hcm.zip')
       unzipper = described_class.new('tmp/download_hcm.zip')
       expect(unzipper.unzip_the_file).to be true
       # cleanup
-      system('rm tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
-      system('rm tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
+      File.delete('tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
+      File.delete('tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
     end
 
     it 'returns false when unzipping fails' do
