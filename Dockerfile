@@ -37,6 +37,9 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 # use --target=builder to stop here
 # this stage copies the app and is used for running tests/lints/stuff
 # usually run via the docker-compose.test.yml
+#
+# Not sure why, but all of a sudden the tmp folder started misbehaving and having the wrong permissions which
+# was causing several tests to fail
 ###
 FROM development AS builder
 
@@ -48,7 +51,6 @@ USER gi-bill-data-service
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 RUN mkdir tmp && chmod 777 tmp
-RUN ls -l
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###

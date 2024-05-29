@@ -178,15 +178,13 @@ RSpec.describe DashboardsController, type: :controller do
       expect(flash.alert).to include(message)
     end
 
-# rubocop:disable Style/BlockComments
-=begin
-    # These tests pass locally consistently but file in Jenkins. Commenting out for now.
     context 'when fetching files which do not require an api key' do
       before do
         system('cp spec/fixtures/Accreditation/download.zip tmp/download.zip')
         system('cp spec/fixtures/download_8_keys_sites.xls tmp/eight_key.xls')
       end
 
+      # rubocop:disable RSpec/AnyInstance
       it 'downloads a zip file from the edu website' do
         allow_any_instance_of(NoKeyApis::NoKeyApiDownloader).to receive(:download_csv).and_return(true)
 
@@ -203,9 +201,8 @@ RSpec.describe DashboardsController, type: :controller do
         expect(File.exist?('tmp/AccreditationRecords.csv')).to be true
         expect(File.exist?('tmp/InstitutionCampus.csv')).to be true
       end
+      # rubocop:enable RSpec/AnyInstance
     end
-=end
-    # rubocop:enable Style/BlockComments
   end
 
   describe 'GET #geocoding_issues' do

@@ -19,10 +19,7 @@ module  ZipFileUtils
         end
       end
       true
-    rescue StandardError => e
-      # rubocop:disable Rails/Output
-      puts e.message
-      # rubocop:enable Rails/Output
+    rescue StandardError => _e
       false
     end
   end
