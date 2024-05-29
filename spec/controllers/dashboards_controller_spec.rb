@@ -180,7 +180,7 @@ RSpec.describe DashboardsController, type: :controller do
 
     context 'when fetching files which do not require an api key' do
       before do
-        system('cp spec/fixtures/Accreditation/download.zip tmp')
+        system('cp spec/fixtures/Accreditation/download.zip tmp/download.zip')
         system('cp spec/fixtures/download_8_keys_sites.xls tmp/eight_key.xls')
       end
 
