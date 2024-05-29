@@ -26,7 +26,7 @@ RSpec.describe ZipFileUtils::Unzipper do
 
     it 'returns false when unzipping fails' do
       system('rm tmp/download_hcm_corrupt.zip') if File.exist?('tmp/download_hcm_corrupt.zip')
-      system('cp spec/fixtures/download_hcm_corrupt.zip tmp/download_hcm_corrupt.zip')
+      system('cp spec/fixtures/download_hcm_corrupt.zip tmp')
       unzipper = described_class.new('tmp/download_hcm_corrupt.zip')
       expect(unzipper.unzip_the_file).to be false
     end
