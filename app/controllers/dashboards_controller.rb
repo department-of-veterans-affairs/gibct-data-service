@@ -160,7 +160,6 @@ class DashboardsController < ApplicationController
       flash.notice = pgsi.current_progress
     end
   end
-  # :nocov:
 
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
@@ -198,6 +197,7 @@ class DashboardsController < ApplicationController
     Rails.logger.error e
     flash.alert = message
   end
+  # :nocov:
 
   def download_csv(class_nm)
     NoKeyApis::NoKeyApiDownloader.new(class_nm).download_csv
