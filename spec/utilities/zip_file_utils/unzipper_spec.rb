@@ -17,6 +17,10 @@ RSpec.describe ZipFileUtils::Unzipper do
 
   describe '#unzip_the_file' do
     it 'returns true when successfully unzipping a file' do
+      stdout, _stderr, _status = Open3.capture3('ls -l')
+      puts "\n\n\n*** stdout"
+      puts stdout
+      puts "***\n\n\n"
       File.delete('tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
       File.delete('tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
       FileUtils.cp('spec/fixtures/download_hcm.zip', 'tmp')
