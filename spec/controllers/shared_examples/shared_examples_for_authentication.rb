@@ -6,9 +6,6 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination, pa
       it 'redirects the user to login page' do
         get action, params: params
 
-        # Remove directory to avoid sprockets file exists error when creating /srv/gi-bill-data-service/src/tmp
-        system('rm -rf /srv/gi-bill-data-service/src/tmp') if Dir.exist?('/srv/gi-bill-data-service/src/tmp')
-
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to(new_user_session_url)
       end
