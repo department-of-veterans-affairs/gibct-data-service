@@ -29,8 +29,6 @@ RSpec.describe ZipFileUtils::Unzipper do
       system('cp spec/fixtures/download_hcm_corrupt.zip tmp/download_hcm_corrupt.zip')
       unzipper = described_class.new('tmp/download_hcm_corrupt.zip')
       expect(unzipper.unzip_the_file).to be false
-      # cleanup
-      system('rm tmp/download_hcm_corrupt.zip') if File.exist?('tmp/download_hcm_corrupt.zip')
     end
   end
 end
