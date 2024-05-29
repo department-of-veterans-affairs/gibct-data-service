@@ -165,22 +165,25 @@ class DashboardsController < ApplicationController
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
-      if download_csv(klass) && unzip_csv
+
+      if download_csv(class_nm) && unzip_csv(class_nm)
         upload = Upload.from_csv_type(params[:csv_type])
         upload.user = current_user
-        file = "tmp/#{params[:csv_type]}s.csv"
-        file = 'tmp/InstitutionCampus.csv' if class_nm.eql?('AccreditationInstituteCampus')
-        file = 'tmp/hd2022.csv' if class_nm.eql?('IpedsHd')
-        file = 'tmp/ic2022_ay.csv' if class_nm.eql?('IpedsIcAy')
-        file = 'tmp/ic2022_py.csv' if class_nm.eql?('IpedsIcPy')
-        file = 'tmp/ic2022.csv' if class_nm.eql?('IpedsIc')
+        upload.csv =
+          if class_nm.eql?('EightKey') # This guy doesn't load properly with roo as is.
+            FileTypeConverters::XlsToCsv.new('tmp/eight_key.xls', 'tmp/eight_key.csv').convert_xls_to_csv
+          else
+            NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
+          end
 
-        upload.csv = file
+        skipline = class_nm.eql?('Hcm') ? 2 : 0
+
         file_options = {
           liberal_parsing: upload.liberal_parsing,
-          sheets: [{ klass: klass, skip_lines: 0, clean_rows: upload.clean_rows }]
+          sheets: [{ klass: klass, skip_lines: skipline, clean_rows: upload.clean_rows }]
         }
-        klass.load_with_roo(file, file_options).first
+
+        klass.load_with_roo(upload.csv, file_options).first
         upload.update(ok: true, completed_at: Time.now.utc.to_fs(:db))
         flash.notice = 'Successfully fetched & uploaded file' if upload.save!
       end
@@ -196,51 +199,14 @@ class DashboardsController < ApplicationController
     flash.alert = message
   end
 
-  # :nocov:
-  def download_csv(klass)
-    # rubocop:disable Style/EmptyCaseCondition
-    # the most recent IPED data files are from 2022. This should be checked periodically.
-    case
-    when klass.name.start_with?('Accreditation')
-      _stdout, _stderr, status = Open3.capture3("curl -X POST \
-        https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles \
-        -H 'Content-Type: application/json' -d '{\"CSVChecked\":true,\"ExcelChecked\":false}' -o tmp/download.zip")
-    when klass.name.eql?('IpedsHd')
-      _stdout, _stderr, status = Open3.capture3("curl -X GET \
-      https://nces.ed.gov/ipeds/datacenter/data/HD2022.zip \
-        -H 'Content-Type: application/json' -o tmp/download.zip")
-    when klass.name.eql?('IpedsIcAy')
-      _stdout, _stderr, status = Open3.capture3("curl -X GET \
-      https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip \
-        -H 'Content-Type: application/json' -o tmp/download.zip")
-    when klass.name.eql?('IpedsIcPy')
-      _stdout, _stderr, status = Open3.capture3("curl -X GET \
-      https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip \
-        -H 'Content-Type: application/json' -o tmp/download.zip")
-    when klass.name.eql?('IpedsIc')
-      _stdout, _stderr, status = Open3.capture3("curl -X GET \
-      https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip \
-        -H 'Content-Type: application/json' -o tmp/download.zip")
-
-    end
-    # rubocop:enable Style/EmptyCaseCondition
-    status.success?
+  def download_csv(class_nm)
+    NoKeyApis::NoKeyApiDownloader.new(class_nm).download_csv
   end
-  # :nocov:
 
-  # This is a candidate for a utility class. Right now, this is the only place we needed it.
-  # If some other process needs it, it should probably be refactored to a utility class.
-  def unzip_csv
-    Zip::File.open('tmp/download.zip') do |zip_file|
-      zip_file.each do |f|
-        f_path = File.join('tmp', f.name)
-        FileUtils.mkdir_p(File.dirname(f_path)) unless File.exist?(File.dirname(f_path))
-        File.delete(f_path) if File.exist?(f_path)
-        zip_file.extract(f, f_path)
-      end
-    end
-    true
-  rescue StandardError => _e
-    false
+  def unzip_csv(class_nm)
+    # Some downloads do are not a zip file, so skip and return true
+    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey')
+
+    ZipFileUtils::Unzipper.new.unzip_the_file
   end
 end
