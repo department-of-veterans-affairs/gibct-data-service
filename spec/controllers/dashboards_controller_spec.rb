@@ -191,7 +191,7 @@ RSpec.describe DashboardsController, type: :controller do
         allow_any_instance_of(described_class).to receive(:unzip_csv).and_return(true)
         # rubocop:enable RSpec/AnyInstance
         get(:api_fetch, params: { csv_type: 'EightKey' })
-        expect(File.exist?('tmp/eight_key.xls')).to be true
+        expect(Upload.last.ok).to be true
       end
 
       it 'extracts the content of the zip file' do
