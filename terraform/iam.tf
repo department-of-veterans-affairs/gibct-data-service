@@ -1,5 +1,5 @@
 locals {
-  #TODO eks_oidc_issuer = trimprefix(module.eks.identity[0].oidc[0].issuer, "https://")
+  eks_oidc_issuer = trimprefix(module.eks_cluster.eks_cluster_identity_oidc_issuer, "https://")
 }
 
 resource "aws_iam_role" "app_role" {
