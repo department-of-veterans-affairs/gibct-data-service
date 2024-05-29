@@ -187,9 +187,8 @@ RSpec.describe DashboardsController, type: :controller do
       it 'downloads a zip file from the edu website' do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(NoKeyApis::NoKeyApiDownloader).to receive(:download_csv).and_return(true)
-
-        allow_any_instance_of(described_class).to receive(:unzip_csv).and_return(true)
         # rubocop:enable RSpec/AnyInstance
+
         get(:api_fetch, params: { csv_type: 'EightKey' })
         expect(Upload.last.ok).to be true
       end
