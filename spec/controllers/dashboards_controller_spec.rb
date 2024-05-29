@@ -178,19 +178,22 @@ RSpec.describe DashboardsController, type: :controller do
       expect(flash.alert).to include(message)
     end
 
-    context 'when fetching Accreditation files which do not require an api key' do
+    context 'when fetching files which do not require an api key' do
       before do
         system('cp spec/fixtures/Accreditation/download.zip tmp')
+        system('cp spec/fixtures/download_8_keys_sites.xls tmp/eight_key.xls')
       end
 
       it 'downloads a zip file from the edu website' do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(NoKeyApis::NoKeyApiDownloader).to receive(:download_csv).and_return(true)
-        # rubocop:enable RSpec/AnyInstance
 
-        CSV_TYPES_NO_API_KEY_TABLE_NAMES.each do |klass_nm|
-          get(:api_fetch, params: { csv_type: klass_nm })
-          expect(File.exist?('tmp/download.zip')).to be true
+        allow_any_instance_of(described_class).to receive(:unzip_csv).and_return(true)
+        # rubocop:enable RSpec/AnyInstance
+        %w[IpedsIc EightKey].each do |class_nm|
+          get(:api_fetch, params: { csv_type: class_nm })
+          expect(File.exist?('tmp/download.zip')).to be true if class_nm.eql?('IpedsIc')
+          expect(File.exist?('tmp/eight_key.xls')).to be true if class_nm.eql?('EightKey')
         end
       end
 
@@ -199,7 +202,7 @@ RSpec.describe DashboardsController, type: :controller do
         allow_any_instance_of(NoKeyApis::NoKeyApiDownloader).to receive(:download_csv).and_return(true)
         # rubocop:enable RSpec/AnyInstance
 
-        get(:api_fetch, params: { csv_type: CSV_TYPES_NO_API_KEY_TABLE_NAMES.first })
+        get(:api_fetch, params: { csv_type: 'AccreditationAction' })
 
         expect(File.exist?('tmp/AccreditationActions.csv')).to be true
         expect(File.exist?('tmp/AccreditationRecords.csv')).to be true
