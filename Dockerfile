@@ -13,7 +13,8 @@ RUN apt-get update -qq && apt-get install -y \
     build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
 RUN mkdir -p /srv/gi-bill-data-service/src && \
-    chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
+    chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service && \
+    chmod -R 777 tmp
 WORKDIR /srv/gi-bill-data-service/src
 
 ###
