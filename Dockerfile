@@ -48,6 +48,7 @@ USER gi-bill-data-service
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 RUN mkdir tmp && chmod 777 tmp
+RUN ls -l
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
