@@ -19,12 +19,9 @@ RSpec.describe ZipFileUtils::Unzipper do
     it 'returns true when successfully unzipping a file' do
       File.delete('tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
       File.delete('tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
-      FileUtils.cp('spec/fixtures/download_hcm.zip', 'tmp/download_hcm.zip')
+      FileUtils.cp('spec/fixtures/download_hcm.zip', 'tmp')
       unzipper = described_class.new('tmp/download_hcm.zip')
       expect(unzipper.unzip_the_file).to be true
-      # cleanup
-      File.delete('tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
-      File.delete('tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
     end
 
     it 'returns false when unzipping fails' do
