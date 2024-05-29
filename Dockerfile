@@ -47,6 +47,8 @@ COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN mkdir tmp && chmod 777 tmp
+RUN ls -l
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
@@ -64,7 +66,6 @@ ENV PATH="/usr/local/bundle/bin:${PATH}"
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
 USER gi-bill-data-service
-RUN ls -l
 
 ENTRYPOINT ["bash", "-c"]
 
