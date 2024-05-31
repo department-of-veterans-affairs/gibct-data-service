@@ -8,25 +8,11 @@ RSpec.describe V0::InstitutionsController, type: :controller do
     expect(response).to match_response_schema(schema)
   end
 
-  def expect_meta_body_eq_preview(body, version_preview_number)
-    expect(body['meta']['version']['number'].to_i).to eq(version_preview_number)
-  end
-
-  def create_extension_institutions(trait)
-    create(:institution, trait, campus_type: 'E')
-    create(:institution, trait, campus_type: 'Y')
-    create(:institution, trait)
-  end
-
   context 'with version determination' do
     it 'uses a production version as a default' do
       create(:version, :production, :with_institution_that_contains_harv)
       get(:index)
       expect_response_match_schema('institutions')
-    end
-
-    def preview_body(body)
-      JSON.parse(body)
     end
 
     it 'accepts invalid version parameter and returns production data' do
