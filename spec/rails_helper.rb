@@ -42,6 +42,9 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+  # needed for perform_enqueued_jobs used in search_geocoder_spec
+  config.include ActiveJob::TestHelper
+
   # Adding capybara DSL to rspec
   config.include Capybara::DSL
   config.include FixAll
