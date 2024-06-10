@@ -200,11 +200,8 @@ RSpec.describe SearchGeocoder, type: :model do
       build_and_create_institution :regular_address
       initial_progress_count = PreviewGenerationStatusInformation.count
       geo_search_results = described_class.new(version)
-
-      perform_enqueued_jobs do
-        geo_search_results.process_geocoder_address
-      end
-
+      geo_search_results.process_geocoder_address
+      sleep(0.5)
       expect(PreviewGenerationStatusInformation.count).to be > initial_progress_count
     end
 
