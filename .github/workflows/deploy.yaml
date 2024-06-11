@@ -1,0 +1,19 @@
+name: "Deploy Environments"
+run-name: "Deploy Environments"
+
+on: 
+  workflow_dispatch:
+  repository_dispatch:
+    types: [trigger-workflow]
+  
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v**'
+    # branches:  # This is for testing only - This will trigger deploys in this repo on every push
+    #   - '**'
+
+jobs:
+  Deploy-Envs:
+    uses: department-of-veterans-affairs/prt-github-workflows/.github/workflows/deploy-all.yaml@main
+    secrets: inherit

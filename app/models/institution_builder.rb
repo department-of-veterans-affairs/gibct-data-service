@@ -80,11 +80,10 @@ module InstitutionBuilder
     def self.run(user)
       prev_gen_start = Time.now.utc
       version = Version.create!(production: false, user: user)
-      build_messages = {}
       begin
         Institution.transaction do
           # to fix 'cancelling statement due to statement timeout' issue
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '120s';")
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '240s';")
           if staging?
             # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
             # rubocop:disable Rails/SkipsModelValidations
@@ -97,24 +96,16 @@ module InstitutionBuilder
             )
             # rubocop:enable Rails/SkipsModelValidations
           end
-          build_messages = run_insertions(version)
+          run_insertions(version)
           version.update(production: true, completed_at: Time.now.utc.to_fs(:db))
           GibctSiteMapper.new(ping: true) if production?
           Archiver.archive_previous_versions if Settings.archiver.archive
           log_info_status PUBLISH_COMPLETE_TEXT
         end
       rescue ActiveRecord::StatementInvalid => e
-        notice = 'There was an error occurring at the database level'
-        log_info_status notice
-        error_msg = e.message
-        Rails.logger.error "#{notice}: #{error_msg}"
-        version.delete
+        log_error_and_delete_version(version, "There was an error occurring at the database level: #{e.message}")
       rescue StandardError => e
-        notice = 'There was an error of unexpected origin'
-        log_info_status notice
-        error_msg = e.message
-        Rails.logger.error "#{notice}: #{error_msg}"
-        version.delete
+        log_error_and_delete_version(version, "There was an error of unexpected origin: #{e.message}")
       end
       prev_gen_end = Time.now.utc
 
@@ -1186,6 +1177,12 @@ module InstitutionBuilder
       SQL
       sql = Institution.send(:sanitize_sql, [str])
       Institution.connection.execute(sql)
+    end
+
+    def self.log_error_and_delete_version(version, notice)
+      log_info_status notice
+      Rails.logger.error notice
+      version.delete
     end
 
     def self.log_info_status(message)
