@@ -4,8 +4,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  # this is the newer, best practice in Rails 7.1.3
-  config.enable_reloading = false
+  config.cache_classes = true
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -28,9 +27,7 @@ Rails.application.configure do
   # Compress JavaScripts and CSS.
   # Do we want to switch to the Terser gem?
   # https://stackoverflow.com/questions/75315372/when-running-rake-assetsprecompile-rails-env-production-over-es6-syntax-pipelin
-  #config.assets.js_compressor = Uglifier.new(harmony: true)
-  # we ran into deploy errors with Uglifier, new instances kept re-initiating, recommendation to switch to terser as per stackoverflow above
-  config.assets.js_compressor = :terser
+  config.assets.js_compressor = Uglifier.new(harmony: true)
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -80,8 +77,6 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "gibct_data_service_production"
   
-  config.action_mailer.perform_caching = false
-
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
