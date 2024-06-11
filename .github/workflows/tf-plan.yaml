@@ -1,0 +1,9 @@
+name: "Comment a Plan on a PR"
+run-name: "Comment a Plan on a PR"
+
+on: [pull_request]
+
+jobs:
+  pr-tf-plan:
+    uses: department-of-veterans-affairs/prt-github-workflows/.github/workflows/tf-plan.yaml@main
+    secrets: inherit
