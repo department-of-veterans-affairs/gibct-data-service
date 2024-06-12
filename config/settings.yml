@@ -8,7 +8,7 @@ archiver:
 
 # For CORS requests; separate multiple origins with a comma
 web_origin: http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001,null
-web_origin_regex: \Ahttps?:\/\/www\.va\.gov(:443)?\z
+web_origin_regex: \Ahttps?:\/\/(www|staging)\.va\.gov\z
 
 csv_upload:
   column_separators:
