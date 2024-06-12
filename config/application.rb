@@ -25,6 +25,7 @@ module GibctDataService
     # CORS configuration; see also cors_preflight route
     config.middleware.insert_before 0, Rack::Cors, logger: (-> { Rails.logger }) do
       allow do
+        regex = Regexp.new(Settings.web_origin_regex)
         origins { |source, _env| Settings.web_origin.split(',').include?(source) || source.match?(regex) }
         resource '*', headers: :any, methods: :any, credentials: true
       end
