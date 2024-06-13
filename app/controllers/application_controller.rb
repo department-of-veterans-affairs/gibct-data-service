@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  before_action :override_origin_header
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -39,5 +41,12 @@ class ApplicationController < ActionController::Base
   def alert_and_log(message, error = nil)
     Rails.logger.error message + error&.backtrace.to_s
     flash[:danger] = message
+  end
+
+  private
+
+  def override_origin_header
+    request.headers['Origin'] = 'http://staging.va.gov:443' if request.headers['Origin'] == 'https://staging.va.gov'
+    request.headers['Origin'] = 'http://www.va.gov:443' if request.headers['Origin'] == 'https://www.va.gov'
   end
 end
