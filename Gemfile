@@ -42,7 +42,6 @@ gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
-gem 'terser'
 gem 'uglifier', '>= 1.3.0'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'

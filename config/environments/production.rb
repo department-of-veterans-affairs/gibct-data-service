@@ -27,9 +27,7 @@ Rails.application.configure do
   # Compress JavaScripts and CSS.
   # Do we want to switch to the Terser gem?
   # https://stackoverflow.com/questions/75315372/when-running-rake-assetsprecompile-rails-env-production-over-es6-syntax-pipelin
-  #config.assets.js_compressor = Uglifier.new(harmony: true)
-  # we ran into deploy errors with Uglifier, new instances kept re-initiating, recommendation to switch to terser as per stackoverflow above
-  config.assets.js_compressor = :terser
+  config.assets.js_compressor = Uglifier.new(harmony: true)
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
