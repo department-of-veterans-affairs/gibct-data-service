@@ -68,8 +68,8 @@ Rails.application.configure do
   # Makes application believe that all requests are arriving over SSL. This is useful when proxying 
   # through a load balancer that terminates SSL, the forwarded request will appear as though it's HTTP
   # instead of HTTPS to the application. This makes redirects and cookie security target HTTP instead
-  # of HTTPS. This middleware makes the server assume that the proxy already terminated SSL, and that 
-  # the request really is HTTPS.
+  # of HTTPS. This middleware makes the server assume that the proxy already terminated SSL, and that the
+  # request really is HTTPS.
   config.assume_ssl=true
 
   # Use the lowest log level to ensure availability of diagnostic information
