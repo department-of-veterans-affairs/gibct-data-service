@@ -64,6 +64,14 @@ Rails.application.configure do
   # We terminate SSL before traffic gets to the gi data service elb and traffic from the elb to the service is over http. So forcing ssl will break our ELB health checks.
   # config.force_ssl = true
 
+  # https://guides.rubyonrails.org/configuring.html#config-assume-ssl
+  # Makes application believe that all requests are arriving over SSL. This is useful when proxying 
+  # through a load balancer that terminates SSL, the forwarded request will appear as though it's HTTP
+  # instead of HTTPS to the application. This makes redirects and cookie security target HTTP instead
+  # of HTTPS. This middleware makes the server assume that the proxy already terminated SSL, and that 
+  # the request really is HTTPS.
+  config.assume_ssl=true
+
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = :info
