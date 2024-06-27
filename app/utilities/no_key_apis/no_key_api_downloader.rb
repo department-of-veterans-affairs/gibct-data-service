@@ -52,11 +52,12 @@ module  NoKeyApis
     end
 
     def o_parm
-      return '-o tmp/hcm.xlsx' if @class_nm.eql?('Hcm')
-      return '-o tmp/eight_key.xls' if @class_nm.eql?('EightKey')
-      return '-o tmp/mou.xlsx' if @class_nm.eql?('Mou')
-
-      '-o tmp/download.zip'
+      case @class_nm
+      when 'Hcm' then '-o tmp/hcm.xlsx'
+      when 'EightKey' then '-o tmp/eight_key.xls'
+      when 'Mou' then '-o tmp/mou.xlsx'
+      else '-o tmp/download.zip'
+      end
     end
 
     def d_parm
