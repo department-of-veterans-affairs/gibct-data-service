@@ -346,4 +346,37 @@ RSpec.describe DashboardsController, type: :controller do
       expect(flash[:alert]).to match(/Unlocking fetches failed/)
     end
   end
+
+  describe 'GET #run_daily_spool' do
+    login_user
+
+    it 'does not run in the production environment' do
+      Settings.environment = 'vagov-prod'
+      get(:run_daily_spool, params: { format: :html })
+
+      # reset environment. We don't want this accidentally to run in production mode
+      Settings.environment = nil
+      expect(flash[:alert]).to match(/Cannot manually run daily spool in production/)
+    end
+
+    it 'runs the job in non-production environments' do
+      allow(VetsApi::Service).to receive(:run_daily_spool_file_job).and_return(true)
+      get(:run_daily_spool, params: { format: :html })
+      expect(flash.notice).to match(/Run Daily Spool File initiated. Check your email in a few minutes./)
+    end
+
+    it 'redirects to the index page on completion' do
+      allow(VetsApi::Service).to receive(:run_daily_spool_file_job).and_return(true)
+      expect(get(:run_daily_spool, params: { format: :html })).to redirect_to(action: :index)
+    end
+
+    it 'writes to the log and flashes an alert if there is an exception' do
+      error_message = 'Error running run_daily_spool_file_job: BOOM!'
+      allow(VetsApi::Service).to receive(:run_daily_spool_file_job).and_raise(StandardError, 'BOOM!')
+      allow(Rails.logger).to receive(:error).with(error_message)
+      get(:run_daily_spool, params: { format: :html })
+      expect(Rails.logger).to have_received(:error).with(error_message)
+      expect(flash.alert).to match(/Error running run_daily_spool_file_job: BOOM!/)
+    end
+  end
 end

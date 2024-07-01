@@ -6,7 +6,7 @@ module VetsApi
     self.open_timeout = Settings.vets_api&.open_timeout || open_timeout
 
     def base_path
-      "#{Figaro.env.link_host}/v0"
+      Figaro.env.link_host
     end
 
     def service_name

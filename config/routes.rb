@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   get '/dashboards/geocoding_issues' => 'dashboards#geocoding_issues', as: :dashboard_geocoding_issues
   get '/dashboards/accreditation_issues' => 'dashboards#accreditation_issues', as: :dashboard_accreditation_issues
   get '/unlock_fetches' => 'dashboards#unlock_fetches', as: :unlock_fetches
+  get 'dashboards/run_daily_spool' => 'dashboards#run_daily_spool', as: :dashboard_run_daily_spool
 
   resources :accreditation_type_keywords, only: [:index, :new, :create, :destroy]
 

@@ -10,6 +10,10 @@ module VetsApi
       end.first[:value]
     end
 
+    def self.run_daily_spool_file_job
+      client.run_daily_spool_file_job
+    end
+
     def self.client
       VetsApi::Client.new
     end

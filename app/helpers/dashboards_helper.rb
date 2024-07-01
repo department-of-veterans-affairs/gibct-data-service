@@ -84,5 +84,17 @@ module DashboardsHelper
 
     false
   end
+
+  def show_spool_file_button?
+    return false if production?
+
+    show_button = false
+    Settings.spool_file_runners.each do |sfr|
+      show_button = true if current_user.email.downcase.include?(sfr)
+      break if show_button
+    end
+
+    show_button
+  end
   # rubocop:enable Metrics/CyclomaticComplexity
 end

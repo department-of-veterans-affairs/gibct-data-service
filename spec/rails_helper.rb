@@ -62,6 +62,8 @@ RSpec.configure do |config|
 
   # Allow skip_before_action in rspec controller tests
   config.include Devise::Test::ControllerHelpers, type: :controller
+  # Allow view tests to use helpers
+  config.include Devise::Test::ControllerHelpers, type: :view
 
   config.include Warden::Test::Helpers, type: :request
 

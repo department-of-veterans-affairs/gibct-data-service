@@ -126,6 +126,21 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path
   end
 
+  def run_daily_spool
+    if production?
+      flash.alert = 'Cannot manually run daily spool in production'
+    else
+      VetsApi::Service.run_daily_spool_file_job
+      flash.notice = 'Run Daily Spool File initiated. Check your email in a few minutes.'
+    end
+
+    redirect_to dashboards_path
+  rescue StandardError => e
+    Rails.logger.error "Error running run_daily_spool_file_job: #{e.message}"
+    flash.alert = "Error running run_daily_spool_file_job: #{e.message}"
+    redirect_to dashboards_path
+  end
+
   private
 
   def log_error(error)
