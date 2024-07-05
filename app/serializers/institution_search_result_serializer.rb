@@ -43,6 +43,9 @@ class InstitutionSearchResultSerializer < ActiveModel::Serializer
   attribute :school_provider
   attribute :employer_provider
   attribute :vrrap
+  attribute :tuition_in_state
+  attribute :tuition_out_of_state
+
 
   link(:self) { v0_institution_url(object.facility_code) }
 
