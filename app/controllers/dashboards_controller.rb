@@ -176,7 +176,12 @@ class DashboardsController < ApplicationController
             NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
           end
 
-        skipline = class_nm.eql?('Hcm') ? 2 : 0
+        skipline =
+          case class_nm
+          when 'Hcm' then 2
+          when 'Mou' then 1
+          else 0
+          end
 
         file_options = {
           liberal_parsing: upload.liberal_parsing,
@@ -205,7 +210,7 @@ class DashboardsController < ApplicationController
 
   def unzip_csv(class_nm)
     # Some downloads do are not a zip file, so skip and return true
-    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey')
+    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou')
 
     ZipFileUtils::Unzipper.new.unzip_the_file
   end

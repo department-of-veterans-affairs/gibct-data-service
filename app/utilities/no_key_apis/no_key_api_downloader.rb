@@ -11,7 +11,8 @@ module  NoKeyApis
       'IpedsHd' => 'tmp/hd2022.csv',
       'IpedsIcAy' => 'tmp/ic2022_ay.csv',
       'IpedsIcPy' => 'tmp/ic2022_py.csv',
-      'IpedsIc' => 'tmp/ic2022.csv'
+      'IpedsIc' => 'tmp/ic2022.csv',
+      'Mou' => 'tmp/mou.xlsx'
     }.freeze
 
     API_NO_KEY_DOWNLOAD_SOURCES = {
@@ -24,7 +25,8 @@ module  NoKeyApis
       'IpedsHd' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/HD2022.zip'],
       'IpedsIc' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip'],
       'IpedsIcAy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip'],
-      'IpedsIcPy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip']
+      'IpedsIcPy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip'],
+      'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"]
     }.freeze
 
     attr_accessor :class_nm, :curl_command
@@ -50,10 +52,12 @@ module  NoKeyApis
     end
 
     def o_parm
-      return '-o tmp/hcm.xlsx' if @class_nm.eql?('Hcm')
-      return '-o tmp/eight_key.xls' if @class_nm.eql?('EightKey')
-
-      '-o tmp/download.zip'
+      case @class_nm
+      when 'Hcm' then '-o tmp/hcm.xlsx'
+      when 'EightKey' then '-o tmp/eight_key.xls'
+      when 'Mou' then '-o tmp/mou.xlsx'
+      else '-o tmp/download.zip'
+      end
     end
 
     def d_parm
