@@ -307,10 +307,12 @@ RSpec.describe Institution, type: :model do
 
     it 'excludes high schools when filtering them out' do
       create(:version, :production)
-      create(:institution, :production_version)
+      create(:institution, :production_version, high_school: false)
+      create(:institution, :production_version, high_school: nil)
       create(:institution, :production_version, :high_school_institution)
+      expect(described_class.count).to eq(3)
       results = described_class.filter_high_school
-      expect(results.count).to eq(0)
+      expect(results.count).to eq(1)
     end
 
     describe '#institution_search_term' do

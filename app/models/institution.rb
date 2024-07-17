@@ -352,7 +352,7 @@ class Institution < ImportableRecord
   end
 
   def self.filter_high_school
-    where(high_school: nil)
+    where.not(high_school: true)
   end
 
   def self.ungeocodable_count
