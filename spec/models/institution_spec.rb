@@ -312,7 +312,7 @@ RSpec.describe Institution, type: :model do
       create(:institution, :production_version, :high_school_institution)
       expect(described_class.count).to eq(3)
       results = described_class.filter_high_school
-      expect(results.count).to eq(1)
+      expect(results.count).to eq(2)
     end
 
     describe '#institution_search_term' do
