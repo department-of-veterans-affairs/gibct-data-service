@@ -42,6 +42,18 @@ RSpec.describe Weam, type: :model do
     it 'sets institution_search' do
       expect(weam.institution_search).to be_present
     end
+
+    it 'does not set high_school to true (default factory)' do
+      expect(weam.high_school).not_to be(true)
+    end
+  end
+
+  describe 'after_initialize for a high school' do
+    subject(:weam) { build :weam, :high_school }
+
+    it 'sets high_school to true' do
+      expect(weam.high_school).to be(true)
+    end
   end
 
   describe 'ojt?' do

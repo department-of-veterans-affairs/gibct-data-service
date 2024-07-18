@@ -227,6 +227,10 @@ FactoryBot.define do
       approved { true }
     end
 
+    trait :high_school do
+      institution { 'Walt Whitman High School' }
+    end
+
     initialize_with do
       new(
         facility_code: facility_code, institution: institution, ope: ope, state: state,
