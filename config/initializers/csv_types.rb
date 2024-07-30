@@ -13,7 +13,7 @@ Rails.application.config.to_prepare do
     { klass: IpedsIcAy, required?: true, has_api?: true, no_api_key?: true },
     { klass: IpedsIcPy, required?: true, has_api?: true, no_api_key?: true },
     { klass: IpedsIc, required?: true, has_api?: true, no_api_key?: true },
-    { klass: Mou, required?: true },
+    { klass: Mou, required?: true, has_api?: true, no_api_key?: true },
     { klass: Outcome, required?: true },
     { klass: Scorecard, required?: true, has_api?: true },
     { klass: ScorecardDegreeProgram, required?: false, has_api?: true },
