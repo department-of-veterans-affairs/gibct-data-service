@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 7.0.8.1'
+gem 'rails', '7.1.3.4'
 
 gem 'active_model_serializers', '~> 0.10.14' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
@@ -34,6 +34,7 @@ gem 'rack', '>= 2.2.8.1'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'rainbow'
+gem 'rexml', '~> 3.3.2'
 gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
 gem 'ruby-saml'
@@ -42,7 +43,7 @@ gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
-gem 'uglifier', '>= 1.3.0'
+gem 'terser'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'

@@ -4,7 +4,8 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.cache_classes = true
+  # this is the newer, best practice in Rails 7.1.3
+  config.enable_reloading = false
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -27,7 +28,7 @@ Rails.application.configure do
   # Compress JavaScripts and CSS.
   # Do we want to switch to the Terser gem?
   # https://stackoverflow.com/questions/75315372/when-running-rake-assetsprecompile-rails-env-production-over-es6-syntax-pipelin
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  config.assets.js_compressor = :terser
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -63,6 +64,14 @@ Rails.application.configure do
   # We terminate SSL before traffic gets to the gi data service elb and traffic from the elb to the service is over http. So forcing ssl will break our ELB health checks.
   # config.force_ssl = true
 
+  # https://guides.rubyonrails.org/configuring.html#config-assume-ssl
+  # Makes application believe that all requests are arriving over SSL. This is useful when proxying 
+  # through a load balancer that terminates SSL, the forwarded request will appear as though it's HTTP
+  # instead of HTTPS to the application. This makes redirects and cookie security target HTTP instead
+  # of HTTPS. This middleware makes the server assume that the proxy already terminated SSL, and that
+  # the request really is HTTPS.
+  config.assume_ssl=true
+
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = :info
@@ -76,6 +85,8 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "gibct_data_service_production"
+  
+  config.action_mailer.perform_caching = false
   
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
