@@ -6,28 +6,28 @@ desc 'task to update any mistmached coordinates with geocoder gem.'
 task old_coord_mismatch: :environment do
   version = Version.current_preview
   results = Institution.approved_institutions(version)
-  by_address = results.where(latitude: nil, longitude: nil).where.not(address_1: nil, city: nil)
+  by_address = results.where(latitude: nil, longitude: nil).where.not(physical_address_1: nil, physical_city: nil)
   country = results.where.not(physical_country: 'USA')
   # will remove staging check, don't want it running on prod until tested
   if version.present?
     if by_address.present? && version.geocoded == false
       by_address.each do |result|
-        address = parse_add(result, result.address)
-        address2 = parse_add(result, result.address_2)
-        address3 = parse_add(result, result.address_3)
+        address = parse_add(result, result.physical_address)
+        address2 = parse_add(result, result.physical_address_2)
+        address3 = parse_add(result, result.physical_address_3)
         geocode_fields(result, address, address2, address3)
       end
     end
 
     if country.present?
       country.each do |result|
-        if result.state.present? && result.physical_country.present? && version.geocoded == false
+        if result.physical_state.present? && result.physical_country.present? && version.geocoded == false
           geocoded_ct = Geocoder.coordinates(result.physical_country)
           update_mismatch(result, geocoded_ct)
         else
-          address = parse_address(result, result.address)
-          address2 = parse_address(result, result.address_2)
-          address3 = parse_address(result, result.address_3)
+          address = parse_address(result, result.physical_address)
+          address2 = parse_address(result, result.physical_address_2)
+          address3 = parse_address(result, result.physical_address_3)
           geocode_fields(result, address, address2, address3)
         end
       end
@@ -52,17 +52,17 @@ end
 
 def parse_add(res, address)
   if address.present?
-    "#{address}, #{res.city}, #{res.state}, #{res.zip}, #{res.country}"
+    "#{address}, #{res.physical_city}, #{res.physical_state}, #{res.physical_zip}, #{res.physical_country}"
   else
-    "#{res.city}, #{res.state}, #{res.zip}, #{res.country}"
+    "#{res.physical_city}, #{res.physical_state}, #{res.physical_zip}, #{res.physical_country}"
   end
 end
 
 def parse_address(res, field)
   if field.present?
-    "#{field}, #{res.city}, #{res.physical_country}"
+    "#{field}, #{res.physical_city}, #{res.physical_country}"
   else
-    "#{res.city}, #{res.physical_country}"
+    "#{res.physical_city}, #{res.physical_country}"
   end
 end
 
