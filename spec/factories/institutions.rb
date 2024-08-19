@@ -216,75 +216,75 @@ FactoryBot.define do
     end
 
     trait :regular_address do
-      address_1 { '1400 Washington Ave' }
-      address_2 { '1400 Washington Ave #123' }
-      address_3 { 'Unit abc' }
-      city { 'ALBANY' }
-      state { 'NY' }
-      country { 'USA' }
-      zip { '12222' }
+      physical_address_1 { '1400 Washington Ave' }
+      physical_address_2 { '1400 Washington Ave #123' }
+      physical_address_3 { 'Unit abc' }
+      physical_city { 'ALBANY' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
+      physical_zip { '12222' }
     end
 
     trait :regular_address_country do
       institution { 'University of Salerno' }
-      address_1 { 'Via Giovanni Paolo I' }
-      address_2 { 'Via Giovanni Paolo I#123' }
-      address_3 { 'Unit abc' }
-      city { 'SAlERNO' }
+      physical_address_1 { 'Via Giovanni Paolo I' }
+      physical_address_2 { 'Via Giovanni Paolo I#123' }
+      physical_address_3 { 'Unit abc' }
+      physical_city { 'SAlERNO' }
       physical_country { 'IT' }
     end
 
     trait :regular_address_country_nil do
-      address_1 { '1400 Washington Ave' }
-      address_2 { '1400 Washington Ave #123' }
-      address_3 { 'Unit abc' }
-      city { 'ALBANY' }
-      state { 'NY' }
+      physical_address_1 { '1400 Washington Ave' }
+      physical_address_2 { '1400 Washington Ave #123' }
+      physical_address_3 { 'Unit abc' }
+      physical_city { 'ALBANY' }
+      physical_state { 'NY' }
       country { nil }
       physical_country { nil }
-      zip { '12222' }
+      physical_zip { '12222' }
     end
 
     trait :regular_address_2 do
-      address_1 { '1400 Washington bdvd 122123d' }
-      address_2 { '1400 Washington Ave' }
-      address_3 { 'Unit abc' }
-      city { 'ALBANY' }
-      state { 'NY' }
-      country { 'USA' }
-      zip { '12222' }
+      physical_address_1 { '1400 Washington bdvd 122123d' }
+      physical_address_2 { '1400 Washington Ave' }
+      physical_address_3 { 'Unit abc' }
+      physical_city { 'ALBANY' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
+      physical_zip { '12222' }
     end
 
     trait :bad_address do
       institution { '' }
-      address_1 { '1400 Washington Ave #123' }
-      address_2 { '1400 Washington Ave xwexewxwexwx' }
-      address_3 { 'Unit abc xwexwxwex' }
-      city { 'ALBANY' }
-      state { 'NY' }
-      country { 'USA' }
-      zip { '12222' }
+      physical_address_1 { '1400 Washington Ave #123' }
+      physical_address_2 { '1400 Washington Ave xwexewxwexwx' }
+      physical_address_3 { 'Unit abc xwexwxwex' }
+      physical_city { 'ALBANY' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
+      physical_zip { '12222' }
     end
 
     trait :bad_address_with_name do
       institution { 'University at Albany' }
-      address_1 { '1400 Washington bdvd 122123d' }
-      address_2 { '1400 Washington Ave xwexewxwexwx' }
-      address_3 { 'Unit abc xwexwxwex' }
-      city { 'ALBANY' }
-      state { 'NY' }
-      country { 'USA' }
-      zip { '12222' }
+      physical_address_1 { '1400 Washington bdvd 122123d' }
+      physical_address_2 { '1400 Washington Ave xwexewxwexwx' }
+      physical_address_3 { 'Unit abc xwexwxwex' }
+      physical_city { 'ALBANY' }
+      physical_state { 'NY' }
+      physical_country { 'USA' }
+      physical_zip { '12222' }
     end
 
     trait :bad_address_with_name_numbered do
       institution { 'ATLANTA FIRE DEPARTMENT STATION #23' }
-      address_1 { '1400 Washington bdvd 122123d' }
-      address_2 { '1400 Washington Ave xwexewxwexwx' }
-      address_3 { 'Unit abc xwexwxwex' }
-      city { 'ATLANTA' }
-      state { 'GA' }
-      country { 'USA' }
+      physical_address_1 { '1400 Washington bdvd 122123d' }
+      physical_address_2 { '1400 Washington Ave xwexewxwexwx' }
+      physical_address_3 { 'Unit abc xwexwxwex' }
+      physical_city { 'ATLANTA' }
+      physical_state { 'GA' }
+      physical_country { 'USA' }
     end
 
     trait :mailing_address do
@@ -345,23 +345,23 @@ FactoryBot.define do
     end
 
     trait :mixed_addresses do
-      address_3 { nil }
-      address_2 { '7100 Whittier Blvd' }
-      address_1 { '8500 River Rd' }
-      city { 'Bethesda' }
-      state { 'MD' }
-      country { 'USA' }
-      zip { '20817' }
+      physical_address_3 { nil }
+      physical_address_2 { '7100 Whittier Blvd' }
+      physical_address_1 { '8500 River Rd' }
+      physical_city { 'Bethesda' }
+      physical_state { 'MD' }
+      physical_country { 'USA' }
+      physical_zip { '20817' }
     end
 
     trait :foreign_bad_address do
-      address_1 { 'CASH OFFICE FIN SVCS' }
-      address_2 { 'UNIT 1 MARKET SQUARE' }
-      address_3 { nil }
-      city { 'HESLINGTON YORK' }
-      state { nil }
-      country { 'UNITED KINGDOM' }
-      zip { nil }
+      physical_address_1 { 'CASH OFFICE FIN SVCS' }
+      physical_address_2 { 'UNIT 1 MARKET SQUARE' }
+      physical_address_3 { nil }
+      physical_city { 'HESLINGTON YORK' }
+      physical_state { nil }
+      physical_country { 'UNITED KINGDOM' }
+      physical_zip { nil }
     end
 
     trait :ungeocodable do
