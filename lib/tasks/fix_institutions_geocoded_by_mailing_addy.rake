@@ -80,7 +80,7 @@ namespace :otos do
   end
 
   # run this task in production
-  desc 'update production institutions geocoded by mailing address'
+  desc 'update production institutions geocoded by mailing address.'
   task update_production_institutions_geocoded_by_mailing_addy: :environment do
     puts "Beg #{Time.current}"
     latest_version = Version.last
