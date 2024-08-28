@@ -49,8 +49,8 @@ class DashboardsController < ApplicationController
       format.csv do
         send_data Institution.export_ungeocodables(
           Institution.ungeocodables.pluck(
-            :institution, :facility_code, :address_1, :address_2, :address_3, :city, :state,
-            :zip, :physical_country, :cross, :ope
+            :institution, :facility_code, :physical_address_1, :physical_address_2, :physical_address_3, :physical_city,
+            :physical_state, :physical_zip, :physical_country, :cross, :ope
           )
         ), type: 'text/csv', filename: 'ungeocodables.csv'
       end
