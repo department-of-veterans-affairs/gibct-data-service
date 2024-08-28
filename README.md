@@ -125,7 +125,7 @@ You can create additional users by adding them to the `/db/seeds/01_users.rb` fi
 User.create(email: 'xxxxxx', password: 'xxxxxx')
 ```
 
-## Development Instructions
+## Development Instructions 
 1. Run `bundle install` to set up the application.
 2. Setup the DS database by running `bundle exec rake db:setup`.
 3. Run any pending migrations by running `bundle exec rake db:migrate`.
