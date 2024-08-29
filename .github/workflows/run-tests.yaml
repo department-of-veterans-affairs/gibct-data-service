@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - flooose/fix-tests
 
 jobs:
   test:
