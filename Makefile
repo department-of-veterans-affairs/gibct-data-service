@@ -72,7 +72,7 @@ else
 endif
 
 .PHONY: down
-down:  ## Stops all docker services
+down:  # Stops all docker services
 ifeq ($(ENV_ARG), dev)
 	@$(COMPOSE_DEV) $(DOWN)
 else
