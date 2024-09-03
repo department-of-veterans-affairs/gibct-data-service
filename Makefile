@@ -7,10 +7,10 @@ else
 endif
 
 COMPOSE_DEV  := docker compose
-COMPOSE_TEST := docker compose -f docker-compose.test.yml
+COMPOSE_TEST := docker compose
 BASH         := run --rm gibct bash --login
 BASH_DEV     := $(COMPOSE_DEV) $(BASH) -c
-BASH_TEST    := $(COMPOSE_TEST) $(BASH) -c
+BASH_TEST    := $(COMPOSE_TEST) -f docker-compose.test.yml $(BASH) -c
 DOWN         := down
 
 .PHONY: default
@@ -68,7 +68,7 @@ build:  ## Builds the service
 ifeq ($(ENV_ARG), dev)
 	$(COMPOSE_DEV) build
 else
-	$(COMPOSE_TEST) build
+	$(COMPOSE_TEST) -f docker-compose.test.yml build
 endif
 
 .PHONY: down
@@ -86,6 +86,6 @@ ifeq ($(ENV_ARG), dev)
 	$(COMPOSE_DEV) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_DEV) down
 else
-	$(COMPOSE_TEST) run gibct rm -r coverage log/* tmp || true
+	$(COMPOSE_TEST) -f docker-compose.test.yml run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_TEST) down
 endif
