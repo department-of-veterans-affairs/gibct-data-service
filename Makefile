@@ -6,11 +6,11 @@ else
     ENV_ARG  := test
 endif
 
-COMPOSE_DEV  := docker compose
-COMPOSE_TEST := docker compose
+COMPOSE_DEV  := docker-compose
+COMPOSE_TEST := docker-compose -f docker-compose.test.yml
 BASH         := run --rm gibct bash --login
 BASH_DEV     := $(COMPOSE_DEV) $(BASH) -c
-BASH_TEST    := $(COMPOSE_TEST) -f docker-compose.test.yml $(BASH) -c
+BASH_TEST    := $(COMPOSE_TEST) $(BASH) -c
 DOWN         := down
 
 .PHONY: default
