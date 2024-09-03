@@ -68,7 +68,7 @@ build:  ## Builds the service
 ifeq ($(ENV_ARG), dev)
 	$(COMPOSE_DEV) build
 else
-	$(COMPOSE_TEST) -f docker-compose.test.yml build
+	$(COMPOSE_TEST) build
 endif
 
 .PHONY: down
