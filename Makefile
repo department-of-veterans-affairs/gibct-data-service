@@ -86,6 +86,6 @@ ifeq ($(ENV_ARG), dev)
 	$(COMPOSE_DEV) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_DEV) down
 else
-	$(COMPOSE_TEST) -f docker-compose.test.yml run gibct rm -r coverage log/* tmp || true
+	$(COMPOSE_TEST) run gibct rm -r coverage log/* tmp || true
 	$(COMPOSE_TEST) down
 endif
