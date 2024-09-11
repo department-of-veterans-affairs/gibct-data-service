@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_25_164737) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -624,6 +624,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_25_164737) do
     t.index "lower((address_1)::text) gin_trgm_ops", name: "index_institutions_on_address_1", using: :gin
     t.index "lower((address_2)::text) gin_trgm_ops", name: "index_institutions_on_address_2", using: :gin
     t.index "lower((address_3)::text) gin_trgm_ops", name: "index_institutions_on_address_3", using: :gin
+    t.index ["approved"], name: "index_institutions_on_approved"
     t.index ["city"], name: "index_institutions_on_city", opclass: :gin_trgm_ops, using: :gin
     t.index ["country"], name: "index_institutions_on_country"
     t.index ["cross"], name: "index_institutions_on_cross"

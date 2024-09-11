@@ -34,15 +34,15 @@ RSpec.describe SearchGeocoder, type: :model do
       [{ 'coordinates' => [33.7976469, -84.4159008] }]
     )
     Geocoder::Lookup::Test.add_stub(
-      'CASH OFFICE FIN SVCS UNIT 1 MARKET SQUARE, HESLINGTON YORK, , , UNITED KINGDOM',
+      'CASH OFFICE FIN SVCS UNIT 1 MARKET SQUARE, HESLINGTON YORK, UNITED KINGDOM',
       [{ 'coordinates' => nil }]
     )
     Geocoder::Lookup::Test.add_stub(
-      'CASH OFFICE FIN SVCS, HESLINGTON YORK, , , UNITED KINGDOM',
+      'UNIT 1 MARKET SQUARE, HESLINGTON YORK, UNITED KINGDOM',
       [{ 'coordinates' => nil }]
     )
     Geocoder::Lookup::Test.add_stub(
-      'UNIT 1 MARKET SQUARE, HESLINGTON YORK, , , UNITED KINGDOM',
+      'CASH OFFICE FIN SVCS, HESLINGTON YORK, UNITED KINGDOM',
       [{ 'coordinates' => nil }]
     )
     Geocoder::Lookup::Test.add_stub(
@@ -154,7 +154,7 @@ RSpec.describe SearchGeocoder, type: :model do
 
     it 'updates coordinates bad address fields, can not find address' do
       institution = build_and_create_institution(:bad_address)
-      institution.update(address_1: 'sunshine highway')
+      institution.update(physical_address_1: 'sunshine highway')
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_address
       expect(Institution.last.latitude.round(2)).to eq(42.6511674.round(2))
@@ -189,7 +189,7 @@ RSpec.describe SearchGeocoder, type: :model do
 
     it 'updates coordinates bad address fields, country with state' do
       institution = build_and_create_institution(:regular_address_country)
-      institution.update(state: 'NY')
+      institution.update(physical_state: 'NY')
       geo_search_results = described_class.new(version)
       geo_search_results.process_geocoder_country
       expect(Institution.last.latitude.round(2)).to eq(42.6384261.round(2))

@@ -16,9 +16,9 @@ module GeocoderLogic
     # parses bad addresses and flags and issues
     stopwords = %w[ave avenue road rd dr drive blvd pkwy st street parkway]
     stopwords_regex = /\b(#{Regexp.union(*stopwords).source})\b/i
-    if result.address
-      add_split = result.address.split(stopwords_regex).map(&:strip)[0..1].join(' ')
-      new_address = [add_split, result.state, result.zip].compact.join(' ')
+    if result.physical_address
+      add_split = result.physical_address.split(stopwords_regex).map(&:strip)[0..1].join(' ')
+      new_address = [add_split, result.physical_state, result.physical_zip].compact.join(' ')
     end
 
     geocoded, timed_out = geocode_addy('coordinates', new_address, 0)
@@ -65,8 +65,8 @@ module GeocoderLogic
   def text_search_numbered_address(result, geo, city, state, num)
     search = []
     address_number = result.institution.downcase.split('#').last.to_i
-    titleized_city = result.city ? result.city.titleize : ''
-    search << geo if city == titleized_city && state == result.state && num == address_number
+    titleized_city = result.physical_city ? result.physical_city.titleize : ''
+    search << geo if city == titleized_city && state == result.physical_state && num == address_number
     search
   end
 
@@ -74,8 +74,8 @@ module GeocoderLogic
     search = []
     zip = geo.data.dig('address', 'postcode')
     village = geo.data.dig('address', 'village')
-    city_check = result.city.titleize if result.city
-    search << geo if city == city_check || state == result.state || zip == result.zip || village == city_check
+    city_check = result.physical_city.titleize if result.physical_city
+    search << geo if city == city_check || state == result.physical_state || zip == result.physical_zip || village == city_check
     search
   end
 
