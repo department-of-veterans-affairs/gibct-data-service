@@ -25,9 +25,9 @@ class SearchGeocoder
     by_address.each_with_index do |result, idx|
       log_info_status(result, idx)
 
-      address = [parse_add_fields(result, result.address),
-                 parse_add_fields(result, result.address_1),
-                 parse_add_fields(result, result.address_2)]
+      address = [parse_add_fields(result, result.physical_address),
+                 parse_add_fields(result, result.physical_address_1),
+                 parse_add_fields(result, result.physical_address_2)]
       geocode_fields(result, address)
     end
     process_geocoder_country
@@ -38,33 +38,34 @@ class SearchGeocoder
     country.each_with_index do |result, idx|
       log_info_status(result, (idx + @by_address.size))
 
-      if result.state.present? && result.physical_country.present?
+      if result.physical_state.present? && result.physical_country.present?
         geocoded_ct = Geocoder.coordinates(result.physical_country)
         update_mismatch(result, geocoded_ct)
       else
-        address = [parse_address(result, result.address),
-                   parse_address(result, result.address_1),
-                   parse_address(result, result.address_2)]
+        address = [parse_address(result, result.physical_address),
+                   parse_address(result, result.physical_address_1),
+                   parse_address(result, result.physical_address_2)]
+
         geocode_fields(result, address)
       end
     end
   end
 
   def log_info_status(result, idx)
-    Rails.logger.info "#{idx}: processing #{result.country}: #{result.institution} " \
-    "#{result.address} #{result.address_1} #{result.address_2} " \
-    "#{result.city}, #{result.state}, #{result.zip}"
+    Rails.logger.info "#{idx}: processing #{result.physical_country}: #{result.institution} " \
+    "#{result.address} #{result.physical_address_1} #{result.physical_address_2} " \
+    "#{result.physical_city}, #{result.physical_state}, #{result.physical_zip}"
 
     message = "Geocoding #{idx} of #{@total_count}"
     UpdatePreviewGenerationStatusJob.perform_later(message) if (idx % 10).eql?(0)
   end
 
   def parse_add_fields(res, field)
-    "#{field}, #{res.city}, #{res.state}, #{res.zip}, #{res.country}" if field.present?
+    "#{field}, #{res.physical_city}, #{res.physical_state}, #{res.physical_zip}, #{res.physical_country}" if field.present?
   end
 
   def parse_address(res, field)
-    field.present? ? "#{field}, #{res.city}, #{res.physical_country}" : "#{res.city}, #{res.physical_country}"
+    field.present? ? "#{field}, #{res.physical_city}, #{res.physical_country}" : "#{res.physical_city}, #{res.physical_country}"
   end
 
   def geocode_fields(result, address)
@@ -84,7 +85,7 @@ class SearchGeocoder
 
     # no geocode match on first 3 address fields. Geocode based on city, state, zip
     # then check bad address on result of geocoding
-    geocoded3, timed_out = geocode_addy('coordinates', "#{result.city}, #{result.state}, #{result.zip}", 0)
+    geocoded3, timed_out = geocode_addy('coordinates', "#{result.physical_city}, #{result.physical_state}, #{result.physical_zip}", 0)
     return if timed_out
 
     check_bad_address(result, geocoded3)
