@@ -12,7 +12,8 @@ module  NoKeyApis
       'IpedsIcAy' => 'tmp/ic2022_ay.csv',
       'IpedsIcPy' => 'tmp/ic2022_py.csv',
       'IpedsIc' => 'tmp/ic2022.csv',
-      'Mou' => 'tmp/mou.xlsx'
+      'Mou' => 'tmp/mou.xlsx',
+      'Vsoc' => 'tmp/vsoc.csv'
     }.freeze
 
     API_NO_KEY_DOWNLOAD_SOURCES = {
@@ -26,7 +27,8 @@ module  NoKeyApis
       'IpedsIc' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip'],
       'IpedsIcAy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip'],
       'IpedsIcPy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip'],
-      'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"]
+      'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
+      'Vsoc' => [' -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
     }.freeze
 
     attr_accessor :class_nm, :curl_command
@@ -56,6 +58,7 @@ module  NoKeyApis
       when 'Hcm' then '-o tmp/hcm.xlsx'
       when 'EightKey' then '-o tmp/eight_key.xls'
       when 'Mou' then '-o tmp/mou.xlsx'
+      when 'Vsoc' then '-o tmp/vsoc.csv'
       else '-o tmp/download.zip'
       end
     end
