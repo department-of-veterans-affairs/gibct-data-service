@@ -12,9 +12,11 @@ module  NoKeyApis
       'IpedsIcAy' => 'tmp/ic2022_ay.csv',
       'IpedsIcPy' => 'tmp/ic2022_py.csv',
       'IpedsIc' => 'tmp/ic2022.csv',
-      'Mou' => 'tmp/mou.xlsx'
+      'Mou' => 'tmp/mou.xlsx',
+      'Vsoc' => 'tmp/vsoc.csv'
     }.freeze
 
+    # Vsoc uses -k parameter to bypass SSL certificate errors
     API_NO_KEY_DOWNLOAD_SOURCES = {
       'Accreditation' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'AccreditationAction' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
@@ -26,7 +28,8 @@ module  NoKeyApis
       'IpedsIc' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip'],
       'IpedsIcAy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip'],
       'IpedsIcPy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip'],
-      'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"]
+      'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
+      'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
     }.freeze
 
     attr_accessor :class_nm, :curl_command
@@ -46,7 +49,9 @@ module  NoKeyApis
     private
 
     def h_parm
+      # Vsoc uses the octet-stream header to pull down from source
       return '-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"' if @class_nm.eql?('Hcm')
+      return '-H \'Content-Type: application/octet-stream\'' if @class_nm.eql?('Vsoc')
 
       '-H \'Content-Type: application/json\''
     end
@@ -56,6 +61,7 @@ module  NoKeyApis
       when 'Hcm' then '-o tmp/hcm.xlsx'
       when 'EightKey' then '-o tmp/eight_key.xls'
       when 'Mou' then '-o tmp/mou.xlsx'
+      when 'Vsoc' then '-o tmp/vsoc.csv'
       else '-o tmp/download.zip'
       end
     end
