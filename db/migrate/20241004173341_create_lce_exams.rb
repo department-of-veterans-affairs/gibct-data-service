@@ -5,7 +5,7 @@ class CreateLceExams < ActiveRecord::Migration[7.1]
       t.text :description
       t.date :dates
       t.decimal :amount
-      t.references :institution, foreign_key: true
+      t.integer :institution_id
 
       t.timestamps
     end

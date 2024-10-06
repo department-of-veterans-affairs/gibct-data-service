@@ -3,7 +3,7 @@ class CreateLceLicenseAndCerts < ActiveRecord::Migration[7.1]
     create_table :lce_license_and_certs do |t|
       t.string :name
       t.decimal :fee
-      t.references :institution, foreign_key: true
+      t.integer :institution_id
 
       t.timestamps
     end

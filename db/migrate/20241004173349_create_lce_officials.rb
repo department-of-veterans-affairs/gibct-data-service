@@ -3,7 +3,7 @@ class CreateLceOfficials < ActiveRecord::Migration[7.1]
     create_table :lce_officials do |t|
       t.string :name
       t.string :title
-      t.references :institution, foreign_key: true
+      t.integer :institution_id
 
       t.timestamps
     end
