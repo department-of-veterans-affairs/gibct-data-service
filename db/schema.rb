@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_04_173349) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1383,6 +1383,52 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cross"], name: "index_ipeds_ics_on_cross"
+  end
+
+  create_table "lce_exams", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.date "dates"
+    t.decimal "amount"
+    t.integer "institution_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lce_institutions", force: :cascade do |t|
+    t.integer "ptcpnt_id"
+    t.string "name"
+    t.string "abbreviated_name"
+    t.string "physical_street"
+    t.string "physical_city"
+    t.string "physical_state"
+    t.string "physical_zip"
+    t.string "physical_country"
+    t.string "mailing_street"
+    t.string "mailing_city"
+    t.string "mailing_state"
+    t.string "mailing_zip"
+    t.string "mailing_country"
+    t.string "phone"
+    t.string "web_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lce_license_and_certs", force: :cascade do |t|
+    t.string "name"
+    t.decimal "fee"
+    t.integer "institution_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lce_officials", force: :cascade do |t|
+    t.string "name"
+    t.string "title"
+    t.integer "institution_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mous", id: :serial, force: :cascade do |t|
