@@ -178,6 +178,40 @@ FactoryBot.define do
       facility_code { '99Z99999' }
     end
 
+    # last 2 characters are less than 51
+    trait :domestic_with_crosswalk_issue do
+      facility_code { '99Z99950' }
+      after(:create) do |weam|
+        create(:crosswalk_issue, :partial_match_type, weam: weam)
+      end
+    end
+
+    trait :domestic_with_ipeds_hd_crosswalk_issue do
+      facility_code { '99Z99950' }
+      cross { '888889' }
+
+      after(:create) do |weam|
+        create(:ipeds_hd, :with_crosswalk_issue, cross: weam.cross)
+      end
+    end
+
+    # last 2 characters are 51 or greater
+    trait :foreign_with_crosswalk_issue do
+      facility_code { '99Z99951' }
+      after(:create) do |weam|
+        create(:crosswalk_issue, :partial_match_type, weam: weam)
+      end
+    end
+
+    trait :foreign_with_ipeds_hd_crosswalk_issue do
+      facility_code { '99Z99951' }
+      cross { '888890' }
+
+      after(:create) do |weam|
+        create(:ipeds_hd, :with_crosswalk_issue, cross: weam.cross)
+      end
+    end
+
     trait :arf_gi_bill do
       city { 'Test' }
       state { 'TN' }

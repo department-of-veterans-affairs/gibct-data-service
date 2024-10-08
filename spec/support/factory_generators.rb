@@ -2,7 +2,10 @@
 
 FactoryBot.define do
   sequence(:facility_code) do |n|
-    n.to_s(32).rjust(8, '0').upcase
+    base32_part = n.to_s(32).rjust(6, '0').upcase
+    # default facility code to domestic. Last 2 digits are numeric and less than 51
+    numeric_part = (n % 50).to_s.rjust(2, '0')
+    base32_part + numeric_part
   end
 
   sequence(:facility_code_ojt) do |n|
