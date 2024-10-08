@@ -54,8 +54,8 @@ class CrosswalkIssue < ApplicationRecord
       Arel::Nodes::Union.new(
         Arel::Nodes::Union.new(
           domestic_crosswalks, domestic_weams
-        ), domestic_iped_hds),
-      CrosswalkIssue.arel_table
+        ), domestic_iped_hds
+      ), CrosswalkIssue.arel_table
     )
 
     from(subquery)
