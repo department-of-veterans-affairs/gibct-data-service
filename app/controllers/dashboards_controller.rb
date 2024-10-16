@@ -210,7 +210,7 @@ class DashboardsController < ApplicationController
 
   def unzip_csv(class_nm)
     # Some downloads do are not a zip file, so skip and return true
-    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou')
+    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou') || class_nm.eql?('Vsoc')
 
     ZipFileUtils::Unzipper.new.unzip_the_file
   end

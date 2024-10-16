@@ -9,7 +9,7 @@
         <%= link_to crosswalk_issues_partials_path do %>
           <button class="btn dashboard-btn-success">
             View
-            <span class="badge"><%= CrosswalkIssue.by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE).count %></span>
+            <span class="badge"><%= CrosswalkIssue.domestic_partial_matches.count %></span>
           </button>
         <% end %>
         </div>

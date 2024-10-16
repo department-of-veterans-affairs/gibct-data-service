@@ -27,6 +27,12 @@ FactoryBot.define do
       zip { '94107' }
     end
 
+    trait :with_crosswalk_issue do
+      after(:create) do |ipeds_hd|
+        create(:crosswalk_issue, :partial_match_type, ipeds_hd: ipeds_hd)
+      end
+    end
+
     initialize_with do
       new(
         cross: cross, vet_tuition_policy_url: vet_tuition_policy_url,
