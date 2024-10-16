@@ -35,7 +35,12 @@ Rails.application.config.to_prepare do
     { klass: VrrapProvider, required?: false, no_upload?: true },
     { klass: InstitutionOwner, required?: false },
     { klass: InstitutionSchoolRating, required?: false },
-    { klass: Section1015, required?: false }
+    { klass: Section1015, required?: false },
+
+    { klass: Lce::Exam, required?: true },
+    { klass: Lce::LicenseAndCert, required?: true },
+    { klass: Lce::Official, required?: true },
+    { klass: Lce::Institution, required?: true }
   ].freeze
 
   CSV_TYPES_HAS_API_TABLE_NAMES ||= CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }.freeze
