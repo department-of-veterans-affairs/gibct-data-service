@@ -7,6 +7,6 @@ version: 2
 updates:
   - package-ecosystem: "bundler" # See documentation for possible values
     directory: "/" # Location of package manifests
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 15
     schedule:
       interval: "daily"
