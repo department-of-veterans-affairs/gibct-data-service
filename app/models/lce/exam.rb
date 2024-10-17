@@ -9,7 +9,7 @@ module Lce
       'amount' => { column: :amount, converter: Converters::NumberConverter },
       'institution_id' => { column: :institution_id, converter: Converters::NumberConverter }
     }.freeze
-  
+
     belongs_to :institution, :class_name => 'Lce::Institution'
   end
 end
