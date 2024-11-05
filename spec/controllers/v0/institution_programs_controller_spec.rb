@@ -186,6 +186,24 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(response).to match_response_schema('institution_programs')
     end
 
+    it 'filters by uppercase facility code' do
+      create(:institution, version_id: Version.last.id, facility_code: 'ABCD1234')
+      create(:institution_program, institution_id: Institution.last.id)
+      get(:index, params: { facility_code: Institution.last.facility_code })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
+    it 'filters by lowercase facility code' do
+      create(:institution, version_id: Version.last.id, facility_code: 'ABCD1234')
+      create(:institution_program, institution_id: Institution.last.id)
+      get(:index, params: { facility_code: Institution.last.facility_code.downcase })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_programs')
+    end
+
     it 'filter by lowercase state returns results' do
       get(:index, params: { state: 'ny' })
       expect(JSON.parse(response.body)['data'].count).to eq(3)
@@ -282,6 +300,37 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       create(:institution_program, description: 'TEST', institution_id: Institution.last.id)
       get(:index, params: { name: 'testville, ak' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
+    end
+
+    context 'pagination' do
+      context 'enabled' do
+        it 'enables pagination by default' do
+          get(:index)
+          expect(JSON.parse(response.body)['links']).not_to be_nil
+        end
+
+        it 'enables pagination with a lowercase query parameter' do
+          get(:index, params: { disable_pagination: 'false' })
+          expect(JSON.parse(response.body)['links']).not_to be_nil
+        end
+
+        it 'enables pagination with an uppercase query parameter' do
+          get(:index, params: { disable_pagination: 'False' })
+          expect(JSON.parse(response.body)['links']).not_to be_nil
+        end
+      end
+
+      context 'disabled' do
+        it 'disables pagination with a lowercase query parameter' do
+          get(:index, params: { disable_pagination: 'true' })
+          expect(JSON.parse(response.body)['links']).to be_nil
+        end
+
+        it 'disabled pagination with an uppercase query parameter' do
+          get(:index, params: { disable_pagination: 'True' })
+          expect(JSON.parse(response.body)['links']).to be_nil
+        end
+      end
     end
   end
 end
