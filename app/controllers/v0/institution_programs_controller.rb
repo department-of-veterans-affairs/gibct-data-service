@@ -29,7 +29,7 @@ module V0
 
       render json: search_results
         .search_order(@query)
-        .page(page), meta: @meta
+        .then { |results| pagination_for(results) }, meta: @meta
     end
 
     private
@@ -40,7 +40,9 @@ module V0
         query[:name].try(:strip!)
         query[:name].try(:downcase!)
         query[:preferred_provider].try(:downcase!)
+        query[:disable_pagination].try(:downcase!)
         query[:provider].try(:upcase!)
+        query[:facility_code].try(:upcase!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
@@ -85,6 +87,7 @@ module V0
       [
         %i[program_type type],
         %i[institutions.institution provider],
+        %i[institutions.facility_code facility_code],
         %w[institutions.physical_country country],
         %w[institutions.physical_state state],
         %w[institutions.preferred_provider preferred_provider]
@@ -115,6 +118,10 @@ module V0
       add_search_facet(raw_facets, :state)
       add_country_search_facet(raw_facets)
       raw_facets
+    end
+
+    def pagination_for(results)
+      @query[:disable_pagination] == 'true' ? results : results.page(page)
     end
   end
 end
