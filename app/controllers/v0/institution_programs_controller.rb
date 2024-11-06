@@ -29,8 +29,7 @@ module V0
 
       render json: search_results
         .search_order(@query)
-        .then { |results| pagination_for(results) },
-        meta: @meta
+        .then { |results| pagination_for(results) }, meta: @meta
     end
 
     private

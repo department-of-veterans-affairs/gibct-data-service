@@ -302,8 +302,8 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
-    context 'pagination' do
-      context 'enabled' do
+    context ' when configuring pagination' do
+      context 'when enabled' do
         it 'enables pagination by default' do
           get(:index)
           expect(JSON.parse(response.body)['links']).not_to be_nil
@@ -325,7 +325,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
         end
       end
 
-      context 'disabled' do
+      context 'when disabled' do
         it 'disables pagination with a lowercase query parameter' do
           get(:index, params: { disable_pagination: 'true' })
           expect(JSON.parse(response.body)['links']).to be_nil
