@@ -121,7 +121,7 @@ module V0
     end
 
     def pagination_for(results)
-      @query[:disable_pagination] ? results : results.page(page)
+      @query[:disable_pagination] == 'true' ? results : results.page(page)
     end
   end
 end
