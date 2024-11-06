@@ -302,7 +302,7 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(1)
     end
 
-    context ' when configuring pagination' do
+    context 'when configuring pagination' do
       context 'when enabled' do
         it 'enables pagination by default' do
           get(:index)
