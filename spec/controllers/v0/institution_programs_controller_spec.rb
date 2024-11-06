@@ -309,6 +309,11 @@ RSpec.describe V0::InstitutionProgramsController, type: :controller do
           expect(JSON.parse(response.body)['links']).not_to be_nil
         end
 
+        it 'enables pagination with invalid query parameter' do
+          get(:index, params: { disable_pagination: 'invalid' })
+          expect(JSON.parse(response.body)['links']).not_to be_nil
+        end
+
         it 'enables pagination with a lowercase query parameter' do
           get(:index, params: { disable_pagination: 'false' })
           expect(JSON.parse(response.body)['links']).not_to be_nil

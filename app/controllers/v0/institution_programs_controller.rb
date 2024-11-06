@@ -43,6 +43,7 @@ module V0
         query[:preferred_provider].try(:downcase!)
         query[:disable_pagination].try(:downcase!)
         query[:provider].try(:upcase!)
+        query[:facility_code].try(:upcase!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
