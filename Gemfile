@@ -57,7 +57,7 @@ group :development, :test do
   gem 'pry-nav'
 
   # Linters
-  gem 'libv8-node', '21.7.2.0'
+  gem 'libv8-node', '22.7.0.4'
   gem 'mini_racer'
   gem 'rubocop', require: false
   gem 'rubocop-rails'
