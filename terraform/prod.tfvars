@@ -10,9 +10,9 @@ fargate_cpu = 2048
 fargate_memory = 4096
 
 ## RYAN Mcneil Help!!!
-LINK_HOST: https://www.example.com
-GIBCT_URL: https://www.example.com
-SANDBOX_URL: https://www.example.com
-GOVDELIVERY_URL: 'stage-tms.govdelivery.com'
-GOVDELIVERY_STAGING_SERVICE: 'True'
-DEPLOYMENT_ENV: 'vagov-dev'
+LINK_HOST: https://api.va.gov
+GIBCT_URL: https://www.va.gov/gi-bill-comparison-tool
+SANDBOX_URL: https://www.va.gov/gi-bill-comparison-tool-sandbox
+GOVDELIVERY_URL: tms.govdelivery.com
+GOVDELIVERY_STAGING_SERVICE: False
+DEPLOYMENT_ENV: vagov-prod
