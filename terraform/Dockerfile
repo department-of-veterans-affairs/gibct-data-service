@@ -1,0 +1,2 @@
+FROM traefik/whoami:latest
+
