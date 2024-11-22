@@ -1,2 +1,4 @@
 environments:
-  - rm-sbx
+  - dev
+  - staging
+  - prod
