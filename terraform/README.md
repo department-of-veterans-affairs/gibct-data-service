@@ -30,5 +30,6 @@ curl --socks5-hostname http://localhost:2001 http://dsva-vagov-gibct-default-fg.
 - Add ECR Access for Dev
 - Upgrade RDS to Postgres 17? 
     https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-versions.html
-- Pass through Params
+- Pass through env vars
+- Reference SSM / Secrets Manager
 - Add Code Owners for Terraform
