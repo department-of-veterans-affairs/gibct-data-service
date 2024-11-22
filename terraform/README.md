@@ -21,3 +21,14 @@ aws ecs update-service --cluster dsva-vagov-gibct-default --service dsva-vagov-g
 ```bash
 curl --socks5-hostname http://localhost:2001 http://dsva-vagov-gibct-default-fg.vfs.va.gov/
 ```
+
+# TODO
+- Add CI
+- Deploy all environments
+- Add RDS
+- Add RDS Access for Dev
+- Add ECR Access for Dev
+- Upgrade RDS to Postgres 17? 
+    https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-versions.html
+- Pass through Params
+- Add Code Owners for Terraform
