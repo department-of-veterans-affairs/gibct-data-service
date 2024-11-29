@@ -9,10 +9,9 @@ fargate_count = 3
 fargate_cpu = 2048
 fargate_memory = 4096
 
-## RYAN Mcneil Help!!!
-LINK_HOST: https://api.va.gov
-GIBCT_URL: https://www.va.gov/gi-bill-comparison-tool
-SANDBOX_URL: https://www.va.gov/gi-bill-comparison-tool-sandbox
-GOVDELIVERY_URL: tms.govdelivery.com
-GOVDELIVERY_STAGING_SERVICE: False
-DEPLOYMENT_ENV: vagov-prod
+deployment_env = vagov-prod
+gibct_url = https://www.va.gov/gi-bill-comparison-tool
+govdelivery_staging_service = False
+govdelivery_url = tms.govdelivery.com
+link_host = https://api.va.gov
+sandbox_url = https://www.va.gov/gi-bill-comparison-tool-sandbox

@@ -31,10 +31,30 @@ locals {
         }
       ]
       environment = [
-        # {
-        #   name : "foo"
-        #   value : "bar"
-        # },
+        {
+          name : "DEPLOYMENT_ENV"
+          value : var.deployment_env
+        },
+        {
+          name : "GIBCT_URL"
+          value : var.gibct_url
+        },
+        {
+          name : "GOVDELIVERY_STAGING_SERVICE"
+          value : var.govdelivery_staging_service
+        },
+        {
+          name : "GOVDELIVERY_URL"
+          value : var.govdelivery_url
+        },
+        {
+          name : "LINK_HOST"
+          value : var.link_host
+        },
+        {
+          name : "SANDBOX_URL"
+          value : var.sandbox_url
+        }
       ]
     }
   ])

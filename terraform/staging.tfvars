@@ -9,10 +9,9 @@ fargate_count = 3
 fargate_cpu = 2048
 fargate_memory = 4096
 
-## RYAN Mcneil Help!!!
-LINK_HOST: https://staging-platform-api.va.gov
-GIBCT_URL: https://staging.va.gov/gi-bill-comparison-tool
-SANDBOX_URL: https://staging.va.gov/gi-bill-comparison-tool-sandbox
-GOVDELIVERY_URL: stage-tms.govdelivery.com
-GOVDELIVERY_STAGING_SERVICE: True
-DEPLOYMENT_ENV: vagov-staging
+deployment_env = vagov-staging
+gibct_url = https://staging.va.gov/gi-bill-comparison-tool
+govdelivery_staging_service = True
+govdelivery_url = stage-tms.govdelivery.com
+link_host = https://staging-platform-api.va.gov
+sandbox_url = https://staging.va.gov/gi-bill-comparison-tool-sandbox
