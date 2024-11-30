@@ -15,3 +15,5 @@ govdelivery_staging_service = True
 govdelivery_url = stage-tms.govdelivery.com
 link_host = https://staging-platform-api.va.gov
 sandbox_url = https://staging.va.gov/gi-bill-comparison-tool-sandbox
+
+ps_prefix = staging

@@ -30,6 +30,8 @@ locals {
           protocol      = "tcp"
         }
       ]
+
+      # Regular environment variables
       environment = [
         {
           name : "DEPLOYMENT_ENV"
@@ -55,6 +57,26 @@ locals {
           name : "SANDBOX_URL"
           value : var.sandbox_url
         }
+      ]
+
+      # Parameter Store values
+      secrets = [
+        {
+          name : "ADMIN_EMAIL"
+          valueFrom : ""
+        },
+        {
+          name : "ADMIN_PW"
+          valueFrom : ""
+        },
+        {
+          name : "GOVDELIVERY_TOKEN"
+          valueFrom : "<stuff>:dsva-vagov/gibct-data-service/${var.ps_prefix}/gov_delivery_token"
+        },
+        {
+          name : "SECRET_KEY_BASE"
+          valueFrom : "<stuff>:dsva-vagov/gibct-data-service/${var.ps_prefix}/secret_key_base"
+        },
       ]
     }
   ])

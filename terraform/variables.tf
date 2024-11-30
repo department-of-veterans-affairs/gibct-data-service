@@ -76,3 +76,7 @@ variable "sandbox_url" {
     default = "https://staging.va.gov/gi-bill-comparison-tool-sandbox"
 }
 
+variable "ps_prefix" {
+  description = "prefix used in parameter store: dev/staging/prod"
+  default = "dev"
+}
