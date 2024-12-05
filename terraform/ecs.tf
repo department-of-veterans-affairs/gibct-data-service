@@ -61,21 +61,25 @@ locals {
 
       # Parameter Store values
       secrets = [
+        # {
+        #   name : "ADMIN_EMAIL"
+        #   valueFrom : ""
+        # },
+        # {
+        #   name : "ADMIN_PW"
+        #   valueFrom : ""
+        # },
         {
-          name : "ADMIN_EMAIL"
-          valueFrom : ""
-        },
-        {
-          name : "ADMIN_PW"
-          valueFrom : ""
+          name : "DATABASE_PASSWORD"
+          valueFrom : "arn:aws-us-gov:ssm:us-gov-west-1:008577686731:parameter/dsva-vagov/gibct-data-service/${var.ps_prefix}/database_password"
         },
         {
           name : "GOVDELIVERY_TOKEN"
-          valueFrom : "<stuff>:dsva-vagov/gibct-data-service/${var.ps_prefix}/gov_delivery_token"
+          valueFrom : "arn:aws-us-gov:ssm:us-gov-west-1:008577686731:parameter/dsva-vagov/gibct-data-service/${var.ps_prefix}/gov_delivery_token"
         },
         {
           name : "SECRET_KEY_BASE"
-          valueFrom : "<stuff>:dsva-vagov/gibct-data-service/${var.ps_prefix}/secret_key_base"
+          valueFrom : "arn:aws-us-gov:ssm:us-gov-west-1:008577686731:parameter/dsva-vagov/gibct-data-service/${var.ps_prefix}/secret_key_base"
         },
       ]
     }
@@ -84,7 +88,9 @@ locals {
 
 resource "aws_ecs_task_definition" "app" {
   family                   = "${local.name}-app-task"
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  # execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
