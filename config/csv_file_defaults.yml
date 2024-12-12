@@ -36,6 +36,7 @@ Complaint:
 
 Program:
   col_sep: '|'
+  liberal_parsing: true
 
 SchoolCertifyingOfficial:
   liberal_parsing: true
