@@ -193,7 +193,7 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE 2'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(2)
-      end 
+      end
 
       it 'does not generate duplicate institution programs for duplicate programs' do
         create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE'
