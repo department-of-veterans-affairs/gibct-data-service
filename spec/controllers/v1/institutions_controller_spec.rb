@@ -385,6 +385,79 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
+
+    # New tests for combined name and location search
+    it 'returns filtered results when searching by both name and location' do
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+      create(:institution, :production_version, :location, institution: 'BOSTON UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard'
+          })
+
+      results = JSON.parse(response.body)['data']
+      expect(results.count).to eq(1)
+      expect(results[0]['attributes']['name']).to eq('HARVARD UNIVERSITY')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results when name does not match within location radius' do
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'stanford'
+          })
+
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns correct count in meta when filtering by both name and location' do
+      create_list(:institution, 3, :production_version, :location)
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard'
+          })
+
+      body = JSON.parse(response.body)
+      expect(body['data'].count).to eq(1)
+      expect(body['meta']['count']).to eq(1)
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    # rubocop:disable RSpec/ExampleLength
+    it 'maintains other filters when combining name and location search' do
+      create(:institution, :production_version, :location,
+             institution: 'HARVARD UNIVERSITY',
+             student_veteran: true) # Factory uses student_veteran
+      create(:institution, :production_version, :location,
+             institution: 'HARVARD COLLEGE',
+             student_veteran: false)
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard',
+            student_veteran: true
+          })
+
+      results = JSON.parse(response.body)['data']
+      expect(results.count).to eq(1)
+      expect(results[0]['attributes']['student_veteran']).to be true # Changed from student_veteran_group to student_veteran
+      expect(response).to match_response_schema('institution_search_results')
+    end
+    # rubocop:enable RSpec/ExampleLength
   end
 
   context 'with compare results' do

@@ -20,8 +20,7 @@ module V1
       render json: { data: @data, meta: @meta, links: @links }, adapter: :json
     end
 
-    # GET /v1/institutions?name=duluth&x=y
-    #   Default search
+    # GET /v1/institutions?name=duluth&location=mn&x=y
     def index
       @query ||= normalized_query_params
 
@@ -30,8 +29,14 @@ module V1
       results = Institution.approved_institutions(@version)
                            .search_v1(@query)
                            .filter_result_v1(@query)
-                           .search_order_v1(@query, max_gibill).page(page)
 
+      # Apply location filters if location string is provided
+      if @query[:location].present?
+        location_params = parse_location(@query[:location])
+        results = results.where(location_params)
+      end
+
+      results = results.search_order_v1(@query, max_gibill).page(page)
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
@@ -45,12 +50,18 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions?latitude=0.0&longitude=0.0
-    #   Location search
+    # GET /v1/institutions?latitude=42.35888&longitude=-71.0568
     def location
       @query ||= normalized_query_params
 
-      location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
+      # Start with base query
+      location_results = Institution.approved_institutions(@version)
+                                    .location_search(@query)
+                                    .filter_result_v1(@query)
+
+      # Add name search if name parameter is present
+      location_results = location_results.search_v1(name: @query[:name]) if @query[:name].present?
+
       results = location_results.location_select(@query).location_order
 
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
@@ -66,8 +77,7 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions?facility_codes=1,2,3,4
-    #   Search by facility code and return using InstitutionCompareSerializer
+    # Other methods remain unchanged...
     def facility_codes
       @query ||= normalized_query_params
 
@@ -84,7 +94,6 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions/20005123
     def show
       resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
@@ -95,7 +104,6 @@ module V1
              meta: { version: @version }, links: @links
     end
 
-    # GET /v1/institutions/20005123/children
     def children
       children = Institution.joins(:version)
                             .where(version: @version)
@@ -120,6 +128,7 @@ module V1
       query = params.deep_dup
       query.tap do
         query[:name].try(:strip!)
+        query[:location].try(:strip!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
@@ -134,8 +143,26 @@ module V1
       end
     end
 
-    # TODO: If filter counts are desired in the future, change boolean facets
-    # to use search_results.filter_count(param) instead of default value
+    def parse_location(location)
+      return {} if location.blank?
+
+      # Try to parse as city, state format
+      if location.include?(',')
+        city, state = location.split(',').map(&:strip)
+        { city: city.upcase, state: state.upcase }
+      # Try to parse as state abbreviation
+      elsif location.length == 2
+        { state: location.upcase }
+      # Try to parse as zip code
+      elsif location.match?(/^\d{5}$/)
+        { zip: location }
+      # Treat as city name
+      else
+        { city: location.upcase }
+      end
+    end
+
+    # Rest of the methods (facets, etc.) remain unchanged...
     def facets(results)
       result = {
         category: {
