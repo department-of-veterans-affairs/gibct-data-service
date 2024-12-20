@@ -378,7 +378,6 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       create(:version, :production)
     end
 
-    # Existing test from master - keep as is
     it 'search returns location results' do
       create(:institution, :production_version, :location)
       get(:location, params: { latitude: '32.7876', longitude: '-79.9403', distance: '50', tab: 'location' })
@@ -387,8 +386,8 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    # tests for name + coordinate search
-    it 'returns filtered results when searching by both name and location' do
+    # New tests for coordinate-based name+location search
+    it 'returns filtered results when searching by both name and coordinates' do
       create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
       create(:institution, :production_version, :location, institution: 'BOSTON UNIVERSITY')
 
@@ -419,7 +418,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    it 'maintains count accuracy with name and location search' do
+    it 'maintains accurate count in meta for coordinate and name search' do
       create_list(:institution, 3, :production_version, :location)
       create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
 
