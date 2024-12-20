@@ -77,7 +77,8 @@ module V1
              meta: @meta
     end
 
-    # Other methods remain unchanged...
+    # GET /v1/institutions?facility_codes=1,2,3,4
+    #   Search by facility code and return using InstitutionCompareSerializer
     def facility_codes
       @query ||= normalized_query_params
 
@@ -104,6 +105,7 @@ module V1
              meta: { version: @version }, links: @links
     end
 
+    # GET /v1/institutions/20005123/children
     def children
       children = Institution.joins(:version)
                             .where(version: @version)
@@ -143,6 +145,8 @@ module V1
       end
     end
 
+    # TODO: If filter counts are desired in the future, change boolean facets
+    # to use search_results.filter_count(param) instead of default value
     def parse_location(location)
       return {} if location.blank?
 
