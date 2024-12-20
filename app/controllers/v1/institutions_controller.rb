@@ -95,6 +95,7 @@ module V1
              meta: @meta
     end
 
+    # GET /v1/institutions/20005123
     def show
       resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
 
