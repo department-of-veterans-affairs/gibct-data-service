@@ -140,6 +140,8 @@ module V1
       end
     end
 
+    # TODO: If filter counts are desired in the future, change boolean facets
+    # to use search_results.filter_count(param) instead of default value
     def facets(results)
       result = {
         category: {

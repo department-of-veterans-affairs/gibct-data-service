@@ -386,7 +386,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    # New tests for coordinate-based name+location search
+    # tests for coordinate-based name+location search
     it 'returns filtered results when searching by both name and coordinates' do
       create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
       create(:institution, :production_version, :location, institution: 'BOSTON UNIVERSITY')
