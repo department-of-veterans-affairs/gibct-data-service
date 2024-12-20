@@ -21,6 +21,7 @@ module V1
     end
 
     # GET /v1/institutions?name=duluth&location=mn&x=y
+    #   Default search
     def index
       @query ||= normalized_query_params
 
@@ -50,7 +51,8 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions?latitude=42.35888&longitude=-71.0568
+    # GET /v1/institutions?latitude=0.0&longitude=0.0
+    #   Location search
     def location
       @query ||= normalized_query_params
 
