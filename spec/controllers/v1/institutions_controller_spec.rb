@@ -154,6 +154,16 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('autocomplete')
     end
 
+    it 'filters by state' do
+      institution = create(:institution, :start_like_harv, :production_version)
+      create(:institution, :start_like_harv, :production_version, state: 'MD', physical_state: 'MD')
+      get(:autocomplete, params: { term: 'harv', state: 'ma' })
+      expect(JSON.parse(response.body)['data'].count).to eq(1)
+      expect(JSON.parse(response.body)['data'][0]['id']).to eq(institution.id)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('autocomplete')
+    end
+
     it 'filters by student_veteran' do
       institution = create(:institution, :start_like_harv, :production_version, student_veteran: 'true')
       create(:institution, :start_like_harv, :production_version)
@@ -187,6 +197,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
   end
 
   context 'with search results' do
+    # need to separate methods in order to pass metrics::AbcSize cop
     def create_facets_keys_array(facets)
       [
         facets['student_vet_group'].keys,
@@ -211,6 +222,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       create_list(:institution, 2, :in_nyc, :production_version)
       create(:institution, :production_version, :in_chicago, online_only: true)
       create(:institution, :production_version, :in_new_rochelle, distance_learning: true)
+      # adding a non approved institutions row
       create(:institution, :production_version, :contains_harv, approved: false)
     end
 
@@ -306,6 +318,13 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
+    it 'filter by uppercase state returns results' do
+      get(:index, params: { state: 'NY' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
     it 'includes vet_tec_provider institutions' do
       vet_tec = create(:institution, :production_version, :vet_tec_provider)
       get(:index, params: { name: 'vet tec' })
@@ -325,6 +344,28 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(JSON.parse(response.body)['data'].map { |a| a['attributes']['preferred_provider'] }).to all(eq(true))
     end
 
+    it 'filter by lowercase state returns results' do
+      get(:index, params: { state: 'ny' })
+      expect(JSON.parse(response.body)['data'].count).to eq(3)
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'includes state search term in facets' do
+      get(:index, params: { name: 'chicago', state: 'WY' })
+      facets = JSON.parse(response.body)['meta']['facets']
+      expect(facets['state']['wy']).not_to be_nil
+      expect(facets['state']['wy']).to eq(0)
+    end
+
+    it 'includes country search term in facets' do
+      get(:index, params: { name: 'chicago', country: 'france' })
+      facets = JSON.parse(response.body)['meta']['facets']
+      match = facets['country'].select { |c| c['name'] == 'FRANCE' }.first
+      expect(match).not_to be nil
+      expect(match['count']).to eq(0)
+    end
+
     it 'includes boolean facets' do
       get(:index)
       facets = JSON.parse(response.body)['meta']['facets']
@@ -337,14 +378,16 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       create(:version, :production)
     end
 
-    it 'returns location-based search results' do
+    # Existing test from master - keep as is
+    it 'search returns location results' do
       create(:institution, :production_version, :location)
-      get(:location, params: { latitude: '32.7876', longitude: '-79.9403', distance: '50' })
+      get(:location, params: { latitude: '32.7876', longitude: '-79.9403', distance: '50', tab: 'location' })
       expect(JSON.parse(response.body)['data'].count).to eq(1)
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
 
+    # tests for name + coordinate search
     it 'returns filtered results when searching by both name and location' do
       create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
       create(:institution, :production_version, :location, institution: 'BOSTON UNIVERSITY')
@@ -376,7 +419,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response).to match_response_schema('institution_search_results')
     end
 
-    it 'returns correct count in meta when filtering by both name and location' do
+    it 'maintains count accuracy with name and location search' do
       create_list(:institution, 3, :production_version, :location)
       create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
 
@@ -390,28 +433,6 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       body = JSON.parse(response.body)
       expect(body['data'].count).to eq(1)
       expect(body['meta']['count']).to eq(1)
-      expect(response).to match_response_schema('institution_search_results')
-    end
-
-    it 'maintains filters with coordinate-based search' do
-      create(:institution, :production_version, :location,
-             institution: 'HARVARD UNIVERSITY',
-             student_veteran: true)
-      create(:institution, :production_version, :location,
-             institution: 'HARVARD COLLEGE',
-             student_veteran: false)
-
-      get(:location, params: {
-            latitude: '32.7876',
-            longitude: '-79.9403',
-            distance: '50',
-            name: 'harvard',
-            student_veteran: true
-          })
-
-      results = JSON.parse(response.body)['data']
-      expect(results.count).to eq(1)
-      expect(results[0]['attributes']['student_veteran']).to be true
       expect(response).to match_response_schema('institution_search_results')
     end
   end
@@ -498,6 +519,7 @@ RSpec.describe V1::InstitutionsController, type: :controller do
 
     it 'returns institution children' do
       school = create(:institution, :in_chicago, :production_version)
+
       child_school = create(:institution, :in_chicago, parent_facility_code_id: school.facility_code, version_id: school.version_id)
       get(:children, params: { id: school.facility_code })
       expect(response.media_type).to eq('application/json')

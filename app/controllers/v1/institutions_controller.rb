@@ -20,8 +20,8 @@ module V1
       render json: { data: @data, meta: @meta, links: @links }, adapter: :json
     end
 
-    # GET /v1/institutions?name=duluth
-    #   Default name-based search
+    # GET /v1/institutions?name=duluth&location=mn&x=y
+    #   Default search
     def index
       @query ||= normalized_query_params
 
@@ -30,9 +30,14 @@ module V1
       results = Institution.approved_institutions(@version)
                            .search_v1(@query)
                            .filter_result_v1(@query)
-                           .search_order_v1(@query, max_gibill)
-                           .page(page)
 
+      # Apply location filters if location string is provided
+      if @query[:location].present?
+        location_params = parse_location(@query[:location])
+        results = results.where(location_params)
+      end
+
+      results = results.search_order_v1(@query, max_gibill).page(page)
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
@@ -47,7 +52,7 @@ module V1
     end
 
     # GET /v1/institutions?latitude=0.0&longitude=0.0
-    #   Location-based search
+    #   Location search
     def location
       @query ||= normalized_query_params
 
@@ -59,9 +64,7 @@ module V1
       # Add name search if name parameter is present
       location_results = location_results.search_v1(name: @query[:name]) if @query[:name].present?
 
-      results = location_results.location_select(@query)
-                                .location_order
-
+      results = location_results.location_select(@query).location_order
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
@@ -76,12 +79,11 @@ module V1
     end
 
     # GET /v1/institutions?facility_codes=1,2,3,4
-    #   Search by facility code
+    #   Search by facility code and return using InstitutionCompareSerializer
     def facility_codes
       @query ||= normalized_query_params
 
-      results = Institution.approved_institutions(@version)
-                           .where(facility_code: @query[:facility_codes])
+      results = Institution.approved_institutions(@version).where(facility_code: @query[:facility_codes])
                            .order(:institution)
 
       @meta = {
@@ -101,10 +103,8 @@ module V1
       raise Common::Exceptions::Internal::RecordNotFound, params[:id] unless resource
 
       @links = { self: self_link }
-      render json: resource,
-             serializer: InstitutionProfileSerializer,
-             meta: { version: @version },
-             links: @links
+      render json: resource, serializer: InstitutionProfileSerializer,
+             meta: { version: @version }, links: @links
     end
 
     # GET /v1/institutions/20005123/children
@@ -132,20 +132,39 @@ module V1
       query = params.deep_dup
       query.tap do
         query[:name].try(:strip!)
-
+        query[:location].try(:strip!)
         %i[state country type].each do |k|
           query[k].try(:upcase!)
         end
-
         %i[name category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning].each do |k|
+           online_only distance_learning location].each do |k|
           query[k].try(:downcase!)
         end
-
         %i[latitude longitude distance].each do |k|
           query[k] = float_conversion(query[k]) if query[k].present?
         end
+      end
+    end
+
+    # TODO: If filter counts are desired in the future, change boolean facets
+    # to use search_results.filter_count(param) instead of default value
+    def parse_location(location)
+      return {} if location.blank?
+
+      # Try to parse as city, state format
+      if location.include?(',')
+        city, state = location.split(',').map(&:strip)
+        { city: city.upcase, state: state.upcase }
+      # Try to parse as state abbreviation
+      elsif location.length == 2
+        { state: location.upcase }
+      # Try to parse as zip code
+      elsif location.match?(/^\d{5}$/)
+        { zip: location }
+      # Treat as city name
+      else
+        { city: location.upcase }
       end
     end
 
