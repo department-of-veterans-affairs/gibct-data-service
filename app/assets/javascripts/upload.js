@@ -45,8 +45,9 @@ $(function() {
         const file = processedFiles[i];
         formData.set("upload[upload_file]", file);
         formData.set("upload[multiple_file_upload]", i !== 0)
-        formData.append("upload[meta][file_number]", i + 1);
-        formData.append("upload[meta][count]", processedFiles.length);
+        // Include metadata to calculate when last file processed
+        formData.append("upload[metadata][file_number]", i + 1);
+        formData.append("upload[metadata][count]", processedFiles.length);
         let result;
         try {
           result = await $.ajax({
@@ -57,10 +58,10 @@ $(function() {
             processData: false,
             contentType: false
           });
+          console.log(JSON.parse(result));
         } catch (error) {
           console.error(error);
         }
-        console.log(result);
       }
     };
 
