@@ -1,38 +1,53 @@
-    <%= form_for(@upload, multipart: true) do |f| %>
-      <% if @upload.csv_type.nil? %>
-        <%= render partial: 'csv_type_select', locals: { f: f } %>
-      <% else %>
-        <%= render partial: 'csv_type_static', locals: { upload: @upload, f: f } %>
-      <% end %>
+<%= form_for(@upload, multipart: true) do |f| %>
+  <% if @upload.csv_type.nil? %>
+    <%= render partial: 'csv_type_select', locals: { f: f } %>
+  <% else %>
+    <%= render partial: 'csv_type_static', locals: { upload: @upload, f: f } %>
+  <% end %>
 
-      <div class="form-group">
-        <%= f.label(:skip_lines_before_header, for: "upload_skip_lines") %><br />
-        <%= f.text_field(:skip_lines) %>
-      </div>
+  <div class="form-group">
+    <%= f.label(:skip_lines_before_header, for: "upload_skip_lines") %><br />
+    <%= f.text_field(:skip_lines) %>
+  </div>
 
-      <div class="form-group">
-        <%= f.label(:upload_file) %>
-        <p class="help-block">Valid file formats include: <%= @extensions %></p>
-        <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
-      </div>
+  <div class="form-group">
+    <%= f.label(:upload_file) %>
+    <p class="help-block">Valid file formats include: <%= @extensions %></p>
+    <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
+  </div>
 
-      <div class="form-group">
-        <%= f.label(:multiple_file_upload) %>
-        <%= f.check_box :multiple_file_upload, {}, true, false %><br/> 
+  <% unless @upload.async_upload.enabled %>
+    <div class="form-group">
+    <%= f.label(:multiple_file_upload) %>
+    <%= f.check_box :multiple_file_upload, {}, true, false %><br/> 
 
-        Use this for very large files that were split into multiple files. Add the header to the all the files.<br/>
-        This should only be checked for the 2nd and subsequent files as part of the load.
+    Use this for very large files that were split into multiple files. Add the header to the all the files.<br/>
+    This should only be checked for the 2nd and subsequent files as part of the load.
+  </div>
+  <% end %>
 
-      </div>
+  <div class="form-group">
+    <%= f.label(:comment) %><br />
+    <%= f.text_field(:comment, style: 'width: 100%') %>
+  </div>
 
-      <div class="form-group">
-        <%= f.label(:comment) %><br />
-        <%= f.text_field(:comment, style: 'width: 100%') %>
-      </div>
+  <div class="actions">
+    <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
 
-      <div class="actions">
-        <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
-        <%= f.submit "Upload", class: "btn btn-primary" %>
-      </div>
+    <% if @upload.async_upload.enabled %>
+      <button
+        type="submit"
+        id="async-submit-btn"
+        class="btn btn-primary"
+        data-chunk-size=<%= @upload.async_upload.chunk_size %>
+        data-url=<%= request.base_url + uploads_path %>
+      >
+        Upload
+      </button>
+    <% else %>
+      <%= f.submit "Upload", class: "btn btn-primary" %>
     <% end %>
+  </div>
+<% end %>
+
 

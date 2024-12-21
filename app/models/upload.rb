@@ -46,6 +46,10 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:multiple_files]
   end
 
+  def async_upload
+    OpenStruct.new(Common::Shared.file_type_defaults(csv_type)[:async_upload])
+  end
+
   def self.last_uploads(for_display = false)
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES
