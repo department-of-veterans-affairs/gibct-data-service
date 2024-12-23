@@ -16,17 +16,31 @@ class UploadsController < ApplicationController
   end
 
   def create
-    @upload = Upload.create(merged_params)
     begin
-      data = load_file
-      alert_messages(data)
-      data_results = data[:results]
+      @upload = Upload.create(merged_params)
+      # data = load_file
+      # alert_messages(data)
+      # data_results = data[:results]
 
-      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
-      error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-      raise(StandardError, error_msg) unless @upload.ok?
+      # @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
+      # error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
+      # raise(StandardError, error_msg) unless @upload.ok?
 
-      redirect_to @upload
+      respond_to do |format|
+        format.html do
+          redirect_to @upload
+        end
+        format.js do
+          current_upload = async_upload_status[:current]
+          total_uploads = async_upload_status[:total]
+          render json: { async_upload_status: }
+          # if current_upload < total_uploads
+          #   render json: { async_upload_status: }
+          # else
+          #   redirect_to @upload
+          # end
+        end
+      end
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
       @extensions = Settings.roo_upload.extensions.single.join(', ')
@@ -84,16 +98,22 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user)
+    upload_params.except(:metadata).merge(csv: original_filename, user: current_user)
   end
 
   def upload_params
     upload_params = params.require(:upload).permit(
-      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
+      metadata: [uploads: [:current, :total]]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
+    upload_params.dig(:metadata, :uploads).try(:transform_values!, &:to_i)
     @upload_params ||= upload_params
+  end
+
+  def async_upload_status
+    @async_upload_status ||= upload_params.dig(:metadata, :uploads)
   end
 
   def load_file
