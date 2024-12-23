@@ -738,8 +738,8 @@ module InstitutionBuilder
       Institution.connection.execute(InstitutionProgram.send(:sanitize_sql, [str]))
     end
 
-    # edu_programs.length_in_weeks is being used twice because
-    # it is a short term fix to an issue that they aren't sure how we should fix
+    # Previously included join on edu_programs table
+    # However, edu_programs feed determined to be defunct for time being
     def self.build_institution_programs(version_id)
       log_info_status 'Creating Institution Program rows'
       str = <<-SQL
@@ -749,19 +749,6 @@ module InstitutionBuilder
           full_time_undergraduate,
           graduate,
           full_time_modifier,
-          length_in_hours,
-          school_locale,
-          provider_website,
-          provider_email_address,
-          phone_area_code,
-          phone_number,
-          student_vet_group,
-          student_vet_group_website,
-          vet_success_name,
-          vet_success_email,
-          vet_tec_program,
-          tuition_amount,
-          length_in_weeks,
           institution_id
         )
         SELECT
@@ -770,34 +757,11 @@ module InstitutionBuilder
           full_time_undergraduate,
           graduate,
           full_time_modifier,
-          length_in_weeks,
-          school_locale,
-          provider_website,
-          provider_email_address,
-          phone_area_code,
-          phone_number,
-          student_vet_group,
-          student_vet_group_website,
-          vet_success_name,
-          vet_success_email,
-          vet_tec_program,
-          tuition_amount,
-          length_in_weeks,
           i.id
         FROM programs p
-          INNER JOIN edu_programs e ON p.facility_code = e.facility_code
-            AND LOWER(description) = LOWER(vet_tec_program)
-            AND vet_tec_program IS NOT NULL
           INNER JOIN institutions i ON p.facility_code = i.facility_code
           WHERE i.version_id = #{version_id}
-            AND i.approved = true;;
-
-        UPDATE institution_programs SET
-          length_in_hours = 0,
-          length_in_weeks = 0
-        WHERE id IN (
-          SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id HAVING COUNT(*) > 1
-        );
+            AND i.approved = true;
 
         DELETE FROM institution_programs WHERE id NOT IN (
           SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id
