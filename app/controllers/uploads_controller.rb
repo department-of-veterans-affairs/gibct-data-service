@@ -33,7 +33,11 @@ class UploadsController < ApplicationController
         format.js do
           current_upload = async_upload_status[:current]
           total_uploads = async_upload_status[:total]
+
+          byebug
+
           render json: { async_upload_status: }
+
           # if current_upload < total_uploads
           #   render json: { async_upload_status: }
           # else

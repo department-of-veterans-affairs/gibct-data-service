@@ -12,15 +12,6 @@
 
   <div class="form-group">
     <%= f.label(:upload_file) %>
-      <% if @upload.async_upload.enabled %>
-        <p>
-          <strong>Note:</strong> To avoid timeout, GIDS will divide the <%= @upload.csv_type %> 
-          file into smaller files and automatically upload each file separately. Please do
-          not exit or reload the page until the uploads are complete.
-        </p>
-        <ul id="async-upload-statuses">
-        </ul>
-      <% end %>
     <p class="help-block">Valid file formats include: <%= @extensions %></p>
     <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
   </div>
