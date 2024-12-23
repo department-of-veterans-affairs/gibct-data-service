@@ -385,6 +385,55 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
+
+    # tests for coordinate-based name+location search
+    it 'returns filtered results when searching by both name and coordinates' do
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+      create(:institution, :production_version, :location, institution: 'BOSTON UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard'
+          })
+
+      results = JSON.parse(response.body)['data']
+      expect(results.count).to eq(1)
+      expect(results[0]['attributes']['name']).to eq('HARVARD UNIVERSITY')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results when name does not match within location radius' do
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'stanford'
+          })
+
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'maintains accurate count in meta for coordinate and name search' do
+      create_list(:institution, 3, :production_version, :location)
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard'
+          })
+
+      body = JSON.parse(response.body)
+      expect(body['data'].count).to eq(1)
+      expect(body['meta']['count']).to eq(1)
+      expect(response).to match_response_schema('institution_search_results')
+    end
   end
 
   context 'with compare results' do

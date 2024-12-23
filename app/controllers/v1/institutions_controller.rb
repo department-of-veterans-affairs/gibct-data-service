@@ -50,9 +50,15 @@ module V1
     def location
       @query ||= normalized_query_params
 
-      location_results = Institution.approved_institutions(@version).location_search(@query).filter_result_v1(@query)
-      results = location_results.location_select(@query).location_order
+      # Start with location-based search
+      location_results = Institution.approved_institutions(@version)
+                                    .location_search(@query)
+                                    .filter_result_v1(@query)
 
+      # Add name search if name parameter is present
+      location_results = location_results.search_v1(name: @query[:name]) if @query[:name].present?
+
+      results = location_results.location_select(@query).location_order
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
@@ -125,7 +131,7 @@ module V1
         end
         %i[name category student_veteran_group yellow_ribbon_scholarship principles_of_excellence
            eight_keys_to_veteran_success stem_offered independent_study priority_enrollment
-           online_only distance_learning location].each do |k|
+           online_only distance_learning].each do |k|
           query[k].try(:downcase!)
         end
         %i[latitude longitude distance].each do |k|
