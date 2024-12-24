@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
+  include CanNormalizeLcpeUpload
+
   attr_accessor :skip_lines, :upload_file, :upload_files
 
   belongs_to :user, inverse_of: :versions
