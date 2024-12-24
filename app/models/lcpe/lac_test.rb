@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+module Lcpe
+  class LacTest < ApplicationRecord
+    extend Edm::SqlContext
+
+    belongs_to :lac
+
+    def self.rebuild
+      pure_sql(<<~SQL)
+        INSERT INTO #{table_name} (id, lac_id, test_nm, fee_amt)
+        SELECT
+          o.id,
+          x.id AS lac_id,
+          o.test_nm,
+          o.fee_amt
+        FROM lcpe_feed_lacs o
+        JOIN lcpe_lacs x ON o.facility_code = x.facility_code AND o.lac_nm = x.lac_nm;
+      SQL
+    end
+
+    def self.reset
+      pure_sql
+        .join(drop_indices)
+        .join(truncate_table)
+        .join(rebuild)
+        .execute
+    end
+  end  
+end
