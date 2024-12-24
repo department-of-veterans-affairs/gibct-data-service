@@ -14,6 +14,8 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
+  after_save :normalize_lcpe!
+
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -102,5 +104,17 @@ class Upload < ApplicationRecord
 
   def self.locked_fetches_exist?
     where(ok: false).any?
+  end
+
+  def normalize_lcpe!
+    return unless ok?
+
+    top_most = csv_type&.split("::").first.constantize rescue nil
+    subject = csv_type&.constantize rescue nil
+    is_valid = top_most == Lcpe && subject.respond_to?(:normalize)
+
+    return unless is_valid
+
+    subject.normalize.execute
   end
 end
