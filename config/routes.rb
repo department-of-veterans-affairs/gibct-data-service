@@ -86,5 +86,10 @@ Rails.application.routes.draw do
     resources :yellow_ribbon_programs, only: :index
 
     resources :zipcode_rates, only: :show
+
+    namespace :lcpe do
+      resources :lacs, only: [:index, :show]
+      resources :exams, only: [:index, :show]
+    end    
   end
 end
