@@ -52,6 +52,12 @@ class Upload < ApplicationRecord
     OpenStruct.new(upload_settings)
   end
 
+  def create_or_update_blob
+    upload_content = File.read(upload_file.tempfile)
+    # Append content to existing blob if it exists
+    update(blob: blob&.concat(upload_content) || upload_content)
+  end
+
   def self.last_uploads(for_display = false)
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES

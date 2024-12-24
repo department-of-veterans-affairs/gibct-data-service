@@ -20,22 +20,25 @@ $(function() {
 
     const generateMultipleFiles = () => {
       // Divide file into smaller files by chunk size (set in csv_file_defaults.yml)
-      for (let start = 0; start < originalFile.size; start += chunkSize) {
+      for (let start = 0, i = 1; start < originalFile.size; start += chunkSize, i++) {
         const blob = originalFile.slice(start, start + chunkSize);
-        processedFiles.push(blob);
+        const newFile = new File([blob], originalFile.name, { type: "text/plain" });
+        processedFiles.push(newFile);
       }
     };
 
     const submitUploadForms = async () => {
+      let uploadId = null;
       const form = $("#new_upload")[0];
       const formData = new FormData(form, this);
       for (let i = 0; i < processedFiles.length; i++) {
         const file = processedFiles[i];
         formData.set("upload[upload_file]", file);
         formData.set("upload[multiple_file_upload]", i !== 0);
-        // Include metadata to calculate when final file processed
-        formData.append("upload[metadata][uploads][current]", i + 1);
-        formData.append("upload[metadata][uploads][total]", processedFiles.length);
+        // Include metadata to track upload ID and calculate when final file processed
+        formData.append("upload[async][count][current]", i + 1);
+        formData.append("upload[async][count][total]", processedFiles.length);
+        formData.append("upload[async][upload_id]", uploadId)
         let response;
         try {
           response = await $.ajax({
@@ -46,7 +49,10 @@ $(function() {
             processData: false,
             contentType: false
           });
-          console.log(response); 
+          if (uploadId === null) {
+            uploadId = response.upload_id;
+          };
+          console.log(response);
         } catch (error) {
           console.error(error);
         }
