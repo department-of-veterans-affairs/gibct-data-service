@@ -57,5 +57,12 @@ module Edm
         END $$;
       SQL
     end
+
+    def reset
+      pure_sql
+        .join(drop_indices)
+        .join(truncate_table)
+        .join(rebuild)
+    end
   end
 end

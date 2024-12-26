@@ -18,13 +18,5 @@ module Lcpe
         JOIN lcpe_lacs x ON o.facility_code = x.facility_code AND o.lac_nm = x.lac_nm;
       SQL
     end
-
-    def self.reset
-      pure_sql
-        .join(drop_indices)
-        .join(truncate_table)
-        .join(rebuild)
-        .execute
-    end
   end  
 end

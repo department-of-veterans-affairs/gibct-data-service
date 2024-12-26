@@ -1,22 +1,17 @@
 class V1::Lcpe::ExamsController < ApplicationController
   def index
-    results = Lcpe::Exam.all
+    results = Lcpe::Exam.with_enriched_id
 
-    json = 
-      results
-        .map do |r|
-          {
-            id: "#{r.id}@#{r.facility_code}",
-            name: r.nexam_nm
-          }
-        end
-        .then do |t|
-          t.to_json
-        end
-
-    render(json:)
+    render json: results, each_serializer: Lcpe::ExamSerializer, adapter: :json, action: 'index'
   end
 
   def show
+    result =
+      Lcpe::Exam
+        .by_enriched_id(params[:id])
+        .includes([:tests, :institution])
+        .first
+
+    render json: result, serializer: Lcpe::ExamSerializer, adapter: :json, action: 'show'
   end
 end
