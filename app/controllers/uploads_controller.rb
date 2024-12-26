@@ -38,29 +38,22 @@ class UploadsController < ApplicationController
   end
 
   # To avoid timeout, custom logic in upload.js breaks file into smaller blobs and uploads each blob
-  # separately via ajax to simulate multiple file upload.
+  # separately to simulate multiple file upload.
   # Reassemble blob into single file and load data via async job.
   def create_async
     begin
-      async_params = upload_params[:async]
-      previous_upload = Upload.find_by(id: async_params[:upload_id])
-      previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
-      # Create and update only one upload record to track multiple blob uploads
+      previous_upload = Upload.find_by(id: async_params[:upload_id])&.tap do |upload|
+        upload.update(upload_file: merged_params[:upload_file])
+      end
+      # Create and update only one upload record to track blob content across multiple uploads
       @upload = previous_upload || Upload.create(merged_params)
-      @upload.create_or_update_blob
+      @upload.create_or_concat_blob
 
-      current_upload = async_params[:count][:current]
-      total_uploads = async_params[:count][:total]
-      
+      if async_params[:count][:current] == async_params[:count][:total]
+        # Queue async load data job
+      end
       respond_to do |format|
-        format.js do
-          if current_upload < total_uploads
-            render json: { upload_id: @upload.id }
-          else
-            render json: { upload_id: @upload.id }
-            # redirect_to @upload
-          end
-        end
+        format.js { render json: { upload_id: @upload.id } }
       end
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
@@ -119,7 +112,7 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.except(:async).merge(csv: original_filename, user: current_user)
+    @merged_params ||= upload_params.except(:async).merge(csv: original_filename, user: current_user)
   end
 
   def upload_params
@@ -131,6 +124,10 @@ class UploadsController < ApplicationController
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
     upload_params.dig(:async, :count).try(:transform_values!, &:to_i)
     @upload_params ||= upload_params
+  end
+
+  def async_params
+    @async_params ||= upload_params[:async]
   end
 
   def load_file

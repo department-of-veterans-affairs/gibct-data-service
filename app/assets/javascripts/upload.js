@@ -49,14 +49,12 @@ $(function() {
             processData: false,
             contentType: false
           });
-          if (uploadId === null) {
-            uploadId = response.upload_id;
-          };
-          console.log(response);
+          uploadId = response.upload_id;
         } catch (error) {
           console.error(error);
         }
       }
+      window.location.href = `/uploads/${uploadId}`;
     };
 
     generateMultipleFiles();

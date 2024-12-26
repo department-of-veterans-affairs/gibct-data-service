@@ -52,7 +52,7 @@ class Upload < ApplicationRecord
     OpenStruct.new(upload_settings)
   end
 
-  def create_or_update_blob
+  def create_or_concat_blob
     upload_content = File.read(upload_file.tempfile)
     # Append content to existing blob if it exists
     update(blob: blob&.concat(upload_content) || upload_content)
