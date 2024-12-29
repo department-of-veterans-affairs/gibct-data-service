@@ -72,6 +72,40 @@ module V1
              meta: @meta
     end
 
+    # GET /v1/institutions?description=nursing&latitude=42.3601&longitude=-71.0589
+    def program
+      @query ||= normalized_query_params
+
+      # First find matching programs
+      matching_programs = InstitutionProgram
+                          .joins(institution: :version)
+                          .where(institutions: { version: @version })
+                          .where('LOWER(description) LIKE ?', "%#{@query[:description].downcase}%")
+                          .select('DISTINCT ON (institutions.id) institutions.id')
+
+      # Apply location search if coordinates provided
+      results = Institution.approved_institutions(@version).where(id: matching_programs)
+
+      if @query[:latitude].present? && @query[:longitudse].present?
+        results = results.location_search(@query).location_select(@query).location_order
+      end
+
+      results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
+
+      @meta = {
+        version: @version,
+        count: results.count,
+        facets: facets(results)
+      }
+      @links = { self: self_link }
+
+      render json: results,
+             each_serializer: InstitutionProfileSerializer,
+             meta: @meta,
+             links: @links
+    end
+
+
     # GET /v1/institutions?facility_codes=1,2,3,4
     #   Search by facility code and return using InstitutionCompareSerializer
     def facility_codes
