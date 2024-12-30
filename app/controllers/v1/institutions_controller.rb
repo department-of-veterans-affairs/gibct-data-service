@@ -72,15 +72,15 @@ module V1
              meta: @meta
     end
 
-    # GET /v1/institutions?description=nursing&latitude=42.3601&longitude=-71.0589
+    # GET /v1/gi/institutions/search?description=nursing&latitude=42.3601&longitude=-71.0589
     def program
       @query ||= normalized_query_params
 
       # Start with filtering by institution programs based on description
       institution_programs = InstitutionProgram.joins(:institution)
-                                                .where('institution_programs.description ILIKE ?', "%#{@query[:description]}%")
-                                                .where(institutions: { version: @version })
-      
+                                               .where('institution_programs.description ILIKE ?', "%#{@query[:description]}%")
+                                               .where(institutions: { version: @version })
+
       # Now filter by location
       location_results = Institution.approved_institutions(@version)
                                     .location_search(@query)
