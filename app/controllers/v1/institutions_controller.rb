@@ -76,35 +76,30 @@ module V1
     def program
       @query ||= normalized_query_params
 
-      # First find matching programs
-      matching_programs = InstitutionProgram
-                          .joins(institution: :version)
-                          .where(institutions: { version: @version })
-                          .where('LOWER(description) LIKE ?', "%#{@query[:description].downcase}%")
-                          .select('DISTINCT ON (institutions.id) institutions.id')
+      # Start with filtering by institution programs based on description
+      institution_programs = InstitutionProgram.joins(:institution)
+                                                .where('institution_programs.description ILIKE ?', "%#{@query[:description]}%")
+                                                .where(institutions: { version: @version })
+      
+      # Now filter by location
+      location_results = Institution.approved_institutions(@version)
+                                    .location_search(@query)
+                                    .filter_result_v1(@query)
+                                    .where(id: institution_programs.select(:institution_id))
 
-      # Apply location search if coordinates provided
-      results = Institution.approved_institutions(@version).where(id: matching_programs)
-
-      if @query[:latitude].present? && @query[:longitudse].present?
-        results = results.location_search(@query).location_select(@query).location_order
-      end
-
+      results = location_results.location_select(@query).location_order
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
         version: @version,
-        count: results.count,
-        facets: facets(results)
+        count: location_results.count,
+        facets: facets(location_results)
       }
-      @links = { self: self_link }
 
       render json: results,
-             each_serializer: InstitutionProfileSerializer,
-             meta: @meta,
-             links: @links
+             each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
     end
-
 
     # GET /v1/institutions?facility_codes=1,2,3,4
     #   Search by facility code and return using InstitutionCompareSerializer
