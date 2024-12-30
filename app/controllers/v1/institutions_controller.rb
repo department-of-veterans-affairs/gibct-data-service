@@ -76,23 +76,23 @@ module V1
     def program
       @query ||= normalized_query_params
 
-      # Start with filtering by institution programs based on description
-      institution_programs = InstitutionProgram.joins(:institution)
-                                               .where('institution_programs.description ILIKE ?', "%#{@query[:description]}%")
-                                               .where(institutions: { version: @version })
-
-      # Now filter by location
+      # Start with fast location search
       location_results = Institution.approved_institutions(@version)
                                     .location_search(@query)
                                     .filter_result_v1(@query)
-                                    .where(id: institution_programs.select(:institution_id))
 
-      results = location_results.location_select(@query).location_order
+      # Then filter those results by program description
+      results = location_results
+                .joins(:institution_programs)
+                .where('institution_programs.description ILIKE ?', "%#{@query[:description]}%")
+                .location_select(@query)
+                .location_order
+
       results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
 
       @meta = {
         version: @version,
-        count: location_results.count,
+        count: results.unscope(:select).count,  # Add unscope
         facets: facets(location_results)
       }
 
