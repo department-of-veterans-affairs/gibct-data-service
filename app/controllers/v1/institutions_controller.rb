@@ -92,7 +92,7 @@ module V1
 
       @meta = {
         version: @version,
-        count: results.unscope(:select).count,  # Add unscope
+        count: results.unscope(:select).count, # Add unscope
         facets: facets(location_results)
       }
 
