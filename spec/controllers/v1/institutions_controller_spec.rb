@@ -535,4 +535,33 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(JSON.parse(response.body)['data'].count).to eq(0)
     end
   end
+
+  context 'with program search results' do
+    before do
+      create(:version, :production)
+      create(:institution, :production_version, latitude: 30.1659, longitude: -93.2146) # Example institution
+      create(:institution_program, institution: Institution.last, description: 'Software Engineering') # Program associated with the institution
+    end
+
+    it 'search returns results matching program description and location' do
+      get(:program, params: { description: 'Software Engineering', latitude: 30.1659, longitude: -93.2146 })
+      expect(JSON.parse(response.body)['data'].count).to eq(1) # Expecting one result
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results for non-matching program description' do
+      get(:program, params: { description: 'Non-existing Program', latitude: 30.1659, longitude: -93.2146 })
+      expect(JSON.parse(response.body)['data'].count).to eq(0) # Expecting no results
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results for non-matching location' do
+      get(:program, params: { description: 'Software Engineering', latitude: 0.0, longitude: 0.0 })
+      expect(JSON.parse(response.body)['data'].count).to eq(0) # Expecting no results
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+  end
 end

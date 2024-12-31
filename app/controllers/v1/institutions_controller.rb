@@ -72,6 +72,35 @@ module V1
              meta: @meta
     end
 
+    # GET /v1/gi/institutions/search?description=nursing&latitude=42.3601&longitude=-71.0589
+    def program
+      @query ||= normalized_query_params
+
+      # Start with fast location search
+      location_results = Institution.approved_institutions(@version)
+                                    .location_search(@query)
+                                    .filter_result_v1(@query)
+
+      # Then filter those results by program description
+      results = location_results
+                .joins(:institution_programs)
+                .where('institution_programs.description ILIKE ?', "%#{@query[:description]}%")
+                .location_select(@query)
+                .location_order
+
+      results = results.filter_high_school if @query[:excluded_school_types]&.include?('HIGH SCHOOL')
+
+      @meta = {
+        version: @version,
+        count: results.unscope(:select).count, # Add unscope
+        facets: facets(location_results)
+      }
+
+      render json: results,
+             each_serializer: InstitutionSearchResultSerializer,
+             meta: @meta
+    end
+
     # GET /v1/institutions?facility_codes=1,2,3,4
     #   Search by facility code and return using InstitutionCompareSerializer
     def facility_codes
