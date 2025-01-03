@@ -134,11 +134,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   end
 
   def program_types
-    Benchmark.bm do |x|
-      x.report { InstitutionProgram.where(instutition: object).pluck(Arel.sql('DISTINCT program_type')) }
-      x.report { InstitutionProgram.where(instutition: object).distinct.pluck(:program_type) }
-      x.repot { object.institution_programs.group(:program_type).pluck(:program_type) }
-    end
+    InstitutionProgram.where(institution: object).distinct.pluck(:program_type)
   end
 
   def caution_flags
