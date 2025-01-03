@@ -92,7 +92,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :stem_indicator
   attribute :facility_map
-  attribute :programs
+  attribute :program_types
   attribute :versioned_school_certifying_officials
   attribute :count_of_caution_flags
   attribute :section_103_message
@@ -133,11 +133,11 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
     end
   end
 
-  def programs
-    return [] unless object.vet_tec_provider
-
-    object.institution_programs.map do |program|
-      InstitutionProgramProfileSerializer.new(program)
+  def program_types
+    Benchmark.bm do |x|
+      x.report { InstitutionProgram.where(instutition: object).pluck(Arel.sql('DISTINCT program_type')) }
+      x.report { InstitutionProgram.where(instutition: object).distinct.pluck(:program_type) }
+      x.repot { object.institution_programs.group(:program_type).pluck(:program_type) }
     end
   end
 
