@@ -472,10 +472,10 @@
                 "type": "object"
               }
             },
-            "programs": {
+            "program_types": {
               "type": ["null", "array"],
               "items": {
-                "type": "object"
+                "type": "string"
               }
             },
             "section_103_message": {
