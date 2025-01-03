@@ -16,8 +16,9 @@ class UploadsController < ApplicationController
   end
 
   def create
-    @upload = Upload.create(merged_params)
     begin
+      @upload = Upload.create(merged_params)
+
       data = load_file
       alert_messages(data)
       data_results = data[:results]
@@ -27,6 +28,33 @@ class UploadsController < ApplicationController
       raise(StandardError, error_msg) unless @upload.ok?
 
       redirect_to @upload
+    rescue StandardError => e
+      @upload = Upload.from_csv_type(merged_params[:csv_type])
+      @extensions = Settings.roo_upload.extensions.single.join(', ')
+      csv_requirements if @upload.csv_type_check?
+      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+      render :new
+    end
+  end
+
+  # To avoid timeout, custom logic in upload.js breaks file into smaller blobs and uploads each blob
+  # separately to simulate multiple file upload.
+  # Reassemble blob into single file and load data via async job.
+  def create_async
+    begin
+      previous_upload = Upload.find_by(id: async_params[:upload_id])&.tap do |upload|
+        upload.update(upload_file: merged_params[:upload_file])
+      end
+      # Create and update only one upload record to track blob content across multiple uploads
+      @upload = previous_upload || Upload.create(merged_params)
+      @upload.create_or_concat_blob
+
+      if async_params[:count][:current] == async_params[:count][:total]
+        # Queue async load data job
+      end
+      respond_to do |format|
+        format.js { render json: { upload_id: @upload.id } }
+      end
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
       @extensions = Settings.roo_upload.extensions.single.join(', ')
@@ -84,16 +112,22 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user)
+    @merged_params ||= upload_params.except(:async).merge(csv: original_filename, user: current_user)
   end
 
   def upload_params
     upload_params = params.require(:upload).permit(
-      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
+      async: [:upload_id, count: [:current, :total]]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
+    upload_params.dig(:async, :count).try(:transform_values!, &:to_i)
     @upload_params ||= upload_params
+  end
+
+  def async_params
+    @async_params ||= upload_params[:async]
   end
 
   def load_file
@@ -104,7 +138,7 @@ class UploadsController < ApplicationController
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     # first is used because when called from standard upload process
-    # because only a single set of results is returned
+    # only a single set of results is returned
     file_options = { liberal_parsing: @upload.liberal_parsing,
                      sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i),
                                 clean_rows: @upload.clean_rows,

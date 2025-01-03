@@ -36,7 +36,11 @@
     <strong>Upload Status: </strong>
   </div>
   <div class="col-xs-3">
-    <%= @upload.ok? ? 'succeeded' : 'failed' %>
+    <% if @upload.ok? %>
+      succeeded
+    <% else %>
+      <%= @upload.queued_at ? 'pending' : 'failed' %>
+    <% end %>
   </div>
 </div>
 

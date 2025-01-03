@@ -46,6 +46,18 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:multiple_files]
   end
 
+  def async_upload
+    default_settings = Common::Shared.file_type_defaults(:generic)[:async_upload]
+    upload_settings = Common::Shared.file_type_defaults(csv_type)[:async_upload] || default_settings
+    OpenStruct.new(upload_settings)
+  end
+
+  def create_or_concat_blob
+    upload_content = File.read(upload_file.tempfile)
+    # Append content to existing blob if it exists
+    update(blob: blob&.concat(upload_content) || upload_content)
+  end
+
   def self.last_uploads(for_display = false)
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES
