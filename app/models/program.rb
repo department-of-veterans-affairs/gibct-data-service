@@ -9,7 +9,8 @@ class Program < ImportableRecord
     'full_time_undergraduate' => { column: :full_time_undergraduate, converter: Converters::BaseConverter },
     'graduate' => { column: :graduate, converter: Converters::BaseConverter },
     'full_time_modifier' => { column: :full_time_modifier, converter: Converters::BaseConverter },
-    'length' => { column: :length, converter: Converters::BaseConverter }
+    'length' => { column: :length, converter: Converters::BaseConverter },
+    'ojt_app' => { column: :ojt_app, converter: Converters::BaseConverter }
   }.freeze
 
   PROGRAM_TYPES = %w[
@@ -20,6 +21,9 @@ class Program < ImportableRecord
     CORR
   ].freeze
 
+  OJT_TYPES = %w[OJT APP].freeze
+
   validates :facility_code, :description, presence: true
   validates :program_type, inclusion: { in: PROGRAM_TYPES }
+  validates :ojt_app, inclusion: { in: OJT_TYPES }, if: Proc.new { |p| p.program_type == 'OJT' }
 end

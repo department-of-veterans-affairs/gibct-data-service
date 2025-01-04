@@ -26,5 +26,10 @@ RSpec.describe Program, type: :model do
     it 'requires a valid program_type' do
       expect(build(:program, program_type: 'NCD')).to be_valid
     end
+
+    it 'only requires a valid ojt_app if program_type is OJT' do
+      expect(build(:program, program_type: 'OJT')).not_to be_valid
+      expect(build(:program, program_type: 'OJT', ojt_app: 'APP')).to be_valid
+    end
   end
 end

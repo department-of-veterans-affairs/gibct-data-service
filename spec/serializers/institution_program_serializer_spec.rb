@@ -60,4 +60,16 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
   it 'includes caution_flags' do
     expect(attributes['caution_flags']).to eq(institution_program.caution_flags)
   end
+
+  it 'does not include ojt_app' do
+    expect(attributes['ojt_app']).to be_nil
+  end
+
+  context 'OJT' do
+    let(:institution_program) { create :institution_program, :in_nyc, program_type: 'OJT', ojt_app: 'APP' }
+
+    it 'includes ojt_app' do
+      expect(attributes['ojt_app']).to eq(institution_program.ojt_app)
+    end
+  end
 end
