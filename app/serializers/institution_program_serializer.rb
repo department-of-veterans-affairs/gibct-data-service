@@ -15,8 +15,4 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
              :school_closing_on,
              :caution_flags,
              :ojt_app
-
-  def ojt_app
-    object.ojt_app if object.program_type == 'OJT'
-  end
 end
