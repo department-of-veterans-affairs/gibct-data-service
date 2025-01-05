@@ -12,15 +12,17 @@ services:
   gibct:
     build:
       context: .
-      target: development
+      dockerfile: Dockerfile-k8s
+      args:
+        RAILS_ENV: "development"
+        BUNDLE_WITHOUT: ""
     image: "gibct:${DOCKER_IMAGE:-latest}"
     volumes:
       - ".:/srv/gi-bill-data-service/src/:cached"
-      - dev_bundle:/usr/local/bundle
     ports:
       - 3000:3000
     environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-vets_api_development}?pool=4"
+      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_development}?pool=4"
       POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
@@ -39,6 +41,3 @@ services:
       - postgres
     links:
       - postgres
-    command: bash --login -c "bundle exec rails s"
-volumes:
-  dev_bundle:
