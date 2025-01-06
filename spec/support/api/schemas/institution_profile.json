@@ -472,6 +472,12 @@
                 "type": "object"
               }
             },
+            "programs": {
+              "type": ["null", "array"],
+              "items": {
+                "type": "object"
+              }
+            },
             "program_types": {
               "type": ["null", "array"],
               "items": {
