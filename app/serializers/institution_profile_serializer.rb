@@ -92,6 +92,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :preferred_provider
   attribute :stem_indicator
   attribute :facility_map
+  attribute :programs
   attribute :program_types
   attribute :versioned_school_certifying_officials
   attribute :count_of_caution_flags
@@ -130,6 +131,13 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   def versioned_school_certifying_officials
     object.versioned_school_certifying_officials.select do |sco|
       VersionedSchoolCertifyingOfficialSerializer.new(sco)
+    end
+  end
+
+  def programs
+    return [] unless object.vet_tec_provider
+    object.institution_programs.map do |program|
+      InstitutionProgramProfileSerializer.new(program)
     end
   end
 
