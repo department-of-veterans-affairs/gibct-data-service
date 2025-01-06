@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_03_233653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -297,6 +297,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
+    t.string "ojt_app"
     t.index ["description", "version"], name: "index_institution_programs"
     t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
@@ -1443,6 +1444,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.string "full_time_modifier", limit: 1
     t.string "length", limit: 7
     t.integer "csv_row"
+    t.string "ojt_app"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
