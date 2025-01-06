@@ -136,6 +136,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
 
   def programs
     return [] unless object.vet_tec_provider
+    
     object.institution_programs.map do |program|
       InstitutionProgramProfileSerializer.new(program)
     end
