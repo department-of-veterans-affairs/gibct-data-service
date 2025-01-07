@@ -26,7 +26,7 @@ workers 3
 # value is 60 seconds.
 #
 
-worker_timeout(60)
+worker_timeout(600)
 worker_timeout(3600) if ENV['RAILS_ENV'].eql?('development')
 
 preload_app!
