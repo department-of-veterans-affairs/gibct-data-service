@@ -25,8 +25,8 @@ workers 3
 # the given timeout. If not the worker process will be restarted. Default
 # value is 60 seconds.
 #
+# need to bump up for long running query in InsitutionBuilder
 
-worker_timeout(60)
-worker_timeout(3600) if ENV['RAILS_ENV'].eql?('development')
+worker_timeout(600)
 
 preload_app!
