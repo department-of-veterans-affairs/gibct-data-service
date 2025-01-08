@@ -72,6 +72,11 @@ Rails.application.routes.draw do
   namespace :v1, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
     get '/institutions', to: 'institutions#facility_codes', constraints: lambda { |request| request.query_parameters.key?(:facility_codes) }
+    get '/institutions', to: 'institutions#program', constraints: lambda { |request| 
+      request.query_parameters.key?(:description) && 
+      request.query_parameters.key?(:latitude) && 
+      request.query_parameters.key?(:longitude)
+    }
     get '/institutions', to: 'institutions#location', constraints: lambda { |request| request.query_parameters.key?(:latitude) && request.query_parameters.key?(:longitude) }
 
     resources :institutions, only: [:index, :show] do
