@@ -22,6 +22,11 @@ roo_upload:
       - '.xls'
       - '.xlsx'
 
+async_upload:
+  extensions:
+    single:
+      - '.txt'
+
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"
   api_key: <%= ENV['SCORECARD_API_KEY'] %>
