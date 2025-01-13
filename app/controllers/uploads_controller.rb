@@ -47,6 +47,11 @@ class UploadsController < ApplicationController
     redirect_to uploads_path
   end
 
+  def create_async
+    byebug
+    fail
+  end
+
   private
 
   def csv_requirements

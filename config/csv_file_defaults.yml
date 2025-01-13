@@ -6,7 +6,7 @@ generic:
   liberal_parsing: false
   async_upload:
     enabled: false
-    chunk_size: 100_000
+    chunk_size: 10_000_000
 
 CipCode:
   liberal_parsing: true

@@ -27,9 +27,11 @@ Rails.application.routes.draw do
 
   resources :accreditation_type_keywords, only: [:index, :new, :create, :destroy]
 
-  resources :uploads, except: [:new, :destroy, :edit, :update] do
+  resources :uploads, only: [:index, :show] do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
+  post 'uploads', to: 'uploads#create', constraints: AsyncUploadConstraint.new(async_enabled: false)
+  post 'uploads/create_async', to: 'uploads#create_async', constraints: AsyncUploadConstraint.new(async_enabled: true)
 
   get '/groups', to: redirect('/uploads')
   resources :groups, except: [:new, :destroy, :edit, :update] do
