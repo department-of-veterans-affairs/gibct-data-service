@@ -20,6 +20,22 @@ FactoryBot.define do
       facility_code { '99Z99999' }
     end
 
+    # last 2 characters are less than 51
+    trait :domestic_with_crosswalk_issue do
+      facility_code { '99Z99950' }
+      after(:create) do |crosswalk|
+        create(:crosswalk_issue, :partial_match_type, crosswalk: crosswalk)
+      end
+    end
+
+    # last 2 characters are 51 or greater
+    trait :foreign_with_crosswalk_issue do
+      facility_code { '99Z99951' }
+      after(:create) do |crosswalk|
+        create(:crosswalk_issue, :partial_match_type, crosswalk: crosswalk)
+      end
+    end
+
     trait :crosswalk_issue_matchable_by_cross do
       cross { '888888' }
     end

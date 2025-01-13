@@ -19,7 +19,7 @@ Rails.application.config.to_prepare do
     { klass: ScorecardDegreeProgram, required?: false, has_api?: true },
     { klass: Sec702, required?: true },
     { klass: Sva, required?: true },
-    { klass: Vsoc, required?: true },
+    { klass: Vsoc, required?: true, has_api?: true, no_api_key?: true },
     { klass: Weam, required?: true },
     { klass: CalculatorConstant, required?: false },
     { klass: IpedsCipCode, required?: true },

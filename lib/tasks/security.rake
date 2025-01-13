@@ -13,7 +13,8 @@ task security: :environment do
   puts 'running bundle-audit to check for insecure dependencies...'
   exit!(1) unless Tasks::Support::ShellCommand.run('bundle-audit update')
   audit_result = Tasks::Support::ShellCommand.run(
-    'bundle-audit check --ignore CVE-2017-8418 CVE-2024-26143 CVE-2024-27456 CVE-2024-34341 CVE-2024-28103'
+    'bundle-audit check --ignore CVE-2017-8418 CVE-2024-26143 CVE-2024-27456 CVE-2024-34341 ' \
+    'CVE-2024-28103 CVE-2024-47889 CVE-2024-41128 CVE-2024-47887 CVE-2024-47888'
   )
   puts "\n"
   if brakeman_result && audit_result

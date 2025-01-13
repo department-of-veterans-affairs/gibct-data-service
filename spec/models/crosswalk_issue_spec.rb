@@ -213,6 +213,46 @@ RSpec.describe CrosswalkIssue, type: :model do
     end
   end
 
+  describe '#by_domestic_crosswalks via crosswalk' do
+    it 'includes crosswalks that have facility codes with the last 2 characters < 51' do
+      create(:crosswalk, :domestic_with_crosswalk_issue)
+      create(:crosswalk, :foreign_with_crosswalk_issue)
+
+      expect(described_class.by_domestic_crosswalks.count).to eq(1)
+    end
+  end
+
+  describe '#by_domestic_crosswalks via weams' do
+    it 'includes crosswalks that have facility codes with the last 2 characters < 51' do
+      create(:weam, :domestic_with_crosswalk_issue)
+      create(:weam, :foreign_with_crosswalk_issue)
+
+      expect(described_class.by_domestic_weams.count).to eq(1)
+    end
+  end
+
+  describe '#by_domestic_crosswalks via ipeds_hds' do
+    it 'includes crosswalks that have facility codes with the last 2 characters < 51' do
+      create(:weam, :domestic_with_ipeds_hd_crosswalk_issue)
+      create(:weam, :foreign_with_ipeds_hd_crosswalk_issue)
+
+      expect(described_class.by_domestic_iped_hds.count).to eq(1)
+    end
+  end
+
+  describe '#domestic_partial_matches' do
+    it 'includes crosswalks that have facility codes with the last 2 characters < 51' do
+      create(:crosswalk, :domestic_with_crosswalk_issue)
+      create(:crosswalk, :foreign_with_crosswalk_issue)
+      create(:weam, :domestic_with_crosswalk_issue)
+      create(:weam, :foreign_with_crosswalk_issue)
+      create(:weam, :domestic_with_ipeds_hd_crosswalk_issue)
+      create(:weam, :foreign_with_ipeds_hd_crosswalk_issue)
+
+      expect(described_class.domestic_partial_matches.count).to eq(3)
+    end
+  end
+
   describe 'when building IPEDS orphans' do
     it 'excludes IpedsHD that match Crosswalk by cross (IPEDS)' do
       create :ipeds_hd, :crosswalk_issue_matchable_by_cross
