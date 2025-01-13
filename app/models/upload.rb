@@ -46,6 +46,18 @@ class Upload < ApplicationRecord
     Common::Shared.file_type_defaults(csv_type)[:multiple_files]
   end
 
+  def async_upload_settings
+    Common::Shared.file_type_defaults(csv_type)[:async_upload].transform_keys(&:to_sym)
+  end
+
+  def async_enabled?
+    async_upload_settings[:enabled]
+  end
+
+  def chunk_size
+    async_upload_settings[:chunk_size]
+  end
+
   def self.last_uploads(for_display = false)
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES
