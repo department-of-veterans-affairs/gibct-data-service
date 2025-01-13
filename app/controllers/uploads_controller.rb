@@ -7,7 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    @extensions = Settings.roo_upload.extensions.single.join(', ')
+    settings = @upload.async_enabled? ? Settings.async_upload : Settings.roo_upload
+    @extensions = settings.extensions.single.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
