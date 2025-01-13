@@ -30,18 +30,19 @@ $(function() {
         let uploadId = null;
         for (let i = 0; i < blobs.length; i++) {
           try {
-            formData.set("upload[upload_file", blobs[i], file.name);
+            formData.set("upload[upload_file]", blobs[i], file.name);
             formData.set("upload[metadata][upload_id]", uploadId);
             formData.set("upload[metadata][count][current]", i + 1);
-            formData.set("upload[metadata][count][current]", blobs.length + 1);
+            formData.set("upload[metadata][count][total]", blobs.length + 1);
             const response = await $.ajax({
               url: "/uploads/create_async",
               type: "POST",
               data: formData,
+              dataType: "json",
               contentType: false,
-              processData: false
+              processData: false,
             });
-            console.log(response);
+            uploadId = response.id
           } catch(error) {
             console.error(error);
           }

@@ -7,8 +7,8 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-    settings = @upload.async_enabled? ? Settings.async_upload : Settings.roo_upload
-    @extensions = settings.extensions.single.join(', ')
+  
+    @extensions = upload_settings.extensions.single.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
 
@@ -19,7 +19,7 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-      data = load_file
+      data = UploadFileProcesser.new(@upload).load_file if @upload.persisted?
       alert_messages(data)
       data_results = data[:results]
 
@@ -29,10 +29,7 @@ class UploadsController < ApplicationController
 
       redirect_to @upload
     rescue StandardError => e
-      @upload = Upload.from_csv_type(merged_params[:csv_type])
-      @extensions = Settings.roo_upload.extensions.single.join(', ')
-      csv_requirements if @upload.csv_type_check?
-      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+      alert_failed_upload_creation(e)
       render :new
     end
   end
@@ -48,8 +45,21 @@ class UploadsController < ApplicationController
   end
 
   def create_async
-    byebug
-    fail
+    previous_upload = Upload.find_by(id: async_params[:upload_id])
+    previous_upload.update(merged_params) if previous_upload
+    @upload = previous_upload || Upload.create(merged_params)
+    begin
+      ProcessUploadJob.perform_later if @upload.persisted? && final_upload?
+
+      respond_to do |format|
+        format.js do
+          render json: { id: @upload.id }
+        end
+      end
+    rescue StandardError => e
+      alert_failed_upload_creation(e)
+      render :new
+    end
   end
 
   private
@@ -79,6 +89,13 @@ class UploadsController < ApplicationController
       }.compact
     end
 
+    def alert_failed_upload_creation(error)
+      @upload = Upload.from_csv_type(merged_params[:csv_type])
+      @extensions = upload_settings.extensions.single.join(', ')
+      csv_requirements if @upload.csv_type_check?
+      alert_and_log("Failed to upload #{original_filename}: #{error.message}\n#{error.backtrace[0]}", error)
+    end
+
     flash[:warning] = {
       'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
       'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
@@ -90,39 +107,34 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user)
+    upload_params.merge(csv: original_filename, user: current_user).except(:metadata)
   end
 
   def upload_params
     upload_params = params.require(:upload).permit(
-      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
+      metadata: [ :upload_id, count: [:current, :total]]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
     @upload_params ||= upload_params
   end
 
-  def load_file
-    return unless @upload.persisted?
+  def async_params
+    upload_params[:metadata].tap do |metadata|
+      metadata[:count]&.transform_values!(&:to_i)
+    end
+  end
 
-    file = @upload.upload_file.tempfile
-
-    CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    # first is used because when called from standard upload process
-    # because only a single set of results is returned
-    file_options = { liberal_parsing: @upload.liberal_parsing,
-                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i),
-                                clean_rows: @upload.clean_rows,
-                                multiple_files: @upload_params[:multiple_file_upload] }] }
-    data = klass.load_with_roo(file, file_options).first
-
-    CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
-
-    data
+  def final_upload?
+    async_params[:count][:current] == async_params[:count][:total]
   end
 
   def klass
     @upload.csv_type.constantize
+  end
+
+  def upload_settings
+    @upload_settings ||= @upload.async_enabled? ? Settings.async_upload : Settings.roo_upload
   end
 end
