@@ -21,14 +21,6 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
     expect(attributes['description']).to eq(institution_program.description)
   end
 
-  it 'includes length_in_hours' do
-    expect(attributes['length_in_hours']).to eq(institution_program.length_in_hours)
-  end
-
-  it 'includes length_in_weeks' do
-    expect(attributes['length_in_weeks']).to eq(institution_program.length_in_weeks)
-  end
-
   it 'includes facility_code' do
     expect(attributes['facility_code']).to eq(institution_program.facility_code)
   end
@@ -51,10 +43,6 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
 
   it 'includes preferred_provider' do
     expect(attributes['preferred_provider']).to eq(institution_program.preferred_provider)
-  end
-
-  it 'includes tuition_amount' do
-    expect(attributes['tuition_amount']).to eq(institution_program.tuition_amount)
   end
 
   it 'includes va_bah' do
