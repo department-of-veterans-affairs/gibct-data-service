@@ -2,7 +2,7 @@ name: runs test on dev/staging
 on:
   push:
     branches:
-      - master
+      - '*'
 
 jobs:
   test:
