@@ -21,7 +21,7 @@ $(function() {
       const generateBlobs = async () => {
         const chunkSize = parseInt(this.dataset.chunkSize);
         for (let start = 0; start < file.size; start += chunkSize) {
-          const blob = file.slice(0, chunkSize, "text/plain");
+          const blob = file.slice(start, start + chunkSize, "text/plain");
           blobs.push(blob);
         }
       };
@@ -33,7 +33,7 @@ $(function() {
             formData.set("upload[upload_file]", blobs[i], file.name);
             formData.set("upload[metadata][upload_id]", uploadId);
             formData.set("upload[metadata][count][current]", i + 1);
-            formData.set("upload[metadata][count][total]", blobs.length + 1);
+            formData.set("upload[metadata][count][total]", blobs.length);
             const response = await $.ajax({
               url: "/uploads/create_async",
               type: "POST",

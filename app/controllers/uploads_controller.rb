@@ -45,11 +45,16 @@ class UploadsController < ApplicationController
   end
 
   def create_async
-    previous_upload = Upload.find_by(id: async_params[:upload_id])
-    previous_upload.update(merged_params) if previous_upload
-    @upload = previous_upload || Upload.create(merged_params)
     begin
-      ProcessUploadJob.perform_later if @upload.persisted? && final_upload?
+      previous_upload = Upload.find_by(id: async_params[:upload_id])
+      previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
+      @upload = previous_upload || Upload.create(**merged_params,
+                                                  queued_at: Time.now.utc.to_fs(:db),
+                                                  dead_at: (Time.now + 5.hours).utc.to_fs(:db),
+                                                  status_message: "preparing upload . . .")
+      @upload.create_or_concat_blob
+
+      ProcessUploadJob.perform_later(@upload) if @upload.persisted? && final_upload?
 
       respond_to do |format|
         format.js do
@@ -57,6 +62,7 @@ class UploadsController < ApplicationController
         end
       end
     rescue StandardError => e
+      byebug
       alert_failed_upload_creation(e)
       render :new
     end

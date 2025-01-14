@@ -13,7 +13,7 @@ class UploadFileProcesser
     # first is used because when called from standard upload process
     # because only a single set of results is returned
     file_options = { liberal_parsing: @upload.liberal_parsing,
-                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i),
+                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i) || 0,
                                 clean_rows: @upload.clean_rows,
                                 multiple_files: @upload.multiple_file_upload }] }
     data = klass.load_with_roo(file, file_options).first
@@ -30,7 +30,9 @@ class UploadFileProcesser
   end
 
   def file_from_blob
-    Tempfile.new([klass, "txt"], binmode: true).tap do |file|
+    return unless @upload.blob
+
+    Tempfile.new([klass.name, ".txt"], binmode: true).tap do |file|
       file.write(@upload.blob)
       file.rewind
     end

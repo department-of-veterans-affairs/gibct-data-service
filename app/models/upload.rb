@@ -58,6 +58,17 @@ class Upload < ApplicationRecord
     async_upload_settings[:chunk_size]
   end
 
+  def create_or_concat_blob
+    File.open(upload_file.tempfile.path, 'rb') do |file|
+      new_blob = upload_file.tempfile.read
+      updated_blob = blob ? blob.concat(new_blob) : new_blob
+      update(blob: updated_blob)
+    end
+  ensure
+    upload_file.tempfile.close
+    upload_file.tempfile.unlink
+  end
+
   def self.last_uploads(for_display = false)
     csv_types = if for_display
                   UPLOAD_TYPES_ALL_NAMES
