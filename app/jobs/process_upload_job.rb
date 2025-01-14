@@ -6,6 +6,7 @@ class ProcessUploadJob < ApplicationJob
   def perform(upload)
     @upload = upload
     begin
+      @upload.update(status_message: "processing data . . .")
       data = UploadFileProcesser.new(@upload).load_file
       # alert_messages(data)
       data_results = data[:results]

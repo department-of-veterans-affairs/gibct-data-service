@@ -16,6 +16,7 @@ class UploadFileProcesser
                      sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i) || 0,
                                 clean_rows: @upload.clean_rows,
                                 multiple_files: @upload.multiple_file_upload }] }
+    file_options.merge!(async: { enabled: true, upload_id: @upload.id }) if @upload.async_enabled?
     data = klass.load_with_roo(file, file_options).first
   
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)

@@ -33,6 +33,7 @@ module RooHelper
     #
     def load_with_roo(file, options = {})
       file_options = merge_options(options)
+      async_options = file_options[:async]
       ext = File.extname(file)
       ext = '.csv' if ext == '.txt'
 
@@ -56,7 +57,7 @@ module RooHelper
                             end
 
           loaded_sheets << {
-            results: sheet_klass.load_records(processed_sheet[:results], sheet_options),
+            results: sheet_klass.load_records(processed_sheet[:results], sheet_options, async_options),
             header_warnings: processed_sheet[:header_warnings],
             klass: sheet_klass
           }
