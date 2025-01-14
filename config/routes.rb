@@ -31,7 +31,10 @@ Rails.application.routes.draw do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
   post 'uploads', to: 'uploads#create', constraints: AsyncUploadConstraint.new(async_enabled: false)
-  post 'uploads/create_async', to: 'uploads#create_async', constraints: AsyncUploadConstraint.new(async_enabled: true)
+  constraints(AsyncUploadConstraint.new(async_enabled: true)) do
+    post 'uploads/create_async', to: 'uploads#create_async'
+    get 'uploads/:id/async_status', to: 'uploads#async_status'
+  end
 
   get '/groups', to: redirect('/uploads')
   resources :groups, except: [:new, :destroy, :edit, :update] do

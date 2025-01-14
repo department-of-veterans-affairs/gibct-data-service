@@ -35,12 +35,14 @@
       <div class="actions">
         <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
         <% if @upload.async_enabled? %>
-          <input
+          <button
             type="submit"
             id="async-submit-btn"
             class="btn btn-primary"
             data-chunk-size=<%= @upload.chunk_size %>
           >
+            Submit
+          </button>
         <% else %>
           <%= f.submit "Upload", class: "btn btn-primary" %>
         <% end %>

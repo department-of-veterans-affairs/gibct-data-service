@@ -36,7 +36,14 @@
     <strong>Upload Status: </strong>
   </div>
   <div class="col-xs-3">
-    <%= @upload.ok? ? 'succeeded' : 'failed' %>
+    <% if true %>
+      <div class="async-upload-status-div"
+           id=<%= "async-upload-status-#{@upload.id}"%>
+           data-upload-id=<%= @upload.id %>>
+      </div>
+    <% else %>
+      <%= @upload.ok? ? 'succeeded' : 'failed' %>
+    <% end %>
   </div>
 </div>
 

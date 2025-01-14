@@ -22,6 +22,20 @@ class Upload < ApplicationRecord
     ok
   end
 
+  def active?
+    pending? && !dead?
+  end
+
+  def pending?
+    return false unless async_enabled?
+
+    completed_at.blank? && queued_at
+  end
+
+  def dead?
+    pending? && Time.now.utc >= dead_at
+  end
+
   def csv_type_check?
     return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name].include?(csv_type)
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UploadsController < ApplicationController
+  skip_after_action :verify_same_origin_request, only: %i[async_status]
+
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
@@ -62,9 +64,23 @@ class UploadsController < ApplicationController
         end
       end
     rescue StandardError => e
-      byebug
       alert_failed_upload_creation(e)
       render :new
+    end
+  end
+
+  def async_status
+    @upload = Upload.find_by(id: params[:id])
+    async_status = {
+      message: @upload.status_message,
+      ok: @upload.ok?,
+      completed: @upload.completed_at || @upload.dead?
+    }
+
+    respond_to do |format|
+      format.js do
+        render json: { async_status: }
+      end
     end
   end
 

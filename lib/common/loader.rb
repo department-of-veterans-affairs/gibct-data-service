@@ -80,7 +80,7 @@ module Common
 
     def update_upload_status(message)
       Thread.new do
-        ActiveRecord::Base.connection_pool.with_connections do
+        ActiveRecord::Base.connection_pool.with_connection do
           @upload.update(status_message: message)
         end
       end

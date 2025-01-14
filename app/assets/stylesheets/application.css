@@ -181,6 +181,12 @@
   margin-bottom: 1em;
 }
 
+.async-upload-status-div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .crosswalk-issues .even:not(:hover) td {
   background-color: #f3f3ff;
 }

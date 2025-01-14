@@ -1,6 +1,16 @@
 <tr>
   <td><%= upload.csv_type %></td>
-  <td><%= upload.ok? ? 'Succeeded' : 'Failed' %></td>
+  <td>
+    <% if upload.active? %>
+      <div class="async-upload-status-div"
+           id=<%= "async-upload-status-#{upload.id}"%>
+           data-upload-id=<%= upload.id %>
+           data-titlecase=true>
+      </div>
+    <% else %>
+      <%= upload.ok? ? 'Succeeded' : 'Failed' %>
+    <% end %>
+  </td>
   <td><%= upload.csv %></td>
   <td><%= upload.created_at.to_formatted_s(:long_ordinal) %></td>
   <td><%= upload.user.email %></td>

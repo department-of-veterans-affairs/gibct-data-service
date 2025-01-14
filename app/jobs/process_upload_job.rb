@@ -17,7 +17,7 @@ class ProcessUploadJob < ApplicationJob
     rescue StandardError => e
       byebug
     ensure
-      @upload.update(blob: nil, status_message: nil)
+      @upload.update(blob: nil)
     end
   end
 

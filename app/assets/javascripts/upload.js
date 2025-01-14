@@ -14,9 +14,11 @@ $(function() {
         return;
       }
       $(this).prop("disabled", true);
+      $(this).html('<i class="fa fa-gear fa-spin" style="font-size:16px"></i>');
       const formData = new FormData(form);
       const file = formData.get("upload[upload_file]");
       const blobs = [];
+      let uploadId = null;
 
       const generateBlobs = async () => {
         const chunkSize = parseInt(this.dataset.chunkSize);
@@ -27,7 +29,6 @@ $(function() {
       };
 
       const submitBlobs = async () => {
-        let uploadId = null;
         for (let i = 0; i < blobs.length; i++) {
           try {
             formData.set("upload[upload_file]", blobs[i], file.name);
@@ -42,14 +43,51 @@ $(function() {
               contentType: false,
               processData: false,
             });
-            uploadId = response.id
+            uploadId = response.id;
           } catch(error) {
             console.error(error);
           }
         }
+        window.location.href = `/uploads/${uploadId}`;
       };
 
       generateBlobs();
-      submitBlobs();
+      await submitBlobs();
     });
+
+    const pollUploadStatus = async () => {
+      const uploadStatuses = $(".async-upload-status-div");
+      for (let i = 0; i < uploadStatuses.length; i++) {
+        const uploadStatus = uploadStatuses[i];
+        const { uploadId, titlecase } = uploadStatus.dataset;
+        const capitalize = (str) => titlecase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+        try {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function() {
+            if (this.status === 200) {
+              const { message, ok, completed } = JSON.parse(xhr.response).async_status;
+              let asyncStatusHtml;
+              if (completed) {
+                clearInterval(pollingInterval);
+                const asyncStatus = ok ? "succeeded" : "failed";
+                asyncStatusHtml = `<div>${capitalize(asyncStatus)}</div>`;
+              } else {
+                asyncStatusHtml = '<i class="fa fa-gear fa-spin" style="font-size:16px"></i>' +
+                                   `<div>${capitalize(message)}</div>`
+              }
+              $(`#async-upload-status-${uploadId}`).html(asyncStatusHtml);
+            }
+          }
+          const getUploadStatus = () => {
+            xhr.open("GET", `/uploads/${uploadId}/async_status`);
+            xhr.send();
+          };
+          getUploadStatus();
+          const pollingInterval = setInterval(getUploadStatus, 10_000);
+        } catch(error) {
+          console.error(error);
+        }
+      }
+    };
+    pollUploadStatus();
 });
