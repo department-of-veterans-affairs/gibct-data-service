@@ -14,7 +14,12 @@ $(function() {
         return;
       }
       $(this).prop("disabled", true);
-      $(this).html('<i class="fa fa-gear fa-spin" style="font-size:16px"></i>');
+      $(this).html(
+        '<div id="async-submit-btn-div">' +
+        '<i class="fa fa-gear fa-spin" style="font-size:16px"></i>' +
+        'Submitting . . .' +
+        '</div>'
+      );
       const formData = new FormData(form);
       const file = formData.get("upload[upload_file]");
       const blobs = [];
@@ -73,7 +78,7 @@ $(function() {
                 asyncStatusHtml = `<div>${capitalize(asyncStatus)}</div>`;
               } else {
                 asyncStatusHtml = '<i class="fa fa-gear fa-spin" style="font-size:16px"></i>' +
-                                   `<div>${capitalize(message)}</div>`
+                                  `<div>${capitalize(message)}</div>`
               }
               $(`#async-upload-status-${uploadId}`).html(asyncStatusHtml);
             }

@@ -181,7 +181,8 @@
   margin-bottom: 1em;
 }
 
-.async-upload-status-div {
+.async-upload-status-div,
+#async-submit-btn-div {
   display: flex;
   align-items: center;
   gap: 5px;

@@ -75,7 +75,7 @@ module Common
 
     def report_import_progress(rows_size, num_batches, current_batch_number, batch_duration_in_secs)
       percent_complete = (current_batch_number.to_f / num_batches.to_f) * 100.00
-      update_upload_status("loading records: #{percent_complete.round} complete . . .")
+      update_upload_status("loading records: #{percent_complete.round}% complete . . .")
     end
 
     def update_upload_status(message)
