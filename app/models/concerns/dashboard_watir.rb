@@ -16,7 +16,7 @@ module DashboardWatir
     STAGE_DASHBOARD ||= 'https://staging.va.gov/gids/dashboards'
     STAGE_IMPORT_PREFIX ||= '/gids/uploads/new/'
 
-    TIMEOUT ||= 180 # seconds
+    TIMEOUT ||= 600 # seconds
 
     attr_accessor :headless, :bsess, :download_dir, :login_url,
                   :dashboard_url, :import_prefix, :user, :pass, :eilogger,
@@ -66,13 +66,18 @@ module DashboardWatir
     # rubocop:disable Lint/RescueException
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Rails/Exit
+    # rubocop:disable Metrics/AbcSize
     def login_to_dashboard
       log_and_puts('*** Logging in to the Dashboard ***')
 
       begin
         client = Selenium::WebDriver::Remote::Http::Default.new
         client.read_timeout = TIMEOUT # seconds
+        client.open_timeout = TIMEOUT # seconds
         @bsess = Watir::Browser.start(@login_url, http_client: client)
+        @bsess.driver.manage.timeouts.page_load = 600 # seconds
+        @bsess.driver.manage.timeouts.script_timeout = 600 # seconds
+        @bsess.driver.manage.timeouts.implicit_wait = 90 # seconds
       rescue Exception => e
         log_and_puts("       Error trying to initiate browser session #{e.message}...")
         log_and_puts('       Trying again in 10 seconds...')
@@ -81,7 +86,11 @@ module DashboardWatir
         begin
           client = Selenium::WebDriver::Remote::Http::Default.new
           client.read_timeout = TIMEOUT # seconds
+          client.open_timeout = TIMEOUT # seconds
           @bsess = Watir::Browser.start(@login_url, http_client: client)
+          @bsess.driver.manage.timeouts.page_load = 600 # seconds
+          @bsess.driver.manage.timeouts.script_timeout = 600 # seconds
+          @bsess.driver.manage.timeouts.implicit_wait = 90 # seconds
         rescue Exception => e
           log_and_puts("       Failed again #{e.message}...")
           exit 1
@@ -91,6 +100,7 @@ module DashboardWatir
       @bsess.text_field(id: 'user_password').set(@pass)
       @bsess.form(id: 'new_user').submit
     end
+    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Rails/Exit
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Lint/RescueException

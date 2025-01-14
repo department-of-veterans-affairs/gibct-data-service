@@ -3,10 +3,7 @@
 class InstitutionProgramSerializer < ActiveModel::Serializer
   attributes :program_type,
              :description,
-             :length_in_hours,
-             :length_in_weeks,
              :facility_code,
-             :tuition_amount,
              :institution_name,
              :city,
              :state,
