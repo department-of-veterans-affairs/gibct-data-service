@@ -86,7 +86,7 @@ group :development, :test do
   gem 'parallel_tests'
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test
-  gem 'vcr', '~> 6.2'
+  gem 'vcr', '~> 6.3'
 end
 
 group :development do
