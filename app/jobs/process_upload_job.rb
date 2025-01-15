@@ -5,8 +5,9 @@ class ProcessUploadJob < ApplicationJob
 
   def perform(upload)
     @upload = upload
+    raise StandardError,"Upload canceled" if @upload.canceled_at
+    @upload.update(status_message: "processing data . . .")
     begin
-      @upload.update(status_message: "processing data . . .")
       data = UploadFileProcesser.new(@upload).load_file
       # alert_messages(data)
       data_results = data[:results]
@@ -15,9 +16,10 @@ class ProcessUploadJob < ApplicationJob
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
     rescue StandardError => e
-      byebug
-    ensure
-      @upload.update(blob: nil)
+      @upload.cancel!
+      Rails.logger.error(e.message + e.backtrace.to_s)
+    else
+      @upload.clean!
     end
   end
 

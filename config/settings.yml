@@ -26,6 +26,7 @@ async_upload:
   extensions:
     single:
       - '.txt'
+  dead_after: 18_000
 
 scorecard:
   url: "https://api.data.gov/ed/collegescorecard/v1"

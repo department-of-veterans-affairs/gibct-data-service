@@ -188,6 +188,10 @@
   gap: 5px;
 }
 
+.upload-icon:hover {
+  cursor: pointer;
+}
+
 .crosswalk-issues .even:not(:hover) td {
   background-color: #f3f3ff;
 }

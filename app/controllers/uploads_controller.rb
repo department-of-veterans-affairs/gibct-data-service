@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class UploadsController < ApplicationController
-  skip_after_action :verify_same_origin_request, only: %i[async_status]
-
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
@@ -31,7 +29,7 @@ class UploadsController < ApplicationController
 
       redirect_to @upload
     rescue StandardError => e
-      alert_failed_upload_creation(e)
+      alert_failed_upload(e)
       render :new
     end
   end
@@ -47,41 +45,38 @@ class UploadsController < ApplicationController
   end
 
   def create_async
-    begin
-      previous_upload = Upload.find_by(id: async_params[:upload_id])
-      previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
-      @upload = previous_upload || Upload.create(**merged_params,
-                                                  queued_at: Time.now.utc.to_fs(:db),
-                                                  dead_at: (Time.now + 5.hours).utc.to_fs(:db),
-                                                  status_message: "preparing upload . . .")
-      @upload.create_or_concat_blob
+    previous_upload = Upload.find_by(id: async_params[:upload_id])
+    previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
+    @upload = previous_upload || Upload.create(**merged_params,
+                                                queued_at: Time.now.utc.to_fs(:db),
+                                                dead_at: (Time.now + Upload::DEAD_AFTER).utc.to_fs(:db))
+    @upload.create_or_concat_blob
+    
+    ProcessUploadJob.perform_later(@upload) if @upload.persisted? && final_upload?
 
-      ProcessUploadJob.perform_later(@upload) if @upload.persisted? && final_upload?
+    render json: { id: @upload.id }
+  rescue StandardError => e
+    @upload.cancel!
+    alert_failed_upload(e)
+    render json: { error: e }, status: :internal_server_error
+  end
 
-      respond_to do |format|
-        format.js do
-          render json: { id: @upload.id }
-        end
-      end
-    rescue StandardError => e
-      alert_failed_upload_creation(e)
-      render :new
-    end
+  def cancel_async
+    @upload = Upload.find_by(id: params[:id])
+    @upload.cancel!
+    render json: { canceled: @upload.canceled_at }
+  rescue StandardError => e
+    
   end
 
   def async_status
     @upload = Upload.find_by(id: params[:id])
     async_status = {
       message: @upload.status_message,
-      ok: @upload.ok?,
-      completed: @upload.completed_at || @upload.dead?
+      active: @upload.active?,
+      ok: @upload.ok?
     }
-
-    respond_to do |format|
-      format.js do
-        render json: { async_status: }
-      end
-    end
+    render json: { async_status: }
   end
 
   private
@@ -111,17 +106,17 @@ class UploadsController < ApplicationController
       }.compact
     end
 
-    def alert_failed_upload_creation(error)
-      @upload = Upload.from_csv_type(merged_params[:csv_type])
-      @extensions = upload_settings.extensions.single.join(', ')
-      csv_requirements if @upload.csv_type_check?
-      alert_and_log("Failed to upload #{original_filename}: #{error.message}\n#{error.backtrace[0]}", error)
-    end
-
     flash[:warning] = {
       'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
       'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
     }.compact
+  end
+
+  def alert_failed_upload(error)
+    @upload = Upload.from_csv_type(merged_params[:csv_type])
+    @extensions = upload_settings.extensions.single.join(', ')
+    csv_requirements if @upload.csv_type_check?
+    alert_and_log("Failed to upload #{original_filename}: #{error.message}\n#{error.backtrace[0]}", error)
   end
 
   def original_filename

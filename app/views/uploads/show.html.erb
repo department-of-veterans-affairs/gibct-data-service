@@ -36,11 +36,12 @@
     <strong>Upload Status: </strong>
   </div>
   <div class="col-xs-3">
-    <% if @upload.active? %>
+    <% if true %>
       <div class="async-upload-status-div"
            id=<%= "async-upload-status-#{@upload.id}"%>
            data-upload-id=<%= @upload.id %>>
         <i class="fa fa-gear fa-spin" style="font-size:16px"></i>
+        <div>loading . . .</div>
       </div>
     <% else %>
       <%= @upload.ok? ? 'succeeded' : 'failed' %>
@@ -85,7 +86,8 @@
       </div>
     </div>
   </div>
-</div>  
+</div>
+
 <div class="row row-space-6">
   <div class="col-lg-12">
     <%= render 'upload_messages' %>

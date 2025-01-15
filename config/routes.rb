@@ -32,8 +32,9 @@ Rails.application.routes.draw do
   end
   post 'uploads', to: 'uploads#create', constraints: AsyncUploadConstraint.new(async_enabled: false)
   constraints(AsyncUploadConstraint.new(async_enabled: true)) do
-    post 'uploads/create_async', to: 'uploads#create_async'
-    get 'uploads/:id/async_status', to: 'uploads#async_status'
+    post 'uploads', to: 'uploads#create_async'
+    patch 'uploads/:id/cancel', to: 'uploads#cancel_async'
+    get 'uploads/:id/status', to: 'uploads#async_status'
   end
 
   get '/groups', to: redirect('/uploads')

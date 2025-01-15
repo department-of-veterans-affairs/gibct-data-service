@@ -6,3 +6,4 @@ class AddColumnsToUpload < ActiveRecord::Migration[7.1]
     add_column :uploads, :dead_at, :datetime, precision: nil
   end
 end
+s
