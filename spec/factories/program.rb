@@ -11,6 +11,6 @@ FactoryBot.define do
     full_time_modifier { 'S' }
     length { '1001' }
     csv_row { generate :csv_row }
-    ojt_app { nil }
+    ojt_app_type { nil }
   end
 end

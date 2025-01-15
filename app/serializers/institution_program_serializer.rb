@@ -14,5 +14,5 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
              :school_closing,
              :school_closing_on,
              :caution_flags,
-             :ojt_app
+             :ojt_app_type
 end

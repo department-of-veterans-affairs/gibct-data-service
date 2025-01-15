@@ -750,7 +750,7 @@ module InstitutionBuilder
           graduate,
           full_time_modifier,
           institution_id,
-          ojt_app
+          ojt_app_type
         )
         SELECT
           program_type,
@@ -759,7 +759,7 @@ module InstitutionBuilder
           graduate,
           full_time_modifier,
           i.id,
-          ojt_app
+          ojt_app_type
         FROM programs p
           INNER JOIN institutions i ON p.facility_code = i.facility_code
           WHERE i.version_id = #{version_id}

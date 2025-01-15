@@ -10,7 +10,7 @@ class Program < ImportableRecord
     'graduate' => { column: :graduate, converter: Converters::BaseConverter },
     'full_time_modifier' => { column: :full_time_modifier, converter: Converters::BaseConverter },
     'length' => { column: :length, converter: Converters::BaseConverter },
-    'ojt_app' => { column: :ojt_app, converter: Converters::BaseConverter }
+    'ojt_app_type' => { column: :ojt_app_type, converter: Converters::OjtAppTypeConverter }
   }.freeze
 
   PROGRAM_TYPES = %w[
@@ -21,9 +21,18 @@ class Program < ImportableRecord
     CORR
   ].freeze
 
-  OJT_TYPES = %w[OJT APP].freeze
+  OJT_APP_TYPES = %w[
+    OJT
+    APP
+    NPOJT
+    NPFA
+  ].freeze
 
   validates :facility_code, :description, presence: true
   validates :program_type, inclusion: { in: PROGRAM_TYPES }
-  validates :ojt_app, inclusion: { in: OJT_TYPES }, if: proc { |p| p.program_type == 'OJT' }
+  validates :ojt_app_type, inclusion: { in: OJT_APP_TYPES }, if: proc { |p| p.ojt? }
+
+  def ojt?
+    program_type == 'OJT'
+  end
 end
