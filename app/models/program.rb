@@ -30,9 +30,5 @@ class Program < ImportableRecord
 
   validates :facility_code, :description, presence: true
   validates :program_type, inclusion: { in: PROGRAM_TYPES }
-  validates :ojt_app_type, inclusion: { in: OJT_APP_TYPES }, if: proc { |p| p.ojt? }
-
-  def ojt?
-    program_type == 'OJT'
-  end
+  validates :ojt_app_type, inclusion: { in: OJT_APP_TYPES }, if: proc { |p| p.program_type == 'OJT' }
 end
