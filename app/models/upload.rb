@@ -28,6 +28,10 @@ class Upload < ApplicationRecord
     pending? && canceled_at.blank? && Time.now.utc < dead_at
   end
 
+  def inactive?
+    !active?
+  end
+
   def pending?
     return false unless async_enabled?
 

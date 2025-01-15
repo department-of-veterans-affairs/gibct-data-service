@@ -3,7 +3,7 @@
 module Common
   module Loader
     # Results is an Array of ImportableRecords
-    def load(results, options = {}, async_options = {})
+    def load(results, options = {}, async_options)
       klass.transaction do
         delete_all
         load_records(results, options, async_options)
@@ -12,17 +12,16 @@ module Common
 
     # Checks if there are any current transactions wrapping this method call
     # If not calls this classes default load with the provided Array of ImportableRecords
-    def load_records(records, options, async_options = {})
+    def load_records(records, options, async_options)
       return load(records, options, async_options) if klass.connection.open_transactions.zero?
 
       import_options = { ignore: true, batch_size: Settings.active_record.batch_size.import }
       if async_options[:enabled]
-        @upload = Upload.find_by(id: async_options[:upload_id])
         import_options.merge!(batch_progress: proc { |*batch_args| report_import_progress(*batch_args)})
       end
       results = klass.import(records, **import_options)
 
-      update_upload_status("validating records . . .")
+      update_upload_status("validating records . . .") if async_options[:enabled]
       after_import_validations(records, results.failed_instances, options)
 
       results
@@ -73,15 +72,17 @@ module Common
       index + row_offset(options)
     end
 
-    def report_import_progress(rows_size, num_batches, current_batch_number, batch_duration_in_secs)
+    def report_import_progress(_rows_size, num_batches, current_batch_number, _batch_duration_in_secs)
       percent_complete = (current_batch_number.to_f / num_batches.to_f) * 100.00
       update_upload_status("loading records: #{percent_complete.round}% complete . . .")
     end
 
     def update_upload_status(message)
+      upload = Upload.find_by(id: async_options[:upload_id])
+      raise ActiveRecord::RollbacK, "Upload canceled" if upload.inactive?
       Thread.new do
         ActiveRecord::Base.connection_pool.with_connection do
-          @upload.update(status_message: message)
+          upload.update(status_message: message)
         end
       end
     end

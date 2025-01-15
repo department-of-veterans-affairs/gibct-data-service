@@ -33,7 +33,7 @@ module RooHelper
     #
     def load_with_roo(file, options = {})
       file_options = merge_options(options)
-      async_options = file_options[:async]
+      async_options = file_options[:async] || {}
       ext = File.extname(file)
       ext = '.csv' if ext == '.txt'
 
