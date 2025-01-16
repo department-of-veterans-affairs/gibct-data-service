@@ -6,7 +6,7 @@ RSpec.describe Converters::OjtAppTypeConverter do
   subject { described_class }
 
   # Accepted characters: G, K, P, E
- 
+
   it 'converts lowercase matched character into abbreviated OJT/APP type' do
     expect(described_class.convert('k')).to eq('APP')
   end
