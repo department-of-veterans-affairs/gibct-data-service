@@ -64,26 +64,12 @@ $(function() {
       submitBlobs();
     });
 
-    // Cancel active upload
-    const cancelUpload = async (icon, uploadId) => {
-      $(icon).off("click mouseleave");
-      try {
-        const response = await $.ajax({
-          url: `/uploads/${uploadId}/cancel`,
-          type: "PATCH",
-          contentType: false,
-          processData: false,
-        });
-      } catch(error) {
-        console.error(error);
-      }
-    };
-
     // Poll backend to track progress as rows are processed and ingested into database
     const pollUploadStatus = async () => {
       // Set polling interval delay
       const DELAY = 5_000;
       const uploadStatuses = $(".async-upload-status-div");
+
       // Multiple upload statuses to be polled on /uploads page
       for (let i = 0; i < uploadStatuses.length; i++) {
         const uploadStatus = uploadStatuses[i];
@@ -91,13 +77,36 @@ $(function() {
         const capitalize = (str) => titlecase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
         try {
           const xhr = new XMLHttpRequest();
+          // Poll upload status
+          const getUploadStatus = () => {
+            xhr.open("GET", `/uploads/${uploadId}/status`);
+            xhr.send();
+          };
+          // Cancel active upload
+          const cancelUpload = async (icon, uploadId) => {
+            $(icon).off("click mouseleave");
+            try {
+              const response = await $.ajax({
+                url: `/uploads/${uploadId}/cancel`,
+                type: "PATCH",
+                contentType: false,
+                processData: false,
+              });
+              console.log(response);
+              getUploadStatus();
+            } catch(error) {
+              console.error(error);
+              // window.location.href = `/uploads/${uploadId}`;
+            }
+          };
+          // Handle poll response
           xhr.onload = function() {
             if (this.status === 200) {
               const { message, active, ok } = JSON.parse(xhr.response).async_status;
               let asyncStatusHtml;
               const iconId = `upload-icon-${uploadId}`;
               const iconHtml = `<i id=${iconId} class="fa fa-gear fa-spin upload-icon" style="font-size:16px"></i>`
-              if (true) {
+              if (active) {
                 // If upload active (not completed, dead, or canceled), report status at intervals
                 asyncStatusHtml = iconHtml + `<div id="active-status-${uploadId}">${capitalize(message || "loading . . .")}</div>`
               } else {
@@ -107,7 +116,7 @@ $(function() {
                 asyncStatusHtml = `<div>${capitalize(asyncStatus)}</div>`;
               }
               $(`#async-upload-status-${uploadId}`).html(asyncStatusHtml);
-              if (true) {
+              if (active) {
                 // If upload active, enable upload cancellation by hovering over gear icon
                 const activeStatusId = `#active-status-${uploadId}`
                 $(`#${iconId}`).on({
@@ -127,10 +136,6 @@ $(function() {
               }
             }
           }
-          const getUploadStatus = () => {
-            xhr.open("GET", `/uploads/${uploadId}/status`);
-            xhr.send();
-          };
           getUploadStatus();
           let pollingInterval = setInterval(getUploadStatus, DELAY);
         } catch(error) {

@@ -14,6 +14,8 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
+  before_update :check_if_canceled, if: :async_enabled?
+
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -23,10 +25,7 @@ class Upload < ApplicationRecord
   end
 
   def active?
-    queued_at &&
-    completed_at.blank? &&
-    canceled_at.blank? &&
-    Time.now.utc < dead_at
+    queued_at && completed_at.blank? && canceled_at.blank? && Time.now.utc < dead_at
   end
 
   def inactive?
@@ -42,9 +41,17 @@ class Upload < ApplicationRecord
   end
 
   def cancel!
+    return if canceled_at
+
     raise StandardError, "Upload cannot be canceled" unless active?
     
     clean! && update(canceled_at: Time.now.utc.to_fs(:db))
+  end
+
+  def check_if_canceled
+    return unless canceled_at
+
+    raise StandardError, "Upload canceled"
   end
 
   def csv_type_check?

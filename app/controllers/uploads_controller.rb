@@ -61,10 +61,14 @@ class UploadsController < ApplicationController
 
   def cancel_async
     @upload = Upload.find_by(id: params[:id])
+    byebug
     @upload.cancel!
+    byebug
     render json: { canceled: @upload.canceled_at }
   rescue StandardError => e
-    
+    byebug
+    alert_and_log("Failed to cancel upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+    render json: { error: e }, status: :unprocessable_entity
   end
 
   def async_status

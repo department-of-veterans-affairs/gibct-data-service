@@ -2,6 +2,8 @@
 
 module Common
   module Loader
+    class UploadCanceledError < ActiveRecord::Rollback; end
+
     # Results is an Array of ImportableRecords
     def load(results, options = {}, async_options)
       klass.transaction do
@@ -17,6 +19,7 @@ module Common
 
       import_options = { ignore: true, batch_size: Settings.active_record.batch_size.import }
       if async_options[:enabled]
+        @upload = Upload.find_by(id: async_options[:upload_id])
         import_options.merge!(batch_progress: proc { |*batch_args| report_import_progress(*batch_args)})
       end
       results = klass.import(records, **import_options)
@@ -78,11 +81,10 @@ module Common
     end
 
     def update_upload_status(message)
-      upload = Upload.find_by(id: async_options[:upload_id])
-      raise ActiveRecord::RollbacK, "Upload canceled" if upload.inactive?
       Thread.new do
         ActiveRecord::Base.connection_pool.with_connection do
-          upload.update(status_message: message)
+          @upload.reload
+          @upload.update(status_message: message)
         end
       end
     end

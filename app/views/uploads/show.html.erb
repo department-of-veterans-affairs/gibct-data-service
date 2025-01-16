@@ -36,7 +36,7 @@
     <strong>Upload Status: </strong>
   </div>
   <div class="col-xs-3">
-    <% if true %>
+    <% if @upload.active? %>
       <div class="async-upload-status-div"
            id=<%= "async-upload-status-#{@upload.id}"%>
            data-upload-id=<%= @upload.id %>>
