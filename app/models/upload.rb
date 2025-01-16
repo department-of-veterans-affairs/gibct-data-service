@@ -14,8 +14,6 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
-  DEAD_AFTER = Settings.async_upload.dead_after.seconds
-
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -25,17 +23,18 @@ class Upload < ApplicationRecord
   end
 
   def active?
-    pending? && canceled_at.blank? && Time.now.utc < dead_at
+    queued_at &&
+    completed_at.blank? &&
+    canceled_at.blank? &&
+    Time.now.utc < dead_at
   end
 
   def inactive?
     !active?
   end
 
-  def pending?
-    return false unless async_enabled?
-
-    completed_at.blank? && queued_at
+  def dead_at
+    queued_at + Settings.async_upload.dead_after.seconds
   end
 
   def clean!

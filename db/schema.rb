@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_14_210830) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -297,6 +297,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_14_210830) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
+    t.string "ojt_app_type"
     t.index ["description", "version"], name: "index_institution_programs"
     t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
@@ -323,6 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_14_210830) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
+    t.string "ojt_app_type"
     t.index ["description", "version"], name: "index_institution_programs_archives"
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
@@ -1443,6 +1445,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_14_210830) do
     t.string "full_time_modifier", limit: 1
     t.string "length", limit: 7
     t.integer "csv_row"
+    t.string "ojt_app_type"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
@@ -1701,7 +1704,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_14_210830) do
     t.string "blob"
     t.string "status_message"
     t.datetime "queued_at", precision: nil
-    t.datetime "dead_at", precision: nil
     t.datetime "canceled_at", precision: nil
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
