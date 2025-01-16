@@ -1387,6 +1387,72 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
     t.index ["cross"], name: "index_ipeds_ics_on_cross"
   end
 
+  create_table "lce_exams", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.date "dates"
+    t.decimal "amount"
+    t.bigint "institution_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["institution_id"], name: "index_lce_exams_on_institution_id"
+  end
+
+  create_table "lce_institutions", force: :cascade do |t|
+    t.integer "ptcpnt_id"
+    t.string "name"
+    t.string "abbreviated_name"
+    t.string "physical_street"
+    t.string "physical_city"
+    t.string "physical_state"
+    t.string "physical_zip"
+    t.string "physical_country"
+    t.string "mailing_street"
+    t.string "mailing_city"
+    t.string "mailing_state"
+    t.string "mailing_zip"
+    t.string "mailing_country"
+    t.string "phone"
+    t.string "web_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lce_license_and_certs", force: :cascade do |t|
+    t.string "name"
+    t.decimal "fee"
+    t.bigint "institution_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["institution_id"], name: "index_lce_license_and_certs_on_institution_id"
+  end
+
+  create_table "lce_officials", force: :cascade do |t|
+    t.string "name"
+    t.string "title"
+    t.bigint "institution_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["institution_id"], name: "index_lce_officials_on_institution_id"
+  end
+
+  create_table "license_certification_institutions", force: :cascade do |t|
+    t.string "name"
+    t.string "abbreviated_name"
+    t.string "physical_street"
+    t.string "physical_city"
+    t.string "physical_zip"
+    t.string "physical_country"
+    t.string "mailing_street"
+    t.string "mailing_city"
+    t.string "mailing_zip"
+    t.string "mailing_country"
+    t.string "phone"
+    t.string "web_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "mous", id: :serial, force: :cascade do |t|
     t.string "ope", null: false
     t.string "ope6", null: false
@@ -1969,7 +2035,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
-  add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify
+  add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
@@ -1977,6 +2043,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
   add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institution_ratings", "institutions"
   add_foreign_key "institutions", "versions"
+  add_foreign_key "lce_exams", "institutions"
+  add_foreign_key "lce_license_and_certs", "institutions"
+  add_foreign_key "lce_officials", "institutions"
   add_foreign_key "versioned_school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
 end
