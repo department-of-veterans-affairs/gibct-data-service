@@ -2,14 +2,17 @@ name: runs test on dev/staging
 on:
   push:
     branches:
-      - master
+      - '*'
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Verify Docker Compose Installation
+        run: |
+          docker compose --version || echo "docker-compose not found"
       - name: Run Tests
         run: |
           make ci
