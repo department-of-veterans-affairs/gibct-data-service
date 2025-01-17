@@ -81,10 +81,12 @@ module Common
     end
 
     def update_upload_status(message)
+      @upload.reload
+      raise ActiveRecord::Rollback if @upload.canceled_at
+
       Thread.new do
         ActiveRecord::Base.connection_pool.with_connection do
-          @upload.reload
-          @upload.update(status_message: message)
+          @upload.update!(status_message: message)
         end
       end
     end

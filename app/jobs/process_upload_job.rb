@@ -6,7 +6,6 @@ class ProcessUploadJob < ApplicationJob
   def perform(upload)
     @upload = upload
     @upload.update(status_message: "processing data . . .")
-    sleep 10.minutes
     begin
       data = UploadFileProcesser.new(@upload).load_file
       # alert_messages(data)

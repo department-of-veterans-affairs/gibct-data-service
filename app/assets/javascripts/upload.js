@@ -7,6 +7,17 @@ $(function() {
       );
     });
 
+    // Open dialog during async upload blob generation
+    $("#async-upload-dialog").dialog({
+      autoOpen: false,
+      modal: true,
+      width: "auto",
+      resizable: false,
+      open: () => {
+        $(".ui-dialog-titlebar-close").hide(); 
+      }
+    });
+
     let csvType;
     // Alternative submit logic for when async upload enabled
     $("#async-submit-btn").on("click", async function(event) {
@@ -15,6 +26,7 @@ $(function() {
       if (!form.reportValidity()) {
         return;
       }
+      $("#async-upload-dialog").dialog("open");
       $(this).prop("disabled", true);
       $(this).html(
         '<div id="async-submit-btn-div">' +
@@ -27,6 +39,7 @@ $(function() {
       csvType = formData.get("upload[csv_type]");
       const blobs = [];
       let uploadId = null;
+      $("#upload_skip_lines, #upload_upload_file, #upload_comment").prop("disabled", true);
       // Divide upload file into smaller files
       const generateBlobs = async () => {
         const chunkSize = parseInt(this.dataset.chunkSize);
@@ -66,6 +79,7 @@ $(function() {
 
     // Poll backend to track progress as rows are processed and ingested into database
     const pollUploadStatus = async () => {
+      $("#async-upload-dialog").dialog("close");
       // Set polling interval delay
       const DELAY = 5_000;
       const uploadStatuses = $(".async-upload-status-div");
@@ -75,6 +89,7 @@ $(function() {
         const uploadStatus = uploadStatuses[i];
         const { uploadId, titlecase } = uploadStatus.dataset;
         const capitalize = (str) => titlecase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+        const $uploadStatusDiv = $(`#async-upload-status-${uploadId}`);
         try {
           const xhr = new XMLHttpRequest();
           // Poll upload status
@@ -86,17 +101,18 @@ $(function() {
           const cancelUpload = async (icon, uploadId) => {
             $(icon).off("click mouseleave");
             try {
-              const response = await $.ajax({
+              await $.ajax({
                 url: `/uploads/${uploadId}/cancel`,
                 type: "PATCH",
                 contentType: false,
                 processData: false,
               });
-              console.log(response);
               getUploadStatus();
             } catch(error) {
               console.error(error);
-              // window.location.href = `/uploads/${uploadId}`;
+              $($uploadStatusDiv).html(`<div>${capitalize("failed to cancel")}</div>`).css({color: "red", fontWeight: "bold"});
+              await new Promise((resolve) => setTimeout(resolve, DELAY));
+              getUploadStatus();
             }
           };
           // Handle poll response
@@ -115,7 +131,7 @@ $(function() {
                 const asyncStatus = ok ? "succeeded" :"failed";
                 asyncStatusHtml = `<div>${capitalize(asyncStatus)}</div>`;
               }
-              $(`#async-upload-status-${uploadId}`).html(asyncStatusHtml);
+              $($uploadStatusDiv).html(asyncStatusHtml).css({color: "#333", fontWeight: "normal"});
               if (active) {
                 // If upload active, enable upload cancellation by hovering over gear icon
                 const activeStatusId = `#active-status-${uploadId}`
@@ -123,7 +139,7 @@ $(function() {
                   mouseenter: function(_event) {
                     clearInterval(pollingInterval);
                     $(this).removeClass("fa-gear fa-spin").addClass("fa-times").css({color: "red", fontSize: "18px"});
-                    $(activeStatusId).css({color: "red", fontWeight: "bold"}).text("cancel upload");
+                    $(activeStatusId).css({color: "red", fontWeight: "bold"}).text(capitalize("cancel upload"));
                     $(this).on("click", (_event) => cancelUpload(this, uploadId));
                   },
                   mouseleave: function(_event) {

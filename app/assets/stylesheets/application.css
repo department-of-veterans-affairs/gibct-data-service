@@ -153,15 +153,24 @@
   text-decoration: underline;
 }
 
-#preview_dialog {
+#preview_dialog,
+#async-upload-dialog {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#preview_dialog_div {
+#preview_dialog_div,
+#async-upload-dialog-div {
   min-width: 250px;
   text-align: center;
+}
+
+#async-upload-dialog-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
 .generate_preview_button_div {

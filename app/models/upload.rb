@@ -14,44 +14,12 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
-  before_update :check_if_canceled, if: :async_enabled?
-
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
 
   def ok?
     ok
-  end
-
-  def active?
-    queued_at && completed_at.blank? && canceled_at.blank? && Time.now.utc < dead_at
-  end
-
-  def inactive?
-    !active?
-  end
-
-  def dead_at
-    queued_at + Settings.async_upload.dead_after.seconds
-  end
-
-  def clean!
-    update(blob: nil, status_message: nil)
-  end
-
-  def cancel!
-    return if canceled_at
-
-    raise StandardError, "Upload cannot be canceled" unless active?
-    
-    clean! && update(canceled_at: Time.now.utc.to_fs(:db))
-  end
-
-  def check_if_canceled
-    return unless canceled_at
-
-    raise StandardError, "Upload canceled"
   end
 
   def csv_type_check?
@@ -88,6 +56,38 @@ class Upload < ApplicationRecord
 
   def chunk_size
     async_upload_settings[:chunk_size]
+  end
+
+  # Upload has been queued for async processing, hasn't been completed or canceled, and hasn't exceeded TTL
+  def active?
+    queued_at.present? &&
+    completed_at.blank? &&
+    canceled_at.blank? &&
+    Time.now.utc < dead_at
+  end
+
+  def inactive?
+    !active?
+  end
+
+  def dead_at
+    return unless queued_at
+
+    queued_at + Settings.async_upload.dead_after.seconds
+  end
+
+  def clean!
+    return false if canceled_at
+
+    update(blob: nil, status_message: nil)
+  end
+
+  def cancel!
+    return false if canceled_at
+
+    raise StandardError, "Upload cannot be canceled" unless active?
+    
+    update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
   end
 
   def create_or_concat_blob
@@ -157,5 +157,16 @@ class Upload < ApplicationRecord
 
   def self.locked_fetches_exist?
     where(ok: false).any?
+  end
+  
+  private
+
+  # before_update: allow record update only if upload hasn't been canceled
+  # If update is to cancel upload, ensure it succeeds
+  def prevent_update_if_canceled
+    cancel_in_progress = canceled_at && canceled_at_in_database.nil?
+    return if canceled_at.blank? || cancel_in_progress
+
+    raise StandardError, "Upload canceled"
   end
 end
