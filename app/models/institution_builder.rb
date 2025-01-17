@@ -757,7 +757,8 @@ module InstitutionBuilder
             full_time_undergraduate,
             graduate,
             full_time_modifier,
-            institution_id
+            institution_id,
+            ojt_app_type
           )
           SELECT
             program_type,
@@ -765,7 +766,8 @@ module InstitutionBuilder
             full_time_undergraduate,
             graduate,
             full_time_modifier,
-            i.id
+            i.id,
+            ojt_app_type
           FROM programs p
             INNER JOIN institutions i ON p.facility_code = i.facility_code
             WHERE i.id IN (#{institution_ids.join(',')});

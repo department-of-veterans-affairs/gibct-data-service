@@ -20,6 +20,7 @@ FactoryBot.define do
     vet_tec_program { 'COMPUTER SCIENCE' }
     tuition_amount { '360' }
     length_in_weeks { '1001' }
+    ojt_app_type { nil }
     institution
 
     trait :start_like_harv do
