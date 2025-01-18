@@ -7,7 +7,7 @@ $(function() {
       );
     });
 
-    // Open dialog during async upload blob generation
+    // Open dialog during initial async upload to disable page
     $("#async-upload-dialog").dialog({
       autoOpen: false,
       modal: true,
@@ -18,7 +18,6 @@ $(function() {
       }
     });
 
-    let csvType;
     // Alternative submit logic for when async upload enabled
     $("#async-submit-btn").on("click", async function(event) {
       event.preventDefault();
@@ -26,21 +25,22 @@ $(function() {
       if (!form.reportValidity()) {
         return;
       }
+      // Disable page and form
       $("#async-upload-dialog").dialog("open");
-      $(this).prop("disabled", true);
       $(this).html(
         '<div id="async-submit-btn-div">' +
         '<i class="fa fa-gear fa-spin" style="font-size:16px"></i>' +
         'Submitting . . .' +
         '</div>'
       );
+      // Grab form data
       const formData = new FormData(form);
       const file = formData.get("upload[upload_file]");
-      csvType = formData.get("upload[csv_type]");
-      const blobs = [];
+      const csvType = formData.get("upload[csv_type]");
       let uploadId = null;
-      $("#upload_skip_lines, #upload_upload_file, #upload_comment").prop("disabled", true);
+      
       // Divide upload file into smaller files
+      const blobs = [];
       const generateBlobs = async () => {
         const chunkSize = parseInt(this.dataset.chunkSize);
         for (let start = 0; start < file.size; start += chunkSize) {
@@ -53,6 +53,7 @@ $(function() {
         try {
           for (let i = 0; i < blobs.length; i++) {
             formData.set("upload[upload_file]", blobs[i], file.name);
+            // Include metadata to track upload progress across multiple requests
             formData.set("upload[metadata][upload_id]", uploadId);
             formData.set("upload[metadata][count][current]", i + 1);
             formData.set("upload[metadata][count][total]", blobs.length);
@@ -82,14 +83,14 @@ $(function() {
       $("#async-upload-dialog").dialog("close");
       // Set polling interval delay
       const DELAY = 5_000;
-      const uploadStatuses = $(".async-upload-status-div");
 
-      // Multiple upload statuses to be polled on /uploads page
+      // Uploads page could have more than one upload status to poll
+      const uploadStatuses = $(".async-upload-status-div");
       for (let i = 0; i < uploadStatuses.length; i++) {
         const uploadStatus = uploadStatuses[i];
+        const uploadStatusDiv = $(`#async-upload-status-${uploadId}`);
         const { uploadId, titlecase } = uploadStatus.dataset;
         const capitalize = (str) => titlecase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
-        const $uploadStatusDiv = $(`#async-upload-status-${uploadId}`);
         try {
           const xhr = new XMLHttpRequest();
           // Poll upload status
@@ -110,7 +111,7 @@ $(function() {
               getUploadStatus();
             } catch(error) {
               console.error(error);
-              $($uploadStatusDiv).html(`<div>${capitalize("failed to cancel")}</div>`).css({color: "red", fontWeight: "bold"});
+              $(uploadStatusDiv).html(`<div>${capitalize("failed to cancel")}</div>`).css({color: "red", fontWeight: "bold"});
               await new Promise((resolve) => setTimeout(resolve, DELAY));
               getUploadStatus();
             }
@@ -128,10 +129,10 @@ $(function() {
               } else {
                 clearInterval(pollingInterval);
                 // Otherwise clear interval and report whether success or failure
-                const asyncStatus = ok ? "succeeded" :"failed";
-                asyncStatusHtml = `<div>${capitalize(asyncStatus)}</div>`;
+                const finalStatus = ok ? "succeeded" :"failed";
+                asyncStatusHtml = `<div>${capitalize(finalStatus)}</div>`;
               }
-              $($uploadStatusDiv).html(asyncStatusHtml).css({color: "#333", fontWeight: "normal"});
+              $(uploadStatusDiv).html(asyncStatusHtml).css({color: "#333", fontWeight: "normal"});
               if (active) {
                 // If upload active, enable upload cancellation by hovering over gear icon
                 const activeStatusId = `#active-status-${uploadId}`

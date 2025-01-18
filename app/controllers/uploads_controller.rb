@@ -70,6 +70,7 @@ class UploadsController < ApplicationController
 
   def async_status
     @upload = Upload.find_by(id: params[:id])
+
     async_status = {
       message: @upload.status_message,
       active: @upload.active?,
