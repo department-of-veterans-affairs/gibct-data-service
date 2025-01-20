@@ -47,14 +47,16 @@ class UploadsController < ApplicationController
   def create_async
     previous_upload = Upload.find_by(id: async_params[:upload_id])
     previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
-    @upload = previous_upload || Upload.create(**merged_params, queued_at: Time.now.utc.to_fs(:db))
+    @upload = previous_upload || Upload.create(**merged_params,
+                                               queued_at: Time.now.utc.to_fs(:db),
+                                               status_message: "queued for upload")
     @upload.create_or_concat_blob
     
     ProcessUploadJob.perform_later(@upload) if @upload.persisted? && final_upload?
 
     render json: { id: @upload.id }
   rescue StandardError => e
-    @upload.cancel!
+    @upload&.cancel!
     alert_failed_upload(e)
     render json: { error: e }, status: :internal_server_error
   end

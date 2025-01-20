@@ -24,7 +24,7 @@ module Common
       end
       results = klass.import(records, **import_options)
 
-      update_upload_status("validating records . . .") if async_options[:enabled]
+      @upload.safely_update_status!("validating records . . .") if @upload
       after_import_validations(records, results.failed_instances, options)
 
       results
@@ -77,18 +77,7 @@ module Common
 
     def report_import_progress(_rows_size, num_batches, current_batch_number, _batch_duration_in_secs)
       percent_complete = (current_batch_number.to_f / num_batches.to_f) * 100.00
-      update_upload_status("loading records: #{percent_complete.round}% complete . . .")
-    end
-
-    def update_upload_status(message)
-      @upload.reload
-      raise ActiveRecord::Rollback if @upload.canceled_at
-
-      Thread.new do
-        ActiveRecord::Base.connection_pool.with_connection do
-          @upload.update!(status_message: message)
-        end
-      end
+      @upload.safely_update_status!("importing #{@upload.csv_type} records: #{percent_complete.round}% . . .")
     end
   end
 end

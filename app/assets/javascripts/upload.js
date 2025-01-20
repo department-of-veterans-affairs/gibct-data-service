@@ -88,8 +88,8 @@ $(function() {
       const uploadStatuses = $(".async-upload-status-div");
       for (let i = 0; i < uploadStatuses.length; i++) {
         const uploadStatus = uploadStatuses[i];
-        const uploadStatusDiv = $(`#async-upload-status-${uploadId}`);
         const { uploadId, titlecase } = uploadStatus.dataset;
+        const uploadStatusDiv = $(`#async-upload-status-${uploadId}`);
         const capitalize = (str) => titlecase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
         try {
           const xhr = new XMLHttpRequest();
@@ -120,6 +120,7 @@ $(function() {
           xhr.onload = function() {
             if (this.status === 200) {
               const { message, active, ok } = JSON.parse(xhr.response).async_status;
+              console.log(xhr.response);
               let asyncStatusHtml;
               const iconId = `upload-icon-${uploadId}`;
               const iconHtml = `<i id=${iconId} class="fa fa-gear fa-spin upload-icon" style="font-size:16px"></i>`

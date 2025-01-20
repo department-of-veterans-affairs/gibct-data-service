@@ -34,6 +34,7 @@ module RooHelper
     def load_with_roo(file, options = {})
       file_options = merge_options(options)
       async_options = file_options[:async] || {}
+      @upload = Upload.find_by(id: async_options[:upload_id])
       ext = File.extname(file)
       ext = '.csv' if ext == '.txt'
 
@@ -49,7 +50,9 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
+          @upload&.safely_update_status!("deleting existing #{sheet_klass} records . . .")
           sheet_klass.in_batches.delete_all unless sheet_options[:multiple_files]
+
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
                               process_as_xml(sheet_klass, sheet, index, sheet_options)
                             else
@@ -137,6 +140,7 @@ module RooHelper
     #
     # Uses file_options[:liberal_parsing] to strip quotes out
     def process_sheet(sheet_klass, sheet, sheet_options, file_options)
+      @upload&.safely_update_status!("converting rows into importable #{sheet_klass} records . . .")
       file_headers = if sheet_options[:no_headers]
                        sheet_klass::CSV_CONVERTER_INFO.keys
                      else

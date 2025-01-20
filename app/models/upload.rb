@@ -14,6 +14,8 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
+  before_create :check_async_queue, if: :async_enabled?
+
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -90,6 +92,20 @@ class Upload < ApplicationRecord
     update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
   end
 
+  def rollback_if_canceled
+    raise ActiveRecord::Rollback, "Upload canceled" if reload.inactive?
+  end
+
+  def safely_update_status!(message)
+    rollback_if_canceled
+
+    Thread.new do
+      ActiveRecord::Base.connection_pool.with_connection do
+        update(status_message: message)
+      end
+    end
+  end
+
   def create_or_concat_blob
     File.open(upload_file.tempfile.path, 'rb') do |file|
       new_blob = upload_file.tempfile.read
@@ -159,14 +175,20 @@ class Upload < ApplicationRecord
     where(ok: false).any?
   end
   
+  def self.async_queue
+    all.select { |u| u.active? }
+  end
+
   private
 
-  # before_update: allow record update only if upload hasn't been canceled
-  # If update is to cancel upload, ensure it succeeds
-  def prevent_update_if_canceled
-    cancel_in_progress = canceled_at && canceled_at_in_database.nil?
-    return if canceled_at.blank? || cancel_in_progress
+  def check_async_queue
+    return unless active_upload_of_same_csv_type?
 
-    raise StandardError, "Upload canceled"
+    error_msg = "#{csv_type} file upload already in progress. Wait for upload to finish or cancel upload"
+    raise StandardError, error_msg
+  end
+
+  def active_upload_of_same_csv_type?
+    Upload.async_queue.pluck(:csv_type).include?(csv_type)
   end
 end
