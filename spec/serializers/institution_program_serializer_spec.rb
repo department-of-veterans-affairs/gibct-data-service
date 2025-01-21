@@ -60,4 +60,8 @@ RSpec.describe InstitutionProgramSerializer, type: :serializer do
   it 'includes caution_flags' do
     expect(attributes['caution_flags']).to eq(institution_program.caution_flags)
   end
+
+  it 'includes ojt_app_type' do
+    expect(attributes['ojt_app_type']).to eq(institution_program.ojt_app_type)
+  end
 end

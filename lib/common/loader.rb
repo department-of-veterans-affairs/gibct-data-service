@@ -17,17 +17,21 @@ module Common
     def load_records(records, options, async_options)
       return load(records, options, async_options) if klass.connection.open_transactions.zero?
 
-      import_options = { ignore: true, batch_size: Settings.active_record.batch_size.import }
-      if async_options[:enabled]
-        @upload = Upload.find_by(id: async_options[:upload_id])
-        import_options.merge!(batch_progress: proc { |*batch_args| report_import_progress(*batch_args)})
+      total_results = ActiveRecord::Import::Result.new([], 0, [], [])
+      total_failed_instances = []
+
+      records.each_slice(Settings.active_record.batch_size.import) do |batch|
+        results = klass.import batch, ignore: true
+        total_failed_instances.concat results&.failed_instances
+        total_results.failed_instances.concat results&.failed_instances
+        total_results.num_inserts += results&.num_inserts
+        total_results.ids.concat results&.ids
+        total_results.results.concat results&.results
       end
-      results = klass.import(records, **import_options)
 
-      @upload&.safely_update_status!("validating records . . .")
-      after_import_validations(records, results.failed_instances, options)
+      after_import_validations(records, total_failed_instances, options)
 
-      results
+      total_results
     end
 
     private

@@ -83,7 +83,7 @@ module InstitutionBuilder
       begin
         Institution.transaction do
           # to fix 'cancelling statement due to statement timeout' issue
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '240s';")
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600s';")
           if staging?
             # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
             # rubocop:disable Rails/SkipsModelValidations
@@ -741,35 +741,87 @@ module InstitutionBuilder
     # Previously included join on edu_programs table
     # However, edu_programs feed determined to be defunct for time being
     def self.build_institution_programs(version_id)
-      log_info_status 'Creating Institution Program rows'
-      str = <<-SQL
-        INSERT INTO institution_programs (
-          program_type,
-          description,
-          full_time_undergraduate,
-          graduate,
-          full_time_modifier,
-          institution_id
-        )
-        SELECT
-          program_type,
-          description,
-          full_time_undergraduate,
-          graduate,
-          full_time_modifier,
-          i.id
-        FROM programs p
-          INNER JOIN institutions i ON p.facility_code = i.facility_code
-          WHERE i.version_id = #{version_id}
-            AND i.approved = true;
+      log_info_status '*** Creating Institution Program rows ***'
 
-        DELETE FROM institution_programs WHERE id NOT IN (
-          SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id
-        );
+      idx = 0
+      # Fetch institution IDs in batches to process programs in chunks
+      Institution.where(version_id: version_id, approved: true).find_in_batches(batch_size: 1000) do |institutions|
+        idx += 1
+        log_info_status "      Batch #{idx}: Processing #{institutions.size} institutions"
+        institution_ids = institutions.map(&:id)
+
+        insert_sql = <<-SQL
+          INSERT INTO institution_programs (
+            program_type,
+            description,
+            full_time_undergraduate,
+            graduate,
+            full_time_modifier,
+            institution_id,
+            ojt_app_type
+          )
+          SELECT
+            program_type,
+            description,
+            full_time_undergraduate,
+            graduate,
+            full_time_modifier,
+            i.id,
+            ojt_app_type
+          FROM programs p
+            INNER JOIN institutions i ON p.facility_code = i.facility_code
+            WHERE i.id IN (#{institution_ids.join(',')});
+        SQL
+
+        # Execute the batch insert
+        sanitized_insert_sql = InstitutionProgram.send(:sanitize_sql, [insert_sql])
+        InstitutionProgram.connection.execute(sanitized_insert_sql)
+      end
+
+      log_info_status '*** Creating Institution Program rows completed ***'
+
+      # Remove duplicate rows after all inserts are done
+      log_info_status '*** Counting duplicates from Institution Program ***'
+      count_dups_sql = <<-SQL
+        SELECT UPPER(description) as description, institution_id, count(*)
+          FROM institution_programs
+         GROUP BY UPPER(description), institution_id
+        HAVING count(*) > 1;
       SQL
 
-      sql = InstitutionProgram.send(:sanitize_sql, [str])
-      InstitutionProgram.connection.execute(sql)
+      results = InstitutionProgram.connection.execute(count_dups_sql)
+      duplicate_count = results.count
+      log_info_status "      #{duplicate_count} duplicates found"
+
+      unless duplicate_count.zero?
+        log_info_status '*** Removing duplicates from Institution Program ***'
+        results.each do |row|
+          description = row['description']
+          institution_id = row['institution_id']
+
+          delete_sql = <<-SQL
+            DELETE FROM institution_programs
+            WHERE UPPER(description) = :description
+              AND institution_id = :institution_id
+              AND id NOT IN (
+                SELECT MIN(id)
+                FROM institution_programs
+                WHERE UPPER(description) = :description
+                  AND institution_id = :institution_id
+                GROUP BY UPPER(description), institution_id
+              );
+          SQL
+
+          sanitized_delete_sql = InstitutionProgram.send(
+            :sanitize_sql,
+            [delete_sql, { description: description, institution_id: institution_id }]
+          )
+
+          InstitutionProgram.connection.execute(sanitized_delete_sql)
+        end
+      end
+
+      log_info_status '*** Removing duplicates from Institution Program completed ***'
     end
 
     def self.build_versioned_school_certifying_official(version_id)

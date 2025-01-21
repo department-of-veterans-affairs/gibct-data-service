@@ -13,5 +13,6 @@ class InstitutionProgramSerializer < ActiveModel::Serializer
              :dod_bah,
              :school_closing,
              :school_closing_on,
-             :caution_flags
+             :caution_flags,
+             :ojt_app_type
 end
