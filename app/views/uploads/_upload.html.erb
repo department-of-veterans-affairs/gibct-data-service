@@ -3,8 +3,7 @@
   <td>
     <% if upload.active? %>
       <div class="async-upload-status-div"
-           id=<%= "async-upload-status-#{upload.id}"%>
-           data-upload-id=<%= upload.id %>
+           id="async-upload-status-<%= upload.id %>"
            data-titlecase=true>
         <i class="fa fa-gear fa-spin" style="font-size:16px"></i>
         <div>Loading . . .</div>

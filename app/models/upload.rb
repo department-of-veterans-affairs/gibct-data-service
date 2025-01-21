@@ -60,6 +60,17 @@ class Upload < ApplicationRecord
     async_upload_settings[:chunk_size]
   end
 
+  def create_or_concat_blob
+    File.open(upload_file.tempfile.path, 'rb') do |file|
+      new_blob = upload_file.tempfile.read
+      updated_blob = blob ? blob.concat(new_blob) : new_blob
+      update(blob: updated_blob)
+    end
+  ensure
+    upload_file.tempfile.close
+    upload_file.tempfile.unlink
+  end
+
   # Upload has been queued for async processing, hasn't been completed or canceled, and hasn't exceeded TTL
   def active?
     queued_at.present? &&
@@ -76,12 +87,6 @@ class Upload < ApplicationRecord
     return unless queued_at
 
     queued_at + Settings.async_upload.dead_after.seconds
-  end
-
-  def clean!
-    return false if canceled_at
-
-    update(blob: nil, status_message: nil)
   end
 
   def cancel!
@@ -106,15 +111,13 @@ class Upload < ApplicationRecord
     end
   end
 
-  def create_or_concat_blob
-    File.open(upload_file.tempfile.path, 'rb') do |file|
-      new_blob = upload_file.tempfile.read
-      updated_blob = blob ? blob.concat(new_blob) : new_blob
-      update(blob: updated_blob)
-    end
-  ensure
-    upload_file.tempfile.close
-    upload_file.tempfile.unlink
+  def alerts
+    data = status_message && JSON.parse(status_message)
+    return {} unless data.is_a?(Hash)
+
+    data.deep_symbolize_keys!
+  rescue StandardError => e
+    {}
   end
 
   def self.last_uploads(for_display = false)

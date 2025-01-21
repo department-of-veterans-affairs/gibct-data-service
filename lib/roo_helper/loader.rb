@@ -50,7 +50,7 @@ module RooHelper
         sheet_klass = sheet_options[:klass]
 
         sheet_klass.transaction do
-          @upload&.safely_update_status!("deleting existing #{sheet_klass} records . . .")
+          @upload&.rollback_if_canceled
           sheet_klass.in_batches.delete_all unless sheet_options[:multiple_files]
 
           processed_sheet = if %w[.xls .xlsx].include?(ext) && parse_as_xml?(sheet, index)
@@ -140,7 +140,7 @@ module RooHelper
     #
     # Uses file_options[:liberal_parsing] to strip quotes out
     def process_sheet(sheet_klass, sheet, sheet_options, file_options)
-      @upload&.safely_update_status!("converting rows into importable #{sheet_klass} records . . .")
+      @upload&.rollback_if_canceled
       file_headers = if sheet_options[:no_headers]
                        sheet_klass::CSV_CONVERTER_INFO.keys
                      else

@@ -160,8 +160,21 @@
   align-items: center;
 }
 
+#async-upload-alert {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#async-upload-alert a {
+  color: #337ab7;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
 #preview_dialog_div,
-#async-upload-dialog-div {
+#async-upload-dialog-div,
+#async-upload-alert {
   min-width: 250px;
   text-align: center;
 }

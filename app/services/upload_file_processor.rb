@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UploadFileProcesser
+class UploadFileProcessor
   def initialize(upload)
     @upload = upload
   end
@@ -24,6 +24,23 @@ class UploadFileProcesser
     data
   end
 
+  def self.parse_results(data)
+    results = data[:results]
+    failed_rows = results.failed_instances
+    validation_warnings = failed_rows.sort do |a, b|
+                            a.errors[:row].first.to_i <=> b.errors[:row].first.to_i
+                          end.map(&:display_errors_with_row)  
+                           
+    { 
+      total_rows_count: results.ids.length,
+      failed_rows_count: failed_rows.length,
+      validation_warnings: validation_warnings,
+      header_warnings: data[:header_warnings]
+    }.tap do |hash|
+        hash[:valid_rows] = hash[:total_rows_count] - hash[:failed_rows_count]
+    end
+  end
+
   private
 
   def klass
@@ -36,6 +53,7 @@ class UploadFileProcesser
     Tempfile.new([klass.name, ".txt"], binmode: true).tap do |file|
       file.write(@upload.blob)
       file.rewind
+      @upload.update(blob: nil)
     end
   end
 end

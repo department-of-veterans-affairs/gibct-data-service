@@ -24,7 +24,7 @@ module Common
       end
       results = klass.import(records, **import_options)
 
-      @upload.safely_update_status!("validating records . . .") if @upload
+      @upload&.safely_update_status!("validating records . . .")
       after_import_validations(records, results.failed_instances, options)
 
       results
@@ -77,7 +77,7 @@ module Common
 
     def report_import_progress(_rows_size, num_batches, current_batch_number, _batch_duration_in_secs)
       percent_complete = (current_batch_number.to_f / num_batches.to_f) * 100.00
-      @upload.safely_update_status!("importing #{@upload.csv_type} records: #{percent_complete.round}% . . .")
+      @upload.safely_update_status!("importing records: #{percent_complete.round}% . . .")
     end
   end
 end

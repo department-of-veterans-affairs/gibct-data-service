@@ -19,7 +19,7 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-      data = UploadFileProcesser.new(@upload).load_file if @upload.persisted?
+      data = UploadFileProcessor.new(@upload).load_file if @upload.persisted?
       alert_messages(data)
       data_results = data[:results]
 
@@ -75,9 +75,18 @@ class UploadsController < ApplicationController
 
     async_status = {
       message: @upload.status_message,
-      active: @upload.active?,
-      ok: @upload.ok?
+      active: @upload.active? && @upload.alerts.empty?,
+      ok: @upload.ok?,
+      type: @upload.csv_type
     }
+
+    if @upload.completed_at
+      @upload.alerts => { csv_success:, warning: }
+      @upload.update(status_message: nil)
+      flash[:csv_success] = csv_success if csv_success
+      flash[:warning] = warning
+    end
+    
     render json: { async_status: }
   end
 
@@ -90,15 +99,12 @@ class UploadsController < ApplicationController
   end
 
   def alert_messages(data)
-    results = data[:results]
-
-    total_rows_count = results.ids.length
-    failed_rows = results.failed_instances
-    failed_rows_count = failed_rows.length
-    valid_rows = total_rows_count - failed_rows_count
-    validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
-                                     .map(&:display_errors_with_row)
-    header_warnings = data[:header_warnings]
+    results_breakdown = UploadFileProcessor.parse_results(data)
+    results_breakdown => { valid_rows:,
+                          total_rows_count:,
+                          failed_rows_count:,
+                          header_warnings:, 
+                          validation_warnings:}
 
     if valid_rows.positive?
       flash[:csv_success] = {
