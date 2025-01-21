@@ -9,10 +9,7 @@ class ProcessUploadJob < ApplicationJob
       @upload.safely_update_status!("preparing upload . . .")
       data = UploadFileProcessor.new(@upload).load_file
       save_alert_messages(data)
-      puts("JEFF: after save alert message")
-      puts("status: " + @upload.status_message)
-      puts("completed at: " + @upload.completed_at.to_s)
-      data_results = data[:results]
+      data_results = data.try(:[], :results)
 
       @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
