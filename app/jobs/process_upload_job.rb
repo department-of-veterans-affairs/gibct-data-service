@@ -18,7 +18,6 @@ class ProcessUploadJob < ApplicationJob
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
     rescue StandardError => e
-      byebug
       @upload.cancel!
       Rails.logger.error(e.message + e.backtrace.to_s)
     end

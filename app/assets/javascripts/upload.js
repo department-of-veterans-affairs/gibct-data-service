@@ -78,7 +78,6 @@ $(function() {
     open: function() {
       const { uploadId, csvType } = $(this).data();
       $(this).html(
-        '<i class="fa fa-cake-candles" style="font-size:24px"></i> ' +
         `<p>${csvType} file upload complete</p>` +
         '<p>Click ' + `<a href="/uploads/${uploadId}">here</a>` +
         ' for a more detailed report</p>'
@@ -91,6 +90,7 @@ $(function() {
     $("#async-upload-alert").data({"uploadId": uploadId, "csvType": csvType}).dialog("open");
   };
 
+  // Grab active client-side uploads from local storage and poll each upload for status
   const pollUploadStatus = async () => {
     const uploadQueue = getUploadQueue();
     uploadQueue.forEach(async (uploadId) => {
@@ -106,10 +106,11 @@ $(function() {
         };
         xhr.onload = function() {
           if (this.status === 200) {
-            const { message, active, ok, type } = JSON.parse(xhr.response).async_status;
+            const { message, active, ok, canceled, type } = JSON.parse(xhr.response).async_status;
             // If upload active and status currently visible on screen
             if (active) {
               if (onScreen) {
+                // Update DOM
                 $(uploadStatusDiv).html(
                   '<i class="fa fa-gear fa-spin upload-icon" style="font-size:16px"></i>' +
                   `<div>${capitalize(message, titlecase)}</div>`
@@ -119,12 +120,12 @@ $(function() {
                 $(icon).on({
                   mouseover: function(_event) {
                     clearInterval(pollingInterval);
-                    $(this).removeClass("fa-gear fa-spin").addClass("fa-times").css({color: "red", fontSize: "18px"});
+                    $(this).removeClass("fa-gear fa-spin").addClass("fa-solid fa-times").css({color: "red", fontSize: "20px"});
                     $(this).on("click", (_event) => cancelUpload(this, uploadId));
                   },
                   mouseleave: function(_event) {
                     pollingInterval = setInterval(getUploadStatus, pollRate);
-                    $(this).removeClass("fa-times").addClass("fa-gear fa-spin").css("color", "#333");
+                    $(this).removeClass("fa-solid fa-times").addClass("fa-gear fa-spin").css({color: "#333", fontSize: "16px"});
                     $(this).off("click");
                   }
                 });
@@ -141,7 +142,7 @@ $(function() {
               if (window.location.pathname === `/uploads/${uploadId}`) {
                 window.location.reload();
               // Otherwise render link to alerts in pop dialog
-              } else {
+              } else if (!canceled) {
                 displayAlert(uploadId, type);
               }
             }
@@ -156,7 +157,24 @@ $(function() {
   };
   pollUploadStatus();
 
-  // Alternative submit logic for when async upload enabled
+  // Reset active upload if for some reason stuck on "Loading . . ."
+  // e.g. if local storage is manually tampered with
+  $(".default-async-loading").on({
+    mouseover: function(_event) {
+      $(this).removeClass("fa-gear fa-spin").addClass("fa-solid fa-rotate").css({color: "green"});
+      $(this).on("click", (_event) => {
+        const { uploadId } = this.dataset;
+        addToQueue(parseInt(uploadId));
+        pollUploadStatus();
+      });
+    },
+    mouseleave: function(_event) {
+      $(this).removeClass("fa-solid fa-rotate").addClass("fa-gear fa-spin").css({color: "#333", fontSize: "16px"});
+      $(this).off("click");
+    }
+  });
+
+  // Submit logic for when async upload enabled
   $("#async-submit-btn").on("click", async function(event) {
     event.preventDefault();
     const form = $("#new_upload")[0];

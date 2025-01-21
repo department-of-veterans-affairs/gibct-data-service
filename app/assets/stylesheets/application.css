@@ -210,7 +210,8 @@
   gap: 5px;
 }
 
-.upload-icon:hover {
+.upload-icon:hover,
+.default-async-loading {
   cursor: pointer;
 }
 

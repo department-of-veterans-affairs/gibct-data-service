@@ -111,6 +111,11 @@ class Upload < ApplicationRecord
     end
   end
 
+  def update_import_progress!(completed, total)
+    percent_complete = (completed.to_f / total.to_f) * 100.00
+    safely_update_status!("importing records: #{percent_complete.round}% . . .")
+  end
+
   def alerts
     data = status_message && JSON.parse(status_message)
     return {} unless data.is_a?(Hash)

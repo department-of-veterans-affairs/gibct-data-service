@@ -75,8 +75,9 @@ class UploadsController < ApplicationController
 
     async_status = {
       message: @upload.status_message,
-      active: @upload.active? && @upload.alerts.empty?,
+      active: @upload.active?,
       ok: @upload.ok?,
+      canceled: @upload.canceled_at.present?,
       type: @upload.csv_type
     }
 

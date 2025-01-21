@@ -39,7 +39,10 @@
     <% if @upload.active? %>
       <div class="async-upload-status-div"
            id="async-upload-status-<%= @upload.id %>">
-        <i class="fa fa-gear fa-spin" style="font-size:16px"></i>
+        <i class="fa fa-gear fa-spin default-async-loading"
+           style="font-size:16px"
+           data-upload-id=<%= @upload.id %>>
+        </i>
         <div>loading . . .</div>
       </div>
     <% else %>

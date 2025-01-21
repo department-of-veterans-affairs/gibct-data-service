@@ -18,8 +18,17 @@ module Common
       total_results = ActiveRecord::Import::Result.new([], 0, [], [])
       total_failed_instances = []
 
+      if async_options[:enabled]
+        @upload = Upload.find_by(id: async_options[:upload_id]) 
+        completed_count = 0
+      end
+
       records.each_slice(Settings.active_record.batch_size.import) do |batch|
         results = klass.import batch, ignore: true
+        @upload&.tap do |u|
+          completed_count += batch.size
+          u.update_import_progress!(completed_count, records.size)
+        end
         total_failed_instances.concat results&.failed_instances
         total_results.failed_instances.concat results&.failed_instances
         total_results.num_inserts += results&.num_inserts
@@ -75,11 +84,6 @@ module Common
     # actual row in document for use by user
     def document_row(index, options)
       index + row_offset(options)
-    end
-
-    def report_import_progress(_rows_size, num_batches, current_batch_number, _batch_duration_in_secs)
-      percent_complete = (current_batch_number.to_f / num_batches.to_f) * 100.00
-      @upload.safely_update_status!("importing records: #{percent_complete.round}% . . .")
     end
   end
 end
