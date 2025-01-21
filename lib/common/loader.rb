@@ -2,8 +2,6 @@
 
 module Common
   module Loader
-    class UploadCanceledError < ActiveRecord::Rollback; end
-
     # Results is an Array of ImportableRecords
     def load(results, options = {}, async_options)
       klass.transaction do
