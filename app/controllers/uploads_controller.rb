@@ -19,7 +19,7 @@ class UploadsController < ApplicationController
   def create
     @upload = Upload.create(merged_params)
     begin
-      data = UploadFileProcessor.new(@upload).load_file if @upload.persisted?
+      data = UploadFileProcessor.new(@upload).load_file
       alert_messages(data)
       data_results = data[:results]
 
@@ -44,6 +44,8 @@ class UploadsController < ApplicationController
     redirect_to uploads_path
   end
 
+  # File split into smaller blobs on client side and uploaded in series of #create_async requests
+  # which reassemble blobs into original file server side
   def create_async
     previous_upload = Upload.find_by(id: async_params[:upload_id])
     previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
@@ -51,8 +53,8 @@ class UploadsController < ApplicationController
                                                queued_at: Time.now.utc.to_fs(:db),
                                                status_message: "queued for upload")
     @upload.create_or_concat_blob
-    
-    ProcessUploadJob.perform_later(@upload) if @upload.persisted? && final_upload?
+
+    ProcessUploadJob.perform_later(@upload) if final_upload?
 
     render json: { id: @upload.id }
   rescue StandardError => e
@@ -70,6 +72,7 @@ class UploadsController < ApplicationController
     render json: { error: e }, status: :unprocessable_entity
   end
 
+  # Client polls server for async upload status until upload complete or inactive
   def async_status
     @upload = Upload.find_by(id: params[:id])
 
@@ -80,7 +83,7 @@ class UploadsController < ApplicationController
       canceled: @upload.canceled_at.present?,
       type: @upload.csv_type
     }
-
+    
     if @upload.completed_at
       @upload.alerts => { csv_success:, warning: }
       @upload.update(status_message: nil)
@@ -89,6 +92,8 @@ class UploadsController < ApplicationController
     end
     
     render json: { async_status: }
+  rescue StandardError => e
+    render json: { error: e }, status: :internal_server_error
   end
 
   private

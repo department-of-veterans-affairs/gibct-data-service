@@ -16,6 +16,7 @@
         <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
       </div>
 
+      <!-- Disable multiple file upload if async submit enabled -->
       <% unless @upload.async_enabled? %>
         <div class="form-group">
           <%= f.label(:multiple_file_upload) %>
@@ -34,6 +35,7 @@
 
       <div class="actions">
         <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
+        <!-- If async enabled, intercept submit and perform custom logic in upload.js -->
         <% if @upload.async_enabled? %>
           <button
             type="submit"

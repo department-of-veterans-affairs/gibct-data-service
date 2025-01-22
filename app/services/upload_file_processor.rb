@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+# Shared behavior between sync and async upload creation
 class UploadFileProcessor
   def initialize(upload)
     @upload = upload
   end
 
   def load_file
+    return unless @upload.persisted?
+
     file = file_from_blob || @upload.upload_file.tempfile
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
@@ -49,12 +52,14 @@ class UploadFileProcessor
     @upload.csv_type.constantize
   end
 
+  # Create tempfile from reassmbled blob
   def file_from_blob
     return unless @upload.blob
 
     Tempfile.new([klass.name, ".txt"], binmode: true).tap do |file|
       file.write(@upload.blob)
       file.rewind
+      # Final blob too large to permanently persist in DB
       @upload.update(blob: nil)
     end
   end

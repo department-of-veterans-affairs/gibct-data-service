@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   resources :uploads, only: [:index, :show] do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
   end
+  # Conditional routing depends on whether async upload enabled for specific csv type
   post 'uploads', to: 'uploads#create', constraints: AsyncUploadConstraint.new(async_enabled: false)
   constraints(AsyncUploadConstraint.new(async_enabled: true)) do
     post 'uploads', to: 'uploads#create_async'

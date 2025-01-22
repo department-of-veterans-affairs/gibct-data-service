@@ -60,6 +60,7 @@ class Upload < ApplicationRecord
     async_upload_settings[:chunk_size]
   end
 
+  # Reassemble blobs after successive #create_async requests
   def create_or_concat_blob
     File.open(upload_file.tempfile.path, 'rb') do |file|
       new_blob = upload_file.tempfile.read
@@ -101,6 +102,7 @@ class Upload < ApplicationRecord
     raise ActiveRecord::Rollback, "Upload canceled" if reload.inactive?
   end
 
+  # Update status in new thread to make jupdates readable from inside a database transaction
   def safely_update_status!(message)
     rollback_if_canceled
 

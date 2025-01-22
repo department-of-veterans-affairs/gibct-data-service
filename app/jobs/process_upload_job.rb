@@ -9,7 +9,7 @@ class ProcessUploadJob < ApplicationJob
       @upload.safely_update_status!("preparing upload . . .")
       data = UploadFileProcessor.new(@upload).load_file
       save_alert_messages(data)
-      data_results = data.try(:[], :results)
+      data_results = data[:results]
 
       @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
@@ -26,6 +26,8 @@ class ProcessUploadJob < ApplicationJob
     @upload.csv_type.constantize
   end
 
+  # Because import and record validation happens in async job, save results in status_message
+  # To report to client via #async_status action
   def save_alert_messages(data)
     results_breakdown = UploadFileProcessor.parse_results(data)
     results_breakdown => { valid_rows:,
