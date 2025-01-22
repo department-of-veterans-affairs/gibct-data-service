@@ -35,7 +35,7 @@ class UploadFileProcessor
     validation_warnings = failed_rows.sort do |a, b|
       a.errors[:row].first.to_i <=> b.errors[:row].first.to_i
     end.map(&:display_errors_with_row)
-                 
+          
     {
       total_rows_count: results.ids.length,
       failed_rows_count: failed_rows.length,

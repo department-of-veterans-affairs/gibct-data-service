@@ -94,7 +94,7 @@ class Upload < ApplicationRecord
     return false if canceled_at
 
     raise StandardError, 'Upload no longer active' unless active?
-    
+
     update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
   end
 
