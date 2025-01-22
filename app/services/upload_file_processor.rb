@@ -42,7 +42,7 @@ class UploadFileProcessor
       validation_warnings: validation_warnings,
       header_warnings: data[:header_warnings]
     }.tap do |hash|
-        hash[:valid_rows] = hash[:total_rows_count] - hash[:failed_rows_count]
+      hash[:valid_rows] = hash[:total_rows_count] - hash[:failed_rows_count]
     end
   end
 

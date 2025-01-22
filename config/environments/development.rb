@@ -86,6 +86,7 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
+  # To-Do: Is this necessary?
   config.active_job.queue_adapter = :async
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new(
     min_threads: 1,
