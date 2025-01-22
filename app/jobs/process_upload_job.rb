@@ -6,7 +6,7 @@ class ProcessUploadJob < ApplicationJob
   def perform(upload)
     @upload = upload
     begin
-      @upload.safely_update_status!("preparing upload . . .")
+      @upload.safely_update_status!('preparing upload . . .')
       data = UploadFileProcessor.new(@upload).load_file
       save_alert_messages(data)
       data_results = data[:results]
@@ -33,7 +33,7 @@ class ProcessUploadJob < ApplicationJob
     results_breakdown => { valid_rows:,
                           total_rows_count:,
                           failed_rows_count:,
-                          header_warnings:, 
+                          header_warnings:,
                           validation_warnings:}
     alerts = {}
 

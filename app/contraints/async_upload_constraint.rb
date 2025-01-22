@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AsyncUploadConstraint
   def initialize(async_enabled:)
     @async_enabled = async_enabled

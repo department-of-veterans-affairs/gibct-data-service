@@ -62,7 +62,7 @@ class Upload < ApplicationRecord
 
   # Reassemble blobs after successive #create_async requests
   def create_or_concat_blob
-    File.open(upload_file.tempfile.path, 'rb') do |file|
+    File.open(upload_file.tempfile.path, 'rb') do
       new_blob = upload_file.tempfile.read
       updated_blob = blob ? blob.concat(new_blob) : new_blob
       update(blob: updated_blob)
@@ -75,9 +75,9 @@ class Upload < ApplicationRecord
   # Upload has been queued for async processing, hasn't been completed or canceled, and hasn't exceeded TTL
   def active?
     queued_at.present? &&
-    completed_at.blank? &&
-    canceled_at.blank? &&
-    Time.now.utc < dead_at
+      completed_at.blank? &&
+      canceled_at.blank? &&
+      Time.now.utc < dead_at
   end
 
   def inactive?
@@ -93,13 +93,13 @@ class Upload < ApplicationRecord
   def cancel!
     return false if canceled_at
 
-    raise StandardError, "Upload cannot be canceled" unless active?
+    raise StandardError, 'Upload no longer active' unless active?
     
     update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
   end
 
   def rollback_if_canceled
-    raise ActiveRecord::Rollback, "Upload canceled" if reload.inactive?
+    raise ActiveRecord::Rollback, 'Upload canceled' if reload.inactive?
   end
 
   # Update status in new thread to make jupdates readable from inside a database transaction
@@ -114,7 +114,7 @@ class Upload < ApplicationRecord
   end
 
   def update_import_progress!(completed, total)
-    percent_complete = (completed.to_f / total.to_f) * 100.00
+    percent_complete = (completed.to_f / total) * 100
     safely_update_status!("importing records: #{percent_complete.round}% . . .")
   end
 
@@ -123,7 +123,7 @@ class Upload < ApplicationRecord
     return {} unless data.is_a?(Hash)
 
     data.deep_symbolize_keys!
-  rescue StandardError => e
+  rescue StandardError
     {}
   end
 
@@ -184,9 +184,9 @@ class Upload < ApplicationRecord
   def self.locked_fetches_exist?
     where(ok: false).any?
   end
-  
+
   def self.async_queue
-    all.select { |u| u.active? }
+    all.select(&:active?)
   end
 
   private

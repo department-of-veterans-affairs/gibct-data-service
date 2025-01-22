@@ -7,7 +7,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.from_csv_type(params[:csv_type])
-  
+
     @extensions = upload_settings.extensions.single.join(', ')
 
     return csv_requirements if @upload.csv_type_check?
@@ -48,10 +48,10 @@ class UploadsController < ApplicationController
   # which reassemble blobs into original file server side
   def create_async
     previous_upload = Upload.find_by(id: async_params[:upload_id])
-    previous_upload.update(upload_file: merged_params[:upload_file]) if previous_upload
+    previous_upload&.update(upload_file: merged_params[:upload_file])
     @upload = previous_upload || Upload.create(**merged_params,
                                                queued_at: Time.now.utc.to_fs(:db),
-                                               status_message: "queued for upload")
+                                               status_message: 'queued for upload')
     @upload.create_or_concat_blob
 
     ProcessUploadJob.perform_later(@upload) if final_upload?
@@ -83,14 +83,14 @@ class UploadsController < ApplicationController
       canceled: @upload.canceled_at.present?,
       type: @upload.csv_type
     }
-    
+
     if @upload.completed_at
       @upload.alerts => { csv_success:, warning: }
       @upload.update(status_message: nil)
       flash[:csv_success] = csv_success if csv_success
       flash[:warning] = warning
     end
-    
+
     render json: { async_status: }
   rescue StandardError => e
     render json: { error: e }, status: :internal_server_error
@@ -109,7 +109,7 @@ class UploadsController < ApplicationController
     results_breakdown => { valid_rows:,
                           total_rows_count:,
                           failed_rows_count:,
-                          header_warnings:, 
+                          header_warnings:,
                           validation_warnings:}
 
     if valid_rows.positive?
@@ -144,7 +144,7 @@ class UploadsController < ApplicationController
   def upload_params
     upload_params = params.require(:upload).permit(
       :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
-      metadata: [ :upload_id, count: [:current, :total]]
+      metadata: [:upload_id, { count: %i[current total] }]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')

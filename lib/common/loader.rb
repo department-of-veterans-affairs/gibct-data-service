@@ -3,7 +3,7 @@
 module Common
   module Loader
     # Results is an Array of ImportableRecords
-    def load(results, options = {}, async_options)
+    def load(results, options = {}, async_options = {})
       klass.transaction do
         delete_all
         load_records(results, options, async_options)
@@ -19,16 +19,14 @@ module Common
       total_failed_instances = []
 
       if async_options[:enabled]
-        @upload = Upload.find_by(id: async_options[:upload_id]) 
+        @upload = Upload.find_by(id: async_options[:upload_id])
         completed_count = 0
       end
 
       records.each_slice(Settings.active_record.batch_size.import) do |batch|
         results = klass.import batch, ignore: true
-        @upload&.tap do |u|
-          completed_count += batch.size
-          u.update_import_progress!(completed_count, records.size)
-        end
+        completed_count += batch.size if @upload
+        @upload&.update_import_progress!(completed_count, records.size)
         total_failed_instances.concat results&.failed_instances
         total_results.failed_instances.concat results&.failed_instances
         total_results.num_inserts += results&.num_inserts
