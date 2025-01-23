@@ -118,4 +118,14 @@ RSpec.describe Upload, type: :model do
       expect(described_class.locked_fetches_exist?).to eq(false)
     end
   end
+
+  context 'async upload' do
+    subject(:upload) { build :upload, user: user }
+
+    describe 'when validating' do
+      it 'has a valid factory' do
+        expect(upload).to be_valid
+      end
+    end
+  end
 end
