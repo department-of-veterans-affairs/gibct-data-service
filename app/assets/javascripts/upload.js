@@ -183,7 +183,6 @@ $(function() {
 
   // ASYNC SUBMIT ACTION
   // Submit logic for new upload form when async upload enabled
-  // To-Do:
   $("#async-submit-btn").on("click", async function(event) {
     event.preventDefault();
     const form = $("#new_upload")[0];
