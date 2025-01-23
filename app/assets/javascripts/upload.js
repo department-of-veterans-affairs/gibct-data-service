@@ -161,7 +161,7 @@ $(function() {
       }
     });
   };
-  pollUploadStatus();
+  $(document).ready(() => pollUploadStatus());
 
   // Reset active upload if for some reason stuck on "Loading . . ."
   // Not sure this is necessary, but technically someone could mess with local storage and

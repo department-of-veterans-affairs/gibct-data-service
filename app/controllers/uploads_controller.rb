@@ -84,7 +84,7 @@ class UploadsController < ApplicationController
       type: @upload.csv_type
     }
 
-    if @upload.completed_at
+    if @upload.completed_at && @upload.alerts.present?
       @upload.alerts => { csv_success:, warning: }
       @upload.update(status_message: nil)
       flash[:csv_success] = csv_success if csv_success
