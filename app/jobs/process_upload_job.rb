@@ -50,6 +50,6 @@ class ProcessUploadJob < ApplicationJob
       'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
     }.compact
 
-    @upload.update!(status_message: alerts.to_json)
+    @upload.update(status_message: alerts.to_json)
   end
 end
