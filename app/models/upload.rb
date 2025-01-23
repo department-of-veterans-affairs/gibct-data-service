@@ -102,7 +102,7 @@ class Upload < ApplicationRecord
     raise ActiveRecord::Rollback, 'Upload canceled' if reload.inactive?
   end
 
-  # Update status in new thread to make jupdates readable from inside a database transaction
+  # Update status in new thread to make updates readable from inside a database transaction
   def safely_update_status!(message)
     rollback_if_canceled
 
