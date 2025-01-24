@@ -78,5 +78,29 @@ FactoryBot.define do
       csv { CipCode.name }
       ok { true }
     end
+
+    factory :async_upload do
+      transient do
+        csv_name { 'program.csv' }
+      end
+
+      csv_type { Program.name }
+      queued_at { Time.now.utc.to_fs(:db) }
+      canceled_at { nil }
+      
+      trait :active do
+        completed_at { nil }
+      end
+
+      trait :canceled do
+        completed_at { nil }
+        canceled_at { (Time.now + 1.minute).utc.to_fs(:db) }
+      end
+
+      trait :dead do
+        completed_at { nil }
+        queued_at { (Time.now - 5.hours).utc.to_fs(:db) }
+      end
+    end
   end
 end

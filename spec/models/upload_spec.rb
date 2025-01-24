@@ -9,6 +9,7 @@ RSpec.describe Upload, type: :model do
 
   describe 'when validating' do
     it 'has a valid factory' do
+      byebug
       expect(upload).to be_valid
     end
 
@@ -120,7 +121,9 @@ RSpec.describe Upload, type: :model do
   end
 
   context 'async upload' do
-    subject(:upload) { build :upload, user: user }
+    subject(:upload) { build :async_upload, :active, user: user }
+
+    before { allow(upload).to receive(:async_enabled?).and_return(true) }
 
     describe 'when validating' do
       it 'has a valid factory' do
