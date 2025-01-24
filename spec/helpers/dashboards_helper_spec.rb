@@ -71,6 +71,41 @@ RSpec.describe DashboardsHelper, type: :helper do
     end
   end
 
+  describe 'generating_in_progress?' do
+    let(:preview_version) { create :version, :preview }
+
+    it 'returns true when the most recent preview version is generating' do
+      expect(helper.generating_in_progress?([preview_version])).to eq(true)
+    end
+
+    it 'returns false when no rows exist on the preview generation status table' do
+      preview_version.completed_at = Time.now.utc
+      expect(helper.generating_in_progress?([preview_version])).not_to eq(true)
+    end
+
+    it 'returns true when rows exist on the preview generation status table' do
+      preview_version.completed_at = Time.now.utc
+      create :preview_generation_status_information, :publishing
+      expect(helper.generating_in_progress?([preview_version])).to eq(true)
+    end
+  end
+
+  describe 'appears_to_be_stuck?' do
+    it 'returns false when no rows exist on the preview generation status or versions table' do
+      expect(helper.appears_to_be_stuck?([])).to eq(false)
+    end
+
+    it 'returns true when rows exist on the preview generation status but not on the versions table' do
+      create :preview_generation_status_information, :publishing
+      expect(helper.appears_to_be_stuck?([])).to eq(true)
+    end
+
+    it 'returns true when there is a preview version that has not completed and is older than 10 minutes' do
+      preview_version = create(:version, :preview, created_at: Time.now.utc - 11.minutes)
+      expect(helper.appears_to_be_stuck?([preview_version])).to eq(true)
+    end
+  end
+
   describe 'preview_generation_started?' do
     it 'returns true when rows exist on the preview generation status table' do
       create :preview_generation_status_information
