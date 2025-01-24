@@ -26,6 +26,7 @@ async_upload:
   extensions:
     single:
       - '.txt'
+      - '.csv'
   dead_after: 18_000
 
 scorecard:

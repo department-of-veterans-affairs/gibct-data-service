@@ -185,7 +185,17 @@ $(function() {
   // Submit logic for new upload form when async upload enabled
   $("#async-submit-btn").on("click", async function(event) {
     event.preventDefault();
+    // Grab form data and validate file extension
     const form = $("#new_upload")[0];
+    const formData = new FormData(form);
+    const file = formData.get("upload[upload_file]");
+    const ext = file.name !== '' ? file.name.slice(file.name.lastIndexOf(".")) : null;
+    const fileInput = $("#upload_upload_file");
+    const validExts = $(fileInput).attr("accept").split(", ");
+    $(fileInput)[0].setCustomValidity('');
+    if (ext !== null && !validExts.includes(ext)) {
+      $(fileInput)[0].setCustomValidity(`${ext} is not a valid file format.`);
+    }
     if (!form.reportValidity()) {
       return;
     }
@@ -197,9 +207,6 @@ $(function() {
       'Submitting . . .' +
       '</div>'
     );
-    // Grab form data
-    const formData = new FormData(form);
-    const file = formData.get("upload[upload_file]");
     const csvType = formData.get("upload[csv_type]");
     let uploadId = null;
     // Divide upload file into smaller files
