@@ -100,8 +100,8 @@ RSpec.describe DashboardsHelper, type: :helper do
       expect(helper.appears_to_be_stuck?([])).to eq(true)
     end
 
-    it 'returns true when there is a preview version that has not completed and is older than 10 minutes' do
-      preview_version = create(:version, :preview, created_at: Time.now.utc - 11.minutes)
+    it 'returns true when there is a preview version that has not completed and is older than 30 minutes' do
+      preview_version = create(:version, :preview, created_at: Time.now.utc - 31.minutes)
       expect(helper.appears_to_be_stuck?([preview_version])).to eq(true)
     end
   end
