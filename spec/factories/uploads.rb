@@ -92,6 +92,11 @@ FactoryBot.define do
         completed_at { nil }
       end
 
+      trait :with_blob do
+        active
+        blob { 'sample csv content' }
+      end
+
       trait :canceled do
         completed_at { nil }
         canceled_at { (Time.now + 1.minute).utc.to_fs(:db) }

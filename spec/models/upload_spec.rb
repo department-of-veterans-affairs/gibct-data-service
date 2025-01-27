@@ -9,7 +9,6 @@ RSpec.describe Upload, type: :model do
 
   describe 'when validating' do
     it 'has a valid factory' do
-      byebug
       expect(upload).to be_valid
     end
 
@@ -122,12 +121,174 @@ RSpec.describe Upload, type: :model do
 
   context 'async upload' do
     subject(:upload) { build :async_upload, :active, user: user }
+    let(:chunk_size) { 10_000_000 }
 
-    before { allow(upload).to receive(:async_enabled?).and_return(true) }
+    before do
+      settings = Common::Shared.file_type_defaults(upload.csv_type)
+      settings.merge!(async_upload: { enabled: true, chunk_size: chunk_size })
+      allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+    end
 
     describe 'when validating' do
       it 'has a valid factory' do
         expect(upload).to be_valid
+      end
+    end
+
+    describe '::async_queue' do
+      it 'lists active async uploads' do
+        expect(described_class.async_queue).to be_empty
+        upload.save
+        expect(described_class.async_queue.length).to eq(1)
+      end
+    end
+
+    describe '#check_async_queue' do
+      it 'prevents creation of more than one active upload of same csv type' do
+        expect(upload.save).to be true
+        expect { create(:async_upload, :active, user: user) }.to raise_error
+        expect(create(:async_upload, :active, user: user, csv_type: "Weam")).to be_truthy
+      end
+    end
+
+    describe '#async_upload_settings, #async_enabled?, #chunk_size' do
+      it 'returns async settings for csv type' do
+        expect(upload.async_upload_settings.keys).to eq([:enabled, :chunk_size])
+        expect(upload.async_enabled?).to be true
+        expect(upload.chunk_size).to eq(chunk_size)
+      end
+    end
+
+    describe '#create_or_concat_blob' do
+      let!(:upload_content) { upload.upload_file.read }
+
+      before(:each) { upload.upload_file.rewind }
+
+      it 'creates blob if upload#blob nil' do
+        expect { upload.create_or_concat_blob }.to change { upload.blob }.from(nil).to(upload_content)
+      end
+
+      it 'concats blob if upload#blob exists' do
+        upload = build(:async_upload, :with_blob, user: user)
+        expect { upload.create_or_concat_blob }.to change { upload.blob }.to(upload.blob + upload_content)
+      end
+
+      it 'closes and unlinks upload file' do
+        expect(upload.upload_file.tempfile).to receive(:close)
+        expect(upload.upload_file.tempfile).to receive(:unlink)
+        upload.create_or_concat_blob
+      end
+    end
+
+    describe '#active?, #inactive?' do
+      it 'returns #active? true if upload queued, not completed, not canceled, and not dead' do
+        expect(upload.active?).to be true
+        expect(upload.inactive?).to be false
+      end
+
+      it 'returns #active? false if upload completed' do
+        upload = build(:async_upload, :valid_upload, user: user)
+        expect(upload.active?).to be false
+        expect(upload.inactive?).to be true
+      end
+
+      it 'returns #active? false if upload canceled' do
+        upload = build(:async_upload, :canceled, user: user)
+        expect(upload.active?).to be false
+        expect(upload.inactive?).to be true
+      end
+
+      it 'returns #active? false if upload dead' do
+      upload = build(:async_upload, :dead, user: user)
+      expect(upload.active?).to be false
+      expect(upload.inactive?).to be true
+      end
+    end
+
+    describe '#dead_at' do
+      let(:dead_after) { Settings.async_upload.dead_after.seconds }
+
+      it 'returns queued_at time plus dead_after time' do
+        expect(upload.dead_at).to eq(upload.queued_at + dead_after)
+      end
+    end
+
+    describe '#cancel!' do
+      it 'returns false if inactive' do
+        upload = build(:async_upload, :canceled, user: user)
+        expect(upload.cancel!).to be false
+      end
+
+      it 'returns true if upload active' do
+        upload = build(:async_upload, :active, user: user)
+        expect(upload.cancel!).to be true
+      end
+    end
+
+    describe '#rollback_if_inactive' do
+      before { upload.save }
+
+      it 'throws error if upload inactive' do
+        upload = build(:async_upload, :canceled, user: user)
+        expect { upload.rollback_if_inactive }.to raise_error
+      end
+
+      it 'proceeds without error if upload active' do
+        expect { upload.rollback_if_inactive }.not_to raise_error
+      end
+    end
+
+    describe '#safely_update_status!' do
+      let(:status) { 'sample status' }
+
+      before { upload.save }
+
+      it 'updates status in separate thread if upload active' do
+        expect(upload).to receive(:update).with(status_message: status)
+        new_thread = upload.safely_update_status!(status)
+        expect(new_thread.class).to eq(Thread)
+        new_thread.join
+      end
+
+      it 'throws error if upload inactive' do
+        upload = build(:async_upload, :canceled, user: user)
+        expect { upload.safely_update_status!(status) }.to raise_error
+      end
+    end
+
+    describe '#update_import_progress!' do
+      let(:completed) { 49 }
+      let(:total) { 100 }
+
+      before { upload.save }
+      
+      it 'updates upload status during import with percent complete' do
+        percent_complete = (completed.to_f / total) * 100
+        new_thread = upload.update_import_progress!(completed, total)
+        new_thread.join
+        expect(upload.status_message).to eq("importing records: #{percent_complete.round}% . . .")
+      end
+
+      it 'throws error if upload inactive' do
+        upload = build(:async_upload, :canceled, user: user)
+        expect { upload.update_import_progress!(completed, total) }.to raise_error
+      end
+    end
+
+    describe '#alerts' do
+      it 'returns hash with fields if upload#status_message parsable JSON' do
+        json_alerts = { alert_key_1: 'alert 1', alert_key_2: 'alert 2' }.to_json
+        upload.update(status_message: json_alerts)
+        expect(upload.alerts.keys).to eq(%i[alert_key_1 alert_key_2])
+      end
+
+      it 'returns empty hash if upload#status_message empty' do
+        expect(upload.alerts).to be_empty
+      end
+
+      it 'returns empty hash if upload#status_message not parsable JSON' do
+        upload.update(status_message: 'string status')
+        expect(upload.alerts).to be_empty
       end
     end
   end
