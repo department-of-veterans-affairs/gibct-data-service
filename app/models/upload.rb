@@ -99,7 +99,7 @@ class Upload < ApplicationRecord
   end
 
   def rollback_if_canceled
-    raise ActiveRecord::Rollback, 'Upload canceled' if reload.inactive?
+    raise ActiveRecord::Rollback, 'Upload no longer active' if reload.inactive?
   end
 
   # Update status in new thread to make updates readable from inside a database transaction
