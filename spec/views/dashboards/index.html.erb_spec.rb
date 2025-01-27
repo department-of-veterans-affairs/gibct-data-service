@@ -28,8 +28,8 @@ RSpec.describe 'dashboards/index', type: :view do
     expect(rendered).to match(/Enable locked Fetches/)
   end
 
-  # The default scenario actually has generation in progress but it is newer than 10 minutes
-  it 'does not show the unlock button if generation is in progress but newer than 10 minutes' do
+  # The default scenario actually has generation in progress but it is newer than 30 minutes
+  it 'does not show the unlock button if generation is in progress but newer than 30 minutes' do
     render
     expect(rendered).not_to match(/Unlock/)
   end
@@ -40,8 +40,8 @@ RSpec.describe 'dashboards/index', type: :view do
     expect(rendered).not_to match(/Unlock/)
   end
 
-  it 'does show the unlock button if generation is in progress and older than 10 minutes' do
-    Version.where(production: false).update(created_at: Time.now.utc - 11.minutes)
+  it 'does show the unlock button if generation is in progress and older than 30 minutes' do
+    Version.where(production: false).update(created_at: Time.now.utc - 31.minutes)
     render
     expect(rendered).to match(/Unlock/)
   end

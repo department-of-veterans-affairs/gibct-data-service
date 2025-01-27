@@ -42,7 +42,7 @@ module DashboardsHelper
       return pgsi.nil? ? false : true
     end
 
-    return true if preview_version.created_at < 10.minutes.ago && preview_version.completed_at.nil?
+    return true if preview_version.created_at < 30.minutes.ago && preview_version.completed_at.nil?
 
     false
   end
