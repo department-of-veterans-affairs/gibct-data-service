@@ -17,6 +17,24 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path
   end
 
+  def unlock_generate_button
+    begin
+      PreviewGenerationStatusInformation.delete_all
+      begin
+        Version.where(production: false).destroy_all
+        flash.notice = 'Unlock completed'
+      rescue StandardError => e
+        log_error(e)
+        flash.error = "Unlock failed on Version: #{e.message}"
+      end
+    rescue StandardError => e
+      log_error(e)
+      flash.error = "Unlock failed on PreviewGenerationStatusInformation: #{e.message}"
+    end
+
+    redirect_to dashboards_path
+  end
+
   def export
     file_type = params[:csv_type]
     if GROUP_FILE_TYPES_NAMES.include?(file_type)
