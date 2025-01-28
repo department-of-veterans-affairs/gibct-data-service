@@ -102,6 +102,11 @@ FactoryBot.define do
         blob { 'sample csv content' }
       end
 
+      trait :with_blob_and_status do
+        with_active_status
+        with_blob
+      end
+
       trait :canceled do
         completed_at { nil }
         canceled_at { (Time.now + 1.minute).utc.to_fs(:db) }
@@ -114,7 +119,7 @@ FactoryBot.define do
 
       trait :complete_with_alerts do
         valid_upload
-        status_message {}
+        status_message { "{\"csv_success\":{\"total_rows_count\":\"58\",\"valid_rows\":\"58\",\"failed_rows_count\":\"0\"},\"warning\":{}}" }
       end
     end
   end

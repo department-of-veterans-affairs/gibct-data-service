@@ -93,8 +93,6 @@ class Upload < ApplicationRecord
   def cancel!
     return false if inactive?
 
-    byebug
-
     update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
   end
 

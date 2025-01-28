@@ -223,6 +223,17 @@ RSpec.describe Upload, type: :model do
         upload = build(:async_upload, :active, user: user)
         expect(upload.cancel!).to be true
       end
+
+      it 'sets canceled_at value' do
+         upload = build(:async_upload, :with_blob_and_status, user: user)
+         expect { upload.cancel! }.to change { upload.canceled_at }.from(nil)
+      end
+
+      it 'clears blob and status message' do
+        upload = build(:async_upload, :with_blob_and_status, user: user)
+        expect { upload.cancel! }.to change { upload.slice(:blob, :status_message).values }
+        .from([ upload.blob, upload.status_message]).to([nil, nil])
+     end
     end
 
     describe '#rollback_if_inactive' do

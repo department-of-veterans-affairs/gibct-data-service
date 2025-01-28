@@ -379,6 +379,44 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
+    describe 'PATCH cancel' do
+      login_user
+
+      subject { patch :cancel_async, params: { id: upload.id }}
+
+      context 'when upload active' do
+        let(:upload) { create(:async_upload, :with_blob_and_status) }
+
+        it 'finds upload by upload id' do
+          expect(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          subject
+        end
+
+        it 'cancels upload' do
+          allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          expect { subject }.to change { upload.canceled_at }.from(nil)
+          expect(response).to have_http_status(200)
+          expect(JSON.parse(response.body)["canceled"]).to be true
+        end
+      end
+
+      context 'when upload inactive' do
+        let(:upload) { create(:async_upload, :valid_upload) }
+
+        it 'finds upload by upload id' do
+          expect(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          subject
+        end
+
+        it 'fails to cancel upload' do
+          allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          expect { subject }.not_to change(upload, :canceled_at)
+          expect(response).to have_http_status(422)
+        end
+
+      end
+    end
+
     describe 'GET async_status' do
       login_user
       
@@ -386,6 +424,11 @@ RSpec.describe UploadsController, type: :controller do
 
       context 'when upload active' do
         let(:upload) { create(:async_upload, :with_active_status) }
+
+        it 'finds upload by upload id' do
+          expect(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          subject
+        end
 
         it 'returns async status' do
           subject
@@ -405,6 +448,11 @@ RSpec.describe UploadsController, type: :controller do
       context 'when upload complete' do
         let(:upload) { create(:async_upload, :complete_with_alerts) }
 
+        it 'finds upload by upload id' do
+          expect(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          subject
+        end
+
         it 'returns async status' do
           subject
           expect(response).to have_http_status(200)
@@ -412,11 +460,28 @@ RSpec.describe UploadsController, type: :controller do
           status = JSON.parse(response.body)["async_status"].transform_keys(&:to_sym)
           expect(status).to include({
             message: upload.status_message,
-            active: true,
-            ok: false,
+            active: false,
+            ok: true,
             canceled: false,
             type: upload.csv_type
           })
+        end
+
+        it 'updates flash[:csv_success] and flash[:warning]' do
+          subject
+          expect(flash[:csv_success]).to eq(upload.alerts[:csv_success])
+          expect(flash[:warning]).to eq(upload.alerts[:warning])
+        end
+      end
+
+      context 'when error encountered' do
+        let(:upload) { create(:async_upload, :complete_with_alerts) }
+
+        it 'returns internal server error' do
+          allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+          allow(upload).to receive(:alerts).and_raise(StandardError)
+          subject
+          expect(response).to have_http_status(500)
         end
       end
     end
