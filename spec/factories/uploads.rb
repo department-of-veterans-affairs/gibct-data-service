@@ -112,7 +112,7 @@ FactoryBot.define do
         queued_at { (Time.now - 5.hours).utc.to_fs(:db) }
       end
 
-      traint :complete_with_alerts do
+      trait :complete_with_alerts do
         valid_upload
         status_message {}
       end
