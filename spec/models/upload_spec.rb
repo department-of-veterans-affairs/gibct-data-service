@@ -162,7 +162,7 @@ RSpec.describe Upload, type: :model do
     describe '#create_or_concat_blob' do
       let!(:upload_content) { upload.upload_file.read }
 
-      before(:each) { upload.upload_file.rewind }
+      before { upload.upload_file.rewind }
 
       it 'creates blob if upload#blob nil' do
         expect { upload.create_or_concat_blob }.to change { upload.blob }.from(nil).to(upload_content)

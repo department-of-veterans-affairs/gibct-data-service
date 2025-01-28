@@ -274,4 +274,151 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
   end
+
+  context 'when async upload' do
+    describe 'POST create_async' do
+      login_user
+      let(:upload_file) { build(:upload).upload_file }
+      let!(:upload_content) { upload_file.read }
+      let(:upload_params) do
+        {
+          upload: { upload_file: upload_file,
+                    skip_lines: 0,
+                    comment: 'Test',
+                    csv_type:,
+                    metadata: }
+        }
+      end
+      let(:csv_type) { 'Program' }
+      let(:current) { '1' }
+      let(:metadata) {{ upload_id: upload&.id, count: { current:, total: '3' }}}
+
+      def upload
+        Upload.first
+      end
+
+      subject { post :create_async, params: upload_params }
+
+      before { upload_file.rewind }
+
+      context 'with valid form input' do
+        context 'when first upload in a series of multiple requests' do
+          it 'creates new upload record with queued_at value' do
+            csv_type = upload_params[:upload][:csv_type]
+            expect { subject }.to change(Upload.where(csv_type:), :count).by(1)
+            expect(upload.queued_at).not_to be_nil
+          end
+
+          it 'changes upload#blob from nil to upload content' do
+            expect { subject }.to change { upload&.blob }.from(nil).to(upload_content)
+          end
+
+          it 'doesn\'t queue ProcessUploadJob' do
+            subject
+            expect(ProcessUploadJob).not_to receive(:perform_later)
+            expect(upload.status_message).to be_nil
+          end
+        end
+
+        context 'when intermediate upload in a series of multiple requests' do
+          let(:current) { '2' }
+
+          before { create(:async_upload, :with_blob)}
+
+          it 'finds previous upload in series instead of creating new one' do
+            expect(Upload).to receive(:find_by).with(id: upload.id.to_s)
+            expect { subject }.not_to change(Upload, :count)
+          end
+
+          it 'concats upload content with previous upload blob' do
+            expect { subject }.to change { upload.blob }.to(upload.blob + upload_content) 
+          end
+
+          it 'doesn\'t queue ProcessUploadJob' do
+            subject
+            expect(ProcessUploadJob).not_to receive(:perform_later)
+            expect(upload.status_message).to be_nil
+          end
+        end
+
+        context 'when last upload in a series of multiple requests' do
+          let(:current) { '3' }
+
+          before { create(:async_upload, :with_blob)}
+
+          it 'finds previous upload in series instead of creating new one' do
+            expect(Upload).to receive(:find_by).with(id: upload.id.to_s)
+            expect { subject }.not_to change(Upload, :count)
+          end
+
+          it 'concats upload content with previous upload blob' do
+            expect { subject }.to change { upload.blob }.to(upload.blob + upload_content) 
+          end
+
+          it 'queues ProcessUploadJob' do
+            expect(ProcessUploadJob).to receive(:perform_later)
+            expect { subject }.to change { upload.status_message }.from(nil).to('queued for upload')
+          end
+        end
+
+        context 'when error occurs' do
+          context 'when blob concatenation fails' do
+            let(:current) { '2' }
+
+            let!(:upload) { create(:async_upload, :with_blob)}
+
+            it 'cancels the existing upload' do
+              allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
+              allow(upload).to receive(:create_or_concat_blob).and_raise(StandardError)
+              expect(upload).to receive(:cancel!)
+              subject
+              expect(response).to have_http_status(500)
+            end
+          end
+        end
+      end
+    end
+
+    describe 'GET async_status' do
+      login_user
+      
+      subject { get :async_status, params: { id: upload.id }}
+
+      context 'when upload active' do
+        let(:upload) { create(:async_upload, :with_active_status) }
+
+        it 'returns async status' do
+          subject
+          expect(response).to have_http_status(200)
+          expect(response).to match_response_schema("async_upload_status")
+          status = JSON.parse(response.body)["async_status"].transform_keys(&:to_sym)
+          expect(status).to include({
+            message: upload.status_message,
+            active: true,
+            ok: false,
+            canceled: false,
+            type: upload.csv_type
+          })
+        end
+      end
+
+      context 'when upload complete' do
+        let(:upload) { create(:async_upload, :complete_with_alerts) }
+
+        it 'returns async status' do
+          subject
+          expect(response).to have_http_status(200)
+          expect(response).to match_response_schema("async_upload_status")
+          status = JSON.parse(response.body)["async_status"].transform_keys(&:to_sym)
+          expect(status).to include({
+            message: upload.status_message,
+            active: true,
+            ok: false,
+            canceled: false,
+            type: upload.csv_type
+          })
+        end
+      end
+    end
+  end
 end

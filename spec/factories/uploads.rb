@@ -92,6 +92,11 @@ FactoryBot.define do
         completed_at { nil }
       end
 
+      trait :with_active_status do
+        active
+        status_message { 'importing records: 50% . . .' }
+      end
+
       trait :with_blob do
         active
         blob { 'sample csv content' }
@@ -105,6 +110,11 @@ FactoryBot.define do
       trait :dead do
         completed_at { nil }
         queued_at { (Time.now - 5.hours).utc.to_fs(:db) }
+      end
+
+      traint :complete_with_alerts do
+        valid_upload
+        status_message {}
       end
     end
   end
