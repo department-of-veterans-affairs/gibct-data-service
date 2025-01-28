@@ -92,19 +92,13 @@ FactoryBot.define do
         completed_at { nil }
       end
 
-      trait :with_active_status do
-        active
-        status_message { 'importing records: 50% . . .' }
-      end
-
       trait :with_blob do
         active
-        blob { 'sample csv content' }
-      end
-
-      trait :with_blob_and_status do
-        with_active_status
-        with_blob
+        blob do
+          rows = self.upload_file.read
+          self.upload_file.rewind
+          rows
+        end
       end
 
       trait :canceled do

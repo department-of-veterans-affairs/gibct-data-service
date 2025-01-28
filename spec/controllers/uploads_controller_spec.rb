@@ -385,7 +385,7 @@ RSpec.describe UploadsController, type: :controller do
       subject { patch :cancel_async, params: { id: upload.id }}
 
       context 'when upload active' do
-        let(:upload) { create(:async_upload, :with_blob_and_status) }
+        let(:upload) { create(:async_upload, :with_blob, status: 'importing records: 50% . . .') }
 
         it 'finds upload by upload id' do
           expect(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
@@ -423,7 +423,7 @@ RSpec.describe UploadsController, type: :controller do
       subject { get :async_status, params: { id: upload.id }}
 
       context 'when upload active' do
-        let(:upload) { create(:async_upload, :with_active_status) }
+        let(:upload) { create(:async_upload, status: 'importing records: 50% . . .') }
 
         it 'finds upload by upload id' do
           expect(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
