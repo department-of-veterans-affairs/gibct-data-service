@@ -87,7 +87,7 @@ FactoryBot.define do
       csv_type { Program.name }
       queued_at { Time.now.utc.to_fs(:db) }
       canceled_at { nil }
-      
+
       trait :active do
         completed_at { nil }
       end
@@ -95,25 +95,27 @@ FactoryBot.define do
       trait :with_blob do
         active
         blob do
-          rows = self.upload_file.read
-          self.upload_file.rewind
+          rows = upload_file.read
+          upload_file.rewind
           rows
         end
       end
 
       trait :canceled do
         completed_at { nil }
-        canceled_at { (Time.now + 1.minute).utc.to_fs(:db) }
+        canceled_at { (Time.now.utc + 1.minute).to_fs(:db) }
       end
 
       trait :dead do
         completed_at { nil }
-        queued_at { (Time.now - 5.hours).utc.to_fs(:db) }
+        queued_at { (Time.now.utc - 5.hours).utc.to_fs(:db) }
       end
 
       trait :complete_with_alerts do
         valid_upload
-        status_message { "{\"csv_success\":{\"total_rows_count\":\"58\",\"valid_rows\":\"58\",\"failed_rows_count\":\"0\"},\"warning\":{}}" }
+        status_message do
+          '{\"csv_success\":{\"total_rows_count\":\"58\",\"valid_rows\":\"58\",\"failed_rows_count\":\"0\"},\"warning\":{}}'
+        end
       end
     end
   end

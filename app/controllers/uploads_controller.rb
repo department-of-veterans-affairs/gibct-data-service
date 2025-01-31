@@ -67,7 +67,7 @@ class UploadsController < ApplicationController
   def cancel_async
     @upload = Upload.find_by(id: params[:id])
     canceled = @upload.cancel!
-    raise StandardError, "Failed to cancel upload #{original_filename}" unless canceled 
+    raise StandardError, "Failed to cancel upload #{original_filename}" unless canceled
 
     render json: { canceled: }
   rescue StandardError => e

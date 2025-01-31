@@ -29,7 +29,7 @@ class UploadFileProcessor
 
   def self.parse_results(data)
     return if data.empty?
-    
+
     results = data[:results]
     failed_rows = results.failed_instances
     validation_warnings = failed_rows.sort do |a, b|

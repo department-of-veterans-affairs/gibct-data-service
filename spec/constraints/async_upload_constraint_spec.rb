@@ -7,7 +7,7 @@ RSpec.describe AsyncUploadConstraint do
   let(:async_constraint) { described_class.new(async_enabled: true) }
   let(:csv_type) { 'Program' }
   let(:upload_file) { build(:upload).upload_file }
-  let(:request) { double(params: upload_params) }
+  let(:request) { OpenStruct.new(params: upload_params) }
 
   before do
     settings = Common::Shared.file_type_defaults(csv_type)
@@ -19,11 +19,11 @@ RSpec.describe AsyncUploadConstraint do
     context 'when async not enabled for file type' do
       let(:async_enabled) { false }
 
-      it "matches non async requests" do
+      it 'matches non async requests' do
         expect(non_async_constraint.matches?(request)).to be !async_enabled
       end
-  
-      it "matches async requests" do
+
+      it 'matches async requests' do
         expect(async_constraint.matches?(request)).to be async_enabled
       end
     end
@@ -31,11 +31,11 @@ RSpec.describe AsyncUploadConstraint do
     context 'when async enabled for file type' do
       let(:async_enabled) { true }
 
-      it "matches non async requests" do
+      it 'matches non async requests' do
         expect(non_async_constraint.matches?(request)).to be !async_enabled
       end
-  
-      it "matches async requests" do
+
+      it 'matches async requests' do
         expect(async_constraint.matches?(request)).to be async_enabled
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe AsyncUploadConstraint do
   describe 'matches request by upload id' do
     let(:user) { create(:user) }
     let(:upload) { create(:upload, user: user) }
-    let(:upload_params) {{ id: upload.id }}
+    let(:upload_params) { { id: upload.id } }
 
     it_behaves_like 'upload request'
   end

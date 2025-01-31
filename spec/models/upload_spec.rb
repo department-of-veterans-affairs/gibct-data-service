@@ -119,8 +119,9 @@ RSpec.describe Upload, type: :model do
     end
   end
 
-  context 'async upload' do
+  context 'when async upload' do
     subject(:upload) { build :async_upload, :active, user: user }
+
     let(:chunk_size) { 10_000_000 }
 
     before do
@@ -146,14 +147,14 @@ RSpec.describe Upload, type: :model do
     describe '#check_async_queue' do
       it 'prevents creation of more than one active upload of same csv type' do
         expect(upload.save).to be true
-        expect { create(:async_upload, :active, user: user) }.to raise_error
-        expect(create(:async_upload, :active, user: user, csv_type: "Weam")).to be_truthy
+        expect { create(:async_upload, :active, user: user) }.to raise_error(StandardError)
+        expect(create(:async_upload, :active, user: user, csv_type: 'Weam')).to be_truthy
       end
     end
 
     describe '#async_upload_settings, #async_enabled?, #chunk_size' do
       it 'returns async settings for csv type' do
-        expect(upload.async_upload_settings.keys).to eq([:enabled, :chunk_size])
+        expect(upload.async_upload_settings.keys).to eq(%i[enabled chunk_size])
         expect(upload.async_enabled?).to be true
         expect(upload.chunk_size).to eq(chunk_size)
       end
@@ -165,18 +166,21 @@ RSpec.describe Upload, type: :model do
       before { upload.upload_file.rewind }
 
       it 'creates blob if upload#blob nil' do
-        expect { upload.create_or_concat_blob }.to change { upload.blob }.from(nil).to(upload_content)
+        upload.save
+        expect { upload.create_or_concat_blob }.to change { upload.reload.blob }.from(nil).to(upload_content)
       end
 
       it 'concats blob if upload#blob exists' do
-        upload = build(:async_upload, :with_blob, user: user)
-        expect { upload.create_or_concat_blob }.to change { upload.blob }.to(upload.blob + upload_content)
+        upload = create(:async_upload, :with_blob, user: user)
+        expect { upload.create_or_concat_blob }.to change { upload.reload.blob }.to(upload.blob + upload_content)
       end
 
       it 'closes and unlinks upload file' do
-        expect(upload.upload_file.tempfile).to receive(:close)
-        expect(upload.upload_file.tempfile).to receive(:unlink)
+        allow(upload.upload_file.tempfile).to receive(:close)
+        allow(upload.upload_file.tempfile).to receive(:unlink)
         upload.create_or_concat_blob
+        expect(upload.upload_file.tempfile).to have_received(:close)
+        expect(upload.upload_file.tempfile).to have_received(:unlink)
       end
     end
 
@@ -199,9 +203,9 @@ RSpec.describe Upload, type: :model do
       end
 
       it 'returns #active? false if upload dead' do
-      upload = build(:async_upload, :dead, user: user)
-      expect(upload.active?).to be false
-      expect(upload.inactive?).to be true
+        upload = build(:async_upload, :dead, user: user)
+        expect(upload.active?).to be false
+        expect(upload.inactive?).to be true
       end
     end
 
@@ -225,15 +229,15 @@ RSpec.describe Upload, type: :model do
       end
 
       it 'sets canceled_at value' do
-         upload = build(:async_upload, :with_blob_and_status, user: user)
-         expect { upload.cancel! }.to change { upload.canceled_at }.from(nil)
+        upload = build(:async_upload, :with_blob, user: user)
+        expect { upload.cancel! }.to change { upload.canceled_at }.from(nil)
       end
 
       it 'clears blob and status message' do
-        upload = build(:async_upload, :with_blob_and_status, user: user)
+        upload = build(:async_upload, :with_blob, status_message: 'sample status', user: user)
         expect { upload.cancel! }.to change { upload.slice(:blob, :status_message).values }
-        .from([ upload.blob, upload.status_message]).to([nil, nil])
-     end
+          .from([upload.blob, upload.status_message]).to([nil, nil])
+      end
     end
 
     describe '#rollback_if_inactive' do
@@ -241,11 +245,11 @@ RSpec.describe Upload, type: :model do
 
       it 'throws error if upload inactive' do
         upload = build(:async_upload, :canceled, user: user)
-        expect { upload.rollback_if_inactive }.to raise_error
+        expect { upload.rollback_if_inactive }.to raise_error(StandardError)
       end
 
       it 'proceeds without error if upload active' do
-        expect { upload.rollback_if_inactive }.not_to raise_error
+        expect { upload.rollback_if_inactive }.not_to raise_error(StandardError)
       end
     end
 
@@ -255,15 +259,14 @@ RSpec.describe Upload, type: :model do
       before { upload.save }
 
       it 'updates status in separate thread if upload active' do
-        expect(upload).to receive(:update).with(status_message: status)
         new_thread = upload.safely_update_status!(status)
-        expect(new_thread.class).to eq(Thread)
         new_thread.join
+        expect(upload.status_message).to eq(status)
       end
 
       it 'throws error if upload inactive' do
         upload = build(:async_upload, :canceled, user: user)
-        expect { upload.safely_update_status!(status) }.to raise_error
+        expect { upload.safely_update_status!(status) }.to raise_error(StandardError)
       end
     end
 
@@ -272,7 +275,7 @@ RSpec.describe Upload, type: :model do
       let(:total) { 100 }
 
       before { upload.save }
-      
+
       it 'updates upload status during import with percent complete' do
         percent_complete = (completed.to_f / total) * 100
         new_thread = upload.update_import_progress!(completed, total)
@@ -282,7 +285,7 @@ RSpec.describe Upload, type: :model do
 
       it 'throws error if upload inactive' do
         upload = build(:async_upload, :canceled, user: user)
-        expect { upload.update_import_progress!(completed, total) }.to raise_error
+        expect { upload.update_import_progress!(completed, total) }.to raise_error(StandardError)
       end
     end
 
