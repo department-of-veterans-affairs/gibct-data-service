@@ -6,7 +6,7 @@ class ProcessUploadJob < ApplicationJob
   def perform(upload)
     @upload = upload
     begin
-      @upload.safely_update_status!('preparing upload . . .')
+      @upload.update(status_message: 'preparing upload . . .')
       data = UploadFileProcessor.new(@upload).load_file
       save_alert_messages(data)
       data_results = data[:results]

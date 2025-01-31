@@ -91,20 +91,18 @@ class Upload < ApplicationRecord
   end
 
   def cancel!
-    return false if canceled_at
-
-    raise StandardError, 'Upload no longer active' unless active?
+    return false if inactive?
 
     update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
   end
 
-  def rollback_if_canceled
+  def rollback_if_inactive
     raise ActiveRecord::Rollback, 'Upload no longer active' if reload.inactive?
   end
 
   # Update status in new thread to make updates readable from inside a database transaction
   def safely_update_status!(message)
-    rollback_if_canceled
+    rollback_if_inactive
 
     Thread.new do
       ActiveRecord::Base.connection_pool.with_connection do

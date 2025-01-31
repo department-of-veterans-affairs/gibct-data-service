@@ -49,12 +49,13 @@ class UploadsController < ApplicationController
   def create_async
     previous_upload = Upload.find_by(id: async_params[:upload_id])
     previous_upload&.update(upload_file: merged_params[:upload_file])
-    @upload = previous_upload || Upload.create(**merged_params,
-                                               queued_at: Time.now.utc.to_fs(:db),
-                                               status_message: 'queued for upload')
+    @upload = previous_upload || Upload.create(**merged_params, queued_at: Time.now.utc.to_fs(:db))
     @upload.create_or_concat_blob
 
-    ProcessUploadJob.perform_later(@upload) if final_upload?
+    if final_upload?
+      @upload.update(status_message: 'queued for upload')
+      ProcessUploadJob.perform_later(@upload)
+    end
 
     render json: { id: @upload.id }
   rescue StandardError => e
@@ -65,10 +66,12 @@ class UploadsController < ApplicationController
 
   def cancel_async
     @upload = Upload.find_by(id: params[:id])
-    @upload.cancel!
-    render json: { canceled: @upload.canceled_at }
+    canceled = @upload.cancel!
+    raise StandardError, "Failed to cancel upload #{original_filename}" unless canceled
+
+    render json: { canceled: }
   rescue StandardError => e
-    alert_and_log("Failed to cancel upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+    alert_and_log("#{e.message}\n#{e.backtrace[0]}", e)
     render json: { error: e }, status: :unprocessable_entity
   end
 
