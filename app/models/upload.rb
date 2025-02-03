@@ -106,14 +106,14 @@ class Upload < ApplicationRecord
     where(ok: false).any?
   end
 
-  # Returns false if the `csv_type` cannot be mapped to `Lcpe::BlahBlahBlah` with a `normalize` method.
+  # Returns false if the `csv_type` cannot be mapped to `Lcpe::BlahBlahBlah` with a `normalize` method
   def lcpe_normalizable?
     top_most = csv_type&.split("::").first.constantize rescue nil
     subject = csv_type&.constantize rescue nil
-  
+
     top_most == Lcpe && subject.respond_to?(:normalize)
   end
-  
+
   def normalize_lcpe!
     subject = csv_type&.constantize rescue nil
 
