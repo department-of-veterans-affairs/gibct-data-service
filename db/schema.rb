@@ -1767,10 +1767,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "completed_at", precision: nil
     t.boolean "multiple_file_upload", default: false
-    t.string "blob"
-    t.string "status_message"
-    t.datetime "queued_at", precision: nil
-    t.datetime "canceled_at", precision: nil
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"
