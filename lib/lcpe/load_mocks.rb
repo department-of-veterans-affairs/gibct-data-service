@@ -1,3 +1,5 @@
+# Should only be executed in local dev environements to generate mock data for development purposes. 
+# It expects data that is extracted from the current WEAMS Public site.
 module Lcpe
   class LoadMocks
     attr_reader :plan_path
