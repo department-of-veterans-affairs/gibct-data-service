@@ -4,11 +4,11 @@ module Lcpe
   class LacSerializer < ActiveModel::Serializer
     attr_reader :resource, :instance_options
 
-    def initialize(resource, instance_options={})
+    def initialize(resource, instance_options = {})
       @resource = resource
       @instance_options = instance_options
     end
-    
+
     def json_key
       'lac'
     end
@@ -18,7 +18,7 @@ module Lcpe
         enriched_id: resource.enriched_id,
         lac_nm: resource.lac_nm,
         edu_lac_type_nm: resource.edu_lac_type_nm,
-        state: resource.state,
+        state: resource.state
       }.tap(&method(:add_tests)).tap(&method(:add_institution))
     end
 

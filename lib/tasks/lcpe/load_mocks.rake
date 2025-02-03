@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 namespace :lcpe do
   desc 'Load Mocks'
   task :load_mocks, [:plan_dir] => :environment do |_cmd, args|
     args.to_h => { plan_dir: }
 
     plan_dir =
-      case
-      when plan_dir.blank?
-        puts "Usage: rake lcpe:load_mocks[plan_dir]"
+      if plan_dir.blank?
+        puts 'Usage: rake lcpe:load_mocks[plan_dir]'
         exit 1
       else
         Pathname(plan_dir)
@@ -17,10 +18,9 @@ namespace :lcpe do
     yml = plan_dir / 'plan.yml'
     yaml = plan_dir / 'plan.yaml'
     plan_path =
-      case
-      when yaml.exist?
+      if yaml.exist?
         yaml
-      when yml.exist?
+      elsif yml.exist?
         yml
       else
         raise "could not find plan.yml or plan.yaml in #{plan_dir}"

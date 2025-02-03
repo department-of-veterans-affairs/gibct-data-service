@@ -4,11 +4,11 @@ module Lcpe
   class ExamTestSerializer < ActiveModel::Serializer
     attr_reader :resource, :instance_options
 
-    def initialize(resource, instance_options={})
+    def initialize(resource, instance_options = {})
       @resource = resource
       @instance_options = instance_options
     end
-    
+
     def json_key
       'exam_test'
     end

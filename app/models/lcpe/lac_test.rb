@@ -18,5 +18,5 @@ module Lcpe
         JOIN lcpe_lacs x ON o.facility_code = x.facility_code AND o.lac_nm = x.lac_nm;
       SQL
     end
-  end  
+  end
 end

@@ -4,11 +4,11 @@ module Lcpe
   class ExamSerializer < ActiveModel::Serializer
     attr_reader :resource, :instance_options
 
-    def initialize(resource, instance_options={})
+    def initialize(resource, instance_options = {})
       @resource = resource
       @instance_options = instance_options
     end
-    
+
     def json_key
       'exam'
     end
@@ -16,7 +16,7 @@ module Lcpe
     def serializable_hash(*)
       {
         enriched_id: resource.enriched_id,
-        name: resource.nexam_nm,
+        name: resource.nexam_nm
       }.tap(&method(:add_tests)).tap(&method(:add_institution))
     end
 

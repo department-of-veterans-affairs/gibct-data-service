@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lcpe
   module Feed
     class Lac < ImportableRecord
@@ -15,7 +17,7 @@ module Lcpe
         pure_sql
           .join(Lcpe::Lac.reset)
           .join(Lcpe::LacTest.reset)
-      end    
+      end
     end
   end
 end

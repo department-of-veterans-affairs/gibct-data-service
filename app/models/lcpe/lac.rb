@@ -6,9 +6,9 @@ module Lcpe
 
     extend SqlContext
 
-    # using Enriched IDs is a good way to ensure that 
+    # using Enriched IDs is a good way to ensure that
     # a stale ID preloaded from the browser is not used.
-    scope :with_enriched_id, -> {
+    scope :with_enriched_id, lambda {
       select(
         '*',
         "#{REF_CODE_FN} AS ref_code",
@@ -16,29 +16,33 @@ module Lcpe
       )
     }
 
-    scope :by_enriched_id, ->(enriched_id) {
-      id, ref_code = enriched_id.match(/\A(\d+)@(.+)\z/).values_at(1, 2)
-      self
-        .with(enriched_query: with_enriched_id.where('id = ?', id))
-        .select("#{table_name}.*", 'enriched_query.enriched_id')
-        .from("#{table_name}")
-        .joins("LEFT JOIN enriched_query ON #{table_name}.id = enriched_query.id")
-        .where('enriched_query.enriched_id = ?', enriched_id)
+    scope :by_enriched_id, lambda { |enriched_id|
+      id, = enriched_id.match(/\A(\d+)@(.+)\z/).values_at(1, 2)
+
+        with(enriched_query: with_enriched_id.where('id = ?', id))
+          .select("#{table_name}.*", 'enriched_query.enriched_id')
+          .from(table_name.to_s)
+          .joins("LEFT JOIN enriched_query ON #{table_name}.id = enriched_query.id")
+          .where('enriched_query.enriched_id = ?', enriched_id)
     }
 
-    has_many :tests, class_name: 'LacTest', foreign_key: 'lac_id'
+    has_many :tests, class_name: 'LacTest', dependent: :destroy
 
+    # rubocop:disable Rails/InverseOf
     belongs_to(
       :institution,
       foreign_key: :facility_code,
       primary_key: :facility_code
     )
+    # rubocop:enable Rails/InverseOf
 
+    # rubocop:disable Rails/InverseOf
     belongs_to(
       :weam,
       foreign_key: :facility_code,
       primary_key: :facility_code
     )
+    # rubocop:enable Rails/InverseOf
 
     def self.rebuild
       pure_sql(<<~SQL)

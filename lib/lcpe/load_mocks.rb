@@ -1,4 +1,6 @@
-# Should only be executed in local dev environements to generate mock data for development purposes. 
+# frozen_string_literal: true
+
+# Should only be executed in local dev environements to generate mock data for development purposes.
 # It expects data that is extracted from the current WEAMS Public site.
 module Lcpe
   class LoadMocks
@@ -22,40 +24,41 @@ module Lcpe
     end
 
     def validate_plan!
-      plan.paths.each do |k, v| 
+      plan.paths.each do |k, v|
         raise "missing value path for #{k} in plan" if v.blank?
+
         plan.paths[k] = Pathname(v)
       end
 
       plan.paths.to_h.except(:result).each do |k, v|
         raise "invalid path: #{v} for #{k} in plan" unless v.exist?
       end
-      
-      raise "directory to place results not in plan" unless plan.paths.output.present?
+
+      raise 'directory to place results not in plan' if plan.paths.output.blank?
     end
 
     def import_schema
-      @import_schema ||= "import_#{Time.now.strftime('%Y%m%dt%H%M%Sj')}"
+      @import_schema ||= "import_#{Time.zone.now.strftime('%Y%m%dt%H%M%Sj')}"
     end
 
     def create_schema
-      print(format("Creating schema: %<import_schema>s: ", {import_schema:}))
+      print(format('Creating schema: %<import_schema>s: ', { import_schema: }))
       ActiveRecord::Base.connection.execute(format(plan.setup.create_schema, import_schema:))
-      puts "done"
+      puts 'done'
     end
 
     def drop_schema
-      print(format("Dropping schema: %<import_schema>s: ", {import_schema:}))
+      print(format('Dropping schema: %<import_schema>s: ', { import_schema: }))
       ActiveRecord::Base.connection.execute(format(plan.setup.drop_schema, import_schema:))
-      puts "done"
+      puts 'done'
     end
 
     def create_tables
-      plan.tables.each do |_, table|
+      plan.tables.each_value do |table|
         name = table.name
-        print(format("Creating table: %<import_schema>s.%<name>s: ", {import_schema:, name:}))
-        ActiveRecord::Base.connection.execute(format(table.create_sql, {import_schema:, name:}))
-        puts "done"
+        print(format('Creating table: %<import_schema>s.%<name>s: ', { import_schema:, name: }))
+        ActiveRecord::Base.connection.execute(format(table.create_sql, { import_schema:, name: }))
+        puts 'done'
       end
     end
 
@@ -89,16 +92,15 @@ module Lcpe
     end
 
     def upload_tables
-      plan.tables.each do |_, table|
+      plan.tables.each_value do |table|
         name = table.name
         path = Pathname(table.path)
-        sql = format(table.upload_sql, {import_schema:, name:})
-        print(format(
-          "Loading rows from %<path>s into: %<import_schema>s.%<name>s: ", 
-          {path:, import_schema:, name:}
-        ))
+        sql = format(table.upload_sql, { import_schema:, name: })
+        template = 'Loading rows from %<path>s into: %<import_schema>s.%<name>s: '
+        fill = { path:, import_schema:, name: }
+        print(format(template, fill))
         upload(path:, sql:)
-        puts "done"
+        puts 'done'
       end
     end
 
@@ -108,7 +110,7 @@ module Lcpe
       @institutions_mappings_query =
         format(
           plan.setup.institutions_mappings_query,
-          {import_schema:}
+          { import_schema: }
         )
     end
 
@@ -117,11 +119,9 @@ module Lcpe
       dest_path.parent.mkpath
       io = dest_path.open('w:ISO-8859-1')
       row = 0
-
-      print(format(
-        "Loading rows from %<import_schema>s.%<name>s into: %<dest_path>s: ",
-        {import_schema:, name:, dest_path:}
-      ))
+      template = 'Loading rows from %<import_schema>s.%<name>s into: %<dest_path>s: '
+      fill = { import_schema:, name:, dest_path: }
+      print(format(template, fill))
       connection.copy_data(sql) do
         while (chunk = connection.get_copy_data)
           io.write(chunk.force_encoding('ISO-8859-1'))
@@ -129,15 +129,15 @@ module Lcpe
           row += 1
         end
       end
-      puts "done"
+      puts 'done'
     end
 
     def download_tables
-      plan.tables.each do |_, table|
-        next unless table.download_sql.present?
+      plan.tables.each_value do |table|
+        next if table.download_sql.blank?
 
         name = table.name
-        sql = format(table.download_sql, {institutions_mappings_query:, import_schema:, name:})
+        sql = format(table.download_sql, { institutions_mappings_query:, import_schema:, name: })
         path = Pathname(table.path)
         download(name:, sql:, path:)
       end
@@ -150,7 +150,7 @@ module Lcpe
       download_tables
     ensure
       drop_schema
-      puts "Finished"
+      puts 'Finished'
     end
   end
 end

@@ -14,7 +14,7 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
-  after_save :normalize_lcpe!, if: [:ok?, :lcpe_normalizable?]
+  after_save :normalize_lcpe!, if: %i[ok? lcpe_normalizable?]
 
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
@@ -108,15 +108,19 @@ class Upload < ApplicationRecord
 
   # Returns false if the `csv_type` cannot be mapped to `Lcpe::BlahBlahBlah` with a `normalize` method
   def lcpe_normalizable?
-    top_most = csv_type&.split("::").first.constantize rescue nil
-    subject = csv_type&.constantize rescue nil
+    top_most = csv_type&.split('::')&.first&.constantize
+    subject = csv_type&.constantize
 
     top_most == Lcpe && subject.respond_to?(:normalize)
+  rescue StandardError
+    nil
   end
 
   def normalize_lcpe!
-    subject = csv_type&.constantize rescue nil
+    subject = csv_type&.constantize
 
     subject.normalize.execute
+  rescue StandardError
+    nil
   end
 end

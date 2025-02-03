@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 module Lcpe
   module SqlContext
     class Sql
       attr_reader :gamma
 
-      def initialize(sql=nil)
+      def initialize(sql = nil)
         @gamma = sql.nil? ? [] : [sql]
       end
-    
+
       def join(ctx)
-        raise "invalid object #{ctx}" unless ctx.class == self.class
+        raise "invalid object #{ctx}" unless ctx.instance_of?(self.class)
 
         @gamma += ctx.gamma
         self
       end
-    
+
       def execute
         result = gamma.join("\n")
 
@@ -22,8 +24,8 @@ module Lcpe
         end
       end
     end
-    
-    def pure_sql(sql=nil)
+
+    def pure_sql(sql = nil)
       Sql.new(sql)
     end
 

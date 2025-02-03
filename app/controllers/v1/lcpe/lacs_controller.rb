@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class V1::Lcpe::LacsController < ApiController
   def index
     render(
@@ -6,15 +8,16 @@ class V1::Lcpe::LacsController < ApiController
         each_serializer: Lcpe::LacSerializer,
         adapter: :json,
         action: 'index'
-      }.tap(&method(:add_pagination_meta)))
+      }.tap(&method(:add_pagination_meta))
+    )
   end
 
   def show
     result =
       Lcpe::Lac
-        .by_enriched_id(params[:id])
-        .includes([:tests, :institution])
-        .first
+      .by_enriched_id(params[:id])
+      .includes(%i[tests institution])
+      .first
 
     render json: result, serializer: Lcpe::LacSerializer, adapter: :json, action: 'show'
   end
@@ -26,13 +29,13 @@ class V1::Lcpe::LacsController < ApiController
 
     @list =
       Lcpe::Lac
-        .with_enriched_id
-        .where(index_params.permit(:edu_lac_type_nm, :state))
-        .then { |relation|
-          relation = relation.where('lac_nm ILIKE ?', "%#{index_params[:lac_nm]}%") if index_params[:lac_nm].present?
-          relation = relation.paginate(page:, per_page:) if paginate?
-          relation
-        }
+      .with_enriched_id
+      .where(index_params.permit(:edu_lac_type_nm, :state))
+      .then do |relation|
+        relation = relation.where('lac_nm ILIKE ?', "%#{index_params[:lac_nm]}%") if index_params[:lac_nm].present?
+        relation = relation.paginate(page:, per_page:) if paginate?
+        relation
+      end
   end
 
   def index_params
@@ -58,8 +61,8 @@ class V1::Lcpe::LacsController < ApiController
 
     @paginate_question = index_params[:per_page].present?
   end
-  
-  alias paginate? paginate_question 
+
+  alias paginate? paginate_question
 
   def add_pagination_meta(signature)
     paginate? ? signature.update(meta: pagination_meta) : signature

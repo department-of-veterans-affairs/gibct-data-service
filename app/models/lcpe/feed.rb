@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lcpe::Feed
   def self.table_name_prefix
     # not going to be pedantic
@@ -5,6 +7,6 @@ module Lcpe::Feed
     # pfx = "feed_"
     # format("%<parent_pfx>s%<pfx>s", {parent_pfx:, pfx:})
 
-    "lcpe_feed_"
+    'lcpe_feed_'
   end
 end
