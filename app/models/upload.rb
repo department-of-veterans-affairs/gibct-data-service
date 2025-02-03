@@ -26,7 +26,7 @@ class Upload < ApplicationRecord
     return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name].include?(csv_type)
 
     if csv_type.present?
-      errors.add(:csv_type, "#{csv_type} is not a valid CSV data source.")
+      errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
     else
       errors.add(:csv_type, 'cannot be blank.')
     end
