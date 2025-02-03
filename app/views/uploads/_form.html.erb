@@ -16,14 +16,17 @@
         <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
       </div>
 
-      <div class="form-group">
-        <%= f.label(:multiple_file_upload) %>
-        <%= f.check_box :multiple_file_upload, {}, true, false %><br/> 
+      <!-- Disable multiple file upload if async submit enabled -->
+      <% unless @upload.async_enabled? %>
+        <div class="form-group">
+          <%= f.label(:multiple_file_upload) %>
+          <%= f.check_box :multiple_file_upload, {}, true, false %><br/> 
 
-        Use this for very large files that were split into multiple files. Add the header to the all the files.<br/>
-        This should only be checked for the 2nd and subsequent files as part of the load.
+          Use this for very large files that were split into multiple files. Add the header to the all the files.<br/>
+          This should only be checked for the 2nd and subsequent files as part of the load.
 
-      </div>
+        </div>
+      <% end %>
 
       <div class="form-group">
         <%= f.label(:comment) %><br />
@@ -32,7 +35,19 @@
 
       <div class="actions">
         <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
-        <%= f.submit "Upload", class: "btn btn-primary" %>
+        <!-- If async enabled, intercept submit and perform custom logic in upload.js -->
+        <% if @upload.async_enabled? %>
+          <button
+            type="submit"
+            id="async-submit-btn"
+            class="btn btn-primary"
+            data-chunk-size=<%= @upload.chunk_size %>
+          >
+            Submit
+          </button>
+        <% else %>
+          <%= f.submit "Upload", class: "btn btn-primary" %>
+        <% end %>
       </div>
     <% end %>
 

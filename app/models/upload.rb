@@ -14,6 +14,8 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
+  before_create :check_async_queue, if: :async_enabled?
+
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -44,6 +46,83 @@ class Upload < ApplicationRecord
 
   def multiple_files
     Common::Shared.file_type_defaults(csv_type)[:multiple_files]
+  end
+
+  def async_upload_settings
+    Common::Shared.file_type_defaults(csv_type)[:async_upload].transform_keys(&:to_sym)
+  end
+
+  def async_enabled?
+    async_upload_settings[:enabled]
+  end
+
+  def chunk_size
+    async_upload_settings[:chunk_size]
+  end
+
+  # Reassemble blobs after successive #create_async requests
+  def create_or_concat_blob
+    File.open(upload_file.tempfile.path, 'rb') do
+      new_blob = upload_file.tempfile.read
+      updated_blob = blob ? blob.concat(new_blob) : new_blob
+      update(blob: updated_blob)
+    end
+  ensure
+    upload_file.tempfile.close
+    upload_file.tempfile.unlink
+  end
+
+  # Upload has been queued for async processing, hasn't been completed or canceled, and hasn't exceeded TTL
+  def active?
+    queued_at.present? &&
+      completed_at.blank? &&
+      canceled_at.blank? &&
+      Time.now.utc < dead_at
+  end
+
+  def inactive?
+    !active?
+  end
+
+  def dead_at
+    return unless queued_at
+
+    queued_at + Settings.async_upload.dead_after.seconds
+  end
+
+  def cancel!
+    return false if inactive?
+
+    update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
+  end
+
+  def rollback_if_inactive
+    raise ActiveRecord::Rollback, 'Upload no longer active' if reload.inactive?
+  end
+
+  # Update status in new thread to make updates readable from inside a database transaction
+  def safely_update_status!(message)
+    rollback_if_inactive
+
+    Thread.new do
+      ActiveRecord::Base.connection_pool.with_connection do
+        update(status_message: message)
+      end
+    end
+  end
+
+  def update_import_progress!(completed, total)
+    percent_complete = (completed.to_f / total) * 100
+    safely_update_status!("importing records: #{percent_complete.round}% . . .")
+  end
+
+  def alerts
+    data = status_message && JSON.parse(status_message)
+    return {} unless data.is_a?(Hash)
+
+    data.deep_symbolize_keys!
+  rescue StandardError
+    {}
   end
 
   def self.last_uploads(for_display = false)
@@ -102,5 +181,22 @@ class Upload < ApplicationRecord
 
   def self.locked_fetches_exist?
     where(ok: false).any?
+  end
+
+  def self.async_queue
+    all.select(&:active?)
+  end
+
+  private
+
+  def check_async_queue
+    return unless active_upload_of_same_csv_type?
+
+    error_msg = "#{csv_type} file upload already in progress. Wait for upload to finish or cancel upload"
+    raise StandardError, error_msg
+  end
+
+  def active_upload_of_same_csv_type?
+    Upload.async_queue.pluck(:csv_type).include?(csv_type)
   end
 end
