@@ -15,13 +15,11 @@ module Lcpe
       end
     
       def execute
-        result = [
-          "BEGIN;",
-          gamma,
-          "COMMIT;"
-        ].flatten(1).join("\n")
+        result = gamma.join("\n")
 
-        ActiveRecord::Base.connection.execute(result)
+        ActiveRecord::Base.transaction do
+          ActiveRecord::Base.connection.execute(result)
+        end
       end
     end
     
