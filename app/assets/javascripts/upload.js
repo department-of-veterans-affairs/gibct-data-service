@@ -63,7 +63,7 @@ $(function() {
       console.error(error);
       const uploadStatusDiv = $(`#async-upload-status-${uploadId}`)[0];
       const { titlecase } = uploadStatusDiv.dataset || false;
-      $(uploadStatusDiv).html(capitalize("failed to cancel.", titlecase));
+      $(uploadStatusDiv).html(capitalize("failed to cancel", titlecase));
       await new Promise((resolve) => setTimeout(resolve, ON_SCREEN_POLL_RATE));
       pollUploadStatus();
     }
