@@ -28,6 +28,25 @@ module DashboardsHelper
       pgsi.current_progress.start_with?('There was an error')
   end
 
+  def generating_in_progress?(preview_versions)
+    return true if preview_versions[0]&.generating?
+
+    pgsi = PreviewGenerationStatusInformation.last
+    pgsi.nil? ? false : true
+  end
+
+  def appears_to_be_stuck?(preview_versions)
+    preview_version = preview_versions[0]
+    if preview_version.nil?
+      pgsi = PreviewGenerationStatusInformation.last
+      return pgsi.nil? ? false : true
+    end
+
+    return true if preview_version.created_at < 30.minutes.ago && preview_version.completed_at.nil?
+
+    false
+  end
+
   def cannot_fetch_api(csv_type)
     Upload.fetching_for?(csv_type)
   end

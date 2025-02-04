@@ -16,6 +16,8 @@ class Upload < ApplicationRecord
 
   before_create :check_async_queue, if: :async_enabled?
 
+  after_save :normalize_lcpe!, if: %i[ok? lcpe_normalizable?]
+
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -198,5 +200,23 @@ class Upload < ApplicationRecord
 
   def active_upload_of_same_csv_type?
     Upload.async_queue.pluck(:csv_type).include?(csv_type)
+  end
+
+  # Returns false if the `csv_type` cannot be mapped to `Lcpe::BlahBlahBlah` with a `normalize` method.
+  def lcpe_normalizable?
+    top_most = csv_type&.split('::')&.first&.constantize
+    subject = csv_type&.constantize
+
+    top_most == Lcpe && subject.respond_to?(:normalize)
+  rescue StandardError
+    nil
+  end
+
+  def normalize_lcpe!
+    subject = csv_type&.constantize
+
+    subject.normalize.execute
+  rescue StandardError
+    nil
   end
 end

@@ -124,6 +124,7 @@ Metrics/MethodLength:
     - "lib/seed_utils.rb"
     - "app/utilities/scorecard_api/service.rb"
     - "app/models/converters/accreditation_date_time_converter.rb"
+    - "app/models/lcpe/**/*.rb"
 
 Metrics/ClassLength:
   Exclude:
@@ -143,6 +144,7 @@ Metrics/ClassLength:
     - "app/controllers/v1/institutions_controller.rb"
     - "app/serializers/institution_compare_serializer.rb"
     - "app/utilities/scorecard_api/service.rb"
+    - "lib/lcpe/**/*.rb"
 
 Metrics/AbcSize:
   Max: 40
@@ -265,3 +267,7 @@ Layout/SpaceAroundMethodCallOperator:
 
 Style/ExponentialNotation:
   Enabled: true
+
+Layout/IndentationConsistency:
+  Exclude:
+    - "app/models/lcpe/**/*.rb"
