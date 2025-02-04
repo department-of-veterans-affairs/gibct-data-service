@@ -16,15 +16,33 @@ RSpec.describe 'dashboards/index', type: :view do
     expect(rendered).to match(/Institutions With No Accreditation/)
   end
 
-  it 'does not show the button if there are no failed fetches' do
+  it 'does not show the enable locked fetches button if there are no failed fetches' do
     create(:upload, :valid_upload)
     render
     expect(rendered).not_to match(/Enable locked Fetches/)
   end
 
-  it 'shows the button if there are failed fetches' do
+  it 'shows the enable locked fetches button if there are failed fetches' do
     create(:upload, :failed_upload)
     render
     expect(rendered).to match(/Enable locked Fetches/)
+  end
+
+  # The default scenario actually has generation in progress but it is newer than 30 minutes
+  it 'does not show the unlock button if generation is in progress but newer than 30 minutes' do
+    render
+    expect(rendered).not_to match(/Unlock/)
+  end
+
+  it 'does not show the unlock button if not generating a version' do
+    Version.where(production: false).delete_all
+    render
+    expect(rendered).not_to match(/Unlock/)
+  end
+
+  it 'does show the unlock button if generation is in progress and older than 30 minutes' do
+    Version.where(production: false).update(created_at: Time.now.utc - 31.minutes)
+    render
+    expect(rendered).to match(/Unlock/)
   end
 end

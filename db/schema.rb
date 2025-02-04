@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_03_183542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1387,70 +1387,55 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
     t.index ["cross"], name: "index_ipeds_ics_on_cross"
   end
 
-  create_table "lce_exams", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.date "dates"
-    t.decimal "amount"
-    t.bigint "institution_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["institution_id"], name: "index_lce_exams_on_institution_id"
+  create_table "lcpe_exam_tests", force: :cascade do |t|
+    t.integer "exam_id"
+    t.string "descp_txt"
+    t.string "fee_amt"
+    t.string "begin_dt"
+    t.string "end_dt"
   end
 
-  create_table "lce_institutions", force: :cascade do |t|
-    t.integer "ptcpnt_id"
-    t.string "name"
-    t.string "abbreviated_name"
-    t.string "physical_street"
-    t.string "physical_city"
-    t.string "physical_state"
-    t.string "physical_zip"
-    t.string "physical_country"
-    t.string "mailing_street"
-    t.string "mailing_city"
-    t.string "mailing_state"
-    t.string "mailing_zip"
-    t.string "mailing_country"
-    t.string "phone"
-    t.string "web_address"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "lcpe_exams", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "nexam_nm"
   end
 
-  create_table "lce_license_and_certs", force: :cascade do |t|
-    t.string "name"
-    t.decimal "fee"
-    t.bigint "institution_id"
+  create_table "lcpe_feed_lacs", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "edu_lac_type_nm"
+    t.string "lac_nm"
+    t.string "test_nm"
+    t.string "fee_amt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["institution_id"], name: "index_lce_license_and_certs_on_institution_id"
+    t.index ["facility_code"], name: "index_lcpe_feed_lacs_on_facility_code"
+    t.index ["lac_nm"], name: "index_lcpe_feed_lacs_on_lac_nm"
   end
 
-  create_table "lce_officials", force: :cascade do |t|
-    t.string "name"
-    t.string "title"
-    t.bigint "institution_id"
+  create_table "lcpe_feed_nexams", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "nexam_nm"
+    t.string "descp_txt"
+    t.string "fee_amt"
+    t.string "begin_dt"
+    t.string "end_dt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["institution_id"], name: "index_lce_officials_on_institution_id"
+    t.index ["facility_code"], name: "index_lcpe_feed_nexams_on_facility_code"
+    t.index ["nexam_nm"], name: "index_lcpe_feed_nexams_on_nexam_nm"
   end
 
-  create_table "license_certification_institutions", force: :cascade do |t|
-    t.string "name"
-    t.string "abbreviated_name"
-    t.string "physical_street"
-    t.string "physical_city"
-    t.string "physical_zip"
-    t.string "physical_country"
-    t.string "mailing_street"
-    t.string "mailing_city"
-    t.string "mailing_zip"
-    t.string "mailing_country"
-    t.string "phone"
-    t.string "web_address"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "lcpe_lac_tests", force: :cascade do |t|
+    t.integer "lac_id"
+    t.string "test_nm"
+    t.string "fee_amt"
+  end
+
+  create_table "lcpe_lacs", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "edu_lac_type_nm"
+    t.string "lac_nm"
+    t.string "state"
   end
 
   create_table "mous", id: :serial, force: :cascade do |t|
@@ -1767,6 +1752,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "completed_at", precision: nil
     t.boolean "multiple_file_upload", default: false
+    t.string "blob"
+    t.string "status_message"
+    t.datetime "queued_at", precision: nil
+    t.datetime "canceled_at", precision: nil
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"
@@ -2043,9 +2032,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_15_202913) do
   add_foreign_key "crosswalk_issues", "weams"
   add_foreign_key "institution_ratings", "institutions"
   add_foreign_key "institutions", "versions"
-  add_foreign_key "lce_exams", "institutions"
-  add_foreign_key "lce_license_and_certs", "institutions"
-  add_foreign_key "lce_officials", "institutions"
   add_foreign_key "versioned_school_certifying_officials", "institutions"
   add_foreign_key "zipcode_rates", "versions"
 end
