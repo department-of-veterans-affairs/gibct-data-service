@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '7.1.5.1'
 
-gem 'active_model_serializers', '~> 0.10.14' # JSON API
+gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
 gem 'activerecord-session_store' # Switch to AR session storage in case of failure pushing to GIBCT
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
