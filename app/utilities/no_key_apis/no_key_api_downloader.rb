@@ -22,7 +22,7 @@ module  NoKeyApis
       'AccreditationAction' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'AccreditationInstituteCampus' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'AccreditationRecord' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
-      'EightKey' => [' -X GET', 'https://www2.ed.gov/documents/military/8-keys-sites.xls'],
+      'EightKey' => [' -X GET', 'https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls'],
       'Hcm' => ['', 'https://studentaid.gov/sites/default/files/Schools-on-HCM-December2023.xlsx'],
       'IpedsHd' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/HD2022.zip'],
       'IpedsIc' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip'],

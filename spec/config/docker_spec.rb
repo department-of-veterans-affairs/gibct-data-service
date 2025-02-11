@@ -7,7 +7,7 @@ describe 'Docker' do
     let(:locked_bundle_version) do
       # seems to be depreciated with ruby version upgrade
       # Bundler::Definition.build('Gemfile', nil, {}).locked_bundler_version
-      '2.5.9'
+      '2.6.0'
     end
 
     it 'in Dockerfile' do

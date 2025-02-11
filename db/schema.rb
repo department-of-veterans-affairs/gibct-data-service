@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_03_183542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -297,6 +297,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
+    t.string "ojt_app_type"
     t.index ["description", "version"], name: "index_institution_programs"
     t.index ["institution_id"], name: "index_institution_programs_on_institution_id"
   end
@@ -323,6 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.integer "tuition_amount"
     t.integer "length_in_weeks"
     t.integer "institution_id"
+    t.string "ojt_app_type"
     t.index ["description", "version"], name: "index_institution_programs_archives"
     t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
@@ -1385,6 +1387,57 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.index ["cross"], name: "index_ipeds_ics_on_cross"
   end
 
+  create_table "lcpe_exam_tests", force: :cascade do |t|
+    t.integer "exam_id"
+    t.string "descp_txt"
+    t.string "fee_amt"
+    t.string "begin_dt"
+    t.string "end_dt"
+  end
+
+  create_table "lcpe_exams", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "nexam_nm"
+  end
+
+  create_table "lcpe_feed_lacs", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "edu_lac_type_nm"
+    t.string "lac_nm"
+    t.string "test_nm"
+    t.string "fee_amt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_code"], name: "index_lcpe_feed_lacs_on_facility_code"
+    t.index ["lac_nm"], name: "index_lcpe_feed_lacs_on_lac_nm"
+  end
+
+  create_table "lcpe_feed_nexams", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "nexam_nm"
+    t.string "descp_txt"
+    t.string "fee_amt"
+    t.string "begin_dt"
+    t.string "end_dt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_code"], name: "index_lcpe_feed_nexams_on_facility_code"
+    t.index ["nexam_nm"], name: "index_lcpe_feed_nexams_on_nexam_nm"
+  end
+
+  create_table "lcpe_lac_tests", force: :cascade do |t|
+    t.integer "lac_id"
+    t.string "test_nm"
+    t.string "fee_amt"
+  end
+
+  create_table "lcpe_lacs", force: :cascade do |t|
+    t.string "facility_code"
+    t.string "edu_lac_type_nm"
+    t.string "lac_nm"
+    t.string "state"
+  end
+
   create_table "mous", id: :serial, force: :cascade do |t|
     t.string "ope", null: false
     t.string "ope6", null: false
@@ -1443,6 +1496,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.string "full_time_modifier", limit: 1
     t.string "length", limit: 7
     t.integer "csv_row"
+    t.string "ojt_app_type"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
@@ -1698,6 +1752,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "completed_at", precision: nil
     t.boolean "multiple_file_upload", default: false
+    t.string "blob"
+    t.string "status_message"
+    t.datetime "queued_at", precision: nil
+    t.datetime "canceled_at", precision: nil
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"
@@ -1966,7 +2024,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_05_145239) do
     t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
-  add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify
+  add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"

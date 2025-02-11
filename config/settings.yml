@@ -1,7 +1,7 @@
 active_record:
   batch_size:
     find_each: 5000
-    import: 50000
+    import: 1000
 
 archiver:
   archive: true

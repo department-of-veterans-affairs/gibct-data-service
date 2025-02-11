@@ -15,11 +15,21 @@ module Common
     def load_records(records, options)
       return load(records, options) if klass.connection.open_transactions.zero?
 
-      results = klass.import records, ignore: true, batch_size: Settings.active_record.batch_size.import
+      total_results = ActiveRecord::Import::Result.new([], 0, [], [])
+      total_failed_instances = []
 
-      after_import_validations(records, results.failed_instances, options)
+      records.each_slice(Settings.active_record.batch_size.import) do |batch|
+        results = klass.import batch, ignore: true
+        total_failed_instances.concat results&.failed_instances
+        total_results.failed_instances.concat results&.failed_instances
+        total_results.num_inserts += results&.num_inserts
+        total_results.ids.concat results&.ids
+        total_results.results.concat results&.results
+      end
 
-      results
+      after_import_validations(records, total_failed_instances, options)
+
+      total_results
     end
 
     private

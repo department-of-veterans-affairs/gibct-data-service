@@ -93,6 +93,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :stem_indicator
   attribute :facility_map
   attribute :programs
+  attribute :program_types
   attribute :versioned_school_certifying_officials
   attribute :count_of_caution_flags
   attribute :section_103_message
@@ -139,6 +140,10 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
     object.institution_programs.map do |program|
       InstitutionProgramProfileSerializer.new(program)
     end
+  end
+
+  def program_types
+    InstitutionProgram.where(institution: object).distinct.pluck(:program_type)
   end
 
   def caution_flags
