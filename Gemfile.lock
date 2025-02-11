@@ -509,7 +509,8 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
-    vcr (6.2.0)
+    vcr (6.3.1)
+      base64
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -605,7 +606,7 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
-  vcr (~> 6.2)
+  vcr (~> 6.3)
   vets_json_schema!
   virtus (~> 2.0.0)
   watir (~> 7.3)
