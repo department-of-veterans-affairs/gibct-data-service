@@ -24,7 +24,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
       expect(nkad.class_nm).to eq('EightKey')
       expect(nkad.curl_command).to include('-X GET')
       expect(nkad.curl_command).to include('tmp/eight_key.xls')
-      expect(nkad.curl_command).to include('https://www2.ed.gov/documents/military/8-keys-sites.xls')
+      expect(nkad.curl_command).to include('https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls')
       expect(nkad.curl_command).not_to include('-d')
     end
 
