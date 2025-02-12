@@ -76,7 +76,7 @@ class Upload < ApplicationRecord
 
   # Upload has been queued for async processing and hasn't been completed or canceled
   def active?
-    queued_at.present? && completed_at.blank? && canceled_at.blank? &&
+    queued_at.present? && completed_at.blank? && canceled_at.blank?
   end
 
   def inactive?
