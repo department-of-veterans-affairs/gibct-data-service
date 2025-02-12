@@ -74,22 +74,13 @@ class Upload < ApplicationRecord
     upload_file.tempfile.unlink
   end
 
-  # Upload has been queued for async processing, hasn't been completed or canceled, and hasn't exceeded TTL
+  # Upload has been queued for async processing and hasn't been completed or canceled
   def active?
-    queued_at.present? &&
-      completed_at.blank? &&
-      canceled_at.blank? &&
-      Time.now.utc < dead_at
+    queued_at.present? && completed_at.blank? && canceled_at.blank? &&
   end
 
   def inactive?
     !active?
-  end
-
-  def dead_at
-    return unless queued_at
-
-    queued_at + Settings.async_upload.dead_after.seconds
   end
 
   def cancel!

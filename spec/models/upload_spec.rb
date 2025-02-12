@@ -209,14 +209,6 @@ RSpec.describe Upload, type: :model do
       end
     end
 
-    describe '#dead_at' do
-      let(:dead_after) { Settings.async_upload.dead_after.seconds }
-
-      it 'returns queued_at time plus dead_after time' do
-        expect(upload.dead_at).to eq(upload.queued_at + dead_after)
-      end
-    end
-
     describe '#cancel!' do
       it 'returns false if inactive' do
         upload = build(:async_upload, :canceled, user: user)
