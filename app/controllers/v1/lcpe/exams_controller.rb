@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class V1::Lcpe::ExamsController < ApiController
+  include Lcpe::PreloadHelper
+
   def index
-    results = Lcpe::Exam.with_enriched_id
+    results = preload_dataset || Lcpe::Exam.with_enriched_id
 
     render json: results, each_serializer: Lcpe::ExamSerializer, adapter: :json, action: 'index'
   end

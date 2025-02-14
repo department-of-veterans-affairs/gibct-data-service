@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class V1::Lcpe::LacsController < ApiController
+  include Lcpe::PreloadHelper
+
   def index
     render(
       {
-        json: list,
+        json: preload_dataset || list,
         each_serializer: Lcpe::LacSerializer,
         adapter: :json,
         action: 'index'

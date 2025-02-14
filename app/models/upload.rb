@@ -120,6 +120,7 @@ class Upload < ApplicationRecord
     subject = csv_type&.constantize
 
     subject.normalize.execute
+    Lcpe::PreloadDataset.new(subject_class: subject::LCPE_TYPE).build!
   rescue StandardError
     nil
   end

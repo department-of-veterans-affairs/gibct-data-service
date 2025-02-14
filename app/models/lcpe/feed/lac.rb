@@ -13,6 +13,8 @@ module Lcpe
         'lc_test_fee' => { column: :fee_amt, converter: Converters::BaseConverter }
       }.freeze
 
+      LCPE_TYPE = 'Lcpe::Lac'
+
       def self.normalize
         pure_sql
           .join(Lcpe::Lac.reset)

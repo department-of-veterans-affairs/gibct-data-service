@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_03_183542) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_14_015743) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1398,6 +1398,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_03_183542) do
   create_table "lcpe_exams", force: :cascade do |t|
     t.string "facility_code"
     t.string "nexam_nm"
+    t.index ["facility_code"], name: "lcpe_exams_facility_code_idx"
+    t.index ["nexam_nm"], name: "lcpe_exams_nexam_nm_idx"
   end
 
   create_table "lcpe_feed_lacs", force: :cascade do |t|
@@ -1436,6 +1438,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_03_183542) do
     t.string "edu_lac_type_nm"
     t.string "lac_nm"
     t.string "state"
+    t.index ["edu_lac_type_nm"], name: "lcpe_lacs_edu_lac_type_nm_idx"
+    t.index ["facility_code"], name: "lcpe_lacs_facility_code_idx"
+    t.index ["lac_nm"], name: "lcpe_lacs_lac_nm_idx"
+  end
+
+  create_table "lcpe_preload_datasets", force: :cascade do |t|
+    t.text "body"
+    t.string "subject_class"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lcpe_preloads", force: :cascade do |t|
+    t.string "lcpe_type"
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mous", id: :serial, force: :cascade do |t|
