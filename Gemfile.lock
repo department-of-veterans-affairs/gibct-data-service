@@ -581,7 +581,7 @@ DEPENDENCIES
   pg
   pry-nav
   puma (~> 6.4.3)
-  rack (>= 2.2.8.1)
+  rack (>= 2.2.11)
   rack-cors
   rails (= 7.1.5.1)
   rails-controller-testing
