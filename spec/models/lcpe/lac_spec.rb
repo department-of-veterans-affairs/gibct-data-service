@@ -11,7 +11,7 @@ RSpec.describe Lcpe::Lac, type: :model do
 
   describe 'when validating' do
     it 'has a valid factory' do
-      expect(build :lcpe_lac, facility_code:).to be_valid
+      expect(build(:lcpe_lac, facility_code:)).to be_valid
     end
   end
 
