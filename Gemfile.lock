@@ -285,7 +285,7 @@ GEM
     multipart-post (2.4.1)
     mutex_m (0.2.0)
     nenv (0.3.0)
-    net-imap (0.5.2)
+    net-imap (0.5.6)
       date
       net-protocol
     net-pop (0.1.2)
@@ -328,7 +328,7 @@ GEM
     puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.8)
+    rack (3.1.10)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-session (2.0.0)
@@ -574,6 +574,7 @@ DEPENDENCIES
   libv8-node (= 21.7.2.0)
   mini_racer
   mutex_m (~> 0.2.0)
+  net-imap (~> 0.5.6)
   newrelic_rpm
   nokogiri (~> 1.16.5)
   oj
@@ -581,7 +582,7 @@ DEPENDENCIES
   pg
   pry-nav
   puma (~> 6.4.3)
-  rack (>= 2.2.11)
+  rack (>= 3.1.10)
   rack-cors
   rails (= 7.1.5.1)
   rails-controller-testing
