@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class V1::Lcpe::LacsController < ApiController
-  include Lcpe::PreloadHelper
-
+class V1::Lcpe::LacsController < V1::LcpeBaseController
   def index
     render(
       {

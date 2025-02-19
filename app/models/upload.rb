@@ -111,7 +111,9 @@ class Upload < ApplicationRecord
     top_most = csv_type&.split('::')&.first&.constantize
     subject = csv_type&.constantize
 
-    top_most == Lcpe && subject.respond_to?(:normalize)
+    top_most == Lcpe &&
+      subject.respond_to?(:normalize) &&
+      subject.const_defined?(:NORMALIZED_KLASS)
   rescue StandardError
     nil
   end
@@ -120,7 +122,8 @@ class Upload < ApplicationRecord
     subject = csv_type&.constantize
 
     subject.normalize.execute
-    Lcpe::PreloadDataset.new(subject_class: subject::LCPE_TYPE).build!
+    klass = subject.const_get(:NORMALIZED_KLASS)
+    Lcpe::PreloadDataset.build(klass)
   rescue StandardError
     nil
   end
