@@ -8,6 +8,7 @@ module Lcpe
 
     # using Enriched IDs is a good way to ensure that
     # a stale ID preloaded from the browser is not used.
+    # :nocov:
     scope :with_enriched_id, lambda {
       select(
         '*',
@@ -25,6 +26,7 @@ module Lcpe
           .joins("LEFT JOIN enriched_query ON #{table_name}.id = enriched_query.id")
           .where('enriched_query.enriched_id = ?', enriched_id)
     }
+    # :nocov:
 
     has_many :tests, class_name: 'ExamTest', dependent: :destroy
 
