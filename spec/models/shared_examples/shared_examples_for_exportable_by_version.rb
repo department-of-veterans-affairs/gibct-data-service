@@ -14,19 +14,20 @@ RSpec.shared_examples 'an exportable model by version' do
     # Pull the default CSV options to be used
     default_options = Common::Shared.file_type_defaults(described_class.name)
 
-    def check_attributes_from_records(rows, header_row)
+    def check_attributes_from_records(rows, header_row, use_full_export_name = false)
       described_class.find_each.with_index do |record, i|
         attributes = {}
 
         rows[i].each.with_index do |value, j|
           header = Common::Shared.convert_csv_header(header_row[j])
-          attributes[mapping[header][:column]] = value
-          attributes[mapping[header][:column]] = version if mapping[header][:column].eql? :version
+
+          column_info = use_full_export_name ? mapping.values.find{|m| m[:full_export_name] == header} : mapping[header]
+          attributes[column_info[:column]] = value
+          attributes[column_info[:column]] = version if column_info[:column].eql? :version
         end
 
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
-
         ignored_attributes = %w[id version created_at updated_at csv_row version_id institution_search]
         csv_test_attributes = csv_record.attributes.except(*ignored_attributes)
         test_attributes = record.attributes.except(*ignored_attributes)
@@ -54,7 +55,7 @@ RSpec.shared_examples 'an exportable model by version' do
         rows = described_class.export_by_version(true).split("\n")
         header_row = rows.shift.split(default_options[:col_sep]).map(&:downcase)
         rows = CSV.parse(rows.join("\n"), col_sep: default_options[:col_sep])
-        check_attributes_from_records(rows, header_row)
+        check_attributes_from_records(rows, header_row, true)
         expect(header_row.size).to eq 149
       end
     end

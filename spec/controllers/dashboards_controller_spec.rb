@@ -159,6 +159,33 @@ RSpec.describe DashboardsController, type: :controller do
     it 'redirects to index on error' do
       expect(get(:export_version, params: { format: :xml, number: 1 })).to redirect_to(action: :index)
     end
+
+    context 'when requesting a full export' do
+      before do
+        # build some real institutions to populate the CSV file, but skip the slow geocoding step
+        allow(InstitutionBuilder::Factory).to receive(:geocode_using_csv_file)
+        InstitutionBuilder.run(User.first)
+      end
+
+      it 'generates a CSV with the appropriate column headers' do
+        get(:export_version, params: { format: :csv, number: 1, export_all: true })
+        csv_data = CSV.parse(response.body, headers: true)
+
+        # just pick a reasonable sample of column headers
+        %w[
+          version
+          weams_priority_enrollment
+          weams_physical_city
+          scorecard_hbcu
+          sec_103_solely_requires_coe
+          computed_complaints_refund_by_ope_id_do_not_sum
+          sec_109_closure109
+          sva_student_veteran
+        ].each do |header_name|
+          expect(csv_data.headers).to include(header_name)
+        end
+      end
+    end
   end
 
   describe 'GET api_fetch' do

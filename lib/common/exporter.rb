@@ -104,7 +104,7 @@ module Common
       raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
 
       klass.includes(:version)
-           .limit(4).each do |record|
+           .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| record.respond_to?(k) == false ? nil : format(k, record.public_send(k)) }
       end
     end
