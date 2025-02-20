@@ -15,7 +15,7 @@ class Lcpe::PreloadDataset < ApplicationRecord
     # wipe all exepct most recent preload for lcpe type
     stale(lcpe_type).destroy_all
     create(subject_class: lcpe_type).tap do |preload|
-      dataset = preload.klass.with_enriched_id(preload.id.to_s)
+      dataset = preload.klass.with_enriched_id
       preload.update(body: dataset.to_json)
     end
   end

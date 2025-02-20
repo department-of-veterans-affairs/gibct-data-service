@@ -2,17 +2,17 @@
 
 module V1
   class LcpeBaseController < ApiController
-    rescue_from ::PreloadVersionStaleError, with: :version_invalid
+    class PreloadVersionStaleError < StandardError; end
+
+    rescue_from PreloadVersionStaleError, with: :version_invalid
 
     before_action :validate_preload_version, only: :show
-
-    class ::PreloadVersionStaleError < StandardError; end
 
     private
 
     def validate_preload_version
       preload_version = params[:id].split('@').last
-      raise ::PreloadVersionStaleError unless preload_version == fresh_preload.id.to_s
+      raise PreloadVersionStaleError unless preload_version == fresh_preload.id.to_s
     end
   
     def preload_dataset
@@ -40,7 +40,7 @@ module V1
     end
 
     def scrubbed_params
-      params.except(:format, :controller, :action)
+      params.except(:format, :controller, :action, controller_name.singularize.to_sym)
     end
 
     def version_invalid
