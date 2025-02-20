@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "async_status": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "active": { "type": "boolean" },
+        "ok": { "type": "boolean" },
+        "canceled": { "type": "boolean" },
+        "type": { "type": "string" }
+      }
+    }
+  }
+}

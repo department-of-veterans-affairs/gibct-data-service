@@ -4,6 +4,9 @@ generic:
   clean_rows: true
   multiple_files: false
   liberal_parsing: false
+  async_upload:
+    enabled: false
+    chunk_size: 10_000_000
 
 CipCode:
   liberal_parsing: true
@@ -37,6 +40,8 @@ Complaint:
 Program:
   col_sep: '|'
   liberal_parsing: true
+  async_upload:
+    enabled: true
 
 SchoolCertifyingOfficial:
   liberal_parsing: true

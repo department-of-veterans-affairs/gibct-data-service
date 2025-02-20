@@ -28,8 +28,15 @@ Rails.application.routes.draw do
 
   resources :accreditation_type_keywords, only: [:index, :new, :create, :destroy]
 
-  resources :uploads, except: [:new, :destroy, :edit, :update] do
+  resources :uploads, only: [:index, :show] do
     get '(:csv_type)' => 'uploads#new', on: :new, as: ''
+  end
+  # Conditional routing depends on whether async upload enabled for specific csv type
+  post 'uploads', to: 'uploads#create', constraints: AsyncUploadConstraint.new(async_enabled: false)
+  constraints(AsyncUploadConstraint.new(async_enabled: true)) do
+    post 'uploads', to: 'uploads#create_async'
+    patch 'uploads/:id/cancel', to: 'uploads#cancel_async'
+    get 'uploads/:id/status', to: 'uploads#async_status'
   end
 
   get '/groups', to: redirect('/uploads')
