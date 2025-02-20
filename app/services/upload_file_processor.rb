@@ -9,7 +9,7 @@ class UploadFileProcessor
   def load_file
     return unless @upload.persisted?
 
-    file = file_from_blob || @upload.upload_file.tempfile
+    file = file_from_body || @upload.upload_file.tempfile
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
@@ -52,15 +52,15 @@ class UploadFileProcessor
     @upload.csv_type.constantize
   end
 
-  # Create tempfile from reassmbled blob
-  def file_from_blob
-    return unless @upload.blob
+  # Create tempfile from reassembled body
+  def file_from_body
+    return unless @upload.body
 
     Tempfile.new([klass.name, '.txt'], binmode: true).tap do |file|
-      file.write(@upload.blob)
+      file.write(@upload.body)
       file.rewind
-      # Final blob too large to permanently persist in DB
-      @upload.update(blob: nil)
+      # Final body too large to permanently persist in DB
+      @upload.update(body: nil)
     end
   end
 end

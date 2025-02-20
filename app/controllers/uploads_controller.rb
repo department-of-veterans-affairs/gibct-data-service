@@ -44,13 +44,13 @@ class UploadsController < ApplicationController
     redirect_to uploads_path
   end
 
-  # File split into smaller blobs on client side and uploaded in series of #create_async requests
-  # which reassemble blobs into original file server side
+  # File split into smaller files on client side and uploaded in series of #create_async requests
+  # which reassemble them into original file server side
   def create_async
     previous_upload = Upload.find_by(id: async_params[:upload_id])
     previous_upload&.update(upload_file: merged_params[:upload_file])
     @upload = previous_upload || Upload.create(**merged_params, queued_at: Time.now.utc.to_fs(:db))
-    @upload.create_or_concat_blob
+    @upload.create_or_concat_body
 
     if final_upload?
       @upload.update(status_message: 'queued for upload')

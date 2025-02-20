@@ -21,7 +21,7 @@ RSpec.describe UploadFileProcessor do
     context 'when async disabled' do
       before { allow(upload).to receive(:async_enabled?).and_return(false) }
 
-      it 'loads rows from reassembled blob into database' do
+      it 'loads rows from reassembled body into database' do
         expect { service.load_file }.to change(klass, :count).by(row_count)
       end
 
@@ -37,7 +37,7 @@ RSpec.describe UploadFileProcessor do
     end
 
     context 'when async enabled' do
-      let(:upload) { create(:async_upload, :with_blob, user: user) }
+      let(:upload) { create(:async_upload, :with_body, user: user) }
       let(:async_options) do
         { async: { enabled: true,
                    upload_id: upload.id } }
@@ -46,7 +46,7 @@ RSpec.describe UploadFileProcessor do
 
       before { allow(upload).to receive(:async_enabled?).and_return(true) }
 
-      it 'loads rows from reassembled blob into database' do
+      it 'loads rows from reassembled body into database' do
         expect { service.load_file }.to change(klass, :count).by(row_count)
       end
 

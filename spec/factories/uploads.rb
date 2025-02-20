@@ -92,9 +92,9 @@ FactoryBot.define do
         completed_at { nil }
       end
 
-      trait :with_blob do
+      trait :with_body do
         active
-        blob do
+        body do
           rows = upload_file.read
           upload_file.rewind
           rows

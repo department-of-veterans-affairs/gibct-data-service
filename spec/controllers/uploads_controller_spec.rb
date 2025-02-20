@@ -309,8 +309,8 @@ RSpec.describe UploadsController, type: :controller do
           expect(upload.queued_at).not_to be_nil
         end
 
-        it 'changes upload#blob from nil to upload content' do
-          expect { create_async_upload }.to change { upload&.blob }.from(nil).to(upload_content)
+        it 'changes upload#body from nil to upload content' do
+          expect { create_async_upload }.to change { upload&.body }.from(nil).to(upload_content)
         end
 
         it 'doesn\'t queue ProcessUploadJob' do
@@ -324,7 +324,7 @@ RSpec.describe UploadsController, type: :controller do
       context 'when intermediate upload in a series of multiple requests' do
         let(:current) { '2' }
 
-        before { create(:async_upload, :with_blob) }
+        before { create(:async_upload, :with_body) }
 
         it 'finds previous upload in series instead of creating new one' do
           allow(Upload).to receive(:find_by)
@@ -332,8 +332,8 @@ RSpec.describe UploadsController, type: :controller do
           expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
         end
 
-        it 'concats upload content with previous upload blob' do
-          expect { create_async_upload }.to change { upload.reload.blob }.to(upload.blob + upload_content)
+        it 'concats upload content with previous upload body' do
+          expect { create_async_upload }.to change { upload.reload.body }.to(upload.body + upload_content)
         end
 
         it 'doesn\'t queue ProcessUploadJob' do
@@ -347,7 +347,7 @@ RSpec.describe UploadsController, type: :controller do
       context 'when last upload in a series of multiple requests' do
         let(:current) { '3' }
 
-        before { create(:async_upload, :with_blob) }
+        before { create(:async_upload, :with_body) }
 
         it 'finds previous upload in series instead of creating new one' do
           allow(Upload).to receive(:find_by)
@@ -355,8 +355,8 @@ RSpec.describe UploadsController, type: :controller do
           expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
         end
 
-        it 'concats upload content with previous upload blob' do
-          expect { create_async_upload }.to change { upload.reload.blob }.to(upload.blob + upload_content)
+        it 'concats upload content with previous upload body' do
+          expect { create_async_upload }.to change { upload.reload.body }.to(upload.body + upload_content)
         end
 
         it 'queues ProcessUploadJob' do
@@ -366,15 +366,15 @@ RSpec.describe UploadsController, type: :controller do
         end
       end
 
-      context 'when blob concatenation fails' do
+      context 'when body concatenation fails' do
         let(:current) { '2' }
 
-        let!(:upload) { create(:async_upload, :with_blob) }
+        let!(:upload) { create(:async_upload, :with_body) }
 
         it 'cancels the existing upload' do
           allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
           allow(upload).to receive(:cancel!)
-          allow(upload).to receive(:create_or_concat_blob).and_raise(StandardError)
+          allow(upload).to receive(:create_or_concat_body).and_raise(StandardError)
           create_async_upload
           expect(upload).to have_received(:cancel!)
           expect(response).to have_http_status(:internal_server_error)
@@ -389,7 +389,7 @@ RSpec.describe UploadsController, type: :controller do
     subject(:cancel_async_upload) { patch :cancel_async, params: { id: upload.id } }
 
     context 'when upload active' do
-      let(:upload) { create(:async_upload, :with_blob, status_message: 'importing records: 50% . . .') }
+      let(:upload) { create(:async_upload, :with_body, status_message: 'importing records: 50% . . .') }
 
       it 'finds upload by upload id' do
         allow(Upload).to receive(:find_by)

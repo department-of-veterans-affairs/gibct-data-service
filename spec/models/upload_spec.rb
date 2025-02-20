@@ -160,25 +160,25 @@ RSpec.describe Upload, type: :model do
       end
     end
 
-    describe '#create_or_concat_blob' do
+    describe '#create_or_concat_body' do
       let!(:upload_content) { upload.upload_file.read }
 
       before { upload.upload_file.rewind }
 
-      it 'creates blob if upload#blob nil' do
+      it 'creates body if upload#body nil' do
         upload.save
-        expect { upload.create_or_concat_blob }.to change { upload.reload.blob }.from(nil).to(upload_content)
+        expect { upload.create_or_concat_body }.to change { upload.reload.body }.from(nil).to(upload_content)
       end
 
-      it 'concats blob if upload#blob exists' do
-        upload = create(:async_upload, :with_blob, user: user)
-        expect { upload.create_or_concat_blob }.to change { upload.reload.blob }.to(upload.blob + upload_content)
+      it 'concats body if upload#body exists' do
+        upload = create(:async_upload, :with_body, user: user)
+        expect { upload.create_or_concat_body }.to change { upload.reload.body }.to(upload.body + upload_content)
       end
 
       it 'closes and unlinks upload file' do
         allow(upload.upload_file.tempfile).to receive(:close)
         allow(upload.upload_file.tempfile).to receive(:unlink)
-        upload.create_or_concat_blob
+        upload.create_or_concat_body
         expect(upload.upload_file.tempfile).to have_received(:close)
         expect(upload.upload_file.tempfile).to have_received(:unlink)
       end
@@ -221,14 +221,14 @@ RSpec.describe Upload, type: :model do
       end
 
       it 'sets canceled_at value' do
-        upload = build(:async_upload, :with_blob, user: user)
+        upload = build(:async_upload, :with_body, user: user)
         expect { upload.cancel! }.to change { upload.canceled_at }.from(nil)
       end
 
-      it 'clears blob and status message' do
-        upload = build(:async_upload, :with_blob, status_message: 'sample status', user: user)
-        expect { upload.cancel! }.to change { upload.slice(:blob, :status_message).values }
-          .from([upload.blob, upload.status_message]).to([nil, nil])
+      it 'clears body and status message' do
+        upload = build(:async_upload, :with_body, status_message: 'sample status', user: user)
+        expect { upload.cancel! }.to change { upload.slice(:body, :status_message).values }
+          .from([upload.body, upload.status_message]).to([nil, nil])
       end
     end
 

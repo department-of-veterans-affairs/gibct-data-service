@@ -6,7 +6,7 @@ RSpec.describe ProcessUploadJob, type: :job do
   describe '#perform' do
     let(:job) { described_class.new }
     let(:user) { create :user }
-    let(:upload) { create(:async_upload, :with_blob, user: user, status_message: status) }
+    let(:upload) { create(:async_upload, :with_body, user: user, status_message: status) }
     let(:klass) { upload.csv_type.constantize }
     let(:status) { 'queued for upload' }
     let(:upload_processor) { instance_double('UploadFileProcessor') }
@@ -38,6 +38,6 @@ RSpec.describe ProcessUploadJob, type: :job do
   end
 
   def row_count
-    upload.blob.scan(/\n/).count - 1
+    upload.body.scan(/\n/).count - 1
   end
 end

@@ -62,12 +62,12 @@ class Upload < ApplicationRecord
     async_upload_settings[:chunk_size]
   end
 
-  # Reassemble blobs after successive #create_async requests
-  def create_or_concat_blob
+  # Reassemble file after successive #create_async requests
+  def create_or_concat_body
     File.open(upload_file.tempfile.path, 'rb') do
-      new_blob = upload_file.tempfile.read
-      updated_blob = blob ? blob.concat(new_blob) : new_blob
-      update(blob: updated_blob)
+      new_body = upload_file.tempfile.read
+      updated_body = body ? body.concat(new_body) : new_body
+      update(body: updated_body)
     end
   ensure
     upload_file.tempfile.close
@@ -86,7 +86,7 @@ class Upload < ApplicationRecord
   def cancel!
     return false if inactive?
 
-    update(canceled_at: Time.now.utc.to_fs(:db), blob: nil, status_message: nil)
+    update(canceled_at: Time.now.utc.to_fs(:db), body: nil, status_message: nil)
   end
 
   def rollback_if_inactive
@@ -177,7 +177,7 @@ class Upload < ApplicationRecord
   end
 
   def self.async_queue
-    all.select(&:active?)
+    select(&:active?)
   end
 
   private
