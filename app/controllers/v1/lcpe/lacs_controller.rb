@@ -29,7 +29,7 @@ class V1::Lcpe::LacsController < V1::LcpeBaseController
 
     @list =
       Lcpe::Lac
-      .with_enriched_id
+      .with_enriched_id(fresh_preload.id)
       .where(index_params.permit(:edu_lac_type_nm, :state))
       .then do |relation|
         relation = relation.where('lac_nm ILIKE ?', "%#{index_params[:lac_nm]}%") if index_params[:lac_nm].present?
