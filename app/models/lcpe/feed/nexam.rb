@@ -14,6 +14,8 @@ module Lcpe
         'nexam_fee_to_date' => { column: :end_dt, converter: Converters::BaseConverter }
       }.freeze
 
+      NORMALIZED_KLASS = 'Lcpe::Exam'
+
       def self.normalize
         pure_sql
           .join(Lcpe::Exam.reset)

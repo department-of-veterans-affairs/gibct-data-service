@@ -2,23 +2,21 @@
 
 module Lcpe
   class Exam < ApplicationRecord
-    REF_CODE_FN = "RIGHT(MD5(CONCAT(facility_code, '-', nexam_nm)), 5)"
-
     extend SqlContext
 
     # using Enriched IDs is a good way to ensure that
     # a stale ID preloaded from the browser is not used.
     # :nocov:
     scope :with_enriched_id, lambda {
+      preload_id = Lcpe::PreloadDataset.fresh(klass.to_s).id
       select(
         '*',
-        "#{REF_CODE_FN} AS ref_code",
-        "CONCAT(id, '@', #{REF_CODE_FN}) enriched_id"
+        "CONCAT(id, '@', #{preload_id}) enriched_id"
       )
     }
 
     scope :by_enriched_id, lambda { |enriched_id|
-      id, = enriched_id.match(/\A(\d+)@(.+)\z/).values_at(1, 2)
+      id = enriched_id.split('@').first
 
         with(enriched_query: with_enriched_id.where('id = ?', id))
           .select("#{table_name}.*", 'enriched_query.enriched_id')
