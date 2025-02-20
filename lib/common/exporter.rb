@@ -8,12 +8,7 @@ module Common
     end
 
     def export_by_version(export_all)
-      # every other model uses csv_headers. We don't want to muck that up for them.
-      if export_all
-        generate_version(csv_headers_for_all_institution_columns)
-      else
-        generate_version(csv_headers)
-      end
+      generate_version(csv_headers)
     end
 
     # simple version that takes incoming array of arrays and creates a CSV object with it
@@ -76,17 +71,6 @@ module Common
       csv_headers = {}
 
       klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
-        key = info[:column]
-        csv_headers[key] = Common::Shared.display_csv_header(csv_column)
-      end
-
-      csv_headers
-    end
-
-    def csv_headers_for_all_institution_columns
-      csv_headers = {}
-
-      klass::CSV_CONVERTER_INFO2.each_pair do |csv_column, info|
         key = info[:column]
         csv_headers[key] = Common::Shared.display_csv_header(csv_column)
       end
