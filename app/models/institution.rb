@@ -798,4 +798,21 @@ class Institution < ImportableRecord
   scope :location_order, lambda {
     order('distance')
   }
+
+  def self.export_by_version(export_all)
+    # Exporting 'all' the fields means something slightly different for
+    # an Institution than for a regular ImportableRecord. It requires
+    # some extra column name fiddling, etc.
+    return super unless export_all
+
+    # csv_headers is a hash of {"model attribute name" => "string to write to CSV header"}
+    csv_headers = CSV_CONVERTER_INFO_FULL_EXPORT.reduce({}) do |memo, (column_name, column_info)|
+      attribute_name = column_info[:column]
+      header_name = column_info[:full_export_name]
+      memo[attribute_name] = header_name
+      memo
+    end
+
+    generate_version(csv_headers)
+  end
 end
