@@ -48,7 +48,7 @@ RSpec.shared_examples 'an exportable model by version' do
     end
 
     describe 'when exporting all columns' do
-      let(:mapping) { described_class::CSV_CONVERTER_INFO2 }
+      let(:mapping) { described_class::CSV_CONVERTER_INFO_FULL_EXPORT }
 
       it 'creates a string representation of a csv_file' do
         rows = described_class.export_by_version(true).split("\n")

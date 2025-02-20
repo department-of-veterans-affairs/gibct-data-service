@@ -180,7 +180,7 @@ class Institution < ImportableRecord
 
   # Used for full export of institution rows with all columns.
   # rubocop:disable Layout/FirstHashElementIndentation
-  CSV_CONVERTER_INFO2 = CSV_CONVERTER_INFO.merge({
+  CSV_CONVERTER_INFO_FULL_EXPORT = CSV_CONVERTER_INFO.merge({
     'version' => { column: :version, converter: Converters::NumberConverter },
     'approval_status' => { column: :approval_status, converter: Converters::BaseConverter },
     'stem_offered' => { column: :stem_offered, converter: Converters::BooleanConverter },

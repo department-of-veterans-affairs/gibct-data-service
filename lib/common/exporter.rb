@@ -86,7 +86,7 @@ module Common
     def csv_headers_for_all_institution_columns
       csv_headers = {}
 
-      klass::CSV_CONVERTER_INFO2.each_pair do |csv_column, info|
+      klass::CSV_CONVERTER_INFO_FULL_EXPORT.each_pair do |csv_column, info|
         key = info[:column]
         csv_headers[key] = Common::Shared.display_csv_header(csv_column)
       end
