@@ -153,15 +153,37 @@
   text-decoration: underline;
 }
 
-#preview_dialog {
+#preview_dialog,
+#async-upload-dialog {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#preview_dialog_div {
+#async-upload-alert {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#async-upload-alert a {
+  color: #337ab7;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#preview_dialog_div,
+#async-upload-dialog-div,
+#async-upload-alert {
   min-width: 250px;
   text-align: center;
+}
+
+#async-upload-dialog-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
 .generate_preview_button_div {
@@ -179,6 +201,18 @@
   font-size: large;
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+.async-upload-status-div,
+#async-submit-btn-div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.upload-icon:hover,
+.default-async-loading {
+  cursor: pointer;
 }
 
 .crosswalk-issues .even:not(:hover) td {
