@@ -106,11 +106,6 @@ FactoryBot.define do
         canceled_at { (Time.now.utc + 1.minute).to_fs(:db) }
       end
 
-      trait :dead do
-        completed_at { nil }
-        queued_at { (Time.now.utc - 5.hours).utc.to_fs(:db) }
-      end
-
       trait :complete_with_alerts do
         valid_upload
         status_message do

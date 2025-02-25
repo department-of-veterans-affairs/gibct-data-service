@@ -130,7 +130,7 @@ $(function() {
                   }
                 });
               }
-            // If upload completed, canceled, or dead
+            // If upload completed or canceled
             } else{
               removeFromQueue(uploadId);
               clearInterval(pollingInterval);

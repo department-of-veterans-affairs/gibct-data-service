@@ -185,7 +185,7 @@ RSpec.describe Upload, type: :model do
     end
 
     describe '#active?, #inactive?' do
-      it 'returns #active? true if upload queued, not completed, not canceled, and not dead' do
+      it 'returns #active? true if upload queued, not completed, and not canceled' do
         expect(upload.active?).to be true
         expect(upload.inactive?).to be false
       end
@@ -198,12 +198,6 @@ RSpec.describe Upload, type: :model do
 
       it 'returns #active? false if upload canceled' do
         upload = build(:async_upload, :canceled, user: user)
-        expect(upload.active?).to be false
-        expect(upload.inactive?).to be true
-      end
-
-      it 'returns #active? false if upload dead' do
-        upload = build(:async_upload, :dead, user: user)
         expect(upload.active?).to be false
         expect(upload.inactive?).to be true
       end
