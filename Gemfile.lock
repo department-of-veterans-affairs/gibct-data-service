@@ -296,11 +296,11 @@ GEM
       net-protocol
     newrelic_rpm (9.13.0)
     nio4r (2.7.4)
-    nokogiri (1.16.8-aarch64-linux)
+    nokogiri (1.18.3-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.16.8-arm64-darwin)
+    nokogiri (1.18.3-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.8-x86_64-linux)
+    nokogiri (1.18.3-x86_64-linux-gnu)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -576,7 +576,7 @@ DEPENDENCIES
   mutex_m (~> 0.2.0)
   net-imap (~> 0.5.6)
   newrelic_rpm
-  nokogiri (~> 1.16.5)
+  nokogiri (~> 1.18.3)
   oj
   parallel_tests
   pg
