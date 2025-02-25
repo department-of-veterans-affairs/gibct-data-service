@@ -6,18 +6,16 @@ module V1
 
     rescue_from PreloadVersionStaleError, with: :version_invalid
 
-    before_action :validate_preload_version, only: :show
-
     private
 
     def validate_preload_version
       preload_version = params[:id].split('@').last
       raise PreloadVersionStaleError unless preload_version == fresh_preload.id.to_s
     end
-  
+
     def preload_dataset
       return if bypass_versioning?
-  
+
       set_etag(fresh_preload.id.to_s)
       JSON.parse(fresh_preload.body)
     end
@@ -25,11 +23,11 @@ module V1
     def fresh_preload
       @fresh_preload ||= ::Lcpe::PreloadDataset.fresh(lcpe_type)
     end
-  
+
     def lcpe_type
       "Lcpe::#{controller_name.singularize.titleize}"
     end
-  
+
     def set_etag(preload_version)
       response.set_header('ETag', preload_version)
     end

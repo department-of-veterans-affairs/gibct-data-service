@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class V1::Lcpe::ExamsController < V1::LcpeBaseController
+  before_action :validate_preload_version, only: :show
+
   def index
     results = preload_dataset || Lcpe::Exam.with_enriched_id
 

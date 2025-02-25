@@ -10,12 +10,12 @@ module Lcpe::Feed
     'lcpe_feed_'
   end
 
-  # Each Lcpe::Feed:: model must define the NORMALIZED_KLASS it's associated with
+  # Each Lcpe::Feed:: model should clarify the NORMALIZED_KLASS it's associated with
   # For example, Lcpe::Feed::Nexam normalizes to Lcpe::Exam
   def self.normalized_klasses
     Lcpe::Feed.constants.map do |const|
-      feed_klass = Lcpe::Feed.const_get(const)
-      feed_klass.const_get(:NORMALIZED_KLASS)
-    end
+      feed = Lcpe::Feed.const_get(const)
+      feed.const_get(:NORMALIZED_KLASS) if feed.const_defined?(:NORMALIZED_KLASS)
+    end.compact
   end
 end

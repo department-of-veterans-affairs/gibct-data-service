@@ -17,7 +17,7 @@ module Lcpe
 
     scope :by_enriched_id, lambda { |enriched_id|
       id = enriched_id.split('@').first
-      
+
         with(enriched_query: with_enriched_id.where('id = ?', id))
           .select("#{table_name}.*", 'enriched_query.enriched_id')
           .from(table_name.to_s)

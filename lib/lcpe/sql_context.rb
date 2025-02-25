@@ -12,12 +12,12 @@ module Lcpe
         elsif sql.blank? && block_given?
           context = :block
           body = Proc.new
-          @gamma = [{context:, body:}]
+          @gamma = [{ context:, body: }]
 
         elsif sql.present? && !block_given?
           context = :sql
           body = sql
-          @gamma = [{context:, body:}]
+          @gamma = [{ context:, body: }]
 
         else # if sql.blank? && !block_given?
           @gamma = []

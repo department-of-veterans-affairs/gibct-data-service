@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class V1::Lcpe::LacsController < V1::LcpeBaseController
+  before_action :validate_preload_version, only: :show
+
   def index
     render(
       {

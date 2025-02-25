@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Lcpe::PreloadDataset < ApplicationRecord
   # ['Lcpe::Lac', 'Lcpe::Exam']
   LCPE_TYPES = Lcpe::Feed.normalized_klasses.freeze
