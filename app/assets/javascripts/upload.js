@@ -53,7 +53,7 @@ $(function() {
     $(icon).off("click mouseleave");
     try {
       await $.ajax({
-        url: `/uploads/${uploadId}/cancel`,
+        url: `/gids/uploads/${uploadId}/cancel`,
         type: "PATCH",
         contentType: false,
         processData: false,
@@ -79,7 +79,7 @@ $(function() {
       const { uploadId, csvType } = $(this).data();
       $(this).html(
         `<p>${csvType} file upload complete</p>` +
-        '<p>Click ' + `<a href="/uploads/${uploadId}">here</a>` +
+        '<p>Click ' + `<a href="/gids/uploads/${uploadId}">here</a>` +
         ' for a more detailed report</p>'
       );
     }
@@ -100,7 +100,7 @@ $(function() {
       try {
         const xhr = new XMLHttpRequest();
         const getUploadStatus = () => {
-          xhr.open("GET", `/uploads/${uploadId}/status`);
+          xhr.open("GET", `/gids/uploads/${uploadId}/status`);
           xhr.send();
         };
         xhr.onload = function() {
@@ -139,7 +139,7 @@ $(function() {
                 $(uploadStatusDiv).html(capitalize(ok ? "succeeded" : "failed", titlecase));
               }
               // If on upload#show page, reload page to render flash alerts
-              if (window.location.pathname === `/uploads/${uploadId}`) {
+              if (window.location.pathname === `/gids/uploads/${uploadId}`) {
                 window.location.reload();
               // Otherwise render link to alerts in pop dialog
               } else if (!canceled) {
@@ -228,7 +228,7 @@ $(function() {
           formData.set("upload[metadata][count][current]", i + 1);
           formData.set("upload[metadata][count][total]", blobs.length);
           const response = await $.ajax({
-            url: "/uploads",
+            url: "/gids/uploads",
             type: "POST",
             data: formData,
             dataType: "json",
@@ -239,10 +239,10 @@ $(function() {
         }
         // If successful, save upload ID in local storage to enable status polling
         addToQueue(uploadId);
-        window.location.href = `/uploads/${uploadId}`;
+        window.location.href = `/gids/uploads/${uploadId}`;
       } catch(error) {
         console.error(error);
-        window.location.href = `/uploads/new/${csvType}`;
+        window.location.href = `/gids/uploads/new/${csvType}`;
       }
     };
 
