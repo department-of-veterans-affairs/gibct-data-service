@@ -7,6 +7,14 @@ $(function() {
     );
   });
 
+  // ASYNC UPLOAD LOGIC
+  const getPathPrefix = () => {
+    const hostname = window.location.hostname
+    const subdomain = hostname.split('.')[0];
+    return subdomain === 'localhost' ? '' : '/gids'
+  };
+  const PATH_PREFIX = getPathPrefix();;
+
   // Open dialog during initial async upload to disable page
   $("#async-upload-dialog").dialog({
     autoOpen: false,
@@ -53,7 +61,7 @@ $(function() {
     $(icon).off("click mouseleave");
     try {
       await $.ajax({
-        url: `/uploads/${uploadId}/cancel`,
+        url: `${PATH_PREFIX}/uploads/${uploadId}/cancel`,
         type: "PATCH",
         contentType: false,
         processData: false,
@@ -79,7 +87,7 @@ $(function() {
       const { uploadId, csvType } = $(this).data();
       $(this).html(
         `<p>${csvType} file upload complete</p>` +
-        '<p>Click ' + `<a href="/uploads/${uploadId}">here</a>` +
+        '<p>Click ' + `<a href="${PATH_PREFIX}/uploads/${uploadId}">here</a>` +
         ' for a more detailed report</p>'
       );
     }
@@ -100,7 +108,7 @@ $(function() {
       try {
         const xhr = new XMLHttpRequest();
         const getUploadStatus = () => {
-          xhr.open("GET", `/uploads/${uploadId}/status`);
+          xhr.open("GET", `${PATH_PREFIX}/uploads/${uploadId}/status`);
           xhr.send();
         };
         xhr.onload = function() {
@@ -139,7 +147,7 @@ $(function() {
                 $(uploadStatusDiv).html(capitalize(ok ? "succeeded" : "failed", titlecase));
               }
               // If on upload#show page, reload page to render flash alerts
-              if (window.location.pathname === `/uploads/${uploadId}`) {
+              if (window.location.pathname === `${PATH_PREFIX}/uploads/${uploadId}`) {
                 window.location.reload();
               // Otherwise render link to alerts in pop dialog
               } else if (!canceled) {
@@ -228,7 +236,7 @@ $(function() {
           formData.set("upload[metadata][count][current]", i + 1);
           formData.set("upload[metadata][count][total]", blobs.length);
           const response = await $.ajax({
-            url: "/uploads",
+            url: `${PATH_PREFIX}/uploads`,
             type: "POST",
             data: formData,
             dataType: "json",
@@ -239,10 +247,10 @@ $(function() {
         }
         // If successful, save upload ID in local storage to enable status polling
         addToQueue(uploadId);
-        window.location.href = `/uploads/${uploadId}`;
+        window.location.href = `${PATH_PREFIX}/uploads/${uploadId}`;
       } catch(error) {
         console.error(error);
-        window.location.href = `/uploads/new/${csvType}`;
+        window.location.href = `${PATH_PREFIX}/uploads/new/${csvType}`;
       }
     };
 
