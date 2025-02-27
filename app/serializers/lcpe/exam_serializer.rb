@@ -15,8 +15,8 @@ module Lcpe
 
     def serializable_hash(*)
       {
-        enriched_id: resource.enriched_id,
-        name: resource.nexam_nm
+        enriched_id: resource['enriched_id'],
+        name: resource['nexam_nm']
       }.tap(&method(:add_tests)).tap(&method(:add_institution))
     end
 
