@@ -16,7 +16,7 @@ module Common
       generic_options = Rails.application.config.csv_defaults['generic']
       klass_options = Rails.application.config.csv_defaults[klass_name]
       default_options = if klass_options.present?
-                          generic_options.deep_merge(klass_options)
+                          generic_options.merge(klass_options)
                         else
                           generic_options
                         end
