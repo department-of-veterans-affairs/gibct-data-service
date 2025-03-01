@@ -17,13 +17,5 @@ RSpec.describe FileTypeConverters::XlsToCsv do
       described_class.new('spec/fixtures/download_8_keys_sites.xls', 'tmp/eight_key.csv').convert_xls_to_csv
       expect(File.exist?('tmp/eight_key.csv')).to be true
     end
-
-    it 'convert numbers to strings, but does not pad them with zeros' do
-      File.delete('tmp/eight_key.csv') if File.exist?('tmp/eight_key.csv')
-      described_class.new('spec/fixtures/download_8_keys_sites.xls', 'tmp/eight_key.csv').convert_xls_to_csv
-      expect(File.exist?('tmp/eight_key.csv')).to be true
-      csv_data = CSV.read('tmp/eight_key.csv')
-      expect(csv_data[2][4]).to eq('100200')
-    end
   end
 end

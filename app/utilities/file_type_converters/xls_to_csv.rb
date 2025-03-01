@@ -14,16 +14,6 @@ module FileTypeConverters
       book = Spreadsheet.open(@xls_file_name)
       sheet = book.worksheet(0)
 
-      # rubocop:disable Rails/Output
-      if Dir.exist?('tmp')
-        puts "\n\n\n***\ntmp directory exists"
-        permissions = File.stat('tmp').mode.to_s(8)
-        puts "permissions for tmp directory are #{permissions[-3, 3]} \n***\n\n\n"
-      else
-        puts 'tmp directory does not exist'
-      end
-      # rubocop:enable Rails/Output
-
       CSV.open(@csv_file_name, 'wb') do |csv|
         sheet.each do |row|
           formatted_row = row.to_a.map do |cell|
