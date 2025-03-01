@@ -18,6 +18,8 @@ RSpec.describe FileTypeConverters::XlsToCsv do
       expect(File.exist?('tmp/eight_key.csv')).to be true
     end
 
+    # Not having the sleep 1 here causes both this test and the above test to fail in Jenkins. It's not clear why
+    # other than that there seems to be a timing issue. Combining the two tests into one also works.
     it 'convert numbers to strings, but does not pad them with zeros' do
       sleep 1
       File.delete('tmp/eight_key.csv') if File.exist?('tmp/eight_key.csv')
