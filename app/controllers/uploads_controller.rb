@@ -25,8 +25,13 @@ class UploadsController < ApplicationController
       @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
-
-      redirect_to @upload
+      if sequential?
+        data = { final: final_upload? }
+        data.merge!(upload: { id: @upload.id }) if final_upload?
+        render json: { **data }
+      else
+        redirect_to @upload
+      end
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
       @extensions = Settings.roo_upload.extensions.single.join(', ')
@@ -54,6 +59,7 @@ class UploadsController < ApplicationController
     @inclusion = UploadTypes::UploadRequirements.validation_messages_inclusion(klass)
   end
 
+  # If sequential upload, append alerts from previous uploads in sequence
   def alert_messages(data)
     results = data[:results]
 
@@ -66,17 +72,29 @@ class UploadsController < ApplicationController
     header_warnings = data[:header_warnings]
 
     if valid_rows.positive?
-      flash[:csv_success] = {
-        total_rows_count: total_rows_count.to_s,
-        valid_rows: valid_rows.to_s,
-        failed_rows_count: failed_rows_count.to_s
-      }.compact
+      successes = {
+        total_rows_count: total_rows_count,
+        valid_rows: valid_rows,
+        failed_rows_count: failed_rows_count
+      }
+      flash[:csv_success] = update_alert(successes) do |key|
+        flash[:csv_success][key].to_i
+      end.compact
     end
 
-    flash[:warning] = {
-      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
-      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
-    }.compact
+    warnings = {
+      'The following headers should be checked: ': header_warnings,
+      'The following rows should be checked: ': validation_warnings
+    }
+    flash[:warning] = update_alert(warnings) do |key|
+      flash[:warning][key] || []
+    end.reject { |_k, value| value.empty? }
+  end
+
+  def update_alert(hash)
+    return hash if single_upload?
+
+    hash.each { |key, value| hash[key] = yield(key) + value }
   end
 
   def original_filename
@@ -84,12 +102,13 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user)
+    upload_params.merge(csv: original_filename, user: current_user).except(:sequence)
   end
 
   def upload_params
     upload_params = params.require(:upload).permit(
-      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
+      sequence: [:current, :total]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
@@ -114,6 +133,24 @@ class UploadsController < ApplicationController
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     data
+  end
+
+  def sequence_params
+    @sequence_params ||= upload_params[:sequence]&.transform_values(&:to_i)
+  end
+
+  def sequential?
+    sequence_params.present?
+  end
+
+  def final_upload?
+    return false unless sequential?
+
+    sequence_params[:current] == sequence_params[:total]
+  end
+
+  def single_upload?
+    !sequential? || sequence_params[:current] == 1
   end
 
   def klass

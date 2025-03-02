@@ -48,7 +48,7 @@ class Upload < ApplicationRecord
     default_settings[:multiple_files]
   end
 
-  def sequentual?
+  def sequential?
     sequential_upload_settings[:enabled]
   end
 

@@ -16,8 +16,8 @@
         <%= f.file_field(:upload_file, class: "form-control", required: true, accept: @extensions) %>
       </div>
 
-      <!-- Disable multiple file upload if async submit enabled -->
-      <% unless @upload.async_enabled? %>
+      <!-- Disable multiple file upload if sequential submit enabled for file type -->
+      <% unless @upload.sequential? %>
         <div class="form-group">
           <%= f.label(:multiple_file_upload) %>
           <%= f.check_box :multiple_file_upload, {}, true, false %><br/> 
@@ -35,11 +35,11 @@
 
       <div class="actions">
         <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
-        <!-- If async enabled, intercept submit and perform custom logic in upload.js -->
-        <% if @upload.async_enabled? %>
+        <!-- If sequential upload enabled, intercept submit and perform custom logic in upload.js -->
+        <% if @upload.sequential? %>
           <button
             type="submit"
-            id="async-submit-btn"
+            id="seq-submit-btn"
             class="btn btn-primary"
             data-chunk-size=<%= @upload.chunk_size %>
           >
