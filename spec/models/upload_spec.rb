@@ -118,4 +118,60 @@ RSpec.describe Upload, type: :model do
       expect(described_class.locked_fetches_exist?).to eq(false)
     end
   end
+
+  describe '#sequential?' do
+    context 'when upload non-sequential' do
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: false })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+      end
+
+      it 'returns false' do
+        expect(upload.sequential?).to be false
+      end
+    end
+
+    context 'when upload sequential' do
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: true })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+      end
+
+      it 'returns true' do
+        expect(upload.sequential?).to be true
+      end
+    end
+  end
+
+  describe '#chunk_size' do
+    context 'when upload non-sequential' do
+      let(:chunk_size) { 10_000_000 }
+
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: false, chunk_size: })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+      end
+
+      it 'returns chunk size' do
+        expect(upload.chunk_size).to eq(chunk_size)
+      end
+    end
+
+    context 'when upload sequential' do
+      let(:chunk_size) { 10_000_000 }
+
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: true, chunk_size: })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+      end
+
+      it 'returns chunk size' do
+        expect(upload.chunk_size).to eq(chunk_size)
+      end
+    end
+  end
 end

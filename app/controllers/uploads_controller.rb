@@ -81,7 +81,7 @@ class UploadsController < ApplicationController
 
   def update_success_alerts(successes)
     alerts = update_alert(successes) { |key| flash[:csv_success][key].to_i }
-    flash[:csv_success] = alerts.compact
+    flash[:csv_success] = alerts.transform_values(&:to_s).compact
   end
 
   def update_warning_alerts(warnings)
@@ -92,7 +92,10 @@ class UploadsController < ApplicationController
   def update_alert(hash)
     return hash if single_upload?
 
-    hash.each { |key, value| hash[key] = yield(key) + value }
+    hash.each do |key, value|
+      combined = yield(key) + value
+      hash[key] = combined.then { |sum| sum.is_a?(Array) ? sum.uniq : sum }
+    end
   end
 
   def original_filename

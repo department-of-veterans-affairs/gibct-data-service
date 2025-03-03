@@ -130,6 +130,10 @@ RSpec.describe UploadsController, type: :controller do
 
   describe 'POST create' do
     let(:upload_file) { build(:upload).upload_file }
+    let(:first) { 1 }
+    let(:second) { 2 }
+    let(:third) { 3 }
+    let(:total) { third }
 
     login_user
 
@@ -165,22 +169,64 @@ RSpec.describe UploadsController, type: :controller do
         expect(Upload.where(multiple_file_upload: true).last).not_to be nil
       end
 
-      it 'redirects to show' do
-        expect(
-          post(:create,
-               params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
-               })
-        ).to redirect_to(action: :show, id: assigns(:upload).id)
+      context 'when upload non-sequential' do
+        it 'redirects to show' do
+          expect(post(:create,
+                      params: {
+                        upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
+                      })).to redirect_to(action: :show, id: assigns(:upload).id)
+        end
+
+        it 'formats an notice message when some records do not validate' do
+          file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
+          post(:create, params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+          expect(flash[:warning].key?(:'The following rows should be checked: ')).to be true
+        end
       end
 
-      it 'formats an notice message when some records do not validate' do
-        file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
-        post(:create,
-             params: {
-               upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
-             })
-        expect(flash[:warning].key?(:'The following rows should be checked: ')).to be true
+      context 'when upload sequential' do
+        before do
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: first, total: } }
+               })
+        end
+
+        it 'renders sequence status as json' do
+          id = Upload.last.id
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: second, total: } }
+               })
+          status = JSON.parse(response.body)
+          expect(status).to include({ 'final' => false, 'upload' => { 'id' => id + 1 } })
+        end
+
+        it 'appends success messages across uploads' do
+          rows = flash[:csv_success][:total_rows_count].to_i
+          expect do
+            post(:create,
+                 params: {
+                   upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                             sequence: { current: second, total: } }
+                 })
+          end.to change { flash[:csv_success][:total_rows_count] }.from(rows.to_s).to((rows + rows).to_s)
+        end
+
+        it 'appends notice messages across uploads when some records do not validate' do
+          file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
+          key = :'The following headers should be checked: '
+          previous_warnings = flash[:warning][key]
+          expect do
+            post(:create,
+                 params: {
+                   upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                             sequence: { current: second, total: } }
+                 })
+          end.to change { flash[:warning][key].length }.from(previous_warnings.length)
+        end
       end
     end
 
@@ -208,6 +254,30 @@ RSpec.describe UploadsController, type: :controller do
           ).to render_template(:new)
         end
       end
+
+      context 'when sequential upload invalid' do
+        let(:csv_type) { 'Weam' }
+        let(:klass) { csv_type.constantize }
+
+        before do
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type:,
+                           sequence: { current: first, total: } }
+               })
+        end
+
+        it 'deletes all records from sequence event if previous upload successful' do
+          previous = klass.count
+          expect do
+            post(:create,
+                 params: {
+                   upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                             sequence: { current: second, total: } }
+                 })
+          end.to change(klass, :count).from(previous).to(0)
+        end
+      end
     end
 
     context 'with a mal-formed csv file' do
@@ -229,6 +299,31 @@ RSpec.describe UploadsController, type: :controller do
 
         message = flash[:warning][:'The following headers should be checked: '].try(:first)
         expect(message).to match(/Independent study is a missing header/)
+      end
+
+      context 'when upload sequential' do
+        before do
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: first, total: } }
+               })
+        end
+
+        it 'appends notice messages in the flash across uploads' do
+          file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
+          key = :'The following headers should be checked: '
+          previous_warnings = flash[:warning][key]
+          post(:create,
+               params: {
+                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: second, total: } }
+               })
+          messages = ['Independent study is a missing header',
+                      'Campus indicator is a missing header',
+                      'Parent facility code is a missing header']
+          expect(flash[:warning][key]).to eq(previous_warnings + messages)
+        end
       end
     end
 
