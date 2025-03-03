@@ -78,5 +78,40 @@ FactoryBot.define do
       csv { CipCode.name }
       ok { true }
     end
+
+    factory :async_upload do
+      transient do
+        csv_name { 'program.csv' }
+      end
+
+      csv_type { Program.name }
+      queued_at { Time.now.utc.to_fs(:db) }
+      canceled_at { nil }
+
+      trait :active do
+        completed_at { nil }
+      end
+
+      trait :with_body do
+        active
+        body do
+          rows = upload_file.read
+          upload_file.rewind
+          rows
+        end
+      end
+
+      trait :canceled do
+        completed_at { nil }
+        canceled_at { (Time.now.utc + 1.minute).to_fs(:db) }
+      end
+
+      trait :complete_with_alerts do
+        valid_upload
+        status_message do
+          '{\"csv_success\":{\"total_rows_count\":\"58\",\"valid_rows\":\"58\",\"failed_rows_count\":\"0\"},\"warning\":{}}'
+        end
+      end
+    end
   end
 end
