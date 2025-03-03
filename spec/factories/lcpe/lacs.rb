@@ -6,5 +6,9 @@ FactoryBot.define do
     edu_lac_type_nm { 'License' }
     lac_nm { 'Gas Fitter' }
     state { 'AR' }
+
+    trait :preloaded do
+      after(:create) { |instance| Lcpe::PreloadDataset.build(instance.class.to_s) }
+    end
   end
 end
