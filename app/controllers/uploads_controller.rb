@@ -19,6 +19,7 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
     begin
       data = load_file
+      raise(StandardError, "jeff") if final_upload?
       alert_messages(data)
       data_results = data[:results]
 
@@ -26,9 +27,7 @@ class UploadsController < ApplicationController
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
       if sequential?
-        data = { final: final_upload? }
-        data.merge!(upload: { id: @upload.id }) if final_upload?
-        render json: { **data }
+        render json: { final: final_upload?, upload: { id: @upload.id } }
       else
         redirect_to @upload
       end
@@ -37,6 +36,7 @@ class UploadsController < ApplicationController
       @extensions = Settings.roo_upload.extensions.single.join(', ')
       csv_requirements if @upload.csv_type_check?
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+      rollback_upload_sequence if sequential?
       render :new
     end
   end
@@ -151,6 +151,11 @@ class UploadsController < ApplicationController
 
   def single_upload?
     !sequential? || sequence_params[:current] == 1
+  end
+
+  def rollback_upload_sequence
+    flash[:csv_success].clear
+    klass.in_batches.delete_all
   end
 
   def klass
