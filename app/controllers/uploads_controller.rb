@@ -19,18 +19,16 @@ class UploadsController < ApplicationController
     @upload = Upload.create(merged_params)
     begin
       data = load_file
-      raise(StandardError, "jeff") if final_upload?
       alert_messages(data)
       data_results = data[:results]
 
       @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
       raise(StandardError, error_msg) unless @upload.ok?
-      if sequential?
-        render json: { final: final_upload?, upload: { id: @upload.id } }
-      else
-        redirect_to @upload
-      end
+
+      return render json: { final: final_upload?, upload: { id: @upload.id } } if sequential?
+
+      redirect_to @upload
     rescue StandardError => e
       @upload = Upload.from_csv_type(merged_params[:csv_type])
       @extensions = Settings.roo_upload.extensions.single.join(', ')
@@ -72,23 +70,23 @@ class UploadsController < ApplicationController
     header_warnings = data[:header_warnings]
 
     if valid_rows.positive?
-      successes = {
-        total_rows_count: total_rows_count,
-        valid_rows: valid_rows,
-        failed_rows_count: failed_rows_count
-      }
-      flash[:csv_success] = update_alert(successes) do |key|
-        flash[:csv_success][key].to_i
-      end.compact
+      update_success_alerts({ total_rows_count: total_rows_count,
+                              valid_rows: valid_rows,
+                              failed_rows_count: failed_rows_count })
     end
 
-    warnings = {
-      'The following headers should be checked: ': header_warnings,
-      'The following rows should be checked: ': validation_warnings
-    }
-    flash[:warning] = update_alert(warnings) do |key|
-      flash[:warning][key] || []
-    end.reject { |_k, value| value.empty? }
+    update_warning_alerts({ 'The following headers should be checked: ': header_warnings,
+                            'The following rows should be checked: ': validation_warnings })
+  end
+
+  def update_success_alerts(successes)
+    alerts = update_alert(successes) { |key| flash[:csv_success][key].to_i }
+    flash[:csv_success] = alerts.compact
+  end
+
+  def update_warning_alerts(warnings)
+    alerts = update_alert(warnings) { |key| flash[:warning][key] || [] }
+    flash[:warning] = alerts.reject { |_k, value| value.empty? }
   end
 
   def update_alert(hash)
@@ -108,7 +106,7 @@ class UploadsController < ApplicationController
   def upload_params
     upload_params = params.require(:upload).permit(
       :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
-      sequence: [:current, :total]
+      sequence: %i[current total]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
