@@ -11,6 +11,7 @@ gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'bcrypt', '~> 3.1.20'
 gem 'bootsnap', require: false
 gem 'cancancan', '~> 1.13', '>= 1.13.1' # Use cancancan for authorization
+gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
 gem 'devise' # Use devise for authentication
@@ -48,7 +49,6 @@ gem 'terser'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'
-gem 'cgi', '>= 0.4.2'
 
 group :production do
   gem 'sass-rails', '6.0'
