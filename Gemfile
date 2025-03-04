@@ -48,6 +48,7 @@ gem 'terser'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'
+gem 'cgi', '>= 0.4.2'
 
 group :production do
   gem 'sass-rails', '6.0'
