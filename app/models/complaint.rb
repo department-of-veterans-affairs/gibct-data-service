@@ -106,7 +106,7 @@ class Complaint < ImportableRecord
     # in complaints being attributed to institutions that have nothing to do with the offending
     # location. So, when doing ope6 rollups, we ignore anything that start with an 'A'. This
     # seems to be a reliable enough pattern to filter out these ephemeral ope ids.
-    ope6_format_clause = on_column == :ope6 ? "AND NOT institutions.#{on_column} LIKE 'A%'" : ""
+    ope6_format_clause = on_column == :ope6 ? "AND NOT institutions.#{on_column} LIKE 'A%'" : ''
 
     rollup_sums.each_pair do |sum_column, complaint_column|
       set_clause << %("#{sum_column}" = sums.#{sum_column})
