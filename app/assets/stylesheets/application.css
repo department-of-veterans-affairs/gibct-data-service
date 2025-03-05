@@ -154,32 +154,25 @@
 }
 
 #preview_dialog,
-#async-upload-dialog {
+#sequential-upload-dialog {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#async-upload-alert {
+#sequential-upload-alert {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-#async-upload-alert a {
-  color: #337ab7;
-  text-decoration: underline;
-  font-weight: bold;
-}
-
 #preview_dialog_div,
-#async-upload-dialog-div,
-#async-upload-alert {
+#sequential-upload-dialog-div {
   min-width: 250px;
   text-align: center;
 }
 
-#async-upload-dialog-div {
+#sequential-upload-dialog-div {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -203,15 +196,13 @@
   margin-bottom: 1em;
 }
 
-.async-upload-status-div,
-#async-submit-btn-div {
+#sequential-submit-btn-div {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.upload-icon:hover,
-.default-async-loading {
+.upload-icon:hover {
   cursor: pointer;
 }
 

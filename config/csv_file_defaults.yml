@@ -4,7 +4,7 @@ generic:
   clean_rows: true
   multiple_files: false
   liberal_parsing: false
-  async_upload:
+  sequential_upload:
     enabled: false
     chunk_size: 10_000_000
 
@@ -40,7 +40,7 @@ Complaint:
 Program:
   col_sep: '|'
   liberal_parsing: true
-  async_upload:
+  sequential_upload:
     enabled: true
 
 SchoolCertifyingOfficial:

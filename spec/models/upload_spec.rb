@@ -119,176 +119,58 @@ RSpec.describe Upload, type: :model do
     end
   end
 
-  context 'when async upload' do
-    subject(:upload) { build :async_upload, :active, user: user }
+  describe '#sequential?' do
+    context 'when upload non-sequential' do
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: false })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+      end
 
-    let(:chunk_size) { 10_000_000 }
-
-    before do
-      settings = Common::Shared.file_type_defaults(upload.csv_type)
-      settings.merge!(async_upload: { enabled: true, chunk_size: chunk_size })
-      allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
-    end
-
-    describe 'when validating' do
-      it 'has a valid factory' do
-        expect(upload).to be_valid
+      it 'returns false' do
+        expect(upload.sequential?).to be false
       end
     end
 
-    describe '::async_queue' do
-      it 'lists active async uploads' do
-        expect(described_class.async_queue).to be_empty
-        upload.save
-        expect(described_class.async_queue.length).to eq(1)
+    context 'when upload sequential' do
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: true })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
+      end
+
+      it 'returns true' do
+        expect(upload.sequential?).to be true
       end
     end
+  end
 
-    describe '#check_async_queue' do
-      it 'prevents creation of more than one active upload of same csv type' do
-        expect(upload.save).to be true
-        expect { create(:async_upload, :active, user: user) }.to raise_error(StandardError)
-        expect(create(:async_upload, :active, user: user, csv_type: 'Weam')).to be_truthy
+  describe '#chunk_size' do
+    context 'when upload non-sequential' do
+      let(:chunk_size) { 10_000_000 }
+
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: false, chunk_size: })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
       end
-    end
 
-    describe '#async_upload_settings, #async_enabled?, #chunk_size' do
-      it 'returns async settings for csv type' do
-        expect(upload.async_upload_settings.keys).to eq(%i[enabled chunk_size])
-        expect(upload.async_enabled?).to be true
+      it 'returns chunk size' do
         expect(upload.chunk_size).to eq(chunk_size)
       end
     end
 
-    describe '#create_or_concat_body' do
-      let!(:upload_content) { upload.upload_file.read }
+    context 'when upload sequential' do
+      let(:chunk_size) { 10_000_000 }
 
-      before { upload.upload_file.rewind }
-
-      it 'creates body if upload#body nil' do
-        upload.save
-        expect { upload.create_or_concat_body }.to change { upload.reload.body }.from(nil).to(upload_content)
+      before do
+        settings = Common::Shared.file_type_defaults(upload.csv_type)
+        settings.merge!(sequential_upload: { enabled: true, chunk_size: })
+        allow(Common::Shared).to receive(:file_type_defaults).and_return(settings)
       end
 
-      it 'concats body if upload#body exists' do
-        upload = create(:async_upload, :with_body, user: user)
-        expect { upload.create_or_concat_body }.to change { upload.reload.body }.to(upload.body + upload_content)
-      end
-
-      it 'closes and unlinks upload file' do
-        allow(upload.upload_file.tempfile).to receive(:close)
-        allow(upload.upload_file.tempfile).to receive(:unlink)
-        upload.create_or_concat_body
-        expect(upload.upload_file.tempfile).to have_received(:close)
-        expect(upload.upload_file.tempfile).to have_received(:unlink)
-      end
-    end
-
-    describe '#active?, #inactive?' do
-      it 'returns #active? true if upload queued, not completed, and not canceled' do
-        expect(upload.active?).to be true
-        expect(upload.inactive?).to be false
-      end
-
-      it 'returns #active? false if upload completed' do
-        upload = build(:async_upload, :valid_upload, user: user)
-        expect(upload.active?).to be false
-        expect(upload.inactive?).to be true
-      end
-
-      it 'returns #active? false if upload canceled' do
-        upload = build(:async_upload, :canceled, user: user)
-        expect(upload.active?).to be false
-        expect(upload.inactive?).to be true
-      end
-    end
-
-    describe '#cancel!' do
-      it 'returns false if inactive' do
-        upload = build(:async_upload, :canceled, user: user)
-        expect(upload.cancel!).to be false
-      end
-
-      it 'returns true if upload active' do
-        upload = build(:async_upload, :active, user: user)
-        expect(upload.cancel!).to be true
-      end
-
-      it 'sets canceled_at value' do
-        upload = build(:async_upload, :with_body, user: user)
-        expect { upload.cancel! }.to change { upload.canceled_at }.from(nil)
-      end
-
-      it 'clears body and status message' do
-        upload = build(:async_upload, :with_body, status_message: 'sample status', user: user)
-        expect { upload.cancel! }.to change { upload.slice(:body, :status_message).values }
-          .from([upload.body, upload.status_message]).to([nil, nil])
-      end
-    end
-
-    describe '#rollback_if_inactive' do
-      before { upload.save }
-
-      it 'throws error if upload inactive' do
-        upload = build(:async_upload, :canceled, user: user)
-        expect { upload.rollback_if_inactive }.to raise_error(StandardError)
-      end
-
-      it 'proceeds without error if upload active' do
-        expect { upload.rollback_if_inactive }.not_to raise_error(StandardError)
-      end
-    end
-
-    describe '#safely_update_status!' do
-      let(:status) { 'sample status' }
-
-      before { upload.save }
-
-      it 'updates status in separate thread if upload active' do
-        new_thread = upload.safely_update_status!(status)
-        new_thread.join
-        expect(upload.status_message).to eq(status)
-      end
-
-      it 'throws error if upload inactive' do
-        upload = build(:async_upload, :canceled, user: user)
-        expect { upload.safely_update_status!(status) }.to raise_error(StandardError)
-      end
-    end
-
-    describe '#update_import_progress!' do
-      let(:completed) { 49 }
-      let(:total) { 100 }
-
-      before { upload.save }
-
-      it 'updates upload status during import with percent complete' do
-        percent_complete = (completed.to_f / total) * 100
-        new_thread = upload.update_import_progress!(completed, total)
-        new_thread.join
-        expect(upload.status_message).to eq("importing records: #{percent_complete.round}% . . .")
-      end
-
-      it 'throws error if upload inactive' do
-        upload = build(:async_upload, :canceled, user: user)
-        expect { upload.update_import_progress!(completed, total) }.to raise_error(StandardError)
-      end
-    end
-
-    describe '#alerts' do
-      it 'returns hash with fields if upload#status_message parsable JSON' do
-        json_alerts = { alert_key_1: 'alert 1', alert_key_2: 'alert 2' }.to_json
-        upload.update(status_message: json_alerts)
-        expect(upload.alerts.keys).to eq(%i[alert_key_1 alert_key_2])
-      end
-
-      it 'returns empty hash if upload#status_message empty' do
-        expect(upload.alerts).to be_empty
-      end
-
-      it 'returns empty hash if upload#status_message not parsable JSON' do
-        upload.update(status_message: 'string status')
-        expect(upload.alerts).to be_empty
+      it 'returns chunk size' do
+        expect(upload.chunk_size).to eq(chunk_size)
       end
     end
   end
