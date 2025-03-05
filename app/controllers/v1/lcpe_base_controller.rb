@@ -29,6 +29,9 @@ module V1
     end
 
     def set_etag(preload_version)
+      no_store_disabled = response.headers['Cache-Control'].remove('no-store, ')
+      response.set_header('Cache-Control', no_store_disabled)
+
       response.set_header('ETag', preload_version)
     end
 
