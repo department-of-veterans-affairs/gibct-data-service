@@ -118,5 +118,22 @@ RSpec.describe Complaint, type: :model do
         end
       end
     end
+
+    describe 'by ope6 with temporary ope ids' do
+      before do
+        create :version, :production
+        institution = create :institution, :institution_builder, version_id: Version.last.id, ope: 'VA000200', ope6: 'A0002'
+
+        create :complaint, :all_issues, ope: 'VA000200'
+        described_class.rollup_sums(:ope6, institution.version_id)
+      end
+
+      it 'ignores the temporary ope id complaint(s)' do
+        institution = Institution.first
+        Complaint::OPE6_ROLL_UP_SUMS.each_key do |ope6_sum|
+          expect(institution[ope6_sum]).to be_nil
+        end
+      end
+    end
   end
 end
