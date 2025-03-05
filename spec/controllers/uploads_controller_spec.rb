@@ -130,6 +130,10 @@ RSpec.describe UploadsController, type: :controller do
 
   describe 'POST create' do
     let(:upload_file) { build(:upload).upload_file }
+    let(:first) { 1 }
+    let(:second) { 2 }
+    let(:third) { 3 }
+    let(:total) { third }
 
     login_user
 
@@ -165,22 +169,64 @@ RSpec.describe UploadsController, type: :controller do
         expect(Upload.where(multiple_file_upload: true).last).not_to be nil
       end
 
-      it 'redirects to show' do
-        expect(
-          post(:create,
-               params: {
-                 upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
-               })
-        ).to redirect_to(action: :show, id: assigns(:upload).id)
+      context 'when upload non-sequential' do
+        it 'redirects to show' do
+          expect(post(:create,
+                      params: {
+                        upload: { upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
+                      })).to redirect_to(action: :show, id: assigns(:upload).id)
+        end
+
+        it 'formats an notice message when some records do not validate' do
+          file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
+          post(:create, params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' } })
+          expect(flash[:warning].key?(:'The following rows should be checked: ')).to be true
+        end
       end
 
-      it 'formats an notice message when some records do not validate' do
-        file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
-        post(:create,
-             params: {
-               upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam' }
-             })
-        expect(flash[:warning].key?(:'The following rows should be checked: ')).to be true
+      context 'when upload sequential' do
+        before do
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: first, total: } }
+               })
+        end
+
+        it 'renders sequence status as json' do
+          id = Upload.last.id
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: second, total: } }
+               })
+          status = JSON.parse(response.body)
+          expect(status).to include({ 'final' => false, 'upload' => { 'id' => id + 1 } })
+        end
+
+        it 'appends success messages across uploads' do
+          rows = flash[:csv_success][:total_rows_count].to_i
+          expect do
+            post(:create,
+                 params: {
+                   upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                             sequence: { current: second, total: } }
+                 })
+          end.to change { flash[:csv_success][:total_rows_count] }.from(rows.to_s).to((rows + rows).to_s)
+        end
+
+        it 'appends notice messages across uploads when some records do not validate' do
+          file = build(:upload, csv_name: 'weam_invalid.csv').upload_file
+          key = :'The following headers should be checked: '
+          previous_warnings = flash[:warning][key]
+          expect do
+            post(:create,
+                 params: {
+                   upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                             sequence: { current: second, total: } }
+                 })
+          end.to change { flash[:warning][key].length }.from(previous_warnings.length)
+        end
       end
     end
 
@@ -208,6 +254,30 @@ RSpec.describe UploadsController, type: :controller do
           ).to render_template(:new)
         end
       end
+
+      context 'when sequential upload invalid' do
+        let(:csv_type) { 'Weam' }
+        let(:klass) { csv_type.constantize }
+
+        before do
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type:,
+                           sequence: { current: first, total: } }
+               })
+        end
+
+        it 'deletes all records from sequence event if previous upload successful' do
+          previous = klass.count
+          expect do
+            post(:create,
+                 params: {
+                   upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                             sequence: { current: second, total: } }
+                 })
+          end.to change(klass, :count).from(previous).to(0)
+        end
+      end
     end
 
     context 'with a mal-formed csv file' do
@@ -229,6 +299,31 @@ RSpec.describe UploadsController, type: :controller do
 
         message = flash[:warning][:'The following headers should be checked: '].try(:first)
         expect(message).to match(/Independent study is a missing header/)
+      end
+
+      context 'when upload sequential' do
+        before do
+          post(:create,
+               params: {
+                 upload: { upload_file:, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: first, total: } }
+               })
+        end
+
+        it 'appends notice messages in the flash across uploads' do
+          file = build(:upload, csv_name: 'weam_missing_column.csv').upload_file
+          key = :'The following headers should be checked: '
+          previous_warnings = flash[:warning][key]
+          post(:create,
+               params: {
+                 upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'Weam',
+                           sequence: { current: second, total: } }
+               })
+          messages = ['Independent study is a missing header',
+                      'Campus indicator is a missing header',
+                      'Parent facility code is a missing header']
+          expect(flash[:warning][key]).to eq(previous_warnings + messages)
+        end
       end
     end
 
@@ -271,220 +366,6 @@ RSpec.describe UploadsController, type: :controller do
     context 'with a invalid id' do
       it 'renders the index view' do
         expect(get(:show, params: { id: 0 })).to redirect_to(action: :index)
-      end
-    end
-  end
-
-  describe 'POST create_async' do
-    login_user
-
-    subject(:create_async_upload) { post :create_async, params: upload_params }
-
-    let(:upload_file) { build(:upload).upload_file }
-    let!(:upload_content) { upload_file.read }
-    let(:upload_params) do
-      {
-        upload: { upload_file: upload_file,
-                  skip_lines: 0,
-                  comment: 'Test',
-                  csv_type:,
-                  metadata: }
-      }
-    end
-    let(:csv_type) { 'Program' }
-    let(:current) { '1' }
-    let(:metadata) { { upload_id: upload&.id, count: { current:, total: '3' } } }
-
-    def upload
-      Upload.first
-    end
-
-    before { upload_file.rewind }
-
-    context 'with valid form input' do
-      context 'when first upload in a series of multiple requests' do
-        it 'creates new upload record with queued_at value' do
-          csv_type = upload_params[:upload][:csv_type]
-          expect { create_async_upload }.to change(Upload.where(csv_type:), :count).by(1)
-          expect(upload.queued_at).not_to be_nil
-        end
-
-        it 'changes upload#body from nil to upload content' do
-          expect { create_async_upload }.to change { upload&.body }.from(nil).to(upload_content)
-        end
-
-        it 'doesn\'t queue ProcessUploadJob' do
-          create_async_upload
-          allow(ProcessUploadJob).to receive(:perform_later)
-          expect(ProcessUploadJob).not_to have_received(:perform_later)
-          expect(upload.status_message).to be_nil
-        end
-      end
-
-      context 'when intermediate upload in a series of multiple requests' do
-        let(:current) { '2' }
-
-        before { create(:async_upload, :with_body) }
-
-        it 'finds previous upload in series instead of creating new one' do
-          allow(Upload).to receive(:find_by)
-          expect { create_async_upload }.not_to change(Upload, :count)
-          expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
-        end
-
-        it 'concats upload content with previous upload body' do
-          expect { create_async_upload }.to change { upload.reload.body }.to(upload.body + upload_content)
-        end
-
-        it 'doesn\'t queue ProcessUploadJob' do
-          create_async_upload
-          allow(ProcessUploadJob).to receive(:perform_later)
-          expect(ProcessUploadJob).not_to have_received(:perform_later)
-          expect(upload.status_message).to be_nil
-        end
-      end
-
-      context 'when last upload in a series of multiple requests' do
-        let(:current) { '3' }
-
-        before { create(:async_upload, :with_body) }
-
-        it 'finds previous upload in series instead of creating new one' do
-          allow(Upload).to receive(:find_by)
-          expect { create_async_upload }.not_to change(Upload, :count)
-          expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
-        end
-
-        it 'concats upload content with previous upload body' do
-          expect { create_async_upload }.to change { upload.reload.body }.to(upload.body + upload_content)
-        end
-
-        it 'queues ProcessUploadJob' do
-          allow(ProcessUploadJob).to receive(:perform_later)
-          expect { create_async_upload }.to change { upload.reload.status_message }.from(nil).to('queued for upload')
-          expect(ProcessUploadJob).to have_received(:perform_later)
-        end
-      end
-
-      context 'when body concatenation fails' do
-        let(:current) { '2' }
-
-        let!(:upload) { create(:async_upload, :with_body) }
-
-        it 'cancels the existing upload' do
-          allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
-          allow(upload).to receive(:cancel!)
-          allow(upload).to receive(:create_or_concat_body).and_raise(StandardError)
-          create_async_upload
-          expect(upload).to have_received(:cancel!)
-          expect(response).to have_http_status(:internal_server_error)
-        end
-      end
-    end
-  end
-
-  describe 'PATCH cancel' do
-    login_user
-
-    subject(:cancel_async_upload) { patch :cancel_async, params: { id: upload.id } }
-
-    context 'when upload active' do
-      let(:upload) { create(:async_upload, :with_body, status_message: 'importing records: 50% . . .') }
-
-      it 'finds upload by upload id' do
-        allow(Upload).to receive(:find_by)
-        cancel_async_upload
-        expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
-      end
-
-      it 'cancels upload' do
-        allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
-        expect { cancel_async_upload }.to change(upload, :canceled_at).from(nil)
-        expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)['canceled']).to be true
-      end
-    end
-
-    context 'when upload inactive' do
-      let(:upload) { create(:async_upload, :valid_upload) }
-
-      it 'finds upload by upload id' do
-        allow(Upload).to receive(:find_by)
-        cancel_async_upload
-        expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
-      end
-
-      it 'fails to cancel upload' do
-        allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
-        expect { cancel_async_upload }.not_to change { upload.reload.canceled_at }
-        expect(response).to have_http_status(:unprocessable_content)
-      end
-    end
-  end
-
-  describe 'GET async_status' do
-    login_user
-
-    subject(:get_async_status) { get :async_status, params: { id: upload.id } }
-
-    context 'when upload active' do
-      let(:upload) { create(:async_upload, :active, status_message: 'importing records: 50% . . .') }
-
-      it 'finds upload by upload id' do
-        allow(Upload).to receive(:find_by)
-        get_async_status
-        expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
-      end
-
-      it 'returns async status' do
-        get_async_status
-        expect(response).to have_http_status(:ok)
-        expect(response).to match_response_schema('async_upload_status')
-        status = JSON.parse(response.body)['async_status'].transform_keys(&:to_sym)
-        expect(status).to include({ message: upload.status_message,
-                                    active: true,
-                                    ok: false,
-                                    canceled: false,
-                                    type: upload.csv_type })
-      end
-    end
-
-    context 'when upload complete' do
-      let(:upload) { create(:async_upload, :complete_with_alerts) }
-
-      it 'finds upload by upload id' do
-        allow(Upload).to receive(:find_by)
-        get_async_status
-        expect(Upload).to have_received(:find_by).with(id: upload.id.to_s)
-      end
-
-      it 'returns async status' do
-        get_async_status
-        expect(response).to have_http_status(:ok)
-        expect(response).to match_response_schema('async_upload_status')
-        status = JSON.parse(response.body)['async_status'].transform_keys(&:to_sym)
-        expect(status).to include({ message: upload.status_message,
-                                    active: false,
-                                    ok: true,
-                                    canceled: false,
-                                    type: upload.csv_type })
-      end
-
-      it 'updates flash[:csv_success] and flash[:warning]' do
-        get_async_status
-        expect(flash[:csv_success]).to eq(upload.alerts[:csv_success])
-        expect(flash[:warning]).to eq(upload.alerts[:warning])
-      end
-    end
-
-    context 'when error encountered' do
-      let(:upload) { create(:async_upload, :complete_with_alerts) }
-
-      it 'returns internal server error' do
-        allow(Upload).to receive(:find_by).with(id: upload.id.to_s).and_return(upload)
-        allow(upload).to receive(:alerts).and_raise(StandardError)
-        get_async_status
-        expect(response).to have_http_status(:internal_server_error)
       end
     end
   end
