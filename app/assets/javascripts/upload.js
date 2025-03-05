@@ -7,7 +7,10 @@ $(function() {
     );
   });
 
-  // ASYNC UPLOAD LOGIC
+  // SEQUENTIAL UPLOAD LOGIC
+  // Simulates multiple file upload by breaking file down and submitting sequence of uploads
+  
+  // 
   const getPathPrefix = () => {
     const hostname = window.location.hostname
     const subdomain = hostname.split('.')[0];
@@ -15,8 +18,8 @@ $(function() {
   };
   const PATH_PREFIX = getPathPrefix();;
 
-  // Open dialog during initial async upload to disable page
-  $("#async-upload-dialog").dialog({
+  // Open dialog during sequential upload to disable page
+  $("#sequential-upload-dialog").dialog({
     autoOpen: false,
     modal: true,
     width: "auto",
@@ -26,235 +29,91 @@ $(function() {
     }
   });
 
-  // POLL UPLOAD STATUS
-  const ON_SCREEN_POLL_RATE = 5_000;
-  const BACKGROUND_POLL_RATE = 10_000;
-
-  const capitalize = (str, titlecase) => titlecase ? str.charAt(0).toUpperCase() + str.slice(1) : str;
-
-  // CRUD methods for local storage
-  const getUploadQueue = () => {
-    try {
-      const uploadQueue = JSON.parse(localStorage.getItem("uploadQueue"));
-      if (Array.isArray(uploadQueue)) {
-        return uploadQueue;
-      }
-      throw new TypeError()
-    } catch(error) {
-      localStorage.setItem("uploadQueue", "[]");
-      return [];
-    }
-  };
-  const addToQueue = (uploadId) => {
-    const uploadQueue = getUploadQueue();
-    uploadQueue.push(uploadId);
-    localStorage.setItem("uploadQueue", JSON.stringify([...new Set(uploadQueue)]));
-  };
-  const removeFromQueue = (uploadId) => {
-    const uploadQueue = getUploadQueue();
-    const filteredQueue = uploadQueue.filter((id) => id !== uploadId);
-    localStorage.setItem("uploadQueue", JSON.stringify([...new Set(filteredQueue)]));
-  };
-
-  // Cancel upload if still active
-  const cancelUpload = async (icon, uploadId) => {
-    $(icon).off("click mouseleave");
-    try {
-      await $.ajax({
-        url: `${PATH_PREFIX}/uploads/${uploadId}/cancel`,
-        type: "PATCH",
-        contentType: false,
-        processData: false,
-      });
-      pollUploadStatus();
-    } catch(error) {
-      console.error(error);
-      const uploadStatusDiv = $(`#async-upload-status-${uploadId}`)[0];
-      const { titlecase } = uploadStatusDiv.dataset || false;
-      $(uploadStatusDiv).html(capitalize("failed to cancel", titlecase));
-      await new Promise((resolve) => setTimeout(resolve, ON_SCREEN_POLL_RATE));
-      pollUploadStatus();
-    }
-  };
-
-  // Dialog and dialog display method for when async upload complete
-  $("#async-upload-alert").dialog({
-    autoOpen: false,
-    modal: true,
-    width: "auto",
-    residable: false,
-    open: function() {
-      const { uploadId, csvType } = $(this).data();
-      $(this).html(
-        `<p>${csvType} file upload complete</p>` +
-        '<p>Click ' + `<a href="${PATH_PREFIX}/uploads/${uploadId}">here</a>` +
-        ' for a more detailed report</p>'
-      );
-    }
-  });
-  const displayAlert = (uploadId, csvType) => {
-    $("#async-upload-alert").data({"uploadId": uploadId, "csvType": csvType}).dialog("open");
-  };
-
-  // Grab active client-side uploads from local storage and poll each upload for status
-  let consecutiveFails = 0;
-  const pollUploadStatus = async () => {
-    const uploadQueue = getUploadQueue();
-    uploadQueue.forEach(async (uploadId) => {
-      const uploadStatusDiv = $(`#async-upload-status-${uploadId}`)[0];
-      const onScreen = typeof uploadStatusDiv !== "undefined";
-      const pollRate = onScreen ? ON_SCREEN_POLL_RATE : BACKGROUND_POLL_RATE;
-      const { titlecase } = uploadStatusDiv?.dataset || false;
-      try {
-        const xhr = new XMLHttpRequest();
-        const getUploadStatus = () => {
-          xhr.open("GET", `${PATH_PREFIX}/uploads/${uploadId}/status`);
-          xhr.send();
-        };
-        xhr.onload = function() {
-          if (this.status === 200) {
-            consecutiveFails = 0;
-            const { message, active, ok, canceled, type } = JSON.parse(xhr.response).async_status;
-            // If upload active and status currently visible on screen
-            if (active) {
-              if (onScreen) {
-                // Update DOM
-                $(uploadStatusDiv).html(
-                  '<i class="fa fa-gear fa-spin upload-icon" style="font-size:16px"></i>' +
-                  `<div>${capitalize(message, titlecase)}</div>`
-                );
-                const icon = $(uploadStatusDiv).find("i");
-                // Enable cancel upload button
-                $(icon).on({
-                  mouseover: function(_event) {
-                    clearInterval(pollingInterval);
-                    $(this).removeClass("fa-gear fa-spin").addClass("fa-solid fa-times").css({color: "red", fontSize: "20px"});
-                    $(this).on("click", (_event) => cancelUpload(this, uploadId));
-                  },
-                  mouseleave: function(_event) {
-                    pollingInterval = setInterval(getUploadStatus, pollRate);
-                    $(this).removeClass("fa-solid fa-times").addClass("fa-gear fa-spin").css({color: "#333", fontSize: "16px"});
-                    $(this).off("click");
-                  }
-                });
-              }
-            // If upload completed or canceled
-            } else{
-              removeFromQueue(uploadId);
-              clearInterval(pollingInterval);
-              // If upload status currently visible on screen
-              if (onScreen) {
-                $(uploadStatusDiv).html(capitalize(ok ? "succeeded" : "failed", titlecase));
-              }
-              // If on upload#show page, reload page to render flash alerts
-              if (window.location.pathname === `${PATH_PREFIX}/uploads/${uploadId}`) {
-                window.location.reload();
-              // Otherwise render link to alerts in pop dialog
-              } else if (!canceled) {
-                displayAlert(uploadId, type);
-              }
-            }
-          } else {
-            consecutiveFails++;
-            if (consecutiveFails === 5) {
-            removeFromQueue(uploadId);
-            clearInterval(pollingInterval);
-            }
-          }
-        };
-        getUploadStatus();
-        let pollingInterval = setInterval(getUploadStatus, pollRate);
-      } catch(error) {
-        console.error(error);
-      }
-    });
-  };
-  $(document).ready(() => pollUploadStatus());
-
-  // Reset active upload if for some reason stuck on "Loading . . ."
-  // Not sure this is necessary, but technically someone could mess with local storage and
-  // it would mess up queue
-  $(".default-async-loading").on({
-    mouseover: function(_event) {
-      $(this).removeClass("fa-gear fa-spin").addClass("fa-solid fa-rotate").css({color: "green"});
-      $(this).on("click", (_event) => {
-        const { uploadId } = this.dataset;
-        addToQueue(parseInt(uploadId));
-        pollUploadStatus();
-      });
-    },
-    mouseleave: function(_event) {
-      $(this).removeClass("fa-solid fa-rotate").addClass("fa-gear fa-spin").css({color: "#333", fontSize: "16px"});
-      $(this).off("click");
-    }
-  });
-
-  // ASYNC SUBMIT ACTION
-  // Submit logic for new upload form when async upload enabled
-  $("#async-submit-btn").on("click", async function(event) {
+  // Submit logic for new upload form when sequential upload enabled
+  $("#seq-submit-btn").on("click", async function(event) {
     event.preventDefault();
-    // Grab form data and validate file extension
+    // Grab form data and validate file selected
     const form = $("#new_upload")[0];
-    const formData = new FormData(form);
-    const file = formData.get("upload[upload_file]");
-    const ext = file.name !== '' ? file.name.slice(file.name.lastIndexOf(".")) : null;
-    const fileInput = $("#upload_upload_file");
-    const validExts = $(fileInput).attr("accept").split(", ");
-    $(fileInput)[0].setCustomValidity('');
-    if (ext !== null && !validExts.includes(ext)) {
-      $(fileInput)[0].setCustomValidity(`${ext} is not a valid file format.`);
-    }
     if (!form.reportValidity()) {
       return;
     }
+    const formData = new FormData(form);
+    const file = formData.get("upload[upload_file]");
+
     // Open dialog and disable page until client-side processing complete
-    $("#async-upload-dialog").dialog("open");
+    $("#sequential-upload-dialog").dialog("open");
     $(this).html(
-      '<div id="async-submit-btn-div">' +
+      '<div id="sequential-submit-btn-div">' +
       '<i class="fa fa-gear fa-spin" style="font-size:16px"></i>' +
       'Submitting . . .' +
       '</div>'
     );
-    const csvType = formData.get("upload[csv_type]");
-    let uploadId = null;
+
     // Divide upload file into smaller files
     const blobs = [];
     const generateBlobs = async () => {
       const chunkSize = parseInt(this.dataset.chunkSize);
+      const text = await file.text();
+      const header = text.slice(0, text.indexOf('\n') + 1);
       for (let start = 0; start < file.size; start += chunkSize) {
-        const blob = file.slice(start, start + chunkSize, "text/plain");
-        blobs.push(blob);
+        let end = start + chunkSize;
+        let charsToEndOfRow = 0;
+        // Ensure rows not divided between blobs
+        if (text[end - 1] !== "\n") {
+          charsToEndOfRow = text.slice(end).indexOf("\n") + 1;
+          end += charsToEndOfRow;
+        };
+        const blob = file.slice(start, end, "text/plain");
+        // Add header if not already present
+        const fileBits = start === 0 ? [blob] : [header, blob]
+        const newFile = new File(fileBits, { type: "text/plain" });
+        blobs.push(newFile);
+        start += charsToEndOfRow;
       }
     };
+
     // Send individual POST request for each blob, simulating multiple file upload
+    let uploadId;
     const submitBlobs = async () => {
+      const total = blobs.length;
+      const idx = file.name.lastIndexOf(".");
+      const [basename, ext] = [file.name.slice(0, idx), file.name.slice(idx)];
       try {
         for (let i = 0; i < blobs.length; i++) {
-          formData.set("upload[upload_file]", blobs[i], file.name);
+          const current = i + 1;
+          const filePosition = `${current.toString().padStart(2, '0')}_of_${total.toString().padStart(2, '0')}`;
+          const fileName = `${basename}_${filePosition}${ext}`;
+          formData.set("upload[upload_file]", blobs[i], fileName);
+          // Set multiple_file_upload to true after first upload
+          if (i > 0) {
+            formData.set("upload[multiple_file_upload]", true);
+          }
           // Include metadata in payload to track upload progress across multiple requests
-          formData.set("upload[metadata][upload_id]", uploadId);
-          formData.set("upload[metadata][count][current]", i + 1);
-          formData.set("upload[metadata][count][total]", blobs.length);
-          const response = await $.ajax({
-            url: `${PATH_PREFIX}/uploads`,
-            type: "POST",
-            data: formData,
-            dataType: "json",
-            contentType: false,
-            processData: false,
+          formData.set("upload[sequence][current]", current);
+          formData.set("upload[sequence][total]", total);
+          const response = await fetch(`${PATH_PREFIX}/uploads`, {
+            method: "POST",
+            body: formData
           });
-          uploadId = response.id;
+
+          if (!response.ok) {
+            throw new Error(`Upload failed with status ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (data.final) {
+            uploadId = data.upload.id;
+          }
         }
-        // If successful, save upload ID in local storage to enable status polling
-        addToQueue(uploadId);
         window.location.href = `${PATH_PREFIX}/uploads/${uploadId}`;
       } catch(error) {
         console.error(error);
+        const csvType = formData.get("upload[csv_type]");
         window.location.href = `${PATH_PREFIX}/uploads/new/${csvType}`;
       }
     };
 
-    generateBlobs();
+    await generateBlobs();
     submitBlobs();
   });
 });
