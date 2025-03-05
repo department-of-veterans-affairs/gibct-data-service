@@ -5,8 +5,23 @@ module Lcpe
     class Sql
       attr_reader :gamma
 
-      def initialize(sql = nil)
-        @gamma = sql.nil? ? [] : [sql]
+      def initialize(sql = nil, &)
+        if sql.present? && block_given?
+          raise "can't provide both sql and block"
+
+        elsif sql.blank? && block_given?
+          context = :block
+          body = Proc.new
+          @gamma = [{ context:, body: }]
+
+        elsif sql.present? && !block_given?
+          context = :sql
+          body = sql
+          @gamma = [{ context:, body: }]
+
+        else # if sql.blank? && !block_given?
+          @gamma = []
+        end
       end
 
       def join(ctx)
@@ -17,10 +32,17 @@ module Lcpe
       end
 
       def execute
-        result = gamma.join("\n")
-
         ActiveRecord::Base.transaction do
-          ActiveRecord::Base.connection.execute(result)
+          gamma.each do |item|
+            case item[:context]
+            when :sql
+              ActiveRecord::Base.connection.execute(item[:body])
+            when :block
+              item[:body].call
+            else
+              raise "invalid context: #{item[:context]}"
+            end
+          end
         end
       end
     end
