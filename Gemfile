@@ -11,6 +11,7 @@ gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'bcrypt', '~> 3.1.20'
 gem 'bootsnap', require: false
 gem 'cancancan', '~> 1.13', '>= 1.13.1' # Use cancancan for authorization
+gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
 gem 'devise' # Use devise for authentication
