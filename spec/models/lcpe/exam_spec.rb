@@ -6,6 +6,7 @@ RSpec.describe Lcpe::Exam, type: :model do
   let(:version) { create :version, :production }
   let(:institution) { create :institution, version_id: version.id }
   let(:facility_code) { institution.facility_code }
+  let(:preload_id) { Lcpe::PreloadDataset.fresh(described_class.to_s).id }
 
   before { create :weam, facility_code: }
 
@@ -16,22 +17,19 @@ RSpec.describe Lcpe::Exam, type: :model do
   end
 
   describe '.with_enriched_id' do
-    before { create :lcpe_exam, facility_code: }
+    before { create :lcpe_exam, :preloaded, facility_code: }
 
     it 'returns exams with ref_code and enriched_id attribute' do
       exam_enriched = described_class.with_enriched_id.first
-      ref = generate_ref_code_from(exam_enriched)
-      id = exam_enriched.id.to_s + '@' + ref
-      expect(exam_enriched.ref_code).to eq(ref)
+      id = exam_enriched.id.to_s + '@' + preload_id.to_s
       expect(exam_enriched.enriched_id).to eq(id)
     end
   end
 
   describe '.by_enriched_id' do
-    subject(:exam) { create :lcpe_exam, facility_code: }
+    subject(:exam) { create :lcpe_exam, :preloaded, facility_code: }
 
-    let(:ref_code) { generate_ref_code_from(exam) }
-    let(:enriched_id) { exam.id.to_s + '@' + ref_code }
+    let(:enriched_id) { exam.id.to_s + '@' + preload_id.to_s }
 
     it 'finds Lcpe::Lac by enriched_id' do
       expect(described_class.by_enriched_id(enriched_id).first).to eq(exam)
@@ -43,10 +41,5 @@ RSpec.describe Lcpe::Exam, type: :model do
       sql = described_class.rebuild
       expect(sql).to be_a Lcpe::SqlContext::Sql
     end
-  end
-
-  def generate_ref_code_from(exam)
-    hash = exam.facility_code + '-' + exam.nexam_nm
-    Digest::MD5.hexdigest(hash).last(5)
   end
 end
