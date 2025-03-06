@@ -6,6 +6,8 @@ module V1
 
     rescue_from PreloadVersionStaleError, with: :version_invalid
 
+    FILTER_PARAMS = %i[edu_lac_type_nm state lac_nm page per_page].freeze
+
     private
 
     def validate_preload_version
@@ -35,11 +37,7 @@ module V1
 
     # If additional filter params present, bypass versioning
     def bypass_versioning?
-      scrubbed_params.present?
-    end
-
-    def scrubbed_params
-      params.except(:format, :controller, :action, controller_name.singularize.to_sym)
+      params.keys.map(&:to_sym).intersect?(FILTER_PARAMS)
     end
 
     def version_invalid
