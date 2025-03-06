@@ -16,7 +16,7 @@ module V1
     def preload_dataset
       return if bypass_versioning?
 
-      set_etag(fresh_preload.id.to_s)
+      set_headers(fresh_preload.id.to_s)
       JSON.parse(fresh_preload.body)
     end
 
@@ -28,7 +28,8 @@ module V1
       "Lcpe::#{controller_name.singularize.titleize}"
     end
 
-    def set_etag(preload_version)
+    def set_headers(preload_version)
+      response.set_header('Cache-Control', 'no-cache, max-age=0, must-revalidate')
       response.set_header('ETag', preload_version)
     end
 
