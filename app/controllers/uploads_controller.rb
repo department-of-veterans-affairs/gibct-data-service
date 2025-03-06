@@ -164,6 +164,10 @@ class UploadsController < ApplicationController
     sequence_params[:final_retry]
   end
 
+  def allow_retry?
+    sequential? && sequence_params[:final_retry]
+  end
+
   def rollback_upload_sequence
     flash[:csv_success].clear
     klass.in_batches.delete_all
