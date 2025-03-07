@@ -29,8 +29,10 @@ module V1
     end
 
     def set_headers(preload_version)
-      response.set_header('Cache-Control', 'no-cache, max-age=0, must-revalidate')
-      response.set_header('ETag', preload_version)
+      response.set_header('Cache-Control', 'private')
+      response.headers.delete('Pragma')
+      response.set_header('Expires', 1.week.since.to_s)
+      response.set_header('ETag', "W/'#{preload_version}'")
     end
 
     # If additional filter params present, bypass versioning
