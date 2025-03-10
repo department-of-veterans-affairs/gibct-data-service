@@ -17,14 +17,7 @@ module FileTypeConverters
       CSV.open(@csv_file_name, 'wb') do |csv|
         sheet.each do |row|
           formatted_row = row.to_a.map do |cell|
-            cell_value = cell.is_a?(Float) ? format('%.0f', cell) : cell.to_s.strip
-            if cell_value =~ /^\d+$/ && cell_value.length <= 8
-              # Format the number to be exactly eight digits
-              formatted_number = cell_value.rjust(8, '0')
-              formatted_number
-            else
-              cell_value
-            end
+            cell.is_a?(Float) ? format('%.0f', cell) : cell.to_s.strip
           end
           csv << formatted_row
         end
