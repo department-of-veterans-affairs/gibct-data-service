@@ -34,6 +34,10 @@ $(function() {
       $(".ui-dialog-titlebar-close").hide(); 
     }
   });
+  
+  // const updateProgress = (completed, total) => {
+    
+  // };
 
   // Submit logic for new upload form when sequential upload enabled
   $("#seq-submit-btn").on("click", async function(event) {
@@ -57,10 +61,12 @@ $(function() {
 
     // Divide upload file into smaller files
     const blobs = [];
+
     const generateBlobs = async () => {
       const chunkSize = parseInt(this.dataset.chunkSize);
       const text = await file.text();
       const header = text.slice(0, text.indexOf('\n') + 1);
+
       for (let start = 0; start < file.size; start += chunkSize) {
         let end = start + chunkSize;
         let charsToEndOfRow = 0;
@@ -80,11 +86,16 @@ $(function() {
 
     // Send individual POST request for each blob, simulating multiple file upload
     const MAX_RETRIES = 5
+    const DELAY = 500;
+    const sleep = () => new Promise((res) => setTimeout(res, DELAY));
+
     const submitBlobs = async () => {
       const total = blobs.length;
       const idx = file.name.lastIndexOf(".");
       const [basename, ext] = [file.name.slice(0, idx), file.name.slice(idx)];
       let uploadId;
+
+      // Iterate through blobs and submit each to /uploads in sequential order
       try {
         for (let i = 0; i < blobs.length; i++) {
           const current = i + 1;
@@ -98,22 +109,30 @@ $(function() {
           // Include metadata in payload to track upload progress across multiple requests
           formData.set("upload[sequence][current]", current);
           formData.set("upload[sequence][total]", total);
+
           // Try each upload five times
           let response;
           let attempts = MAX_RETRIES
           while(!response?.ok && attempts > 0) {
-            attempts--;
-            console.log(`Uploading ${filename}, attempt: ${MAX_RETRIES - attempts}`);
-            formData.set("upload[sequence][final_retry]", attempts === 0);
-            response = await fetch(`${PATH_PREFIX}/uploads`, {
-              method: "POST",
-              body: formData
-            });
+            try {
+              attempts--;
+              console.log(`Uploading ${filename}, attempt: ${MAX_RETRIES - attempts}/${MAX_RETRIES}`);
+              formData.set("upload[sequence][retry]", attempts < MAX_RETRIES);
+              response = await fetch(`${PATH_PREFIX}/uploads`, {
+                method: "POST",
+                body: formData
+              });
+            } catch(error) {
+              console.error(error);
+              sleep();
+            }
           }
+
           // Throw error if all retries fail
           if (!response.ok) {
             throw new Error(`Upload failed with status ${response.status}`);
           }
+          console.log(`Upload successful: ${filename}`);
           const data = await response.json();
           if (data.final) {
             uploadId = data.upload.id;

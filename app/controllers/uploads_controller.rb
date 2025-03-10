@@ -24,7 +24,7 @@ class UploadsController < ApplicationController
 
       @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
       error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-      raise(StandardError, error_msg) unless @upload.ok? || allow_retry?
+      raise(StandardError, error_msg) unless @upload.ok? || retriable?
 
       return render json: { final: final_upload?, upload: { id: @upload.id } } if sequential?
 
@@ -34,7 +34,7 @@ class UploadsController < ApplicationController
       @extensions = Settings.roo_upload.extensions.single.join(', ')
       csv_requirements if @upload.csv_type_check?
       alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
-      rollback_upload_sequence if final_retry?
+      rollback_upload_sequence unless retriable?
       render :new
     end
   end
@@ -109,7 +109,7 @@ class UploadsController < ApplicationController
   def upload_params
     upload_params = params.require(:upload).permit(
       :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
-      sequence: %i[current total final_retry]
+      sequence: %i[current total retry]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
@@ -158,13 +158,7 @@ class UploadsController < ApplicationController
     !sequential? || sequence_params[:current] == 1
   end
 
-  def final_retry?
-    return false unless sequential?
-
-    sequence_params[:final_retry]
-  end
-
-  def allow_retry?
+  def retriable?
     sequential? && sequence_params[:final_retry]
   end
 
