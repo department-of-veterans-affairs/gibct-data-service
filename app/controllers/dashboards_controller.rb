@@ -184,12 +184,17 @@ class DashboardsController < ApplicationController
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
 
+      # HCM is a special case. It may have an xls extension or an xlsx extension. Each quarter
+      # this has to be checked and handled appropriately.
       if download_csv(class_nm) && unzip_csv(class_nm)
         upload = Upload.from_csv_type(params[:csv_type])
         upload.user = current_user
         upload.csv =
-          if class_nm.eql?('EightKey') # This guy doesn't load properly with roo as is.
+          case class_nm
+          when 'EightKey' # This guy doesn't load properly with roo as is.
             FileTypeConverters::XlsToCsv.new('tmp/eight_key.xls', 'tmp/eight_key.csv').convert_xls_to_csv
+          when 'Hcm'
+            hcm_spreadsheet_processing(class_nm)
           else
             NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
           end
@@ -231,5 +236,14 @@ class DashboardsController < ApplicationController
     return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou') || class_nm.eql?('Vsoc')
 
     ZipFileUtils::Unzipper.new.unzip_the_file
+  end
+
+  # Sometimes the file is an xls file and sometimes it is an xlsx file.
+  def hcm_spreadsheet_processing(class_nm)
+    if NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm].end_with?('.xls')
+      FileTypeConverters::XlsToCsv.new('tmp/hcm.xls', 'tmp/hcm.csv').convert_xls_to_csv
+    else
+      NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
+    end
   end
 end
