@@ -62,9 +62,9 @@ $(function() {
 
     // Divide upload file into smaller files
     const blobs = [];
-    const chunkSize = parseInt(this.dataset.chunkSize);
 
     const generateBlobs = async () => {
+      const chunkSize = parseInt(this.dataset.chunkSize);
       const text = await file.text();
       const header = text.slice(0, text.indexOf('\n') + 1);
 
