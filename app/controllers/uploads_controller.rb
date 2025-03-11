@@ -21,11 +21,10 @@ class UploadsController < ApplicationController
       data = load_file
       alert_messages(data)
       data_results = data[:results]
-      ok = data_results.present? && data_results.ids.present?
 
+      ok = data_results.present? && data_results.ids.present?
       @upload.update(ok:, completed_at: Time.now.utc.to_fs(:db)) unless !ok && retriable?
-      error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-      raise(StandardError, error_msg) unless @upload.ok? || retriable?
+      inspect_results
 
       return redirect_to @upload unless sequential?
 
@@ -66,11 +65,16 @@ class UploadsController < ApplicationController
     end
   end
 
-  def handle_upload_error(e)
+  def inspect_results
+    error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
+    raise(StandardError, error_msg) unless @upload.ok? || retriable?
+  end
+
+  def handle_upload_error(err)
     @upload = Upload.from_csv_type(merged_params[:csv_type])
     @extensions = Settings.roo_upload.extensions.single.join(', ')
     csv_requirements if @upload.csv_type_check?
-    alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
+    alert_and_log("Failed to upload #{original_filename}: #{err.message}\n#{err.backtrace[0]}", err)
     rollback_upload_sequence if sequence_params[:retries]&.zero?
   end
 
@@ -80,7 +84,7 @@ class UploadsController < ApplicationController
                              valid_rows:,
                              failed_rows_count:,
                              validation_warnings: }
-    
+
     update_success_alerts({ total_rows_count:, valid_rows:, failed_rows_count: }) if valid_rows.positive?
 
     update_warning_alerts({ 'The following headers should be checked: ': data[:header_warnings],
@@ -174,7 +178,7 @@ class UploadsController < ApplicationController
   def retriable?
     return false unless sequential?
 
-    sequence_params[:retries] > 0
+    sequence_params[:retries].positive?
   end
 
   def rollback_upload_sequence
