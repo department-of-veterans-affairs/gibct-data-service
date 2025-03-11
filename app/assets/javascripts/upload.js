@@ -35,9 +35,10 @@ $(function() {
     }
   });
   
-  // const updateProgress = (completed, total) => {
-    
-  // };
+  const updateProgress = (completed, total) => {
+    const percentage = (completed / total) * 100;
+    $("#sequntial-upload-progress").text(`${Math.round(percentage)}%`);
+  };
 
   // Submit logic for new upload form when sequential upload enabled
   $("#seq-submit-btn").on("click", async function(event) {
@@ -61,9 +62,9 @@ $(function() {
 
     // Divide upload file into smaller files
     const blobs = [];
+    const chunkSize = parseInt(this.dataset.chunkSize);
 
     const generateBlobs = async () => {
-      const chunkSize = parseInt(this.dataset.chunkSize);
       const text = await file.text();
       const header = text.slice(0, text.indexOf('\n') + 1);
 
@@ -91,20 +92,18 @@ $(function() {
 
     const submitBlobs = async () => {
       const total = blobs.length;
-      const idx = file.name.lastIndexOf(".");
-      const [basename, ext] = [file.name.slice(0, idx), file.name.slice(idx)];
       let uploadId;
 
       // Iterate through blobs and submit each to /uploads in sequential order
       try {
         for (let i = 0; i < blobs.length; i++) {
           const current = i + 1;
-          const filePosition = `${current.toString().padStart(2, '0')}_of_${total.toString().padStart(2, '0')}`;
-          const filename = `${basename}_${filePosition}${ext}`;
-          formData.set("upload[upload_file]", blobs[i], filename);
+
+          formData.set("upload[upload_file]", blobs[i], file.name);
           // Set multiple_file_upload to true after first upload
           if (i > 0) {
             formData.set("upload[multiple_file_upload]", true);
+            formData.set("upload[sequence][id]", uploadId);
           }
           // Include metadata in payload to track upload progress across multiple requests
           formData.set("upload[sequence][current]", current);
@@ -116,8 +115,7 @@ $(function() {
           while(!response?.ok && attempts > 0) {
             try {
               attempts--;
-              console.log(`Uploading ${filename}, attempt: ${MAX_RETRIES - attempts}/${MAX_RETRIES}`);
-              formData.set("upload[sequence][retry]", attempts < MAX_RETRIES);
+              formData.set("upload[sequence][retries]", attempts);
               response = await fetch(`${PATH_PREFIX}/uploads`, {
                 method: "POST",
                 body: formData
@@ -132,11 +130,9 @@ $(function() {
           if (!response.ok) {
             throw new Error(`Upload failed with status ${response.status}`);
           }
-          console.log(`Upload successful: ${filename}`);
           const data = await response.json();
-          if (data.final) {
-            uploadId = data.upload.id;
-          }
+          uploadId = data.upload.id;
+          updateProgress(i, blobs.length);
         }
         window.location.href = `${PATH_PREFIX}/uploads/${uploadId}`;
       } catch(error) {
