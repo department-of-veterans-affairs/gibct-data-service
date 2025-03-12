@@ -75,7 +75,7 @@ class UploadsController < ApplicationController
     @extensions = Settings.roo_upload.extensions.single.join(', ')
     csv_requirements if @upload.csv_type_check?
     alert_and_log("Failed to upload #{original_filename}: #{err.message}\n#{err.backtrace[0]}", err)
-    rollback_upload_sequence if sequence_params[:retries]&.zero?
+    rollback_upload_sequence if sequential? && sequence_params[:retries].zero?
   end
 
   # If sequential upload, append alerts from previous uploads in sequence
