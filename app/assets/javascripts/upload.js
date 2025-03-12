@@ -9,8 +9,14 @@ $(function() {
 
   // SEQUENTIAL UPLOAD LOGIC
   // Simulates multiple file upload by breaking file down and submitting sequence of uploads
-  
-  // 
+
+  // Allow for multiple file upload checkbox to override sequential submit
+  $("#upload_multiple_file_upload").on("change", function(_event) {
+    $("#seq-submit-btn").css("display", this.checked ? "none" : "inline-block");
+    $("#default-submit-upload-btn").css("display", this.checked ? "inline-block" : "none");
+  });
+
+  // Handle path for different environments
   const getPathPrefix = () => {
     const hostname = window.location.hostname
     const subdomain = hostname.split('.')[0];
@@ -28,6 +34,11 @@ $(function() {
       $(".ui-dialog-titlebar-close").hide(); 
     }
   });
+  
+  const updateProgress = (completed, total) => {
+    const percentage = (completed / total) * 100;
+    $("#sequntial-upload-progress").text(`${Math.round(percentage)}%`);
+  };
 
   // Submit logic for new upload form when sequential upload enabled
   $("#seq-submit-btn").on("click", async function(event) {
@@ -51,10 +62,12 @@ $(function() {
 
     // Divide upload file into smaller files
     const blobs = [];
+
     const generateBlobs = async () => {
       const chunkSize = parseInt(this.dataset.chunkSize);
       const text = await file.text();
       const header = text.slice(0, text.indexOf('\n') + 1);
+
       for (let start = 0; start < file.size; start += chunkSize) {
         let end = start + chunkSize;
         let charsToEndOfRow = 0;
@@ -73,37 +86,53 @@ $(function() {
     };
 
     // Send individual POST request for each blob, simulating multiple file upload
-    let uploadId;
+    const MAX_RETRIES = 5
+    const DELAY = 500;
+    const sleep = () => new Promise((res) => setTimeout(res, DELAY));
+
     const submitBlobs = async () => {
       const total = blobs.length;
-      const idx = file.name.lastIndexOf(".");
-      const [basename, ext] = [file.name.slice(0, idx), file.name.slice(idx)];
+      let uploadId;
+
+      // Iterate through blobs and submit each to /uploads in sequential order
       try {
         for (let i = 0; i < blobs.length; i++) {
           const current = i + 1;
-          const filePosition = `${current.toString().padStart(2, '0')}_of_${total.toString().padStart(2, '0')}`;
-          const fileName = `${basename}_${filePosition}${ext}`;
-          formData.set("upload[upload_file]", blobs[i], fileName);
+
+          formData.set("upload[upload_file]", blobs[i], file.name);
           // Set multiple_file_upload to true after first upload
           if (i > 0) {
             formData.set("upload[multiple_file_upload]", true);
+            formData.set("upload[sequence][id]", uploadId);
           }
           // Include metadata in payload to track upload progress across multiple requests
           formData.set("upload[sequence][current]", current);
           formData.set("upload[sequence][total]", total);
-          const response = await fetch(`${PATH_PREFIX}/uploads`, {
-            method: "POST",
-            body: formData
-          });
 
+          // Try each upload five times
+          let response;
+          let attempts = MAX_RETRIES
+          while(!response?.ok && attempts > 0) {
+            try {
+              attempts--;
+              formData.set("upload[sequence][retries]", attempts);
+              response = await fetch(`${PATH_PREFIX}/uploads`, {
+                method: "POST",
+                body: formData
+              });
+            } catch(error) {
+              console.error(error);
+              sleep();
+            }
+          }
+
+          // Throw error if all retries fail
           if (!response.ok) {
             throw new Error(`Upload failed with status ${response.status}`);
           }
-
           const data = await response.json();
-          if (data.final) {
-            uploadId = data.upload.id;
-          }
+          uploadId = data.upload.id;
+          updateProgress(i, blobs.length);
         }
         window.location.href = `${PATH_PREFIX}/uploads/${uploadId}`;
       } catch(error) {
