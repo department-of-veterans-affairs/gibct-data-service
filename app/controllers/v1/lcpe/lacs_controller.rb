@@ -43,7 +43,7 @@ class V1::Lcpe::LacsController < V1::LcpeBaseController
   def index_params
     return @index_params if defined?(@index_params)
 
-    @index_params = params.permit(:edu_lac_type_nm, :state, :lac_nm, :page, :per_page)
+    @index_params = params.permit(*FILTER_PARAMS)
   end
 
   def page
