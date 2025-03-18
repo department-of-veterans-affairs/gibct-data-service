@@ -100,6 +100,13 @@ class Complaint < ImportableRecord
 
     set_clause = []
     sum_clause = []
+    # some ope codes are placeholders (e.g. 'VA000200', 'VA000300') and are assigned while
+    # an institution is in the process of being assigned a 'real' ope id. These temporary
+    # ope ids _should not_ be used to roll up complaints, since it will inevitably result
+    # in complaints being attributed to institutions that have nothing to do with the offending
+    # location. So, when doing ope6 rollups, we ignore anything that start with an 'A'. This
+    # seems to be a reliable enough pattern to filter out these ephemeral ope ids.
+    ope6_format_clause = on_column == :ope6 ? "AND NOT institutions.#{on_column} LIKE 'A%'" : ''
 
     rollup_sums.each_pair do |sum_column, complaint_column|
       set_clause << %("#{sum_column}" = sums.#{sum_column})
@@ -112,6 +119,7 @@ class Complaint < ImportableRecord
         (SELECT "#{on_column}", #{sum_clause.join(', ')} FROM complaints GROUP BY #{on_column}) AS sums
         WHERE institutions.#{on_column} = sums.#{on_column} AND
           institutions.version_id = #{version_id} AND institutions.#{on_column} IS NOT NULL
+          #{ope6_format_clause}
     SQL
 
     Complaint.connection.update(str)

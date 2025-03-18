@@ -32,7 +32,22 @@
 
       <div class="actions">
         <%= link_to "Cancel", uploads_path, class: "btn btn-default" %>
-        <%= f.submit "Upload", class: "btn btn-primary" %>
+        <!-- Overwrite default submit if upload sequential -->
+        <%= f.submit "Upload",
+          id: "default-submit-upload-btn",
+          class: "btn btn-primary",
+          style: "display:#{@upload.sequential? ? "none" : "inline-block"}"
+        %>
+
+        <button
+          style=<%= "display:#{@upload.sequential? ? "inline-block" : "none"}" %>
+          type="submit"
+          id="seq-submit-btn"
+          class="btn btn-primary"
+          data-chunk-size=<%= @upload.chunk_size %>
+        >
+          Upload
+        </button>
       </div>
     <% end %>
 

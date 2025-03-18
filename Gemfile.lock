@@ -142,7 +142,7 @@ GEM
       xpath (~> 3.2)
     case_transform (0.2)
       activesupport
-    cgi (0.4.1)
+    cgi (0.4.2)
     coderay (1.1.3)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -153,9 +153,9 @@ GEM
     connection_pool (2.5.0)
     crass (1.0.6)
     csv (3.3.0)
-    database_cleaner (2.0.2)
+    database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
-    database_cleaner-active_record (2.1.0)
+    database_cleaner-active_record (2.2.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
@@ -260,8 +260,8 @@ GEM
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.5)
     loofah (2.24.0)
+    logger (1.6.6)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     lumberjack (1.2.8)
@@ -285,7 +285,7 @@ GEM
     multipart-post (2.4.1)
     mutex_m (0.2.0)
     nenv (0.3.0)
-    net-imap (0.5.2)
+    net-imap (0.5.6)
       date
       net-protocol
     net-pop (0.1.2)
@@ -296,11 +296,11 @@ GEM
       net-protocol
     newrelic_rpm (9.13.0)
     nio4r (2.7.4)
-    nokogiri (1.16.8-aarch64-linux)
+    nokogiri (1.18.3-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.16.8-arm64-darwin)
+    nokogiri (1.18.3-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.8-x86_64-linux)
+    nokogiri (1.18.3-x86_64-linux-gnu)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -328,7 +328,7 @@ GEM
     puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.8)
+    rack (3.1.12)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-session (2.1.0)
@@ -444,7 +444,7 @@ GEM
       rubocop (~> 1.40)
     ruby-ole (1.2.12.2)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.17.0)
+    ruby-saml (1.18.0)
       nokogiri (>= 1.13.10)
       rexml
     ruby2_keywords (0.0.5)
@@ -501,7 +501,7 @@ GEM
       activerecord (>= 5.2)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
-    terser (1.2.4)
+    terser (1.2.5)
       execjs (>= 0.3.0, < 3)
     thor (1.3.2)
     thread_safe (0.3.6)
@@ -510,7 +510,8 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
-    vcr (6.2.0)
+    vcr (6.3.1)
+      base64
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -552,6 +553,7 @@ DEPENDENCIES
   byebug
   cancancan (~> 1.13, >= 1.13.1)
   capybara (= 3.40.0)
+  cgi (>= 0.4.2)
   config
   csv (~> 3.3)
   database_cleaner
@@ -574,14 +576,15 @@ DEPENDENCIES
   libv8-node (= 21.7.2.0)
   mini_racer
   mutex_m (~> 0.2.0)
+  net-imap (~> 0.5.6)
   newrelic_rpm
-  nokogiri (~> 1.16.5)
+  nokogiri (~> 1.18.3)
   oj
   parallel_tests
   pg
   pry-nav
   puma (~> 6.4.3)
-  rack (>= 2.2.8.1)
+  rack (>= 3.1.10)
   rack-cors
   rails (= 7.1.5.1)
   rails-controller-testing
@@ -594,7 +597,7 @@ DEPENDENCIES
   rubocop
   rubocop-rails
   rubocop-rspec
-  ruby-saml
+  ruby-saml (>= 1.18.0)
   rubyzip (~> 2.3)
   sass-rails (= 6.0)
   scss_lint
@@ -606,7 +609,7 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
-  vcr (~> 6.2)
+  vcr (~> 6.3)
   vets_json_schema!
   virtus (~> 2.0.0)
   watir (~> 7.3)

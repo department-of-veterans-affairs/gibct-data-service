@@ -37,15 +37,23 @@ class Upload < ApplicationRecord
   end
 
   def liberal_parsing
-    Common::Shared.file_type_defaults(csv_type)[:liberal_parsing]
+    default_settings[:liberal_parsing]
   end
 
   def clean_rows
-    Common::Shared.file_type_defaults(csv_type)[:clean_rows]
+    default_settings[:clean_rows]
   end
 
   def multiple_files
-    Common::Shared.file_type_defaults(csv_type)[:multiple_files]
+    default_settings[:multiple_files]
+  end
+
+  def sequential?
+    sequential_upload_settings[:enabled]
+  end
+
+  def chunk_size
+    sequential_upload_settings[:chunk_size]
   end
 
   def self.last_uploads(for_display = false)
@@ -120,7 +128,19 @@ class Upload < ApplicationRecord
     subject = csv_type&.constantize
 
     subject.normalize.execute
+    str_klass = subject.const_get(:NORMALIZED_KLASS)
+    Lcpe::PreloadDataset.build(str_klass)
   rescue StandardError
     nil
+  end
+
+  private
+
+  def default_settings
+    @default_settings ||= Common::Shared.file_type_defaults(csv_type)
+  end
+
+  def sequential_upload_settings
+    default_settings[:sequential_upload].transform_keys(&:to_sym)
   end
 end
