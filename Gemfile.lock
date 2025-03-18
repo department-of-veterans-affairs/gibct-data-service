@@ -81,7 +81,7 @@ GEM
       activemodel (= 7.1.5.1)
       activesupport (= 7.1.5.1)
       timeout (>= 0.4.0)
-    activerecord-import (1.7.0)
+    activerecord-import (2.1.0)
       activerecord (>= 4.2)
     activerecord-session_store (2.1.0)
       actionpack (>= 6.1)
