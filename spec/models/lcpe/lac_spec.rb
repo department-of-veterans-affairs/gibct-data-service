@@ -21,7 +21,7 @@ RSpec.describe Lcpe::Lac, type: :model do
 
     it 'returns lacs with ref_code and enriched_id attribute' do
       lac_enriched = described_class.with_enriched_id.first
-      id = lac_enriched.id.to_s + '@' + preload_id.to_s
+      id = lac_enriched.id.to_s + 'v' + preload_id.to_s
       expect(lac_enriched.enriched_id).to eq(id)
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe Lcpe::Lac, type: :model do
   describe '.by_enriched_id' do
     subject(:lac) { create :lcpe_lac, :preloaded, facility_code: }
 
-    let(:enriched_id) { lac.id.to_s + '@' + preload_id.to_s }
+    let(:enriched_id) { lac.id.to_s + 'v' + preload_id.to_s }
 
     it 'finds Lcpe::Lac by enriched_id' do
       expect(described_class.by_enriched_id(enriched_id).first).to eq(lac)

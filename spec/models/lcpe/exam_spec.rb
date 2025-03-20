@@ -21,7 +21,7 @@ RSpec.describe Lcpe::Exam, type: :model do
 
     it 'returns exams with ref_code and enriched_id attribute' do
       exam_enriched = described_class.with_enriched_id.first
-      id = exam_enriched.id.to_s + '@' + preload_id.to_s
+      id = exam_enriched.id.to_s + 'v' + preload_id.to_s
       expect(exam_enriched.enriched_id).to eq(id)
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe Lcpe::Exam, type: :model do
   describe '.by_enriched_id' do
     subject(:exam) { create :lcpe_exam, :preloaded, facility_code: }
 
-    let(:enriched_id) { exam.id.to_s + '@' + preload_id.to_s }
+    let(:enriched_id) { exam.id.to_s + 'v' + preload_id.to_s }
 
     it 'finds Lcpe::Lac by enriched_id' do
       expect(described_class.by_enriched_id(enriched_id).first).to eq(exam)
