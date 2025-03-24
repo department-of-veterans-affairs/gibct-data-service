@@ -14,6 +14,8 @@ class Upload < ApplicationRecord
 
   after_initialize :derive_dependent_columns, unless: :persisted?
 
+  after_save :normalize_lcpe!, if: %i[ok? lcpe_normalizable?]
+
   def derive_dependent_columns
     self.csv ||= upload_file.try(:original_filename)
   end
@@ -35,15 +37,23 @@ class Upload < ApplicationRecord
   end
 
   def liberal_parsing
-    Common::Shared.file_type_defaults(csv_type)[:liberal_parsing]
+    default_settings[:liberal_parsing]
   end
 
   def clean_rows
-    Common::Shared.file_type_defaults(csv_type)[:clean_rows]
+    default_settings[:clean_rows]
   end
 
   def multiple_files
-    Common::Shared.file_type_defaults(csv_type)[:multiple_files]
+    default_settings[:multiple_files]
+  end
+
+  def sequential?
+    sequential_upload_settings[:enabled]
+  end
+
+  def chunk_size
+    sequential_upload_settings[:chunk_size]
   end
 
   def self.last_uploads(for_display = false)
@@ -102,5 +112,35 @@ class Upload < ApplicationRecord
 
   def self.locked_fetches_exist?
     where(ok: false).any?
+  end
+
+  # Returns false if the `csv_type` cannot be mapped to `Lcpe::BlahBlahBlah` with a `normalize` method.
+  def lcpe_normalizable?
+    top_most = csv_type&.split('::')&.first&.constantize
+    subject = csv_type&.constantize
+
+    top_most == Lcpe && subject.respond_to?(:normalize)
+  rescue StandardError
+    nil
+  end
+
+  def normalize_lcpe!
+    subject = csv_type&.constantize
+
+    subject.normalize.execute
+    str_klass = subject.const_get(:NORMALIZED_KLASS)
+    Lcpe::PreloadDataset.build(str_klass)
+  rescue StandardError
+    nil
+  end
+
+  private
+
+  def default_settings
+    @default_settings ||= Common::Shared.file_type_defaults(csv_type)
+  end
+
+  def sequential_upload_settings
+    default_settings[:sequential_upload].transform_keys(&:to_sym)
   end
 end

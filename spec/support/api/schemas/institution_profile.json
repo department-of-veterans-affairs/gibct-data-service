@@ -478,6 +478,12 @@
                 "type": "object"
               }
             },
+            "program_types": {
+              "type": ["null", "array"],
+              "items": {
+                "type": "string"
+              }
+            },
             "section_103_message": {
               "type": ["null", "string"]
             },

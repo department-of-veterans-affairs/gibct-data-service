@@ -24,7 +24,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
       expect(nkad.class_nm).to eq('EightKey')
       expect(nkad.curl_command).to include('-X GET')
       expect(nkad.curl_command).to include('tmp/eight_key.xls')
-      expect(nkad.curl_command).to include('https://www2.ed.gov/documents/military/8-keys-sites.xls')
+      expect(nkad.curl_command).to include('https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls')
       expect(nkad.curl_command).not_to include('-d')
     end
 
@@ -42,10 +42,10 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
     it 'sets the curl command correctly for Hcm' do
       nkad = described_class.new('Hcm')
       expect(nkad.class_nm).to eq('Hcm')
-      expect(nkad.curl_command).to include('tmp/hcm.xlsx')
+      expect(nkad.curl_command).to include('tmp/hcm.xls')
       expect(nkad.curl_command)
         .to include('-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"')
-      expect(nkad.curl_command).to include('https://studentaid.gov/sites/default/files/Schools-on-HCM-December2023.xlsx')
+      expect(nkad.curl_command).to include('https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls')
       expect(nkad.curl_command).not_to include('-d')
     end
   end

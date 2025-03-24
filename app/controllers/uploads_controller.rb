@@ -16,23 +16,25 @@ class UploadsController < ApplicationController
   end
 
   def create
-    @upload = Upload.create(merged_params)
+    @upload = find_or_create_upload
     begin
       data = load_file
       alert_messages(data)
       data_results = data[:results]
 
-      @upload.update(ok: data_results.present? && data_results.ids.present?, completed_at: Time.now.utc.to_fs(:db))
-      error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-      raise(StandardError, error_msg) unless @upload.ok?
+      ok = data_results.present? && data_results.ids.present?
+      @upload.update(ok:, completed_at: Time.now.utc.to_fs(:db)) unless !ok && retriable?
+      inspect_results
 
-      redirect_to @upload
+      return redirect_to @upload unless sequential?
+
+      render json: { upload: { id: @upload.id } }
     rescue StandardError => e
-      @upload = Upload.from_csv_type(merged_params[:csv_type])
-      @extensions = Settings.roo_upload.extensions.single.join(', ')
-      csv_requirements if @upload.csv_type_check?
-      alert_and_log("Failed to upload #{original_filename}: #{e.message}\n#{e.backtrace[0]}", e)
-      render :new
+      handle_upload_error(e)
+
+      return render :new unless sequential?
+
+      render json: { error: e }, status: :internal_server_error
     end
   end
 
@@ -54,29 +56,71 @@ class UploadsController < ApplicationController
     @inclusion = UploadTypes::UploadRequirements.validation_messages_inclusion(klass)
   end
 
-  def alert_messages(data)
-    results = data[:results]
+  # If sequential upload, use one upload object to track multiple part uploads
+  def find_or_create_upload
+    return Upload.create(merged_params) if first_upload?
 
-    total_rows_count = results.ids.length
+    Upload.find_by(id: sequence_params[:id])&.tap do |obj|
+      obj.update(upload_file: merged_params[:upload_file])
+    end
+  end
+
+  def inspect_results
+    error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
+    raise(StandardError, error_msg) unless @upload.ok? || retriable?
+  end
+
+  def handle_upload_error(err)
+    @upload = Upload.from_csv_type(merged_params[:csv_type])
+    @extensions = Settings.roo_upload.extensions.single.join(', ')
+    csv_requirements if @upload.csv_type_check?
+    alert_and_log("Failed to upload #{original_filename}: #{err.message}\n#{err.backtrace[0]}", err)
+    rollback_upload_sequence if sequential? && sequence_params[:retries].zero?
+  end
+
+  # If sequential upload, append alerts from previous uploads in sequence
+  def alert_messages(data)
+    parse_results(data) => { total_rows_count:,
+                             valid_rows:,
+                             failed_rows_count:,
+                             validation_warnings: }
+
+    update_success_alerts({ total_rows_count:, valid_rows:, failed_rows_count: }) if valid_rows.positive?
+
+    update_warning_alerts({ 'The following headers should be checked: ': data[:header_warnings],
+                            'The following rows should be checked: ': validation_warnings })
+  end
+
+  def parse_results(data)
+    results = data[:results]
     failed_rows = results.failed_instances
-    failed_rows_count = failed_rows.length
-    valid_rows = total_rows_count - failed_rows_count
     validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                      .map(&:display_errors_with_row)
-    header_warnings = data[:header_warnings]
 
-    if valid_rows.positive?
-      flash[:csv_success] = {
-        total_rows_count: total_rows_count.to_s,
-        valid_rows: valid_rows.to_s,
-        failed_rows_count: failed_rows_count.to_s
-      }.compact
+    { total_rows_count: results.ids.length,
+      failed_rows_count: failed_rows.length,
+      validation_warnings: }.tap do |hash|
+      hash[:valid_rows] = hash[:total_rows_count] - hash[:failed_rows_count]
     end
+  end
 
-    flash[:warning] = {
-      'The following headers should be checked: ': (header_warnings unless header_warnings.empty?),
-      'The following rows should be checked: ': (validation_warnings unless validation_warnings.empty?)
-    }.compact
+  def update_success_alerts(successes)
+    alerts = update_alert(successes) { |key| flash[:csv_success][key].to_i }
+    flash[:csv_success] = alerts.transform_values(&:to_s).compact
+  end
+
+  def update_warning_alerts(warnings)
+    alerts = update_alert(warnings) { |key| flash[:warning][key] || [] }
+    flash[:warning] = alerts.reject { |_k, value| value.empty? }
+  end
+
+  def update_alert(hash)
+    return hash if first_upload?
+
+    hash.each do |key, value|
+      combined = yield(key) + value
+      hash[key] = combined.then { |sum| sum.is_a?(Array) ? sum.uniq : sum }
+    end
   end
 
   def original_filename
@@ -84,12 +128,13 @@ class UploadsController < ApplicationController
   end
 
   def merged_params
-    upload_params.merge(csv: original_filename, user: current_user)
+    upload_params.merge(csv: original_filename, user: current_user).except(:sequence)
   end
 
   def upload_params
     upload_params = params.require(:upload).permit(
-      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload
+      :csv_type, :skip_lines, :upload_file, :comment, :multiple_file_upload,
+      sequence: %i[current total id retries]
     )
 
     upload_params[:multiple_file_upload] = true if upload_params[:multiple_file_upload].eql?('true')
@@ -106,7 +151,7 @@ class UploadsController < ApplicationController
     # first is used because when called from standard upload process
     # because only a single set of results is returned
     file_options = { liberal_parsing: @upload.liberal_parsing,
-                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.try(:to_i),
+                     sheets: [{ klass: klass, skip_lines: @upload.skip_lines.to_i,
                                 clean_rows: @upload.clean_rows,
                                 multiple_files: @upload_params[:multiple_file_upload] }] }
     data = klass.load_with_roo(file, file_options).first
@@ -114,6 +159,31 @@ class UploadsController < ApplicationController
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
     data
+  end
+
+  def sequence_params
+    @sequence_params ||= upload_params[:sequence]&.transform_values(&:to_i)
+  end
+
+  def sequential?
+    sequence_params.present?
+  end
+
+  def first_upload?
+    return true unless sequential?
+
+    sequence_params[:current] == 1
+  end
+
+  def retriable?
+    return false unless sequential?
+
+    sequence_params[:retries].positive?
+  end
+
+  def rollback_upload_sequence
+    flash[:csv_success]&.clear
+    klass.in_batches.delete_all
   end
 
   def klass

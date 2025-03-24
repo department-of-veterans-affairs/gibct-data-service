@@ -180,61 +180,42 @@ RSpec.describe InstitutionBuilder, type: :model do
     end
 
     describe 'when generating institution programs' do
-      it 'properly generates institution programs from programs and edu_programs' do
+      it 'properly generates institution programs from programs' do
         create :program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
         expect(InstitutionProgram.first.institution_id).to eq(Institution.first.id)
         expect(Institution.first.version_id).to eq(Version.current_production.id)
       end
 
-      it 'does not generate duplicate institution programs for duplicate edu-programs' do
-        create :program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
+      it 'generates unique institution programs for different programs belonging to the same institution' do
+        create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE 1'
+        create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE 2'
 
-        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
-      end
-
-      it 'does not generate duplicate institution programs for duplicate edu-programs with differently cased names' do
-        create :program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ', vet_tec_program: 'computer science'
-        create :edu_program, facility_code: '1ZZZZZZZ'
-
-        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
+        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(2)
       end
 
       it 'does not generate duplicate institution programs for duplicate programs' do
-        create :program, facility_code: '1ZZZZZZZ'
-        create :program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
+        create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE'
+        create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
       end
 
       it 'does not generate duplicate institution programs for duplicate programs with differently cased names' do
+        create :program, facility_code: '1ZZZZZZZ', description: 'COMPUTER SCIENCE'
         create :program, facility_code: '1ZZZZZZZ', description: 'computer science'
-        create :program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
 
         expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
       end
 
-      it 'defaults deduped InstitutionProgram length_in_weeks to 0' do
-        create :program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
-        create :edu_program, facility_code: '1ZZZZZZZ'
-
-        expect { described_class.run(user) }.to change(InstitutionProgram, :count).from(0).to(1)
-        expect(InstitutionProgram.first.length_in_weeks).to eq(0)
-      end
-
-      it 'does not generate institution programs without matching programs and edu_programs' do
+      # Join on edu_programs removed for time being
+      # Ensure edu_programs no longer necessary for institution_program generation
+      it 'generates institution programs without matching programs and edu_programs' do
         create :program, facility_code: '1ZZZZZZZ'
         create :edu_program, facility_code: '0001'
         described_class.run(user)
-        expect(InstitutionProgram.count).to eq(0)
+        expect(InstitutionProgram.count).to eq(1)
       end
     end
 
