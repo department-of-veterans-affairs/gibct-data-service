@@ -11,7 +11,7 @@ module V1
     private
 
     def validate_preload_version
-      preload_version = params[:id].split('@').last
+      preload_version = params[:id].split('v').last
       raise PreloadVersionStaleError unless preload_version == fresh_preload.id.to_s
     end
 
