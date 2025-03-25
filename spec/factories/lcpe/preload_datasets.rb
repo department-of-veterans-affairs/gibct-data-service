@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :lcpe_preload_dataset, class: 'Lcpe::PreloadDataset' do
-    body { 'MyText' }
-    subject_class { 'MyString' }
+    body { [{ some_attribute: 'value' }].to_json }
   end
 end
