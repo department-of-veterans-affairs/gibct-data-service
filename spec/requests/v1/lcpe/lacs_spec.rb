@@ -9,7 +9,7 @@ RSpec.describe 'V1::Lcpe::Lac', type: :request do
   let(:preload) { Lcpe::PreloadDataset.fresh('Lcpe::Lac') }
   let(:enriched_id) { "#{lac.id}v#{preload.id}" }
   let(:fresh_etag) { "W/\"#{preload.id}\"" }
-  let(:stale_etag) { "W/\"#{preload.id - 1}\""}
+  let(:stale_etag) { "W/\"#{preload.id - 1}\"" }
 
   before do
     create(:weam, facility_code: institution.facility_code)
@@ -81,7 +81,6 @@ RSpec.describe 'V1::Lcpe::Lac', type: :request do
         )
       end
 
-
       context 'when pagination enabled' do
         it 'paginates results' do
           get '/v1/lcpe/lacs', params: { per_page: 1 }
@@ -101,10 +100,10 @@ RSpec.describe 'V1::Lcpe::Lac', type: :request do
 
   describe 'GET /show' do
     context 'when version valid' do
-      let!(:lac_test) { create(:lcpe_lac_test, lac_id: lac.id )}
+      let!(:lac_test) { create(:lcpe_lac_test, lac_id: lac.id) }
       let(:test_hash) { serialize_nested_hash(Lcpe::LacTestSerializer.new(lac_test)) }
       let(:inst_hash) { serialize_nested_hash(Lcpe::InstitutionSerializer.new(institution)) }
-  
+
       it 'returns http success' do
         get "/v1/lcpe/lacs/#{enriched_id}"
         expect(response).to have_http_status(:success)
@@ -113,7 +112,7 @@ RSpec.describe 'V1::Lcpe::Lac', type: :request do
           'edu_lac_type_nm' => lac.edu_lac_type_nm,
           'enriched_id' => enriched_id,
           'lac_nm' => lac.lac_nm,
-          'state' => lac.state,
+          'state' => lac.state
         )
         expect(parsed_lac['institution']).to include(inst_hash)
         expect(parsed_lac['tests'].first).to include(test_hash)

@@ -9,7 +9,7 @@ RSpec.describe 'V1::Lcpe::Exam', type: :request do
   let(:preload) { Lcpe::PreloadDataset.fresh('Lcpe::Exam') }
   let(:enriched_id) { "#{exam.id}v#{preload.id}" }
   let(:fresh_etag) { "W/\"#{preload.id}\"" }
-  let(:stale_etag) { "W/\"#{preload.id - 1}\""}
+  let(:stale_etag) { "W/\"#{preload.id - 1}\"" }
 
   before do
     create(:weam, facility_code: institution.facility_code)
@@ -39,7 +39,7 @@ RSpec.describe 'V1::Lcpe::Exam', type: :request do
           parsed_exam = JSON.parse(response.body)['exams'].first
           expect(parsed_exam).to include(
             'name' => exam.nexam_nm,
-            'enriched_id' => enriched_id,
+            'enriched_id' => enriched_id
           )
         end
       end
@@ -54,7 +54,7 @@ RSpec.describe 'V1::Lcpe::Exam', type: :request do
           parsed_exam = JSON.parse(response.body)['exams'].first
           expect(parsed_exam).to include(
             'name' => exam.nexam_nm,
-            'enriched_id' => enriched_id,
+            'enriched_id' => enriched_id
           )
         end
       end
@@ -63,10 +63,10 @@ RSpec.describe 'V1::Lcpe::Exam', type: :request do
 
   describe 'GET /show' do
     context 'when version valid' do
-      let!(:exam_test) { create(:lcpe_exam_test, exam_id: exam.id )}
+      let!(:exam_test) { create(:lcpe_exam_test, exam_id: exam.id) }
       let(:test_hash) { serialize_nested_hash(Lcpe::ExamTestSerializer.new(exam_test)) }
       let(:inst_hash) { serialize_nested_hash(Lcpe::InstitutionSerializer.new(institution)) }
-  
+
       it 'returns http success' do
         get "/v1/lcpe/exams/#{enriched_id}"
         expect(response).to have_http_status(:success)

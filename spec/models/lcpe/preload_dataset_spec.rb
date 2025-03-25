@@ -34,7 +34,7 @@ RSpec.describe Lcpe::PreloadDataset, type: :model do
   describe '.build' do
     let(:version) { create(:version, :production) }
     let(:institution) { create(:institution, version_id: version.id) }
-    
+
     before { create(:weam, facility_code: institution.facility_code) }
 
     it 'deletes stale preload datasets' do
