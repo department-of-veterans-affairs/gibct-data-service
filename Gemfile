@@ -19,7 +19,7 @@ gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'figaro'
-gem 'font-awesome-rails', '4.7.0.8'
+gem 'font-awesome-rails', '4.7.0.9'
 gem 'geocoder', '~> 1.8'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'jquery-rails'
