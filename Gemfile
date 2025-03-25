@@ -40,7 +40,7 @@ gem 'rexml', '~> 3.3.9'
 gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
 gem 'ruby-saml', '>= 1.18.0'
-gem 'rubyzip', '~> 2.3'
+gem 'rubyzip', '~> 2.4'
 gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
