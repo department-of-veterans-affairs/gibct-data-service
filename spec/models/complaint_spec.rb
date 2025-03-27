@@ -143,14 +143,11 @@ RSpec.describe Complaint, type: :model do
     it 'ignores case_id and case_owner columns in the upload file' do
       load_options = Common::Shared.file_type_defaults('complaint', { skip_lines: 7 })
 
-      file_options = {
-        liberal_parsing: load_options[:liberal_parsing],
-        sheets: [{
-          klass: described_class,
-          skip_lines: load_options[:skip_lines].try(:to_i),
-          clean_rows: load_options[:clean_rows]
-          }]
-        }
+      file_options = { liberal_parsing: load_options[:liberal_parsing], sheets: [{
+        klass: described_class,
+        skip_lines: load_options[:skip_lines].try(:to_i),
+        clean_rows: load_options[:clean_rows]
+      }] }
 
       described_class.load_with_roo(csv_file, file_options).first[:results]
       expect(described_class.count).to eq(2)
