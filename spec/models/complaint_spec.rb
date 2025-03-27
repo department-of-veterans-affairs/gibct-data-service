@@ -138,7 +138,7 @@ RSpec.describe Complaint, type: :model do
   end
 
   describe 'importing' do
-    let(:csv_file) { "./spec/fixtures/complaint.csv" }
+    let(:csv_file) { './spec/fixtures/complaint.csv' }
 
     it 'ignores case_id and case_owner columns in the upload file' do
       load_options = Common::Shared.file_type_defaults('complaint', { skip_lines: 7 })
@@ -152,29 +152,29 @@ RSpec.describe Complaint, type: :model do
           }]
         }
 
-      results = Complaint.load_with_roo(csv_file, file_options).first[:results]
-      expect(Complaint.count).to eq(2)
-      expect(Complaint.pluck(:case_id)).to eq([nil, nil]) # There are actual case ids in the fixture file
-      expect(Complaint.pluck(:case_owner)).to eq([nil, nil]) # There are actual case owners in the fixture file
+      described_class.load_with_roo(csv_file, file_options).first[:results]
+      expect(described_class.count).to eq(2)
+      expect(described_class.pluck(:case_id)).to eq([nil, nil]) # There are actual case ids in the fixture file
+      expect(described_class.pluck(:case_owner)).to eq([nil, nil]) # There are actual case owners in the fixture file
     end
   end
 
   describe 'exporting' do
-    let!(:complaints) {
+    let!(:complaints) do
       [
         create(:complaint, case_id: 'ABC', case_owner: 'Frank'),
         create(:complaint, case_id: 'DEF', case_owner: 'Joan')
       ]
-    }
+    end
 
     it 'does not export case_id or case_owner columns' do
-      csv_string = Complaint.export
+      csv_string = described_class.export
       csv = CSV.parse(csv_string, headers: true)
       expect(csv.size).to eq(complaints.size)
-      expect(csv.headers).to_not include('case_id')
-      expect(csv.headers).to_not include('case id')
-      expect(csv.headers).to_not include('case_owner')
-      expect(csv.headers).to_not include('case owner')
+      expect(csv.headers).not_to include('case_id')
+      expect(csv.headers).not_to include('case id')
+      expect(csv.headers).not_to include('case_owner')
+      expect(csv.headers).not_to include('case owner')
     end
   end
 end
