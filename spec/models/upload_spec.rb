@@ -119,6 +119,80 @@ RSpec.describe Upload, type: :model do
     end
   end
 
+  describe '#lcpe_normalizable?' do
+    subject(:upload) { build :upload, user: user, csv_type: }
+
+    context 'when csv_type namespaced under Lcpe::Feed' do
+      let(:csv_type) { Lcpe::Feed::Lac.name }
+
+      it 'returns true' do
+        expect(subject.lcpe_normalizable?).to be true
+      end
+    end
+
+    context 'when csv_type namespaced under Lcpe but not normalizable' do
+      let(:csv_type) { Lcpe::Lac.name }
+
+      it 'returns true' do
+        expect(subject.lcpe_normalizable?).to be false
+      end
+    end
+
+    context 'when csv_type not namespaced under Lcpe' do
+      let(:csv_type) { Weam.name }
+
+      it 'returns true' do
+        expect(subject.lcpe_normalizable?).to be false
+      end
+    end
+  end
+  
+  describe '#normalize_lcpe!' do
+    context 'when upload fails' do
+      subject(:upload) { build :upload,:failed_upload }
+
+      it 'does not receive #normalize_lcpe! after save' do
+        expect(subject).not_to receive(:normalize_lcpe!)
+        subject.save
+      end
+    end
+
+    context 'when upload ok but not normalizable' do
+      subject(:upload) { build :upload, :valid_upload, user: user, csv_type: csv_klass.name }
+
+      let(:csv_klass) { Lcpe::Lac }
+
+      it 'does not receive #normalize_lcpe! after save' do
+        expect(subject).not_to receive(:normalize_lcpe!)
+        subject.save
+      end
+    end
+
+    context 'when upload ok and normalizable' do
+      subject(:upload) { build :upload, :valid_upload, user: user, csv_type: csv_klass.name }
+
+      let(:csv_klass) { Lcpe::Feed::Lac }
+      let(:sql_context) { double('Lcpe::SqlContext::Sql') }
+      let(:normalized_klass) { csv_klass.const_get(:NORMALIZED_KLASS) }
+
+      it 'receives #normalize_lcpe!' do
+        expect(subject).to receive(:normalize_lcpe!)
+        subject.save
+      end
+
+      it 'generates and executes SQL context' do
+        allow(csv_klass).to receive(:normalize).and_return(sql_context)
+        expect(sql_context).to receive(:execute)
+        subject.normalize_lcpe!
+      end
+
+      it 'builds preload dataset' do
+        expect(Lcpe::PreloadDataset).to receive(:build).with(normalized_klass)
+        subject.normalize_lcpe!
+      end
+    end
+  end
+
   describe '#sequential?' do
     context 'when upload non-sequential' do
       before do
