@@ -136,4 +136,42 @@ RSpec.describe Complaint, type: :model do
       end
     end
   end
+
+  describe 'importing' do
+    let(:csv_file) { './spec/fixtures/complaint.csv' }
+
+    it 'ignores case_id and case_owner columns in the upload file' do
+      load_options = Common::Shared.file_type_defaults('complaint', { skip_lines: 7 })
+
+      file_options = { liberal_parsing: load_options[:liberal_parsing], sheets: [{
+        klass: described_class,
+        skip_lines: load_options[:skip_lines].try(:to_i),
+        clean_rows: load_options[:clean_rows]
+      }] }
+
+      described_class.load_with_roo(csv_file, file_options).first[:results]
+      expect(described_class.count).to eq(2)
+      expect(described_class.pluck(:case_id)).to eq([nil, nil]) # There are actual case ids in the fixture file
+      expect(described_class.pluck(:case_owner)).to eq([nil, nil]) # There are actual case owners in the fixture file
+    end
+  end
+
+  describe 'exporting' do
+    let!(:complaints) do
+      [
+        create(:complaint, case_id: 'ABC', case_owner: 'Frank'),
+        create(:complaint, case_id: 'DEF', case_owner: 'Joan')
+      ]
+    end
+
+    it 'does not export case_id or case_owner columns' do
+      csv_string = described_class.export
+      csv = CSV.parse(csv_string, headers: true)
+      expect(csv.size).to eq(complaints.size)
+      expect(csv.headers).not_to include('case_id')
+      expect(csv.headers).not_to include('case id')
+      expect(csv.headers).not_to include('case_owner')
+      expect(csv.headers).not_to include('case owner')
+    end
+  end
 end
