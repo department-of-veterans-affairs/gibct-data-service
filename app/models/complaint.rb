@@ -62,10 +62,8 @@ class Complaint < ImportableRecord
   }.freeze
 
   CSV_CONVERTER_INFO = {
-    'case_id' => { column: :case_id, converter: Converters::BaseConverter },
     'escalation_level' => { column: :level, converter: Converters::BaseConverter },
     'status' => { column: :status, converter: Converters::DowncaseConverter },
-    'case_owner' => { column: :case_owner, converter: Converters::BaseConverter },
     'school_name' => { column: :institution, converter: Converters::InstitutionConverter },
     'opeid' => { column: :ope, converter: Converters::OpeConverter },
     'facility_code' => { column: :facility_code, converter: Converters::FacilityCodeConverter },
