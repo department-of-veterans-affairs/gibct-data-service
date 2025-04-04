@@ -96,12 +96,15 @@ class UploadsController < ApplicationController
     failed_rows = results.failed_instances
     validation_warnings = failed_rows.sort { |a, b| a.errors[:row].first.to_i <=> b.errors[:row].first.to_i }
                                      .map(&:display_errors_with_row)
+    total_rows_count = results.ids.length
+    failed_rows_count = failed_rows.length
 
-    { total_rows_count: results.ids.length,
-      failed_rows_count: failed_rows.length,
-      validation_warnings: }.tap do |hash|
-      hash[:valid_rows] = hash[:total_rows_count] - hash[:failed_rows_count]
-    end
+    {
+      total_rows_count:,
+      failed_rows_count:,
+      validation_warnings:,
+      valid_rows: total_rows_count - failed_rows_count
+    }
   end
 
   def update_success_alerts(successes)
@@ -114,6 +117,7 @@ class UploadsController < ApplicationController
     flash[:warning] = alerts.reject { |_k, value| value.empty? }
   end
 
+  # Concat success and warning alerts if sequential upload
   def update_alert(hash)
     return hash if first_upload?
 
@@ -148,12 +152,14 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.delete_all if [Crosswalk, IpedsHd, Weam].include?(klass)
 
-    # first is used because when called from standard upload process
+    # first is used when called from standard upload process
     # because only a single set of results is returned
     file_options = { liberal_parsing: @upload.liberal_parsing,
                      sheets: [{ klass: klass, skip_lines: @upload.skip_lines.to_i,
                                 clean_rows: @upload.clean_rows,
                                 multiple_files: @upload_params[:multiple_file_upload] }] }
+    # If sequential upload, offset first line to capture csv_row relative to original upload
+    file_options[:sheets][0][:first_line] = klass.last.csv_row + 1 unless first_upload?
     data = klass.load_with_roo(file, file_options).first
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
