@@ -22,8 +22,7 @@ class UploadsController < ApplicationController
       alert_messages(data)
       data_results = data[:results]
 
-      ok = data_results.present? && data_results.ids.present?
-      @upload.update(ok:, completed_at: Time.now.utc.to_fs(:db)) unless !ok && retriable?
+      update_upload(data_results)
       inspect_results
 
       return redirect_to @upload unless sequential?
@@ -65,9 +64,18 @@ class UploadsController < ApplicationController
     end
   end
 
+  def update_upload(results)
+    return if sequence_incomplete?
+
+    @upload.update(ok: data_results.present? && data_results.ids.present?)
+    @upload.update(completed_at: Time.now.utc.to_fs(:db)) unless needs_retry?
+  end
+
   def inspect_results
+    return if @upload.ok? || needs_retry?
+
     error_msg = "There was no saved #{klass} data. Please check the file or \"Skip lines before header\"."
-    raise(StandardError, error_msg) unless @upload.ok? || retriable?
+    raise(StandardError, error_msg)
   end
 
   def handle_upload_error(err)
@@ -181,10 +189,13 @@ class UploadsController < ApplicationController
     sequence_params[:current] == 1
   end
 
-  def retriable?
-    return false unless sequential?
+  def sequence_incomplete?
+    sequential? && sequence_params[:current] < sequence_params[:total]
+  end
 
-    sequence_params[:retries].positive?
+  # Retries implemented when sequential upload fails
+  def needs_retry?
+    sequential? && !@upload.ok && sequence_params[:retries].positive?
   end
 
   def rollback_upload_sequence
