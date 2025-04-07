@@ -4,6 +4,7 @@ generic:
   clean_rows: true
   multiple_files: false
   liberal_parsing: false
+  first_line: 2
   sequential_upload:
     enabled: false
     chunk_size: 100_000

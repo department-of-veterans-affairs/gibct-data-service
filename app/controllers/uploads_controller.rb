@@ -17,6 +17,7 @@ class UploadsController < ApplicationController
 
   def create
     @upload = find_or_create_upload
+
     begin
       data = load_file
       alert_messages(data)
