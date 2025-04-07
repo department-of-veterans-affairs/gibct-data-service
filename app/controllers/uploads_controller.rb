@@ -67,7 +67,7 @@ class UploadsController < ApplicationController
   def update_upload(results)
     return if sequence_incomplete?
 
-    @upload.update(ok: data_results.present? && data_results.ids.present?)
+    @upload.update(ok: results.present? && results.ids.present?)
     @upload.update(completed_at: Time.now.utc.to_fs(:db)) unless needs_retry?
   end
 
