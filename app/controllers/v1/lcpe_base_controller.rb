@@ -6,17 +6,19 @@ module V1
 
     rescue_from PreloadVersionStaleError, with: :version_invalid
 
+    FILTER_PARAMS = %i[edu_lac_type_nm state lac_nm page per_page].freeze
+
     private
 
     def validate_preload_version
-      preload_version = params[:id].split('@').last
+      preload_version = params[:id].split('v').last
       raise PreloadVersionStaleError unless preload_version == fresh_preload.id.to_s
     end
 
     def preload_dataset
       return if bypass_versioning?
 
-      set_etag(fresh_preload.id.to_s)
+      set_headers(fresh_preload.id.to_s)
       JSON.parse(fresh_preload.body)
     end
 
@@ -28,17 +30,16 @@ module V1
       "Lcpe::#{controller_name.singularize.titleize}"
     end
 
-    def set_etag(preload_version)
-      response.set_header('ETag', preload_version)
+    def set_headers(preload_version)
+      response.set_header('Cache-Control', 'private')
+      response.headers.delete('Pragma')
+      response.set_header('Expires', 1.week.since.to_s)
+      response.set_header('ETag', "W/\"#{preload_version}\"")
     end
 
     # If additional filter params present, bypass versioning
     def bypass_versioning?
-      scrubbed_params.present?
-    end
-
-    def scrubbed_params
-      params.except(:format, :controller, :action, controller_name.singularize.to_sym)
+      params.keys.map(&:to_sym).intersect?(FILTER_PARAMS)
     end
 
     def version_invalid
