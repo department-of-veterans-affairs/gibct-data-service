@@ -137,9 +137,10 @@ RSpec.describe UploadsController, type: :controller do
     let(:upload) { { upload_file:, skip_lines: 0, comment: 'Test', csv_type: klass.name } }
     let(:total) { '3' }
     let(:retries) { '5' }
+    let(:multiple_file_upload) { true }
     let(:first_upload) { { **upload, sequence: { current: '1', total:, retries: } } }
-    let(:second_upload) { { **upload, sequence: { current: '2', total:, retries: }, multiple_file_upload: true } }
-    let(:third_upload) { { **upload, sequence: { current: '3', total:, retries: }, multiple_file_upload: true } }
+    let(:second_upload) { { **upload, sequence: { current: '2', total:, retries: }, multiple_file_upload: } }
+    let(:third_upload) { { **upload, sequence: { current: '3', total:, retries: }, multiple_file_upload: } }
 
     def load_sequence(*uploads)
       uploads.map do |upload|
@@ -366,6 +367,27 @@ RSpec.describe UploadsController, type: :controller do
                  upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: 'SchoolCertifyingOfficial' }
                })
         end.to change(SchoolCertifyingOfficial, :count).by(2)
+      end
+    end
+
+    describe 'sequential retries' do
+      before { load_sequence(first_upload, second_upload) }
+
+      context 'when upload fails and retries available' do
+        it 'does not rollback previous uploads' do
+          upload[:upload_file] = nil
+          load_sequence(third_upload)
+          expect(klass.count.zero?).to be false
+        end
+      end
+
+      context 'when upload fails and retries exhausted' do
+        it 'rollbacks previous uploads' do
+          upload[:upload_file] = nil
+          third_upload[:sequence][:retries] = 0
+          load_sequence(third_upload)
+          expect(klass.count.zero?).to be true
+        end
       end
     end
   end
