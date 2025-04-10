@@ -25,7 +25,7 @@ gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'jquery-rails'
 gem 'jquery-ui-rails', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails', branch: 'master'
 gem 'json', '>= 2.3.0'
-gem 'mutex_m', '~> 0.2.0' # ruby 3.4.0 warning said to add
+gem 'mutex_m', '~> 0.3.0' # ruby 3.4.0 warning said to add
 gem 'net-imap', '~> 0.5.6' # ruby 3.4.0 warning said to add
 gem 'newrelic_rpm'
 gem 'nokogiri', '~> 1.18.4'
