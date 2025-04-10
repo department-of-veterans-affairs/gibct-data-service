@@ -382,7 +382,7 @@ RSpec.describe UploadsController, type: :controller do
       end
 
       context 'when upload fails and retries exhausted' do
-        it 'rollbacks previous uploads' do
+        it 'rolls back previous uploads' do
           upload[:upload_file] = nil
           third_upload[:sequence][:retries] = 0
           load_sequence(third_upload)
