@@ -14,15 +14,12 @@ class Lcpe::PreloadDataset < ApplicationRecord
   end
 
   def self.build(lcpe_type)
-    # wipe all exepct most recent preload for lcpe type
+    # wipe all except most recent preload for lcpe type
     stale(lcpe_type).destroy_all
     create(subject_class: lcpe_type).tap do |preload|
-      dataset = preload.klass.with_enriched_id
+      dataset = lcpe_type.constantize.with_enriched_id
+      # create preload record before generating body because enriched_id includes new record's id
       preload.update(body: dataset.to_json)
     end
-  end
-
-  def klass
-    subject_class.constantize
   end
 end
