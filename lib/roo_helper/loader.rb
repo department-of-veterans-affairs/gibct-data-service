@@ -232,11 +232,12 @@ module RooHelper
     #                 add 1 for the difference in indexes and 1 for the header row itself.
     #   - :skip_lines defaults to 0
     def merge_options(file_options)
+      Common::Shared.file_type_defaults(klass.name) => { skip_lines:, first_line: }
       file_options[:sheets] = if file_options[:sheets].present?
                                 file_options[:sheets]
-                                  .map { |sheet| sheet.reverse_merge(skip_lines: 0, first_line: 2) }
+                                  .map { |sheet| sheet.reverse_merge(skip_lines:, first_line:) }
                               else
-                                [{ klass: klass, skip_lines: 0, first_line: 2, clean_rows: true,
+                                [{ klass: klass, skip_lines:, first_line:, clean_rows: true,
                                    multiple_files: false }]
                               end
 

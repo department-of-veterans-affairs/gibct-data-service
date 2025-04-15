@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_17_143740) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1759,10 +1759,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_17_143740) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "completed_at", precision: nil
     t.boolean "multiple_file_upload", default: false
-    t.string "status_message"
-    t.datetime "queued_at", precision: nil
-    t.datetime "canceled_at", precision: nil
-    t.text "body"
     t.index ["csv_type"], name: "index_uploads_on_csv_type"
     t.index ["updated_at"], name: "index_uploads_on_updated_at"
     t.index ["user_id"], name: "index_uploads_on_user_id"

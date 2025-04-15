@@ -118,7 +118,6 @@ class Upload < ApplicationRecord
   def lcpe_normalizable?
     top_most = csv_type&.split('::')&.first&.constantize
     subject = csv_type&.constantize
-
     top_most == Lcpe && subject.respond_to?(:normalize)
   rescue StandardError
     nil
