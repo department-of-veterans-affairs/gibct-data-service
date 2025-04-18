@@ -307,6 +307,19 @@ class Institution < ImportableRecord
     compact_address
   end
 
+  def versioned_complaints_by_facility_code
+    VersionedComplaint.where(facility_code: facility_code, version_id: version_id)
+  end
+
+  def versioned_complaints_by_ope6
+    # OPE codes that start with 'VA' are temporary and should not be used
+    # to assign or roll-up complaints. In these cases the ope6 field starts
+    # with an 'A'
+    return VersionedComplaint.none if ope6.blank? || ope6.starts_with?('A')
+
+    VersionedComplaint.where(ope6: ope6, version_id: version_id)
+  end
+
   # Given a search term representing a partial school name, returns all
   # schools starting with the search term.
   #

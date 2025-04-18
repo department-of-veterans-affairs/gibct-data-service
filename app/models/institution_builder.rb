@@ -68,12 +68,12 @@ module InstitutionBuilder
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
-      unless initial_buildout?
-        update_longitude_and_latitude(version.id)
-        update_ungeocodable(version.id)
-        geocode_institutions(version)
-      end
-      geocode_using_csv_file if initial_buildout?
+      # unless initial_buildout?
+      #   update_longitude_and_latitude(version.id)
+      #   update_ungeocodable(version.id)
+      #   geocode_institutions(version)
+      # end
+      # geocode_using_csv_file if initial_buildout?
 
       build_messages.filter { |_k, v| v.present? }
     end
