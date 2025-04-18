@@ -80,6 +80,8 @@ class Complaint < ImportableRecord
   validates :status, inclusion: { in: STATUSES }
   after_initialize :derive_dependent_columns
 
+  scope :closed, -> { where.not(closed: ['', nil]) }
+
   def derive_dependent_columns
     self.ope6 = Converters::Ope6Converter.convert(ope)
     set_facility_code_complaint if ok_to_sum?
