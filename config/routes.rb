@@ -83,6 +83,7 @@ Rails.application.routes.draw do
     resources :institutions, only: [:index, :show] do
       get :autocomplete, on: :collection
       get :children, on: :member
+      get :complaints, on: :member
     end
 
     resources :institution_programs, only: [:index] do

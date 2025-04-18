@@ -315,9 +315,13 @@ class Institution < ImportableRecord
     # OPE codes that start with 'VA' are temporary and should not be used
     # to assign or roll-up complaints. In these cases the ope6 field starts
     # with an 'A'
-    return VersionedComplaint.none if ope6.blank? || ope6.starts_with?('A')
+    return VersionedComplaint.none if has_generic_ope6?
 
     VersionedComplaint.where(ope6: ope6, version_id: version_id)
+  end
+
+  def has_generic_ope6?
+    ope6.blank? || ope6.starts_with?('A')
   end
 
   # Given a search term representing a partial school name, returns all
