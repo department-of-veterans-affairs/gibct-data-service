@@ -13,16 +13,16 @@ module  NoKeyApis
     API_DOWNLOAD_CONVERSION_NAMES = {
       'AccreditationInstituteCampus' => 'tmp/InstitutionCampus.csv',
       'Hcm' => 'tmp/hcm.xls',
-      'IpedsHd' => -> { match_ipeds_download_for('IpedsHd') },
-      'IpedsIcAy' => -> { match_ipeds_download_for('IpedsIcAy') },
-      'IpedsIcPy' => -> { match_ipeds_download_for('IpedsIcPy') },
-      'IpedsIc' => -> { match_ipeds_download_for('IpedsIc') },
+      'IpedsHd' => ->(url) { ipeds_download_name_from(url) },
+      'IpedsIcAy' => ->(url) { ipeds_download_name_from(url) },
+      'IpedsIcPy' => ->(url) { ipeds_download_name_from(url) },
+      'IpedsIc' => ->(url) { ipeds_download_name_from(url) },
       'Mou' => 'tmp/mou.xlsx',
       'Vsoc' => 'tmp/vsoc.csv'
     }.freeze
 
     # Vsoc uses -k parameter to bypass SSL certificate errors
-    RAW_API_NO_KEY_DOWNLOAD_SOURCES = {
+    API_NO_KEY_DOWNLOAD_SOURCES = {
       'Accreditation' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'AccreditationAction' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'AccreditationInstituteCampus' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
@@ -46,12 +46,13 @@ module  NoKeyApis
       'IpedsIcPy' => /^IC\d{4}_PY$/
     }.freeze
 
-    attr_accessor :class_nm, :curl_command
+    attr_accessor :class_nm, :curl_command, :url
 
     def initialize(class_nm)
       @class_nm = class_nm
-      rest_command, url = self.class.api_no_key_download_sources(@class_nm)
-      @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm}#{d_parm}"
+      rest_command, url_or_proc = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
+      @url = url_or_proc.try(:call) || url_or_proc
+      @curl_command = "curl#{rest_command} #{@url} #{h_parm} #{o_parm}#{d_parm}"
     end
 
     def download_csv
@@ -86,15 +87,6 @@ module  NoKeyApis
       " -d '{\"CSVChecked\":true,\"ExcelChecked\":false}'"
     end
 
-    # Lazy load url values
-    def self.api_no_key_download_sources(class_nm)
-      @sources ||= RAW_API_NO_KEY_DOWNLOAD_SOURCES.deep_dup
-      url_or_proc = @sources[class_nm][1]
-      @sources[class_nm][1] = url_or_proc.call if url_or_proc.is_a?(Proc)
-
-      @sources[class_nm]
-    end
-
     def self.fetch_ipeds_source_for(class_nm)
       page = HTTParty.get("#{IPEDS_BASE_URL}/#{IPEDS_DOWNLOADS_PATH}").body
       doc = Nokogiri::HTML(page)
@@ -105,8 +97,7 @@ module  NoKeyApis
       "#{IPEDS_BASE_URL}/#{link['href']}"
     end
 
-    def self.match_ipeds_download_for(class_nm)
-      url = self.api_no_key_download_sources(class_nm)[1]
+    def self.ipeds_download_name_from(url)
       filename = url.match(/data\/(.*)\.zip$/).captures.first.downcase
 
       "tmp/#{filename}.csv"

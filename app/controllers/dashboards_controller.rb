@@ -197,7 +197,7 @@ class DashboardsController < ApplicationController
             hcm_spreadsheet_processing(class_nm)
           else
             conversion = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm]
-            conversion.try(:call) || conversion || "tmp/#{params[:csv_type]}s.csv"
+            conversion.try(:call, @downloader.url) || conversion || "tmp/#{params[:csv_type]}s.csv"
           end
 
         skipline =
@@ -229,7 +229,8 @@ class DashboardsController < ApplicationController
   end
 
   def download_csv(class_nm)
-    NoKeyApis::NoKeyApiDownloader.new(class_nm).download_csv
+    @downloader ||= NoKeyApis::NoKeyApiDownloader.new(class_nm)
+    @downloader.download_csv
   end
 
   def unzip_csv(class_nm)
@@ -245,7 +246,7 @@ class DashboardsController < ApplicationController
     if conversion.try(:end_with?, '.xls')
       FileTypeConverters::XlsToCsv.new('tmp/hcm.xls', 'tmp/hcm.csv').convert_xls_to_csv
     else
-      conversion.try(:call) || conversion || "tmp/#{params[:csv_type]}s.csv"
+      conversion.try(:call, @downloader.url) || conversion || "tmp/#{params[:csv_type]}s.csv"
     end
   end
 end
