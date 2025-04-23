@@ -34,7 +34,7 @@ module  NoKeyApis
       'IpedsIcAy' => [' -X GET', -> { fetch_ipeds_source_for('IpedsIcAy') }],
       'IpedsIcPy' => [' -X GET', -> { fetch_ipeds_source_for('IpedsIcPy') }],
       'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
-      'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
+      'Vsoc' => [' -k -X GET', -> { fetch_vsoc_source } ]
     }.freeze
 
     IPEDS_URL = 'https://nces.ed.gov/ipeds/datacenter'
@@ -45,6 +45,8 @@ module  NoKeyApis
       'IpedsIcAy' => /^IC\d{4}_AY$/,
       'IpedsIcPy' => /^IC\d{4}_PY$/
     }.freeze
+
+    VSOC_INDEX_URL = 'https://vbaw.vba.va.gov/education/job_aids.asp'
 
     attr_accessor :class_nm, :curl_command, :url
 
