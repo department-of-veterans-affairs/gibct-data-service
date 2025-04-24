@@ -196,8 +196,7 @@ class DashboardsController < ApplicationController
           when 'Hcm'
             hcm_spreadsheet_processing(class_nm)
           else
-            conversion = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm]
-            conversion.try(:call, @downloader.url) || conversion || "tmp/#{params[:csv_type]}s.csv"
+            NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
           end
 
         skipline =
@@ -229,24 +228,24 @@ class DashboardsController < ApplicationController
   end
 
   def download_csv(class_nm)
-    @downloader ||= NoKeyApis::NoKeyApiDownloader.new(class_nm)
-    @downloader.download_csv
+    NoKeyApis::NoKeyApiDownloader.new(class_nm).download_csv
   end
 
   def unzip_csv(class_nm)
     # Some downloads are not a zip file, so skip and return true
     return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou') || class_nm.eql?('Vsoc')
 
-    ZipFileUtils::Unzipper.new.unzip_the_file
+    f_name = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] if class_nm.starts_with?('Ipeds')
+    
+    ZipFileUtils::Unzipper.new.unzip_the_file(f_name)
   end
 
   # Sometimes the file is an xls file and sometimes it is an xlsx file.
   def hcm_spreadsheet_processing(class_nm)
-    conversion = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm]
-    if conversion.try(:end_with?, '.xls')
+    if NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm].end_with?('.xls')
       FileTypeConverters::XlsToCsv.new('tmp/hcm.xls', 'tmp/hcm.csv').convert_xls_to_csv
     else
-      conversion.try(:call, @downloader.url) || conversion || "tmp/#{params[:csv_type]}s.csv"
+      NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
     end
   end
 end

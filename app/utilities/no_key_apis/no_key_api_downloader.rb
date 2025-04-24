@@ -13,10 +13,10 @@ module  NoKeyApis
     API_DOWNLOAD_CONVERSION_NAMES = {
       'AccreditationInstituteCampus' => 'tmp/InstitutionCampus.csv',
       'Hcm' => 'tmp/hcm.xls',
-      'IpedsHd' => ->(url) { ipeds_download_name_from(url) },
-      'IpedsIcAy' => ->(url) { ipeds_download_name_from(url) },
-      'IpedsIcPy' => ->(url) { ipeds_download_name_from(url) },
-      'IpedsIc' => ->(url) { ipeds_download_name_from(url) },
+      'IpedsHd' => 'tmp/ipeds_hd.csv',
+      'IpedsIc' => 'tmp/ipeds_ic.csv',
+      'IpedsIcAy' => 'tmp/ipeds_ic_ay.csv',
+      'IpedsIcPy' => 'tmp/ipeds_ic_py.csv',
       'Mou' => 'tmp/mou.xlsx',
       'Vsoc' => 'tmp/vsoc.csv'
     }.freeze
@@ -37,7 +37,7 @@ module  NoKeyApis
       'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
     }.freeze
 
-    IPEDS_BASE_URL = 'https://nces.ed.gov/ipeds/datacenter'
+    IPEDS_URL = 'https://nces.ed.gov/ipeds/datacenter'
     IPEDS_DOWNLOADS_PATH = 'DataFiles.aspx?year=-1'
     IPEDS_MATCHERS = {
       'IpedsHd' => /^HD\d{4}$/,
@@ -51,8 +51,9 @@ module  NoKeyApis
     def initialize(class_nm)
       @class_nm = class_nm
       rest_command, url_or_proc = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
-      @url = url_or_proc.try(:call) || url_or_proc
-      @curl_command = "curl#{rest_command} #{@url} #{h_parm} #{o_parm}#{d_parm}"
+      # Certain url values exist as procs which dynamically fetch latest download source urls
+      url = url_or_proc.try(:call) || url_or_proc
+      @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm}#{d_parm}"
     end
 
     def download_csv
@@ -88,21 +89,13 @@ module  NoKeyApis
     end
 
     def self.fetch_ipeds_source_for(class_nm)
-      page = HTTParty.get("#{IPEDS_BASE_URL}/#{IPEDS_DOWNLOADS_PATH}").body
-      doc = Nokogiri::HTML(page)
+      # Nokogiri HTML document
+      doc = NoKeyApis::WebScraper.new("#{IPEDS_URL}/#{IPEDS_DOWNLOADS_PATH}").scrape
       link_tag = doc.css('.idc_gridviewrow td a')
                     .select { |link| link.text.match?(IPEDS_MATCHERS[class_nm]) }
                     .first
-
-      "#{IPEDS_BASE_URL}/#{link_tag['href']}"
+      "#{IPEDS_URL}/#{link_tag['href']}"
     end
     private_class_method :fetch_ipeds_source_for
-
-    def self.ipeds_download_name_from(url)
-      filename = url.match(%r{data/(.*)\.zip$}).captures.first.downcase
-
-      "tmp/#{filename}.csv"
-    end
-    private_class_method :ipeds_download_name_from
   end
 end
