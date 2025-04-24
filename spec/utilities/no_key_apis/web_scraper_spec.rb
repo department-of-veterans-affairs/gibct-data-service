@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe NoKeyApis::WebScraper do
   subject(:scraper) { described_class.new(url) }
+
   let(:url) { 'https://www.example.com' }
-  let(:page) { File.read('spec/fixtures/ipeds_directory_page.txt') } 
+  let(:page) { File.read('spec/fixtures/ipeds_directory_page.txt') }
 
   describe '.initialize' do
     it 'sets the url value of the web page to be scraped' do

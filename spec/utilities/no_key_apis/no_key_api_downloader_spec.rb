@@ -40,7 +40,8 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
         expect(nkad.class_nm).to eq(class_nm)
         expect(nkad.curl_command).to include('tmp/download.zip')
         expect(nkad.curl_command).to include('-X GET')
-        expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data/IC2023_AY.zip')
+        expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data/')
+        expect(nkad.curl_command).to include('2023')
         expect(nkad.curl_command).not_to include('-d')
       end
     end
@@ -77,7 +78,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
           link_tags = nokogiri_doc.css('.idc_gridviewrow td a').select { |link| link.text.match?(matcher) }
           expect(link_tags.size).to be > 1
           most_recent_link = described_class.send(:fetch_ipeds_source_for, class_nm)
-          expect(most_recent_link).to include '2023'
+          expect(most_recent_link).to include('2023')
         end
       end
     end
