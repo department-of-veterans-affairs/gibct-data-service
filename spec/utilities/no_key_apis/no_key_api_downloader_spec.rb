@@ -56,17 +56,18 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
       expect(nkad.curl_command).not_to include('-d')
     end
 
-    it 'sets the curl command correctly for Vsoc' do
-      html = File.open(Rails.root.join('spec','fixtures','vsoc_download_page.html'))
-      allow(HTTParty).to receive(:get).and_return(OpenStruct.new({body: html}))
+    describe 'the VSOC scraping' do
+      let(:nokogiri_doc) { Nokogiri::HTML(File.read(Rails.root.join('spec','fixtures','vsoc_download_page.html'))) }
 
-      nkad = described_class.new('Vsoc')
-      expect(nkad.class_nm).to eq('Vsoc')
-      expect(nkad.curl_command).to include('tmp/vsoc.csv')
-      expect(nkad.curl_command)
-        .to include("-H 'Content-Type: application/octet-stream'")
-      expect(nkad.curl_command).to include('https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv')
-      expect(nkad.curl_command).not_to include('-d')
+      it 'sets the curl command correctly for Vsoc' do
+        nkad = described_class.new('Vsoc')
+        expect(nkad.class_nm).to eq('Vsoc')
+        expect(nkad.curl_command).to include('tmp/vsoc.csv')
+        expect(nkad.curl_command)
+          .to include("-H 'Content-Type: application/octet-stream'")
+        expect(nkad.curl_command).to include('https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv')
+        expect(nkad.curl_command).not_to include('-d')
+      end
     end
   end
 

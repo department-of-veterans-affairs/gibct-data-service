@@ -99,5 +99,22 @@ module  NoKeyApis
       "#{IPEDS_URL}/#{link_tag['href']}"
     end
     private_class_method :fetch_ipeds_source_for
+
+    def self.fetch_vsoc_source
+      # Find the link that points to a file of the form "Vsoc_******.csv". We _could_
+      # try an match by link text, but that seems more brittle.
+      doc = NoKeyApis::WebScraper.new(VSOC_INDEX_URL).scrape
+
+      href = doc.css('a').map{|a| a['href']}.find{|str| str =~ /vsoc.*\.csv\Z/i}
+      unless href
+        Rails.logger.warn("NoKeyApiDownloader: Failed to find VSOC link on page")
+        return ''
+      end
+
+      # hrefs can be relative (/foo/bar) or absolute (https://example.com/foo/bar)
+      # let's handle both cases
+      href.starts_with?('/') ? "https://vbaw.vba.va.gov#{href}" : href
+    end
+    private_class_method :fetch_vsoc_source
   end
 end
