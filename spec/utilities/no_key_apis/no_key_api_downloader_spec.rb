@@ -42,13 +42,16 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
         expect(nkad.curl_command).to include('-X GET')
         expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data/')
         expect(nkad.curl_command).not_to include('-d')
+      end
 
+      it "fetches the most recent download source for #{class_nm}" do
         matcher = described_class::IPEDS_MATCHERS[class_nm]
         links = nokogiri_doc.css('.idc_gridviewrow td a').select { |a| a.text.match?(matcher) }
         link_years = links.map { |tag| tag['href'].match(%r{\d{4}})[0] }
         # Confirm multiple download versions exist for Ipeds type
         expect(link_years).to eq(%w[2023 2022])
         # Dynamically grabs most recent link
+        nkad = described_class.new(class_nm)
         expect(nkad.curl_command).to include('2023')
       end
     end
