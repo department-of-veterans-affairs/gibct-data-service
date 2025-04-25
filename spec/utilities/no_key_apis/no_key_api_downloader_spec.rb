@@ -40,19 +40,21 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
         expect(nkad.class_nm).to eq(class_nm)
         expect(nkad.curl_command).to include('tmp/download.zip')
         expect(nkad.curl_command).to include('-X GET')
-        expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data/')
+        expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data')
         expect(nkad.curl_command).not_to include('-d')
       end
 
       it "fetches the most recent download source for #{class_nm}" do
         matcher = described_class::IPEDS_MATCHERS[class_nm]
-        links = nokogiri_doc.css('.idc_gridviewrow td a').select { |a| a.text.match?(matcher) }
-        link_years = links.map { |tag| tag['href'].match(%r{\d{4}})[0] }
+        hrefs = nokogiri_doc.css('.idc_gridviewrow td a')
+                            .select { |a| a.text.match?(matcher) }
+                            .map { |tag| tag['href'] }
+        year_regex = /\d{4}/
         # Confirm multiple download versions exist for Ipeds type
-        expect(link_years).to eq(%w[2023 2022])
+        expect(hrefs.map { |h| h.match(year_regex)[0] }).to eq(%w[2023 2022])
         # Dynamically grabs most recent link
         nkad = described_class.new(class_nm)
-        expect(nkad.curl_command).to include('2023')
+        expect(nkad.curl_command).to include(hrefs.first)
       end
     end
 
