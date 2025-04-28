@@ -97,6 +97,9 @@ module  NoKeyApis
                     .select { |link| link.text.match?(IPEDS_MATCHERS[class_nm]) }
                     .first
       "#{IPEDS_URL}/#{link_tag['href']}"
+    rescue StandardError => e
+      Rails.logge.error("Failed to fetch download source for #{class_nm}: #{e.message}")
+      nil
     end
     private_class_method :fetch_ipeds_source_for
 

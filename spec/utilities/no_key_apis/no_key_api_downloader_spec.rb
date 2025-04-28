@@ -40,9 +40,21 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
         expect(nkad.class_nm).to eq(class_nm)
         expect(nkad.curl_command).to include('tmp/download.zip')
         expect(nkad.curl_command).to include('-X GET')
-        expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data/')
-        expect(nkad.curl_command).to include('2023')
+        expect(nkad.curl_command).to include('https://nces.ed.gov/ipeds/datacenter/data')
         expect(nkad.curl_command).not_to include('-d')
+      end
+
+      it "fetches the most recent download source for #{class_nm}" do
+        matcher = described_class::IPEDS_MATCHERS[class_nm]
+        hrefs = nokogiri_doc.css('.idc_gridviewrow td a')
+                            .select { |a| a.text.match?(matcher) }
+                            .map { |tag| tag['href'] }
+        year_regex = /\d{4}/
+        # Confirm multiple download versions exist for Ipeds type
+        expect(hrefs.map { |h| h.match(year_regex)[0] }).to eq(%w[2023 2022])
+        # Dynamically grabs most recent link
+        nkad = described_class.new(class_nm)
+        expect(nkad.curl_command).to include(hrefs.first)
       end
     end
 
@@ -80,21 +92,6 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
         .and_return(Open3.capture3('ls')) # how to mock Process::Status? Just run a simple command instead
 
       expect(nkad.download_csv).to be true
-    end
-  end
-
-  # We obtain the download source for certain file types by scraping web page for most recent download link
-  describe 'dynamic download sources' do
-    describe '.fetch_ipeds_source_for' do
-      %w[IpedsHd IpedsIc IpedsIcAy IpedsIcPy].each do |class_nm|
-        it "iterates through html table and determines most recent download link for #{class_nm}" do
-          matcher = described_class::IPEDS_MATCHERS[class_nm]
-          link_tags = nokogiri_doc.css('.idc_gridviewrow td a').select { |link| link.text.match?(matcher) }
-          expect(link_tags.size).to be > 1
-          most_recent_link = described_class.send(:fetch_ipeds_source_for, class_nm)
-          expect(most_recent_link).to include('2023')
-        end
-      end
     end
   end
 
