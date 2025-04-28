@@ -14,7 +14,8 @@ module NoKeyApis
       page = HTTParty.get(@url).body
       Nokogiri::HTML(page)
     rescue StandardError => e
-      Rails.logger.error e
+      Rails.logger.error("Failed to scrape #{@url}: #{e.message}")
+      nil
     end
   end
 end
