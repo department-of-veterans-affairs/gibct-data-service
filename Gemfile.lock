@@ -212,7 +212,7 @@ GEM
     font-awesome-rails (4.7.0.9)
       railties (>= 3.2, < 9.0)
     formatador (1.1.0)
-    geocoder (1.8.3)
+    geocoder (1.8.5)
       base64 (>= 0.1.0)
       csv (>= 3.0.0)
     globalid (1.2.1)
@@ -292,7 +292,7 @@ GEM
     multipart-post (2.4.1)
     mutex_m (0.3.0)
     nenv (0.3.0)
-    net-imap (0.5.6)
+    net-imap (0.5.8)
       date
       net-protocol
     net-pop (0.1.2)
@@ -591,7 +591,7 @@ DEPENDENCIES
   libv8-node (= 21.7.2.0)
   mini_racer
   mutex_m (~> 0.3.0)
-  net-imap (~> 0.5.6)
+  net-imap (~> 0.5.8)
   newrelic_rpm
   nokogiri (~> 1.18.8)
   oj
