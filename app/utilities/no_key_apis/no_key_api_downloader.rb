@@ -29,30 +29,20 @@ module  NoKeyApis
       'AccreditationRecord' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'EightKey' => [' -X GET', 'https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls'],
       'Hcm' => ['', 'https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls'],
-      'IpedsHd' => [' -X GET', -> { fetch_ipeds_source_for('IpedsHd') }],
-      'IpedsIc' => [' -X GET', -> { fetch_ipeds_source_for('IpedsIc') }],
-      'IpedsIcAy' => [' -X GET', -> { fetch_ipeds_source_for('IpedsIcAy') }],
-      'IpedsIcPy' => [' -X GET', -> { fetch_ipeds_source_for('IpedsIcPy') }],
+      'IpedsHd' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsHd') }],
+      'IpedsIc' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsIc') }],
+      'IpedsIcAy' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsIcAy') }],
+      'IpedsIcPy' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsIcPy') }],
       'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
-      'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
-    }.freeze
-
-    IPEDS_URL = 'https://nces.ed.gov/ipeds/datacenter'
-    IPEDS_DOWNLOADS_PATH = 'DataFiles.aspx?year=-1'
-    IPEDS_MATCHERS = {
-      'IpedsHd' => /^HD\d{4}$/,
-      'IpedsIc' => /^IC\d{4}$/,
-      'IpedsIcAy' => /^IC\d{4}_AY$/,
-      'IpedsIcPy' => /^IC\d{4}_PY$/
+      'Vsoc' => [' -k -X GET', -> { NoKeyApi::VsocDownloadSource.fetch }]
     }.freeze
 
     attr_accessor :class_nm, :curl_command, :url
 
     def initialize(class_nm)
       @class_nm = class_nm
-      rest_command, url_or_proc = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
-      # Certain url values exist as procs which dynamically fetch latest download source urls
-      url = url_or_proc.try(:call) || url_or_proc
+      rest_command, source = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
+      url = url_from(source)
       @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm}#{d_parm}"
     end
 
@@ -88,17 +78,10 @@ module  NoKeyApis
       " -d '{\"CSVChecked\":true,\"ExcelChecked\":false}'"
     end
 
-    def self.fetch_ipeds_source_for(class_nm)
-      # Nokogiri HTML document
-      doc = NoKeyApis::WebScraper.new("#{IPEDS_URL}/#{IPEDS_DOWNLOADS_PATH}").scrape
-      link_tag = doc.css('.idc_gridviewrow td a')
-                    .select { |link| link.text.match?(IPEDS_MATCHERS[class_nm]) }
-                    .first
-      "#{IPEDS_URL}/#{link_tag['href']}"
-    rescue StandardError => e
-      Rails.logge.error("Failed to fetch download source for #{class_nm}: #{e.message}")
-      nil
+    def url_from(source)
+      return source unless source.is_a?(Proc)
+
+      source.call
     end
-    private_class_method :fetch_ipeds_source_for
   end
 end
