@@ -18,9 +18,8 @@ module DashboardWatir
 
     TIMEOUT ||= 600 # seconds
 
-    attr_accessor :headless, :bsess, :download_dir, :login_url,
-                  :dashboard_url, :import_prefix, :user, :pass, :eilogger,
-                  :workfiles
+    attr_accessor :headless, :bsess, :download_dir, :login_url, :dashboard_url,
+                  :import_prefix, :user, :pass, :eilogger, :workfiles
 
     def common_initialize_watir(user, pass, load_env = nil)
       @user = user
@@ -74,7 +73,18 @@ module DashboardWatir
         client = Selenium::WebDriver::Remote::Http::Default.new
         client.read_timeout = TIMEOUT # seconds
         client.open_timeout = TIMEOUT # seconds
-        @bsess = Watir::Browser.start(@login_url, http_client: client)
+
+        # Set up temporary profile directory
+        temp_profile = Dir.mktmpdir('watir-profile')
+
+        # Set up Chrome options
+        options = Selenium::WebDriver::Chrome::Options.new
+        options.add_argument("--user-data-dir=#{temp_profile}")
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage') # optional, helps in CI sometimes
+
+        @bsess = Watir::Browser.new(:chrome, options: options, http_client: client)
+        @bsess.goto(@login_url)
         @bsess.driver.manage.timeouts.page_load = 600 # seconds
         @bsess.driver.manage.timeouts.script_timeout = 600 # seconds
         @bsess.driver.manage.timeouts.implicit_wait = 90 # seconds
@@ -112,7 +122,7 @@ module DashboardWatir
       log_and_puts ''
       sleep(5)
 
-      if table_name.eql?('Section1015') # last table in the array
+      if CSV_TYPES_ALL_TABLES_CLASSES.last.to_s.include?(table_name)
         log_and_puts('*** Finished uploading tables ***')
       else
         login_to_dashboard

@@ -79,7 +79,8 @@ class DashboardExporterImporter
     if !table_name.eql?('institutions_version')
       return unless File.exist?("#{@download_dir}/#{table_name}.csv")
 
-      File.delete("#{@download_dir}/#{table_name}.csv")
+      # Lcpe tables cause issues with the file name because of colons
+      File.delete("#{@download_dir}/#{table_name.gsub(':', '_')}.csv")
     else
       institutions_files = Dir.glob("#{@download_dir}/#{table_name}*.csv")
       return if institutions_files.empty?
@@ -97,7 +98,8 @@ class DashboardExporterImporter
     log_and_puts('    Waiting for download to complete...')
 
     @bsess.wait_until(timeout: TIMEOUT) do
-      check_exists_for(table_name)
+      # Lcpe tables cause issues with the file name because of colons
+      check_exists_for(table_name.gsub(':', '_'))
     end
 
     log_and_puts('    Completed')
@@ -133,7 +135,9 @@ class DashboardExporterImporter
     button.click
 
     @bsess.text_field(id: 'upload_skip_lines').set(0)
-    @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name}.csv")
+
+    # Lcpe tables cause issues with the file name because of the colons
+    @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name.gsub(':', '_')}.csv")
 
     @bsess
       .text_field(id: 'upload_comment')
