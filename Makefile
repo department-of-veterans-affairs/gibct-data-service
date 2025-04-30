@@ -6,6 +6,9 @@ else
     ENV_ARG  := test
 endif
 
+export LOCAL_UID := $(shell id -u)
+export LOCAL_GID := $(shell id -g)
+
 COMPOSE_DEV  := docker-compose
 COMPOSE_TEST := docker-compose -f docker-compose.test.yml
 BASH         := run --rm gibct bash --login
