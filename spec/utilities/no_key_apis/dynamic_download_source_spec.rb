@@ -29,17 +29,3 @@ RSpec.describe NoKeyApis::DynamicDownloadSource do
     end
   end
 end
-
-# it "fetches the most recent download source for #{class_nm}" do
-#   matcher = NoKeyApis::IpedsDownloadSource::MATCHERS[class_nm]
-#   # Grab hrefs from all html links associated with ipeds type
-#   hrefs = nokogiri_doc.css('.idc_gridviewrow td a')
-#                       .select { |a| a.text.match?(matcher) }
-#                       .map { |tag| tag['href'] }
-#   year_regex = /\d{4}/
-#   # Confirm multiple links found for ipeds type across different years
-#   expect(hrefs.map { |h| h.match(year_regex)[0] }).to eq(%w[2023 2022])
-#   # Expect nkad to dynamically select href of most recent download link
-#   nkad = described_class.new(class_nm)
-#   expect(nkad.curl_command).to include(hrefs.first)
-# end

@@ -18,18 +18,27 @@ module NoKeyApis
 
     private
 
+    def cache_html?
+      false
+    end
+
     def parse_html
       raise NotImplementedError, '#parse_refs must be defined in subclass'
     end
 
     def scrape_html
-      page = Rails.cache.fetch(@url, expires_in: 1.hour) do
-        HTTParty.get(@url).body
-      end
+      page = do_cached_with { HTTParty.get(@url).body }
       Nokogiri::HTML(page)
     rescue StandardError => e
       Rails.logger.error("Error scraping #{@url}: #{e.message}")
       nil
+    end
+
+    # cache html via solid cache if caching enabled in subclass
+    def do_cached_with(&block)
+      return yield unless cache_html?
+
+      Rails.cache.fetch(CACHE_KEY, expires_in: 1.hour, &block)
     end
   end
 end
