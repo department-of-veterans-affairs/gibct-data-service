@@ -38,7 +38,7 @@ module NoKeyApis
     def do_cached_with(&block)
       return yield unless cache_html?
 
-      Rails.cache.fetch(CACHE_KEY, expires_in: 1.hour, &block)
+      Rails.cache.fetch(self.class::CACHE_KEY, expires_in: 1.hour, &block)
     end
   end
 end
