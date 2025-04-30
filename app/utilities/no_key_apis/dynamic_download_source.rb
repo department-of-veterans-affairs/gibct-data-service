@@ -2,24 +2,23 @@
 
 module NoKeyApis
   class DynamicDownloadSource
- 
+    attr_reader :href
+
     def initialize(url)
-      if self.class == DynamicDownloadSource
-        raise NotImplementedError, 'abstract class cannot be initialized'
-      end
+      raise NotImplementedError, 'abstract class cannot be initialized' if instance_of?(DynamicDownloadSource)
 
       @url = url
       @html = scrape_html
       @href = parse_html
     end
 
-    def fetch(*args)
-      self.new(*args).href
+    def self.fetch(*args)
+      new(*args).href
     end
 
     private
-  
-    def parse_hrefs
+
+    def parse_html
       raise NotImplementedError, '#parse_refs must be defined in subclass'
     end
 

@@ -29,12 +29,12 @@ module  NoKeyApis
       'AccreditationRecord' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'EightKey' => [' -X GET', 'https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls'],
       'Hcm' => ['', 'https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls'],
-      'IpedsHd' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsHd') }],
-      'IpedsIc' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsIc') }],
-      'IpedsIcAy' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsIcAy') }],
-      'IpedsIcPy' => [' -X GET', -> { NoKeyApi::IpedsDownloadSource.fetch('IpedsIcPy') }],
+      'IpedsHd' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsHd') }],
+      'IpedsIc' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIc') }],
+      'IpedsIcAy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcAy') }],
+      'IpedsIcPy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcPy') }],
       'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
-      'Vsoc' => [' -k -X GET', -> { NoKeyApi::VsocDownloadSource.fetch }]
+      'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
     }.freeze
 
     attr_accessor :class_nm, :curl_command, :url
@@ -78,6 +78,7 @@ module  NoKeyApis
       " -d '{\"CSVChecked\":true,\"ExcelChecked\":false}'"
     end
 
+    # If download source is a proc (and not url string), call proc to dynamically fetch url
     def url_from(source)
       return source unless source.is_a?(Proc)
 
