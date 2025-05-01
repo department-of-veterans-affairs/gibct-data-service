@@ -10,6 +10,7 @@ module NoKeyApis
       'IpedsIcAy' => /^IC\d{4}_AY$/,
       'IpedsIcPy' => /^IC\d{4}_PY$/
     }.freeze
+
     CACHE_KEY = 'ipeds_html'
 
     def initialize(ipeds_type)
@@ -18,10 +19,6 @@ module NoKeyApis
     end
 
     private
-
-    def cache_html?
-      true
-    end
 
     def parse_html
       return unless @html
