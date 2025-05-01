@@ -490,6 +490,10 @@ GEM
     simplecov_json_formatter (0.1.4)
     sitemap_generator (6.3.0)
       builder (~> 3.0)
+    solid_cache (0.7.0)
+      activejob (>= 7)
+      activerecord (>= 7)
+      railties (>= 7)
     spreadsheet (1.3.0)
       ruby-ole
     spring (4.2.1)
@@ -609,6 +613,7 @@ DEPENDENCIES
   simplecov
   simplecov-single_file
   sitemap_generator
+  solid_cache (~> 0.7.0)
   spring
   sprockets-rails
   strong_migrations
