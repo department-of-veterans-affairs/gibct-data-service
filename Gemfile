@@ -37,7 +37,7 @@ gem 'rack', '>= 3.1.10'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'rainbow'
-gem 'rexml', '~> 3.3.9'
+gem 'rexml', '~> 3.4.1'
 gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
 gem 'ruby-saml', '>= 1.18.0'
