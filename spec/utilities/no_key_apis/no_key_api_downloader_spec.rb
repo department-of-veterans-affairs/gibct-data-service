@@ -7,6 +7,11 @@ require 'rails_helper'
 # calling, but it's advisable to run it from the command line separately and not as part of the test suite
 
 RSpec.describe NoKeyApis::NoKeyApiDownloader do
+  let(:ipeds_page) { File.read('spec/fixtures/ipeds_directory_page.txt') }
+  let(:ipeds_response) { instance_double(HTTParty::Response, body: ipeds_page) }
+
+  before { allow(HTTParty).to receive(:get).and_return(ipeds_response) }
+
   describe '#initialize' do
     %w[Accreditation AccreditationAction AccreditationInstituteCampus AccreditationRecord].each do |class_nm|
       it "sets the accreditation curl command correctly for #{class_nm}" do
@@ -71,11 +76,11 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
     call_externally = ENV['EXTERNAL'].eql?('true') ? true : false
     context 'when making external calls', if: call_externally do
       it 'downloads the hcm file into the tmp folder' do
-        system('rm tmp/hcm.xlsx') if File.exist?('tmp/hcm.xlsx')
-        expect(File).not_to exist('tmp/hcm.xlsx')
+        system('rm tmp/hcm.xls') if File.exist?('tmp/hcm.xls')
+        expect(File).not_to exist('tmp/hcm.xls')
         nkad = described_class.new('Hcm')
         nkad.download_csv
-        expect(File).to exist('tmp/hcm.xlsx')
+        expect(File).to exist('tmp/hcm.xls')
       end
 
       it 'downloads the eight key file into the tmp folder' do
