@@ -34,7 +34,7 @@ module  NoKeyApis
       'IpedsIcAy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcAy') }],
       'IpedsIcPy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcPy') }],
       'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
-      'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
+      'Vsoc' => [' -k -X GET', -> { VsocDownloadSource.fetch } ]
     }.freeze
 
     attr_accessor :class_nm, :curl_command, :url
