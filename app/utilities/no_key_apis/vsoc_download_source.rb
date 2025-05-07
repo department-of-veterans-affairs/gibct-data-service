@@ -15,9 +15,9 @@ module NoKeyApis
     def parse_html
       return unless @html
 
-      href = @html.css('a').map{|a| a['href']}.find{|str| str =~ /vsoc.*\.csv\Z/i}
+      href = @html.css('a').map { |a| a['href'] }.find { |str| str =~ /vsoc.*\.csv\Z/i }
       unless href
-        Rails.logger.warn("NoKeyApiDownloader: Failed to find VSOC link on page")
+        Rails.logger.warn('NoKeyApiDownloader: Failed to find VSOC link on page')
         return ''
       end
 
@@ -27,4 +27,3 @@ module NoKeyApis
     end
   end
 end
-

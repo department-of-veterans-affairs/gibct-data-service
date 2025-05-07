@@ -9,7 +9,7 @@ RSpec.describe NoKeyApis::VsocDownloadSource do
   before { allow(HTTParty).to receive(:get).and_return(vsoc_response) }
 
   describe '#initialize' do
-    it "dynamically fetches the href" do
+    it 'dynamically fetches the href' do
       expect(described_class.new.href).to eq('https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv')
     end
   end

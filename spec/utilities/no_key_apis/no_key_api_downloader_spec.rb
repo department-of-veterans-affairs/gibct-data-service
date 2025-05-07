@@ -11,7 +11,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
   let(:ipeds_response) { instance_double(HTTParty::Response, body: ipeds_page) }
 
   let(:vsoc_page) { File.read('spec/fixtures/vsoc_download_page.html') }
-  let(:vsoc_response) { instance_double(HTTParty::Response, body: vsoc_page ) }
+  let(:vsoc_response) { instance_double(HTTParty::Response, body: vsoc_page) }
 
   before { allow(HTTParty).to receive(:get).and_return(ipeds_response) }
 
@@ -57,7 +57,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
       expect(nkad.curl_command).not_to include('-d')
     end
 
-    context 'for Vsoc downloads' do
+    context 'with Vsoc downloads' do
       before { allow(HTTParty).to receive(:get).and_return(vsoc_response) }
 
       it 'sets the curl command correctly for VSOC' do
