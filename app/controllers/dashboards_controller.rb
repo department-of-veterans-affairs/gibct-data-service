@@ -232,13 +232,10 @@ class DashboardsController < ApplicationController
   end
 
   def unzip_csv(class_nm)
-    # Some downloads are not a zip file, so skip and return true
+    # Some downloads do are not a zip file, so skip and return true
     return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou') || class_nm.eql?('Vsoc')
 
-    # Overwrite extracted file name if Ipeds
-    f_name = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] if class_nm.starts_with?('Ipeds')
-
-    ZipFileUtils::Unzipper.new.unzip_the_file(f_name)
+    ZipFileUtils::Unzipper.new.unzip_the_file
   end
 
   # Sometimes the file is an xls file and sometimes it is an xlsx file.

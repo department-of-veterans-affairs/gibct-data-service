@@ -22,7 +22,6 @@ RSpec.describe ZipFileUtils::Unzipper do
       FileUtils.cp('spec/fixtures/download_hcm.zip', 'tmp')
       unzipper = described_class.new('tmp/download_hcm.zip')
       expect(unzipper.unzip_the_file).to be true
-      expect(File.exist?('tmp/hcm.csv')).to be true
     end
 
     it 'returns false when unzipping fails' do
@@ -30,18 +29,6 @@ RSpec.describe ZipFileUtils::Unzipper do
       system('cp spec/fixtures/download_hcm_corrupt.zip tmp')
       unzipper = described_class.new('tmp/download_hcm_corrupt.zip')
       expect(unzipper.unzip_the_file).to be false
-    end
-
-    it 'accepts optional argument which overwrites extracted file name' do
-      overwritten = 'tmp/overwritten.csv'
-      File.delete('tmp/download_hcm.zip') if File.exist?('tmp/download_hcm.zip')
-      File.delete('tmp/hcm.csv') if File.exist?('tmp/hcm.csv')
-      FileUtils.cp('spec/fixtures/download_hcm.zip', 'tmp')
-      unzipper = described_class.new('tmp/download_hcm.zip')
-      expect(unzipper.unzip_the_file(overwritten)).to be true
-      expect(File.exist?(overwritten)).to be true
-
-      File.delete(overwritten) if File.exist?(overwritten)
     end
   end
 end
