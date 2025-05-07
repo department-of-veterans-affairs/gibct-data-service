@@ -43,6 +43,7 @@ gem 'ruby-saml', '>= 1.18.0'
 gem 'rubyzip', '~> 2.4'
 gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
+gem 'solid_cache', '~> 0.7.0'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
 gem 'terser'
