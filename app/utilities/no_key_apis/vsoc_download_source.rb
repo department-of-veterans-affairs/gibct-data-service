@@ -4,8 +4,6 @@ module NoKeyApis
   class VsocDownloadSource < DynamicDownloadSource
     URL = 'https://vbaw.vba.va.gov/education/job_aids.asp'
 
-    CACHE_KEY = 'vsoc_html'
-
     def initialize
       super(URL)
     end
