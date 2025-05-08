@@ -10,6 +10,9 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
   let(:ipeds_page) { File.read('spec/fixtures/ipeds_directory_page.txt') }
   let(:ipeds_response) { instance_double(HTTParty::Response, body: ipeds_page) }
 
+  let(:vsoc_page) { File.read('spec/fixtures/vsoc_download_page.html') }
+  let(:vsoc_response) { instance_double(HTTParty::Response, body: vsoc_page) }
+
   before { allow(HTTParty).to receive(:get).and_return(ipeds_response) }
 
   describe '#initialize' do
@@ -52,6 +55,17 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
         .to include('-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"')
       expect(nkad.curl_command).to include('https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls')
       expect(nkad.curl_command).not_to include('-d')
+    end
+
+    context 'with Vsoc downloads' do
+      before { allow(HTTParty).to receive(:get).and_return(vsoc_response) }
+
+      it 'sets the curl command correctly for VSOC' do
+        nkad = described_class.new('Vsoc')
+        expect(nkad.class_nm).to eq('Vsoc')
+        expect(nkad.curl_command).to include('tmp/vsoc.csv')
+        expect(nkad.curl_command).to include('https://vbaw.vba.va.gov/')
+      end
     end
   end
 
