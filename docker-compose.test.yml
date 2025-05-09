@@ -10,7 +10,10 @@ services:
   gibct:
     build:
       context: .
-      target: builder
+      dockerfile: Dockerfile-k8s
+      args:
+        RAILS_ENV: "test"
+        BUNDLE_WITHOUT: ""
     image: "gibct:${DOCKER_IMAGE:-latest}"
     ports:
       - 3000:3000
@@ -19,7 +22,7 @@ services:
       ADMIN_PW: 'something...'
       CC_TEST_REPORTER_ID: 'b2bfddfeacb799e6c25db347d97406262860380eb1feb21884d5151f818165f5'
       CI: "true"
-      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_development}?pool=4"
+      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-gibct_test}?pool=4"
       DEPLOYMENT_ENV: 'vagov-staging'
       GIBCT_URL: https://www.example.com
       SANDBOX_URL: https://www.example.com
