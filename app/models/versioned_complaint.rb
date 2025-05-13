@@ -3,7 +3,7 @@
 class VersionedComplaint < ApplicationRecord
   belongs_to :version
 
-  scope :closed, -> { where.not(closed: ['', nil]) }
+  scope :closed, -> { where(status: 'closed').where.not(closed_reason: ['invalid','',nil]) }
 
   # A complaint can have multiple categories. These are originally derived
   # from the `issues` field, which is just a string of complaint types. This
