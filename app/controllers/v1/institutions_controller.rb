@@ -149,29 +149,7 @@ module V1
              links: @links
     end
 
-    def complaints
-      resource = Institution.approved_institutions(@version).find_by(facility_code: params[:id])
-      years = complaint_year_params
-
-      render json: {
-        data: {
-          by_facility_code: VersionedComplaintRollup.compute_yearly_rollup_by_facility_code(resource, years),
-          by_ope6: VersionedComplaintRollup.compute_yearly_rollup_by_ope6(resource, years)
-        },
-        meta: {
-          years: years
-        },
-        links: { self: self_link }
-      }
-    end
-
     private
-
-    def complaint_year_params
-      valid_range = (Date.today.year - 5..Date.today.year)
-      years = (params[:years] || []).map(&:to_i).filter{|y| valid_range.include?(y)}
-      years.empty? ? valid_range.to_a : years.uniq
-    end
 
     def normalized_query_params
       query = params.deep_dup
