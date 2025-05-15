@@ -578,6 +578,11 @@ module InstitutionBuilder
 
     def self.add_complaint(version_id)
       Complaint.update_ope_from_crosswalk
+
+      # TODO: to future devs, as part of https://github.com/department-of-veterans-affairs/gibct-data-service/pull/1408 we are
+      # changing the way complaints are rolled up and returned to the front end. Assuming this new way of doing things
+      # is successful, we should be able to remove these Complaint.rollup_* function calls, as well as all the
+      # complaints_* columns on the institutions table.
       Complaint.rollup_sums(:facility_code, version_id)
       Complaint.rollup_sums(:ope6, version_id)
     end
