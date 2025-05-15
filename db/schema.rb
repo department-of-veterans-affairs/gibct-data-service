@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_01_160219) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1838,6 +1838,40 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_01_160219) do
     t.datetime "updated_at", null: false
     t.index ["version_id", "facility_code"], name: "index_versioned_complaints_on_version_id_and_facility_code"
     t.index ["version_id", "ope6"], name: "index_versioned_complaints_on_version_id_and_ope6"
+  end
+
+  create_table "versioned_complaints_archives", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "status"
+    t.string "ope"
+    t.string "ope6"
+    t.string "facility_code"
+    t.string "closed_reason"
+    t.string "issues"
+    t.integer "cfc", default: 0
+    t.integer "cfbfc", default: 0
+    t.integer "cqbfc", default: 0
+    t.integer "crbfc", default: 0
+    t.integer "cmbfc", default: 0
+    t.integer "cabfc", default: 0
+    t.integer "cdrbfc", default: 0
+    t.integer "cslbfc", default: 0
+    t.integer "cgbfc", default: 0
+    t.integer "cctbfc", default: 0
+    t.integer "cjbfc", default: 0
+    t.integer "ctbfc", default: 0
+    t.integer "cobfc", default: 0
+    t.string "case_id"
+    t.string "level"
+    t.string "case_owner"
+    t.string "institution"
+    t.string "city"
+    t.string "state"
+    t.string "submitted"
+    t.string "closed"
+    t.string "education_benefits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "versioned_school_certifying_officials", id: :serial, force: :cascade do |t|
