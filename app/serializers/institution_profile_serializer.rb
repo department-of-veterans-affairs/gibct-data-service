@@ -118,6 +118,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :vrrap
   attribute :ownership_name
 
+  attribute :all_facility_code_complaints
+  attribute :all_ope6_complaints
+
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
   link(:vet_website_link) { object.vet_website_link }
@@ -151,6 +154,18 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
 
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
+    end
+  end
+
+  def all_facility_code_complaints
+    object.versioned_complaints_by_facility_code.closed.map do |complaint|
+      VersionedComplaintSerializer.new(complaint)
+    end
+  end
+
+  def all_ope6_complaints
+    object.versioned_complaints_by_ope6.closed.map do |complaint|
+      VersionedComplaintSerializer.new(complaint)
     end
   end
 end

@@ -552,6 +552,18 @@
             },
             "tribal": {
               "type": ["null", "integer"]
+            },
+            "all_facility_code_complaints": {
+              "type": ["null", "array"],
+              "items": {
+                "type": "object"
+              }
+            },
+            "all_ope6_complaints": {
+              "type": ["null", "array"],
+              "items": {
+                "type": "object"
+              }
             }
           },
           "required": [
