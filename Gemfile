@@ -32,7 +32,7 @@ gem 'newrelic_rpm'
 gem 'nokogiri', '~> 1.18.8'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 gem 'pg' # Use postgresql as the database for Active Record
-gem 'puma', '~> 6.4.3'
+gem 'puma', '~> 6.6.0'
 gem 'rack', '>= 3.1.10'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
