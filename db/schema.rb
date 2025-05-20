@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1712,6 +1712,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
+  create_table "solid_cache_entries", force: :cascade do |t|
+    t.binary "key", null: false
+    t.binary "value", null: false
+    t.datetime "created_at", null: false
+    t.bigint "key_hash", null: false
+    t.integer "byte_size", null: false
+    t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
+    t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
+    t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
+  end
+
   create_table "stem_cip_codes", id: :serial, force: :cascade do |t|
     t.integer "two_digit_series"
     t.string "twentyten_cip_code"
@@ -1791,6 +1802,76 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.string "settlement_link"
     t.string "school_closing_date"
     t.boolean "sec_702"
+  end
+
+  create_table "versioned_complaints", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "status"
+    t.string "ope"
+    t.string "ope6"
+    t.string "facility_code"
+    t.string "closed_reason"
+    t.string "issues"
+    t.integer "cfc", default: 0
+    t.integer "cfbfc", default: 0
+    t.integer "cqbfc", default: 0
+    t.integer "crbfc", default: 0
+    t.integer "cmbfc", default: 0
+    t.integer "cabfc", default: 0
+    t.integer "cdrbfc", default: 0
+    t.integer "cslbfc", default: 0
+    t.integer "cgbfc", default: 0
+    t.integer "cctbfc", default: 0
+    t.integer "cjbfc", default: 0
+    t.integer "ctbfc", default: 0
+    t.integer "cobfc", default: 0
+    t.string "case_id"
+    t.string "level"
+    t.string "case_owner"
+    t.string "institution"
+    t.string "city"
+    t.string "state"
+    t.string "submitted"
+    t.string "closed"
+    t.string "education_benefits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["version_id", "facility_code"], name: "index_versioned_complaints_on_version_id_and_facility_code"
+    t.index ["version_id", "ope6"], name: "index_versioned_complaints_on_version_id_and_ope6"
+  end
+
+  create_table "versioned_complaints_archives", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "status"
+    t.string "ope"
+    t.string "ope6"
+    t.string "facility_code"
+    t.string "closed_reason"
+    t.string "issues"
+    t.integer "cfc", default: 0
+    t.integer "cfbfc", default: 0
+    t.integer "cqbfc", default: 0
+    t.integer "crbfc", default: 0
+    t.integer "cmbfc", default: 0
+    t.integer "cabfc", default: 0
+    t.integer "cdrbfc", default: 0
+    t.integer "cslbfc", default: 0
+    t.integer "cgbfc", default: 0
+    t.integer "cctbfc", default: 0
+    t.integer "cjbfc", default: 0
+    t.integer "ctbfc", default: 0
+    t.integer "cobfc", default: 0
+    t.string "case_id"
+    t.string "level"
+    t.string "case_owner"
+    t.string "institution"
+    t.string "city"
+    t.string "state"
+    t.string "submitted"
+    t.string "closed"
+    t.string "education_benefits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "versioned_school_certifying_officials", id: :serial, force: :cascade do |t|
