@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CalculatorConstant < ImportableRecord
+  belongs_to :cost_of_living_adjustment, optional: true
+
   CSV_CONVERTER_INFO = {
     'name' => { column: :name, converter: Converters::UpcaseConverter },
     'value' => { column: :float_value, converter: Converters::NumberConverter },

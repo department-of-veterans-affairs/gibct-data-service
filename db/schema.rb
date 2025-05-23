@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_23_161539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -104,6 +104,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
+    t.float "previous_year"
+    t.bigint "cost_of_living_adjustment_id"
+    t.index ["cost_of_living_adjustment_id"], name: "index_calculator_constants_on_cost_of_living_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
   end
 
@@ -178,6 +181,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_complaints_on_facility_code"
     t.index ["ope6"], name: "index_complaints_on_ope6"
+  end
+
+  create_table "cost_of_living_adjustments", force: :cascade do |t|
+    t.string "benefit_type", null: false
+    t.decimal "rate", precision: 5, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["benefit_type"], name: "index_cost_of_living_adjustments_on_benefit_type", unique: true
   end
 
   create_table "crosswalk_issues", force: :cascade do |t|
