@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_23_161539) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_23_174025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -2039,6 +2039,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_23_161539) do
   end
 
   add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
+  add_foreign_key "calculator_constants", "cost_of_living_adjustments", validate: false
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"

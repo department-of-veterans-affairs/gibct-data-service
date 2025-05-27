@@ -5,5 +5,6 @@ class CostOfLivingAdjustment < ApplicationRecord
 
   BENEFIT_TYPES = %w[30 33 35 1606].freeze
 
-  validates :benefit_type, uniqueness: true, inclusion: { in: BENEFIT_TYPES }
+  validates :benefit_type, presence: true, uniqueness: true, inclusion: { in: BENEFIT_TYPES }
+  validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
 end
