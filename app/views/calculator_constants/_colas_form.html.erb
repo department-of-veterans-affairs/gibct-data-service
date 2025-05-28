@@ -1,0 +1,25 @@
+<%= form_with(url: cost_of_living_adjustments_path, id: 'cost_of_living_adjustments_update') do %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div>Cost of Living Adjustments</div>
+      <%= link_to 'Edit', dashboards_path, class: "btn dashboard-btn-success" %>
+    </div>
+
+    <div class="panel-body">
+      <div class="cola-list-div">
+        <% @cost_of_living_adjustments.each do |cola| %>
+          <div class="cola-div">
+            <%= label_tag "ch#{cola.benefit_type}", "Ch. #{cola.benefit_type}"%></label>
+            <input type="number"
+                   min="0.00"
+                   step="0.01"
+                   required
+                   id=<%= "ch#{cola.benefit_type}" %>
+                   name=<%= "cost_of_living_adjustments[#{cola.benefit_type}]"%>
+                   value=<%= cola.rate %> />
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

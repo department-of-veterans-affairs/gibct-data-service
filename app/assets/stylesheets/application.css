@@ -327,6 +327,37 @@ table.crosswalk-issues thead.sub th {
   margin-left:1rem;
 }
 
+#cost_of_living_adjustments_update .panel-heading {
+  font-size: 2rem;
+  background-color: #f3f3ff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#cost_of_living_adjustments_update .cola-list-div {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+#cost_of_living_adjustments_update .cola-div {
+  white-space: nowrap;
+  flex: 0 1 15%;
+  gap: 6px;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+}
+
+#cost_of_living_adjustments_update .cola-div label {
+  margin-bottom: 0;
+}
+
+#cost_of_living_adjustments_update .cola-div input {
+  width: 80px;
+}
+
 .equal {
   flex-wrap: wrap;
   display: flex;
