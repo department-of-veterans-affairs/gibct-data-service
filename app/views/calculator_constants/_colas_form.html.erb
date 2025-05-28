@@ -1,10 +1,15 @@
-<%= form_with(url: cost_of_living_adjustments_path, id: 'cost_of_living_adjustments_update') do %>
-  <div class="panel panel-default">
+<%= form_with(url: cost_of_living_adjustments_path, id: "cost_of_living_adjustments_update") do %>
+  <div class="panel panel-default" data-controller="colas-form">
     <div class="panel-heading">
       <div>Cost of Living Adjustments</div>
-      <%= link_to 'Edit', dashboards_path, class: "btn dashboard-btn-success" %>
+        <%= button_tag "Edit",
+                        type: "button",
+                        class: "btn dashboard-btn-info btn-xs",
+                        data: { action: "click->colas-form#enableEditing", colas_form_target: "editButton" } %>
+        <div data-colas-form-target="saveAndCancelButtons" style="display: none">
+          <%= link_to 'Cancel', calculator_constants_path, class: "btn dashboard-btn-danger" %>
+        </div>
     </div>
-
     <div class="panel-body">
       <div class="cola-list-div">
         <% @cost_of_living_adjustments.each do |cola| %>
@@ -14,9 +19,12 @@
                    min="0.00"
                    step="0.01"
                    required
+                   disabled
                    id=<%= "ch#{cola.benefit_type}" %>
                    name=<%= "cost_of_living_adjustments[#{cola.benefit_type}]"%>
+                   data-colas-form-target="input"
                    value=<%= cola.rate %> />
+            <span>%</span>
           </div>
         <% end %>
       </div>

@@ -3,7 +3,14 @@
 <head>
   <title>GibctDataService</title>
   <%= stylesheet_link_tag    'application', media: 'all' %>
-  <%= javascript_include_tag 'application', nonce: '**CSP_NONCE**' %>
+
+  <!-- Load legacy Sprockets assets (e.g. jQuery, Bootstrap) -->
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true, nonce: '**CSP_NONCE**' %>
+
+  <!-- Load modern ES6 modules via Importmap (e.g. Stimulus controllers) -->
+  <!-- override default 'application' with 'main' to avoid name-collision with legacy app/assets/javascripts/application.js -->
+  <%= javascript_importmap_tags 'main' %>
+
   <%= csrf_meta_tags %>
 </head>
 <body>
