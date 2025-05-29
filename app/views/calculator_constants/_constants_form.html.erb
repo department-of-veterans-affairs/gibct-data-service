@@ -14,21 +14,26 @@
         <thead class="sub">
           <th>Name</th>
           <th>Description</th>
-          <th>Value</th>
+          <th>COLA</th>
+          <th>Previous Year</th>
+          <th>Current Value</th>
         </thead>
         <tbody>
             <% @calculator_constants.each do |constant| %>
               <tr>
                 <td width="20%"> <%= constant.name %></td>
-                <td>
-                  <% if constant.description && constant.description != '' %>
-                    <%= constant.description %>
-                  <% else %>
-                    TBD
-                  <% end %>
+                <td><%= constant.description %></td>
+                <td width="auto">
+                  <select <%= "disabled" if constant.benefit_type.nil? %>>name=<%= "calculator_constants[#{constant.name}][cola]" %>>
+                    <option></option>
+                    <% CostOfLivingAdjustment::BENEFIT_TYPES.each do |cola| %>
+                      <option <%= "selected" if constant.benefit_type == cola %>><%= "Ch. #{cola}" %></option>
+                    <% end %>
+                  </select>
                 </td>
-                <td width="20%">
-                  <input type="number" class="form-control" step="0.01" required="true" name="<%='calculator_constants['+constant.name+']'%>" id="<%=constant.name %>" value="<%=constant.value %>">
+                <td width="auto"><%= constant.previous_year %></td>
+                <td width="auto">
+                  <input type="number" class="form-control" step="0.01" required="true" name=<%="calculator_constants[#{constant.name}][value]" %> id=<%=constant.name %> value=<%=constant.value %>>
                 </td>
               </tr>
             <% end %>

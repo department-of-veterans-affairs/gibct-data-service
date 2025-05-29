@@ -17,15 +17,13 @@ class CalculatorConstant < ImportableRecord
   validates :float_value, presence: true
   validate :description_cannot_reference_more_than_one_benefit_type
 
-  # Support for GIBCT using value
-  def value
-    float_value
-  end
+  delegate :benefit_type, to: :cost_of_living_adjustment, allow_nil: true
 
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
 
+  alias_attribute :value, :float_value
   alias cola cost_of_living_adjustment
 
   # Associate with COLA if benefit type parseable from description
