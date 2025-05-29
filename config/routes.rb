@@ -48,6 +48,7 @@ Rails.application.routes.draw do
 
   resources :calculator_constants, only: [:index] do
     post :update, on: :collection
+    post :apply_colas, on: :collection, as: :apply_colas_to
   end
 
   resources :cost_of_living_adjustments, only: [] do

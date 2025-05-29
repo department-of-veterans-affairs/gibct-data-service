@@ -1,10 +1,19 @@
 <%= form_with(url: calculator_constants_path, id: 'calculator_constants_update') do %>
+    <div class="row">
+      <div class="col-md-12 constants-actions">
+        <%= link_to "Apply Cost of Living Adjustments",
+                    apply_colas_to_calculator_constants_path,
+                    method: :post,
+                    role: "button",
+                    class: "btn btn-primary btn-xs" %>
+      </div>
+  </div>
   <div class="row">
     <div class="col-md-10">
       <h3>Manage Calculator Constants</h3>
       <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
     </div>
-    <div align="right" class="col-md-2 top-table-button-div">
+    <div class="col-md-2 constants-btns">
       <%= link_to 'Cancel', calculator_constants_path, class: "btn dashboard-btn-danger" %>
       <%= submit_tag("Save", class: 'btn dashboard-btn-success', id: "submit-button") %>
     </div>
@@ -14,7 +23,7 @@
         <thead class="sub">
           <th>Name</th>
           <th>Description</th>
-          <th>COLA</th>
+          <th>Benefit</th>
           <th>Previous Year</th>
           <th>Current Value</th>
         </thead>
@@ -24,25 +33,21 @@
                 <td width="20%"> <%= constant.name %></td>
                 <td><%= constant.description %></td>
                 <td width="auto">
-                  <select <%= "disabled" if constant.benefit_type.nil? %>>name=<%= "calculator_constants[#{constant.name}][cola]" %>>
-                    <option></option>
-                    <% CostOfLivingAdjustment::BENEFIT_TYPES.each do |cola| %>
-                      <option <%= "selected" if constant.benefit_type == cola %>><%= "Ch. #{cola}" %></option>
+                  <select <%= "disabled selected" if constant.benefit_type.nil? %> name=<%= "calculator_constants[#{constant.id}][cost_of_living_adjustment_id]" %>>
+                    <option value=""><%= constant.benefit_type.nil? ? "" : "none" %></option>
+                    <% CostOfLivingAdjustment.all.each do |cola| %>
+                      <option value=<%= cola.id %> <%= "selected" if constant.cola == cola %>><%= "Ch. #{cola.benefit_type}" %></option>
                     <% end %>
                   </select>
                 </td>
                 <td width="auto"><%= constant.previous_year %></td>
                 <td width="auto">
-                  <input type="number" class="form-control" step="0.01" required="true" name=<%="calculator_constants[#{constant.name}][value]" %> id=<%=constant.name %> value=<%=constant.value %>>
+                  <input type="number" class="form-control" step="0.01" required="true" name=<%="calculator_constants[#{constant.id}][value]" %> id=<%=constant.name %> value=<%=constant.value %>>
                 </td>
               </tr>
             <% end %>
         </tbody>
       </table>
-      <div>
-        <%= link_to 'Cancel', dashboards_path, class: "btn dashboard-btn-danger" %>
-        <%= submit_tag("Save", class: 'btn dashboard-btn-success', id: "submit-button") %>
-      </div>
     </div>
   </div>
 <% end %>

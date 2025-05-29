@@ -1,33 +1,28 @@
 # frozen_string_literal: true
 
 class CalculatorConstantsController < ApplicationController
+  include CollectionUpdatable
+
   def index
     @calculator_constants = CalculatorConstant.all
     @cost_of_living_adjustments = CostOfLivingAdjustment.by_chapter_number
   end
 
   def update
-    updated_fields = []
-    submitted_constants = params['calculator_constants']
-    update_calculator_constant(submitted_constants, updated_fields)
-    unless updated_fields.empty?
+    # iterate over collection and update records if changes present
+    updated_ids = super
+
+    unless updated_ids.empty?
+      # convert ids to associated record names
+      updated_names = updated_ids.map { |id| CalculatorConstant.find(id).name }
       flash[:success] = {
-        updated_fields: updated_fields
+        updated_fields: updated_names
       }
     end
     redirect_to action: :index
   end
 
-  private
-
-  def update_calculator_constant(submitted_constants, updated_fields)
-    constant_fields = CalculatorConstant.where(name: submitted_constants.keys)
-    constant_fields.each do |constant|
-      submitted_value = submitted_constants[constant.name]
-      if submitted_value.to_d != constant.float_value.to_d
-        constant.update(float_value: submitted_value)
-        updated_fields.push(constant.name)
-      end
-    end
+  def apply_colas
+    CalculatorConstant.subject_to_cola.each(&:apply_cola)
   end
 end

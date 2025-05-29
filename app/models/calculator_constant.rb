@@ -22,6 +22,7 @@ class CalculatorConstant < ImportableRecord
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
+  scope :subject_to_cola, -> { where.not(cost_of_living_adjustment_id: nil) }
 
   alias_attribute :value, :float_value
   alias cola cost_of_living_adjustment
@@ -33,6 +34,13 @@ class CalculatorConstant < ImportableRecord
     benefit_type = matched_benefit_types.first
     cola = CostOfLivingAdjustment.find_by(benefit_type:)
     update(cost_of_living_adjustment: cola)
+  end
+
+  def apply_cola
+    return false if cola.nil?
+
+    percent_increase = 1 + (cola.rate / 100)
+    update(float_value: float_value * percent_increase)
   end
 
   private
