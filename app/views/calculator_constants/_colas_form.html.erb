@@ -1,14 +1,30 @@
-<%= form_with(url: cost_of_living_adjustments_path, id: "cost_of_living_adjustments_update") do %>
-  <div class="panel panel-default" data-controller="colas-form">
-    <div class="panel-heading">
+<%= turbo_stream_from "cost_of_living_adjustments" %>
+<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
+
+<%= form_with(url: cost_of_living_adjustments_path,
+              id: "cost_of_living_adjustments_update",
+              data: { controller: "colas-form", action: 'turbo:submit-end->colas-form#toggleForm' }) do %>
+  <div class="panel panel-default">
+    <div class="panel-heading" data-colas-form-target="heading">
       <div>Cost of Living Adjustments</div>
+      <div class="colas-btns">
         <%= button_tag "Edit",
                         type: "button",
-                        class: "btn dashboard-btn-info btn-xs",
-                        data: { action: "click->colas-form#enableEditing", colas_form_target: "editButton" } %>
-        <div data-colas-form-target="saveAndCancelButtons" style="display: none">
-          <%= link_to 'Cancel', calculator_constants_path, class: "btn dashboard-btn-danger" %>
-        </div>
+                        class: "btn cola-edit",
+                        data: { action: "click->colas-form#toggleForm", colas_form_target: "editButton" } %>
+        <%= button_tag type: "submit",
+                       class: "btn cola-save",
+                       disabled: "true",
+                       data: { colas_form_target: "updateButton" } do %>
+            <span class="glyphicon glyphicon-ok"></span>   
+        <% end %>
+        <%= button_tag type: "button",
+                       class: "btn cola-cancel",
+                       disabled: "true",
+                       data: { action: "click->colas-form#cancel", colas_form_target: "updateButton" } do %>
+         <span class="glyphicon glyphicon-remove"></span>   
+        <% end %>
+      </div>
     </div>
     <div class="panel-body">
       <div class="cola-list-div">

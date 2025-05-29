@@ -33,7 +33,7 @@ class CalculatorConstant < ImportableRecord
     return if cola.present? || matched_benefit_types.empty?
 
     benefit_type = matched_benefit_types.first
-    cola = CostOfLivingAdjustment.find_by(benefit_type: benefit_type)
+    cola = CostOfLivingAdjustment.find_by(benefit_type:)
     update(cost_of_living_adjustment: cola)
   end
 

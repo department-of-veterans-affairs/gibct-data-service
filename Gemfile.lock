@@ -515,6 +515,9 @@ GEM
     thread_safe (0.3.6)
     tilt (2.1.0)
     timeout (0.4.3)
+    turbo-rails (2.0.13)
+      actionpack (>= 7.1.0)
+      railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
@@ -618,6 +621,7 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
+  turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
   virtus (~> 2.0.0)

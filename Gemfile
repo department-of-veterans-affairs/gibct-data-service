@@ -47,6 +47,7 @@ gem 'sitemap_generator'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
 gem 'terser'
+gem 'turbo-rails'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'

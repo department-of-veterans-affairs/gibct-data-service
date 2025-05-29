@@ -329,10 +329,49 @@ table.crosswalk-issues thead.sub th {
 
 #cost_of_living_adjustments_update .panel-heading {
   font-size: 2rem;
-  background-color: #f3f3ff;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns {
+  display: flex;
+  gap: 10px;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns button {
+  background: none;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns .cola-edit {
+  color: #337ab7;
+  font-weight: bold;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns .cola-edit:enabled:hover {
+  color: #286090;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns .cola-save span {
+  color: #5cb85c;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns .cola-save:enabled span:hover {
+  color: #47a447;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns .cola-cancel span {
+  color: #d9534f;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns .cola-cancel:enabled span:hover {
+  color: #c9302c;
+}
+
+#cost_of_living_adjustments_update .panel-heading .colas-btns button:disabled,
+#cost_of_living_adjustments_update .panel-heading .colas-btns button:disabled span {
+  color: #333;
+  cursor: auto;
 }
 
 #cost_of_living_adjustments_update .cola-list-div {

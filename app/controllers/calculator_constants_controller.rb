@@ -3,7 +3,7 @@
 class CalculatorConstantsController < ApplicationController
   def index
     @calculator_constants = CalculatorConstant.all
-    @cost_of_living_adjustments = CostOfLivingAdjustment.all
+    @cost_of_living_adjustments = CostOfLivingAdjustment.by_chapter_number
   end
 
   def update
