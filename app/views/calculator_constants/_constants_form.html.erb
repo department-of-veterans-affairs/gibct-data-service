@@ -1,4 +1,6 @@
-<%= form_with(url: calculator_constants_path, id: 'calculator_constants_update') do %>
+<%= form_with(url: calculator_constants_path,
+              id: 'calculator_constants_update',
+              data: { controller: 'constants-form' }) do %>
   <div class="row">
     <div class="col-md-10">
       <h3>Manage Calculator Constants</h3>
@@ -24,7 +26,8 @@
                 <td width="20%"> <%= constant.name %></td>
                 <td><%= constant.description %></td>
                 <td width="auto">
-                  <select <%= "disabled selected" if constant.benefit_type.nil? %> name=<%= "calculator_constants[#{constant.id}][cost_of_living_adjustment_id]" %>>
+                  <select <%= "disabled selected data-constants-form-target=select" if constant.benefit_type.nil? %>
+                      name=<%= "calculator_constants[#{constant.id}][cost_of_living_adjustment_id]" %>>
                     <option value=""><%= constant.benefit_type.nil? ? "" : "none" %></option>
                     <% CostOfLivingAdjustment.all.each do |cola| %>
                       <option value=<%= cola.id %> <%= "selected" if constant.cola == cola %>><%= cola.chapterize %></option>
