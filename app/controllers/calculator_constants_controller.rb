@@ -23,6 +23,10 @@ class CalculatorConstantsController < ApplicationController
   end
 
   def apply_colas
-    CalculatorConstant.subject_to_cola.each(&:apply_cola)
+    updated = CalculatorConstant.subject_to_cola.each(&:apply_cola)
+    flash[:success] = {
+      updated_fields: updated.pluck(:name)
+    }
+    redirect_to action: :index
   end
 end

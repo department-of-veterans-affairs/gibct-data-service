@@ -12,4 +12,8 @@ class CostOfLivingAdjustment < ApplicationRecord
 
   # assumes all benefit types can be converted to integer
   scope :by_chapter_number, -> { sort_by { |cola| cola.benefit_type.to_i } }
+
+  def chapterize
+    "Ch. #{benefit_type}"
+  end
 end

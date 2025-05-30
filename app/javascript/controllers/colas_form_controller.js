@@ -14,12 +14,6 @@ export default class extends Controller {
     });
   }
 
-  toggleForm() {
-    this.#toggle_inputs();
-    this.#toggle_buttons();
-    this.#toggle_heading();
-  }
-
   cancel() {
     // reset inputs to original values
     this.inputTargets.forEach(input => {
@@ -31,13 +25,17 @@ export default class extends Controller {
     this.toggleForm();
   }
 
+  toggleForm() {
+    this.#toggle_inputs();
+    this.#toggle_buttons();
+    this.#toggle_heading();
+  }
+
   // toggle edit button on and save/cancel off, and vice versa
   #toggle_buttons() {
-    const isEditing = this.editButtonTarget.disabled === true;
-
-    this.editButtonTarget.disabled = !isEditing;
+    this.editButtonTarget.disabled = !this.editButtonTarget.disabled;
     this.updateButtonTargets.forEach(button => {
-      button.disabled = isEditing;
+      button.disabled = !button.disabled
     });
   }
 

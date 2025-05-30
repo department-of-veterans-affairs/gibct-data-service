@@ -37,10 +37,11 @@ class CalculatorConstant < ImportableRecord
   end
 
   def apply_cola
-    return false if cola.nil?
+    return if cola.nil?
 
     percent_increase = 1 + (cola.rate / 100)
-    update(float_value: float_value * percent_increase)
+    self.float_value = (float_value * percent_increase).round(2)
+    tap(&:save) # return updated object instead of true
   end
 
   private
