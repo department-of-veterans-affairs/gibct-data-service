@@ -5,10 +5,11 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
 
   <!-- Load legacy Sprockets assets (e.g. jQuery, Bootstrap) -->
-  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true, nonce: '**CSP_NONCE**' %>
+  <!-- TO DO: convert legacy jquery and use hotwire -->
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', nonce: '**CSP_NONCE**' %>
 
   <!-- Load modern ES6 modules via Importmap (e.g. Stimulus controllers) -->
-  <!-- override default 'application' with 'main' to avoid name-collision with legacy app/assets/javascripts/application.js -->
+  <!-- override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js -->
   <%= javascript_importmap_tags 'main' %>
 
   <%= csrf_meta_tags %>

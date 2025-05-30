@@ -10,7 +10,7 @@ class CalculatorConstantsController < ApplicationController
 
   def update
     # iterate over collection and update records if changes present
-    updated_ids = super
+    updated_ids = update_collection
 
     unless updated_ids.empty?
       # convert ids to associated record names

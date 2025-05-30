@@ -25,14 +25,16 @@ $(function() {
   const PATH_PREFIX = getPathPrefix();;
 
   // Open dialog during sequential upload to disable page
-  $("#sequential-upload-dialog").dialog({
-    autoOpen: false,
-    modal: true,
-    width: "auto",
-    resizable: false,
-    open: () => {
-      $(".ui-dialog-titlebar-close").hide(); 
-    }
+  $(function() {
+    $("#sequential-upload-dialog").dialog({
+      autoOpen: false,
+      modal: true,
+      width: "auto",
+      resizable: false,
+      open: () => {
+        $(".ui-dialog-titlebar-close").hide(); 
+      }
+    });
   });
   
   const updateProgress = (completed, total) => {

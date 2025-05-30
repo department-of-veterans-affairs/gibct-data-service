@@ -28,11 +28,19 @@ if ENV['CI'].blank?
   puts 'Deleting old constants'
   CalculatorConstant.delete_all
 
+  puts 'Deleting old cost of living adjustments'
+  CostOfLivingAdjustment.delete_all
+
   puts 'Deleting old crosswalk issues'
   CrosswalkIssue.delete_all
 
   puts 'Deleting old versions'
   Version.delete_all
+
+  puts 'Building new cost of living adjustments'
+  CostOfLivingAdjustment::BENEFIT_TYPES.each do |benefit_type|
+    CostOfLivingAdjustment.create(benefit_type: benefit_type, rate: 0)
+  end
 
   puts 'Loading CSVs. Why not do some calf raises while you wait? ...'
   SeedUtils.seed_tables_with_group('Accreditation', user)

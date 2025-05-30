@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-# Shared update logic for GIDS forms which cover entire collection
+# Shared update logic for GIDS forms which iterate over entire collection
+#  - e.g. Calculator Constants and Cost of Living Adjustments
 module CollectionUpdatable
   extend ActiveSupport::Concern
 
   # Iterates over collection and updates records if changes present
   # Returns array of IDs for updated records
-  def update
+  def update_collection
     updated = []
     collection_params.each do |id, attrs|
       record = klass.find(id)
@@ -24,6 +25,7 @@ module CollectionUpdatable
 
   def collection_params
     permitted = {}
+    # e.g. { '1' => [:benefit_type, :rate] }
     klass.pluck(:id).each { |id| permitted[id.to_s] = updatable_fields }
     @collection_params = params.require(controller_name).permit(permitted)
   end
