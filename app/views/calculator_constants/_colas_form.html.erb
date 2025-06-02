@@ -47,14 +47,22 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12 constants-actions">
-      <%= button_tag "Apply Cost of Living Adjustments",
-                    type: "submit",
-                    formaction: apply_colas_to_calculator_constants_path,
-                    formmethod: :post,
-                    class: "btn btn-primary btn-xs",
-                    data: { colas_form_target: "updateButton" } %>
-    </div>
+
+  <div class="constants-actions">
+    <%= button_tag "Apply Cost of Living Adjustments",
+                  type: "button",
+                  class: "btn btn-primary btn-xs",
+                  data: { action: "click->colas-form#confirm",
+                          colas_form_target: "updateButton",
+                          colas_form_url_value: apply_colas_to_calculator_constants_path } %>
+    <%= button_tag "Generate New Fiscal Year",
+            type: "button",
+            class: "btn btn-warning btn-xs",
+            data: { action: "click->colas-form#confirm",
+                    colas_form_target: "updateButton",
+                    colas_form_url_value: generate_fiscal_year_for_calculator_constants_path } %>
   </div>
+
+
+  <%= render partial: 'modal'%>
 <% end %>

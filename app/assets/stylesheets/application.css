@@ -350,6 +350,11 @@ table.crosswalk-issues thead.sub th {
   gap: 10px;
 }
 
+#cost_of_living_adjustments_update .constants-actions {
+  display: flex;
+  gap: 10px;
+}
+
 #cost_of_living_adjustments_update .panel-heading .colas-btns button {
   background: none;
 }

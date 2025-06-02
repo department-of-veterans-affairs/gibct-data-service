@@ -78,5 +78,3 @@ config/environments/*.local.yml
 
 ~$*.xlsx
 .idea/
-
-node_modules/

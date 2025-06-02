@@ -29,4 +29,14 @@ class CalculatorConstantsController < ApplicationController
     }
     redirect_to action: :index
   end
+
+  def generate_fiscal_year
+    CalculatorConstant.find_each do |constant|
+      constant.update(previous_year: constant.float_value)
+    end
+    flash[:success] = {
+      message: 'New fiscal year generated.'
+    }
+    redirect_to action: :index
+  end
 end

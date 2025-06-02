@@ -1,7 +1,9 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "input", "editButton", "updateButton", "heading" ];
+  static targets = [
+    "input", "editButton", "updateButton", "heading", "dialog", "confirmButton"
+   ];
 
   static BLUE = "rgb(243, 243, 255)";
   static GRAY = "rgb(245, 245, 245)";
@@ -29,6 +31,17 @@ export default class extends Controller {
     this.#toggle_inputs();
     this.#toggle_buttons();
     this.#toggle_heading();
+  }
+
+  // Set form submit action of confirmation modal
+  confirm(event) {
+    const url = event.target.dataset.colasFormUrlValue;
+
+    if (url) {
+      this.confirmButtonTarget.setAttribute("formaction", url);
+    }
+
+    $(this.dialogTarget).modal("show");
   }
 
   // toggle edit button on and save/cancel off, and vice versa

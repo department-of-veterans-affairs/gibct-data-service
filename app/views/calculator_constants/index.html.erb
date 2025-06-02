@@ -3,12 +3,16 @@
     <% if flash[:success].present? %>
       <aside class="alert alert-success">
         <div class="errors">
-          <p>The following calculator constants have been updated: </p>
-          <ul>
-            <% flash[:success][:updated_fields].each do |field| %>
-              <li><%=field %></li>
-            <% end %>
-          </ul>
+          <% if flash[:success][:message].present? %>
+            <p><%= flash[:success][:message] %></p>
+          <% else %>
+            <p>The following calculator constants have been updated: </p>
+            <ul>
+              <% flash[:success][:updated_fields].each do |field| %>
+                <li><%=field %></li>
+              <% end %>
+            </ul>
+          <% end %>
         </div>
       </aside>
     <% end %>
