@@ -1,4 +1,4 @@
-$(function() {
+document.addEventListener("turbo:load", function() {
   $( "[id^=api_fetch_]" ).on( "click", function() {
     this.parentElement.parentElement.innerHTML = (
       '<td colspan="7" class="text-center">' +
@@ -25,17 +25,16 @@ $(function() {
   const PATH_PREFIX = getPathPrefix();;
 
   // Open dialog during sequential upload to disable page
-  $(function() {
-    $("#sequential-upload-dialog").dialog({
-      autoOpen: false,
-      modal: true,
-      width: "auto",
-      resizable: false,
-      open: () => {
-        $(".ui-dialog-titlebar-close").hide(); 
-      }
-    });
+  $("#sequential-upload-dialog").dialog({
+    autoOpen: false,
+    modal: true,
+    width: "auto",
+    resizable: false,
+    open: () => {
+      $(".ui-dialog-titlebar-close").hide(); 
+    }
   });
+
   
   const updateProgress = (completed, total) => {
     const percentage = (completed / total) * 100;

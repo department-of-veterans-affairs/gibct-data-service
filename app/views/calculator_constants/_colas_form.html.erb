@@ -37,7 +37,7 @@
                    required
                    disabled
                    id=<%= "ch#{cola.benefit_type}" %>
-                   name=<%= "cost_of_living_adjustments[#{cola.id}][rate]" %>
+                   name="cost_of_living_adjustments[<%= cola.id %>][rate]"
                    data-colas-form-target="input"
                    value=<%= cola.rate %> />
             <span>%</span>

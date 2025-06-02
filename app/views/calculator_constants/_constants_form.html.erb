@@ -23,11 +23,23 @@
         <tbody>
             <% @calculator_constants.each do |constant| %>
               <tr>
-                <td width="20%"> <%= constant.name %></td>
-                <td><%= constant.description %></td>
+                <td width="20%" data-constants-form-target="textCell">
+                  <p><%= constant.name %></p>
+                  <input type="text"
+                         class="form-control"
+                         style="display: none"
+                         value= <%= constant.name %>
+                         name= "calculator_constants[<%= constant.id %>][name]" />
+                </td>
+                <td data-constants-form-target="textCell">
+                  <p><%= constant.description %></p>
+                  <textarea class="form-control"
+                            style="display: none"
+                            name= "calculator_constants[<%= constant.id %>][description]"><%= constant.description %></textarea>
+                </td> 
                 <td width="auto">
                   <select <%= "disabled selected data-constants-form-target=select" if constant.benefit_type.nil? %>
-                      name=<%= "calculator_constants[#{constant.id}][cost_of_living_adjustment_id]" %>>
+                      name="calculator_constants[<%= constant.id %>][cost_of_living_adjustment_id]">
                     <option value=""><%= constant.benefit_type.nil? ? "" : "none" %></option>
                     <% CostOfLivingAdjustment.all.each do |cola| %>
                       <option value=<%= cola.id %> <%= "selected" if constant.cola == cola %>><%= cola.chapterize %></option>
@@ -36,7 +48,13 @@
                 </td>
                 <td width="auto"><%= constant.previous_year %></td>
                 <td width="auto">
-                  <input type="number" class="form-control" step="0.01" required="true" name=<%="calculator_constants[#{constant.id}][float_value]" %> id=<%=constant.name %> value=<%=constant.value %>>
+                  <input type="number"
+                         class="form-control"
+                         step="0.01"
+                         required
+                         name="calculator_constants[<%= constant.id %>][float_value]"
+                         id=<%= constant.name %>
+                         value=<%= constant.value %> />
                 </td>
               </tr>
             <% end %>
