@@ -8,11 +8,11 @@
       <%= link_to "Cancel",
                   calculator_constants_path,
                   class: "btn dashboard-btn-danger",
-                  data: { action: "click->colas-form#confirm"} %>
+                  data: { action: "click->colas-form#warn"} %>
       <%= submit_tag "Save",
                      class: 'btn dashboard-btn-success',
                      id: "submit-button",
-                     data: { action: "click->colas-form#confirm" } %>
+                     data: { action: "click->colas-form#warn" } %>
       <%= render partial: 'dropdown' %>
     </div>
   </div>
