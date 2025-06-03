@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "form", "textCell", "select" ];
+  static targets = [ "textCell", "select", "dialog", "modalConfirm" ];
 
   connect() {
     // Constant name: enable edit on hover
@@ -42,5 +42,18 @@ export default class extends Controller {
         }
       });
     });
+  }
+
+  confirm(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation()
+
+    const url = event.target.href;
+
+    if (url) {
+      this.modalConfirmTarget.setAttribute("formaction", url);
+    }
+
+    $(this.dialogTarget).modal("show");
   }
 }

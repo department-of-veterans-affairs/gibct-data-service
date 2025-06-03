@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     post :update, on: :collection
     post :apply_colas, on: :collection, as: :apply_colas_to
     post :generate_fiscal_year, on: :collection, as: :generate_fiscal_year_for
+    post :export, on: :collection, defaults: { format: 'csv' }
   end
 
   resources :cost_of_living_adjustments, only: [] do

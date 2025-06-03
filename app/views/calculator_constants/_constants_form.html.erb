@@ -1,75 +1,23 @@
-<%= form_with(url: calculator_constants_path,
-              id: 'calculator_constants_update',
-              data: { controller: 'constants-form', constants_form_target: "form" }) do %>
+<%= form_with(url: calculator_constants_path, id: 'calculator_constants_update') do %>
   <div class="row">
     <div class="col-md-10">
       <h3>Manage Calculator Constants</h3>
       <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
     </div>
     <div class="col-md-2 constants-btns">
-      <%= link_to 'Cancel', calculator_constants_path, class: "btn dashboard-btn-danger" %>
-      <%= submit_tag("Save", class: 'btn dashboard-btn-success', id: "submit-button") %>
+      <%= link_to "Cancel",
+                  calculator_constants_path,
+                  class: "btn dashboard-btn-danger",
+                  data: { action: "click->colas-form#confirm"} %>
+      <%= submit_tag "Save",
+                     class: 'btn dashboard-btn-success',
+                     id: "submit-button",
+                     data: { action: "click->colas-form#confirm" } %>
+      <%= render partial: 'dropdown' %>
     </div>
   </div>
   <div>
-    <table class="table table-hover table-condensed table-bordered table-responsive calculator-constants-table">
-        <thead class="sub">
-          <tr>
-            <th rowspan="2">Name</th>
-            <th rowspan="2">Description</th>
-            <th rowspan="2">Benefit</th>
-            <th colspan="2" style="text-align: center">Value <span style="font-weight: normal";>(by year)</span></th>
-          </tr>
-          <tr>
-            <th>Previous</th>
-            <th>Current</th>
-          </tr>
-
-        </thead>
-        <tbody>
-            <% @calculator_constants.each do |constant| %>
-              <tr>
-                <td width="20%" data-constants-form-target="textCell">
-                  <p><%= constant.name %></p>
-                  <input type="text"
-                         class="form-control"
-                         style="display: none"
-                         value=<%= constant.name %>
-                         name="calculator_constants[<%= constant.id %>][name]"
-                         data-action="input->constants-form#trackChange" />
-                </td>
-                <td data-constants-form-target="textCell">
-                  <p class="constant-description"><%= constant.description %></p>
-                  <textarea class="form-control"
-                            style="display: none"
-                            name="calculator_constants[<%= constant.id %>][description]"
-                            data-action="input->constants-form#trackChange"><%= constant.description %></textarea>
-                </td> 
-                <td width="auto">
-                  <select <%= "disabled selected data-constants-form-target=select" if constant.benefit_type.nil? %>
-                      name="calculator_constants[<%= constant.id %>][cost_of_living_adjustment_id]"
-                      data-action="change->constants-form#trackChange">
-                    <option value=""><%= constant.benefit_type.nil? ? "" : "none" %></option>
-                    <% @cost_of_living_adjustments.each do |cola| %>
-                      <option value=<%= cola.id %> <%= "selected" if constant.cola == cola %>><%= cola.chapterize %></option>
-                    <% end %>
-                  </select>
-                </td>
-                <td width="auto"><%= constant.previous_year %></td>
-                <td width="15%">
-                  <input type="number"
-                         class="form-control"
-                         step="0.01"
-                         required
-                         name="calculator_constants[<%= constant.id %>][float_value]"
-                         id=<%= constant.name %>
-                         value=<%= constant.value %>
-                         data-action="input->constants-form#trackChange" />
-                </td>
-              </tr>
-            <% end %>
-        </tbody>
-      </table>
-    </div>
+    <%= render partial: 'table' %>
   </div>
+  <%= render partial: "modal" %>
 <% end %>

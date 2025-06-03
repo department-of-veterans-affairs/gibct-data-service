@@ -1,4 +1,4 @@
-<div data-colas-form-target="dialog" class="modal fade" role="dialog">
+<div data-constants-form-target="dialog" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -6,16 +6,15 @@
         <h4 class="modal-title">Are You Sure?</h4>
       </div>
       <div class="modal-body">
-        <p>Any unsaved changes to calculator constants will be lost.</p>
+        Any unsaved changes to Calculator Constants will be lost.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <%= button_tag "Confirm",
                        formmethod: :post,
                        class: "btn btn-primary",
-                       data: { colas_form_target: "confirmButton" } %>
+                       data: { constants_form_target: "modalConfirm" } %>
       </div>
     </div>
-
   </div>
 </div>

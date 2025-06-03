@@ -5,8 +5,9 @@ class CalculatorConstant < ImportableRecord
 
   CSV_CONVERTER_INFO = {
     'name' => { column: :name, converter: Converters::UpcaseConverter },
-    'value' => { column: :float_value, converter: Converters::NumberConverter },
-    'description' => { column: :description, converter: Converters::BaseConverter }
+    'description' => { column: :description, converter: Converters::BaseConverter },
+    'previous_year' => { column: :previous_year, converter: Converters::NumberConverter },
+    'current_value' => { column: :float_value, converter: Converters::NumberConverter }
   }.freeze
 
   default_scope { order('name') }

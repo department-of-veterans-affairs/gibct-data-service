@@ -345,16 +345,6 @@ table.crosswalk-issues thead.sub th {
   justify-content: space-between;
 }
 
-#cost_of_living_adjustments_update .panel-heading .colas-btns {
-  display: flex;
-  gap: 10px;
-}
-
-#cost_of_living_adjustments_update .constants-actions {
-  display: flex;
-  gap: 10px;
-}
-
 #cost_of_living_adjustments_update .panel-heading .colas-btns button {
   background: none;
 }

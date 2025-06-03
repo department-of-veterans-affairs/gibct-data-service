@@ -3,7 +3,8 @@
 
 <%= form_with(url: cost_of_living_adjustments_path,
               id: "cost_of_living_adjustments_update",
-              data: { controller: "colas-form", action: "turbo:submit-end->colas-form#toggleForm" }) do %>
+              data: { action: "turbo:submit-end->colas-form#toggleForm",
+                      colas_form_target: "form" }) do %>
   <div class="panel panel-default">
     <div class="panel-heading" data-colas-form-target="heading">
       <div>Cost of Living Adjustments</div>
@@ -13,16 +14,16 @@
                         class: "btn cola-edit",
                         data: { action: "click->colas-form#toggleForm", colas_form_target: "editButton" } %>
         <%= button_tag type: "submit",
-                       class: "btn cola-save",
-                       disabled: "true",
-                       data: { colas_form_target: "updateButton" } do %>
+                      class: "btn cola-save",
+                      disabled: "true",
+                      data: { colas_form_target: "updateButton" } do %>
             <span class="glyphicon glyphicon-ok"></span>   
         <% end %>
         <%= button_tag type: "button",
-                       class: "btn cola-cancel",
-                       disabled: "true",
-                       data: { action: "click->colas-form#cancel", colas_form_target: "updateButton" } do %>
-         <span class="glyphicon glyphicon-remove"></span>   
+                      class: "btn cola-cancel",
+                      disabled: "true",
+                      data: { action: "click->colas-form#cancel", colas_form_target: "updateButton" } do %>
+        <span class="glyphicon glyphicon-remove"></span>   
         <% end %>
       </div>
     </div>
@@ -32,37 +33,18 @@
           <div class="cola-div">
             <%= label_tag "ch#{cola.benefit_type}", "Ch. #{cola.benefit_type} "%></label>
             <input type="number"
-                   min="0.00"
-                   step="0.01"
-                   required
-                   disabled
-                   id=<%= "ch#{cola.benefit_type}" %>
-                   name="cost_of_living_adjustments[<%= cola.id %>][rate]"
-                   data-colas-form-target="input"
-                   value=<%= cola.rate %> />
+                  min="0.00"
+                  step="0.01"
+                  required
+                  disabled
+                  id=<%= "ch#{cola.benefit_type}" %>
+                  name="cost_of_living_adjustments[<%= cola.id %>][rate]"
+                  data-colas-form-target="input"
+                  value=<%= cola.rate %> />
             <span>%</span>
           </div>
         <% end %>
       </div>
     </div>
   </div>
-
-
-  <div class="constants-actions">
-    <%= button_tag "Apply Cost of Living Adjustments",
-                  type: "button",
-                  class: "btn btn-primary btn-xs",
-                  data: { action: "click->colas-form#confirm",
-                          colas_form_target: "updateButton",
-                          colas_form_url_value: apply_colas_to_calculator_constants_path } %>
-    <%= button_tag "Generate New Fiscal Year",
-            type: "button",
-            class: "btn btn-warning btn-xs",
-            data: { action: "click->colas-form#confirm",
-                    colas_form_target: "updateButton",
-                    colas_form_url_value: generate_fiscal_year_for_calculator_constants_path } %>
-  </div>
-
-
-  <%= render partial: 'modal'%>
 <% end %>

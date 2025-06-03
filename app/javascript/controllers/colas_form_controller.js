@@ -1,9 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [
-    "input", "editButton", "updateButton", "heading", "dialog", "confirmButton"
-   ];
+  static targets = [ "input", "editButton", "updateButton", "heading", "warning" ];
 
   static BLUE = "rgb(243, 243, 255)";
   static GRAY = "rgb(245, 245, 245)";
@@ -11,6 +9,7 @@ export default class extends Controller {
   connect() {
     // save original input values so #cancel can revert changes without calling server
     this.originalInputs = {};
+    this.isEditing = false;
     this.inputTargets.forEach(input => {
       this.originalInputs[input.name] = input.value;
     });
@@ -28,20 +27,20 @@ export default class extends Controller {
   }
 
   toggleForm() {
+    this.isEditing = !this.isEditing
+    this.warningTarget.hidden = true
     this.#toggle_inputs();
     this.#toggle_buttons();
     this.#toggle_heading();
   }
 
-  // Set form submit action of confirmation modal
-  confirm(event) {
-    const url = event.target.dataset.colasFormUrlValue;
-
-    if (url) {
-      this.confirmButtonTarget.setAttribute("formaction", url);
+  // Prevent CRUD actions to Calculator Constants if COLAs form still in edit mode
+  warn(event) {
+    if (this.isEditing) {
+      event.preventDefault();
+      event.stopImmediatePropagation()
+      this.warningTarget.removeAttribute("hidden");
     }
-
-    $(this.dialogTarget).modal("show");
   }
 
   // toggle edit button on and save/cancel off, and vice versa

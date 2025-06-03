@@ -1,0 +1,23 @@
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle"
+          type="button"
+          id="about-us"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false">
+    <i class="fa fa-gear"></i>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="about-us">
+    <li><%= link_to "Apply Cost of Living Adjustments",
+                    apply_colas_to_calculator_constants_path,
+                    method: :post,
+                    data: { action: "click->colas-form#warn click->constants-form#confirm" }%></li>
+    <li><%= link_to "Generate New Fiscal Year",
+                    generate_fiscal_year_for_calculator_constants_path,
+                    method: :post,
+                    data: { action: "click->colas-form#warn click->constants-form#confirm" }%></li>
+    <li><%= link_to "Export CSV",
+                    export_calculator_constants_path,
+                    method: :post %></li>
+  </ul>
+</div>

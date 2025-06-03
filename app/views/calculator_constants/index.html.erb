@@ -1,22 +1,30 @@
-<div class="row row-space-6">
+<div class="row row-space-6" data-controller="colas-form constants-form">
   <div class="col-md-8">
     <% if flash[:success].present? %>
       <aside class="alert alert-success">
-        <div class="errors">
-          <% if flash[:success][:message].present? %>
-            <p><%= flash[:success][:message] %></p>
-          <% else %>
-            <p>The following calculator constants have been updated: </p>
-            <ul>
-              <% flash[:success][:updated_fields].each do |field| %>
-                <li><%=field %></li>
-              <% end %>
-            </ul>
-          <% end %>
-        </div>
+        <% if flash[:success][:message].present? %>
+          <p><%= flash[:success][:message] %></p>
+        <% else %>
+          <div class="errors">
+            <% if flash[:success][:message].present? %>
+              <p><%= flash[:success][:message] %></p>
+            <% else %>
+              <p>The following calculator constants have been updated: </p>
+              <ul>
+                <% flash[:success][:updated_fields].each do |field| %>
+                  <li><%=field %></li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        <% end%>
       </aside>
     <% end %>
-    <%= render "colas_form" %>
-    <%= render "constants_form" %>
+    <aside class="alert alert-warning" data-colas-form-target="warning" hidden>
+      Please save or discard changes to Cost of Living Adjustments before updating Calculator Constants.
+    </aside>
+    <%= render partial: "colas_form" %>
+    <%= render partial: "constants_form" %>
   </div>
 </div>
+

@@ -39,4 +39,19 @@ class CalculatorConstantsController < ApplicationController
     }
     redirect_to action: :index
   end
+
+  def export
+    respond_to do |format|
+      format.csv { send_data CalculatorConstant.export, type: 'text/csv', filename: 'CalculatorConstant.csv' }
+    end
+  rescue ActionController::UnknownFormat => e
+    log_error(e)
+  end
+
+  private
+
+  def log_error(err)
+    Rails.logger.error(err.message + err&.backtrace.to_s)
+    redirect_to action: :index
+  end
 end
