@@ -14,7 +14,7 @@ class CalculatorConstantsController < ApplicationController
 
     unless updated_ids.empty?
       # convert ids to associated record names
-      updated_names = updated_ids.map { |id| CalculatorConstant.find(id).name }
+      updated_names = CalculatorConstant.where(id: updated_ids).pluck(:name)
       flash[:success] = {
         updated_fields: updated_names
       }
