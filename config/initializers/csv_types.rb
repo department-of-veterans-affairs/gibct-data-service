@@ -21,7 +21,7 @@ Rails.application.config.to_prepare do
     { klass: Sva, required?: true },
     { klass: Vsoc, required?: true, has_api?: true, no_api_key?: true },
     { klass: Weam, required?: true },
-    { klass: CalculatorConstant, required?: false },
+    { klass: CalculatorConstant, required?: false, inactive?: true },
     { klass: IpedsCipCode, required?: true },
     { klass: StemCipCode, required?: true },
     { klass: YellowRibbonProgramSource, required?: true },

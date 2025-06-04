@@ -58,11 +58,10 @@ class Upload < ApplicationRecord
 
   def self.last_uploads(for_display = false)
     csv_types = if for_display
-                  UPLOAD_TYPES_ALL_NAMES
+                  UPLOAD_TYPES_ACTIVE_NAMES
                 else
-                  [*UPLOAD_TYPES_ALL_NAMES]
+                  [*UPLOAD_TYPES_ACTIVE_NAMES]
                 end
-
     Upload.select('DISTINCT ON("csv_type") *')
           .where(ok: true, csv_type: csv_types)
           .order(csv_type: :asc, updated_at: :desc)
@@ -73,7 +72,7 @@ class Upload < ApplicationRecord
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    UPLOAD_TYPES_ALL_NAMES.each do |klass_name|
+    UPLOAD_TYPES_ACTIVE_NAMES.each do |klass_name|
       next if upload_csv_types.include?(klass_name)
 
       missing_upload = Upload.new

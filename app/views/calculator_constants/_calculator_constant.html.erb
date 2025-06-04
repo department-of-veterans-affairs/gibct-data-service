@@ -1,0 +1,36 @@
+<tr>
+  <td width="20%" data-constants-form-target="textCell">
+    <p><%= constant.name %></p>
+    <input type="text"
+            class="form-control"
+            style="display: none"
+            value=<%= constant.name %>
+            name="calculator_constants[<%= constant.id %>][name]" />
+  </td>
+  <td data-constants-form-target="textCell">
+    <p class="constant-description"><%= constant.description %></p>
+    <textarea class="form-control"
+              style="display: none"
+              name="calculator_constants[<%= constant.id %>][description]"><%= constant.description %></textarea>
+  </td> 
+  <td width="auto">
+    <select <%= "disabled selected data-constants-form-target=select" if constant.benefit_type.nil? %>
+        name="calculator_constants[<%= constant.id %>][cost_of_living_adjustment_id]"
+        data-action="change->constants-form#trackChange">
+      <option value=""></option>
+      <% @cost_of_living_adjustments.each do |cola| %>
+        <option value=<%= cola.id %> <%= "selected" if constant.cola == cola %>><%= cola.chapterize %></option>
+      <% end %>
+    </select>
+  </td>
+  <td width="auto"><%= display_value_for(constant, :previous_year) %></td>
+  <td width="auto">
+    <input type="number"
+            class="form-control"
+            step=<%= step_value_for(constant) %>
+            required
+            name="calculator_constants[<%= constant.id %>][float_value]"
+            id=<%= constant.name %>
+            value=<%= display_value_for(constant, :float_value) %> />
+  </td>
+</tr>
