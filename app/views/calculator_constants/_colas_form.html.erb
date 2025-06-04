@@ -1,6 +1,3 @@
-<%= turbo_stream_from "cost_of_living_adjustments" %>
-<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-
 <%= form_with(url: cost_of_living_adjustments_path,
               id: "cost_of_living_adjustments_update",
               data: { action: "turbo:submit-end->colas-form#toggleForm",
@@ -28,25 +25,13 @@
       </div>
     </div>
     <div class="panel-body">
-      <aside class="alert alert-warning" data-colas-form-target="warning" hidden>
-        Please save or discard changes to Cost of Living Adjustments before updating Calculator Constants.
-      </aside>
-      <div class="cola-list-div">
-        <% @cost_of_living_adjustments.each do |cola| %>
-          <div class="cola-div">
-            <%= label_tag "ch#{cola.benefit_type}", "Ch. #{cola.benefit_type} "%></label>
-            <input type="number"
-                  min="0.00"
-                  step="0.01"
-                  required
-                  disabled
-                  id=<%= "ch#{cola.benefit_type}" %>
-                  name="cost_of_living_adjustments[<%= cola.id %>][rate]"
-                  data-colas-form-target="input"
-                  value=<%= cola.rate %> />
-            <span>%</span>
-          </div>
-        <% end %>
+      <div id="colas-alert">
+        <aside class="alert alert-warning" data-colas-form-target="warning" hidden>
+          Please save or discard changes to Cost of Living Adjustments before updating Calculator Constants.
+        </aside>
+      </div>
+      <div id="colas-list">
+        <%= render partial: "cost_of_living_adjustment", collection: @cost_of_living_adjustments, as: :cola %>
       </div>
     </div>
   </div>

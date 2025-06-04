@@ -380,7 +380,7 @@ table.crosswalk-issues thead.sub th {
   cursor: auto;
 }
 
-#cost_of_living_adjustments_update .cola-list-div {
+#cost_of_living_adjustments_update #colas-list {
   display: flex;
   flex-wrap: wrap;
   row-gap: 10px;

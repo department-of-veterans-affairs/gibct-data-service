@@ -1,0 +1,7 @@
+<turbo-stream target="colas-list" action="update">
+  <template>
+    <%= render partial: "calculator_constants/cost_of_living_adjustment",
+               collection: @cost_of_living_adjustments,
+               as: :cola %>
+  </template>
+</turbo-stream>

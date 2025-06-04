@@ -9,19 +9,18 @@ class CalculatorConstantsController < ApplicationController
   end
 
   def update
-    # iterate over collection and update records if changes present
-    updated_ids = update_collection
+    # Iterate over collection and update records if changes present
+    updated = update_collection(&:name)
 
-    unless updated_ids.empty?
-      # convert ids to associated record names
-      updated_names = CalculatorConstant.where(id: updated_ids).pluck(:name)
+    unless updated.empty?
       flash[:success] = {
-        updated_fields: updated_names
+        updated_fields: updated
       }
     end
     redirect_to action: :index
   end
 
+  # Apply cost of living adjustments to associated constants
   def apply_colas
     updated = CalculatorConstant.subject_to_cola.each(&:apply_cola)
     flash[:success] = {
@@ -30,6 +29,7 @@ class CalculatorConstantsController < ApplicationController
     redirect_to action: :index
   end
 
+  # Copy current year (:float_value) to previous year's value (:previous_year)
   def generate_fiscal_year
     CalculatorConstant.find_each do |constant|
       constant.update(previous_year: constant.float_value)

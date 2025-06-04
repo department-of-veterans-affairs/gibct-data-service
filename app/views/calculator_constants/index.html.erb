@@ -12,7 +12,7 @@
               <p>The following calculator constants have been updated: </p>
               <ul>
                 <% flash[:success][:updated_fields].each do |field| %>
-                  <li><%=field %></li>
+                  <li><%= field %></li>
                 <% end %>
               </ul>
             <% end %>

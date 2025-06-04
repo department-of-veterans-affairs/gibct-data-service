@@ -6,17 +6,18 @@ module CollectionUpdatable
   extend ActiveSupport::Concern
 
   # Iterates over collection and updates records if changes present
+  # Accepts optional block to transform output (e.g. record.name or record.id)
   # Returns array of IDs for updated records
   def update_collection
     updated = []
     collection_params.each do |id, attrs|
       record = klass.find(id)
-      # Only update records for which changes are present
       record.assign_attributes(attrs)
-      if record.changed?
-        record.save
-        updated.push(id)
-      end
+      # Only update records for which changes are present
+      next unless record.changed?
+
+      record.save
+      updated << (block_given? ? yield(record) : record)
     end
     updated
   end
