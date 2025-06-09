@@ -86,7 +86,7 @@ group :development, :test do
 
   gem 'capybara', '3.40.0'
   gem 'database_cleaner'
-  gem 'faker', '~> 3.3'
+  gem 'faker', '~> 3.5'
   gem 'parallel_tests'
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test
