@@ -3,45 +3,33 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = [ "textCell", "select", "dialog", "modalBody", "modalConfirm" ];
 
-  connect() {
-    // Constant name: enable edit on hover
-    this.textCellTargets.forEach(cell => {
-      const [p, input] = cell.children;
+  // Convert to input field on click
+  enableEditing(event) {
+    const [p, input] = event.currentTarget.children;
+    p.style.display = "none";
+    input.style.display = "block";
+    input.focus();
+  }
 
-      // convert to input field on click
-      cell.addEventListener("click", () => {
-        p.style.display = "none";
-        input.style.display = "block";
-        input.focus();
-      });
+  // Convert back to static text on unfocus if unchanged
+  disableEditing(event) {
+    const [p, input] = event.currentTarget.children;
+    const unchanged = input.value === p.textContent;
+    if (unchanged) {
+      p.textContent = input.value;
+      p.style.display = "block";
+      input.style.display = "none";
+    }
+  }
 
-      // convert back to static text on unfocus if unchanged
-      cell.addEventListener("focusout", () => {
-        const unchanged = input.value === p.textContent;
-        if (unchanged) {
-          p.textContent = input.value;
-          p.style.display = "block";
-          input.style.display = "none";
-        }
-      });
+  enableSelect(event) {
+    event.currentTarget.disabled = false;
+  }
 
-    });
-
-    // COLA select field: enable edit on hover
-    this.selectTargets.forEach(select => {
-      select.addEventListener("mouseenter", () => {
-        select.disabled = false;
-      });
-
-      select.addEventListener("mouseleave", () => {
-        if (select.value) {
-          select.options[0].text = "none";
-        } else {
-          select.options[0].text = "";
-          select.disabled = true;
-        }
-      });
-    });
+  disableSelect(event) {
+    if (!event.currentTarget.value) {
+      event.currentTarget.disabled = true;
+    }
   }
 
   confirm(event) {

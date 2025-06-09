@@ -7,16 +7,17 @@ export default class extends Controller {
   static GRAY = "rgb(245, 245, 245)";
 
   connect() {
-    // save original input values so #cancel can revert changes without calling server
-    this.originalInputs = {};
+    this.#reset();
     this.isEditing = false;
+    // Save original input values so #cancel can revert changes without calling server
+    this.originalInputs = {};
     this.inputTargets.forEach(input => {
       this.originalInputs[input.name] = input.value;
     });
   }
 
   cancel() {
-    // reset inputs to original values
+    // Reset inputs to original values
     this.inputTargets.forEach(input => {
       if (input.name in this.originalInputs) {
         input.value = this.originalInputs[input.name];
@@ -25,10 +26,12 @@ export default class extends Controller {
 
     this.toggleForm();
   }
-
+  
   toggleForm() {
     this.isEditing = !this.isEditing
-    this.warningTarget.hidden = true
+    if (this.hasWarningTarget) {
+      this.warningTarget.hidden = true
+    }
     this.#toggle_inputs();
     this.#toggle_buttons();
     this.#toggle_heading();
@@ -43,7 +46,13 @@ export default class extends Controller {
     }
   }
 
-  // toggle edit button on and save/cancel off, and vice versa
+  #reset() {
+    if (this.editButtonTarget.disabled === true) {
+      this.toggleForm();
+    }
+  }
+
+  // Toggle edit button on and save/cancel off, and vice versa
   #toggle_buttons() {
     this.editButtonTarget.disabled = !this.editButtonTarget.disabled;
     this.updateButtonTargets.forEach(button => {
@@ -51,7 +60,7 @@ export default class extends Controller {
     });
   }
 
-  // toggle input fields enabled/disabled
+  // Roggle input fields enabled/disabled
   #toggle_inputs() {
     this.inputTargets.forEach(input => {
       input.disabled = !input.disabled;

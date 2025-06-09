@@ -1,22 +1,29 @@
 <tr>
-  <td width="20%" data-constants-form-target="textCell">
+  <td width="20%"
+      data-constants-form-target="textCell"
+      data-action="click->constants-form#enableEditing focusout->constants-form#disableEditing">
     <p><%= constant.name %></p>
     <input type="text"
-            class="form-control"
-            style="display: none"
-            value=<%= constant.name %>
-            name="calculator_constants[<%= constant.id %>][name]" />
+           class="form-control"
+           style="display: none"
+           value=<%= constant.name %>
+           name="calculator_constants[<%= constant.id %>][name]" />
   </td>
-  <td data-constants-form-target="textCell">
+  <td data-constants-form-target="textCell"
+      data-action="click->constants-form#enableEditing focusout->constants-form#disableEditing">
     <p class="constant-description"><%= constant.description %></p>
     <textarea class="form-control"
               style="display: none"
               name="calculator_constants[<%= constant.id %>][description]"><%= constant.description %></textarea>
   </td> 
   <td width="auto">
-    <select <%= "disabled selected data-constants-form-target=select" if constant.benefit_type.nil? %>
-        name="calculator_constants[<%= constant.id %>][cost_of_living_adjustment_id]"
-        data-action="change->constants-form#trackChange">
+    <select name="calculator_constants[<%= constant.id %>][cost_of_living_adjustment_id]"
+          <% if constant.benefit_type.nil? %>
+            disabled
+            selected
+            data-constants-form-target="select"
+            data-action="mouseenter->constants-form#enableSelect mouseout->constants-form#disableSelect"
+          <% end %>>
       <option value=""></option>
       <% @cost_of_living_adjustments.each do |cola| %>
         <option value=<%= cola.id %> <%= "selected" if constant.cola == cola %>><%= cola.chapterize %></option>

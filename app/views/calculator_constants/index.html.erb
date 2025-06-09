@@ -1,7 +1,9 @@
-<div class="row row-space-6" data-controller="colas-form constants-form">
+<div class="row row-space-6"
+     data-controller="colas-form constants-form"
+     data-action="turbo:load->colas-form#reset">
   <div class="col-md-8">
     <% if flash[:success].present? %>
-      <aside class="alert alert-success">
+      <aside class="alert alert-success" data-turbo-temporary="true">
         <% if flash[:success][:message].present? %>
           <p><%= flash[:success][:message] %></p>
         <% else %>
