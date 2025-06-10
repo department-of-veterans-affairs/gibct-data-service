@@ -64,16 +64,17 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
+      build_public_export(version.id)
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
-      unless initial_buildout?
-        update_longitude_and_latitude(version.id)
-        update_ungeocodable(version.id)
-        geocode_institutions(version)
-      end
-      geocode_using_csv_file if initial_buildout?
+      # unless initial_buildout?
+      #   update_longitude_and_latitude(version.id)
+      #   update_ungeocodable(version.id)
+      #   geocode_institutions(version)
+      # end
+      # geocode_using_csv_file if initial_buildout?
 
       build_messages.filter { |_k, v| v.present? }
     end
@@ -1272,6 +1273,12 @@ module InstitutionBuilder
       SQL
       sql = Institution.send(:sanitize_sql, [str])
       Institution.connection.execute(sql)
+    end
+
+    def self.build_public_export(version_id)
+      log_info_status 'Building Public Export file record'
+      progress = -> (message) { log_info_status(message) }
+      VersionPublicExport.build(version_id, progress_callback: progress)
     end
 
     def self.log_error_and_delete_version(version, notice)
