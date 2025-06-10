@@ -22,10 +22,10 @@ class VersionPublicExport < ApplicationRecord
     total_count = Institution.approved_institutions(version).count
     i = 0
     Institution.approved_institutions(version).limit(10).find_each do |institution|
-      progress_callback.call("VersionPublicExport: processed #{i}/#{total_count}") if progress_callback && i % 100 == 0
+      progress_callback.call("VersionPublicExport: processed #{i}/#{total_count}") if progress_callback && (i % 100).zero?
       begin
         writer << InstitutionProfileSerializer.new(institution).to_json << "\n"
-      rescue
+      rescue StandardError
         nil
       end
       i += 1

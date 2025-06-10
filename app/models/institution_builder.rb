@@ -1277,7 +1277,7 @@ module InstitutionBuilder
 
     def self.build_public_export(version_id)
       log_info_status 'Building Public Export file record'
-      progress = -> (message) { log_info_status(message) }
+      progress = ->(message) { log_info_status(message) }
       VersionPublicExport.build(version_id, progress_callback: progress)
     end
 

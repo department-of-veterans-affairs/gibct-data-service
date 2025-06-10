@@ -53,6 +53,8 @@ Rails.application.routes.draw do
     get 'download' => 'storages#download', on: :member, defaults: { format: 'csv' }
   end
 
+  resources :version_public_exports, only: [:show], path: :public_exports
+
   namespace :v0, defaults: { format: 'json' } do
     get '/calculator/constants' => 'calculator_constants#index'
 
