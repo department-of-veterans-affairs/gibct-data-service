@@ -6,4 +6,8 @@ class Converters::OpeConverter < Converters::BaseConverter
     value = super(value.to_s)
     value.blank? ? nil : value.rjust(8, '0')
   end
+
+  def self.deconvert(value)
+    "\"#{value}\""
+  end
 end
