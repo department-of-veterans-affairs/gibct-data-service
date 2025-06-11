@@ -12,7 +12,7 @@ RSpec.describe 'VersionPublicExports', type: :request do
 
     context 'when getting the latest export' do
       it 'returns the correct file' do
-        get version_public_export_path(id: 'latest')
+        get v1_version_public_export_path(id: 'latest')
         expect(response.media_type).to eq('application/x-gzip')
         gz = Zlib::GzipReader.new(StringIO.new(response.body.to_s))
         expect(gz.read).to eq("hello\n")
@@ -21,9 +21,8 @@ RSpec.describe 'VersionPublicExports', type: :request do
 
     context 'with a missing export' do
       it 'returns a 404' do
-        expect do
-          get version_public_export_path(id: '12345')
-        end.to raise_error(ActionController::RoutingError)
+        get v1_version_public_export_path(id: '12345')
+        expect(response.status).to eq(404)
       end
     end
   end
