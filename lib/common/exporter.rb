@@ -130,14 +130,19 @@ module Common
     def format(key, value)
       return value unless value.present? && requires_deconversion?(key)
 
-      converter = converter_info[key.to_s][:converter]
+      converter = export_settings[key.to_s][:converter]
       converter.deconvert(value)
     rescue NoMethodError
       raise NoMethodError, "#{converter.class.demodulize} must implement deconvert"
     end
 
-    def converter_info
-      klass.const_get(:CSV_CONVERTER_INFO2) || klass.const_get(:CSV_CONVERTER_INFO)
+    # Necessary to distinguish in case of InstitutionsArchive
+    def export_settings
+      if klass.const_defined?(:CSV_CONVERTER_INFO2)
+        klass.const_get(:CSV_CONVERTER_INFO2)
+      else
+        klass.const_get(:CSV_CONVERTER_INFO)
+      end
     end
     
     def requires_deconversion?(key)

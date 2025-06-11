@@ -13,4 +13,10 @@ RSpec.describe Converters::OpeConverter do
     expect(described_class.convert(nil)).to be_nil
     expect(described_class.convert('   ')).to be_nil
   end
+
+  describe '.deconvert' do
+    it 'wraps value in double quotes' do
+      expect(described_class.deconvert('12345')).to eq("\"12345\"")
+    end
+  end
 end
