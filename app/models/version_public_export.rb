@@ -21,7 +21,7 @@ class VersionPublicExport < ApplicationRecord
   def self.write_compressed_institution_data(version, writer, progress_callback: nil)
     total_count = Institution.approved_institutions(version).count
     i = 0
-    Institution.approved_institutions(version).limit(10).find_each do |institution|
+    Institution.approved_institutions(version).find_each do |institution|
       progress_callback.call("VersionPublicExport: processed #{i}/#{total_count}") if progress_callback && (i % 100).zero?
       begin
         writer << InstitutionProfileSerializer.new(institution).to_json << "\n"
