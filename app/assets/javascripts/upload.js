@@ -1,4 +1,4 @@
-$(function() {
+document.addEventListener("turbo:load", function() {
   $( "[id^=api_fetch_]" ).on( "click", function() {
     this.parentElement.parentElement.innerHTML = (
       '<td colspan="7" class="text-center">' +
@@ -34,6 +34,7 @@ $(function() {
       $(".ui-dialog-titlebar-close").hide(); 
     }
   });
+
   
   const updateProgress = (completed, total) => {
     const percentage = (completed / total) * 100;
@@ -111,7 +112,6 @@ $(function() {
 
           // Try each upload five times
           let response;
-          let lastError;
           let attempts = MAX_RETRIES
           while(!response?.ok && attempts > 0) {
             try {
@@ -122,22 +122,14 @@ $(function() {
                 body: formData
               });
             } catch(error) {
-              lastError = error;
-              console.error("Fetch error:", error);
-              await sleep();
+              console.error(error);
+              sleep();
             }
           }
 
           // Throw error if all retries fail
-          if (!response || !response.ok || !response.headers.get("Content-Type")?.includes("application/json")) {
-            const responseBody = response ? await response.text() : "no response";
-            console.error("Upload failed. Details:");
-            console.error("Status:", response?.status || "no status");
-            console.error("Response body:", responseBody);
-            if (lastError) {
-              console.error("Last caught error:", lastError);
-            }
-            throw new Error("Upload failed or response was not JSON");
+          if (!response.ok) {
+            throw new Error(`Upload failed with status ${response.status}`);
           }
           const data = await response.json();
           uploadId = data.upload.id;
