@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_12_185446) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -104,7 +104,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
+    t.float "previous_year"
+    t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
+    t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"
   end
 
   create_table "caution_flags", force: :cascade do |t|
@@ -1507,6 +1510,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
   end
 
+  create_table "rate_adjustments", force: :cascade do |t|
+    t.integer "benefit_type", null: false
+    t.decimal "rate", precision: 5, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["benefit_type"], name: "index_rate_adjustments_on_benefit_type", unique: true
+  end
+
   create_table "school_certifying_officials", id: :serial, force: :cascade do |t|
     t.string "facility_code"
     t.string "institution_name"
@@ -2109,6 +2120,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
   end
 
   add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
+  add_foreign_key "calculator_constants", "rate_adjustments", validate: false
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"
