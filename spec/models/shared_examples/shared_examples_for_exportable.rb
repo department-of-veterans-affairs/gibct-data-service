@@ -38,9 +38,15 @@ RSpec.shared_examples 'an exportable model' do |options|
           csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
           test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
         end
-        test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
-        test_attributes['ojt_app_type'] = Converters::OjtAppTypeConverter.deconvert(test_attributes['ojt_app_type']) if test_attributes['ojt_app_type']
+        deconvert(test_attributes)
         expect(csv_test_attributes).to eq(test_attributes)
+      end
+    end
+
+    def deconvert(test_attributes)
+      test_attributes['ope'] = "\"#{test_attributes['ope']}\"" if test_attributes['ope']
+      if test_attributes['ojt_app_type']
+        test_attributes['ojt_app_type'] = Converters::OjtAppTypeConverter.deconvert(test_attributes['ojt_app_type'])
       end
     end
 
