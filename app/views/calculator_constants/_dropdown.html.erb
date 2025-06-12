@@ -1,0 +1,18 @@
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false">
+    Actions <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="about-us">
+    <li>
+      <%= link_to "Apply Rate Adjustments",
+                  apply_rate_adjustments_to_calculator_constants_path,
+                  method: :post,
+                  data: { action: "click->rates-form#warn click->constants-form#confirm",
+                          modal_body: "Percentage increases will be applied to the current value of each calculator constant with an associated rate adjustment. Adjustment rates determined by benefity type." } %>
+    </li>
+  </ul>
+</div>

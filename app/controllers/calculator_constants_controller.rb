@@ -1,32 +1,31 @@
 # frozen_string_literal: true
 
 class CalculatorConstantsController < ApplicationController
+  include CollectionUpdatable
+
   def index
     @calculator_constants = CalculatorConstant.all
+    @rate_adjustments = RateAdjustment.by_chapter_number
   end
 
   def update
-    updated_fields = []
-    submitted_constants = params['calculator_constants']
-    update_calculator_constant(submitted_constants, updated_fields)
-    unless updated_fields.empty?
+    # Iterate over collection and update records if changes present
+    updated = update_collection(&:name)
+
+    unless updated.empty?
       flash[:success] = {
-        updated_fields: updated_fields
+        updated_fields: updated
       }
     end
     redirect_to action: :index
   end
 
-  private
-
-  def update_calculator_constant(submitted_constants, updated_fields)
-    constant_fields = CalculatorConstant.where(name: submitted_constants.keys)
-    constant_fields.each do |constant|
-      submitted_value = submitted_constants[constant.name]
-      if submitted_value.to_d != constant.float_value.to_d
-        constant.update(float_value: submitted_value)
-        updated_fields.push(constant.name)
-      end
-    end
+  # Apply rate adjustments to associated constants
+  def apply_rate_adjustments
+    updated = CalculatorConstant.subject_to_rate_adjustment.each(&:apply_rate_adjustment)
+    flash[:success] = {
+      updated_fields: updated.pluck(:name)
+    }
+    redirect_to action: :index
   end
 end

@@ -1,0 +1,21 @@
+<div data-constants-form-target="dialog" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Are You Sure?</h4>
+      </div>
+      <div class="modal-body">
+        <p data-constants-form-target="modalBody"></p>
+        <p>This cannot be undone. Any unsaved changes will be lost.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= button_tag "Confirm",
+                       formmethod: :post,
+                       class: "btn btn-primary",
+                       data: { constants_form_target: "modalConfirm" } %>
+      </div>
+    </div>
+  </div>
+</div>

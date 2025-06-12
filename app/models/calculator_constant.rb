@@ -53,6 +53,9 @@ class CalculatorConstant < ImportableRecord
 
   alias_attribute :value, :float_value
 
+  delegate :benefit_type, to: :rate_adjustment, allow_nil: true
+
+  scope :subject_to_rate_adjustment, -> { where.not(rate_adjustment_id: nil) }
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
@@ -64,6 +67,14 @@ class CalculatorConstant < ImportableRecord
     benefit_type = matched_benefit_types.first
     rate_adjustment = RateAdjustment.find_by(benefit_type:)
     update(rate_adjustment:)
+  end
+
+  def apply_rate_adjustment
+    return if rate_adjustment.nil?
+
+    percent_increase = 1 + (rate_adjustment.rate / 100)
+    self.float_value = (float_value * percent_increase).round(2)
+    tap(&:save) # return updated object instead of true
   end
 
   private

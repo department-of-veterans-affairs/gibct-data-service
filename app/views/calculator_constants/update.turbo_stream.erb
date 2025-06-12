@@ -1,0 +1,3 @@
+<%= turbo_stream.update "rates-list" do %>
+  <%= render partial: "calculator_constants/rate_adjustment", collection: @rate_adjustments %>
+<% end %>

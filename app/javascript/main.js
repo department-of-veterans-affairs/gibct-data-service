@@ -4,9 +4,9 @@
 
 import { Application } from "@hotwired/stimulus";
 import "@hotwired/turbo-rails"
-// import ColasFormController from "./controllers/colas_form_controller";
-// import ConstantsFormController from "./controllers/constants_form_controller";
+import RatesFormController from "./controllers/rates_form_controller";
+import ConstantsFormController from "./controllers/constants_form_controller";
 
 window.Stimulus = Application.start();
-// Stimulus.register("colas-form", ColasFormController);
-// Stimulus.register("constants-form", ConstantsFormController);
+Stimulus.register("rates-form", RatesFormController);
+Stimulus.register("constants-form", ConstantsFormController);
