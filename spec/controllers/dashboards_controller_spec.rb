@@ -137,7 +137,7 @@ RSpec.describe DashboardsController, type: :controller do
       allow(Converters::OjtAppTypeConverter).to receive(:deconvert)
 
       get(:export, params: { csv_type: 'Program', format: :csv })
-      
+
       expect(Converters::OjtAppTypeConverter).to have_received(:deconvert)
     end
   end

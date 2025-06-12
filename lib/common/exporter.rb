@@ -144,7 +144,7 @@ module Common
         klass.const_get(:CSV_CONVERTER_INFO)
       end
     end
-    
+
     def requires_deconversion?(key)
       DECONVERTIBLE_COLUMN_NAMES.include?(key)
     end
