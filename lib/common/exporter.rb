@@ -3,8 +3,6 @@
 module Common
   # rubocop:disable Metrics/ModuleLength
   module Exporter
-    DECONVERTIBLE_COLUMN_NAMES = %i[ope version ojt_app_type].freeze
-
     def export
       generate(csv_headers)
     end
@@ -128,25 +126,17 @@ module Common
     end
 
     def format(key, value)
-      return value unless value.present? && requires_deconversion?(key)
+      return value if value.blank?
 
-      converter = export_settings[key.to_s][:converter]
-      converter.deconvert(value)
-    rescue NoMethodError
-      raise NoMethodError, "#{converter.class.demodulize} must implement deconvert"
-    end
-
-    # Necessary to distinguish in case of InstitutionsArchive
-    def export_settings
-      if klass.const_defined?(:CSV_CONVERTER_INFO2)
-        klass.const_get(:CSV_CONVERTER_INFO2)
-      else
-        klass.const_get(:CSV_CONVERTER_INFO)
+      # Should case list grow, a more dynamic approach to deconversion could be implemented
+      case key
+      when :ope
+        "\"#{value}\""
+      when :version
+        value.number
+      when :ojt_app_type
+        Converters::OjtAppTypeConverter.deconvert(value)
       end
-    end
-
-    def requires_deconversion?(key)
-      DECONVERTIBLE_COLUMN_NAMES.include?(key)
     end
 
     def format_ope(col)

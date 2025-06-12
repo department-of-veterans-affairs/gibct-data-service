@@ -13,15 +13,4 @@ RSpec.describe Converters::NumberConverter do
     expect(described_class.convert(nil)).to be_nil
     expect(described_class.convert('   ')).to be_nil
   end
-
-  describe '.deconvert' do
-    it 'returns number attribute if value is Version record' do
-      value = build(:version)
-      expect(described_class.deconvert(value)).to eq(value.number)
-    end
-
-    it 'returns value without deconverting if value is not Version record' do
-      expect(described_class.deconvert(1)).to eq(1)
-    end
-  end
 end
