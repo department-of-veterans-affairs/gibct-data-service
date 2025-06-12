@@ -136,6 +136,8 @@ module Common
         value.number
       when :ojt_app_type
         Converters::OjtAppTypeConverter.deconvert(value)
+      else
+        value
       end
     end
 
