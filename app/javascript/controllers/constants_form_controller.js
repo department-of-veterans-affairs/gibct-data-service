@@ -1,7 +1,11 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "dialog", "rateApplied" ];
+  static targets = [ "dialog", "select", "warning", "constantsList", "rateApplied", "ul", "confirm" ];
+
+  connect() {
+    this.updateRateApplied();
+  }
 
   // Convert to input field on click
   enableEditing(event) {
@@ -40,6 +44,41 @@ export default class extends Controller {
   }
 
   updateRateApplied() {
-    console.log(this.rateAppliedTarget);
+    const selectedOption = this.selectTarget.selectedOptions[0];
+    const { rate, constants } = selectedOption.dataset;
+    const names = JSON.parse(constants);
+    
+    if (rate === 0.0) {
+      this.#showContent(0);
+    } else if (names.length === 0) {
+      this.#showContent(1);
+    } else {
+      this.#showConstants(rate, names);
+    }
+  }
+
+  #showContent(i) {
+    this.#resetModal();
+    this.warningTarget.children[i].hidden = false;
+  }
+
+  #showConstants(rate, names) {
+    this.#showContent(2);
+    this.confirmTarget.hidden = false;
+    this.rateAppliedTarget.innerText = rate;
+
+    names.forEach(name => {
+      const li = document.createElement("li");
+      li.textContent = name;
+      this.ulTarget.appendChild(li);
+    });
+  }
+
+  #resetModal() {
+    this.ulTarget.innerHTML = "";
+    this.confirmTarget.hidden = true;
+    this.warningTarget.children[0].hidden = true;
+    this.warningTarget.children[1].hidden = true;
+    this.warningTarget.children[2].hidden = true;
   }
 }

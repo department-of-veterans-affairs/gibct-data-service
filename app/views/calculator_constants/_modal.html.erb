@@ -11,14 +11,26 @@
             <%= label_tag "benefit_type", "Benefit Type: "%>
             <select name="rate_id"
                     id="benefit_type"
+                    data-constants-form-target="select"
                     data-action="change->constants-form#updateRateApplied">
-              <%= @rate_adjustments.each do |rate| %>
-                <option value=<%= rate.id %>><%= rate.chapterize %></option>
+              <%= @rate_adjustments.each do |rate_adjustment| %>
+                <option value=<%= rate_adjustment.id %>
+                        data-rate=<%= rate_adjustment.rate %>
+                        data-constants=<%= constants_by_rate_adjustment(rate_adjustment:, constants: @calculator_constants).to_json %>>
+                  <%= rate_adjustment.chapterize %>
+                </option>
               <% end %>
             </select>
           </div>
-          <p>A percentage increase of <strong><span data-constants-form-target="rateApplied"><%= @rate_adjustments.first.rate %></span>%</strong> will be applied to the following calculator constants:</p>
-          <p>This cannot be undone. Any unsaved changes will be lost.</p>
+          <aside class="alert alert-warning" data-constants-form-target="warning">
+            <p>Zero percent increase cannot be applied.</p>
+            <p>No Calculator Constants associated with benefit type.</p>
+            <div>
+              <p>A percentage increase of <strong><span data-constants-form-target="rateApplied"></span>%</strong> will be applied to the following calculator constants:</p>
+              <ul data-constants-form-target="ul"></ul>
+            </div>
+          </aside>
+          <p data-constants-form-target="confirm">This cannot be undone. Any unsaved changes will be lost.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -27,3 +39,4 @@
     </div>
   </div>
 </div>
+_

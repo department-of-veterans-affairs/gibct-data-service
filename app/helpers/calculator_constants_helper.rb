@@ -9,6 +9,10 @@ module CalculatorConstantsHelper
     year_value?(constant) ? '1' : '0.01'
   end
 
+  def constants_by_rate_adjustment(rate_adjustment:, constants:)
+    constants.where(rate_adjustment_id: rate_adjustment.id).map(&:name)
+  end
+
   private
 
   def year_value?(constant)
