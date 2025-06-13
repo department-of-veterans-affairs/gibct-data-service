@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "textCell", "select", "dialog", "modalBody", "modalConfirm" ];
+  static targets = [ "dialog", "rateApplied" ];
 
   // Convert to input field on click
   enableEditing(event) {
@@ -32,21 +32,14 @@ export default class extends Controller {
     }
   }
 
-  confirm(event) {
+  showModal(event) {
     event.preventDefault();
     event.stopImmediatePropagation()
 
-    const url = event.target.href;
-    const modalBody = event.target.dataset.modalBody;
-
-    if (url) {
-      this.modalConfirmTarget.setAttribute("formaction", url);
-    }
-
-    if (modalBody) {
-      this.modalBodyTarget.innerText = modalBody;
-    }
-
     $(this.dialogTarget).modal("show");
+  }
+
+  updateRateApplied() {
+    console.log(this.rateAppliedTarget);
   }
 }

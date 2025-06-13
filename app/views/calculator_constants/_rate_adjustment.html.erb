@@ -1,11 +1,11 @@
 <div class="rate-div">
-  <%= label_tag "ch#{rate_adjustment.benefit_type}", "Ch. #{rate_adjustment.benefit_type} " %>
+  <%= label_tag rate_adjustment.benefit_type, rate_adjustment.chapterize %>
   <input type="number"
          min="0.00"
          step="0.01"
          required
          disabled
-         id="ch<%= rate_adjustment.benefit_type %>"
+         id=<%= rate_adjustment.benefit_type %>
          name="rate_adjustments[<%= rate_adjustment.id %>][rate]"
          data-rates-form-target="input"
          value="<%= rate_adjustment.rate %>" />
