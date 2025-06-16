@@ -397,6 +397,7 @@ table.crosswalk-issues thead.sub th {
 
 #rate_adjustments_update .rate-div label {
   margin-bottom: 0;
+  width: 60px;
 }
 
 #rate_adjustments_update .rate-div input {

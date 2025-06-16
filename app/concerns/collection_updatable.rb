@@ -5,12 +5,18 @@
 module CollectionUpdatable
   extend ActiveSupport::Concern
 
+  included do
+    before_action :set_collection_params, only: :update
+  end
+
+  private
+
   # Iterates over collection and updates records if changes present
   # Accepts optional block to transform output (e.g. record.name or record.id)
   # Returns array of IDs for updated records
   def update_collection
     updated = []
-    collection_params.each do |id, attrs|
+    @collection_params.each do |id, attrs|
       record = klass.find(id)
       record.assign_attributes(attrs)
       # Only update records for which changes are present
@@ -22,9 +28,7 @@ module CollectionUpdatable
     updated
   end
 
-  private
-
-  def collection_params
+  def set_collection_params
     permitted = {}
     # e.g. { '1' => [:benefit_type, :rate] }
     klass.pluck(:id).each { |id| permitted[id.to_s] = updatable_fields }

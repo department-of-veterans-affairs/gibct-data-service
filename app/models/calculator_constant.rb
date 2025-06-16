@@ -55,7 +55,7 @@ class CalculatorConstant < ImportableRecord
 
   delegate :benefit_type, to: :rate_adjustment, allow_nil: true
 
-  scope :subject_to_rate_adjustment, -> { where.not(rate_adjustment_id: nil) }
+  scope :by_rate_adjustment, ->(rate_adjustment_id) { where(rate_adjustment_id:) }
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
