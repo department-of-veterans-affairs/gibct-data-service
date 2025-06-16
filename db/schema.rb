@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_10_181818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1802,6 +1802,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_154210) do
     t.string "settlement_link"
     t.string "school_closing_date"
     t.boolean "sec_702"
+  end
+
+  create_table "version_public_exports", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "file_type"
+    t.binary "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "versioned_complaints", force: :cascade do |t|
