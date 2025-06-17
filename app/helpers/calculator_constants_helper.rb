@@ -2,7 +2,11 @@
 
 module CalculatorConstantsHelper
   def display_value_for(constant)
-    year_value?(constant) ? constant.float_value.to_i : format('%.2f', constant.float_value)
+    year_value?(constant) ? constant.float_value.to_i : decimalize(constant.float_value)
+  end
+
+  def decimalize(value)
+    format('%.2f', value)
   end
 
   def step_value_for(constant)

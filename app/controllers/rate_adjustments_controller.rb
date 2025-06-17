@@ -5,8 +5,7 @@ class RateAdjustmentsController < ApplicationController
 
   def update
     # Iterate over collection and update records if changes present
-    update_collection
-    @rate_adjustments = RateAdjustment.by_chapter_number
+    @updated_rate_adjustments = update_collection
 
     respond_to do |format|
       format.turbo_stream { render template: 'calculator_constants/update' }
