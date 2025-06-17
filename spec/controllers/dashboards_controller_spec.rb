@@ -132,6 +132,14 @@ RSpec.describe DashboardsController, type: :controller do
       expect(get(:export, params: { csv_type: 'BlahBlah', format: :csv })).to redirect_to(action: :index)
       expect(get(:export, params: { csv_type: 'Weam', format: :xml })).to redirect_to(action: :index)
     end
+
+    it 'deconverts column names if required' do
+      allow(Converters::OjtAppTypeConverter).to receive(:deconvert)
+
+      get(:export, params: { csv_type: 'Program', format: :csv })
+
+      expect(Converters::OjtAppTypeConverter).to have_received(:deconvert)
+    end
   end
 
   describe 'GET export_version' do
