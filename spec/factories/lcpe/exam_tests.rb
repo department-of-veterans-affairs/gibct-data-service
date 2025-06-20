@@ -2,6 +2,8 @@
 
 FactoryBot.define do
   factory :lcpe_exam_test, class: 'Lcpe::ExamTest' do
+    association :lcpe_exam, factory: :lcpe_exam
+
     descp_txt { 'AP Exam Fee International' }
     fee_amt { 127 }
     begin_dt { '01-NOV-16' }
