@@ -4,7 +4,9 @@ module Lcpe
   class ExamTest < ApplicationRecord
     extend SqlContext
 
-    belongs_to :exam
+    # rubocop:disable Rails/InverseOf
+    belongs_to :lcpe_exam, class_name: 'Lcpe::Exam', foreign_key: :exam_id
+    # rubocop:enable Rails/InverseOf
 
     def self.rebuild
       pure_sql(<<~SQL)

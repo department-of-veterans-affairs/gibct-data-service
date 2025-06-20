@@ -13,4 +13,20 @@ RSpec.describe NoKeyApis::VsocDownloadSource do
       expect(described_class.new.href).to eq('https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv')
     end
   end
+
+  describe 'when no href is found' do
+    let(:vsoc_page_without_link) { '<html><body></body></html>' }
+    let(:vsoc_response) { instance_double(HTTParty::Response, body: vsoc_page_without_link) }
+
+    before do
+      allow(HTTParty).to receive(:get).and_return(vsoc_response)
+      allow(Rails.logger).to receive(:warn)
+    end
+
+    it 'returns an empty string and logs a warning' do
+      described_class.new.href
+      expect(Rails.logger).to have_received(:warn).with('NoKeyApiDownloader: Failed to find VSOC link on page')
+      expect(described_class.new.href).to eq('')
+    end
+  end
 end
