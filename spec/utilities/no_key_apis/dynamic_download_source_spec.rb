@@ -25,7 +25,7 @@ end
 
 # rescue StandardError in scrape_html
 class ScrapeFailingDummyDownloadSource < NoKeyApis::DynamicDownloadSource
-  def parse_html; end # required, even if unused
+  def parse_html; end
 end
 
 RSpec.describe NoKeyApis::DynamicDownloadSource do
@@ -68,9 +68,9 @@ RSpec.describe NoKeyApis::DynamicDownloadSource do
 
   describe '#parse_html when the subclass does not implement it' do
     it 'raises NotImplementedError when not implemented in subclass' do
-      expect {
+      expect do
         BrokenDummyDownloadSource.new('http://example.com')
-      }.to raise_error(NotImplementedError, '#parse_refs must be defined in subclass')
+      end.to raise_error(NotImplementedError, '#parse_refs must be defined in subclass')
     end
   end
 

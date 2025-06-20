@@ -4,7 +4,7 @@ module Lcpe
   class ExamTest < ApplicationRecord
     extend SqlContext
 
-    belongs_to :lcpe_exam, class_name: 'Lcpe::Exam', foreign_key: :exam_id
+    belongs_to :lcpe_exam, class_name: 'Lcpe::Exam', foreign_key: :exam_id, inverse_of: :exam_tests
 
     def self.rebuild
       pure_sql(<<~SQL)
