@@ -14,6 +14,10 @@ class CalculatorConstantsController < ApplicationController
         updated_fields: updated_fields
       }
     end
+
+    # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
+    create_upload_row
+
     redirect_to action: :index
   end
 
@@ -28,5 +32,19 @@ class CalculatorConstantsController < ApplicationController
         updated_fields.push(constant.name)
       end
     end
+  end
+
+  # This causes the popup when generating a new version to include gonculator contstants as changed
+  def create_upload_row
+    Upload.create!(
+      user: current_user,
+      csv: 'Gonculator Constants Online',
+      csv_type: 'CalculatorConstant',
+      comment: 'Updated Gonculator Constant value(s)',
+      ok: true,
+      # This is how the uploads controller sets completed_at
+      completed_at: Time.now.utc.to_fs(:db),
+      multiple_file_upload: false
+    )
   end
 end

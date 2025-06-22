@@ -2,6 +2,7 @@ Rails.application.config.to_prepare do
   UPLOAD_TYPES ||= [
       *GROUP_FILE_TYPES,
       *CSV_TYPES_TABLES,
+      *ONLINE_TYPES,
   ].freeze
 
   UPLOAD_TYPES_ALL_NAMES ||= UPLOAD_TYPES.map do |upload|

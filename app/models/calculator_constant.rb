@@ -17,6 +17,8 @@ class CalculatorConstant < ImportableRecord
     float_value
   end
 
+  # removing this breaks the caclulator constant request spec (v0)
+  # TODO: remove without breaking functionality
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
