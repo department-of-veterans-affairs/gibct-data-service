@@ -126,10 +126,19 @@ module Common
     end
 
     def format(key, value)
-      return "\"#{value}\"" if key == :ope && value.present?
-      return value.number if key == :version && value.present?
+      return value if value.blank?
 
-      value
+      # Should case list grow, a more dynamic approach to deconversion could be implemented
+      case key
+      when :ope
+        "\"#{value}\""
+      when :version
+        value.number
+      when :ojt_app_type
+        Converters::OjtAppTypeConverter.deconvert(value)
+      else
+        value
+      end
     end
 
     def format_ope(col)
