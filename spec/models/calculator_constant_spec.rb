@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'models/shared_examples/shared_examples_for_loadable'
-require 'models/shared_examples/shared_examples_for_exportable'
+# require 'models/shared_examples/shared_examples_for_loadable'
+# require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe CalculatorConstant, type: :model do
   # No longer importable record, updated instead via calculator constants dashboard
@@ -16,7 +16,7 @@ RSpec.describe CalculatorConstant, type: :model do
   end
 
   describe 'when validating' do
-    subject(:calculator_constant) { create :calculator_constant }
+    subject(:calculator_constant) { create(:calculator_constant) }
 
     it 'has a valid factory' do
       expect(calculator_constant).to be_valid
@@ -42,7 +42,7 @@ RSpec.describe CalculatorConstant, type: :model do
   end
 
   describe 'when updating' do
-    subject(:calculator_constant) { create :calculator_constant }
+    subject(:calculator_constant) { create(:calculator_constant) }
 
     it 'preserves name as read only' do
       original_name = calculator_constant.name
@@ -52,7 +52,7 @@ RSpec.describe CalculatorConstant, type: :model do
   end
 
   describe '.by_rate_adjustment' do
-    subject(:calculator_constant) { create :calculator_constant, :associated_rate_adjustment }
+    subject(:calculator_constant) { create(:calculator_constant, :associated_rate_adjustment) }
 
     it 'filters calculator constants by specified rate-adjustment_id' do
       rate_adjustment = calculator_constant.rate_adjustment
@@ -63,7 +63,7 @@ RSpec.describe CalculatorConstant, type: :model do
   end
 
   describe '#set_rate_adjustment_if_exists' do
-    subject(:calculator_constant) { create :calculator_constant }
+    subject(:calculator_constant) { create(:calculator_constant) }
 
     let(:rate_adjustment) { create :rate_adjustment }
 
@@ -72,7 +72,7 @@ RSpec.describe CalculatorConstant, type: :model do
     end
 
     it 'returns false if rate adjustment association already exists' do
-      with_rate_adjustment = create :calculator_constant, :associated_rate_adjustment
+      with_rate_adjustment = create(:calculator_constant, :associated_rate_adjustment)
       expect(with_rate_adjustment.set_rate_adjustment_if_exists).to be false
     end
 
@@ -86,12 +86,12 @@ RSpec.describe CalculatorConstant, type: :model do
 
   describe '#apply_rate_adjustment' do
     it 'returns nil if no associated rate adjustment' do
-      calculator_constant = create :calculator_constant
+      calculator_constant = create(:calculator_constant)
       expect(calculator_constant.apply_rate_adjustment).to be_nil
     end
 
     it 'applies percentage increase of associated rate adjustment and returns updated record' do
-      calculator_constant = create :calculator_constant, :associated_rate_adjustment
+      calculator_constant = create(:calculator_constant, :associated_rate_adjustment)
       initial_value = calculator_constant.float_value
       rate_adjustment = calculator_constant.rate_adjustment
       percent_increase = 1 + (rate_adjustment.rate / 100)
