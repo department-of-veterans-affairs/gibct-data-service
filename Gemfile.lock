@@ -171,7 +171,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.6.0)
     docile (1.4.0)
-    drb (2.2.1)
+    drb (2.2.3)
     erubi (1.13.1)
     execjs (2.10.0)
     factory_bot (6.5.1)
@@ -572,7 +572,7 @@ DEPENDENCIES
   csv (~> 3.3)
   database_cleaner
   devise
-  drb (~> 2.2, >= 2.2.1)
+  drb (~> 2.2)
   factory_bot_rails (> 5)
   faker (~> 3.3)
   faraday
