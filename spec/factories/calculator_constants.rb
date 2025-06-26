@@ -4,7 +4,8 @@ FactoryBot.define do
   factory :calculator_constant do
     sequence(:name) do |n|
       names = CalculatorConstant::CONSTANT_NAMES
-      raise "Number of factories exceeds available calculator constant names" if n >= names.size
+      raise 'Number of factories exceeds available calculator constant names' if n >= names.size
+
       names[n]
     end
     float_value { (Random.rand * 1_000).round(2) }

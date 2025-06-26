@@ -38,7 +38,7 @@ RSpec.describe RateAdjustment, type: :model do
         create(:rate_adjustment, benefit_type: n)
       end
     end
-    
+
     it 'sorts rate adjustments numerically by benefit type' do
       rates = described_class.by_chapter_number
       expect(rates.pluck(:benefit_type)).to eq((1..5).to_a)

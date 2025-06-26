@@ -10,7 +10,7 @@ RSpec.shared_examples 'a collection updatable' do |column|
       hash[record.id.to_s] = { column => record.send(column) + 1.0 }
     end
   end
-  let(:params) {{ controller_name => nested_params }}
+  let(:params) { { controller_name => nested_params } }
 
   it "updates #{described_class.controller_name.tr('_', ' ')}" do
     expected_values = records.map { |record| record.send(column) + 1.0 }

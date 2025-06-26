@@ -27,7 +27,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
 
     it 'flashes updated fields' do
       constant = create(:calculator_constant)
-      params = { 
+      params = {
         calculator_constants: {
           constant.id.to_s => { float_value: constant.float_value + 1 }
         }
@@ -42,7 +42,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
 
     let(:calculator_constant) { create(:calculator_constant, :associated_rate_adjustment) }
     let(:rate_adjustment_id) { calculator_constant.rate_adjustment_id }
-    let(:params) {{ rate_adjustment_id: rate_adjustment_id }}
+    let(:params) { { rate_adjustment_id: rate_adjustment_id } }
 
     it 'updates calculator constants associated with rate adjustment and flashes updated fields' do
       allow(CalculatorConstant).to receive(:by_rate_adjustment)
