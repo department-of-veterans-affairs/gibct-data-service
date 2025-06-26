@@ -4,6 +4,7 @@ require 'rails_helper'
 require 'support/controller_macros'
 require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
+require 'controllers/shared_examples/shared_examples_for_collection_updatable'
 
 RSpec.describe CalculatorConstantsController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'calculator_constants'
@@ -22,20 +23,17 @@ RSpec.describe CalculatorConstantsController, type: :controller do
   describe 'POST #update' do
     login_user
 
-    let(:calculator_constant) { create(:calculator_constant) }
-    let(:new_value) { calculator_constant.float_value + 1.0 }
-    let(:params) do
-      {
+    it_behaves_like 'a collection updatable', :float_value
+
+    it 'flashes updated fields' do
+      constant = create(:calculator_constant)
+      params = { 
         calculator_constants: {
-          calculator_constant.id.to_s => { float_value: new_value }
+          constant.id.to_s => { float_value: constant.float_value + 1 }
         }
       }
-    end
-
-    it 'updates calculator constants and flashes updated fields' do
       post(:update, params: params)
-      expect(calculator_constant.reload.float_value).to eq(new_value)
-      expect(flash[:success][:updated_fields]).to include(calculator_constant.name)
+      expect(flash[:success][:updated_fields]).to include(constant.name)
     end
   end
 

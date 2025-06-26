@@ -13,7 +13,7 @@ module CollectionUpdatable
 
   # Iterates over collection and updates records if changes present
   # Accepts optional block to transform output (e.g. record.name or record.id)
-  # Returns array of IDs for updated records
+  # Returns array of update records or output of block if given
   def update_collection
     updated = []
     @collection_params.each do |id, attrs|
