@@ -111,23 +111,24 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-    describe 'requirements_messages for CalculatorConstant' do
-      before do
-        get :new, params: { csv_type: CalculatorConstant.name }
-      end
+    # CalculatorConstant disabled as importable record, updated instead via calculator constants dashboard
+    # describe 'requirements_messages for CalculatorConstant' do
+    #   before do
+    #     get :new, params: { csv_type: CalculatorConstant.name }
+    #   end
 
-      it 'returns validates uniqueness messages' do
-        validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
-        message = { message: 'These columns should contain unique values: ', value: validations_of_str }
-        expect(assigns(:requirements)).to include(message)
-      end
+    #   it 'returns validates uniqueness messages' do
+    #     validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
+    #     message = { message: 'These columns should contain unique values: ', value: validations_of_str }
+    #     expect(assigns(:requirements)).to include(message)
+    #   end
 
-      it 'returns validates presence messages' do
-        validations_of_str = 'name', 'value'
-        message = { message: 'These columns must have a value: ', value: validations_of_str }
-        expect(assigns(:requirements)).to include(message)
-      end
-    end
+    #   it 'returns validates presence messages' do
+    #     validations_of_str = 'name', 'value'
+    #     message = { message: 'These columns must have a value: ', value: validations_of_str }
+    #     expect(assigns(:requirements)).to include(message)
+    #   end
+    # end
   end
 
   describe 'POST create' do
