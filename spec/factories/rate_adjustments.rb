@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :rate_adjustment do
-    benefit_type { 33 }
+    sequence(:benefit_type)
     rate { 3.20 }
   end
 end
