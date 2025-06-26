@@ -3,7 +3,8 @@
 FactoryBot.define do
   factory :calculator_constant do
     sequence(:name) do |n|
-      names = CalculatorConstant::CONSTANT_NAMES
+      # Only generate FISCALYEAR via :year trait
+      names = CalculatorConstant::CONSTANT_NAMES.dup.reject { |name| name == 'FISCALYEAR' }
       raise 'Number of factories exceeds available calculator constant names' if n >= names.size
 
       names[n]
@@ -13,6 +14,10 @@ FactoryBot.define do
 
     trait :associated_rate_adjustment do
       association :rate_adjustment
+    end
+
+    trait :year do
+      name { 'FISCALYEAR' }
     end
   end
 end
