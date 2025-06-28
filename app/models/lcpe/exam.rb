@@ -26,7 +26,7 @@ module Lcpe
     }
     # :nocov:
 
-    has_many :tests, class_name: 'ExamTest', dependent: :destroy
+    has_many :tests, class_name: 'Lcpe::ExamTest', dependent: :destroy
 
     # rubocop:disable Rails/InverseOf
     belongs_to(
