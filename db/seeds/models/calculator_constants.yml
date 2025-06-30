@@ -1,0 +1,81 @@
+- name: AVEGRADRATE
+  float_value: 42.3
+  description: Average Graduation Rate
+- name: AVERETENTIONRATE
+  float_value: 47.99
+  description: Average Retention Rate
+- name: AVEREPAYMENTRATE
+  float_value: 67.9
+  description: Average Payment Rate
+- name: AVESALARY
+  float_value: 33400
+  description: Average Salary
+- name: AVGDODBAH
+  float_value: 1650
+  description: Average Monthly Housing Allowance
+- name: AVGVABAH
+  float_value: 1681
+  description: Monthly Housing Allowance
+- name: BSCAP
+  float_value: 1000
+  description: Books/Supplies Stipend
+- name: CORRESPONDTFCAP
+  float_value: 11076.86
+  description: Correspondence Schools
+- name: DEARATEFULLTIME
+  float_value: 1224
+  description: Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) Full Time
+- name: DEARATEOJT
+  float_value: 747
+  description: Apprenticeship and On-the-Job Training
+- name: DEARATEONEHALF
+  float_value: 710
+  description: Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) 1/2
+- name: DEARATEUPTOONEHALF
+  float_value: 710
+  description: Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) Up to a Quarter
+- name: DEARATEUPTOONEQUARTER
+  float_value: 306
+  description: Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) 1 half
+- name: DEARATETHREEQUARTERS
+  float_value: 967
+  description: Educational Assistance Allowance for trainees under the Survivors' and Dependents' Educational Assistance Program (Chapter 35 of title 38, U.S.C.) 3/4
+- name: FISCALYEAR
+  float_value: 2019
+  description: Fiscal Year
+- name: FLTTFCAP
+  float_value: 13031.61
+  description: Vocational Flight Schools
+- name: MGIB2YRRATE
+  float_value: 1509
+  description: Montgomery GI Bill - Active Duty (Ch. 30 of title 38 U.S.C.) Less Than 3 Years
+- name: MGIB3YRRATE
+  float_value: 1857
+  description: Montgomery GI Bill - Active Duty (Ch. 30 of title 38 U.S.C.) 3 or More Years
+- name: SRRATE
+  float_value: 369
+  description: Montgomery GI Bill - Selected Reserve (Ch. 1606 of Title 10, U.S.C.).
+- name: TFCAP
+  float_value: 22805.34
+  description: Maximum Tuition & Fee Reimbursement per Academic Year
+- name: VRE0DEPRATE
+  float_value: 605.44
+  description: Vocational Rehabilitation and Employment  0 Dependents
+- name: VRE0DEPRATEOJT
+  float_value: 529.36
+  description: Vocational Rehabilitation and Employment  Farm Cooperative, Apprenticeship or other On-Job Training Plus 1
+- name: VRE1DEPRATE
+  float_value: 751
+  description: Vocational Rehabilitation and Employment  1 Dependents
+- name: VRE1DEPRATEOJT
+  float_value: 640.15
+  description: Vocational Rehabilitation and Employment Farm Cooperative, Apprenticeship or other On-Job Training
+- name: VRE2DEPRATE
+  float_value: 885
+  description: Vocational Rehabilitation and Employment 2 Dependents
+- name: VREINCRATE
+  float_value: 64.5
+  description: Vocational Rehabilitation and Employment Each Additional after 2 Dependents
+- name: VREINCRATEOJT
+  float_value: 737.77
+  description: Vocational Rehabilitation and Employment Farm Cooperative, Apprenticeship or other On-Job Training FY Increase
