@@ -1,4 +1,4 @@
-document.addEventListener("turbo:load", function() {
+$(function() {
     $('#version_publish').on('confirm:complete', function(e, confirmed) {
         if (confirmed) {
             $('#preview_versions tbody td:nth-child(5)').html(
