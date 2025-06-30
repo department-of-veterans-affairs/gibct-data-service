@@ -15,6 +15,27 @@ RSpec.describe UploadTypes::UploadRequirements do
   end
 
   describe 'requirements_messages' do
+    # Because CalculatorConstant was disabled as ImportableRecord, there no longer exists upload that validates
+    # uniqueness. Create DummyImportable in meantime
+    before(:all) do
+      ActiveRecord::Base.connection.create_table :dummy_importable, force: true do |t|
+        t.string :name
+      end
+
+      class DummyImportable < ImportableRecord
+        validates :name, uniqueness: true
+
+        CSV_CONVERTER_INFO = {
+          'name' => { column: :name, converter: Converters::UpcaseConverter },
+        }.freeze
+      end
+    end
+
+    after(:all) do
+      ActiveRecord::Base.connection.drop_table(:dummy_importable, if_exists: true)
+      Object.send(:remove_const, :DummyImportable)
+    end
+
     it 'returns validates numericality messages' do
       validations_of_str = ['facility code', 'institution name', 'institution country']
       message = { message: 'These columns must have a value: ', value: validations_of_str }
@@ -22,17 +43,18 @@ RSpec.describe UploadTypes::UploadRequirements do
       expect(messages).to include(message)
     end
 
+    # TO-DO: Replace DummyImportable with existing upload class if one exists that validates uniqueness
     it 'returns validates uniqueness messages' do
-      validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
+      validations_of_str = map_attributes(DummyImportable, ActiveRecord::Validations::UniquenessValidator)
       message = { message: 'These columns should contain unique values: ', value: validations_of_str }
-      messages = described_class.requirements_messages(CalculatorConstant)
+      messages = described_class.requirements_messages(DummyImportable)
       expect(messages).to include(message)
     end
 
     it 'returns validates presence messages' do
-      validations_of_str = 'name', 'value'
+      validations_of_str = ['facility code', 'institution name', 'institution country']
       message = { message: 'These columns must have a value: ', value: validations_of_str }
-      messages = described_class.requirements_messages(CalculatorConstant)
+      messages = described_class.requirements_messages(Weam)
       expect(messages).to include(message)
     end
   end
