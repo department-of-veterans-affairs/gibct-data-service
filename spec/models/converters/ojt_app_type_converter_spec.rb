@@ -19,4 +19,10 @@ RSpec.describe Converters::OjtAppTypeConverter do
     expect(described_class.convert('Z')).to be_nil
     expect(described_class.convert(nil)).to be_nil
   end
+
+  describe '.deconvert' do
+    it 'converts abbreviated OJT/APP type back to uppercase character' do
+      expect(described_class.deconvert('APP')).to eq('K')
+    end
+  end
 end
