@@ -2,6 +2,16 @@
 
 require 'rails_helper'
 
+# Because CalculatorConstant was disabled as ImportableRecord, there no longer exists upload that validates
+# uniqueness. Create DummyImportable in meantime
+class DummyImportable < ImportableRecord
+  validates :name, uniqueness: true
+
+  CSV_CONVERTER_INFO = {
+    'name' => { column: :name, converter: Converters::UpcaseConverter }
+  }.freeze
+end
+
 RSpec.describe UploadTypes::UploadRequirements do
   def validations(csv_class, requirement_class)
     csv_class.validators
@@ -38,16 +48,6 @@ RSpec.describe UploadTypes::UploadRequirements do
 
     # TO-DO: Replace DummyImportable with existing upload class if one exists that validates uniqueness
     context 'when using dummy importable record' do
-      # Because CalculatorConstant was disabled as ImportableRecord, there no longer exists upload that validates
-      # uniqueness. Create DummyImportable in meantime
-      class DummyImportable < ImportableRecord
-        validates :name, uniqueness: true
-
-        CSV_CONVERTER_INFO = {
-          'name' => { column: :name, converter: Converters::UpcaseConverter },
-        }.freeze
-      end
-
       before do
         ActiveRecord::Base.connection.create_table :dummy_importable, force: true do |t|
           t.string :name
