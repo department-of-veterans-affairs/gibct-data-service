@@ -15,39 +15,10 @@ RSpec.describe UploadTypes::UploadRequirements do
   end
 
   describe 'requirements_messages' do
-    # Because CalculatorConstant was disabled as ImportableRecord, there no longer exists upload that validates
-    # uniqueness. Create DummyImportable in meantime
-    before(:all) do
-      ActiveRecord::Base.connection.create_table :dummy_importable, force: true do |t|
-        t.string :name
-      end
-
-      class DummyImportable < ImportableRecord
-        validates :name, uniqueness: true
-
-        CSV_CONVERTER_INFO = {
-          'name' => { column: :name, converter: Converters::UpcaseConverter },
-        }.freeze
-      end
-    end
-
-    after(:all) do
-      ActiveRecord::Base.connection.drop_table(:dummy_importable, if_exists: true)
-      Object.send(:remove_const, :DummyImportable)
-    end
-
     it 'returns validates numericality messages' do
-      validations_of_str = ['facility code', 'institution name', 'institution country']
-      message = { message: 'These columns must have a value: ', value: validations_of_str }
+      validations_of_str = ['current academic year va bah rate']
+      message = { message: 'These columns can only contain numeric values: ', value: validations_of_str }
       messages = described_class.requirements_messages(Weam)
-      expect(messages).to include(message)
-    end
-
-    # TO-DO: Replace DummyImportable with existing upload class if one exists that validates uniqueness
-    it 'returns validates uniqueness messages' do
-      validations_of_str = map_attributes(DummyImportable, ActiveRecord::Validations::UniquenessValidator)
-      message = { message: 'These columns should contain unique values: ', value: validations_of_str }
-      messages = described_class.requirements_messages(DummyImportable)
       expect(messages).to include(message)
     end
 
@@ -57,12 +28,43 @@ RSpec.describe UploadTypes::UploadRequirements do
       messages = described_class.requirements_messages(Weam)
       expect(messages).to include(message)
     end
-  end
 
-  it 'returns validates inclusion messages' do
-    validations_of_str = validations(Complaint, ActiveModel::Validations::InclusionValidator)
-    message = { message: 'status', value: validations_of_str.options[:in].map(&:to_s) }
-    messages = described_class.validation_messages_inclusion(Complaint)
-    expect(messages.first).to include(message)
+    it 'returns validates inclusion messages' do
+      validations_of_str = validations(Complaint, ActiveModel::Validations::InclusionValidator)
+      message = { message: 'status', value: validations_of_str.options[:in].map(&:to_s) }
+      messages = described_class.validation_messages_inclusion(Complaint)
+      expect(messages.first).to include(message)
+    end
+
+    # TO-DO: Replace DummyImportable with existing upload class if one exists that validates uniqueness
+    context 'when using dummy importable record' do
+      # Because CalculatorConstant was disabled as ImportableRecord, there no longer exists upload that validates
+      # uniqueness. Create DummyImportable in meantime
+      class DummyImportable < ImportableRecord
+        validates :name, uniqueness: true
+
+        CSV_CONVERTER_INFO = {
+          'name' => { column: :name, converter: Converters::UpcaseConverter },
+        }.freeze
+      end
+
+      before do
+        ActiveRecord::Base.connection.create_table :dummy_importable, force: true do |t|
+          t.string :name
+        end
+      end
+
+      after do
+        ActiveRecord::Base.connection.drop_table(:dummy_importable, if_exists: true)
+        Object.send(:remove_const, :DummyImportable)
+      end
+
+      it 'returns validates uniqueness messages' do
+        validations_of_str = map_attributes(DummyImportable, ActiveRecord::Validations::UniquenessValidator)
+        message = { message: 'These columns should contain unique values: ', value: validations_of_str }
+        messages = described_class.requirements_messages(DummyImportable)
+        expect(messages).to include(message)
+      end
+    end
   end
 end
