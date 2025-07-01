@@ -101,4 +101,4 @@ group :development do
   gem 'spring', platforms: :ruby
 end
 
-gem "solid_queue", "~> 1.1"
+gem 'solid_queue', '~> 1.1'
