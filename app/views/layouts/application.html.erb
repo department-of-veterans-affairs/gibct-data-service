@@ -10,8 +10,24 @@
 
   <!-- Load modern ES6 modules via Importmap (e.g. Stimulus controllers) -->
   <!-- override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js -->
-  <%= javascript_importmap_tags 'main' %>
-
+  <!-- Manually write importmap scripts to include nonce, otherwise you'll encounter issue with CSP -->
+  <script type="importmap" data-turbo-track="reload" nonce="**CSP_NONCE**">
+    {
+      "imports": {
+        "main": "/assets/main.js",
+        "@hotwired/stimulus": "/assets/@hotwired--stimulus.js",
+        "@hotwired/turbo-rails": "/assets/@hotwired--turbo-rails.js",
+        "@hotwired/turbo": "/assets/@hotwired--turbo.js",
+        "@rails/actioncable/src": "/assets/@rails--actioncable--src.js"
+      }
+    }
+  </script>
+  <link rel="modulepreload" href="/assets/main-02949a8d902b0962821e46c8c0dc0c4e7fad9b8d133bd823af57ae00cbc7b76d.js">
+  <link rel="modulepreload" href="/assets/@hotwired--stimulus-d7988e16a93333941ba2b5aae02a3b7131f9ec809f9619a876aa2180ab9b0767.js">
+  <link rel="modulepreload" href="/assets/@hotwired--turbo-rails-39115723f26b33d5461d9630cf63bc05d3abee3dff8a4f5cfe4e1fb63a7b37df.js">
+  <link rel="modulepreload" href="/assets/@hotwired--turbo-60db8edd2b334a7f7c7f54b32f17416fa031cfd306bc8ce16caf937174fc32d5.js">
+  <link rel="modulepreload" href="/assets/@rails--actioncable--src-517c13baee7cfa6bdf876caef24fb5434b096fe089b6de62255581072837bc73.js">
+  <script type="module" nonce="**CSP_NONCE**">import "main"</script>
   <%= csrf_meta_tags %>
 </head>
 <body>
