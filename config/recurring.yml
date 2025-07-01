@@ -13,3 +13,11 @@ development:
   test_recurring:
     class: ExampleRecurringJob
     schedule: every minute
+staging:
+  test_recurring:
+    class: ExampleRecurringJob
+    schedule: every minute
+production:
+  test_recurring:
+    class: ExampleRecurringJob
+    schedule: every minute
