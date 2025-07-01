@@ -6,7 +6,7 @@
 
   <!-- Load legacy Sprockets assets (e.g. jQuery, Bootstrap) -->
   <!-- TO DO: convert legacy jquery to hotwire stimulus -->
-  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', nonce: '**CSP_NONCE**' %>
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', nonce: true %>
 
   <!-- Load modern ES6 modules via Importmap (e.g. Stimulus controllers) -->
   <!-- override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js -->
