@@ -103,5 +103,7 @@ Rails.application.routes.draw do
       resources :lacs, only: [:index, :show]
       resources :exams, only: [:index, :show]
     end    
+
+    resources :version_public_exports, only: [:show], path: :public_exports
   end
 end

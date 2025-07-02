@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_12_185446) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_30_151248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -104,7 +104,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_185446) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
-    t.float "previous_year"
     t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
     t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"
@@ -1813,6 +1812,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_185446) do
     t.string "settlement_link"
     t.string "school_closing_date"
     t.boolean "sec_702"
+  end
+
+  create_table "version_public_exports", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "file_type"
+    t.binary "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "versioned_complaints", force: :cascade do |t|
