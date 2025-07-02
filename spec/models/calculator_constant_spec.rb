@@ -41,7 +41,7 @@ RSpec.describe CalculatorConstant, type: :model do
 
     it 'returns false if description nil' do
       descriptionless = create(:calculator_constant, description: nil)
-      expect(calculator_constant.set_rate_adjustment_if_exists).to be false
+      expect(descriptionless.set_rate_adjustment_if_exists).to be false
     end
 
     it 'returns false if benefit type not included in description' do
