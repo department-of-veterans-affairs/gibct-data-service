@@ -102,3 +102,5 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', platforms: :ruby
 end
+
+gem 'solid_queue', '~> 1.1'
