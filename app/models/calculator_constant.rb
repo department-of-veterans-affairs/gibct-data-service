@@ -69,10 +69,10 @@ class CalculatorConstant < ApplicationRecord
     update(rate_adjustment:)
   end
 
-  private
-
   # Parse benefit types from description
   def matched_benefit_types
+    return [] unless description
+
     benefit_type_options = RateAdjustment.pluck(:benefit_type).join('|') # e.g. "30|31|33|35|1606"
     description.scan(/(?:Chapter|Ch\.?) (#{benefit_type_options})/).flatten
   end

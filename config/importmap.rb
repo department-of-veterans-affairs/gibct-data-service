@@ -1,5 +1,9 @@
 # Pin npm packages by running ./bin/importmap
 
+# Important! In application.html.erb, we must hard code script and links tags that reference assets pinned by
+#            importmap. Otherwise we're unable to include nonce attribute, which violates CSP. When a new
+#            asset is pinned, don't forget to update application.html.erb.
+
 # main.js instead of application.js to avoid name-collision with legacy app/assets/javascripts/application.js
 pin "main", to: "main.js", preload: true
 pin_all_from "app/javascript/controllers", under: "controllers"

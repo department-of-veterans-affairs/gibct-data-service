@@ -47,6 +47,39 @@ RSpec.describe CalculatorConstant, type: :model do
     end
   end
 
+  describe '#set_rate_adjustment_if_exists' do
+    subject(:calculator_constant) { create(:calculator_constant) }
+
+    let(:rate_adjustment) { create :rate_adjustment }
+
+    it 'returns false if description nil' do
+      descriptionless = create(:calculator_constant, description: nil)
+      expect(descriptionless.set_rate_adjustment_if_exists).to be false
+    end
+
+    it 'returns false if benefit type not included in description' do
+      expect(calculator_constant.set_rate_adjustment_if_exists).to be false
+    end
+
+    it 'returns false if rate adjustment association already exists' do
+      with_rate_adjustment = create(:calculator_constant, :associated_rate_adjustment)
+      expect(with_rate_adjustment.set_rate_adjustment_if_exists).to be false
+    end
+
+    it 'returns false if benefit type not prefaced by Chapter or Ch.' do
+      chapterless_description = "References #{rate_adjustment.benefit_type} benefit type"
+      calculator_constant.update(description: chapterless_description)
+      expect(calculator_constant.set_rate_adjustment_if_exists).to be false
+    end
+
+    it 'updates rate adjustment and returns true if match found' do
+      matching_description = "References Ch. #{rate_adjustment.benefit_type} benefit type"
+      calculator_constant.update(description: matching_description)
+      expect(calculator_constant.set_rate_adjustment_if_exists).to be true
+      expect(calculator_constant.rate_adjustment).to eq(rate_adjustment)
+    end
+  end
+
   describe 'when updating' do
     subject(:calculator_constant) { create(:calculator_constant) }
 
@@ -65,28 +98,6 @@ RSpec.describe CalculatorConstant, type: :model do
       constants = described_class.by_rate_adjustment(rate_adjustment.id)
       expect(constants.length).to eq(1)
       expect(constants.first).to eq(calculator_constant)
-    end
-  end
-
-  describe '#set_rate_adjustment_if_exists' do
-    subject(:calculator_constant) { create(:calculator_constant) }
-
-    let(:rate_adjustment) { create :rate_adjustment }
-
-    it 'returns false if benefit type not included in description' do
-      expect(calculator_constant.set_rate_adjustment_if_exists).to be false
-    end
-
-    it 'returns false if rate adjustment association already exists' do
-      with_rate_adjustment = create(:calculator_constant, :associated_rate_adjustment)
-      expect(with_rate_adjustment.set_rate_adjustment_if_exists).to be false
-    end
-
-    it 'updates rate adjustment and returns true if match found' do
-      matching_description = "References #{rate_adjustment.chapterize} benefit type"
-      calculator_constant.update(description: matching_description)
-      expect(calculator_constant.set_rate_adjustment_if_exists).to be true
-      expect(calculator_constant.rate_adjustment).to eq(rate_adjustment)
     end
   end
 
