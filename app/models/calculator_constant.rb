@@ -7,6 +7,8 @@ class CalculatorConstant < ImportableRecord
     'description' => { column: :description, converter: Converters::BaseConverter }
   }.freeze
 
+  belongs_to :rate_adjustment, optional: true
+
   default_scope { order('name') }
 
   validates :name, uniqueness: true, presence: true
@@ -20,4 +22,22 @@ class CalculatorConstant < ImportableRecord
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
+
+  # Associate with rate adjustment if benefit type parseable from description
+  # Explicitly used for seeds/migrations
+  def set_rate_adjustment_if_exists
+    return false if rate_adjustment.present? || matched_benefit_types.empty?
+
+    benefit_type = matched_benefit_types.first
+    rate_adjustment = RateAdjustment.find_by(benefit_type:)
+    update(rate_adjustment:)
+  end
+
+  # Parse benefit types from description
+  def matched_benefit_types
+    return [] unless description
+
+    benefit_type_options = RateAdjustment.pluck(:benefit_type).join('|') # e.g. "30|31|33|35|1606"
+    description.scan(/(?:Chapter|Ch\.?) (#{benefit_type_options})/).flatten
+  end
 end

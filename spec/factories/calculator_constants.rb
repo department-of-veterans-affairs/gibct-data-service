@@ -7,6 +7,11 @@ FactoryBot.define do
       ('A'..'Z').to_a.sample(length).join
     end
     float_value { |_n| Random.rand.round(2) }
+    description { 'Sample description' }
+  end
+
+  trait :associated_rate_adjustment do
+    association :rate_adjustment
   end
 
   trait :avg_dod_bah_constant do
