@@ -8,10 +8,12 @@
   <!-- TO DO: convert legacy jquery to hotwire stimulus -->
   <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', nonce: '**CSP_NONCE**' %>
 
-  <!-- Load modern ES6 modules via Importmap (e.g. Stimulus controllers) -->
-  <!-- override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js -->
-
-  <!-- Manually write importmap scripts with nonce -->
+  <!-- > Load modern ES6 modules via Importmap (e.g. Stimulus controllers)
+       > Override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js
+       > Must manually write importmap scripts with nonce attribute. Standard is to use javascript_importmap_tags helper to generate
+         script tags and links. But helper method does not execpt nonce argument and will therefore violate CSP enforced
+       > Important! Because we're hard coding the script and links tags, you must update every time a new asset is pinned
+         in importmap.rb -->
   <script type="importmap" data-turbo-track="reload" nonce="**CSP_NONCE**">
     {
       "imports": {
@@ -23,6 +25,7 @@
       }
     }
   </script>
+  <!-- Same here! Don't forget to update whenever a new asset is pinned in importmap.rb -->
   <link rel="modulepreload" href="<%= asset_path('main.js') %>">
   <link rel="modulepreload" href="<%= asset_path('@hotwired--stimulus.js') %>">
   <link rel="modulepreload" href="<%= asset_path('@hotwired--turbo-rails.js') %>">
