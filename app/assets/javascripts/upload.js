@@ -34,7 +34,6 @@ document.addEventListener("turbo:load", function() {
       $(".ui-dialog-titlebar-close").hide(); 
     }
   });
-
   
   const updateProgress = (completed, total) => {
     const percentage = (completed / total) * 100;
@@ -112,6 +111,7 @@ document.addEventListener("turbo:load", function() {
 
           // Try each upload five times
           let response;
+          let lastError;
           let attempts = MAX_RETRIES
           while(!response?.ok && attempts > 0) {
             try {
@@ -122,14 +122,22 @@ document.addEventListener("turbo:load", function() {
                 body: formData
               });
             } catch(error) {
-              console.error(error);
-              sleep();
+              lastError = error;
+              console.error("Fetch error:", error);
+              await sleep();
             }
           }
 
           // Throw error if all retries fail
-          if (!response.ok) {
-            throw new Error(`Upload failed with status ${response.status}`);
+          if (!response || !response.ok || !response.headers.get("Content-Type")?.includes("application/json")) {
+            const responseBody = response ? await response.text() : "no response";
+            console.error("Upload failed. Details:");
+            console.error("Status:", response?.status || "no status");
+            console.error("Response body:", responseBody);
+            if (lastError) {
+              console.error("Last caught error:", lastError);
+            }
+            throw new Error("Upload failed or response was not JSON");
           }
           const data = await response.json();
           uploadId = data.upload.id;
