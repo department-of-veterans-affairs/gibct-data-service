@@ -27,6 +27,7 @@ module InstitutionBuilder
     include CommonInstitutionBuilder::VersionGeneration
     extend Common
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def self.run_insertions(version)
       build_messages = {}
       initialize_with_weams(version)
@@ -64,7 +65,10 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
-      build_public_export(version.id)
+
+      # Do not build in unless production or local environment
+      # Ultimately we're pulling this out and putting it in a batch job overnite
+      build_public_export(version.id) if production? || ENV['CI'].blank?
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
@@ -78,6 +82,7 @@ module InstitutionBuilder
 
       build_messages.filter { |_k, v| v.present? }
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def self.run(user)
       prev_gen_start = Time.now.utc
