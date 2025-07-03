@@ -4,6 +4,7 @@ require 'rails_helper'
 require 'support/controller_macros'
 require 'support/devise'
 require 'controllers/shared_examples/shared_examples_for_authentication'
+require 'controllers/shared_examples/shared_examples_for_collection_updatable'
 
 RSpec.describe CalculatorConstantsController, type: :controller do
   it_behaves_like 'an authenticating controller', :index, 'calculator_constants'
@@ -11,29 +12,46 @@ RSpec.describe CalculatorConstantsController, type: :controller do
   describe 'GET #index' do
     login_user
 
-    it 'returns calculator constants' do
-      create_list(:calculator_constant, 2)
+    it 'returns calculator constants and rate adjustments' do
+      create_list(:calculator_constant, 2, :associated_rate_adjustment)
       get :index
       expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
+      expect(assigns(:rate_adjustments)).to eq(RateAdjustment.by_chapter_number)
     end
   end
 
   describe 'POST #update' do
     login_user
-    test_rate = 9999.99
 
-    let(:params) do
-      {
+    it_behaves_like 'a collection updatable', :float_value
+
+    it 'flashes updated fields' do
+      constant = create(:calculator_constant)
+      params = {
         calculator_constants: {
-          AVGDODBAH: test_rate
+          constant.id.to_s => { float_value: constant.float_value + 1 }
         }
       }
-    end
-
-    it 'updated calculator constants' do
-      create :calculator_constant, :avg_dod_bah_constant
       post(:update, params: params)
-      expect(CalculatorConstant.where(name: 'AVGDODBAH')[0].float_value).to eq(test_rate)
+      expect(flash[:success][:updated_fields]).to include(constant.name)
+    end
+  end
+
+  describe 'POST #apply_rate_adjustments' do
+    login_user
+
+    let(:calculator_constant) { create(:calculator_constant, :associated_rate_adjustment) }
+    let(:rate_adjustment_id) { calculator_constant.rate_adjustment_id }
+    let(:params) { { rate_adjustment_id: rate_adjustment_id } }
+
+    it 'updates calculator constants associated with rate adjustment and flashes updated fields' do
+      allow(CalculatorConstant).to receive(:where)
+        .with({ rate_adjustment_id: rate_adjustment_id.to_s })
+        .and_return([calculator_constant])
+      allow(calculator_constant).to receive(:apply_rate_adjustment).and_call_original
+      post(:apply_rate_adjustments, params: params)
+      expect(calculator_constant).to have_received(:apply_rate_adjustment)
+      expect(flash[:success][:updated_fields]).to include(calculator_constant.name)
     end
   end
 end

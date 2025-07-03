@@ -1,0 +1,38 @@
+<%= form_with(url: rate_adjustments_path,
+              id: "rate_adjustments_update",
+              data: { action: "turbo:submit-end->rates-form#toggleForm",
+                      rates_form_target: "form" }) do %>
+  <div class="panel panel-default">
+    <div class="panel-heading" data-rates-form-target="heading">
+      <div>Rate Adjustments</div>
+      <div class="rates-btns">
+        <%= button_tag "Edit",
+                        type: "button",
+                        class: "btn rate-edit",
+                        data: { action: "click->rates-form#toggleForm", rates_form_target: "editButton" } %>
+        <%= button_tag type: "submit",
+                      class: "btn rate-save",
+                      disabled: "true",
+                      data: { rates_form_target: "updateButton" } do %>
+            <span class="glyphicon glyphicon-ok"></span>   
+        <% end %>
+        <%= button_tag type: "button",
+                       class: "btn rate-cancel",
+                       disabled: "true",
+                       data: { action: "click->rates-form#cancel", rates_form_target: "updateButton" } do %>
+        <span class="glyphicon glyphicon-remove"></span>   
+        <% end %>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="rates-alert">
+        <aside class="alert alert-warning" data-rates-form-target="warning" hidden>
+          Please save or discard changes to Rate Adjustments before updating Calculator Constants.
+        </aside>
+      </div>
+      <div id="rates-list">
+        <%= render partial: "rate_adjustment", collection: @rate_adjustments %>
+      </div>
+    </div>
+  </div>
+<% end %>
