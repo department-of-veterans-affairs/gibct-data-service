@@ -65,10 +65,8 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
-
-      # Do not build in unless production or local environment
-      # Ultimately we're pulling this out and putting it in a batch job overnite
-      build_public_export(version.id) if production? || ENV['CI'].blank?
+      add_calculator_constant_versions(version.id)
+      build_public_export(version.id)
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
@@ -1278,6 +1276,11 @@ module InstitutionBuilder
       SQL
       sql = Institution.send(:sanitize_sql, [str])
       Institution.connection.execute(sql)
+    end
+
+    def self.add_calculator_constant_versions(version_id)
+      log_info_status 'Adding Calculator Constant Versions'
+      CalculatorConstantVersionBuilder.build(version_id)
     end
 
     def self.build_public_export(version_id)

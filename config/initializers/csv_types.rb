@@ -21,8 +21,6 @@ Rails.application.config.to_prepare do
     { klass: Sva, required?: true },
     { klass: Vsoc, required?: true, has_api?: true, no_api_key?: true },
     { klass: Weam, required?: true },
-    # No longer importable record, updated instead via calculator constants dashboard
-    # { klass: CalculatorConstant, required?: false },
     { klass: IpedsCipCode, required?: true },
     { klass: StemCipCode, required?: true },
     { klass: YellowRibbonProgramSource, required?: true },

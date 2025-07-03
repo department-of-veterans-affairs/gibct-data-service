@@ -2,12 +2,6 @@
 
 class CalculatorConstant < ApplicationRecord
   # No longer importable record, updated instead via calculator constants dashboard
-  # Leaving csv settings in place in case spreadsheet upload desired again in future
-  # CSV_CONVERTER_INFO = {
-  #   'name' => { column: :name, converter: Converters::UpcaseConverter },
-  #   'value' => { column: :float_value, converter: Converters::NumberConverter },
-  #   'description' => { column: :description, converter: Converters::BaseConverter }
-  # }.freeze
 
   CONSTANT_NAMES = %w[
     AVEGRADRATE
@@ -54,6 +48,12 @@ class CalculatorConstant < ApplicationRecord
   delegate :benefit_type, to: :rate_adjustment, allow_nil: true
 
   default_scope { order('name') }
+
+  # removing this breaks the caclulator constant request spec (v0)
+  # TODO: remove without breaking functionality
+  scope :version, lambda { |version|
+    # TODO: where(version: version)
+  }
 
   # Associate with rate adjustment if benefit type parseable from description
   # Explicitly used for seeds/migrations
