@@ -44,8 +44,6 @@ class CalculatorConstant < ApplicationRecord
 
   belongs_to :rate_adjustment, optional: true
 
-  default_scope { order('name') }
-
   validates :name, uniqueness: true, presence: true, inclusion: { in: CONSTANT_NAMES }
   validates :float_value, presence: true
 
@@ -55,9 +53,7 @@ class CalculatorConstant < ApplicationRecord
 
   delegate :benefit_type, to: :rate_adjustment, allow_nil: true
 
-  scope :version, lambda { |version|
-    # TODO: where(version: version)
-  }
+  default_scope { order('name') }
 
   # Associate with rate adjustment if benefit type parseable from description
   # Explicitly used for seeds/migrations
@@ -68,6 +64,20 @@ class CalculatorConstant < ApplicationRecord
     rate_adjustment = RateAdjustment.find_by(benefit_type:)
     update(rate_adjustment:)
   end
+
+  def apply_rate_adjustment
+    return if rate_adjustment.nil?
+
+    percent_increase = 1 + (rate_adjustment.rate / 100)
+    self.float_value = (float_value * percent_increase).round(2)
+    tap(&:save) # return updated object instead of true
+  end
+
+  def previous_year_value
+    nil
+  end
+
+  private
 
   # Parse benefit types from description
   def matched_benefit_types

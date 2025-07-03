@@ -45,8 +45,8 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     let(:params) { { rate_adjustment_id: rate_adjustment_id } }
 
     it 'updates calculator constants associated with rate adjustment and flashes updated fields' do
-      allow(CalculatorConstant).to receive(:by_rate_adjustment)
-        .with(rate_adjustment_id.to_s)
+      allow(CalculatorConstant).to receive(:where)
+        .with({ rate_adjustment_id: rate_adjustment_id.to_s })
         .and_return([calculator_constant])
       allow(calculator_constant).to receive(:apply_rate_adjustment).and_call_original
       post(:apply_rate_adjustments, params: params)

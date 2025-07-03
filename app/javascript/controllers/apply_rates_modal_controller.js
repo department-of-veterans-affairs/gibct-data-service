@@ -23,7 +23,7 @@ export default class extends Controller {
     
     // Only enable modal if certain criteria met
     // If associated rate is 0%, disable modal
-    if (rate === 0.0) {
+    if (rate === '0.0') {
       this.#showContent(0);
     // If zero constants affected, disable modal
     } else if (names.length === 0) {

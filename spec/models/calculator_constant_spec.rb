@@ -90,17 +90,6 @@ RSpec.describe CalculatorConstant, type: :model do
     end
   end
 
-  describe '.by_rate_adjustment' do
-    subject(:calculator_constant) { create(:calculator_constant, :associated_rate_adjustment) }
-
-    it 'filters calculator constants by specified rate-adjustment_id' do
-      rate_adjustment = calculator_constant.rate_adjustment
-      constants = described_class.by_rate_adjustment(rate_adjustment.id)
-      expect(constants.length).to eq(1)
-      expect(constants.first).to eq(calculator_constant)
-    end
-  end
-
   describe '#apply_rate_adjustment' do
     it 'returns nil if no associated rate adjustment' do
       calculator_constant = create(:calculator_constant)

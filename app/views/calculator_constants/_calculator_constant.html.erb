@@ -7,7 +7,7 @@
               name="calculator_constants[<%= constant.id %>][description]"><%= constant.description %></textarea>
   </td> 
   <td width="auto">
-    <select name="calculator_constants[<%= constant.id %>][rate_adjustment_id]"
+    <select name="calculator_constants[<%= constant.id %>][rate_adjustment_id]">
           <% if constant.benefit_type.nil? %>
             disabled
             selected
@@ -19,7 +19,7 @@
       <% end %>
     </select>
   </td>
-  <td width="auto"><!-- TO DO: after versioning implemented --></td>
+  <td disabled width="auto" <%= "class=previous-year-unavailable" if constant.previous_year_value.nil? %>></td>
   <td width="auto">
     <input type="number"
             class="form-control"
