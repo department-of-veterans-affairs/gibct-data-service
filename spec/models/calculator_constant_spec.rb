@@ -36,12 +36,6 @@ RSpec.describe CalculatorConstant, type: :model do
       expect(invalid_name.errors.first.type).to eq(:inclusion)
     end
 
-    it 'requires inclusion of name in CONSTANT_NAMES' do
-      invalid_name = build(:calculator_constant, name: 'ERROR')
-      expect(invalid_name).not_to be_valid
-      expect(invalid_name.errors.first.type).to eq(:inclusion)
-    end
-
     it 'requires presence of float value' do
       expect(build(:calculator_constant, float_value: nil)).not_to be_valid
     end

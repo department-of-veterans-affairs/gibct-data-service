@@ -25,7 +25,7 @@ class CalculatorConstantsController < ApplicationController
   # Apply rate adjustments to associated constants
   def apply_rate_adjustments
     updated = CalculatorConstant.where(rate_adjustment_id: @rate_adjustment_id)
-                                .each(&:apply_rate_adjustment)
+                                .find_each(&:apply_rate_adjustment)
     flash[:success] = {
       updated_fields: updated.pluck(:name)
     }
