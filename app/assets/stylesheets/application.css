@@ -291,6 +291,16 @@ table.crosswalk-issues thead.sub th {
 
 .calculator-constants-table {
   margin-top: 10px;
+  table-layout: auto;
+}
+
+.calculator-constants-table td:not(:nth-child(2)) {
+  white-space: nowrap;
+}
+
+.calculator-constants-table input[type="number"] {
+  width: 100%;
+  min-width: min-content;
 }
 
 #calculator_constants_update .row {
