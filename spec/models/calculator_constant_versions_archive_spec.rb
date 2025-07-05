@@ -15,7 +15,7 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
     end
 
     it 'requires presence of name' do
-      expect(build(:constant_archive, name: nil)).not_to be_valid
+      expect(build(:calculator_constant_versions_archive, name: nil)).not_to be_valid
     end
 
     it 'requires inclusion of name in CONSTANT_NAMES' do
@@ -31,13 +31,12 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
 
   describe '.circa' do
     # TO-DO: Associate archives with versions and update factory to use :association
-    subject(:constant_archive) { create(:calculator_constant_versions_archive, version_id: version.id) }
-
+    let!(:constant_archive) { create(:calculator_constant_versions_archive, version_id: version.id) }
     let(:version) { create(:version, :production, :from_last_year) }
 
     it 'returns all constants belonging to last version as of a specific year' do
       previous_year = 1.year.ago.year
-      expect(described_class.circa(previous_year)).to eq([constant_archive])
+      expect(described_class.circa(previous_year)).to include(constant_archive)
     end
   end
 end

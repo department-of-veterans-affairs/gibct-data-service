@@ -30,11 +30,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
 
     it 'flashes updated fields' do
       constant = create(:calculator_constant)
-      params = {
-        calculator_constants: {
-          constant.id.to_s => { float_value: constant.float_value + 1 }
-        }
-      }
+      params = { calculator_constants: { constant.id.to_s => { float_value: constant.float_value + 1 } } }
       post(:update, params: params)
       expect(flash[:success][:updated_fields]).to include(constant.name)
     end
@@ -42,7 +38,8 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     # This is the mechanism that tells the generate version function something changed
     # that needs a new version to be generated
     it 'creates an upload row and sets the columns to expected values' do
-      create(:calculator_constant)
+      constant = create(:calculator_constant)
+      params = { calculator_constants: { constant.id.to_s => { float_value: constant.float_value + 1 } } }
       post(:update, params: params)
       expect(Upload.count).to eq(1)
 

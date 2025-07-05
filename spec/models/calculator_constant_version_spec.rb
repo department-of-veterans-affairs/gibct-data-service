@@ -15,7 +15,7 @@ RSpec.describe CalculatorConstantVersion, type: :model do
     end
 
     it 'requires presence of name' do
-      expect(build(:constant_version, name: nil)).not_to be_valid
+      expect(build(:calculator_constant_version, name: nil)).not_to be_valid
     end
 
     it 'requires inclusion of name in CONSTANT_NAMES' do
