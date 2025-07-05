@@ -12,9 +12,9 @@
         <div class="modal-body">
           <p>Please select the benefit type for which you would like to apply rate adjustments. </p>
           <div class="form-group">
-            <%= label_tag "benefit_type", "Benefit Type: "%>
+            <%= label_tag "rate_adjustment_select", "Benefit Type: "%>
             <select name="rate_adjustment_id"
-                    id="benefit_type"
+                    id="rate_adjustment_select"
                     data-apply-rates-modal-target="select"
                     data-action="change->apply-rates-modal#update">
               <%= @rate_adjustments.each do |rate_adjustment| %>

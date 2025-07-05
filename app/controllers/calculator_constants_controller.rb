@@ -26,7 +26,6 @@ class CalculatorConstantsController < ApplicationController
 
     # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
     create_upload_row
-    @unpublished_calculator_constants = CalculatorConstant.unpublished?
 
     redirect_to action: :index
   end
@@ -41,7 +40,6 @@ class CalculatorConstantsController < ApplicationController
 
     # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
     create_upload_row
-    @unpublished_calculator_constants = CalculatorConstant.unpublished?
 
     redirect_to action: :index
   end

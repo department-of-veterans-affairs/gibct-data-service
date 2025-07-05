@@ -4,14 +4,11 @@ export default class extends Controller {
   static targets = [ "dialog", "select", "warning", "constantsList", "rateApplied", "ul", 
                      "confirm", "form", "applyButton" ];
 
-  connect() {
-    this.update();
-  }
-
   show(event) {
     event.preventDefault();
     event.stopImmediatePropagation()
 
+    this.update();
     $(this.dialogTarget).modal("show");
     this.selectTarget.selectedIndex = 0;
   }
