@@ -241,7 +241,7 @@ RSpec.describe InstitutionBuilder, type: :model do
 
     describe 'when adding CalculatorConstantVersion data' do
       before do
-        create :calculator_constant, :avg_dod_bah_constant
+        create :calculator_constant
         described_class.run(user)
       end
 
