@@ -1,5 +1,5 @@
 <tr>
-  <td width="20%"><%= constant.name %></td>
+  <td width="auto"><%= constant.name %></td>
   <td data-action="click->constants-form#enableEditing focusout->constants-form#disableEditing">
     <p class="constant-description"><%= constant.description %></p>
     <textarea class="form-control"
@@ -19,7 +19,9 @@
       <% end %>
     </select>
   </td>
-  <td disabled width="auto" <%= "class=previous-year-unavailable" if constant.previous_year_value.nil? %>></td>
+  <td width="auto" style="background-color: #f5f5f5;">
+    <%= @previous_constants.index_by(&:name)[constant.name]&.float_value %>
+  </td>
   <td width="auto">
     <input type="number"
             class="form-control"

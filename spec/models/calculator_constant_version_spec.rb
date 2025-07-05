@@ -3,5 +3,29 @@
 require 'rails_helper'
 
 RSpec.describe CalculatorConstantVersion, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'when validating' do
+    subject(:constant_version) { create(:calculator_constant_version) }
+
+    it 'has a valid factory' do
+      expect(constant_version).to be_valid
+    end
+
+    it 'requires uniqueness' do
+      expect(constant_version.dup).not_to be_valid
+    end
+
+    it 'requires presence of name' do
+      expect(build(:constant_version, name: nil)).not_to be_valid
+    end
+
+    it 'requires inclusion of name in CONSTANT_NAMES' do
+      invalid_name = build(:calculator_constant_version, name: 'ERROR')
+      expect(invalid_name).not_to be_valid
+      expect(invalid_name.errors.first.type).to eq(:inclusion)
+    end
+
+    it 'requires presence of float value' do
+      expect(build(:calculator_constant_version, float_value: nil)).not_to be_valid
+    end
+  end
 end

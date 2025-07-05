@@ -293,10 +293,6 @@ table.crosswalk-issues thead.sub th {
   margin-top: 10px;
 }
 
-.calculator-constants-table td.previous-year-unavailable {
-  background-color: #f5f5f5;
-}
-
 #calculator_constants_update .row {
   display: flex;
   align-items: flex-end;

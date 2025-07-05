@@ -6,7 +6,11 @@ class CalculatorConstantsController < ApplicationController
   before_action :set_rate_adjustment_id, only: :apply_rate_adjustments
 
   def index
+    previous_year = Date.today.years_ago(1).year
+    
     @calculator_constants = CalculatorConstant.all
+    @constants_unpublished = CalculatorConstant.unpublished?
+    @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year) 
     @rate_adjustments = RateAdjustment.by_chapter_number
   end
 
@@ -22,6 +26,7 @@ class CalculatorConstantsController < ApplicationController
 
     # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
     create_upload_row
+    @unpublished_calculator_constants = CalculatorConstant.unpublished?
 
     redirect_to action: :index
   end
@@ -29,10 +34,15 @@ class CalculatorConstantsController < ApplicationController
   # Apply rate adjustments to associated constants
   def apply_rate_adjustments
     updated = CalculatorConstant.where(rate_adjustment_id: @rate_adjustment_id)
-                                .find_each(&:apply_rate_adjustment)
+                                .map(&:apply_rate_adjustment)
     flash[:success] = {
       updated_fields: updated.pluck(:name)
     }
+
+    # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
+    create_upload_row
+    @unpublished_calculator_constants = CalculatorConstant.unpublished?
+
     redirect_to action: :index
   end
 

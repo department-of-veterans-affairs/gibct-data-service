@@ -15,7 +15,10 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     it 'returns calculator constants and rate adjustments' do
       create_list(:calculator_constant, 2, :associated_rate_adjustment)
       get :index
+      previous_year = Date.today.years_ago(1).year
       expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
+      expect(assigns(:constants_unpublished)).to eq(CalculatorConstant.unpublished?)
+      expect(assigns(:previous_constants)).to eq(CalculatorConstantVersionsArchive.circa(previous_year))
       expect(assigns(:rate_adjustments)).to eq(RateAdjustment.by_chapter_number)
     end
   end
@@ -34,6 +37,23 @@ RSpec.describe CalculatorConstantsController, type: :controller do
       }
       post(:update, params: params)
       expect(flash[:success][:updated_fields]).to include(constant.name)
+    end
+
+    # This is the mechanism that tells the generate version function something changed
+    # that needs a new version to be generated
+    it 'creates an upload row and sets the columns to expected values' do
+      create(:calculator_constant)
+      post(:update, params: params)
+      expect(Upload.count).to eq(1)
+
+      uploade = Upload.last
+      expect(uploade.user).to eq current_user
+      expect(uploade.csv).to eq 'Gonculator Constants Online'
+      expect(uploade.csv_type).to eq 'CalculatorConstant'
+      expect(uploade.comment).to eq 'Updated Gonculator Constant value(s)'
+      expect(uploade.ok).to eq true
+      expect(uploade.completed_at).not_to be nil
+      expect(uploade.multiple_file_upload).to eq false
     end
   end
 
@@ -57,8 +77,8 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     # This is the mechanism that tells the generate version function something changed
     # that needs a new version to be generated
     it 'creates an upload row and sets the columns to expected values' do
-      create :calculator_constant, :avg_dod_bah_constant
-      post(:update, params: params)
+      create(:calculator_constant)
+      post(:apply_rate_adjustments, params: params)
       expect(Upload.count).to eq(1)
 
       uploade = Upload.last

@@ -124,7 +124,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_02_164254) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
-    t.float "previous_year"
     t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
     t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"

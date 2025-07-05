@@ -7,7 +7,7 @@ RSpec.describe CalculatorConstant, type: :model do
 
   describe 'instance methods' do
     it 'responds to value' do
-      expect(build(:calculator_constant).value).to be_a(Float)
+      expect(build(:calculator_constant).float_value).to be_a(Float)
     end
   end
 

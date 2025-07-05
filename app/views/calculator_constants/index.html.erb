@@ -2,6 +2,11 @@
      data-controller="rates-form constants-form apply-rates-modal"
      data-action="turbo:load->rate-form#reset">
   <div class="col-md-8">
+    <% if @constants_unpublished %>
+      <aside class="alert alert-warning">
+        Unpublished changes to Calculator Constants present. Generate new version from Dashboard.
+      </aside>
+    <% end %>
     <% if flash[:success].present? %>
       <aside class="alert alert-success" data-turbo-temporary="true">
         <% if flash[:success][:message].present? %>

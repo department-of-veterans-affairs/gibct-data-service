@@ -3,6 +3,8 @@
 class CalculatorConstant < ApplicationRecord
   # No longer importable record, updated instead via calculator constants dashboard
 
+  self.ignored_columns += ["previous_year"]
+
   CONSTANT_NAMES = %w[
     AVEGRADRATE
     AVEREPAYMENTRATE
@@ -43,8 +45,6 @@ class CalculatorConstant < ApplicationRecord
 
   attr_readonly :name
 
-  alias_attribute :value, :float_value
-
   delegate :benefit_type, to: :rate_adjustment, allow_nil: true
 
   default_scope { order('name') }
@@ -54,6 +54,10 @@ class CalculatorConstant < ApplicationRecord
   scope :version, lambda { |version|
     # TODO: where(version: version)
   }
+
+  def self.unpublished?
+    Upload.since_last_version.any? { |upload| upload.csv_type == self.name }
+  end
 
   # Associate with rate adjustment if benefit type parseable from description
   # Explicitly used for seeds/migrations
@@ -71,10 +75,6 @@ class CalculatorConstant < ApplicationRecord
     percent_increase = 1 + (rate_adjustment.rate / 100)
     self.float_value = (float_value * percent_increase).round(2)
     tap(&:save) # return updated object instead of true
-  end
-
-  def previous_year_value
-    nil
   end
 
   private

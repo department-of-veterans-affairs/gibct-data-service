@@ -66,7 +66,7 @@ module InstitutionBuilder
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
       add_calculator_constant_versions(version.id)
-      build_public_export(version.id)
+      build_public_export(version.id) if production? || ENV['CI'].blank?
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
