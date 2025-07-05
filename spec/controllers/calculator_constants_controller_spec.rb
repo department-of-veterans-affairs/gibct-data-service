@@ -15,7 +15,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     it 'returns calculator constants and rate adjustments' do
       create_list(:calculator_constant, 2, :associated_rate_adjustment)
       get :index
-      previous_year = Date.today.years_ago(1).year
+      previous_year = 1.year.ago.year
       expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
       expect(assigns(:constants_unpublished)).to eq(CalculatorConstant.unpublished?)
       expect(assigns(:previous_constants)).to eq(CalculatorConstantVersionsArchive.circa(previous_year))

@@ -140,7 +140,7 @@ RSpec.describe Version, type: :model do
 
     it 'returns the most recently completed version as of a specific year' do
       latest = create(:version, :production, :from_last_year)
-      previous_year = Date.today.years_ago(1).year
+      previous_year = 1.year.ago.year
       expect(described_class.latest_from_year(previous_year)).to eq(latest)
     end
 

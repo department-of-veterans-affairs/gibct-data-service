@@ -3,8 +3,6 @@
 class CalculatorConstant < ApplicationRecord
   # No longer importable record, updated instead via calculator constants dashboard
 
-  self.ignored_columns += ["previous_year"]
-
   CONSTANT_NAMES = %w[
     AVEGRADRATE
     AVEREPAYMENTRATE
@@ -56,7 +54,7 @@ class CalculatorConstant < ApplicationRecord
   }
 
   def self.unpublished?
-    Upload.since_last_version.any? { |upload| upload.csv_type == self.name }
+    Upload.since_last_version.any? { |upload| upload.csv_type == name }
   end
 
   # Associate with rate adjustment if benefit type parseable from description

@@ -51,7 +51,7 @@ class Version < ApplicationRecord
   # Used by CalculatorConstantVersionsArchive to find most recently completed version as of a specific year
   def self.latest_from_year(year)
     raise ArgumentError, 'Must provide a valid year' unless year.is_a?(Integer)
-    
+
     Version.where('extract(year from completed_at) = ?', year)
            .order(number: :desc)
            .first

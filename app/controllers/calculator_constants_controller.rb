@@ -6,11 +6,11 @@ class CalculatorConstantsController < ApplicationController
   before_action :set_rate_adjustment_id, only: :apply_rate_adjustments
 
   def index
-    previous_year = Date.today.years_ago(1).year
-    
+    previous_year = 1.year.ago.year
+
     @calculator_constants = CalculatorConstant.all
     @constants_unpublished = CalculatorConstant.unpublished?
-    @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year) 
+    @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year)
     @rate_adjustments = RateAdjustment.by_chapter_number
   end
 

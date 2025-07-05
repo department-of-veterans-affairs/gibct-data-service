@@ -36,7 +36,7 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
     let(:version) { create(:version, :production, :from_last_year) }
 
     it 'returns all constants belonging to last version as of a specific year' do
-      previous_year = Date.today.years_ago(1).year
+      previous_year = 1.year.ago.year
       expect(described_class.circa(previous_year)).to eq([constant_archive])
     end
   end
