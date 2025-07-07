@@ -10,5 +10,7 @@ class Vsoc < ImportableRecord
     'vetsuccess_email' => { column: :vetsuccess_email, converter: Converters::BaseConverter }
   }.freeze
 
+  API_SOURCE = 'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/'
+
   validates :facility_code, presence: true
 end

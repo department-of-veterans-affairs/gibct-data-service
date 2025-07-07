@@ -385,6 +385,55 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('institution_search_results')
     end
+
+    # tests for coordinate-based name+location search
+    it 'returns filtered results when searching by both name and coordinates' do
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+      create(:institution, :production_version, :location, institution: 'BOSTON UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard'
+          })
+
+      results = JSON.parse(response.body)['data']
+      expect(results.count).to eq(1)
+      expect(results[0]['attributes']['name']).to eq('HARVARD UNIVERSITY')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results when name does not match within location radius' do
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'stanford'
+          })
+
+      expect(JSON.parse(response.body)['data'].count).to eq(0)
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'maintains accurate count in meta for coordinate and name search' do
+      create_list(:institution, 3, :production_version, :location)
+      create(:institution, :production_version, :location, institution: 'HARVARD UNIVERSITY')
+
+      get(:location, params: {
+            latitude: '32.7876',
+            longitude: '-79.9403',
+            distance: '50',
+            name: 'harvard'
+          })
+
+      body = JSON.parse(response.body)
+      expect(body['data'].count).to eq(1)
+      expect(body['meta']['count']).to eq(1)
+      expect(response).to match_response_schema('institution_search_results')
+    end
   end
 
   context 'with compare results' do
@@ -462,6 +511,29 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('errors')
     end
+
+    # rubocop:disable RSpec/LetSetup
+    context 'with versioned complaints present' do
+      let(:other_version) { create :version }
+      let!(:school) { create :institution, ope: '00279100', ope6: '02791', version_id: Version.current_production.id }
+      let!(:versioned_complaints) do
+        [
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: school.facility_code, ope6: school.ope6, status: 'closed'), # match by facility_code and ope6
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: '99999999', ope6: school.ope6, status: 'closed'), # match by ope6
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: '99999999', ope6: school.ope6, status: 'closed'), # match by ope6
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: school.facility_code, ope6: school.ope6, status: 'active'), # wrong status
+          create(:versioned_complaint, version_id: other_version.id, facility_code: school.facility_code, ope6: school.ope6, status: 'closed') # wrong version
+        ]
+      end
+
+      it 'returns only those complaints associated with the given institution' do
+        get(:show, params: { id: school.facility_code })
+        data = JSON.parse(response.body)['data']
+        expect(data['attributes']['all_facility_code_complaints'].size).to eq(1)
+        expect(data['attributes']['all_ope6_complaints'].size).to eq(3)
+      end
+    end
+    # rubocop:enable RSpec/LetSetup
   end
 
   context 'with institution children' do
@@ -484,6 +556,35 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       get(:children, params: { id: '10000' })
       expect(response.media_type).to eq('application/json')
       expect(JSON.parse(response.body)['data'].count).to eq(0)
+    end
+  end
+
+  context 'with program search results' do
+    before do
+      create(:version, :production)
+      create(:institution, :production_version, latitude: 30.1659, longitude: -93.2146) # Example institution
+      create(:institution_program, institution: Institution.last, description: 'Software Engineering') # Program associated with the institution
+    end
+
+    it 'search returns results matching program description and location' do
+      get(:program, params: { description: 'Software Engineering', latitude: 30.1659, longitude: -93.2146 })
+      expect(JSON.parse(response.body)['data'].count).to eq(1) # Expecting one result
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results for non-matching program description' do
+      get(:program, params: { description: 'Non-existing Program', latitude: 30.1659, longitude: -93.2146 })
+      expect(JSON.parse(response.body)['data'].count).to eq(0) # Expecting no results
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
+    end
+
+    it 'returns no results for non-matching location' do
+      get(:program, params: { description: 'Software Engineering', latitude: 0.0, longitude: 0.0 })
+      expect(JSON.parse(response.body)['data'].count).to eq(0) # Expecting no results
+      expect(response.media_type).to eq('application/json')
+      expect(response).to match_response_schema('institution_search_results')
     end
   end
 end

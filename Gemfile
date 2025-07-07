@@ -2,15 +2,16 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '7.1.3.4'
+gem 'rails', '7.1.5.1'
 
-gem 'active_model_serializers', '~> 0.10.14' # JSON API
+gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
 gem 'activerecord-session_store' # Switch to AR session storage in case of failure pushing to GIBCT
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'bcrypt', '~> 3.1.20'
 gem 'bootsnap', require: false
 gem 'cancancan', '~> 3.6' # Use cancancan for authorization
+gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
 gem 'devise' # Use devise for authentication
@@ -18,32 +19,37 @@ gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'figaro'
-gem 'font-awesome-rails', '4.7.0.8'
+gem 'font-awesome-rails', '4.7.0.9'
 gem 'geocoder', '~> 1.8'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+gem 'httparty'
+gem 'importmap-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails', branch: 'master'
 gem 'json', '>= 2.3.0'
-gem 'mutex_m', '~> 0.2.0' # ruby 3.4.0 warning said to add
+gem 'mutex_m', '~> 0.3.0' # ruby 3.4.0 warning said to add
+gem 'net-imap', '~> 0.5.8' # ruby 3.4.0 warning said to add
 gem 'newrelic_rpm'
-gem 'nokogiri', '~> 1.16.5'
+gem 'nokogiri', '~> 1.18.8'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 gem 'pg' # Use postgresql as the database for Active Record
-gem 'puma', '~> 6.4.2'
-gem 'rack', '>= 2.2.8.1'
+gem 'puma', '~> 6.6.0'
+gem 'rack', '>= 3.1.10'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'rainbow'
-gem 'rexml', '~> 3.3.4'
+gem 'rexml', '~> 3.4.1'
 gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
-gem 'ruby-saml'
-gem 'rubyzip', '~> 2.3'
+gem 'ruby-saml', '>= 1.18.0'
+gem 'rubyzip', '~> 2.4'
 gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
+gem 'solid_cache', '~> 0.7.0'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
 gem 'terser'
+gem 'turbo-rails'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'
@@ -86,7 +92,7 @@ group :development, :test do
   gem 'parallel_tests'
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test
-  gem 'vcr', '~> 6.2'
+  gem 'vcr', '~> 6.3'
 end
 
 group :development do

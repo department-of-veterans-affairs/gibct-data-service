@@ -17,6 +17,24 @@ class DashboardsController < ApplicationController
     redirect_to dashboards_path
   end
 
+  def unlock_generate_button
+    begin
+      PreviewGenerationStatusInformation.delete_all
+      begin
+        Version.where(production: false).destroy_all
+        flash.notice = 'Unlock completed'
+      rescue StandardError => e
+        log_error(e)
+        flash.error = "Unlock failed on Version: #{e.message}"
+      end
+    rescue StandardError => e
+      log_error(e)
+      flash.error = "Unlock failed on PreviewGenerationStatusInformation: #{e.message}"
+    end
+
+    redirect_to dashboards_path
+  end
+
   def export
     file_type = params[:csv_type]
     if GROUP_FILE_TYPES_NAMES.include?(file_type)
@@ -49,8 +67,8 @@ class DashboardsController < ApplicationController
       format.csv do
         send_data Institution.export_ungeocodables(
           Institution.ungeocodables.pluck(
-            :institution, :facility_code, :address_1, :address_2, :address_3, :city, :state,
-            :zip, :physical_country, :cross, :ope
+            :institution, :facility_code, :physical_address_1, :physical_address_2, :physical_address_3, :physical_city,
+            :physical_state, :physical_zip, :physical_country, :cross, :ope
           )
         ), type: 'text/csv', filename: 'ungeocodables.csv'
       end
@@ -166,12 +184,17 @@ class DashboardsController < ApplicationController
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)
       klass = Object.const_get(class_nm)
 
+      # HCM is a special case. It may have an xls extension or an xlsx extension. Each quarter
+      # this has to be checked and handled appropriately.
       if download_csv(class_nm) && unzip_csv(class_nm)
         upload = Upload.from_csv_type(params[:csv_type])
         upload.user = current_user
         upload.csv =
-          if class_nm.eql?('EightKey') # This guy doesn't load properly with roo as is.
+          case class_nm
+          when 'EightKey' # This guy doesn't load properly with roo as is.
             FileTypeConverters::XlsToCsv.new('tmp/eight_key.xls', 'tmp/eight_key.csv').convert_xls_to_csv
+          when 'Hcm'
+            hcm_spreadsheet_processing(class_nm)
           else
             NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
           end
@@ -209,9 +232,21 @@ class DashboardsController < ApplicationController
   end
 
   def unzip_csv(class_nm)
-    # Some downloads do are not a zip file, so skip and return true
-    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou')
+    # Some downloads are not a zip file, so skip and return true
+    return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou') || class_nm.eql?('Vsoc')
 
-    ZipFileUtils::Unzipper.new.unzip_the_file
+    # Overwrite extracted file name if Ipeds
+    f_name = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] if class_nm.starts_with?('Ipeds')
+
+    ZipFileUtils::Unzipper.new.unzip_the_file(f_name)
+  end
+
+  # Sometimes the file is an xls file and sometimes it is an xlsx file.
+  def hcm_spreadsheet_processing(class_nm)
+    if NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm].end_with?('.xls')
+      FileTypeConverters::XlsToCsv.new('tmp/hcm.xls', 'tmp/hcm.csv').convert_xls_to_csv
+    else
+      NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
+    end
   end
 end

@@ -93,6 +93,7 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :stem_indicator
   attribute :facility_map
   attribute :programs
+  attribute :program_types
   attribute :versioned_school_certifying_officials
   attribute :count_of_caution_flags
   attribute :section_103_message
@@ -116,6 +117,9 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
   attribute :in_state_tuition_information
   attribute :vrrap
   attribute :ownership_name
+
+  attribute :all_facility_code_complaints
+  attribute :all_ope6_complaints
 
   link(:website) { object.website_link }
   link(:scorecard) { object.scorecard_link }
@@ -141,11 +145,27 @@ class InstitutionProfileSerializer < ActiveModel::Serializer
     end
   end
 
+  def program_types
+    InstitutionProgram.where(institution: object).distinct.pluck(:program_type)
+  end
+
   def caution_flags
     return [] unless object.caution_flag
 
     object.caution_flags.map do |flag|
       CautionFlagSerializer.new(flag)
+    end
+  end
+
+  def all_facility_code_complaints
+    object.versioned_complaints_by_facility_code.closed.map do |complaint|
+      VersionedComplaintSerializer.new(complaint)
+    end
+  end
+
+  def all_ope6_complaints
+    object.versioned_complaints_by_ope6.closed.map do |complaint|
+      VersionedComplaintSerializer.new(complaint)
     end
   end
 end

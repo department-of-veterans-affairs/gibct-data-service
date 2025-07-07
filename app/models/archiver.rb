@@ -8,7 +8,8 @@ module Archiver
     { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
     { source: CautionFlag, archive: nil },
-    { source: Institution, archive: InstitutionsArchive }
+    { source: Institution, archive: InstitutionsArchive },
+    { source: VersionedComplaint, archive: VersionedComplaintsArchive }
   ].freeze
 
   def self.archive_previous_versions
@@ -62,8 +63,16 @@ module Archiver
     insert_cols = (cols.map { |col| '"' + col + '"' }).join(', ')
     select_cols = (cols.map { |col| 's.' + col }).join(', ')
 
+    # Only archive approved institutions and related data.
     str = "INSERT INTO #{archive.table_name}(#{insert_cols}) SELECT #{select_cols} FROM #{source.table_name} s "
-    str += source.has_attribute?(:institution_id) ? 'JOIN institutions i ON s.institution_id = i.id JOIN versions v ON i.version_id = v.id' : 'JOIN versions v ON s.version_id = v.id'
+    str += if source.has_attribute?(:institution_id)
+             'JOIN institutions i ON s.institution_id = i.id JOIN versions v ON i.version_id = v.id AND i.approved = true'
+           elsif source.eql?(Institution)
+             'JOIN versions v ON s.version_id = v.id AND approved = true'
+           else
+             'JOIN versions v ON s.version_id = v.id'
+           end
+
     str += ' WHERE v.number >= ? AND v.number < ?;'
     sql = archive.send(:sanitize_sql_for_conditions, [str, previous_version, production_version])
     ApplicationRecord.connection.execute(sql)

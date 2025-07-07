@@ -9,7 +9,7 @@ Secondarily, institution information may be exported as a CSV for regulatory rep
 GIDS data is accessible via an API intended for use by the GI Bill Comparison Tool client (**GIBCT**), which is part of
 the `vets-api` and `vets-website` applications.
 
-### Data Modes and Versions
+### Data Modes and Versions 
 GIDS profile data is logically partitioned in two modes: **preview** mode and **production** mode. In preview mode the
 data retrieved via the API has not yet been completely processed and built out by the InstitutionBuilder model. In 
 contrast, production mode is the actual data pushed to **GIBCT** for public consumption.
@@ -125,7 +125,7 @@ You can create additional users by adding them to the `/db/seeds/01_users.rb` fi
 User.create(email: 'xxxxxx', password: 'xxxxxx')
 ```
 
-## Development Instructions
+## Development Instructions 
 1. Run `bundle install` to set up the application.
 2. Setup the DS database by running `bundle exec rake db:setup`.
 3. Run any pending migrations by running `bundle exec rake db:migrate`.

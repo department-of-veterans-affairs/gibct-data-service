@@ -14,10 +14,57 @@ class CrosswalkIssue < ApplicationRecord
 
   scope :by_issue_type, ->(n) { where(issue_type: n) }
 
+  scope :by_domestic_crosswalks, lambda {
+    joins(
+      'JOIN crosswalks crs on crosswalk_issues.crosswalk_id = crs.id ' \
+      " AND RIGHT(crs.facility_code, 2) ~ '^[0-9]{2}$' " \
+      ' AND CAST(right(crs.facility_code, 2) as integer) < 51 '
+    ).merge(by_issue_type(PARTIAL_MATCH_TYPE))
+  }
+
+  scope :by_domestic_weams, lambda {
+    joins(
+      'JOIN weams wms on crosswalk_issues.weam_id = wms.id ' \
+      " AND RIGHT(wms.facility_code, 2) ~ '^[0-9]{2}$' " \
+      ' AND CAST(right(wms.facility_code, 2) as integer) < 51 '
+    ).merge(by_issue_type(PARTIAL_MATCH_TYPE))
+  }
+
+  scope :by_domestic_iped_hds, lambda {
+    joins(
+      'JOIN ipeds_hds ihs on crosswalk_issues.ipeds_hd_id = ihs.id ' \
+      'JOIN weams iws on ihs.cross = iws.cross ' \
+      " AND RIGHT(iws.facility_code, 2) ~ '^[0-9]{2}$' " \
+      ' AND CAST(right(iws.facility_code, 2) as integer) < 51'
+    ).merge(by_issue_type(PARTIAL_MATCH_TYPE))
+  }
+
+  # The issue here is activerecord doesn't have a union clause per se.
+  # https://stackoverflow.com/questions/6686920/activerecord-query-union
+  # See solution by Vlad Hilko near the bottom of the page. However, this
+  # soltion only works when you have two pieces to the union. For more, you
+  # have to chain them as described in this solution describe by Sebastian Palma
+  # https://stackoverflow.com/questions/59294114/build-triple-union-query-using-arel-rails-5
+  def self.domestic_partial_matches
+    domestic_crosswalks = by_domestic_crosswalks.arel
+    domestic_weams = by_domestic_weams.arel
+    domestic_iped_hds = by_domestic_iped_hds.arel
+
+    subquery = Arel::Nodes::As.new(
+      Arel::Nodes::Union.new(
+        Arel::Nodes::Union.new(
+          domestic_crosswalks, domestic_weams
+        ), domestic_iped_hds
+      ), CrosswalkIssue.arel_table
+    )
+
+    from(subquery)
+  end
+
   # class methods
   def self.partials
     includes(:crosswalk, :ipeds_hd, weam: :arf_gi_bill)
-      .by_issue_type(CrosswalkIssue::PARTIAL_MATCH_TYPE)
+      .domestic_partial_matches
       .order('arf_gi_bills.gibill desc nulls last, weams.institution, weams.facility_code')
   end
 

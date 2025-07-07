@@ -51,7 +51,7 @@ RSpec.describe DashboardsController, type: :controller do
     end
   end
 
-  describe 'GET #build' do
+  describe 'POST #build' do
     login_user
 
     before do
@@ -72,6 +72,25 @@ RSpec.describe DashboardsController, type: :controller do
       initial_progress_count = PreviewGenerationStatusInformation.count
       post(:build)
       expect(PreviewGenerationStatusInformation.count).to be > initial_progress_count
+    end
+  end
+
+  describe 'POST unlock_generate_button' do
+    login_user
+
+    before do
+      create(:version, :preview)
+      create(:preview_generation_status_information)
+    end
+
+    it 'Clears the table related data and redirects to the dashboard' do
+      expect(Version.count).to eq(1)
+      expect(PreviewGenerationStatusInformation.count).to eq(1)
+      post(:unlock_generate_button)
+      expect(Version.count).to eq(0)
+      expect(PreviewGenerationStatusInformation.count).to eq(0)
+      expect(response).to have_http_status(:redirect)
+      expect(response).to redirect_to('/dashboards')
     end
   end
 
@@ -112,6 +131,14 @@ RSpec.describe DashboardsController, type: :controller do
     it 'redirects to index on error' do
       expect(get(:export, params: { csv_type: 'BlahBlah', format: :csv })).to redirect_to(action: :index)
       expect(get(:export, params: { csv_type: 'Weam', format: :xml })).to redirect_to(action: :index)
+    end
+
+    it 'deconverts column names if required' do
+      allow(Converters::OjtAppTypeConverter).to receive(:deconvert)
+
+      get(:export, params: { csv_type: 'Program', format: :csv })
+
+      expect(Converters::OjtAppTypeConverter).to have_received(:deconvert)
     end
   end
 

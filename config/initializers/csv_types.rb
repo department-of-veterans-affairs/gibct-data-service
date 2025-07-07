@@ -19,7 +19,7 @@ Rails.application.config.to_prepare do
     { klass: ScorecardDegreeProgram, required?: false, has_api?: true },
     { klass: Sec702, required?: true },
     { klass: Sva, required?: true },
-    { klass: Vsoc, required?: true },
+    { klass: Vsoc, required?: true, has_api?: true, no_api_key?: true },
     { klass: Weam, required?: true },
     { klass: CalculatorConstant, required?: false },
     { klass: IpedsCipCode, required?: true },
@@ -35,7 +35,9 @@ Rails.application.config.to_prepare do
     { klass: VrrapProvider, required?: false, no_upload?: true },
     { klass: InstitutionOwner, required?: false },
     { klass: InstitutionSchoolRating, required?: false },
-    { klass: Section1015, required?: false }
+    { klass: Section1015, required?: false },
+    { klass: Lcpe::Feed::Nexam, required?: true },
+    { klass: Lcpe::Feed::Lac, required?: true }
   ].freeze
 
   CSV_TYPES_HAS_API_TABLE_NAMES ||= CSV_TYPES_TABLES.select { |table| table[:has_api?] }.map { |table| table[:klass].name }.freeze

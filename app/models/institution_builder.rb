@@ -27,6 +27,7 @@ module InstitutionBuilder
     include CommonInstitutionBuilder::VersionGeneration
     extend Common
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def self.run_insertions(version)
       build_messages = {}
       initialize_with_weams(version)
@@ -49,6 +50,7 @@ module InstitutionBuilder
       add_settlement(version.id)
       add_hcm(version.id)
       add_complaint(version.id)
+      build_versioned_complaints(version.id)
       add_outcome(version.id)
       add_stem_offered(version.id)
       add_yellow_ribbon_programs(version.id)
@@ -64,6 +66,10 @@ module InstitutionBuilder
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
 
+      # Do not build in unless production or local environment
+      # Ultimately we're pulling this out and putting it in a batch job overnite
+      build_public_export(version.id) if production? || ENV['CI'].blank?
+
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
@@ -76,6 +82,7 @@ module InstitutionBuilder
 
       build_messages.filter { |_k, v| v.present? }
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def self.run(user)
       prev_gen_start = Time.now.utc
@@ -83,7 +90,7 @@ module InstitutionBuilder
       begin
         Institution.transaction do
           # to fix 'cancelling statement due to statement timeout' issue
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '240s';")
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600s';")
           if staging?
             # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
             # rubocop:disable Rails/SkipsModelValidations
@@ -577,8 +584,86 @@ module InstitutionBuilder
 
     def self.add_complaint(version_id)
       Complaint.update_ope_from_crosswalk
+
+      # TODO: to future devs, as part of https://github.com/department-of-veterans-affairs/gibct-data-service/pull/1408 we are
+      # changing the way complaints are rolled up and returned to the front end. Assuming this new way of doing things
+      # is successful, we should be able to remove these Complaint.rollup_* function calls, as well as all the
+      # complaints_* columns on the institutions table.
       Complaint.rollup_sums(:facility_code, version_id)
       Complaint.rollup_sums(:ope6, version_id)
+    end
+
+    def self.build_versioned_complaints(version_id)
+      str = <<-SQL
+        INSERT INTO versioned_complaints(
+          version_id,
+          status,
+          ope,
+          ope6,
+          facility_code,
+          closed_reason,
+          issues,
+          cfc,
+          cfbfc,
+          cqbfc,
+          crbfc,
+          cmbfc,
+          cabfc,
+          cdrbfc,
+          cslbfc,
+          cgbfc,
+          cctbfc,
+          cjbfc,
+          ctbfc,
+          cobfc,
+          case_id,
+          level,
+          case_owner,
+          institution,
+          city,
+          state,
+          submitted,
+          closed,
+          education_benefits,
+          created_at,
+          updated_at)
+        SELECT
+          #{version_id},
+          c.status,
+          c.ope,
+          c.ope6,
+          c.facility_code,
+          c.closed_reason,
+          c.issues,
+          c.cfc,
+          c.cfbfc,
+          c.cqbfc,
+          c.crbfc,
+          c.cmbfc,
+          c.cabfc,
+          c.cdrbfc,
+          c.cslbfc,
+          c.cgbfc,
+          c.cctbfc,
+          c.cjbfc,
+          c.ctbfc,
+          c.cobfc,
+          c.case_id,
+          c.level,
+          c.case_owner,
+          c.institution,
+          c.city,
+          c.state,
+          c.submitted,
+          c.closed,
+          c.education_benefits,
+          NOW(),
+          NOW()
+        FROM complaints c
+      SQL
+
+      sql = ActiveRecord::Base.sanitize_sql([str])
+      ActiveRecord::Base.connection.execute(sql)
     end
 
     def self.add_outcome(version_id)
@@ -738,74 +823,90 @@ module InstitutionBuilder
       Institution.connection.execute(InstitutionProgram.send(:sanitize_sql, [str]))
     end
 
-    # edu_programs.length_in_weeks is being used twice because
-    # it is a short term fix to an issue that they aren't sure how we should fix
+    # Previously included join on edu_programs table
+    # However, edu_programs feed determined to be defunct for time being
     def self.build_institution_programs(version_id)
-      log_info_status 'Creating Institution Program rows'
-      str = <<-SQL
-        INSERT INTO institution_programs (
-          program_type,
-          description,
-          full_time_undergraduate,
-          graduate,
-          full_time_modifier,
-          length_in_hours,
-          school_locale,
-          provider_website,
-          provider_email_address,
-          phone_area_code,
-          phone_number,
-          student_vet_group,
-          student_vet_group_website,
-          vet_success_name,
-          vet_success_email,
-          vet_tec_program,
-          tuition_amount,
-          length_in_weeks,
-          institution_id
-        )
-        SELECT
-          program_type,
-          description,
-          full_time_undergraduate,
-          graduate,
-          full_time_modifier,
-          length_in_weeks,
-          school_locale,
-          provider_website,
-          provider_email_address,
-          phone_area_code,
-          phone_number,
-          student_vet_group,
-          student_vet_group_website,
-          vet_success_name,
-          vet_success_email,
-          vet_tec_program,
-          tuition_amount,
-          length_in_weeks,
-          i.id
-        FROM programs p
-          INNER JOIN edu_programs e ON p.facility_code = e.facility_code
-            AND LOWER(description) = LOWER(vet_tec_program)
-            AND vet_tec_program IS NOT NULL
-          INNER JOIN institutions i ON p.facility_code = i.facility_code
-          WHERE i.version_id = #{version_id}
-            AND i.approved = true;;
+      log_info_status '*** Creating Institution Program rows ***'
 
-        UPDATE institution_programs SET
-          length_in_hours = 0,
-          length_in_weeks = 0
-        WHERE id IN (
-          SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id HAVING COUNT(*) > 1
-        );
+      idx = 0
+      # Fetch institution IDs in batches to process programs in chunks
+      Institution.where(version_id: version_id, approved: true).find_in_batches(batch_size: 1000) do |institutions|
+        idx += 1
+        log_info_status "      Batch #{idx}: Processing #{institutions.size} institutions"
+        institution_ids = institutions.map(&:id)
 
-        DELETE FROM institution_programs WHERE id NOT IN (
-          SELECT MIN(id) FROM institution_programs GROUP BY UPPER(description), institution_id
-        );
+        insert_sql = <<-SQL
+          INSERT INTO institution_programs (
+            program_type,
+            description,
+            full_time_undergraduate,
+            graduate,
+            full_time_modifier,
+            institution_id,
+            ojt_app_type
+          )
+          SELECT
+            program_type,
+            description,
+            full_time_undergraduate,
+            graduate,
+            full_time_modifier,
+            i.id,
+            ojt_app_type
+          FROM programs p
+            INNER JOIN institutions i ON p.facility_code = i.facility_code
+            WHERE i.id IN (#{institution_ids.join(',')});
+        SQL
+
+        # Execute the batch insert
+        sanitized_insert_sql = InstitutionProgram.send(:sanitize_sql, [insert_sql])
+        InstitutionProgram.connection.execute(sanitized_insert_sql)
+      end
+
+      log_info_status '*** Creating Institution Program rows completed ***'
+
+      # Remove duplicate rows after all inserts are done
+      log_info_status '*** Counting duplicates from Institution Program ***'
+      count_dups_sql = <<-SQL
+        SELECT UPPER(description) as description, institution_id, count(*)
+          FROM institution_programs
+         GROUP BY UPPER(description), institution_id
+        HAVING count(*) > 1;
       SQL
 
-      sql = InstitutionProgram.send(:sanitize_sql, [str])
-      InstitutionProgram.connection.execute(sql)
+      results = InstitutionProgram.connection.execute(count_dups_sql)
+      duplicate_count = results.count
+      log_info_status "      #{duplicate_count} duplicates found"
+
+      unless duplicate_count.zero?
+        log_info_status '*** Removing duplicates from Institution Program ***'
+        results.each do |row|
+          description = row['description']
+          institution_id = row['institution_id']
+
+          delete_sql = <<-SQL
+            DELETE FROM institution_programs
+            WHERE UPPER(description) = :description
+              AND institution_id = :institution_id
+              AND id NOT IN (
+                SELECT MIN(id)
+                FROM institution_programs
+                WHERE UPPER(description) = :description
+                  AND institution_id = :institution_id
+                GROUP BY UPPER(description), institution_id
+              );
+          SQL
+
+          sanitized_delete_sql = InstitutionProgram.send(
+            :sanitize_sql,
+            [delete_sql, { description: description, institution_id: institution_id }]
+          )
+
+          InstitutionProgram.connection.execute(sanitized_delete_sql)
+        end
+      end
+
+      log_info_status '*** Removing duplicates from Institution Program completed ***'
     end
 
     def self.build_versioned_school_certifying_official(version_id)
@@ -1177,6 +1278,12 @@ module InstitutionBuilder
       SQL
       sql = Institution.send(:sanitize_sql, [str])
       Institution.connection.execute(sql)
+    end
+
+    def self.build_public_export(version_id)
+      log_info_status 'Building Public Export file record'
+      progress = ->(message) { log_info_status(message) }
+      VersionPublicExport.build(version_id, progress_callback: progress)
     end
 
     def self.log_error_and_delete_version(version, notice)

@@ -7,6 +7,14 @@ require 'rails_helper'
 # calling, but it's advisable to run it from the command line separately and not as part of the test suite
 
 RSpec.describe NoKeyApis::NoKeyApiDownloader do
+  let(:ipeds_page) { File.read('spec/fixtures/ipeds_directory_page.txt') }
+  let(:ipeds_response) { instance_double(HTTParty::Response, body: ipeds_page) }
+
+  let(:vsoc_page) { File.read('spec/fixtures/vsoc_download_page.html') }
+  let(:vsoc_response) { instance_double(HTTParty::Response, body: vsoc_page) }
+
+  before { allow(HTTParty).to receive(:get).and_return(ipeds_response) }
+
   describe '#initialize' do
     %w[Accreditation AccreditationAction AccreditationInstituteCampus AccreditationRecord].each do |class_nm|
       it "sets the accreditation curl command correctly for #{class_nm}" do
@@ -24,7 +32,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
       expect(nkad.class_nm).to eq('EightKey')
       expect(nkad.curl_command).to include('-X GET')
       expect(nkad.curl_command).to include('tmp/eight_key.xls')
-      expect(nkad.curl_command).to include('https://www2.ed.gov/documents/military/8-keys-sites.xls')
+      expect(nkad.curl_command).to include('https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls')
       expect(nkad.curl_command).not_to include('-d')
     end
 
@@ -42,11 +50,22 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
     it 'sets the curl command correctly for Hcm' do
       nkad = described_class.new('Hcm')
       expect(nkad.class_nm).to eq('Hcm')
-      expect(nkad.curl_command).to include('tmp/hcm.xlsx')
+      expect(nkad.curl_command).to include('tmp/hcm.xls')
       expect(nkad.curl_command)
         .to include('-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"')
-      expect(nkad.curl_command).to include('https://studentaid.gov/sites/default/files/Schools-on-HCM-December2023.xlsx')
+      expect(nkad.curl_command).to include('https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls')
       expect(nkad.curl_command).not_to include('-d')
+    end
+
+    context 'with Vsoc downloads' do
+      before { allow(HTTParty).to receive(:get).and_return(vsoc_response) }
+
+      it 'sets the curl command correctly for VSOC' do
+        nkad = described_class.new('Vsoc')
+        expect(nkad.class_nm).to eq('Vsoc')
+        expect(nkad.curl_command).to include('tmp/vsoc.csv')
+        expect(nkad.curl_command).to include('https://vbaw.vba.va.gov/')
+      end
     end
   end
 
@@ -71,11 +90,11 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
     call_externally = ENV['EXTERNAL'].eql?('true') ? true : false
     context 'when making external calls', if: call_externally do
       it 'downloads the hcm file into the tmp folder' do
-        system('rm tmp/hcm.xlsx') if File.exist?('tmp/hcm.xlsx')
-        expect(File).not_to exist('tmp/hcm.xlsx')
+        system('rm tmp/hcm.xls') if File.exist?('tmp/hcm.xls')
+        expect(File).not_to exist('tmp/hcm.xls')
         nkad = described_class.new('Hcm')
         nkad.download_csv
-        expect(File).to exist('tmp/hcm.xlsx')
+        expect(File).to exist('tmp/hcm.xls')
       end
 
       it 'downloads the eight key file into the tmp folder' do

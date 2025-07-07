@@ -5,7 +5,7 @@ class DashboardExporterImporter
   # :nocov:
   include DashboardWatir
 
-  TABLES_TO_SKIP = %w[CipCode InstitutionSchoolRating VrrapProvider Weam].freeze
+  TABLES_TO_SKIP = %w[CipCode InstitutionSchoolRating VrrapProvider].freeze
 
   def initialize(user, pass, load_env = nil)
     common_initialize_watir(user, pass, load_env)
@@ -38,8 +38,6 @@ class DashboardExporterImporter
       table_name = table_class.to_s
 
       next if TABLES_TO_SKIP.include? table_name
-      # Weam  has split files
-      next if table_name.include?('Weam')
 
       begin
         upload_csv_file_for(table_name)

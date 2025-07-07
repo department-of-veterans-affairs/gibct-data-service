@@ -78,6 +78,56 @@ RSpec.describe Institution, type: :model do
     end
   end
 
+  describe 'versioned_complaints_by_facility_code' do
+    let(:version) { create :version, :production }
+    let(:other_version) { create :version }
+    let(:institution) { create :institution, version: version }
+    let!(:versioned_complaints) do
+      [
+        create(:versioned_complaint, facility_code: institution.facility_code, version: Version.current_production), # match
+        create(:versioned_complaint, facility_code: institution.facility_code, version: Version.current_production), # match
+        create(:versioned_complaint, facility_code: institution.facility_code, version: other_version), # wrong version
+        create(:versioned_complaint, facility_code: '99999999', version: Version.current_production) # wrong facility code
+      ]
+    end
+
+    it 'returns only those versioned complaints that match this institution' do
+      result = institution.versioned_complaints_by_facility_code
+
+      expect(result.count).to eq(2)
+      expect(result.map(&:id)).to match_array([versioned_complaints[0].id, versioned_complaints[1].id])
+    end
+  end
+
+  describe 'versioned_complaints_by_ope6' do
+    let(:version) { create :version, :production }
+    let(:other_version) { create :version }
+    let(:institution) { create :institution, version: version, ope: '12345678', ope6: '123456' }
+    let!(:versioned_complaints) do
+      [
+        create(:versioned_complaint, ope6: institution.ope6, version: Version.current_production), # match
+        create(:versioned_complaint, ope6: institution.ope6, version: Version.current_production), # match
+        create(:versioned_complaint, ope6: institution.ope6, version: other_version), # wrong version
+        create(:versioned_complaint, ope6: '99999', version: Version.current_production) # wrong ope6
+      ]
+    end
+
+    it 'returns only those versioned complaints that match this institution' do
+      result = institution.versioned_complaints_by_ope6
+
+      expect(result.count).to eq(2)
+      expect(result.map(&:id)).to match_array([versioned_complaints[0].id, versioned_complaints[1].id])
+    end
+
+    context 'with a dummy ope6' do
+      before { institution.update(ope: 'VA000200', ope6: 'A0002') }
+
+      it 'returns no complaints' do
+        expect(institution.versioned_complaints_by_ope6.count).to eq(0)
+      end
+    end
+  end
+
   describe 'locale_type' do
     it 'maps locale numbers to descriptions' do
       {
