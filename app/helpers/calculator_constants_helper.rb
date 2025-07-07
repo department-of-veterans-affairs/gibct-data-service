@@ -3,7 +3,7 @@
 module CalculatorConstantsHelper
   def display_value_for(constant)
     return unless constant
-    
+
     year_value?(constant) ? constant.float_value.to_i : decimalize(constant.float_value)
   end
 
