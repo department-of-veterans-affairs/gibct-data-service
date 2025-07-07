@@ -72,6 +72,12 @@ RSpec.describe Upload, type: :model do
     end
   end
 
+  describe '.true_upload_types_all_names' do
+    it 'excludes CalculatorConstants from list of upload types for display' do
+      expect(described_class.true_upload_types_all_names).not_to include('CalculatorConstant')
+    end
+  end
+
   describe 'latest_uploads' do
     before do
       # 3 Weam upload records

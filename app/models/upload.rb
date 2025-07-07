@@ -25,7 +25,7 @@ class Upload < ApplicationRecord
   end
 
   def csv_type_check?
-    return true if [*UPLOAD_TYPES_ALL_NAMES, Institution.name].include?(csv_type)
+    return true if [*Upload.true_upload_types_all_names, Institution.name].include?(csv_type)
 
     if csv_type.present?
       errors.add(:csv_type, "#{csv_type} is not a valid CSV data source")
@@ -56,9 +56,14 @@ class Upload < ApplicationRecord
     sequential_upload_settings[:chunk_size]
   end
 
+  # CalculatorConstant no longer an importable record, but must remain an upload type for versioning
+  def self.true_upload_types_all_names
+    UPLOAD_TYPES_ALL_NAMES.reject { |name| name == 'CalculatorConstant' }
+  end
+
   def self.last_uploads(for_display = false)
     csv_types = if for_display
-                  UPLOAD_TYPES_ALL_NAMES
+                  true_upload_types_all_names
                 else
                   [*UPLOAD_TYPES_ALL_NAMES]
                 end
@@ -73,7 +78,7 @@ class Upload < ApplicationRecord
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    UPLOAD_TYPES_ALL_NAMES.each do |klass_name|
+    true_upload_types_all_names.each do |klass_name|
       next if upload_csv_types.include?(klass_name)
 
       missing_upload = Upload.new
