@@ -20,7 +20,7 @@
     </select>
   </td>
   <td style="background-color: #f5f5f5;">
-    <%= @previous_constants.index_by(&:name)[constant.name]&.float_value %>
+    <%= display_value_for(@previous_constants.index_by(&:name)[constant.name]) %>
   </td>
   <td>
     <input type="number"

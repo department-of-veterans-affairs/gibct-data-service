@@ -290,8 +290,15 @@ table.crosswalk-issues thead.sub th {
 }
 
 .calculator-constants-table {
-  margin-top: 10px;
+  width: 100%;
   table-layout: auto;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.calculator-constants-table td:nth-child(2) {
+  white-space: normal;
+  word-break: break-word;
 }
 
 .calculator-constants-table td:not(:nth-child(2)) {
@@ -299,8 +306,12 @@ table.crosswalk-issues thead.sub th {
 }
 
 .calculator-constants-table input[type="number"] {
-  width: 100%;
-  min-width: min-content;
+  box-sizing: border-box;
+  padding: 4px 4px;
+}
+
+.calculator-constants-table select {
+  max-width: 100px;
 }
 
 #calculator_constants_update .row {
