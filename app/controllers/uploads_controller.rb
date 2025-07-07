@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UploadsController < ApplicationController
+  before_action :exclude_calculator_constants, only: %i[new show]
+
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
@@ -206,5 +208,9 @@ class UploadsController < ApplicationController
 
   def klass
     @upload.csv_type.constantize
+  end
+
+  def exclude_calculator_constants
+    redirect_to dashboards_path if params[:csv_type] == 'CalculatorConstant'
   end
 end
