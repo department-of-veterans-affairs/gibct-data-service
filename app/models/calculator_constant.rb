@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
-class CalculatorConstant < ApplicationRecord
-  # No longer importable record, updated instead via calculator constants dashboard
+class CalculatorConstant < ImportableRecord
+  CSV_CONVERTER_INFO = {
+    'name' => { column: :name, converter: Converters::UpcaseConverter },
+    'value' => { column: :float_value, converter: Converters::NumberConverter },
+    'description' => { column: :description, converter: Converters::BaseConverter }
+  }.freeze
 
   belongs_to :rate_adjustment, optional: true
 

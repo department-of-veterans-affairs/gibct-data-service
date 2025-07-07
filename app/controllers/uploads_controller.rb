@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UploadsController < ApplicationController
-  before_action :exclude_calculator_constants, only: %i[new show]
+  before_action :exclude_online_types, only: %i[new create show]
 
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
@@ -210,8 +210,9 @@ class UploadsController < ApplicationController
     @upload.csv_type.constantize
   end
 
-  def exclude_calculator_constants
-    csv_type = params[:csv_type]
-    redirect_to dashboards_path if csv_type == 'CalculatorConstant'
+  # Online Upload types cannot be created/updated via HTTP requests
+  def exclude_online_types
+    csv_type = params[:csv_type] || params.dig(:upload, :csv_type)
+    redirect_to dashboards_path if ONLINE_TYPES_NAMES.map(&:name).include?(csv_type)
   end
 end
