@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe CalculatorConstantsHelper, type: :helper do
-  let(:nonyear_constant) { create(:calculator_constant) }
-  let(:year_constant) { create(:calculator_constant, :year) }
+  let(:nonyear_constant) { create(:calculator_constant, name: 'AVEGRADRATE') }
+  let(:year_constant) { create(:calculator_constant, name: 'FISCALYEAR') }
 
   describe '#display_value_for' do
     it 'calls #decimalize on nonyear float values' do

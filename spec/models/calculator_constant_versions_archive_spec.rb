@@ -18,12 +18,6 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       expect(build(:calculator_constant_versions_archive, name: nil)).not_to be_valid
     end
 
-    it 'requires inclusion of name in CONSTANT_NAMES' do
-      invalid_name = build(:calculator_constant_versions_archive, name: 'ERROR')
-      expect(invalid_name).not_to be_valid
-      expect(invalid_name.errors.first.type).to eq(:inclusion)
-    end
-
     it 'requires presence of float value' do
       expect(build(:calculator_constant_versions_archive, float_value: nil)).not_to be_valid
     end

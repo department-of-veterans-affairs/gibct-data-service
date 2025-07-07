@@ -7,15 +7,13 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 require 'controllers/shared_examples/shared_examples_for_collection_updatable'
 
 RSpec.describe CalculatorConstantsController, type: :controller do
-  before { CalculatorConstant.delete_all }
-
   it_behaves_like 'an authenticating controller', :index, 'calculator_constants'
 
   describe 'GET #index' do
     login_user
 
     it 'returns calculator constants and rate adjustments' do
-      create_list(:calculator_constant, 2, :associated_rate_adjustment)
+      create(:calculator_constant, :associated_rate_adjustment)
       get :index
       previous_year = 1.year.ago.year
       expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
@@ -31,7 +29,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     it_behaves_like 'a collection updatable', :float_value
 
     it 'flashes updated fields' do
-      constant = create(:calculator_constant)
+      constant = create(:calculator_constant, name: 'AVEREPAYMENTRATE')
       params = { calculator_constants: { constant.id.to_s => { float_value: constant.float_value + 1 } } }
       post(:update, params: params)
       expect(flash[:success][:updated_fields]).to include(constant.name)
@@ -40,7 +38,7 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     # This is the mechanism that tells the generate version function something changed
     # that needs a new version to be generated
     it 'creates an upload row and sets the columns to expected values' do
-      constant = create(:calculator_constant)
+      constant = create(:calculator_constant, name: 'AVEREPAYMENTRATE')
       params = { calculator_constants: { constant.id.to_s => { float_value: constant.float_value + 1 } } }
       post(:update, params: params)
       expect(Upload.count).to eq(1)

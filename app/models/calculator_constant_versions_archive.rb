@@ -6,6 +6,6 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
   # Will be frequent query when exporting calculator constant report
   scope :circa, ->(year) { where(version_id: Version.latest_from_year(year)&.id) }
 
-  validates :name, uniqueness: { scope: :version_id }, presence: true, inclusion: { in: CalculatorConstant::CONSTANT_NAMES }
+  validates :name, uniqueness: { scope: :version_id }, presence: true
   validates :float_value, presence: true
 end

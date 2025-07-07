@@ -3,42 +3,9 @@
 class CalculatorConstant < ApplicationRecord
   # No longer importable record, updated instead via calculator constants dashboard
 
-  CONSTANT_NAMES = %w[
-    AVEGRADRATE
-    AVEREPAYMENTRATE
-    AVERETENTIONRATE
-    AVESALARY
-    AVGBAH
-    AVGDODBAH
-    AVGVABAH
-    BSCAP
-    BSOJTMONTH
-    CORRESPONDTFCAP
-    DEARATEFULLTIME
-    DEARATEOJT
-    DEARATEONEHALF
-    DEARATETHREEQUARTERS
-    DEARATEUPTOONEHALF
-    DEARATEUPTOONEQUARTER
-    FISCALYEAR
-    FLTTFCAP
-    MGIB2YRRATE
-    MGIB3YRRATE
-    SRRATE
-    TFCAP
-    VRE0DEPRATE
-    VRE0DEPRATEOJT
-    VRE1DEPRATE
-    VRE1DEPRATEOJT
-    VRE2DEPRATE
-    VRE2DEPRATEOJT
-    VREINCRATE
-    VREINCRATEOJT
-  ].freeze
-
   belongs_to :rate_adjustment, optional: true
 
-  validates :name, uniqueness: true, presence: true, inclusion: { in: CONSTANT_NAMES }
+  validates :name, uniqueness: true, presence: true
   validates :float_value, presence: true
 
   attr_readonly :name
