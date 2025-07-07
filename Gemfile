@@ -10,7 +10,7 @@ gem 'activerecord-session_store' # Switch to AR session storage in case of failu
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'bcrypt', '~> 3.1.20'
 gem 'bootsnap', require: false
-gem 'cancancan', '~> 1.13', '>= 1.13.1' # Use cancancan for authorization
+gem 'cancancan', '~> 3.6' # Use cancancan for authorization
 gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
@@ -23,6 +23,7 @@ gem 'font-awesome-rails', '4.7.0.9'
 gem 'geocoder', '~> 1.8'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
 gem 'httparty'
+gem 'importmap-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails', branch: 'master'
 gem 'json', '>= 2.3.0'
@@ -48,6 +49,7 @@ gem 'solid_cache', '~> 0.7.0'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
 gem 'terser'
+gem 'turbo-rails'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'

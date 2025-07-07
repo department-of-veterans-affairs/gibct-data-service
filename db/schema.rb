@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_01_145156) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_02_164254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -98,13 +98,36 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_145156) do
     t.index ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true
   end
 
+  create_table "calculator_constant_versions", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "name"
+    t.float "float_value"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "idx_calc_constant_vsns_nm"
+    t.index ["version_id"], name: "index_calculator_constant_versions_on_version_id"
+  end
+
+  create_table "calculator_constant_versions_archives", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "name"
+    t.float "float_value"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
     t.string "name"
     t.float "float_value"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
+    t.float "previous_year"
+    t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
+    t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"
   end
 
   create_table "caution_flags", force: :cascade do |t|
@@ -1398,6 +1421,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_145156) do
   create_table "lcpe_exams", force: :cascade do |t|
     t.string "facility_code"
     t.string "nexam_nm"
+    t.index ["facility_code"], name: "lcpe_exams_facility_code_idx"
+    t.index ["nexam_nm"], name: "lcpe_exams_nexam_nm_idx"
   end
 
   create_table "lcpe_feed_lacs", force: :cascade do |t|
@@ -1436,6 +1461,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_145156) do
     t.string "edu_lac_type_nm"
     t.string "lac_nm"
     t.string "state"
+    t.index ["edu_lac_type_nm"], name: "lcpe_lacs_edu_lac_type_nm_idx"
+    t.index ["facility_code"], name: "lcpe_lacs_facility_code_idx"
+    t.index ["lac_nm"], name: "lcpe_lacs_lac_nm_idx"
   end
 
   create_table "lcpe_preload_datasets", force: :cascade do |t|
@@ -1505,6 +1533,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_145156) do
     t.integer "csv_row"
     t.string "ojt_app_type"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
+  end
+
+  create_table "rate_adjustments", force: :cascade do |t|
+    t.integer "benefit_type", null: false
+    t.decimal "rate", precision: 5, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["benefit_type"], name: "index_rate_adjustments_on_benefit_type", unique: true
   end
 
   create_table "school_certifying_officials", id: :serial, force: :cascade do |t|
@@ -2238,6 +2274,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_145156) do
   end
 
   add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
+  add_foreign_key "calculator_constant_versions", "versions"
+  add_foreign_key "calculator_constants", "rate_adjustments", validate: false
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"

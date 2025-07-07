@@ -70,4 +70,18 @@ module SeedUtils
   def seed_table(klass, path, options = {})
     klass.load_with_roo(path, options)
   end
+
+  def seed_table_with_yaml(klass)
+    file_name = klass.name.underscore.pluralize
+    path = File.join(Rails.root, 'db', 'seeds', 'models', "#{file_name}.yml")
+
+    puts "Loading #{klass.name} from #{path} ... "
+
+    seeds = YAML.load_file(path)
+    seeds.each do |attributes|
+      klass.create(attributes)
+    end
+
+    puts 'Done!'
+  end
 end

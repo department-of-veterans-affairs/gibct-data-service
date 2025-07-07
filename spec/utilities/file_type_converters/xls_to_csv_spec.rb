@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe FileTypeConverters::XlsToCsv do
+  before do
+    FileUtils.mkdir_p('tmp')
+  end
+
   describe '#initialize' do
     it 'sets the input and output files to their respective instance variables' do
       xtc = described_class.new('tmp/excel_file.xls', 'tmp/comma_sep_val_file.csv')
