@@ -211,6 +211,7 @@ class UploadsController < ApplicationController
   end
 
   def exclude_calculator_constants
-    redirect_to dashboards_path if params[:csv_type] == 'CalculatorConstant'
+    csv_type = params[:csv_type]
+    redirect_to dashboards_path if csv_type == 'CalculatorConstant'
   end
 end
