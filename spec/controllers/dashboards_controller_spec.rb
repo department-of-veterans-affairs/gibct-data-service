@@ -42,9 +42,8 @@ RSpec.describe DashboardsController, type: :controller do
       get(:index)
     end
 
-    # Excludes CalculatorConstant
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(Upload.true_upload_types_all_names.length)
+      expect(assigns(:uploads).length).to eq(TRUE_UPLOAD_TYPES.length)
     end
 
     it 'returns http success' do
