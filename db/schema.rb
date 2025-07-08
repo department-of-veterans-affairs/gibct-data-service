@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_02_164254) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_08_145215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -116,6 +116,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_02_164254) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["version_id"], name: "index_calculator_constant_versions_archives_on_version_id"
   end
 
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
