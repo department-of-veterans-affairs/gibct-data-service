@@ -6,6 +6,7 @@ class Version < ApplicationRecord
   has_many :institutions, dependent: :nullify
   has_many :zipcode_rates, dependent: :nullify
   has_many :calculator_constant_versions, dependent: :nullify
+  has_many :calculator_constant_versions_archives, dependent: :nullify
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 

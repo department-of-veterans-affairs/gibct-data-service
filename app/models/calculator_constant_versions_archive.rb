@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class CalculatorConstantVersionsArchive < ApplicationRecord
-  # TO-DO? Is it necessary to add foreign key and index to associate Version with CalculatorConstantVersionsArchive
-  # So you can call Version.latest_from_year(year).calculator_constant_versions_archives
-  # Will be frequent query when exporting calculator constant report
-  scope :circa, ->(year) { where(version_id: Version.latest_from_year(year)&.id) }
+  belongs_to :version
 
   validates :name, uniqueness: { scope: :version_id }, presence: true
   validates :float_value, presence: true
+
+  # If you plug current year into :circa, you will always get empty collection
+  # because latest CalculatorConstantVersion has yet to be archived, which is desired behavior
+  scope :circa, ->(year) { where(version: Version.latest_from_year(year)) }
 end
