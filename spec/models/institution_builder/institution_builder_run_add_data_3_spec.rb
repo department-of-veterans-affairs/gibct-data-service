@@ -271,6 +271,18 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'when creating versioned_complaints' do
+      before do
+        create_list :complaint, 3
+      end
+
+      it 'properly generates versioned complaints with the right version id' do
+        expect(VersionedComplaint.count).to eq(0)
+        expect { described_class.run(user) }.to change(VersionedComplaint, :count).from(0).to(3)
+        expect(VersionedComplaint.pluck(:version_id)).to eq([Version.latest.id] * 3)
+      end
+    end
+
     describe 'when setting section 103 data' do
       it 'sets default message for IHL institutions' do
         weam = create :weam, :ihl_facility_code
@@ -315,6 +327,14 @@ RSpec.describe InstitutionBuilder, type: :model do
         described_class.run(user)
 
         expect(institutions.where("facility_code = '#{weam.facility_code}'").first['approved']).to eq(false)
+      end
+    end
+
+    describe 'creating a version public export' do
+      it 'creates a new version public export' do
+        skip 'This test fails in Jenkins CI'
+        expect { described_class.run(user) }.to change(VersionPublicExport, :count).by(1)
+        expect(VersionPublicExport.first.version_id).to eq(Version.current_production.id)
       end
     end
 

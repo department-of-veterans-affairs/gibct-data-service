@@ -13,10 +13,10 @@ module  NoKeyApis
     API_DOWNLOAD_CONVERSION_NAMES = {
       'AccreditationInstituteCampus' => 'tmp/InstitutionCampus.csv',
       'Hcm' => 'tmp/hcm.xls',
-      'IpedsHd' => 'tmp/hd2022.csv',
-      'IpedsIcAy' => 'tmp/ic2022_ay.csv',
-      'IpedsIcPy' => 'tmp/ic2022_py.csv',
-      'IpedsIc' => 'tmp/ic2022.csv',
+      'IpedsHd' => 'tmp/ipeds_hd.csv',
+      'IpedsIc' => 'tmp/ipeds_ic.csv',
+      'IpedsIcAy' => 'tmp/ipeds_ic_ay.csv',
+      'IpedsIcPy' => 'tmp/ipeds_ic_py.csv',
       'Mou' => 'tmp/mou.xlsx',
       'Vsoc' => 'tmp/vsoc.csv'
     }.freeze
@@ -29,19 +29,20 @@ module  NoKeyApis
       'AccreditationRecord' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'EightKey' => [' -X GET', 'https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls'],
       'Hcm' => ['', 'https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls'],
-      'IpedsHd' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/HD2022.zip'],
-      'IpedsIc' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022.zip'],
-      'IpedsIcAy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_AY.zip'],
-      'IpedsIcPy' => [' -X GET', 'https://nces.ed.gov/ipeds/datacenter/data/IC2022_PY.zip'],
+      'IpedsHd' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsHd') }],
+      'IpedsIc' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIc') }],
+      'IpedsIcAy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcAy') }],
+      'IpedsIcPy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcPy') }],
       'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
-      'Vsoc' => [' -k -X GET', "'https://vbaw.vba.va.gov/EDUCATION/job_aids/documents/Vsoc_08132024.csv'"]
+      'Vsoc' => [' -k -X GET', -> { VsocDownloadSource.fetch }]
     }.freeze
 
-    attr_accessor :class_nm, :curl_command
+    attr_accessor :class_nm, :curl_command, :url
 
     def initialize(class_nm)
       @class_nm = class_nm
-      rest_command, url = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
+      rest_command, source = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
+      url = url_from(source)
       @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm}#{d_parm}"
     end
 
@@ -75,6 +76,13 @@ module  NoKeyApis
       return '' unless @class_nm.start_with?('Accreditation')
 
       " -d '{\"CSVChecked\":true,\"ExcelChecked\":false}'"
+    end
+
+    # If download source is a proc (and not url string), call proc to dynamically fetch url
+    def url_from(source)
+      return source unless source.is_a?(Proc)
+
+      source.call
     end
   end
 end

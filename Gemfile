@@ -10,7 +10,7 @@ gem 'activerecord-session_store' # Switch to AR session storage in case of failu
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
 gem 'bcrypt', '~> 3.1.20'
 gem 'bootsnap', require: false
-gem 'cancancan', '~> 1.13', '>= 1.13.1' # Use cancancan for authorization
+gem 'cancancan', '~> 3.6' # Use cancancan for authorization
 gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
@@ -22,6 +22,8 @@ gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.9'
 gem 'geocoder', '~> 1.8'
 gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+gem 'httparty'
+gem 'importmap-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails', branch: 'master'
 gem 'json', '>= 2.3.0'
@@ -31,21 +33,23 @@ gem 'newrelic_rpm'
 gem 'nokogiri', '~> 1.18.8'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 gem 'pg' # Use postgresql as the database for Active Record
-gem 'puma', '~> 6.4.3'
+gem 'puma', '~> 6.6.0'
 gem 'rack', '>= 3.1.10'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'rainbow'
-gem 'rexml', '~> 3.3.9'
+gem 'rexml', '~> 3.4.1'
 gem 'roo', '~> 2.10'
 gem 'roo-xls', '~> 1.2'
 gem 'ruby-saml', '>= 1.18.0'
 gem 'rubyzip', '~> 2.4'
 gem 'sentry-raven', '~> 3.1.2'
 gem 'sitemap_generator'
+gem 'solid_cache', '~> 0.7.0'
 gem 'sprockets-rails' # Rails 7 upgrade - needed for now.
 gem 'strong_migrations'
 gem 'terser'
+gem 'turbo-rails'
 gem 'vets_json_schema', git: 'https://github.com/department-of-veterans-affairs/vets-json-schema', branch: 'master'
 gem 'virtus', '~> 2.0.0'
 gem 'will_paginate'

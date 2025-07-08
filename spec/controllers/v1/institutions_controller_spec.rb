@@ -511,6 +511,29 @@ RSpec.describe V1::InstitutionsController, type: :controller do
       expect(response.media_type).to eq('application/json')
       expect(response).to match_response_schema('errors')
     end
+
+    # rubocop:disable RSpec/LetSetup
+    context 'with versioned complaints present' do
+      let(:other_version) { create :version }
+      let!(:school) { create :institution, ope: '00279100', ope6: '02791', version_id: Version.current_production.id }
+      let!(:versioned_complaints) do
+        [
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: school.facility_code, ope6: school.ope6, status: 'closed'), # match by facility_code and ope6
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: '99999999', ope6: school.ope6, status: 'closed'), # match by ope6
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: '99999999', ope6: school.ope6, status: 'closed'), # match by ope6
+          create(:versioned_complaint, version_id: Version.current_production.id, facility_code: school.facility_code, ope6: school.ope6, status: 'active'), # wrong status
+          create(:versioned_complaint, version_id: other_version.id, facility_code: school.facility_code, ope6: school.ope6, status: 'closed') # wrong version
+        ]
+      end
+
+      it 'returns only those complaints associated with the given institution' do
+        get(:show, params: { id: school.facility_code })
+        data = JSON.parse(response.body)['data']
+        expect(data['attributes']['all_facility_code_complaints'].size).to eq(1)
+        expect(data['attributes']['all_ope6_complaints'].size).to eq(3)
+      end
+    end
+    # rubocop:enable RSpec/LetSetup
   end
 
   context 'with institution children' do

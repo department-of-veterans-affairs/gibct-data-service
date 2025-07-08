@@ -15,4 +15,8 @@ class Converters::OjtAppTypeConverter < Converters::BaseConverter
 
     OJT_APP_TYPES[value.try(&:upcase)]
   end
+
+  def self.deconvert(value)
+    OJT_APP_TYPES.invert[value]
+  end
 end

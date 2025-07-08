@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_02_164254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -98,13 +98,36 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.index ["facility_code"], name: "index_arf_gi_bills_on_facility_code", unique: true
   end
 
+  create_table "calculator_constant_versions", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "name"
+    t.float "float_value"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "idx_calc_constant_vsns_nm"
+    t.index ["version_id"], name: "index_calculator_constant_versions_on_version_id"
+  end
+
+  create_table "calculator_constant_versions_archives", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "name"
+    t.float "float_value"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
     t.string "name"
     t.float "float_value"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
+    t.float "previous_year"
+    t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
+    t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"
   end
 
   create_table "caution_flags", force: :cascade do |t|
@@ -1398,6 +1421,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
   create_table "lcpe_exams", force: :cascade do |t|
     t.string "facility_code"
     t.string "nexam_nm"
+    t.index ["facility_code"], name: "lcpe_exams_facility_code_idx"
+    t.index ["nexam_nm"], name: "lcpe_exams_nexam_nm_idx"
   end
 
   create_table "lcpe_feed_lacs", force: :cascade do |t|
@@ -1436,6 +1461,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.string "edu_lac_type_nm"
     t.string "lac_nm"
     t.string "state"
+    t.index ["edu_lac_type_nm"], name: "lcpe_lacs_edu_lac_type_nm_idx"
+    t.index ["facility_code"], name: "lcpe_lacs_facility_code_idx"
+    t.index ["lac_nm"], name: "lcpe_lacs_lac_nm_idx"
   end
 
   create_table "lcpe_preload_datasets", force: :cascade do |t|
@@ -1505,6 +1533,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.integer "csv_row"
     t.string "ojt_app_type"
     t.index ["facility_code", "description"], name: "index_programs_on_facility_code_and_description"
+  end
+
+  create_table "rate_adjustments", force: :cascade do |t|
+    t.integer "benefit_type", null: false
+    t.decimal "rate", precision: 5, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["benefit_type"], name: "index_rate_adjustments_on_benefit_type", unique: true
   end
 
   create_table "school_certifying_officials", id: :serial, force: :cascade do |t|
@@ -1712,6 +1748,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
+  create_table "solid_cache_entries", force: :cascade do |t|
+    t.binary "key", null: false
+    t.binary "value", null: false
+    t.datetime "created_at", null: false
+    t.bigint "key_hash", null: false
+    t.integer "byte_size", null: false
+    t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
+    t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
+    t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
+  end
+
   create_table "stem_cip_codes", id: :serial, force: :cascade do |t|
     t.integer "two_digit_series"
     t.string "twentyten_cip_code"
@@ -1791,6 +1838,84 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
     t.string "settlement_link"
     t.string "school_closing_date"
     t.boolean "sec_702"
+  end
+
+  create_table "version_public_exports", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "file_type"
+    t.binary "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "versioned_complaints", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "status"
+    t.string "ope"
+    t.string "ope6"
+    t.string "facility_code"
+    t.string "closed_reason"
+    t.string "issues"
+    t.integer "cfc", default: 0
+    t.integer "cfbfc", default: 0
+    t.integer "cqbfc", default: 0
+    t.integer "crbfc", default: 0
+    t.integer "cmbfc", default: 0
+    t.integer "cabfc", default: 0
+    t.integer "cdrbfc", default: 0
+    t.integer "cslbfc", default: 0
+    t.integer "cgbfc", default: 0
+    t.integer "cctbfc", default: 0
+    t.integer "cjbfc", default: 0
+    t.integer "ctbfc", default: 0
+    t.integer "cobfc", default: 0
+    t.string "case_id"
+    t.string "level"
+    t.string "case_owner"
+    t.string "institution"
+    t.string "city"
+    t.string "state"
+    t.string "submitted"
+    t.string "closed"
+    t.string "education_benefits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["version_id", "facility_code"], name: "index_versioned_complaints_on_version_id_and_facility_code"
+    t.index ["version_id", "ope6"], name: "index_versioned_complaints_on_version_id_and_ope6"
+  end
+
+  create_table "versioned_complaints_archives", force: :cascade do |t|
+    t.bigint "version_id"
+    t.string "status"
+    t.string "ope"
+    t.string "ope6"
+    t.string "facility_code"
+    t.string "closed_reason"
+    t.string "issues"
+    t.integer "cfc", default: 0
+    t.integer "cfbfc", default: 0
+    t.integer "cqbfc", default: 0
+    t.integer "crbfc", default: 0
+    t.integer "cmbfc", default: 0
+    t.integer "cabfc", default: 0
+    t.integer "cdrbfc", default: 0
+    t.integer "cslbfc", default: 0
+    t.integer "cgbfc", default: 0
+    t.integer "cctbfc", default: 0
+    t.integer "cjbfc", default: 0
+    t.integer "ctbfc", default: 0
+    t.integer "cobfc", default: 0
+    t.string "case_id"
+    t.string "level"
+    t.string "case_owner"
+    t.string "institution"
+    t.string "city"
+    t.string "state"
+    t.string "submitted"
+    t.string "closed"
+    t.string "education_benefits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "versioned_school_certifying_officials", id: :serial, force: :cascade do |t|
@@ -2028,6 +2153,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_04_162848) do
   end
 
   add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
+  add_foreign_key "calculator_constant_versions", "versions"
+  add_foreign_key "calculator_constants", "rate_adjustments", validate: false
   add_foreign_key "caution_flags", "institutions"
   add_foreign_key "caution_flags", "versions"
   add_foreign_key "crosswalk_issues", "crosswalks"

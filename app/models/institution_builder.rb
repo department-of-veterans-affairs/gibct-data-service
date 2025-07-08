@@ -27,6 +27,7 @@ module InstitutionBuilder
     include CommonInstitutionBuilder::VersionGeneration
     extend Common
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def self.run_insertions(version)
       build_messages = {}
       initialize_with_weams(version)
@@ -49,6 +50,7 @@ module InstitutionBuilder
       add_settlement(version.id)
       add_hcm(version.id)
       add_complaint(version.id)
+      build_versioned_complaints(version.id)
       add_outcome(version.id)
       add_stem_offered(version.id)
       add_yellow_ribbon_programs(version.id)
@@ -64,6 +66,10 @@ module InstitutionBuilder
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
 
+      # Do not build in unless production or local environment
+      # Ultimately we're pulling this out and putting it in a batch job overnite
+      build_public_export(version.id) if production? || ENV['CI'].blank?
+
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
@@ -76,6 +82,7 @@ module InstitutionBuilder
 
       build_messages.filter { |_k, v| v.present? }
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def self.run(user)
       prev_gen_start = Time.now.utc
@@ -577,8 +584,86 @@ module InstitutionBuilder
 
     def self.add_complaint(version_id)
       Complaint.update_ope_from_crosswalk
+
+      # TODO: to future devs, as part of https://github.com/department-of-veterans-affairs/gibct-data-service/pull/1408 we are
+      # changing the way complaints are rolled up and returned to the front end. Assuming this new way of doing things
+      # is successful, we should be able to remove these Complaint.rollup_* function calls, as well as all the
+      # complaints_* columns on the institutions table.
       Complaint.rollup_sums(:facility_code, version_id)
       Complaint.rollup_sums(:ope6, version_id)
+    end
+
+    def self.build_versioned_complaints(version_id)
+      str = <<-SQL
+        INSERT INTO versioned_complaints(
+          version_id,
+          status,
+          ope,
+          ope6,
+          facility_code,
+          closed_reason,
+          issues,
+          cfc,
+          cfbfc,
+          cqbfc,
+          crbfc,
+          cmbfc,
+          cabfc,
+          cdrbfc,
+          cslbfc,
+          cgbfc,
+          cctbfc,
+          cjbfc,
+          ctbfc,
+          cobfc,
+          case_id,
+          level,
+          case_owner,
+          institution,
+          city,
+          state,
+          submitted,
+          closed,
+          education_benefits,
+          created_at,
+          updated_at)
+        SELECT
+          #{version_id},
+          c.status,
+          c.ope,
+          c.ope6,
+          c.facility_code,
+          c.closed_reason,
+          c.issues,
+          c.cfc,
+          c.cfbfc,
+          c.cqbfc,
+          c.crbfc,
+          c.cmbfc,
+          c.cabfc,
+          c.cdrbfc,
+          c.cslbfc,
+          c.cgbfc,
+          c.cctbfc,
+          c.cjbfc,
+          c.ctbfc,
+          c.cobfc,
+          c.case_id,
+          c.level,
+          c.case_owner,
+          c.institution,
+          c.city,
+          c.state,
+          c.submitted,
+          c.closed,
+          c.education_benefits,
+          NOW(),
+          NOW()
+        FROM complaints c
+      SQL
+
+      sql = ActiveRecord::Base.sanitize_sql([str])
+      ActiveRecord::Base.connection.execute(sql)
     end
 
     def self.add_outcome(version_id)
@@ -1193,6 +1278,12 @@ module InstitutionBuilder
       SQL
       sql = Institution.send(:sanitize_sql, [str])
       Institution.connection.execute(sql)
+    end
+
+    def self.build_public_export(version_id)
+      log_info_status 'Building Public Export file record'
+      progress = ->(message) { log_info_status(message) }
+      VersionPublicExport.build(version_id, progress_callback: progress)
     end
 
     def self.log_error_and_delete_version(version, notice)
