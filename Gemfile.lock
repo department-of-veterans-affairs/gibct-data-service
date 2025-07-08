@@ -130,7 +130,7 @@ GEM
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
     byebug (12.0.0)
-    cancancan (1.17.0)
+    cancancan (3.6.1)
     capybara (3.40.0)
       addressable
       matrix
@@ -244,6 +244,10 @@ GEM
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    importmap-rails (2.1.0)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     io-console (0.8.0)
     irb (1.15.1)
       pp (>= 0.6.0)
@@ -521,6 +525,9 @@ GEM
     thread_safe (0.3.6)
     tilt (2.1.0)
     timeout (0.4.3)
+    turbo-rails (2.0.16)
+      actionpack (>= 7.1.0)
+      railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
@@ -565,7 +572,7 @@ DEPENDENCIES
   brakeman
   bundler-audit
   byebug
-  cancancan (~> 1.13, >= 1.13.1)
+  cancancan (~> 3.6)
   capybara (= 3.40.0)
   cgi (>= 0.4.2)
   config
@@ -584,6 +591,7 @@ DEPENDENCIES
   guard-rspec
   headless (~> 2.3.1)
   httparty
+  importmap-rails
   jquery-rails
   jquery-ui-rails!
   json (>= 2.3.0)
@@ -625,6 +633,7 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
+  turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
   virtus (~> 2.0.0)

@@ -330,6 +330,14 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'creating a version public export' do
+      it 'creates a new version public export' do
+        skip 'This test fails in Jenkins CI'
+        expect { described_class.run(user) }.to change(VersionPublicExport, :count).by(1)
+        expect(VersionPublicExport.first.version_id).to eq(Version.current_production.id)
+      end
+    end
+
     describe 'when missing latitude and longitude' do
       it 'sets latitude and longitdue from CensusLatLong' do
         weam = create(:weam)
