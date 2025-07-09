@@ -10,6 +10,12 @@
     <li>
       <%= link_to "Apply Rate Adjustments", "#",
                   data: { action: "click->rates-form#warn click->apply-rates-modal#show" } %>
+      <%= link_to "Export", "#", data: { action: "click-rates-form#warm click->export-constants-modal#show" } %>
+
+      <!--
+      <%= link_to "Export Current Values", dashboard_export_path('CalculatorConstant') %>
+      <%= link_to "Export Calculator Constant History", export_calculator_constants_path %>
+      -->
     </li>
   </ul>
 </div>

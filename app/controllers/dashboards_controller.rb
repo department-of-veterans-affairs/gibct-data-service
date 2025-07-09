@@ -152,7 +152,8 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
+    klass_names = CSV_TYPES_ALL_TABLES_CLASSES + ONLINE_TYPES_ALL_TABLES_CLASSES
+    model = klass_names.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid exportable CSV type") if model.blank?

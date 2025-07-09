@@ -16,6 +16,11 @@ module Common
       end
     end
 
+    def export_version_history(start_year = nil, end_year = nil)
+      almanac = klass.over_the_years(start_year, end_year)
+      byebug
+    end
+
     # simple version that takes incoming array of arrays and creates a CSV object with it
     def generate_csv(rows)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|

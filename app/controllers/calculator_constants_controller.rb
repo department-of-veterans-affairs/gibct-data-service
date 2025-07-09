@@ -11,6 +11,7 @@ class CalculatorConstantsController < ApplicationController
     @calculator_constants = CalculatorConstant.all
     @constants_unpublished = CalculatorConstant.unpublished?
     @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year)
+    @earliest_available_year = CalculatorConstantVersionsArchive.earliest_available_year
     @rate_adjustments = RateAdjustment.by_chapter_number
   end
 
@@ -42,6 +43,10 @@ class CalculatorConstantsController < ApplicationController
     create_upload_row
 
     redirect_to action: :index
+  end
+
+  def export
+
   end
 
   private

@@ -4,4 +4,5 @@ Rails.application.config.to_prepare do
   ].freeze
 
   ONLINE_TYPES_NAMES ||= ONLINE_TYPES.map { |g| g[:klass] }.freeze
+  ONLINE_TYPES_ALL_TABLES_CLASSES ||= ONLINE_TYPES.map { |table| table[:klass] }.freeze
 end

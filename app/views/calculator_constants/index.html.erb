@@ -1,5 +1,5 @@
 <div class="row row-space-6"
-     data-controller="rates-form constants-form apply-rates-modal"
+     data-controller="rates-form constants-form apply-rates-modal export-constants-modal"
      data-action="turbo:load->rate-form#reset">
   <div class="col-md-8">
     <% if @constants_unpublished %>
@@ -29,6 +29,7 @@
     <% end %>
     <%= render partial: "rates_form" %>
     <%= render partial: "constants_form" %>
-    <%= render partial: "modal" %>
+    <%= render partial: "apply_rates_modal" %>
+    <%= render partial: "export_constants_modal" %>
   </div>
 </div>

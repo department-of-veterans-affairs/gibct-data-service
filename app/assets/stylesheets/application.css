@@ -434,3 +434,8 @@ table.crosswalk-issues thead.sub th {
     margin-left: 0;
     margin-right: 0;
 }
+
+label:has(input[type="radio"]:not(:checked)) {
+  color: #767676 ;
+}
+

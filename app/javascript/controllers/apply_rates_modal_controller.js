@@ -6,7 +6,7 @@ export default class extends Controller {
 
   show(event) {
     event.preventDefault();
-    event.stopImmediatePropagation()
+    event.stopImmediatePropagation();
 
     this.update();
     $(this.dialogTarget).modal("show");

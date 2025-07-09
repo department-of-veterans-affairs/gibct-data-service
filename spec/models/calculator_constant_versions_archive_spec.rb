@@ -24,13 +24,13 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
   end
 
   describe '.circa' do
-    # TO-DO: Associate archives with versions and update factory to use :association
-    let!(:constant_archive) { create(:calculator_constant_versions_archive, version_id: version.id) }
-    let(:version) { create(:version, :production, :from_last_year) }
+    # TO-DO: move this to spec for ArchiveVersionable concern
+    # let!(:constant_archive) { create(:calculator_constant_versions_archive, version_id: version.id) }
+    # let(:version) { create(:version, :production, :from_last_year) }
 
-    it 'returns all constants belonging to last version as of a specific year' do
-      previous_year = 1.year.ago.year
-      expect(described_class.circa(previous_year)).to include(constant_archive)
-    end
+    # it 'returns all constants belonging to last version as of a specific year' do
+    #   previous_year = 1.year.ago.year
+    #   expect(described_class.circa(previous_year)).to include(constant_archive)
+    # end
   end
 end

@@ -2,7 +2,7 @@ Rails.application.config.to_prepare do
   UPLOAD_TYPES ||= [
       *GROUP_FILE_TYPES,
       *CSV_TYPES_TABLES,
-      *ONLINE_TYPES,
+      *ONLINE_TYPES
   ].freeze
 
   # Excludes ONLINE_TYPES, which cannot be updated via CSV upload
