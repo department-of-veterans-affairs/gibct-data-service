@@ -13,6 +13,12 @@ FactoryBot.define do
       production { false }
     end
 
+    trait :from_last_year do
+      after(:create) do |version|
+        version.update(completed_at: version.created_at.years_ago(1))
+      end
+    end
+
     trait :with_institution do
       after(:create) do |version|
         create(:institution, version_id: version.id, version: version)

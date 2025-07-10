@@ -6,6 +6,7 @@ class Version < ApplicationRecord
   has_many :institutions, dependent: :nullify
   has_many :zipcode_rates, dependent: :nullify
   has_many :calculator_constant_versions, dependent: :nullify
+  has_many :calculator_constant_versions_archives, dependent: :nullify
   belongs_to :user, inverse_of: :versions
   alias_attribute :created_by, :user
 
@@ -46,6 +47,22 @@ class Version < ApplicationRecord
     Version.select('distinct on (number) *')
            .where('number < ? and production = true', Version.current_production&.number)
            .order(number: :desc)
+  end
+
+  # Used by CalculatorConstantVersionsArchive to find most recently completed version as of a specific year
+  def self.latest_from_year(year)
+    raise ArgumentError, 'Must provide a valid year' unless year.is_a?(Integer)
+
+    Version.where('extract(year from completed_at) = ?', year)
+           .order(number: :desc)
+           .first
+  end
+
+  def self.latest_from_year_range(start_year, end_year)
+    raise ArgumentError, 'Must provide a valid year' unless [start_year, end_year].all? { |y| y.is_a?(Integer) }
+    raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
+
+    (start_year..end_year).map { |y| latest_from_year(y) }.compact
   end
 
   # public instance methods

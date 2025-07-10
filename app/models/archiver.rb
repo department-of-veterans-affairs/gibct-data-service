@@ -9,7 +9,8 @@ module Archiver
     { source: ZipcodeRate, archive: ZipcodeRatesArchive },
     { source: CautionFlag, archive: nil },
     { source: Institution, archive: InstitutionsArchive },
-    { source: VersionedComplaint, archive: VersionedComplaintsArchive }
+    { source: VersionedComplaint, archive: VersionedComplaintsArchive },
+    { source: CalculatorConstantVersion, archive: CalculatorConstantVersionsArchive }
   ].freeze
 
   def self.archive_previous_versions

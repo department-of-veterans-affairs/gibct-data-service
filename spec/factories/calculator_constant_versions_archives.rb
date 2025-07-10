@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :calculator_constant_versions_archive do
     version_id { '' }
-    name { 'MyString' }
+    name { 'AVEGRADRATE' }
     float_value { 1.5 }
     description { 'MyString' }
   end
