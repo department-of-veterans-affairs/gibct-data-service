@@ -16,9 +16,8 @@ module Common
       end
     end
 
-    def export_version_history(start_year = nil, end_year = nil)
-      almanac = klass.over_the_years(start_year, end_year)
-      byebug
+    def export_version_history(start_year, end_year)
+      generate_version_history(csv_headers_for_version_history, start_year:, end_year:)
     end
 
     # simple version that takes incoming array of arrays and creates a CSV object with it
@@ -99,6 +98,17 @@ module Common
       csv_headers
     end
 
+    def csv_headers_for_version_history
+      csv_headers = {}
+
+      klass::SOURCE_TABLE::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
+        key = info[:column]
+        csv_headers[key] = Common::Shared.display_csv_header(csv_column)
+      end
+
+      csv_headers
+    end
+
     def generate(csv_headers)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         csv << csv_headers.values
@@ -115,6 +125,14 @@ module Common
       end
     end
 
+    def generate_version_history(csv_headers, start_year:, end_year:)
+      CSV.generate(col_sep: defaults[:col_sep]) do |csv|
+        csv <<  csv_headers.values.concat(%w[updated_by date])
+
+        klass == write_version_history_row(csv, csv_headers, start_year:, end_year:)
+      end
+    end
+
     def write_row(csv, csv_headers)
       klass.find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| format(k, record.public_send(k)) }
@@ -127,6 +145,28 @@ module Common
       klass.includes(:version)
            .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| record.respond_to?(k) == false ? nil : format(k, record.public_send(k)) }
+      end
+    end
+
+    def write_version_history_row(csv, csv_headers, start_year:, end_year:)
+      if end_year == Time.zone.now.year
+        end_year -= 1
+        klass::SOURCE_TABLE.includes(version: :user)
+                         .order(:name)
+                         .each do |record|
+          version = record.version
+          row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+          csv << [*row, version.user.email, version.completed_at]
+        end
+      end
+
+      klass.includes(version: :user)
+           .over_the_years(start_year, end_year)
+           .order(created_at: :desc, name: :asc)
+           .each do |record|
+        version = record.version
+        row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+        csv << [*row, version.user.email, version.completed_at]
       end
     end
 

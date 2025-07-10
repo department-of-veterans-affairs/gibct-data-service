@@ -58,6 +58,13 @@ class Version < ApplicationRecord
            .first
   end
 
+  def self.latest_from_year_range(start_year, end_year)
+    raise ArgumentError, 'Must provide a valid year' unless [start_year, end_year].all? { |y| y.is_a?(Integer) }
+    raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
+
+    (start_year..end_year).map { |y| latest_from_year(y) }.compact
+  end
+
   # public instance methods
   def preview?
     !production?

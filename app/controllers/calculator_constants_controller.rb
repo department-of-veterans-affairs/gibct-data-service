@@ -3,8 +3,6 @@
 class CalculatorConstantsController < ApplicationController
   include CollectionUpdatable
 
-  before_action :set_rate_adjustment_id, only: :apply_rate_adjustments
-
   def index
     previous_year = 1.year.ago.year
 
@@ -33,7 +31,7 @@ class CalculatorConstantsController < ApplicationController
 
   # Apply rate adjustments to associated constants
   def apply_rate_adjustments
-    updated = CalculatorConstant.where(rate_adjustment_id: @rate_adjustment_id)
+    updated = CalculatorConstant.where(rate_adjustment_id: rate_adjustment_id)
                                 .map(&:apply_rate_adjustment)
     flash[:success] = {
       updated_fields: updated.pluck(:name)
@@ -46,15 +44,22 @@ class CalculatorConstantsController < ApplicationController
   end
 
   def export
-    # respond_to do |format|
-    #   format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
-    # end
+    start_year = params[:start_year].to_i
+    end_year = params[:end_year].to_i
+    export_name = "CalculatorConstants_#{start_year}_to_#{end_year}.csv"
+
+    respond_to do |format|
+      format.csv do
+        send_data(CalculatorConstantVersionsArchive.export_version_history(start_year, end_year),
+                  type: 'text/csv', filename: export_name)
+      end
+    end
   end
 
   private
 
-  def set_rate_adjustment_id
-    @rate_adjustment_id = params.require(:rate_adjustment_id)
+  def rate_adjustment_id
+    @rate_adjustment_id ||= params.require(:rate_adjustment_id)
   end
 
   # This causes the popup when generating a new version to include gonculator contstants as changed

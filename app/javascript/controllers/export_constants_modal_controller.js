@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "dialog", "form", "radioCurrent", "radioStart", "selectStart",
+  static targets = [ "dialog", "form", "radioCurrent", "radioHistory", "selectStart",
                      "selectEnd", "exportButton"];
 
   show(event) {
@@ -15,9 +15,9 @@ export default class extends Controller {
     this.selectEndTarget.selectedIndex = this.selectEndTarget.options.length - 1;
     this.selectEndTarget.disabled = true;
   }
-
+q
   toggleSelects(event) {
-    this.exportButtonTarget.href = event.target.value;
+    this.#setExportPath(event.target);
     this.selectStartTarget.disabled = !this.selectStartTarget.disabled;
     this.selectEndTarget.disabled = !this.selectEndTarget.disabled;
   }
@@ -34,6 +34,7 @@ export default class extends Controller {
       }
       this.selectStartTarget.add(option);
     }
+    this.#setExportPath();
   }
 
   updateEnd() {
@@ -51,5 +52,27 @@ export default class extends Controller {
       }
       this.selectEndTarget.add(option);
     }
+    this.#setExportPath();
+  }
+
+  download(event) {
+    event.preventDefault();
+
+    $(this.dialogTarget).modal("hide");
+
+    setTimeout(() => {
+      window.location = event.target.href;
+    }, 300);
+  }
+
+  #setExportPath(target = this.radioHistoryTarget) {
+    let path = target.value;
+    
+    if (target.id === "history") {
+      const start = this.selectStartTarget.value;
+      const end = this.selectEndTarget.value;
+      path += `?start_year=${start}&end_year=${end}`;
+    }
+    this.exportButtonTarget.href = path;
   }
 }

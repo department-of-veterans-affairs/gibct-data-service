@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-class CalculatorConstant < ImportableRecord
-  CSV_CONVERTER_INFO = {
-    'name' => { column: :name, converter: Converters::UpcaseConverter },
-    'value' => { column: :float_value, converter: Converters::NumberConverter },
-    'description' => { column: :description, converter: Converters::BaseConverter }
-  }.freeze
-
+class CalculatorConstant < ApplicationRecord
   belongs_to :rate_adjustment, optional: true
 
   validates :name, uniqueness: true, presence: true

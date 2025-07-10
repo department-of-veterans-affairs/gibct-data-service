@@ -13,7 +13,7 @@
           <input type="radio"
                   id="current"
                   name="export"
-                  value="<%= dashboard_export_path('CalculatorConstant') %>"
+                  value="<%= dashboard_export_path('CalculatorConstantVersion') %>"
                   data-export-constants-modal-target="radioCurrent"
                   data-action="change->export-constants-modal#toggleSelects">
           Current calculator constants
@@ -25,7 +25,7 @@
                   id="history"
                   name="export"
                   value="<%= export_calculator_constants_path %>"
-                  data-export-constants-modal-target="radioCurrent"
+                  data-export-constants-modal-target="radioHistory"
                   data-action="change->export-constants-modal#toggleSelects">
             A history of calculator constants from
             <select name="start_year"
@@ -51,10 +51,10 @@
     <div class="modal-footer">
       <button type="button" class="btn dashboard-btn-danger" data-dismiss="modal">Cancel</button>
       <%= link_to "Export",
-                  dashboard_export_path('CalculatorConstant'),
+                  dashboard_export_path('CalculatorConstantVersion'),
                   class: "btn dashboard-btn-success",
                   role: "button",
-                  data: { export_constants_modal_target: "exportButton" } %>
+                  data: { action: "click->export-constants-modal#download", export_constants_modal_target: "exportButton" } %>
     </div>
     </div>
   </div>
