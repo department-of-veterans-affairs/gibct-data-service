@@ -8,16 +8,3 @@
 #     command: "SoftDeletedRecord.due.delete_all"
 #     priority: 2
 #     schedule: at 5am every day
-
-development:
-  test_recurring:
-    class: ExampleRecurringJob
-    schedule: every minute
-staging:
-  test_recurring:
-    class: ExampleRecurringJob
-    schedule: every minute
-production:
-  test_recurring:
-    class: ExampleRecurringJob
-    schedule: every minute
