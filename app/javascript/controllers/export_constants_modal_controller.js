@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "dialog", "form", "radioCurrent", "radioStart", "selectStart", "selectEnd" ];
+  static targets = [ "dialog", "form", "radioCurrent", "radioStart", "selectStart",
+                     "selectEnd", "exportButton"];
 
   show(event) {
     event.preventDefault();
@@ -15,17 +16,22 @@ export default class extends Controller {
     this.selectEndTarget.disabled = true;
   }
 
-  toggleSelects() {
+  toggleSelects(event) {
+    this.exportButtonTarget.href = event.target.value;
     this.selectStartTarget.disabled = !this.selectStartTarget.disabled;
     this.selectEndTarget.disabled = !this.selectEndTarget.disabled;
   }
 
   updateStart() {
+    const currentValue = parseInt(this.selectStartTarget.value);
     const startYear = parseInt(this.selectStartTarget.options[0].value);
     const endYear = parseInt(this.selectEndTarget.value);
     this.selectStartTarget.innerHTML = "";
     for(let year = startYear; year < endYear; year++) {
       const option = new Option(year, year);
+      if (year === currentValue) {
+        option.selected = true;
+      }
       this.selectStartTarget.add(option);
     }
   }

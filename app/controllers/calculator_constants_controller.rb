@@ -46,7 +46,9 @@ class CalculatorConstantsController < ApplicationController
   end
 
   def export
-
+    # respond_to do |format|
+    #   format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
+    # end
   end
 
   private
