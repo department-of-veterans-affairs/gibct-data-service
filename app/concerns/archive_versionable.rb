@@ -9,7 +9,7 @@ module ArchiveVersionable
     end
 
     # start_year and end_year are inclusive
-    def over_the_years(start_year = earliest_available_year, end_year = Time.now.year)
+    def over_the_years(start_year = earliest_available_year, end_year = Time.zone.now.year)
       validate_years(start_year, end_year)
       return {} if earliest_available_year.nil?
 
@@ -32,15 +32,15 @@ module ArchiveVersionable
       record = where.not(version_id: nil)
                     .order(:created_at)
                     .first
-      return nil unless record.present?
-      
+      return nil if record.blank?
+
       record.created_at.year
     end
 
     private
 
     def klass_from(year)
-      return self unless year == Time.now.year
+      return self unless year == Time.zone.now.year
 
       raise NotImplementedError, "#{name} must define SOURCE_TABLE" unless defined?(self::SOURCE_TABLE)
 
@@ -48,10 +48,9 @@ module ArchiveVersionable
     end
 
     def validate_years(start_year, end_year)
-      unless [start_year, end_year].all? { |year| year.is_a?(Integer) }
-        raise ArgumentError, 'Must provide a valid year'
-      end
-      
+      valid_integers = [start_year, end_year].all? { |year| year.is_a?(Integer) }
+      raise ArgumentError, 'Must provide a valid year' unless valid_integers
+
       raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
     end
   end
