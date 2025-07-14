@@ -127,7 +127,7 @@ module Common
 
     def generate_version_history(csv_headers, start_year:, end_year:)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
-        csv <<  csv_headers.values.concat(%w[updated_by date])
+        csv << csv_headers.values.concat(%w[updated_by date])
 
         klass == write_version_history_row(csv, csv_headers, start_year:, end_year:)
       end
@@ -152,8 +152,8 @@ module Common
       if end_year == Time.zone.now.year
         end_year -= 1
         klass::SOURCE_TABLE.includes(version: :user)
-                         .order(:name)
-                         .each do |record|
+                           .order(:name)
+                           .each do |record|
           version = record.version
           row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
           csv << [*row, version.user.email, version.completed_at]
