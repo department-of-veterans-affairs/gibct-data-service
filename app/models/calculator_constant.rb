@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CalculatorConstant < ApplicationRecord
+class CalculatorConstant < ImportableRecord
   belongs_to :rate_adjustment, optional: true
 
   validates :name, uniqueness: true, presence: true
