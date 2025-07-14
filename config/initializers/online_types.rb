@@ -1,6 +1,7 @@
 Rails.application.config.to_prepare do
   ONLINE_TYPES ||= [
-    { klass: CalculatorConstant, required?: false },
+    # klass must be string or ImportableRecord (see upload_types_spec), CalculatorConstant no longer ImportableRecord
+    { klass: 'CalculatorConstant', required?: false },
     { klass: CalculatorConstantVersion, required?: false }
   ].freeze
 
