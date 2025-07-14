@@ -41,7 +41,6 @@ class DashboardsController < ApplicationController
       send_data Group.export_as_zip(file_type), type: 'application/zip', filename: "#{file_type}.zip"
     else
       klass = csv_model(file_type)
-      byebug
       respond_to do |format|
         format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
       end
