@@ -8,7 +8,7 @@ module ArchiveVersionable
     extend Common::Exporter
 
     scope :circa, ->(year) { where(version: Version.latest_from_year(year)) }
-    scope :over_the_years, lambda(start_year, end_year) do
+    scope :over_the_years, lambda do |start_year, end_year|
       where(version: Version.latest_from_year_range(start_year, end_year))
     end
   end
