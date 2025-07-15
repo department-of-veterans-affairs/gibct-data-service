@@ -4,17 +4,18 @@ FactoryBot.define do
   factory :calculator_constant_versions_archive do
     transient do
       year { 2024 }
-      date { Time.zone.local(year, 12, 31) }
+      date { Time.current.change(year: year) }
     end
 
-    association :version, factory: %i[version production]
-    name { 'AVEGRADRATE' }
+    sequence(:name) { |n| "CONSTANT #{n}" }
     float_value { 1.5 }
     description { 'MyString' }
     created_at { date }
+    # Override version if you want to create multiple constants belonging to same version
+    version { nil }
 
     after(:build) do |archive, evaluator|
-      archive.version.update(completed_at: evaluator.date)
+      archive.version ||= create(:version, :production, :from_year, year: evaluator.year)
     end
   end
 end

@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'models/shared_examples/shared_examples_for_archive_versionable'
 
 RSpec.describe CalculatorConstantVersionsArchive, type: :model do
+  it_behaves_like 'an archive versionable'
+
   describe 'when validating' do
     subject(:constant_archive) { create(:calculator_constant_versions_archive) }
 

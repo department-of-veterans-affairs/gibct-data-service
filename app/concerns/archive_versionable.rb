@@ -14,6 +14,7 @@ module ArchiveVersionable
   end
 
   module ClassMethods
+    # Year where versioning first implemented for record
     def earliest_available_year
       record = where.not(version_id: nil)
                     .order(:created_at)
