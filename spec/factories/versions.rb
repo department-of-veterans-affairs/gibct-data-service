@@ -2,6 +2,11 @@
 
 FactoryBot.define do
   factory :version do
+    transient do
+      year { Time.zone.now.year }
+      date { Time.current.change(year: year) }
+    end
+
     user
 
     trait :production do
@@ -9,14 +14,14 @@ FactoryBot.define do
       geocoded { true }
     end
 
-    trait :preview do
-      production { false }
+    # Set :year transient value in conjunction with :from_year trait
+    # Used to test #latest_from_year and #latest_from_year_range
+    trait :from_year do
+      completed_at { date }
     end
 
-    trait :from_last_year do
-      after(:create) do |version|
-        version.update(completed_at: version.created_at.years_ago(1))
-      end
+    trait :preview do
+      production { false }
     end
 
     trait :with_institution do

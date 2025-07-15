@@ -49,7 +49,7 @@ class Version < ApplicationRecord
            .order(number: :desc)
   end
 
-  # Used by CalculatorConstantVersionsArchive to find most recently completed version as of a specific year
+  # Used by Calculator Constants to find most recently versioned records as of a specific year
   def self.latest_from_year(year)
     raise ArgumentError, 'Must provide a valid year' unless year.is_a?(Integer)
 
@@ -58,6 +58,8 @@ class Version < ApplicationRecord
            .first
   end
 
+  # Inclusive of start and end year
+  # Used by Calculator Constants to produce export of records over range of years
   def self.latest_from_year_range(start_year, end_year)
     raise ArgumentError, 'Must provide a valid year' unless [start_year, end_year].all? { |y| y.is_a?(Integer) }
     raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
