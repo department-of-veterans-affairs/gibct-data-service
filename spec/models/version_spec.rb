@@ -142,7 +142,7 @@ RSpec.describe Version, type: :model do
 
     it 'returns the most recently completed version as of a specific year' do
       latest = create(:version, :production, :from_year, year: previous_year)
-      
+
       expect(described_class.latest_from_year(previous_year)).to eq(latest)
     end
 
@@ -156,9 +156,11 @@ RSpec.describe Version, type: :model do
   end
 
   describe '.latest_from_year_range' do
-    let!(:versions_2022) { create_list(:version, 2, :production, :from_year, year: 2022) }
-    let!(:versions_2023) { create_list(:version, 2, :production, :from_year, year: 2023) }
-    let!(:versions_2024) { create_list(:version, 2, :production, :from_year, year: 2024) }
+    before do
+      create_list(:version, 2, :production, :from_year, year: 2022)
+      create_list(:version, 2, :production, :from_year, year: 2023)
+      create_list(:version, 2, :production, :from_year, year: 2024)
+    end
 
     it 'takes start and end year and returns most recently completed version for each year in range' do
       v2022 = create(:version, :production, :from_year, year: 2022)

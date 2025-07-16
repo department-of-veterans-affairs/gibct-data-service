@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'models/shared_examples/shared_examples_for_exportable_by_version_history'
+
 RSpec.shared_examples 'an archive versionable' do
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }

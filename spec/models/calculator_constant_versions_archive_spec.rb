@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_archive_versionable'
+require 'models/shared_examples/shared_examples_for_exportable_by_version_history'
 
 RSpec.describe CalculatorConstantVersionsArchive, type: :model do
   it_behaves_like 'an archive versionable'
+  it_behaves_like 'an exportable model by version history'
 
   describe 'when validating' do
     subject(:constant_archive) { create(:calculator_constant_versions_archive) }

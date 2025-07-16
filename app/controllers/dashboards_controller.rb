@@ -151,7 +151,7 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    klass_names = CSV_TYPES_ALL_TABLES_CLASSES + ONLINE_TYPES_ALL_TABLES_CLASSES
+    klass_names = CSV_TYPES_ALL_TABLES_CLASSES + ONLINE_TYPES_NAMES
     model = klass_names.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 

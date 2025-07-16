@@ -16,6 +16,7 @@ module Common
       end
     end
 
+    # used by Calculator Constant dashboard to generate report of changes to constants over time
     def export_version_history(start_year, end_year)
       generate_version_history(csv_headers_for_version_history, start_year:, end_year:)
     end
@@ -99,6 +100,8 @@ module Common
     end
 
     def csv_headers_for_version_history
+      raise NotImplementedError, "#{klass.name} must defined SOURCE_TABLE" unless defined?(:SOURCE_TABLE)
+
       csv_headers = {}
 
       klass::SOURCE_TABLE::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
@@ -149,15 +152,12 @@ module Common
     end
 
     def write_version_history_row(csv, csv_headers, start_year:, end_year:)
+      raise MissingAttributeError, "#{klass.name} is not versioned" unless klass.has_attribute?('version_id')
+
+      # Query source table where live data lives if current year included in range
       if end_year == Time.zone.now.year
         end_year -= 1
-        klass::SOURCE_TABLE.includes(version: :user)
-                           .order(:name)
-                           .each do |record|
-          version = record.version
-          row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
-          csv << [*row, version.user.email, version.completed_at]
-        end
+        write_live_data_to_version_history(csv, csv_headers)
       end
 
       klass.includes(version: :user)
@@ -166,7 +166,17 @@ module Common
            .each do |record|
         version = record.version
         row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
-        csv << [*row, version.user.email, version.completed_at]
+        csv << [*row, version.user.email, version.completed_at&.to_fs(:db)]
+      end
+    end
+
+    def write_live_data_to_version_history(csv, csv_headers)
+      klass::SOURCE_TABLE.includes(version: :user)
+                         .order(:name)
+                         .each do |record|
+        version = record.version
+        row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+        csv << [*row, version.user.email, version.completed_at&.to_fs(:db)]
       end
     end
 
