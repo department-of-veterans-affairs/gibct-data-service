@@ -155,8 +155,8 @@ module Common
       raise MissingAttributeError, "#{klass.name} is not versioned" unless klass.has_attribute?('version_id')
 
       # Query source table where live data lives if current year included in range
-      if end_year == Time.zone.now.year
-        end_year -= 1
+      if end_year >= Time.zone.now.year
+        end_year = Time.zone.now.year - 1
         write_live_data_to_version_history(csv, csv_headers)
       end
 
