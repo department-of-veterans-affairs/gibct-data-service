@@ -90,7 +90,34 @@ RSpec.describe CalculatorConstantsController, type: :controller do
     end
   end
 
-  # describe 'GET #export' do
+  describe 'GET #export' do
+    login_user
 
-  # end
+    let(:current_year) { Time.zone.now.year }
+
+    before do
+      v2022 = create(:version, :production, :from_year, year: 2022)
+      create_list(:calculator_constant_versions_archive, 5, year: 2022, version: v2022)
+
+      v2023 = create(:version, :production, :from_year, year: 2023)
+      create_list(:calculator_constant_versions_archive, 5, year: 2023, version: v2023)
+
+      v2024 = create(:version, :production, :from_year, year: 2024)
+      create_list(:calculator_constant_versions_archive, 5, year: 2024, version: v2024)
+
+      live_version = create(:version, :production, :from_year, year: current_year)
+      create_list(:calculator_constant_versions_archive, 5, version: live_version)
+    end
+
+    it 'receives start and end year params and exports a version history' do
+      allow(CalculatorConstantVersionsArchive).to receive(:export_version_history).with(2022, current_year)
+      get(:export, params: { start_year: 2022, end_year: current_year, format: :csv })
+      expect(CalculatorConstantVersionsArchive).to have_received(:export_version_history)
+    end
+
+    it 'includes filename parameter in content-disposition header' do
+      get(:export, params: { start_year: 2022, end_year: current_year, format: :csv })
+      expect(response.headers['Content-Disposition']).to include("CalculatorConstants_2022_to_#{current_year}.csv")
+    end
+  end
 end
