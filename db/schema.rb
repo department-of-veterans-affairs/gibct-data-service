@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_08_145215) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -1958,6 +1958,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_08_145215) do
     t.binary "uuid", null: false
     t.datetime "completed_at", precision: nil
     t.boolean "geocoded", default: false
+    t.index ["completed_at"], name: "index_versions_on_completed_at"
     t.index ["number"], name: "index_versions_on_number"
     t.index ["user_id"], name: "index_versions_on_user_id"
     t.index ["uuid"], name: "index_versions_on_uuid", unique: true
