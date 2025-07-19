@@ -55,7 +55,8 @@ RSpec.shared_examples 'an exportable model by version history' do
     end
 
     def attributes_from(record, version = record.version)
-      excepted = %w[id version version_id created_at updated_at]
+      # Except name because issues with sequence when running tests in parallel
+      excepted = %w[id name version version_id created_at updated_at]
       record.attributes.except(*excepted).merge({ updated_by: version.user.email,
                                                   date: version.completed_at.to_fs(:db) })
     end
