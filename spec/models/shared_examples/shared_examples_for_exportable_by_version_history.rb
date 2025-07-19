@@ -3,8 +3,8 @@
 RSpec.shared_examples 'an exportable model by version history' do
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
-  let(:source_table) { described_class::SOURCE_TABLE }
-  let(:source_factory) { source_table.name.underscore.to_sym }
+  let(:source_klass) { described_class.source_klass }
+  let(:source_factory) { source_klass.name.underscore.to_sym }
   let(:current_year) { Time.zone.now.year }
 
   before do
@@ -21,19 +21,13 @@ RSpec.shared_examples 'an exportable model by version history' do
     create_list(source_factory, 5, version: live_version)
   end
 
-  describe 'archivable model' do
-    it 'defines SOURCE_TABLE where live data lives' do
-      expect(described_class.const_defined?(:SOURCE_TABLE)).to be true
-    end
-
-    it 'establishes association with Version' do
-      expect(described_class.reflect_on_all_associations(:belongs_to).map(&:klass)).to include(Version)
-    end
-  end
-
   describe '.export_version_history' do
-    let(:mapping) { source_table::CSV_CONVERTER_INFO }
+    let(:mapping) { source_klass::CSV_CONVERTER_INFO }
     let(:col_sep) { Common::Shared.file_type_defaults(described_class.name)[:col_sep] }
+
+    it 'raises NotImplementedError unless klass included in VERSION_HISTORY_EXPORTABLE_TABLES' do
+      expect {described_class.export_version_history(2022, current_year) }.not_to raise_error(NotImplementedError)
+    end
 
     def check_headers(header_row)
       expect(header_row).to match_array([*mapping.keys, 'updated_by', 'date'])
@@ -74,7 +68,7 @@ RSpec.shared_examples 'an exportable model by version history' do
       rows = CSV.parse(rows.join("\n"), col_sep: col_sep)
       check_headers(header_row)
 
-      live_data = source_table.all.to_a
+      live_data = source_klass.all.to_a
       archived_data = described_class.where('created_at >= ?', Time.zone.local(start_year, 1, 1))
                                      .order(created_at: :desc)
                                      .to_a

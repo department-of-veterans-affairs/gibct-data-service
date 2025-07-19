@@ -16,8 +16,10 @@ module Common
       end
     end
 
-    # used by Calculator Constant dashboard to generate report of changes to constants over time
+    # Currently only used by CalculatorConstantVersionsArchive to generate report of changes to constants over time
     def export_version_history(start_year, end_year)
+      raise NotImplementedError, "#{klass} does not implement version history export" unless version_history_exportable?
+      
       generate_version_history(csv_headers_for_version_history, start_year:, end_year:)
     end
 
@@ -100,11 +102,9 @@ module Common
     end
 
     def csv_headers_for_version_history
-      raise NotImplementedError, "#{klass.name} must defined SOURCE_TABLE" unless defined?(:SOURCE_TABLE)
-
       csv_headers = {}
 
-      klass::SOURCE_TABLE::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
+      klass.source_klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
         key = info[:column]
         csv_headers[key] = Common::Shared.display_csv_header(csv_column)
       end
@@ -130,6 +130,7 @@ module Common
 
     def generate_version_history(csv_headers, start_year:, end_year:)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
+        # version history requires extra columns of updated_by and date
         csv << csv_headers.values.concat(%w[updated_by date])
 
         klass == write_version_history_row(csv, csv_headers, start_year:, end_year:)
@@ -143,7 +144,7 @@ module Common
     end
 
     def write_versioned_row(csv, csv_headers)
-      raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
+      raise MissingAttributeError, "#{klass.name} is not versioned" unless klass.has_attribute?('version_id')
 
       klass.includes(:version)
            .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
@@ -152,10 +153,9 @@ module Common
     end
 
     def write_version_history_row(csv, csv_headers, start_year:, end_year:)
-      raise MissingAttributeError, "#{klass.name} is not versioned" unless klass.has_attribute?('version_id')
-
-      # Query source table where live data lives if current year included in range
+      # Query source klass where live data lives if current year included in range
       if end_year >= Time.zone.now.year
+        # Do not query archives for current year
         end_year = Time.zone.now.year - 1
         write_live_data_to_version_history(csv, csv_headers)
       end
@@ -166,16 +166,18 @@ module Common
            .each do |record|
         version = record.version
         row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+        # version history requires extra columns of updated_by (email) and date
         csv << [*row, version.user.email, version.completed_at&.to_fs(:db)]
       end
     end
 
     def write_live_data_to_version_history(csv, csv_headers)
-      klass::SOURCE_TABLE.includes(version: :user)
-                         .order(:name)
-                         .each do |record|
+      klass.source_klass.includes(version: :user)
+                        .order(:name)
+                        .each do |record|
         version = record.version
         row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+        # version history requires extra columns of updated_by (email) and date
         csv << [*row, version.user.email, version.completed_at&.to_fs(:db)]
       end
     end
@@ -198,6 +200,12 @@ module Common
 
     def format_ope(col)
       "=\"#{col}\""
+    end
+
+    VERSION_HISTORY_EXPORTABLE_KLASSES = [CalculatorConstantVersionsArchive].freeze
+
+    def version_history_exportable?
+      VERSION_HISTORY_EXPORTABLE_KLASSES.include?(klass)
     end
   end
   # rubocop:enable Metrics/ModuleLength

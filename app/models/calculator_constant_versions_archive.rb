@@ -1,12 +1,48 @@
 # frozen_string_literal: true
 
 class CalculatorConstantVersionsArchive < ApplicationRecord
-  include ArchiveVersionable
-
-  SOURCE_TABLE = CalculatorConstantVersion
+  extend Common::Shared
+  extend Common::Exporter
 
   belongs_to :version
 
-  validates :name, uniqueness: { scope: :version_id }, presence: true
-  validates :float_value, presence: true
+  # Year versioning first implemented for CalculatorConstants
+  EARLIEST_AVAILABLE_YEAR = 2025
+  SOURCE_TABLE = 'calculator_constant_versions'
+
+  # Current year yields zero results because latest from current year has yet to be archived
+  def self.circa(year)
+    version = Version.latest_from_year(year)
+    return [] if version.nil?
+
+    CalculatorConstantVersionsArchive.where(version_id: version.id)
+  end
+
+  # Inclusive of start and end year
+  def self.over_the_years(start_year, end_year)
+    raise ArgumentError, 'Must provide a valid year' unless [start_year, end_year].all? { |y| y.is_a?(Integer) }
+    raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
+
+    # Adjust start and end year if they are outside bounds of existing records
+    earliest_year = earliest_available_year
+    start_year = earliest_year if start_year < earliest_year
+    end_year = Time.zone.now.year if end_year >= Time.zone.now.year
+
+    versions = (start_year..end_year).map { |y| Version.latest_from_year(y) }.compact
+    CalculatorConstantVersionsArchive.where(version_id: versions.pluck(:id))
+  end
+
+  # Allow earliest available year to be overwritten for dev/test/staging
+  def self.earliest_available_year
+    return EARLIEST_AVAILABLE_YEAR if production?
+
+    record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
+                                              .order(:created_at)
+                                              .first
+    record&.created_at&.year || EARLIEST_AVAILABLE_YEAR
+  end
+
+  def self.source_klass
+    SOURCE_TABLE.classify.constantize
+  end
 end
