@@ -7,7 +7,7 @@ FactoryBot.define do
       date { Time.current.change(year: year) }
     end
 
-    sequence(:name) { |n| "CONSTANT #{ENV['TEST_ENV_NUMBER'].to_i * 1000 + n}" }
+    sequence(:name) { |n| "CONSTANT #{n}" }
     float_value { 1.5 }
     description { 'MyString' }
     created_at { date }

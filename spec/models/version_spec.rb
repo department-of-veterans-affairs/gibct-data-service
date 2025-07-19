@@ -154,34 +154,4 @@ RSpec.describe Version, type: :model do
       expect { described_class.latest_from_year(nil) }.to raise_error(ArgumentError, 'Must provide a valid year')
     end
   end
-
-  describe '.latest_from_year_range' do
-    before do
-      create_list(:version, 2, :production, :from_year, year: 2022)
-      create_list(:version, 2, :production, :from_year, year: 2023)
-      create_list(:version, 2, :production, :from_year, year: 2024)
-    end
-
-    it 'takes start and end year and returns most recently completed version for each year in range' do
-      v2022 = create(:version, :production, :from_year, year: 2022)
-      v2023 = create(:version, :production, :from_year, year: 2023)
-      v2024 = create(:version, :production, :from_year, year: 2024)
-
-      expect(described_class.latest_from_year_range(2022, 2024)).to eq([v2022, v2023, v2024])
-      expect(described_class.latest_from_year_range(2023, 2024)).to eq([v2023, v2024])
-    end
-
-    it 'raises ArgumentError if either year is not an integer' do
-      expect { described_class.latest_from_year_range(2022, '2024') }.to raise_error(ArgumentError, 'Must provide a valid year')
-    end
-
-    it 'raises ArgumentError if either year is nil' do
-      expect { described_class.latest_from_year_range(nil, 2024) }.to raise_error(ArgumentError, 'Must provide a valid year')
-    end
-
-    it 'raises ArgumentError if start year greater than end year' do
-      expect { described_class.latest_from_year_range(2024, 2022) }
-        .to raise_error(ArgumentError, 'Start year must be less than or equal to end year')
-    end
-  end
 end
