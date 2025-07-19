@@ -26,7 +26,7 @@ RSpec.shared_examples 'an exportable model by version history' do
     let(:col_sep) { Common::Shared.file_type_defaults(described_class.name)[:col_sep] }
 
     it 'raises NotImplementedError unless klass included in VERSION_HISTORY_EXPORTABLE_TABLES' do
-      expect {described_class.export_version_history(2022, current_year) }.not_to raise_error(NotImplementedError)
+      expect { described_class.export_version_history(2022, current_year) }.not_to raise_error(NotImplementedError)
     end
 
     def check_headers(header_row)

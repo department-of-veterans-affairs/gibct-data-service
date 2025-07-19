@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SeedUtils
+  # :nocov:
+
   module_function
 
   def seed_tables_with_group(group, user, options = {})
@@ -84,4 +86,5 @@ module SeedUtils
 
     puts 'Done!'
   end
+  # :nocov:
 end

@@ -19,7 +19,7 @@ module Common
     # Currently only used by CalculatorConstantVersionsArchive to generate report of changes to constants over time
     def export_version_history(start_year, end_year)
       raise NotImplementedError, "#{klass} does not implement version history export" unless version_history_exportable?
-      
+
       generate_version_history(csv_headers_for_version_history, start_year:, end_year:)
     end
 
@@ -172,9 +172,10 @@ module Common
     end
 
     def write_live_data_to_version_history(csv, csv_headers)
-      klass.source_klass.includes(version: :user)
-                        .order(:name)
-                        .each do |record|
+      klass.source_klass
+           .includes(version: :user)
+           .order(:name)
+           .each do |record|
         version = record.version
         row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
         # version history requires extra columns of updated_by (email) and date
