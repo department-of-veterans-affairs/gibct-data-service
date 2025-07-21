@@ -61,6 +61,10 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
 
   describe '.earliest_available_year' do
     it 'returns year where versioning first implemented for record' do
+      # TO-DO: Install timecop gem
+      frozen_time = Time.current.change(year: 2024)
+      allow(Time.zone).to receive(:now).and_return(frozen_time)
+      
       create(:calculator_constant_versions_archive, year: 2021)
       create(:calculator_constant_versions_archive, year: 2022)
       create(:calculator_constant_versions_archive, year: 2023)
@@ -68,7 +72,23 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       expect(described_class.earliest_available_year).to eq(2021)
     end
 
-    it 'returns EARLIEST_AVAILABLE_YEAR if environment production' do
+    it 'returns nil if environment production and year 2025' 
+      # TO-DO: Install timecop gem
+      frozen_time = Time.current.change(year: 2025)
+      allow(Time.zone).to receive(:now).and_return(frozen_time)
+      allow(Settings).to receive(:environment).and_return('vagov-prod')
+
+      create(:calculator_constant_versions_archive, year: 2021)
+      create(:calculator_constant_versions_archive, year: 2022)
+      create(:calculator_constant_versions_archive, year: 2023)
+
+      expect(described_class.earliest_available_year).to eq(nil)
+    end
+
+    it 'returns EARLIEST_AVAILABLE_YEAR if environment production and year greater than 2025' 
+      # TO-DO: Install timecop gem
+      frozen_time = Time.current.change(year: 2026)
+      allow(Time.zone).to receive(:now).and_return(frozen_time)
       allow(Settings).to receive(:environment).and_return('vagov-prod')
 
       create(:calculator_constant_versions_archive, year: 2021)
@@ -78,7 +98,7 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       expect(described_class.earliest_available_year).to eq(described_class::EARLIEST_AVAILABLE_YEAR)
     end
 
-    it 'returns EARLIEST_AVAILABLE_YEAR if no records available' do
+    it 'returns EARLIEST_AVAILABLE_YEAR if no records available (outside of prod)' do
       expect(described_class.earliest_available_year).to eq(described_class::EARLIEST_AVAILABLE_YEAR)
     end
   end

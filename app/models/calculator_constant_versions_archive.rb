@@ -34,12 +34,14 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
 
   # Allow earliest available year to be overwritten for dev/test/staging
   def self.earliest_available_year
-    return EARLIEST_AVAILABLE_YEAR if production?
+    # TO-DO: This logic can be simplified when it's 2026
+    earliest_or_nil = EARLIEST_AVAILABLE_YEAR if Time.zone.now.year > EARLIEST_AVAILABLE_YEAR
+    return earliest_or_nil if production?
 
     record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
                                               .order(:created_at)
                                               .first
-    record&.created_at&.year || EARLIEST_AVAILABLE_YEAR
+    record&.created_at&.year
   end
 
   def self.source_klass
