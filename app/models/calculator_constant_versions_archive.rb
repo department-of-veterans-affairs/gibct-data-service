@@ -40,8 +40,8 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
                    EARLIEST_AVAILABLE_YEAR
                  else
                    record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
-                                                              .order(:created_at)
-                                                              .first
+                                                             .order(:created_at)
+                                                             .first
                    record&.created_at&.year
                  end
 
