@@ -19,7 +19,7 @@
           Current calculator constants
         </label>
         <br/>
-        <% if @earliest_available_year.present? && @earliest_available_year !== Time.zone.now.year %>
+        <% if @earliest_available_year.present? && @earliest_available_year != Time.zone.now.year %>
           <label for="history" style="font-weight:normal;">
             <input type="radio"
                   id="history"
