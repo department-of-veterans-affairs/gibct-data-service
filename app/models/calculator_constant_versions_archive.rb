@@ -22,7 +22,7 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
     # TO-DO: This logic can be simplified when it's 2026
     # Inclusive of start and end year
     def over_the_years(start_year, end_year)
-      return CalculatorConstantVersionsArchive.none if earliest_available_year.nil?
+      return CalculatorConstantVersionsArchive.none if earliest_available_year == Time.zone.now.year
 
       validate_year_range(start_year, end_year)
       # Adjust start and end year if they are outside bounds of existing records
@@ -36,17 +36,12 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
     # TO-DO: This logic can be simplified when it's 2026
     # Allow earliest available year to be overwritten for dev/test/staging
     def earliest_available_year
-      earliest = if production?
-                   EARLIEST_AVAILABLE_YEAR
-                 else
-                   record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
-                                                             .order(:created_at)
-                                                             .first
-                   record&.created_at&.year
-                 end
+      return EARLIEST_AVAILABLE_YEAR if production?
 
-      # Return nil if still 2025
-      earliest unless earliest.nil? || earliest <= EARLIEST_AVAILABLE_YEAR
+      record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
+                                                .order(:created_at)
+                                                .first
+      record&.created_at&.year || EARLIEST_AVAILABLE_YEAR
     end
 
     def source_klass

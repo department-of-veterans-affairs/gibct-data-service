@@ -19,7 +19,7 @@
           Current calculator constants
         </label>
         <br/>
-        <% if @earliest_available_year.present? %>
+        <% if @earliest_available_year.present? && @earliest_available_year !== Time.zone.now.year %>
           <label for="history" style="font-weight:normal;">
             <input type="radio"
                   id="history"
@@ -38,7 +38,7 @@
             <select name="end_year"
                     data-export-constants-modal-target="selectEnd"
                     data-action="change->export-constants-modal#updateStart">
-              <% ((@earliest_available_year + 1)..Time.now.year).each do |year| %>
+              <% ((@earliest_available_year + 1)..Time.zone.now.year).each do |year| %>
                 <option value="<%= year %>">
                   <%= year == Time.now.year ? "Present" : year %>
                 </option>

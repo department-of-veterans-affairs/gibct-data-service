@@ -35,8 +35,11 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       create_list(:calculator_constant_versions_archive, 2, year: 2024)
     end
 
-    it 'returns empty query if earliest available year nil' do
-      allow(described_class).to receive(:earliest_available_year).and_return(nil)
+    it 'returns empty query if earliest available year same as current year' do
+      # TO-DO: Install timecop gem
+      frozen_time = Time.current.change(year: described_class::EARLIEST_AVAILABLE_YEAR)
+      allow(Time.zone).to receive(:now).and_return(frozen_time)
+      allow(described_class).to receive(:earliest_available_year).and_return(described_class::EARLIEST_AVAILABLE_YEAR)
       expect(described_class.over_the_years(2022, 2024)).to eq(described_class.none)
     end
 
@@ -77,7 +80,7 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       expect(described_class.earliest_available_year).to eq(2021)
     end
 
-    it 'returns nil if environment production and year 2025' do
+    it 'returns EARLIEST_AVAILABLE_YEAR if environment production' do
       # TO-DO: Install timecop gem
       frozen_time = Time.current.change(year: 2025)
       allow(Time.zone).to receive(:now).and_return(frozen_time)
@@ -87,34 +90,10 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       create(:calculator_constant_versions_archive, year: 2022)
       create(:calculator_constant_versions_archive, year: 2023)
 
-      expect(described_class.earliest_available_year).to eq(nil)
+      expect(described_class.earliest_available_year).to eq(described_class::EARLIEST_AVAILABLE_YEAR)
     end
 
-    it 'returns nil outside of production if year 2025' do
-      frozen_time = Time.current.change(year: 2025)
-      allow(Time.zone).to receive(:now).and_return(frozen_time)
-
-      create(:calculator_constant_versions_archive, year: 2021)
-      create(:calculator_constant_versions_archive, year: 2022)
-      create(:calculator_constant_versions_archive, year: 2023)
-
-      expect(described_class.earliest_available_year).to eq(nil)
-    end
-
-    it 'returns nil if no records available' do
-      expect(described_class.earliest_available_year).to eq(nil)
-    end
-
-    it 'returns EARLIEST_AVAILABLE_YEAR if environment production and year greater than 2025' do
-      # TO-DO: Install timecop gem
-      frozen_time = Time.current.change(year: 2026)
-      allow(Time.zone).to receive(:now).and_return(frozen_time)
-      allow(Settings).to receive(:environment).and_return('vagov-prod')
-
-      create(:calculator_constant_versions_archive, year: 2021)
-      create(:calculator_constant_versions_archive, year: 2022)
-      create(:calculator_constant_versions_archive, year: 2023)
-
+    it 'returns EARLIEST_AVAILABLE_YEAR if no records available (outside production)' do
       expect(described_class.earliest_available_year).to eq(described_class::EARLIEST_AVAILABLE_YEAR)
     end
   end
