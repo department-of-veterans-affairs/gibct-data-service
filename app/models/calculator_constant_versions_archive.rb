@@ -46,7 +46,7 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
                  end
       
       # Return nil if still 2025
-      earliest if earliest > EARLIEST_AVAILABLE_YEAR
+      earliest unless earliest.nil? || earliest <= EARLIEST_AVAILABLE_YEAR
     end
 
     def source_klass
