@@ -10,41 +10,51 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
   EARLIEST_AVAILABLE_YEAR = 2025
   SOURCE_TABLE = 'calculator_constant_versions'
 
-  # Current year yields zero results because latest from current year has yet to be archived
-  def self.circa(year)
-    version = Version.latest_from_year(year)
-    return [] if version.nil?
+  class << self
+    # Current year yields zero results because latest from current year has yet to be archived
+    def circa(year)
+      version = Version.latest_from_year(year)
+      return CalculatorConstantVersionsArchive.none if version.nil?
 
-    CalculatorConstantVersionsArchive.where(version_id: version.id)
-  end
+      CalculatorConstantVersionsArchive.where(version_id: version.id)
+    end
 
-  # Inclusive of start and end year
-  def self.over_the_years(start_year, end_year)
-    raise ArgumentError, 'Must provide a valid year' unless [start_year, end_year].all? { |y| y.is_a?(Integer) }
-    raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
-
-    # Adjust start and end year if they are outside bounds of existing records
-    earliest_year = earliest_available_year
-    start_year = earliest_year if start_year < earliest_year
-    end_year = Time.zone.now.year if end_year >= Time.zone.now.year
-
-    versions = (start_year..end_year).map { |y| Version.latest_from_year(y) }.compact
-    CalculatorConstantVersionsArchive.where(version_id: versions.pluck(:id))
-  end
-
-  # Allow earliest available year to be overwritten for dev/test/staging
-  def self.earliest_available_year
     # TO-DO: This logic can be simplified when it's 2026
-    earliest_or_nil = EARLIEST_AVAILABLE_YEAR if Time.zone.now.year > EARLIEST_AVAILABLE_YEAR
-    return earliest_or_nil if production?
+    # Inclusive of start and end year
+    def over_the_years(start_year, end_year)
+      return CalculatorConstantVersionsArchive.none if earliest_available_year.nil?
 
-    record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
-                                              .order(:created_at)
-                                              .first
-    record&.created_at&.year
-  end
+      validate_year_range(start_year, end_year)
+      # Adjust start and end year if they are outside bounds of existing records
+      start_year = earliest_available_year if start_year < earliest_available_year
+      end_year = Time.zone.now.year if end_year >= Time.zone.now.year
 
-  def self.source_klass
-    SOURCE_TABLE.classify.constantize
+      versions = (start_year..end_year).map { |y| Version.latest_from_year(y) }.compact
+      CalculatorConstantVersionsArchive.where(version_id: versions.pluck(:id))
+    end
+
+    # TO-DO: This logic can be simplified when it's 2026
+    # Allow earliest available year to be overwritten for dev/test/staging
+    def earliest_available_year
+      # If still 2025 return nil
+      earliest_or_nil = EARLIEST_AVAILABLE_YEAR if Time.zone.now.year > EARLIEST_AVAILABLE_YEAR
+      return earliest_or_nil if production?
+
+      record = CalculatorConstantVersionsArchive.where.not(version_id: nil)
+                                                .order(:created_at)
+                                                .first
+      record&.created_at&.year
+    end
+
+    def source_klass
+      SOURCE_TABLE.classify.constantize
+    end
+
+    private
+
+    def validate_year_range(start_year, end_year)
+      raise ArgumentError, 'Must provide a valid year' unless [start_year, end_year].all? { |y| y.is_a?(Integer) }
+      raise ArgumentError, 'Start year must be less than or equal to end year' if start_year > end_year
+    end
   end
 end
