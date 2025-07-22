@@ -8,9 +8,9 @@ export default class extends Controller {
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    this.selectTarget.selectedIndex = 0;
     this.update();
     $(this.dialogTarget).modal("show");
-    this.selectTarget.selectedIndex = 0;
   }
 
   update() {
