@@ -10,18 +10,16 @@
                         type: "button",
                         class: "btn rate-edit",
                         data: { action: "click->rates-form#toggleForm", rates_form_target: "editButton" } %>
-        <%= button_tag type: "submit",
-                      class: "btn rate-save",
-                      disabled: "true",
-                      data: { rates_form_target: "updateButton" } do %>
-            <span class="glyphicon glyphicon-ok"></span>   
-        <% end %>
-        <%= button_tag type: "button",
+        <%= button_tag "Save",
+                       type: "submit",
+                       class: "btn rate-save",
+                       disabled: "true",
+                       data: { rates_form_target: "updateButton" } %>
+        <%= button_tag "Cancel",
+                       type: "button",
                        class: "btn rate-cancel",
                        disabled: "true",
-                       data: { action: "click->rates-form#cancel", rates_form_target: "updateButton" } do %>
-        <span class="glyphicon glyphicon-remove"></span>   
-        <% end %>
+                       data: { action: "click->rates-form#cancel", rates_form_target: "updateButton" } %>
       </div>
     </div>
     <div class="panel-body">

@@ -379,19 +379,21 @@ table.crosswalk-issues thead.sub th {
   color: #286090;
 }
 
-#rate_adjustments_update .panel-heading .rates-btns .rate-save span {
+#rate_adjustments_update .panel-heading .rates-btns .rate-save {
   color: #5cb85c;
+  font-weight: bold;
 }
 
-#rate_adjustments_update .panel-heading .rates-btns .rate-save:enabled span:hover {
+#rate_adjustments_update .panel-heading .rates-btns .rate-save:enabled:hover {
   color: #47a447;
 }
 
-#rate_adjustments_update .panel-heading .rates-btns .rate-cancel span {
+#rate_adjustments_update .panel-heading .rates-btns .rate-cancel {
   color: #d9534f;
+  font-weight: bold;
 }
 
-#rate_adjustments_update .panel-heading .rates-btns .rate-cancel:enabled span:hover {
+#rate_adjustments_update .panel-heading .rates-btns .rate-cancel:enabled:hover {
   color: #c9302c;
 }
 
