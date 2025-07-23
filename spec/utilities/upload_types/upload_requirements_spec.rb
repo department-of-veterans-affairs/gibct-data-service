@@ -23,16 +23,16 @@ RSpec.describe UploadTypes::UploadRequirements do
     end
 
     it 'returns validates uniqueness messages' do
-      validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
+      validations_of_str = map_attributes(CalculatorConstantVersion, ActiveRecord::Validations::UniquenessValidator)
       message = { message: 'These columns should contain unique values: ', value: validations_of_str }
-      messages = described_class.requirements_messages(CalculatorConstant)
+      messages = described_class.requirements_messages(CalculatorConstantVersion)
       expect(messages).to include(message)
     end
 
     it 'returns validates presence messages' do
       validations_of_str = 'name', 'value'
       message = { message: 'These columns must have a value: ', value: validations_of_str }
-      messages = described_class.requirements_messages(CalculatorConstant)
+      messages = described_class.requirements_messages(CalculatorConstantVersion)
       expect(messages).to include(message)
     end
   end

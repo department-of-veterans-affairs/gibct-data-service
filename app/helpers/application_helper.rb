@@ -2,10 +2,16 @@
 
 module ApplicationHelper
   def controller_label_for_header
-    return controller.controller_name.humanize.singularize unless
-           controller.controller_name.eql?('accreditation_type_keywords')
-
-    'Accreditation keyword'
+    case controller.controller_name
+    when 'accreditation_type_keywords'
+      'Accreditation keyword'
+    when 'uploads'
+      'Uploads / Online Changes'
+    when 'calculator_constants'
+      controller.controller_name.humanize
+    else
+      controller.controller_name.humanize.singularize
+    end
   end
 
   def active_link?(path, method = 'GET')

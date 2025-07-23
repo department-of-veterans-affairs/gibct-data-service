@@ -211,18 +211,18 @@
 }
 
 table.crosswalk-issues thead.system-header th {
-    background-color: #333333;
-    color: #ffffff;
-    text-align: center;
-    position: sticky;
-    top: 0;
+  background-color: #333333;
+  color: #ffffff;
+  text-align: center;
+  position: sticky;
+  top: 0;
 }
 
 table.crosswalk-issues thead.sub th {
-    background-color: #FFFFFF;
-    position: sticky;
-    top: 29px;
-    color:#000000;
+  background-color: #FFFFFF;
+  position: sticky;
+  top: 29px;
+  color:#000000;
 }
 
 .dashboard-btn-success {
@@ -272,11 +272,11 @@ table.crosswalk-issues thead.sub th {
 }
 
 .archives .even:not(:hover) td {
-    background-color: #f3f3ff;
+  background-color: #f3f3ff;
 }
 
 .weams_override {
-    color: #d43f3a;
+  color: #d43f3a;
 }
 
 .current {
@@ -284,17 +284,49 @@ table.crosswalk-issues thead.sub th {
 }
 
 .calculator_constants_header {
-    padding-bottom: 9px;
-    margin: 10px 0 20px;
-    border-bottom: 1px solid #eee;
+  padding-bottom: 9px;
+  margin: 10px 0 20px;
+  border-bottom: 1px solid #eee;
 }
 
 .calculator-constants-table {
-    margin-top: 10px;
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.calculator-constants-table td:nth-child(2) {
+  white-space: normal;
+  word-break: break-word;
+}
+
+.calculator-constants-table td:not(:nth-child(2)) {
+  white-space: nowrap;
+}
+
+.calculator-constants-table input[type="number"] {
+  box-sizing: border-box;
+  padding: 4px 4px;
+}
+
+.calculator-constants-table select {
+  max-width: 100px;
+}
+
+#calculator_constants_update .row {
+  display: flex;
+  align-items: flex-end;
+}
+
+#calculator_constants_update .constants-btns {
+  display: flex;
+  justify-content: right;
+  gap: 5px;
 }
 
 .top-table-button-div {
-    margin-top: 40px;
+  margin-top: 40px;
 }
 
 #crosswalk-issues-dashboard {
@@ -327,6 +359,72 @@ table.crosswalk-issues thead.sub th {
   margin-left:1rem;
 }
 
+#rate_adjustments_update .panel-heading {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns button {
+  background: none;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns .rate-edit {
+  color: #337ab7;
+  font-weight: bold;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns .rate-edit:enabled:hover {
+  color: #286090;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns .rate-save span {
+  color: #5cb85c;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns .rate-save:enabled span:hover {
+  color: #47a447;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns .rate-cancel span {
+  color: #d9534f;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns .rate-cancel:enabled span:hover {
+  color: #c9302c;
+}
+
+#rate_adjustments_update .panel-heading .rates-btns button:disabled,
+#rate_adjustments_update .panel-heading .rates-btns button:disabled span {
+  color: #333;
+  cursor: auto;
+}
+
+#rate_adjustments_update #rates-list {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+#rate_adjustments_update .rate-div {
+  white-space: nowrap;
+  flex: 0 1 15%;
+  gap: 6px;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+}
+
+#rate_adjustments_update .rate-div label {
+  margin-bottom: 0;
+  width: 60px;
+}
+
+#rate_adjustments_update .rate-div input {
+  width: 70px;
+}
+
 .equal {
   flex-wrap: wrap;
   display: flex;
@@ -336,3 +434,8 @@ table.crosswalk-issues thead.sub th {
     margin-left: 0;
     margin-right: 0;
 }
+
+label:has(input[type="radio"]:not(:checked)) {
+  color: #767676 ;
+}
+
