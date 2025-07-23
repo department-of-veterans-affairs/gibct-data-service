@@ -256,7 +256,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (8.0.0)
       railties (>= 3.2.16)
-    json (2.7.2)
+    json (2.13.0)
     json_matchers (0.11.1)
       json_schema
     json_schema (0.21.0)
@@ -641,7 +641,6 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
-  thor (>= 1.4.0)
   turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
