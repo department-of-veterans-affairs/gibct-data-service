@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_02_164254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -116,7 +116,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["version_id"], name: "index_calculator_constant_versions_archives_on_version_id"
   end
 
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
@@ -125,6 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
+    t.float "previous_year"
     t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
     t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"
@@ -2079,7 +2079,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
     t.binary "uuid", null: false
     t.datetime "completed_at", precision: nil
     t.boolean "geocoded", default: false
-    t.index ["completed_at"], name: "index_versions_on_completed_at"
     t.index ["number"], name: "index_versions_on_number"
     t.index ["user_id"], name: "index_versions_on_user_id"
     t.index ["uuid"], name: "index_versions_on_uuid", unique: true

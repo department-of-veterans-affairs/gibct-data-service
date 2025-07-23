@@ -9,23 +9,14 @@ RSpec.shared_examples 'an exportable model' do |options|
   let(:mapping) { described_class::CSV_CONVERTER_INFO }
 
   describe 'when exporting' do
-    unless described_class.eql?(CalculatorConstantVersion)
-      load_options = Common::Shared.file_type_defaults(described_class.name, options)
+    load_options = Common::Shared.file_type_defaults(described_class.name, options)
 
-      file_options = { liberal_parsing: load_options[:liberal_parsing],
-                       sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
-                                  clean_rows: load_options[:clean_rows] }] }
-    end
+    file_options = { liberal_parsing: load_options[:liberal_parsing],
+                     sheets: [{ klass: described_class, skip_lines: load_options[:skip_lines].try(:to_i),
+                                clean_rows: load_options[:clean_rows] }] }
 
     before do
-      # CalculatorConstantVersion is exportable but not loadable via CSV
-      if described_class.eql?(CalculatorConstantVersion)
-        SeedUtils.seed_table_with_yaml(CalculatorConstant)
-        version = create(:version, :production)
-        InstitutionBuilder::CalculatorConstantVersionBuilder.build(version.id)
-      else
-        described_class.load_with_roo(csv_file, file_options)
-      end
+      described_class.load_with_roo(csv_file, file_options)
     end
 
     def check_attributes_from_records(rows, header_row)
@@ -36,15 +27,18 @@ RSpec.shared_examples 'an exportable model' do |options|
           header = Common::Shared.convert_csv_header(header_row[j])
           attributes[mapping[header][:column]] = value
         end
-
         csv_record = described_class.new(attributes)
         csv_record.derive_dependent_columns if csv_record.respond_to?(:derive_dependent_columns)
-        excepted = %w[id version version_id created_at updated_at csv_row]
-        excepted.concat(%w[latitude longitude]) if factory_name == :weam
-        csv_test_attributes = csv_record.attributes.except(*excepted)
-        test_attributes = record.attributes.except(*excepted)
+        if factory_name == :weam
+          csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', \
+                                                             'latitude', 'longitude')
+          test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row', \
+                                                     'latitude', 'longitude')
+        else
+          csv_test_attributes = csv_record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
+          test_attributes = record.attributes.except('id', 'version', 'created_at', 'updated_at', 'csv_row')
+        end
         deconvert(test_attributes)
-
         expect(csv_test_attributes).to eq(test_attributes)
       end
     end
