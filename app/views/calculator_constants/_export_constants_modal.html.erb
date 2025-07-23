@@ -1,0 +1,61 @@
+<div data-export-constants-modal-target="dialog"
+     class="modal fade"
+     role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 class="modal-title">Export Calculator Constants</h4>
+    </div>
+    <div class="modal-body">      
+      <div class="form-group">
+        <label for="current" style="font-weight:normal;">
+          <input type="radio"
+                  id="current"
+                  name="export"
+                  value="<%= dashboard_export_path('CalculatorConstantVersion') %>"
+                  data-export-constants-modal-target="radioCurrent"
+                  data-action="change->export-constants-modal#toggleSelects">
+          Current calculator constants
+        </label>
+        <br/>
+        <% if @earliest_available_year.present? && @earliest_available_year != Time.zone.now.year %>
+          <label for="history" style="font-weight:normal;">
+            <input type="radio"
+                  id="history"
+                  name="export"
+                  value="<%= export_calculator_constants_path %>"
+                  data-export-constants-modal-target="radioHistory"
+                  data-action="change->export-constants-modal#toggleSelects">
+            A history of calculator constants from
+            <select name="start_year"
+                    data-export-constants-modal-target="selectStart"
+                    data-action="change->export-constants-modal#updateEnd">
+              <% (@earliest_available_year..1.year.ago.year).each do |year| %>
+                <option value="<%= year %>"><%= year %></option>
+              <% end %>
+            </select> to
+            <select name="end_year"
+                    data-export-constants-modal-target="selectEnd"
+                    data-action="change->export-constants-modal#updateStart">
+              <% ((@earliest_available_year + 1)..Time.zone.now.year).each do |year| %>
+                <option value="<%= year %>">
+                  <%= year == Time.now.year ? "Present" : year %>
+                </option>
+              <% end %>
+            </select>
+          </label>
+        <% end %>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn dashboard-btn-danger" data-dismiss="modal">Cancel</button>
+      <%= link_to "Export",
+                  dashboard_export_path('CalculatorConstantVersion'),
+                  class: "btn dashboard-btn-success",
+                  role: "button",
+                  data: { action: "click->export-constants-modal#download", export_constants_modal_target: "exportButton" } %>
+    </div>
+    </div>
+  </div>
+</div>

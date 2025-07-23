@@ -1,0 +1,22 @@
+<%= form_with(url: calculator_constants_path, id: 'calculator_constants_update') do %>
+  <div class="row">
+    <div class="col-md-10">
+      <h3>Manage Calculator Constants</h3>
+      <span class="dashboard-header">The constants below are used by CT for various benefit calculations</span>
+    </div>
+    <div class="col-md-2 constants-btns">
+      <%= link_to "Cancel",
+                  calculator_constants_path,
+                  class: "btn dashboard-btn-danger",
+                  data: { action: "click->rates-form#warn" } %>
+      <%= submit_tag "Save",
+                     class: "btn dashboard-btn-success",
+                     id: "submit-button",
+                     data: { action: "click->rates-form#warn" } %>
+      <%= render partial: "dropdown" %>
+    </div>
+  </div>
+  <div>
+    <%= render partial: 'table' %>
+  </div>
+<% end %>
