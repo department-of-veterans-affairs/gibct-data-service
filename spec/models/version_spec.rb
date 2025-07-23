@@ -134,24 +134,4 @@ RSpec.describe Version, type: :model do
       expect(described_class.archived.to_a.size).to eq(2)
     end
   end
-
-  describe '.latest_from_year' do
-    let(:previous_year) { 1.year.ago.year }
-
-    before { create_list(:version, 2, :production, :from_year, year: previous_year) }
-
-    it 'returns the most recently completed version as of a specific year' do
-      latest = create(:version, :production, :from_year, year: previous_year)
-
-      expect(described_class.latest_from_year(previous_year)).to eq(latest)
-    end
-
-    it 'raises ArgumentError if year is not an integer' do
-      expect { described_class.latest_from_year('2024') }.to raise_error(ArgumentError, 'Must provide a valid year')
-    end
-
-    it 'raises ArgumentError if year is nil' do
-      expect { described_class.latest_from_year(nil) }.to raise_error(ArgumentError, 'Must provide a valid year')
-    end
-  end
 end

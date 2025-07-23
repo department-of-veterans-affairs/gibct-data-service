@@ -25,11 +25,8 @@ if ENV['CI'].blank?
   puts 'Deleting old zipcode rates'
   ZipcodeRate.delete_all
 
-  puts 'Deleting old calculator constants'
+  puts 'Deleting old constants'
   CalculatorConstant.delete_all
-
-  puts 'Deleting old rate adjustments'
-  RateAdjustment.delete_all
 
   puts 'Deleting old crosswalk issues'
   CrosswalkIssue.delete_all
@@ -37,18 +34,13 @@ if ENV['CI'].blank?
   puts 'Deleting old versions'
   Version.delete_all
 
-  puts 'Seeding Calculator Constants and Rate Adjustments'
-  SeedUtils.seed_table_with_yaml(CalculatorConstant)
-  SeedUtils.seed_table_with_yaml(RateAdjustment)
-  # Associate calculator constants with rate adjustment
-  CalculatorConstant.all.each(&:set_rate_adjustment_if_exists)
-
   puts 'Loading CSVs. Why not do some calf raises while you wait? ...'
   SeedUtils.seed_tables_with_group('Accreditation', user)
   SeedUtils.seed_table_with_upload(AccreditationAction, user)
   SeedUtils.seed_table_with_upload(AccreditationInstituteCampus, user)
   SeedUtils.seed_table_with_upload(AccreditationRecord, user)
   SeedUtils.seed_table_with_upload(ArfGiBill, user)
+  SeedUtils.seed_table_with_upload(CalculatorConstant, user)
   SeedUtils.seed_table_with_upload(CipCode, user)
   SeedUtils.seed_table_with_upload(Complaint, user, skip_lines: 0)
   SeedUtils.seed_table_with_upload(Crosswalk, user)

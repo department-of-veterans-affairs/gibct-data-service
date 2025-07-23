@@ -39,7 +39,7 @@ RSpec.describe 'UPLOAD_TYPES' do
   end
 
   describe 'fields checks' do
-    TRUE_UPLOAD_TYPES.each do |upload|
+    UPLOAD_TYPES.each do |upload|
       it "#{klass_name(upload)} upload type config has field klass" do
         expect(upload[:klass]).to be_a(String).or be < ImportableRecord
       end
