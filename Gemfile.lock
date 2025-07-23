@@ -262,9 +262,9 @@ GEM
     json_schema (0.21.0)
     jsonapi-renderer (0.2.2)
     language_server-protocol (3.17.0.3)
-    libv8-node (21.7.2.0-aarch64-linux)
-    libv8-node (21.7.2.0-arm64-darwin)
-    libv8-node (21.7.2.0-x86_64-linux)
+    libv8-node (24.1.0.0-aarch64-linux)
+    libv8-node (24.1.0.0-arm64-darwin)
+    libv8-node (24.1.0.0-x86_64-linux)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -285,8 +285,8 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2024.0305)
     mini_mime (1.1.5)
-    mini_racer (0.12.0)
-      libv8-node (~> 21.7.2.0)
+    mini_racer (0.19.0)
+      libv8-node (~> 24.1.0.0)
     minitest (5.25.5)
     msgpack (1.7.5)
     multi_json (1.15.0)
@@ -603,7 +603,7 @@ DEPENDENCIES
   jquery-ui-rails (>= 8.0.0)
   json (>= 2.3.0)
   json_matchers
-  libv8-node (= 21.7.2.0)
+  libv8-node (= 24.1.0.0)
   mini_racer
   mutex_m (~> 0.3.0)
   net-imap (~> 0.5.8)
@@ -641,7 +641,6 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
-  thor (>= 1.4.0)
   turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
