@@ -1,21 +1,18 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'models/shared_examples/shared_examples_for_loadable'
-require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe CalculatorConstant, type: :model do
-  it_behaves_like 'a loadable model', skip_lines: 0
-  it_behaves_like 'an exportable model', skip_lines: 0
+  # No longer importable record, updated instead via calculator constants dashboard
 
   describe 'instance methods' do
     it 'responds to value' do
-      expect(build(:calculator_constant).value).to be_a(Float)
+      expect(build(:calculator_constant).float_value).to be_a(Float)
     end
   end
 
   describe 'when validating' do
-    subject(:calculator_constant) { create :calculator_constant }
+    subject(:calculator_constant) { create(:calculator_constant) }
 
     it 'has a valid factory' do
       expect(calculator_constant).to be_valid
@@ -64,6 +61,33 @@ RSpec.describe CalculatorConstant, type: :model do
       calculator_constant.update(description: matching_description)
       expect(calculator_constant.set_rate_adjustment_if_exists).to be true
       expect(calculator_constant.rate_adjustment).to eq(rate_adjustment)
+    end
+  end
+
+  describe 'when updating' do
+    subject(:calculator_constant) { create(:calculator_constant) }
+
+    it 'preserves name as read only' do
+      original_name = calculator_constant.name
+      calculator_constant.update(name: 'NEW NAME')
+      expect(calculator_constant.reload.name).to eq(original_name)
+    end
+  end
+
+  describe '#apply_rate_adjustment' do
+    it 'returns nil if no associated rate adjustment' do
+      calculator_constant = create(:calculator_constant)
+      expect(calculator_constant.apply_rate_adjustment).to be_nil
+    end
+
+    it 'applies percentage increase of associated rate adjustment and returns updated record' do
+      calculator_constant = create(:calculator_constant, :associated_rate_adjustment)
+      initial_value = calculator_constant.float_value
+      rate_adjustment = calculator_constant.rate_adjustment
+      percent_increase = 1 + (rate_adjustment.rate / 100)
+      expected_value = (initial_value * percent_increase).round(2)
+      expect(calculator_constant.apply_rate_adjustment).to eq(calculator_constant)
+      expect(calculator_constant.float_value).to eq(expected_value)
     end
   end
 end

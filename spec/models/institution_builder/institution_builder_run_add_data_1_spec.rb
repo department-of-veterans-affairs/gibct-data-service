@@ -238,5 +238,16 @@ RSpec.describe InstitutionBuilder, type: :model do
         end
       end
     end
+
+    describe 'when adding CalculatorConstantVersion data' do
+      before do
+        create :calculator_constant
+        described_class.run(user)
+      end
+
+      it 'adds CalculatorConstantVersion' do
+        expect(CalculatorConstantVersion.count).to eq(1)
+      end
+    end
   end
 end
