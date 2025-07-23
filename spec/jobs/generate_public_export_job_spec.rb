@@ -13,12 +13,13 @@ RSpec.describe GeneratePublicExportJob, type: :job do
 
     context 'with an existing export' do
       before do
+        allow(VersionPublicExport).to receive(:build)
         create(:version_public_export, version: version)
       end
 
       it 'just returns' do
-        expect(VersionPublicExport).to_not receive(:build)
         job.perform(version.id)
+        expect(VersionPublicExport).not_to have_received(:build)
       end
     end
 
