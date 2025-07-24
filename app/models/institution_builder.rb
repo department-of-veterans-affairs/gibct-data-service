@@ -68,7 +68,7 @@ module InstitutionBuilder
 
       # Do not build in unless production or local environment
       # Ultimately we're pulling this out and putting it in a batch job overnite
-      build_public_export(version.id) if production? || ENV['CI'].blank?
+      GeneratePublicExportJob.perform_later(version.id) if production? || ENV['CI']
 
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
@@ -1278,12 +1278,6 @@ module InstitutionBuilder
       SQL
       sql = Institution.send(:sanitize_sql, [str])
       Institution.connection.execute(sql)
-    end
-
-    def self.build_public_export(version_id)
-      log_info_status 'Building Public Export file record'
-      progress = ->(message) { log_info_status(message) }
-      VersionPublicExport.build(version_id, progress_callback: progress)
     end
 
     def self.log_error_and_delete_version(version, notice)
