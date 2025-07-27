@@ -54,14 +54,14 @@ module ApplicationHelper
 
   # Dynamically generate import entries for stimulus controllers in application.html.erb
   # Necessary because javascript_importmap_tags helper does not accept nonce argument
-   def importmap_controller_assets
+  def importmap_controller_assets
     assets = controller_paths.map do |path|
       file = File.basename(path, '.js')
       key = "controllers/#{file}"
       url = asset_path(key)
       "\"#{key}\": \"#{url}\""
     end
-    (assets.empty? ? '' : ",\n        " + assets.join(",\n        ")).html_safe
+    (assets.empty? ? '' : ",\n        " + assets.join(",\n        "))
   end
 
   # Dynamically generate link tags for stimulus controllers in application.html.erb
@@ -72,7 +72,7 @@ module ApplicationHelper
       url = asset_path("controllers/#{file}")
       tag.link(rel: 'modulepreload', href: url)
     end
-    (links.empty? ? '' : "\n  " + links.join("\n  ")).html_safe
+    (links.empty? ? '' : "\n  " + links.join("\n  "))
   end
 
   private

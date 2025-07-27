@@ -94,15 +94,15 @@ RSpec.describe ApplicationHelper, type: :helper do
     let(:dir_path) { Rails.root.join('app/javascript/controllers/*.js') }
     let(:controller_paths) do
       %w[/gi-bill-data-service/src/app/javascript/controllers/a_controller.js
-        /gi-bill-data-service/src/app/javascript/controllers/b_controller.js
-        /gi-bill-data-service/src/app/javascript/controllers/c_controller.js]
+         /gi-bill-data-service/src/app/javascript/controllers/b_controller.js
+         /gi-bill-data-service/src/app/javascript/controllers/c_controller.js]
     end
     let(:hash) { Digest::SHA2.new(256).hexdigest }
 
     before do
       allow(Dir).to receive(:glob).with(dir_path).and_return(controller_paths)
       controller_paths.each do |path|
-        letter = path.match(%r{\/controllers\/([abc])})[1]
+        letter = path.match(%r{/controllers/([abc])})[1]
         asset_url = "/assets/controllers/#{letter}_controller-#{hash}.js"
         allow(helper).to receive(:asset_path).with("controllers/#{letter}_controller").and_return(asset_url)
       end
