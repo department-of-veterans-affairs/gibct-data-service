@@ -22,7 +22,7 @@ class CalculatorConstant < ApplicationRecord
     Upload.since_last_version.any? { |upload| upload.csv_type == name }
   end
 
-  # Associate with rate adjustment if benefit type parseable from description
+  # Associate with rate adjustment if benefit type is parseable from description
   # Explicitly used for seeds/migrations
   def set_rate_adjustment_if_exists
     return false if rate_adjustment.present? || matched_benefit_types.empty?
