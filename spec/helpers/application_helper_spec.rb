@@ -89,4 +89,51 @@ RSpec.describe ApplicationHelper, type: :helper do
       end
     end
   end
+
+  context 'when rendering importmap assets and links' do
+    let(:dir_path) { Rails.root.join('app/javascript/controllers/*.js') }
+    let(:controller_paths) do
+      %w[/gi-bill-data-service/src/app/javascript/controllers/a_controller.js
+        /gi-bill-data-service/src/app/javascript/controllers/b_controller.js
+        /gi-bill-data-service/src/app/javascript/controllers/c_controller.js]
+    end
+    let(:hash) { Digest::SHA2.new(256).hexdigest }
+
+    before do
+      allow(Dir).to receive(:glob).with(dir_path).and_return(controller_paths)
+      controller_paths.each do |path|
+        letter = path.match(%r{\/controllers\/([abc])})[1]
+        asset_url = "/assets/controllers/#{letter}_controller-#{hash}.js"
+        allow(helper).to receive(:asset_path).with("controllers/#{letter}_controller").and_return(asset_url)
+      end
+    end
+
+    describe 'importmap_controller_assets' do
+      it 'returns empty string if no stimulus controllers' do
+        allow(Dir).to receive(:glob).with(dir_path).and_return([])
+        expect(helper.importmap_controller_assets).to eq('')
+      end
+
+      it 'returns import entries for stimulus controllers' do
+        str = ",\n        \"controllers/a_controller\": \"/assets/controllers/a_controller-#{hash}.js\"," \
+              "\n        \"controllers/b_controller\": \"/assets/controllers/b_controller-#{hash}.js\"," \
+              "\n        \"controllers/c_controller\": \"/assets/controllers/c_controller-#{hash}.js\""
+        expect(helper.importmap_controller_assets).to eq(str)
+      end
+    end
+
+    describe 'importmap_controller_links' do
+      it 'returns empty string if no stimulus controllers' do
+        allow(Dir).to receive(:glob).with(dir_path).and_return([])
+        expect(helper.importmap_controller_links).to eq('')
+      end
+
+      it 'returns import link tags for stimulus controllers' do
+        str = "\n  <link rel=\"modulepreload\" href=\"/assets/controllers/a_controller-#{hash}.js\">" \
+              "\n  <link rel=\"modulepreload\" href=\"/assets/controllers/b_controller-#{hash}.js\">" \
+              "\n  <link rel=\"modulepreload\" href=\"/assets/controllers/c_controller-#{hash}.js\">"
+        expect(helper.importmap_controller_links).to eq(str)
+      end
+    end
+  end
 end

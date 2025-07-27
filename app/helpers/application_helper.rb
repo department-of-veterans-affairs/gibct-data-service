@@ -52,7 +52,7 @@ module ApplicationHelper
     end
   end
 
-  # Dynamically generate importmap entries for stimulus controllers in application.html.erb
+  # Dynamically generate import entries for stimulus controllers in application.html.erb
   # Necessary because javascript_importmap_tags helper does not accept nonce argument
    def importmap_controller_assets
     assets = controller_paths.map do |path|
