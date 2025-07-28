@@ -52,6 +52,7 @@ module ApplicationHelper
     end
   end
 
+  # rubocop:disable Rails/OutputSafety
   # Dynamically generate import entries for stimulus controllers in application.html.erb
   # Necessary because javascript_importmap_tags helper does not accept nonce argument
   def importmap_controller_assets
@@ -61,7 +62,7 @@ module ApplicationHelper
       url = asset_path(key)
       "\"#{key}\": \"#{url}\""
     end
-    (assets.empty? ? '' : ",\n        " + assets.join(",\n        "))
+    (assets.empty? ? '' : ",\n        " + assets.join(",\n        ")).html_safe
   end
 
   # Dynamically generate link tags for stimulus controllers in application.html.erb
@@ -72,8 +73,9 @@ module ApplicationHelper
       url = asset_path("controllers/#{file}")
       tag.link(rel: 'modulepreload', href: url)
     end
-    (links.empty? ? '' : "\n  " + links.join("\n  "))
+    (links.empty? ? '' : "\n  " + links.join("\n  ")).html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
   private
 
