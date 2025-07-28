@@ -641,6 +641,7 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
+  thor (>= 1.4.0)
   turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
@@ -651,3 +652,4 @@ DEPENDENCIES
 
 BUNDLED WITH
    2.6.0
+   

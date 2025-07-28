@@ -27,7 +27,8 @@ module InstitutionBuilder
     include CommonInstitutionBuilder::VersionGeneration
     extend Common
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def self.run_insertions(version)
       build_messages = {}
       initialize_with_weams(version)
@@ -84,7 +85,8 @@ module InstitutionBuilder
 
       build_messages.filter { |_k, v| v.present? }
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/PerceivedComplexity
 
     def self.run(user)
       prev_gen_start = Time.now.utc
