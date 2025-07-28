@@ -608,7 +608,7 @@ DEPENDENCIES
   mutex_m (~> 0.3.0)
   net-imap (~> 0.5.8)
   newrelic_rpm
-  nokogiri (~> 1.18.8)
+  nokogiri (~> 1.18.9)
   oj
   parallel_tests
   pg
@@ -641,6 +641,7 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
+  thor (>= 1.4.0)
   turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
