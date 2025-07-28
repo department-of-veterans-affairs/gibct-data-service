@@ -3,13 +3,13 @@
 # TODO: refactor line #6 when we write new ratings code
 module Archiver
   ARCHIVE_TYPES = [
-    { source: InstitutionRating, archive: InstitutionRatingsArchive },
-    { source: InstitutionProgram, archive: InstitutionProgramsArchive },
-    { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
-    { source: ZipcodeRate, archive: ZipcodeRatesArchive },
-    { source: CautionFlag, archive: nil },
-    { source: Institution, archive: InstitutionsArchive },
-    { source: VersionedComplaint, archive: VersionedComplaintsArchive },
+    # { source: InstitutionRating, archive: InstitutionRatingsArchive },
+    # { source: InstitutionProgram, archive: InstitutionProgramsArchive },
+    # { source: VersionedSchoolCertifyingOfficial, archive: VersionedSchoolCertifyingOfficialsArchive },
+    # { source: ZipcodeRate, archive: ZipcodeRatesArchive },
+    # { source: CautionFlag, archive: nil },
+    # { source: Institution, archive: InstitutionsArchive },
+    # { source: VersionedComplaint, archive: VersionedComplaintsArchive },
     { source: CalculatorConstantVersion, archive: CalculatorConstantVersionsArchive }
   ].freeze
 
