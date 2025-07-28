@@ -68,6 +68,10 @@ module InstitutionBuilder
       add_calculator_constant_versions(version.id)
       build_public_export(version.id) if production? || ENV['CI'].blank?
 
+      # Do not build in unless production or local environment
+      # Ultimately we're pulling this out and putting it in a batch job overnite
+      GeneratePublicExportJob.perform_later(version.id) if production? || ENV['CI']
+
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
