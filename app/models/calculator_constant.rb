@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class CalculatorConstant < ApplicationRecord
+  # TO-DO: Remove after feature flag removed, can live in CalculatorConstantVersion
+  CSV_CONVERTER_INFO = {
+    'name' => { column: :name, converter: Converters::UpcaseConverter },
+    'value' => { column: :float_value, converter: Converters::NumberConverter },
+    'description' => { column: :description, converter: Converters::BaseConverter }
+  }.freeze
+
   belongs_to :rate_adjustment, optional: true
 
   validates :name, uniqueness: true, presence: true
