@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class CalculatorConstant < ApplicationRecord
+# TO-DO: Inherit from ApplicationRecord after feature flag removed
+class CalculatorConstant < ImportableRecord
   # TO-DO: Remove after feature flag removed, can live in CalculatorConstantVersion
   CSV_CONVERTER_INFO = {
     'name' => { column: :name, converter: Converters::UpcaseConverter },
