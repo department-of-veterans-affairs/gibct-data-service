@@ -12,11 +12,12 @@ class CalculatorConstant < ApplicationRecord
 
   default_scope { order('name') }
 
-  # removing this breaks the caclulator constant request spec (v0)
-  # TODO: remove without breaking functionality
-  scope :version, lambda { |version|
-    # TODO: where(version: version)
-  }
+  # :nocov:
+  # TO-DO: Remove after feature flag removed
+  def self.versioning_enabled?
+    VetsApi::Service.feature_enabled?('calculator_constants_versioning')
+  end
+  # :novcov:
 
   def self.unpublished?
     Upload.since_last_version.any? { |upload| upload.csv_type == name }
