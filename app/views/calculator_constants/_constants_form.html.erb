@@ -13,7 +13,7 @@
                      class: "btn dashboard-btn-success",
                      id: "submit-button",
                      data: { action: "click->rates-form#warn" } %>
-      <%= render partial: "dropdown" if CalculatorConstant.versioning_enabled? %>
+      <%= render partial: "dropdown" if @versioning_enabled %>
     </div>
   </div>
   <div>

@@ -7,6 +7,7 @@ class CalculatorConstantsController < ApplicationController
     if CalculatorConstant.versioning_enabled?
       previous_year = 1.year.ago.year
 
+      @versioning_enabled = true # TO-DO: remove after flag removed
       @calculator_constants = CalculatorConstant.all
       @constants_unpublished = CalculatorConstant.unpublished?
       @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year)

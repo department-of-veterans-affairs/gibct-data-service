@@ -27,7 +27,7 @@
         <% end%>
       </aside>
     <% end %>
-    <% if CalculatorConstant.versioning_enabled? %>
+    <% if @versioning_enabled %>
       <%= render partial: "rates_form" %>
       <%= render partial: "apply_rates_modal" %>
       <%= render partial: "export_constants_modal" %>

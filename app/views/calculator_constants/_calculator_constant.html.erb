@@ -6,7 +6,7 @@
               style="display: none"
               name="calculator_constants[<%= constant.id %>][description]"><%= constant.description %></textarea>
   </td> 
-  <% if CalculatorConstant.versioning_enabled? %>
+  <% if @versioning_enabled %>
     <td>
       <select name="calculator_constants[<%= constant.id %>][rate_adjustment_id]">
             <% if constant.benefit_type.nil? %>
