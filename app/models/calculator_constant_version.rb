@@ -9,6 +9,5 @@ class CalculatorConstantVersion < ImportableRecord
 
   belongs_to :version
 
-  validates :name, uniqueness: { scope: :version_id }, presence: true
-  validates :float_value, presence: true
+  default_scope { order('name') }
 end

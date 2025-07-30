@@ -39,6 +39,8 @@ RSpec.describe DashboardsController, type: :controller do
       create_list :upload, 3, csv_name: 'crosswalk.csv', csv_type: 'Crosswalk'
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
+      allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
+
       get(:index)
     end
 

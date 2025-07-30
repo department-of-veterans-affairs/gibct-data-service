@@ -7,6 +7,8 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 require 'controllers/shared_examples/shared_examples_for_collection_updatable'
 
 RSpec.describe CalculatorConstantsController, type: :controller do
+  before { allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true) }
+
   it_behaves_like 'an authenticating controller', :index, 'calculator_constants'
 
   describe 'GET #index' do
