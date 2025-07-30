@@ -11,9 +11,9 @@ module V1
         @links = { self: self_link }
         @meta = { version: @version }
         render json: @data,
-              each_serializer: CalculatorConstantSerializer,
-              meta: @meta,
-              links: @links
+               each_serializer: CalculatorConstantSerializer,
+               meta: @meta,
+               links: @links
       else
         @data = CalculatorConstant.all
         @links = { self: self_link }

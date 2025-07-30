@@ -42,7 +42,7 @@ class CalculatorConstantsController < ApplicationController
     flash[:success] = {
       updated_fields: updated.pluck(:name)
     }
-oti
+
     # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
     create_upload_row
 
@@ -51,7 +51,7 @@ oti
 
   def export
     raise NotImplementedError, 'Versioning disabled' unless CalculatorConstant.versioning_enabled?
-    
+
     start_year = params[:start_year].to_i
     end_year = params[:end_year].to_i
     export_name = "CalculatorConstants_#{start_year}_to_#{end_year}.csv"
