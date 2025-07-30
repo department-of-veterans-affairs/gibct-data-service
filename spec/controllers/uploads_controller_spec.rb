@@ -8,6 +8,8 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 RSpec.describe UploadsController, type: :controller do
   let(:klass) { Weam }
 
+  before { allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true) }
+
   it_behaves_like 'an authenticating controller', :index, 'uploads'
 
   describe 'GET index' do
