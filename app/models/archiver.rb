@@ -13,6 +13,10 @@ module Archiver
     { source: CalculatorConstantVersion, archive: CalculatorConstantVersionsArchive }
   ].freeze
 
+  # TO-DO: Can remove rubocop disable after CalculatorConstant feature flag removed
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def self.archive_previous_versions
     # don't bother if nothing to archive. Also note that during the initial buildout, there is no previous version
     # The below previous_version will exception out and cause all the work to be rolled back.
@@ -32,9 +36,7 @@ module Archiver
         get_timeout_parameter
 
         ARCHIVE_TYPES.each do |archivable|
-          if archivable[:source] == CalculatorConstantVersion
-            next unless CalculatorConstant.versioning_enabled?
-          end
+          next if archivable[:source] == CalculatorConstantVersion && !CalculatorConstant.versioning_enabled?
 
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
           source = if archivable[:source].has_attribute?(:institution_id)
@@ -58,6 +60,9 @@ module Archiver
     get_timeout_parameter
     Rails.logger.info "*** End of Archiving process\n\n\n"
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def self.create_archives(source, archive, previous_version, production_version)
     return if archive.blank?
