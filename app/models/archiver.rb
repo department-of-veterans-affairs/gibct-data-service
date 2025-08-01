@@ -32,8 +32,8 @@ module Archiver
         get_timeout_parameter
 
         ARCHIVE_TYPES.each do |archivable|
-          if archivable[:source] == CalculatorConstantVersion && CalculatorConstant.versioning_enabled?
-            next
+          if archivable[:source] == CalculatorConstantVersion
+            next unless CalculatorConstant.versioning_enabled?
           end
 
           create_archives(archivable[:source], archivable[:archive], previous_version, production_version)
