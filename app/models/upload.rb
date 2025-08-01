@@ -61,7 +61,7 @@ class Upload < ApplicationRecord
                   if CalculatorConstant.versioning_enabled?
                     TRUE_UPLOAD_TYPES_ALL_NAMES
                   else
-                    UPLOAD_TYPES_ALL_NAMES
+                    UPLOAD_TYPES_ALL_NAMES.reject { |name| name == 'CalculatorConstantVersion' }
                   end
                 else
                   [*UPLOAD_TYPES_ALL_NAMES]
@@ -80,7 +80,7 @@ class Upload < ApplicationRecord
     names = if CalculatorConstant.versioning_enabled?
               TRUE_UPLOAD_TYPES_ALL_NAMES
             else
-              UPLOAD_TYPES_ALL_NAMES
+              UPLOAD_TYPES_ALL_NAMES.reject { |name| name == 'CalculatorConstantVersion' }
             end
     names.each do |klass_name|
       next if upload_csv_types.include?(klass_name)

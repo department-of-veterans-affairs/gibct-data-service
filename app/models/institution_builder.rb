@@ -66,7 +66,7 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
-      add_calculator_constant_versions(version.id)
+      add_calculator_constant_versions(version.id) if CalculatorConstant.versioning_enabled?
       build_public_export(version.id) if production? || ENV['CI'].blank?
 
       # Do not build in unless production or local environment
