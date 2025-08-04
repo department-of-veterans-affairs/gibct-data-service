@@ -104,7 +104,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       controller_paths.each do |path|
         letter = path.match(%r{/controllers/([abc])})[1]
         asset_url = "/assets/controllers/#{letter}_controller-#{hash}.js"
-        allow(helper).to receive(:asset_path).with("controllers/#{letter}_controller").and_return(asset_url)
+        allow(helper).to receive(:asset_path).with("controllers/#{letter}_controller.js").and_return(asset_url)
       end
     end
 
@@ -115,9 +115,9 @@ RSpec.describe ApplicationHelper, type: :helper do
       end
 
       it 'returns import entries for stimulus controllers' do
-        str = ",\n        \"controllers/a_controller\": \"/assets/controllers/a_controller-#{hash}.js\"," \
-              "\n        \"controllers/b_controller\": \"/assets/controllers/b_controller-#{hash}.js\"," \
-              "\n        \"controllers/c_controller\": \"/assets/controllers/c_controller-#{hash}.js\""
+        str = ",\n        \"controllers/a_controller.js\": \"/assets/controllers/a_controller-#{hash}.js\"," \
+              "\n        \"controllers/b_controller.js\": \"/assets/controllers/b_controller-#{hash}.js\"," \
+              "\n        \"controllers/c_controller.js\": \"/assets/controllers/c_controller-#{hash}.js\""
         expect(helper.importmap_controller_assets).to eq(str)
       end
     end

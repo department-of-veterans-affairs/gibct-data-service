@@ -57,7 +57,7 @@ module ApplicationHelper
   # Necessary because javascript_importmap_tags helper does not accept nonce argument
   def importmap_controller_assets
     assets = controller_paths.map do |path|
-      file = File.basename(path, '.js')
+      file = File.basename(path)
       key = "controllers/#{file}"
       url = asset_path(key)
       "\"#{key}\": \"#{url}\""
@@ -69,7 +69,7 @@ module ApplicationHelper
   # Necessary because javascript_importmap_tags helper does not accept nonce argument
   def importmap_controller_links
     links = controller_paths.map do |path|
-      file = File.basename(path, '.js')
+      file = File.basename(path)
       url = asset_path("controllers/#{file}")
       tag.link(rel: 'modulepreload', href: url)
     end
