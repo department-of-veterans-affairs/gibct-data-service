@@ -15,11 +15,12 @@ module V0
                meta: @meta,
                links: @links
       else
+        @version = Version.current_production
         @data = CalculatorConstant.all
         @links = { self: self_link }
         render json: @data,
                each_serializer: CalculatorConstantSerializer,
-               meta: {},
+               meta: { version: @version },
                links: @links
       end
     end
