@@ -8,6 +8,8 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 RSpec.describe UploadsController, type: :controller do
   let(:klass) { Weam }
 
+  before { allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true) }
+
   it_behaves_like 'an authenticating controller', :index, 'uploads'
 
   describe 'GET index' do
@@ -108,24 +110,6 @@ RSpec.describe UploadsController, type: :controller do
         message = 'Facility codes should be unique'
         # message = { message: 'Requirement Description:', value: [validations_of_str] }
         expect(assigns(:custom_batch_validator)).to include(message)
-      end
-    end
-
-    describe 'requirements_messages for CalculatorConstant' do
-      before do
-        get :new, params: { csv_type: CalculatorConstant.name }
-      end
-
-      it 'returns validates uniqueness messages' do
-        validations_of_str = map_attributes(CalculatorConstant, ActiveRecord::Validations::UniquenessValidator)
-        message = { message: 'These columns should contain unique values: ', value: validations_of_str }
-        expect(assigns(:requirements)).to include(message)
-      end
-
-      it 'returns validates presence messages' do
-        validations_of_str = 'name', 'value'
-        message = { message: 'These columns must have a value: ', value: validations_of_str }
-        expect(assigns(:requirements)).to include(message)
       end
     end
   end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UploadsController < ApplicationController
+  before_action :exclude_online_types, only: %i[new create show]
+
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)
   end
@@ -206,5 +208,13 @@ class UploadsController < ApplicationController
 
   def klass
     @upload.csv_type.constantize
+  end
+
+  # Online Upload types cannot be created/updated via HTTP requests
+  def exclude_online_types
+    return unless CalculatorConstant.versioning_enabled?
+
+    csv_type = params[:csv_type] || params.dig(:upload, :csv_type)
+    redirect_to dashboards_path if ONLINE_TYPES_NAMES.map(&:name).include?(csv_type)
   end
 end
