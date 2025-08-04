@@ -458,7 +458,7 @@ GEM
       rubocop (~> 1.40)
     ruby-ole (1.2.12.2)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.18.0)
+    ruby-saml (1.18.1)
       nokogiri (>= 1.13.10)
       rexml
     ruby2_keywords (0.0.5)
@@ -641,7 +641,6 @@ DEPENDENCIES
   sprockets-rails
   strong_migrations
   terser
-  thor (>= 1.4.0)
   turbo-rails
   vcr (~> 6.3)
   vets_json_schema!
