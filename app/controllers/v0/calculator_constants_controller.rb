@@ -6,7 +6,6 @@ module V0
     def index
       if CalculatorConstant.versioning_enabled?
         # Use the Versioned CalculatorConstant model to get the data
-        @version = Version.current_production
         @data = CalculatorConstantVersion.where(version: @version)
         @links = { self: self_link }
         @meta = { version: @version }
@@ -15,7 +14,6 @@ module V0
                meta: @meta,
                links: @links
       else
-        @version = Version.current_production
         @data = CalculatorConstant.all
         @links = { self: self_link }
         render json: @data,
