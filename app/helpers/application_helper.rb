@@ -59,15 +59,9 @@ module ApplicationHelper
     assets = controller_paths.map do |path|
       file = File.basename(path)
       key = "controllers/#{file}"
-
-      begin
-        url = asset_path(key)
-        "\"#{key}\": \"#{url}\""
-      rescue Sprockets::Rails::Helper::AssetNotFound
-        # prevent crashing page if asset not precompiled
-        nil
-      end
-    end.compact
+      url = asset_path(key)
+      "\"#{key}\": \"#{url}\""
+    end
     (assets.empty? ? '' : ",\n        " + assets.join(",\n        ")).html_safe
   end
 
@@ -76,15 +70,9 @@ module ApplicationHelper
   def importmap_controller_links
     links = controller_paths.map do |path|
       file = File.basename(path)
-
-      begin
-        url = asset_path("controllers/#{file}")
-        tag.link(rel: 'modulepreload', href: url)
-      rescue Sprockets::Rails::Helper::AssetNotFound
-        # prevent crashing page if asset not precompiled
-        nil
-      end
-    end.compact
+      url = asset_path("controllers/#{file}")
+      tag.link(rel: 'modulepreload', href: url)
+    end
     (links.empty? ? '' : "\n  " + links.join("\n  ")).html_safe
   end
   # rubocop:enable Rails/OutputSafety
