@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :calculator_constant_version do
-    association :version, factory: %i[version production]
-    sequence(:name) { |n| "CONSTANT #{n}" }
-    float_value { 1000.00 }
-    description { 'Average DOD BAH' }
+    version { nil }
+    name { 'MyString' }
+    float_value { 1.5 }
+    description { 'MyString' }
   end
 end

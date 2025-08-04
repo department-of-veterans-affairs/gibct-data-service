@@ -9,7 +9,7 @@ RSpec.describe SeedCalculatorConstantVersions, type: :migration do
   let(:user) { create :user }
 
   before do
-    create(:calculator_constant)
+    create(:calculator_constant, :avg_dod_bah_constant)
     create(:version, :production, user: user)
   end
 

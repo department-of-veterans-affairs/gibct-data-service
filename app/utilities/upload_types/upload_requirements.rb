@@ -39,7 +39,7 @@ class UploadTypes::UploadRequirements
     def validation_messages_numericality(type)
       numericality = { message: 'These columns can only contain numeric values: ', value: [] }
 
-      numericality[:value] = klass_validator(ActiveRecord::Validations::NumericalityValidator, type)
+      numericality[:value] = klass_validator(ActiveModel::Validations::NumericalityValidator, type)
 
       numericality unless numericality[:value].empty?
     end

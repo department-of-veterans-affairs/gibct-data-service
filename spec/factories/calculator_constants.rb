@@ -2,12 +2,20 @@
 
 FactoryBot.define do
   factory :calculator_constant do
-    sequence(:name) { |n| "CONSTANT #{n}" }
-    float_value { (Random.rand * 1_000).round(2) }
-    description { 'Sample description' }
-
-    trait :associated_rate_adjustment do
-      association :rate_adjustment
+    sequence(:name) do
+      length = [3, 6, 13].sample
+      ('A'..'Z').to_a.sample(length).join
     end
+    float_value { |_n| Random.rand.round(2) }
+    description { 'Sample description' }
+  end
+
+  trait :associated_rate_adjustment do
+    association :rate_adjustment
+  end
+
+  trait :avg_dod_bah_constant do
+    name { 'AVGDODBAH' }
+    float_value { 1000.00 }
   end
 end
