@@ -8,34 +8,12 @@
   <!-- TO DO: convert legacy jquery to hotwire stimulus -->
   <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', nonce: '**CSP_NONCE**' %>
 
-  <!-- > Load modern ES6 modules via Importmap (e.g. Stimulus controllers)
-       > Override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js
-       > Must manually write importmap scripts with nonce attribute. Standard is to use javascript_importmap_tags helper to generate
-         script tags and links. But helper method does not execpt nonce argument and will therefore violate CSP enforced
-       > Important! Because we're hard coding the script and links tags, you must update every time a new asset is pinned
-         in importmap.rb -->
-  <script type="importmap" data-turbo-track="reload" nonce="**CSP_NONCE**">
-    {
-      "imports": {
-        "main": "<%= asset_path('main.js') %>",
-        "@hotwired/stimulus": "<%= asset_path('@hotwired--stimulus.js') %>",
-        "@hotwired/turbo-rails": "<%= asset_path('@hotwired--turbo-rails.js') %>",
-        "@hotwired/turbo": "<%= asset_path('@hotwired--turbo.js') %>",
-        "@rails/actioncable/src": "<%= asset_path('@rails--actioncable--src.js') %>"
-      }
-    }
-  </script>
-  <!-- Same here! Don't forget to update whenever a new asset is pinned in importmap.rb -->
-  <link rel="modulepreload" href="<%= asset_path('main.js') %>">
-  <link rel="modulepreload" href="<%= asset_path('@hotwired--stimulus.js') %>">
-  <link rel="modulepreload" href="<%= asset_path('@hotwired--turbo-rails.js') %>">
-  <link rel="modulepreload" href="<%= asset_path('@hotwired--turbo.js') %>">
-  <link rel="modulepreload" href="<%= asset_path('@rails--actioncable--src.js') %>">
+  <!-- Load modern ES6 modules via Importmap (e.g. Stimulus controllers) -->
+  <!-- Override default 'application.js' with 'main.js' to avoid name-collision with legacy app/assets/javascripts/application.js -->
+  <%= javascript_importmap_tags_with_nonce %>
 
-  <script type="module" nonce="**CSP_NONCE**">import "main"</script>
-  
   <%= csrf_meta_tags %>
-</head>
+</head> 
 <body>
 	<%= render 'layouts/navbar' %>
 	<%= render 'layouts/messages' %>

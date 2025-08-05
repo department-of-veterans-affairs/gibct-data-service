@@ -26,6 +26,7 @@ describe '::ARCHIVE_TYPES' do
       create(:versioned_school_certifying_official, institution: prev_appr_ins)
       create(:zipcode_rate, version: prev_vsn)
       create(:versioned_complaint, version: prev_vsn)
+      create(:calculator_constant_version, version: prev_vsn)
 
       prev_unapproved = create(:institution, version: prev_vsn, approved: false)
       create(:institution_program, institution: prev_unapproved)
@@ -37,6 +38,7 @@ describe '::ARCHIVE_TYPES' do
       create(:versioned_school_certifying_official, institution: curr_appr_ins)
       create(:zipcode_rate, version: curr_vsn)
       create(:versioned_complaint, version: curr_vsn)
+      create(:calculator_constant_version, version: curr_vsn)
 
       curr_unaaproved = create(:institution, version: curr_vsn, approved: false)
       create(:institution_program, institution: curr_unaaproved)
@@ -44,6 +46,8 @@ describe '::ARCHIVE_TYPES' do
     end
 
     it 'archives only approved institutions & related data & deletes all archivable data from the previous version' do
+      allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
+
       expect do
         Archiver.archive_previous_versions
       end.to change(InstitutionsArchive, :count).by(1)
@@ -51,11 +55,13 @@ describe '::ARCHIVE_TYPES' do
          .and change(VersionedSchoolCertifyingOfficialsArchive, :count).by(1)
          .and change(ZipcodeRatesArchive, :count).by(1)
          .and change(VersionedComplaintsArchive, :count).by(1)
+         .and change(CalculatorConstantVersionsArchive, :count).by(1)
          .and change(Institution, :count).by(-2)
          .and change(InstitutionProgram, :count).by(-2)
          .and change(VersionedSchoolCertifyingOfficial, :count).by(-2)
          .and change(ZipcodeRate, :count).by(-1)
          .and change(VersionedComplaint, :count).by(-1)
+         .and change(CalculatorConstantVersion, :count).by(-1)
     end
   end
 end
