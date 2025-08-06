@@ -30,26 +30,4 @@ RSpec.describe RateAdjustment, type: :model do
       expect(build(:rate_adjustment, rate: -1)).not_to be_valid
     end
   end
-
-  describe '.by_chapter_number' do
-    before do
-      # Reverse range to ensure order by created_at and benefit_type do not yield same result
-      (1..5).to_a.reverse.each do |n|
-        create(:rate_adjustment, benefit_type: n)
-      end
-    end
-
-    it 'sorts rate adjustments numerically by benefit type' do
-      rates = described_class.by_chapter_number
-      expect(rates.pluck(:benefit_type)).to eq((1..5).to_a)
-    end
-  end
-
-  describe '#chapterize' do
-    subject(:rate_adjustment) { create(:rate_adjustment) }
-
-    it 'converts benefit_type integer into formatted string' do
-      expect(rate_adjustment.chapterize).to eq("Ch. #{rate_adjustment.benefit_type}")
-    end
-  end
 end

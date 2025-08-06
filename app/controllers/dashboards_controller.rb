@@ -41,6 +41,7 @@ class DashboardsController < ApplicationController
       send_data Group.export_as_zip(file_type), type: 'application/zip', filename: "#{file_type}.zip"
     else
       klass = csv_model(file_type)
+
       respond_to do |format|
         format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
       end
@@ -151,8 +152,7 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    klass_names = CSV_TYPES_ALL_TABLES_CLASSES + ONLINE_TYPES_NAMES
-    model = klass_names.select { |klass| klass.name == csv_type }.first
+    model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid exportable CSV type") if model.blank?

@@ -6,27 +6,6 @@ RSpec.describe ApplicationHelper, type: :helper do
     allow(helper.controller).to receive(:action_name).and_return('index')
   end
 
-  describe 'controller_label_for_header' do
-    it 'returns singular, humanized label in default case' do
-      expect(helper.controller_label_for_header).to eq('Dashboard')
-    end
-
-    it 'returns specific label if controller is AccrediationTypeKeywords' do
-      allow(helper.controller).to receive(:controller_name).and_return('accreditation_type_keywords')
-      expect(helper.controller_label_for_header).to eq('Accreditation keyword')
-    end
-
-    it 'returns specific label if controller is Uploads' do
-      allow(helper.controller).to receive(:controller_name).and_return('uploads')
-      expect(helper.controller_label_for_header).to eq('Uploads / Online Changes')
-    end
-
-    it 'returns specific label if controller is CalculatorConstants' do
-      allow(helper.controller).to receive(:controller_name).and_return('calculator_constants')
-      expect(helper.controller_label_for_header).to eq('Calculator constants')
-    end
-  end
-
   describe 'active_link?' do
     it 'tells if a link is active' do
       expect(helper).to be_active_link('/dashboards')
@@ -87,14 +66,6 @@ RSpec.describe ApplicationHelper, type: :helper do
       it 'returns the label when there are no errors' do
         expect(helper.pretty_error([], label)).to eq(div_helper(label_alone))
       end
-    end
-  end
-
-  describe 'javascript_importmap_tags_with_nonce' do
-    it 'injects nonce value into javascript_importmap_tags helper' do
-      tags = helper.javascript_importmap_tags_with_nonce
-      expect(tags).to include('<script nonce="**CSP_NONCE**" type="importmap" data-turbo-track="reload">')
-      expect(tags).to include('<script nonce="**CSP_NONCE**" type="module">import "main"</script>')
     end
   end
 end

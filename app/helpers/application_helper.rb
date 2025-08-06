@@ -2,16 +2,10 @@
 
 module ApplicationHelper
   def controller_label_for_header
-    case controller.controller_name
-    when 'accreditation_type_keywords'
-      'Accreditation keyword'
-    when 'uploads'
-      'Uploads / Online Changes'
-    when 'calculator_constants'
-      controller.controller_name.humanize
-    else
-      controller.controller_name.humanize.singularize
-    end
+    return controller.controller_name.humanize.singularize unless
+           controller.controller_name.eql?('accreditation_type_keywords')
+
+    'Accreditation keyword'
   end
 
   def active_link?(path, method = 'GET')
@@ -51,11 +45,4 @@ module ApplicationHelper
       end
     end
   end
-
-  # rubocop:disable Rails/OutputSafety
-  def javascript_importmap_tags_with_nonce
-    tags = javascript_importmap_tags('main').to_s
-    tags.gsub(/<script /, '<script nonce="**CSP_NONCE**" ').html_safe
-  end
-  # rubocop:enable Rails/OutputSafety
 end

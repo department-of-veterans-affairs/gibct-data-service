@@ -4,23 +4,11 @@ module V0
   class CalculatorConstantsController < ApiController
     # GET /v0/calculator/constants
     def index
-      if CalculatorConstant.versioning_enabled?
-        # Use the Versioned CalculatorConstant model to get the data
-        @data = CalculatorConstantVersion.where(version: @version)
-        @links = { self: self_link }
-        @meta = { version: @version }
-        render json: @data,
-               each_serializer: CalculatorConstantSerializer,
-               meta: @meta,
-               links: @links
-      else
-        @data = CalculatorConstant.all
-        @links = { self: self_link }
-        render json: @data,
-               each_serializer: CalculatorConstantSerializer,
-               meta: { version: @version },
-               links: @links
-      end
+      # TODO: implement actual versioning
+      @data = CalculatorConstant.version(@version).all
+      @links = { self: self_link }
+      @meta = { version: @version }
+      render json: @data, meta: @meta, links: @links
     end
   end
 end
