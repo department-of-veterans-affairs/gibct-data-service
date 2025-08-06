@@ -62,6 +62,6 @@ export default class extends Controller {
   }
 
   #setFormUrl(id) {
-    this.formTarget.action = `/calculator_constants/apply_rate_adjustments/${id}`;
+    this.formTarget.action = `/gids/calculator_constants/apply_rate_adjustments/${id}`;
   }
 }
