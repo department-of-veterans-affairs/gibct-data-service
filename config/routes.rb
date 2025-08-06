@@ -48,10 +48,10 @@ Rails.application.routes.draw do
 
   resources :calculator_constants, only: [:index] do
     post :update, on: :collection
-    post 'apply_rate_adjustments/:rate_adjustment_id', on: :collection, to: 'calculator_constants#apply_rate_adjustments'
     get 'export' => 'calculator_constants#export', on: :collection, defaults: { format: 'csv' }
-
   end
+
+  post '/calculator_constants/apply_rate_adjustments/:rate_adjustment_id', to: 'calculator_constants#apply_rate_adjustments'
 
   resources :rate_adjustments, only: [] do
     post :update, on: :collection
