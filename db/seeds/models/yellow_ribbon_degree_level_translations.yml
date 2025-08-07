@@ -1,0 +1,1133 @@
+- raw_degree_level: 'aas'
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: 'aas in accounting'
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: 'aas/bs - undergraduate'
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: 'aas/bs - undergraduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'aos - undergraduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'all'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (arts & science)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (bachelor of arts)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (biological sciences division)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (brandeis school of law)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (chicago booth)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (college of arts and sciences)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (college of graduate studies)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (college of lifelong learning)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (college of undergraduate studies)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (college of veterinary medicine)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (dental school)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (divinity school)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (engineering school)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (financial planning program)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (fine arts)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (friendman school of nutrition science and policy)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (graham school of general studies)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (hsc programs)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (harris school of public policy)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (humanities division)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (jd, llm)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (juris doctor)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (law school)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (meadows school of arts)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (nursing school)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (peabody college)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (pharmacy)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (pritzker school of medicine)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of architecture - professional)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of architecture/urban planning)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of art & design)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of arts & sciences)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of business administration)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of business)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of education)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of engineering)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of information)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of kinesiology)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of law)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of literature, science, & arts)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of medicine)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of music, theatre, and dance)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of natural resources)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of nursing)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of nursing/health)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of pharmacy)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of physical sciences)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of public health)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of public policy)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of social services administration)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (school of social work)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (seminary)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (social sciences division)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (thayer school of engineering)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all (the flethcher school of law and diplomacy)'
+  translated_degree_level: 'All'
+
+- raw_degree_level: 'all medical'
+  translated_degree_level: 'All'
+
+- raw_degree_level: associates
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: 'associates (lakeland college japan - associate)'
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: bachelors
+  translated_degree_level: 'Bachelors'
+
+- raw_degree_level: certificate
+  translated_degree_level: 'Certificate'
+
+- raw_degree_level: certification
+  translated_degree_level: 'Certificate'
+
+- raw_degree_level: college
+  translated_degree_level: 'Other'
+
+- raw_degree_level: dentistry
+  translated_degree_level: 'Other'
+
+- raw_degree_level: diploma
+  translated_degree_level: 'Other'
+
+- raw_degree_level: doctoral
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (all)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (cmb)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (college of arts and sciences)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (college of business)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (college of education)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (dental school)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (education)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (law)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (leadership studies)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (los angeles college of chiropractic)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (medical school)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (national college of education)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (nursing)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (professional psychology)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (school of education)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (school of law)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (school of medicine)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (school of psychology)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral (st ambrose & accel-college of professional studies)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral, school of law'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral/graduate'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral/graduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'doctoral/professional'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'doctoral/professional'
+  translated_degree_level: 'Other'
+
+- raw_degree_level: doctorate
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'executive mba'
+  translated_degree_level: 'Masters'
+
+- raw_degree_level: 'gradauate (natural sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: graduate
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate & doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate & doctoral'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (all non-law)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (all students)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (all)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (architecture)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (breech school business admin)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (business & nursing education)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (business school)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (business)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (caspersen school of graduate studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (chester)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (college of arts and sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (college of graduate studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (college of lifelong learning)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (cox school of business)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (cox school of engineering)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (dedman college)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (dedman school of law)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (doctoral)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (education)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (eduction)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (engineering)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (executive mba)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (graduate college)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (graduate studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (int’l education mgmt)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (int’l envirmental policy)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (intl policy studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (jd)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (law school)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (law)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (loyola college of arts & sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (ma public administration)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (mba & masters)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (md&master)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (mfa)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (master of education degree/master of education degree)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (master of engineering program)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (masters)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (med/dent/law/pharm)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (national college of education)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (owen graduate school of management)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (peace corps programs)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (perkins school of theology)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (professional psychology)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (sit graduate institute)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of architecture)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of art)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of arts and sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of behavioral science)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of business administration)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of business)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of communication)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of conflict transformation)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of continuing and professional studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of counseling)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of education)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of engineering)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of graduate & professional studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of jewish studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of law)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of management)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of music)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of nursing)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of occupational therapy)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of psychology)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of social work)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of teacher education)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (school of theology )'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (sellinger school)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (seminary)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (simmons school of ed & hd)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (social work)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (st ambrose & accel-college of professional studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (stuart school of business)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (t&i)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (tfl)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (tlm)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (the guildhall)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (theological school)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (tuck school of business)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (ucla anderson/mba)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (university college)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (all but school of dentistry)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate (except doctoral physical therapy)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate certificates'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate jd'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate mfa in creative writing/ mfa in interdisciplinary studies'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate physician assistant'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate school/continuing professional studies'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate and professional'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate and professional'
+  translated_degree_level: 'Other'
+
+- raw_degree_level: 'graduate(school of business and leadership)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate, doctoral'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate, doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate-nr'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/ doctoral/1st prof'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/ doctoral/1st prof'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (center for urban sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (center for urban sciences)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (gallatin school)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (gallatin school)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (global public health)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (global public health)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (graduate arts & sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (graduate arts & sciences)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (graduate school of arts and sciences)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (graduate school of arts and sciences)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (law school)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (law school)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (school of continuing ed and professional studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (school of continuing ed and professional studies)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (school of dentisty)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (school of dentisty)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (school of nursing)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (school of nursing)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (silver school of social work)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (silver school of social work)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (steinhardt school of education)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctoral (steinhardt school of education)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (tisch school of the arts)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/doctoral (tisch school of the arts)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctorate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/doctorate'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'graduate/non-prof'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/ph.d'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/professional'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graduate/professional'
+  translated_degree_level: 'Other'
+
+- raw_degree_level: 'graduate/undergraduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'graduate/undergraduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: graudate
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graudate (tesol)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graudate/doctoral'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'graudate/doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'j.d/doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: jd
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'jd, emba, amba'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'juris doctor'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'juris doctor (all)'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'juris doctorate'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'llm/jd'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'llm/jd'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: law
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'law school'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: md
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: ms
+  translated_degree_level: 'Masters'
+
+- raw_degree_level: masters
+  translated_degree_level: 'Masters'
+
+- raw_degree_level: 'medical asst aas'
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: 'medical lab tech aas'
+  translated_degree_level: 'Associates'
+
+- raw_degree_level: medicine
+  translated_degree_level: 'Other'
+
+- raw_degree_level: ncd
+  translated_degree_level: 'Other'
+
+- raw_degree_level: online
+  translated_degree_level: 'Other'
+
+- raw_degree_level: optometry
+  translated_degree_level: 'Other'
+
+- raw_degree_level: 'other professional programs'
+  translated_degree_level: 'Other'
+
+- raw_degree_level: phd
+  translated_degree_level: 'Other'
+
+- raw_degree_level: pharmacy
+  translated_degree_level: 'Other'
+
+- raw_degree_level: 'post baccalaureate'
+  translated_degree_level: 'Other'
+
+- raw_degree_level: private
+  translated_degree_level: 'Other'
+
+- raw_degree_level: professional
+  translated_degree_level: 'Other'
+
+- raw_degree_level: 'rt, ota, pta'
+  translated_degree_level: 'Other'
+
+- raw_degree_level: seminary
+  translated_degree_level: 'Other'
+
+- raw_degree_level: 'traditional undergraduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'ug-ba-graduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergrad/graduate/doctoral'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergrad/graduate/doctoral'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergrad/graduate/doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: undergraduate
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate & graduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate & graduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate & graduate (art institute of boston)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate & graduate (art institute of boston)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate & graduate (online)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate & graduate (online)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate (aas)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (adn)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (accounting systems)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (administrative asst.)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (adult degree completion)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (adult education programs)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (all adult education programs)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (all uw oshkosh college)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (all)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (arts and sciences)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (associate degree)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (ba intl studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (bachelors)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (business management)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (business technologies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (business)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (college of arts and sciences )'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (college of arts and sciences)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (college of cont. studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (college of liberal arts)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (college of management and business)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (college)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (continuing studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (day college)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (day)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (digital graphics)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (engineering)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (evening)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (flight school)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (game design)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (information technology)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (lesley college)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (liberal arts/science/engineering)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (massage therapy)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (medical assisting)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (misenheimer)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (nr)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (national college of education)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (office, project mang.)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (paralegal studies/cj)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (practical nursing)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (sit study abroad)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of adult studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of arts & science)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of arts & sciences)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of business admin)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of business)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of computer information system)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of criminal justice)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of culinary arts & hospitality)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of culinary arts and hospitality)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of education)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of health science)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of health sciences)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of liberal arts)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of nursing)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of professional studies/trine virtual campus)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (school of undergraduate)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (sellinger school)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (st ambrose & accel-college of professional studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (traditional - undergraduate)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (traditional)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (trinity arts and sciences)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (wec)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate (assos of occup studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate - college'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate - nys residents (vta eligible)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate - nys residents (non-vta eligible)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate : dc'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate all (traditional campus)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate certificate'
+  translated_degree_level: 'Certificate'
+
+- raw_degree_level: 'undergraduate and graduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate and graduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate and masters'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate and masters'
+  translated_degree_level: 'Masters'
+
+- raw_degree_level: 'undergraduate(day program)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(loyola college of arts & sciences)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(school of art science)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(school of business admin)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(school of business and leadership)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(school of computer info science)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(school of culinary art and hospitality mgt)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate(school of health science)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate, biblical studies'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate, grad'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate, grad'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate, graduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate, graduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate-non nys residents'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/certificate'
+  translated_degree_level: 'Certificate'
+
+- raw_degree_level: 'undergraduate/certificate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/graduate'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/graduate'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate/graduate (cps)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/graduate (cps)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate/graduate (metropolitan school of professional studies)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/graduate (metropolitan school of professional studies)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate/graduate (out of state)'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/graduate (out of state)'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate/graduate/doctoral'
+  translated_degree_level: 'Undergraduate'
+
+- raw_degree_level: 'undergraduate/graduate/doctoral'
+  translated_degree_level: 'Graduate'
+
+- raw_degree_level: 'undergraduate/graduate/doctoral'
+  translated_degree_level: 'Doctoral'
+
+- raw_degree_level: 'undergraduate: dc'
+  translated_degree_level: 'Undergraduate'
