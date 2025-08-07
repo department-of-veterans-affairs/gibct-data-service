@@ -26,11 +26,12 @@
   <% end %>
   <td>
     <input type="number"
-            class="form-control"
-            required
-            name="calculator_constants[<%= constant.id %>][float_value]"
-            id=<%= constant.name %>
-            step=<%= step_value_for(constant) %>
-            value=<%= display_value_for(constant) %> />
+           class="form-control"
+           required
+           name="calculator_constants[<%= constant.id %>][float_value]"
+           id=<%= constant.name %>
+           step=<%= step_value_for(constant) %>
+           value=<%= display_value_for(constant) %>
+           <%= data-action="blur->constants-form#formatInput" unless year_value?(constant) %> />
   </td>
 </tr>
