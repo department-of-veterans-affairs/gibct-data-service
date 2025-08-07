@@ -20,7 +20,34 @@
   <%= form.submit "Create New Entry", class: 'btn btn-success' %>
 <% end %>
 
-<table id="translations" class="table">
+<h3>Unmatched Degree Levels</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Institution</th>
+      <th>Degree Level</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @unmatched_programs.each do |yrp| %>
+      <tr>
+        <td><%= yrp.institution.institution %></td>
+        <td><%= yrp.degree_level %></td>
+        <td>
+          <%= form_with model: YellowRibbonDegreeLevelTranslation.new(raw_degree_level: yrp.degree_level), html: { class: 'form-inline' } do |form| %>
+            <%= form.hidden_field :raw_degree_level %>
+            <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
+            <%= form.submit "Quick Create", class: 'btn btn-success' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Existing Degree Levels</h3>
+<table class="table">
   <thead>
     <tr>
       <th>Raw Value (From YRP Input File)</th>
