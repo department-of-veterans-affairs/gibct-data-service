@@ -32,6 +32,8 @@
            id=<%= constant.name %>
            step=<%= step_value_for(constant) %>
            value=<%= display_value_for(constant) %>
-           <%= data-action="blur->constants-form#formatInput" unless year_value?(constant) %> />
+           <% unless year_value?(constant) %>
+            data-action="blur->constants-form#formatInput"
+           <% end %>/>
   </td>
 </tr>
