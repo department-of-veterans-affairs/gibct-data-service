@@ -441,3 +441,6 @@ label:has(input[type="radio"]:not(:checked)) {
   color: #767676 ;
 }
 
+.inline-block {
+  display: inline-block;
+}

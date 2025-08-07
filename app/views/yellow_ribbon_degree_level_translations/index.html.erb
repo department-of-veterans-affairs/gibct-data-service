@@ -30,15 +30,7 @@
   </thead>
   <tbody>
     <% @yellow_ribbon_degree_level_translations.each do |translation| %>
-      <tr>
-        <td><%= translation.raw_degree_level %></td>
-        <td><%= translation.translated_degree_level %></td>
-        <td>
-          <%= button_to yellow_ribbon_degree_level_translation_path(translation), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' do %>
-            Delete
-          <% end %>
-        </td>
-      </tr>
+      <%= render partial: 'show_row', locals: { translation: translation } %>
     <% end %>
   </tbody>
 </table>

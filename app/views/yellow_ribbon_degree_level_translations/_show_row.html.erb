@@ -1,0 +1,12 @@
+<tr id="<%= dom_id translation %>">
+  <td><%= translation.raw_degree_level %></td>
+  <td><%= translation.translated_degree_level %></td>
+  <td>
+    <div class="row">
+      <%= link_to 'Edit', edit_yellow_ribbon_degree_level_translation_path(translation), class: 'btn btn-default', data: { 'turbo-stream': true } %>
+      <%= button_to yellow_ribbon_degree_level_translation_path(translation), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', form_class: 'inline-block' do %>
+        Delete
+      <% end %>
+    </div>
+  </td>
+</tr>

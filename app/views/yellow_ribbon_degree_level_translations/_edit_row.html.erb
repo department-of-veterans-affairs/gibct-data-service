@@ -1,0 +1,20 @@
+<% form_id = "form_for_translation_#{translation.id}" %>
+
+<tr id="<%= dom_id translation %>">
+  <td>
+    <%= form_with model: translation, html: { class: 'form-inline panel', id: form_id, style: 'margin:0;' } do |form| %>
+    <% end %>
+    <div class="<%= 'has-error' if translation.errors[:raw_degree_level].present? %>">
+      <%= text_field_tag "yellow_ribbon_degree_level_translation[raw_degree_level]", translation.raw_degree_level, class: 'form-control', form: form_id %>
+    </div>
+  </td>
+  <td>
+    <div class="<%= 'has-error' if translation.errors[:translated_degree_level].present? %>">
+      <%= select_tag "yellow_ribbon_degree_level_translation[translated_degree_level]", options_for_select(YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, translation.translated_degree_level), class: 'form-control', form: form_id %>
+    </div>
+  </td>
+  <td>
+    <button class="btn btn-success" type="submit" form="<%= form_id %>">Save</button>
+    <%= link_to 'Cancel', yellow_ribbon_degree_level_translation_path(translation), class: 'btn btn-default', data: { 'turbo-stream': true } %>
+  </td>
+</tr>
