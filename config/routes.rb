@@ -51,6 +51,8 @@ Rails.application.routes.draw do
     get 'export' => 'calculator_constants#export', on: :collection, defaults: { format: 'csv' }
   end
 
+  resources :yellow_ribbon_degree_level_translations, path: :degree_levels
+
   post '/calculator_constants/apply_rate_adjustments/:rate_adjustment_id', to: 'calculator_constants#apply_rate_adjustments'
 
   resources :rate_adjustments, only: [] do

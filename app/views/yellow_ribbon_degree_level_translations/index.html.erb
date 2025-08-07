@@ -1,0 +1,44 @@
+<% unless @translation.errors.empty? %>
+  <div class="alert alert-danger">
+    <p>Error</p>
+    <ul>
+      <% @translation.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<%= form_with model: @translation, html: { class: 'form-inline panel' } do |form| %>
+  <div class="form-group">
+    <%= form.label :raw_degree_level %>
+    <%= form.text_field :raw_degree_level, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= form.label :translated_degree_level, 'Display Degree Level' %>
+    <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
+  </div>
+  <%= form.submit "Create New Entry", class: 'btn btn-success' %>
+<% end %>
+
+<table id="translations" class="table">
+  <thead>
+    <tr>
+      <th>Raw Value (From YRP Input File)</th>
+      <th>Display Value</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @yellow_ribbon_degree_level_translations.each do |translation| %>
+      <tr>
+        <td><%= translation.raw_degree_level %></td>
+        <td><%= translation.translated_degree_level %></td>
+        <td>
+          <%= button_to yellow_ribbon_degree_level_translation_path(translation), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' do %>
+            Delete
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
