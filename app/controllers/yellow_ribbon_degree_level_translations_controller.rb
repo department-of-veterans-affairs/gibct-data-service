@@ -6,17 +6,6 @@ class YellowRibbonDegreeLevelTranslationsController < ApplicationController
     load_models
   end
 
-  def create
-    @translation = YellowRibbonDegreeLevelTranslation.new(translation_params)
-
-    if @translation.save
-      redirect_to yellow_ribbon_degree_level_translations_path, notice: "Entry Created"
-    else
-      load_models
-      render :index, status: :unprocessable_entity
-    end
-  end
-  
   def show
     @translation = YellowRibbonDegreeLevelTranslation.find(params[:id])
 
@@ -48,11 +37,10 @@ class YellowRibbonDegreeLevelTranslationsController < ApplicationController
   protected
 
   def translation_params
-    params.require(:yellow_ribbon_degree_level_translation).permit(:raw_degree_level, translations: [])
+    params.require(:yellow_ribbon_degree_level_translation).permit(translations: [])
   end
 
   def load_models
-    @grouped_translations = YellowRibbonDegreeLevelTranslation.all.group_by(&:raw_degree_level)
-    @unmatched_programs = YellowRibbonProgram.includes(:institution).version(Version.current_production).joins('left join yellow_ribbon_degree_level_translations on lower(degree_level) = raw_degree_level').where(yellow_ribbon_degree_level_translations: {id: nil}).distinct
+    @translations = YellowRibbonDegreeLevelTranslation.order(created_at: :desc)
   end
 end

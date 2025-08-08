@@ -1,9 +1,8 @@
 <tr id="<%= dom_id translation %>">
   <td><%= translation.raw_degree_level %></td>
   <td><%= translation.translations.join(', ') %></td>
+  <td><%= translation.created_at.to_date %></td>
   <td>
-    <div class="row">
-      <%= link_to 'Edit', edit_yellow_ribbon_degree_level_translation_path(translation), class: 'btn btn-default', data: { 'turbo-stream': true } %>
-    </div>
+    <%= link_to 'Edit', edit_yellow_ribbon_degree_level_translation_path(translation), class: 'btn btn-default', data: { 'turbo-stream': true } %>
   </td>
 </tr>

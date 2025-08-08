@@ -17,11 +17,16 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
   validate :only_valid_translations
 
   before_validation :downcase_raw_degree_level
+  before_validation :strip_empty_translations
 
   protected
 
   def downcase_raw_degree_level
     self.raw_degree_level = raw_degree_level&.downcase
+  end
+
+  def strip_empty_translations
+    self.translations = translations.reject(&:empty?)
   end
 
   def only_valid_translations
