@@ -3,7 +3,7 @@
 class YellowRibbonDegreeLevelTranslationsController < ApplicationController
   def index
     @translation = YellowRibbonDegreeLevelTranslation.new
-    load_models
+    @translations = YellowRibbonDegreeLevelTranslation.order(created_at: :desc)
   end
 
   def show
@@ -50,9 +50,5 @@ class YellowRibbonDegreeLevelTranslationsController < ApplicationController
 
   def translation_params
     params.require(:yellow_ribbon_degree_level_translation).permit(translations: [])
-  end
-
-  def load_models
-    @translations = YellowRibbonDegreeLevelTranslation.order(created_at: :desc)
   end
 end

@@ -17,7 +17,7 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
   validate :only_valid_translations
 
   before_validation :downcase_raw_degree_level
-  before_validation :strip_empty_translations
+  before_validation :strip_invalid_translations
 
   def self.generate_guesses_for_unmapped_values
     unmapped_degree_levels = YellowRibbonProgramSource
@@ -57,8 +57,8 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
     self.raw_degree_level = raw_degree_level&.downcase
   end
 
-  def strip_empty_translations
-    self.translations = translations.reject(&:empty?)
+  def strip_invalid_translations
+    self.translations = translations.filter { |e| VALID_DEGREE_LEVELS.include?(e) }
   end
 
   def only_valid_translations
