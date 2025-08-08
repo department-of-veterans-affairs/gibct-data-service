@@ -20,4 +20,25 @@ RSpec.describe YellowRibbonDegreeLevelTranslation, type: :model do
     expect { model.save }.not_to change(described_class, :count)
     expect(model.errors[:translations]).not_to be_empty
   end
+
+  describe '::guess_translations' do
+    let(:test_values) {
+      {
+        'undergraduate/graduate' => ['Undergraduate', 'Graduate'],
+        'undergraduate/graduate/doctoral' => ['Undergraduate', 'Graduate', 'Doctoral'],
+        'undergraduate & graduate' => ['Undergraduate', 'Graduate'],
+        'undergraduate' => ['Undergraduate'],
+        'graduate' => ['Graduate'],
+        'medical lab tech aas	' => ['Associates'],
+        'certification' => ['Certificate'],
+        'bachelors' => ['Bachelors']
+      }
+    }
+
+    it 'picks the right translations based on the input string' do
+      test_values.each do |input, outputs|
+        expect(described_class.guess_translations(input)).to match_array(outputs)
+      end
+    end
+  end
 end

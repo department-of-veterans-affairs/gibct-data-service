@@ -19,6 +19,27 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
   before_validation :downcase_raw_degree_level
   before_validation :strip_empty_translations
 
+  def self.guess_translations(raw_string)
+    result = []
+
+    {
+      'All' => [],
+      'Certificate' => [/certif/i],
+      'Associates' => [/\bassoc/i, /\baas/i],
+      'Bachelors' => [/bachel/i],
+      'Undergraduate' => [/undergra/i],
+      'Masters' => [/master/i],
+      'Graduate' => [/\bgrad/i],
+      'Doctoral' => [/doctor/i],
+      'Other' => []
+    }.each do |level, patterns|
+      result.push(level) if patterns.any?{ |pattern| pattern =~ raw_string }
+    end
+
+    result.push('Other') if result.empty?
+    result
+  end
+
   protected
 
   def downcase_raw_degree_level
