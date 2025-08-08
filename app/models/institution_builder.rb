@@ -53,6 +53,7 @@ module InstitutionBuilder
       add_outcome(version.id)
       add_stem_offered(version.id)
       add_yellow_ribbon_programs(version.id)
+      prune_unused_yellow_ribbon_degree_levels(version.id)
       add_school_closure(version.id)
       add_vet_tec_provider(version.id)
       add_extension_campus_type(version.id)
@@ -724,6 +725,22 @@ module InstitutionBuilder
             ON i.facility_code = yrs.facility_code
             WHERE i.version_id = #{version_id}
           )
+      SQL
+
+      sql = Institution.send(:sanitize_sql, [str])
+      Institution.connection.execute(sql)
+    end
+
+    def self.prune_unused_yellow_ribbon_degree_levels(_version_id)
+      str = <<-SQL
+        DELETE FROM yellow_ribbon_degree_level_translations
+        WHERE id IN (
+          SELECT yellow_ribbon_degree_level_translations.id
+          FROM yellow_ribbon_degree_level_translations
+          LEFT JOIN yellow_ribbon_programs
+          ON yellow_ribbon_degree_level_translations.raw_degree_level = yellow_ribbon_programs.degree_level
+          WHERE yellow_ribbon_programs.id IS NULL
+        )
       SQL
 
       sql = Institution.send(:sanitize_sql, [str])

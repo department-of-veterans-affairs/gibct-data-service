@@ -129,6 +129,22 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'cleaning up unused YellowRibbonDegreeLevelTranslations' do
+      before do
+        create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'aas', translations: ['Other'])
+        create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'ugrad', translations: ['Undergraduate'])
+        create(:yellow_ribbon_program_source, :institution_builder, degree_level: 'ugrad')
+      end
+
+      it 'keeps the used one, and deletes the unused ones' do
+        expect(YellowRibbonDegreeLevelTranslation.count).to eq(2)
+        described_class.run(user)
+        expect(YellowRibbonDegreeLevelTranslation.count).to eq(1)
+        expect(YellowRibbonDegreeLevelTranslation.first.raw_degree_level).to eq('ugrad')
+        expect(YellowRibbonProgram.count).to eq(1)
+      end
+    end
+
     describe 'when adding School Closure data' do
       let(:institution) { institutions.find_by(facility_code: va_caution_flag.facility_code) }
       let(:va_caution_flag) { VaCautionFlag.first }

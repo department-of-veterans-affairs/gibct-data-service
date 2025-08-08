@@ -175,6 +175,8 @@ class UploadsController < ApplicationController
 
     CrosswalkIssue.rebuild if [Crosswalk, IpedsHd, Weam].include?(klass)
 
+    YellowRibbonDegreeLevelTranslation.generate_guesses_for_unmapped_values if klass == YellowRibbonProgramSource
+
     data
   end
 
