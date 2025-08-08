@@ -18,8 +18,8 @@
         <%= form.text_field :raw_degree_level, class: 'form-control' %>
       </div>
       <div class="form-group">
-        <%= form.label :translated_degree_level, 'Display Degree Level' %>
-        <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
+        <%= form.label :translations, 'Display Degree Level' %>
+        <%= form.select :translations, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
       </div>
       <%= form.submit "Create New Entry", class: 'btn btn-success' %>
     <% end %>
@@ -46,7 +46,7 @@
             <td>
               <%= form_with model: YellowRibbonDegreeLevelTranslation.new(raw_degree_level: yrp.degree_level), html: { class: 'form-inline' } do |form| %>
                 <%= form.hidden_field :raw_degree_level %>
-                <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
+                <%= form.select :translations, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
                 <%= form.submit "Quick Create", class: 'btn btn-success' %>
               <% end %>
             </td>
@@ -70,8 +70,8 @@
         </tr>
       </thead>
       <tbody>
-        <% @yellow_ribbon_degree_level_translations.each do |translation| %>
-          <%= render partial: 'show_row', locals: { translation: translation } %>
+        <% @grouped_translations.each do |raw_degree_level, translations| %>
+          <%= render partial: 'show_row', locals: { raw_degree_level: raw_degree_level, translations: translations } %>
         <% end %>
       </tbody>
     </table>

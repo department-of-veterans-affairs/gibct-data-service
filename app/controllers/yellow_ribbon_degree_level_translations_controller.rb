@@ -45,20 +45,14 @@ class YellowRibbonDegreeLevelTranslationsController < ApplicationController
     end
   end
 
-  def destroy
-    @translation = YellowRibbonDegreeLevelTranslation.find(params[:id])
-    @translation.destroy
-    redirect_to yellow_ribbon_degree_level_translations_path, notice: "Entry Deleted"
-  end
-
   protected
 
   def translation_params
-    params.require(:yellow_ribbon_degree_level_translation).permit(:raw_degree_level, :translated_degree_level)
+    params.require(:yellow_ribbon_degree_level_translation).permit(:raw_degree_level, translations: [])
   end
 
   def load_models
-    @yellow_ribbon_degree_level_translations = YellowRibbonDegreeLevelTranslation.order(raw_degree_level: :asc)
+    @grouped_translations = YellowRibbonDegreeLevelTranslation.all.group_by(&:raw_degree_level)
     @unmatched_programs = YellowRibbonProgram.includes(:institution).version(Version.current_production).joins('left join yellow_ribbon_degree_level_translations on lower(degree_level) = raw_degree_level').where(yellow_ribbon_degree_level_translations: {id: nil}).distinct
   end
 end

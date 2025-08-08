@@ -26,7 +26,7 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :zip
   
   def display_degree_levels
-    values = YellowRibbonDegreeLevelTranslation.where(raw_degree_level: object.degree_level.downcase).pluck(:translated_degree_level)
+    values = YellowRibbonDegreeLevelTranslation.find_by(raw_degree_level: object.degree_level.downcase)&.translations
     values.empty? ? ['Other'] : values
   end
 end

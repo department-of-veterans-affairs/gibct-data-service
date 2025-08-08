@@ -9,8 +9,8 @@
     </div>
   </td>
   <td>
-    <div class="<%= 'has-error' if translation.errors[:translated_degree_level].present? %>">
-      <%= select_tag "yellow_ribbon_degree_level_translation[translated_degree_level]", options_for_select(YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, translation.translated_degree_level), class: 'form-control', form: form_id %>
+    <div class="<%= 'has-error' if translation.errors[:translations].present? %>">
+      <%= select_tag "yellow_ribbon_degree_level_translation[translations]", options_for_select(YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, translation.translations), class: 'form-control', form: form_id %>
     </div>
   </td>
   <td>
