@@ -26,7 +26,7 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
       .pluck(:degree_level)
     
     unmapped_degree_levels.each do |degree_level|
-      create(raw_degree_level: degree_level, guess_translations(degree_level))
+      create(raw_degree_level: degree_level, translations: guess_translations(degree_level))
     end
   end
 
