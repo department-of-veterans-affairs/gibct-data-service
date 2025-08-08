@@ -9,6 +9,8 @@ module ApplicationHelper
       'Uploads / Online Changes'
     when 'calculator_constants'
       controller.controller_name.humanize
+    when 'yellow_ribbon_degree_level_translations'
+      'YRP Degree Levels'
     else
       controller.controller_name.humanize.singularize
     end

@@ -1,63 +1,79 @@
-<% unless @translation.errors.empty? %>
-  <div class="alert alert-danger">
-    <p>Error</p>
-    <ul>
-      <% @translation.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-<%= form_with model: @translation, html: { class: 'form-inline panel' } do |form| %>
-  <div class="form-group">
-    <%= form.label :raw_degree_level %>
-    <%= form.text_field :raw_degree_level, class: 'form-control' %>
-  </div>
-  <div class="form-group">
-    <%= form.label :translated_degree_level, 'Display Degree Level' %>
-    <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
-  </div>
-  <%= form.submit "Create New Entry", class: 'btn btn-success' %>
-<% end %>
-
-<h3>Unmatched Degree Levels</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Institution</th>
-      <th>Degree Level</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @unmatched_programs.each do |yrp| %>
-      <tr>
-        <td><%= yrp.institution.institution %></td>
-        <td><%= yrp.degree_level %></td>
-        <td>
-          <%= form_with model: YellowRibbonDegreeLevelTranslation.new(raw_degree_level: yrp.degree_level), html: { class: 'form-inline' } do |form| %>
-            <%= form.hidden_field :raw_degree_level %>
-            <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
-            <%= form.submit "Quick Create", class: 'btn btn-success' %>
+<div class="panel panel-default">
+  <div class="panel-heading">Create New Entry</div>
+  <div class="panel-body">
+    <% unless @translation.errors.empty? %>
+      <div class="alert alert-danger">
+        <p>Error</p>
+        <ul>
+          <% @translation.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
           <% end %>
-        </td>
-      </tr>
+        </ul>
+      </div>
     <% end %>
-  </tbody>
-</table>
+    <%= form_with model: @translation, html: { class: 'form-inline' } do |form| %>
+      <p class="text-muted">Note: Degree Levels are case-insensitive. So Undergrad will translate to the same thing as UnDeRGrAD.</p>
+      <div class="form-group">
+        <%= form.label :raw_degree_level %>
+        <%= form.text_field :raw_degree_level, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= form.label :translated_degree_level, 'Display Degree Level' %>
+        <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
+      </div>
+      <%= form.submit "Create New Entry", class: 'btn btn-success' %>
+    <% end %>
+  </div>
+</div>
 
-<h3>Existing Degree Levels</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Raw Value (From YRP Input File)</th>
-      <th>Display Value</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @yellow_ribbon_degree_level_translations.each do |translation| %>
-      <%= render partial: 'show_row', locals: { translation: translation } %>
-    <% end %>
-  </tbody>
-</table>
+<div class="panel panel-default">
+  <div class="panel-heading">Unmatched Degree Levels</div>
+  <div class="panel-body">
+    <p class="text-muted">These degree levels are present in the Yellow Ribbon Program upload, but do not have a corresponding display value. They will display as 'Other' by default.</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Institution</th>
+          <th>Degree Level</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @unmatched_programs.each do |yrp| %>
+          <tr>
+            <td><%= yrp.institution.institution %></td>
+            <td><%= yrp.degree_level %></td>
+            <td>
+              <%= form_with model: YellowRibbonDegreeLevelTranslation.new(raw_degree_level: yrp.degree_level), html: { class: 'form-inline' } do |form| %>
+                <%= form.hidden_field :raw_degree_level %>
+                <%= form.select :translated_degree_level, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, {}, class: 'form-control' %>
+                <%= form.submit "Quick Create", class: 'btn btn-success' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Existing Degree Levels</div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Raw Value (From YRP Input File)</th>
+          <th>Display Value</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @yellow_ribbon_degree_level_translations.each do |translation| %>
+          <%= render partial: 'show_row', locals: { translation: translation } %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
