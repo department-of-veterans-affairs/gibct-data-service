@@ -9,10 +9,10 @@ RSpec.describe YellowRibbonDegreeLevelTranslation, type: :model do
     expect(described_class.first.raw_degree_level).to eq('undergrad')
   end
 
-  it 'does not allow invalid translations' do
+  it 'filters out invalid translations' do
     model = described_class.new(raw_degree_level: 'aas', translations: %w[Undergraduate not_a_real_value])
-    expect { model.save }.not_to change(described_class, :count)
-    expect(model.errors[:translations]).not_to be_empty
+    expect { model.save }.to change(described_class, :count).by(1)
+    expect(described_class.first.translations).to eq(['Undergraduate'])
   end
 
   it 'does not allow empty lists of translations' do
