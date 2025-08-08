@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_07_173208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -2160,6 +2160,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_134644) do
     t.index ["institution"], name: "index_weams_on_institution"
     t.index ["ope"], name: "index_weams_on_ope"
     t.index ["state"], name: "index_weams_on_state"
+  end
+
+  create_table "yellow_ribbon_degree_level_translations", force: :cascade do |t|
+    t.string "raw_degree_level", null: false
+    t.string "translations", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["raw_degree_level"], name: "idx_on_raw_degree_level_98fb8026fd"
   end
 
   create_table "yellow_ribbon_program_sources", id: :serial, force: :cascade do |t|
