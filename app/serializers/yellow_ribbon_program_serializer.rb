@@ -6,6 +6,7 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :correspondence,
              :country,
              :degree_level,
+             :display_degree_levels,
              :distance_learning,
              :division_professional_school,
              :facility_code,
@@ -23,4 +24,9 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :ungeocodable,
              :year_of_yr_participation,
              :zip
+  
+  def display_degree_levels
+    values = YellowRibbonDegreeLevelTranslation.where(raw_degree_level: object.degree_level.downcase).pluck(:translated_degree_level)
+    values.empty? ? ['Other'] : values
+  end
 end
