@@ -21,10 +21,10 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
 
   def self.generate_guesses_for_unmapped_values
     unmapped_degree_levels = YellowRibbonProgramSource
-      .joins('left join yellow_ribbon_degree_level_translations on lower(degree_level) = raw_degree_level')
-      .where(yellow_ribbon_degree_level_translations: {id: nil})
-      .pluck(:degree_level)
-    
+                             .joins('left join yellow_ribbon_degree_level_translations on lower(degree_level) = raw_degree_level')
+                             .where(yellow_ribbon_degree_level_translations: { id: nil })
+                             .pluck(:degree_level)
+
     unmapped_degree_levels.each do |degree_level|
       create(raw_degree_level: degree_level, translations: guess_translations(degree_level))
     end
@@ -44,7 +44,7 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
       'Doctoral' => [/doctor/i],
       'Other' => []
     }.each do |level, patterns|
-      result.push(level) if patterns.any?{ |pattern| pattern =~ raw_string }
+      result.push(level) if patterns.any? { |pattern| pattern =~ raw_string }
     end
 
     result.push('Other') if result.empty?
@@ -63,6 +63,8 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
 
   def only_valid_translations
     errors.add(:translations, 'Must not be emtpy') if translations.empty?
-    errors.add(:translations, 'Invalid translations') if translations.size != translations.filter{|t| VALID_DEGREE_LEVELS.include?(t)}.size
+    errors.add(:translations, 'Invalid translations') if translations.size != translations.filter do |t|
+                                                                                VALID_DEGREE_LEVELS.include?(t)
+                                                                              end.size
   end
 end

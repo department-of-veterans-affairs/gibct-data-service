@@ -731,7 +731,7 @@ module InstitutionBuilder
       Institution.connection.execute(sql)
     end
 
-    def self.prune_unused_yellow_ribbon_degree_levels(version_id)
+    def self.prune_unused_yellow_ribbon_degree_levels(_version_id)
       str = <<-SQL
         DELETE FROM yellow_ribbon_degree_level_translations
         WHERE id IN (

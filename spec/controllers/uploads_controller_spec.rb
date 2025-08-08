@@ -282,25 +282,25 @@ RSpec.describe UploadsController, type: :controller do
       end
     end
 
-  describe 'POST create with YellowRibbonProgramSource' do
-    let(:klass) { YellowRibbonProgramSource }
-    let(:upload_file) { build(:upload, csv_type: klass.name, csv_name: 'yellow_ribbon_program_source.csv').upload_file }
-    let(:upload) { { upload_file:, skip_lines: 0, comment: 'Test', csv_type: klass.name } }
+    describe 'POST create with YellowRibbonProgramSource' do
+      let(:klass) { YellowRibbonProgramSource }
+      let(:upload_file) { build(:upload, csv_type: klass.name, csv_name: 'yellow_ribbon_program_source.csv').upload_file }
+      let(:upload) { { upload_file:, skip_lines: 0, comment: 'Test', csv_type: klass.name } }
 
-    login_user
+      login_user
 
-    it 'Creates new new program sources' do
-      expect { post :create, params: { upload: } }.to change(klass, :count).by(2)
+      it 'Creates new new program sources' do
+        expect { post :create, params: { upload: } }.to change(klass, :count).by(2)
+      end
+
+      it 'creates new YellowRibbonDegreeLevelTranslations as needed' do
+        # fixture csv file contains entries for 'Undergraduate' and 'Doctoral' degree levels
+        create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'undergraduate', translations: ['Undergraduate'])
+        expect(YellowRibbonDegreeLevelTranslation.count).to eq(1)
+        expect { post :create, params: { upload: } }.to change(YellowRibbonDegreeLevelTranslation, :count).by(1)
+        expect(YellowRibbonDegreeLevelTranslation.pluck(:raw_degree_level)).to match_array(%w[undergraduate doctoral])
+      end
     end
-
-    it 'creates new YellowRibbonDegreeLevelTranslations as needed' do
-      # fixture csv file contains entries for 'Undergraduate' and 'Doctoral' degree levels
-      create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'undergraduate', translations: ['Undergraduate'])
-      expect(YellowRibbonDegreeLevelTranslation.count).to eq (1)
-      expect { post :create, params: { upload: } }.to change(YellowRibbonDegreeLevelTranslation, :count).by(1)
-      expect(YellowRibbonDegreeLevelTranslation.pluck(:raw_degree_level)).to match_array(['undergraduate', 'doctoral'])
-    end
-  end
 
     context 'with invalid form input' do
       context 'with a non-valid csv_type' do

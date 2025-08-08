@@ -10,7 +10,7 @@ RSpec.describe YellowRibbonDegreeLevelTranslation, type: :model do
   end
 
   it 'does not allow invalid translations' do
-    model = described_class.new(raw_degree_level: 'aas', translations: ['Undergraduate', 'not_a_real_value'])
+    model = described_class.new(raw_degree_level: 'aas', translations: %w[Undergraduate not_a_real_value])
     expect { model.save }.not_to change(described_class, :count)
     expect(model.errors[:translations]).not_to be_empty
   end
@@ -22,18 +22,18 @@ RSpec.describe YellowRibbonDegreeLevelTranslation, type: :model do
   end
 
   describe '::guess_translations' do
-    let(:test_values) {
+    let(:test_values) do
       {
-        'undergraduate/graduate' => ['Undergraduate', 'Graduate'],
-        'undergraduate/graduate/doctoral' => ['Undergraduate', 'Graduate', 'Doctoral'],
-        'undergraduate & graduate' => ['Undergraduate', 'Graduate'],
+        'undergraduate/graduate' => %w[Undergraduate Graduate],
+        'undergraduate/graduate/doctoral' => %w[Undergraduate Graduate Doctoral],
+        'undergraduate & graduate' => %w[Undergraduate Graduate],
         'undergraduate' => ['Undergraduate'],
         'graduate' => ['Graduate'],
         'medical lab tech aas	' => ['Associates'],
         'certification' => ['Certificate'],
         'bachelors' => ['Bachelors']
       }
-    }
+    end
 
     it 'picks the right translations based on the input string' do
       test_values.each do |input, outputs|
