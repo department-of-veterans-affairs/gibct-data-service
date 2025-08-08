@@ -19,6 +19,17 @@ class YellowRibbonDegreeLevelTranslation < ApplicationRecord
   before_validation :downcase_raw_degree_level
   before_validation :strip_empty_translations
 
+  def self.generate_guesses_for_unmapped_values
+    unmapped_degree_levels = YellowRibbonProgramSource
+      .joins('left join yellow_ribbon_degree_level_translations on lower(degree_level) = raw_degree_level')
+      .where(yellow_ribbon_degree_level_translations: {id: nil})
+      .pluck(:degree_level)
+    
+    unmapped_degree_levels.each do |degree_level|
+      create(raw_degree_level: degree_level, guess_translations(degree_level))
+    end
+  end
+
   def self.guess_translations(raw_string)
     result = []
 
