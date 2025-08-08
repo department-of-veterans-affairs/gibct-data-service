@@ -125,6 +125,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_07_173208) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
+    t.float "previous_year"
     t.bigint "rate_adjustment_id"
     t.index ["name"], name: "index_calculator_constants_on_name"
     t.index ["rate_adjustment_id"], name: "index_calculator_constants_on_rate_adjustment_id"
@@ -2164,10 +2165,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_07_173208) do
 
   create_table "yellow_ribbon_degree_level_translations", force: :cascade do |t|
     t.string "raw_degree_level", null: false
-    t.string "translated_degree_level", null: false
+    t.string "translations", default: [], null: false, array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["raw_degree_level", "translated_degree_level"], name: "idx_on_raw_degree_level_translated_degree_level_bc15e11aa2"
     t.index ["raw_degree_level"], name: "idx_on_raw_degree_level_98fb8026fd"
   end
 
