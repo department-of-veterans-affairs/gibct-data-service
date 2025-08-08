@@ -27,6 +27,6 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
 
   def display_degree_levels
     values = YellowRibbonDegreeLevelTranslation.find_by(raw_degree_level: object.degree_level.downcase)&.translations
-    values.empty? ? ['Other'] : values
+    values.blank? ? ['Other'] : values
   end
 end

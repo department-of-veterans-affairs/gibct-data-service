@@ -2,7 +2,6 @@
 
 class YellowRibbonDegreeLevelTranslationsController < ApplicationController
   def index
-    @translation = YellowRibbonDegreeLevelTranslation.new
     @translations = YellowRibbonDegreeLevelTranslation.order(created_at: :desc)
   end
 
