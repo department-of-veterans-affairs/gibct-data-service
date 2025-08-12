@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class DashboardsController < ApplicationController
-  before_action :set_preview_status, only: %i[index preview_status]
+  before_action :set_preview_status, only: :preview_status
+  before_action :flash_preview_status, only: :index
 
   def index
     @uploads = Upload.last_uploads_rows
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_version
-    flash.notice = @preview_status.current_progress if @preview_status.present?
   end
 
   def build
@@ -250,9 +250,5 @@ class DashboardsController < ApplicationController
     else
       NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
     end
-  end
-
-  def set_preview_status
-    @preview_status = PreviewGenerationStatusInformation.last
   end
 end

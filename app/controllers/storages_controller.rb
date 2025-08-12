@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class StoragesController < ApplicationController
+  before_action :flash_preview_status, only: :index
+  
   def index
     @storages = Storage.all.order(:csv_type)
   end

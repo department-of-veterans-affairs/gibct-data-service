@@ -2,6 +2,7 @@
 
 class UploadsController < ApplicationController
   before_action :exclude_online_types, only: %i[new create show]
+  before_action :flash_preview_status, only: :index
 
   def index
     @uploads = Upload.paginate(page: params[:page]).order(created_at: :desc)

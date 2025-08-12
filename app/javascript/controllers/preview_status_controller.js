@@ -7,6 +7,7 @@ export default class extends Controller {
   static POLLING_INTERVAL = 10_000;
 
   connect() {
+    const { POLLING_INTERVAL } = this.constructor;
     this.previewPoll = setInterval(() => this.#updatePreviewStatus(), POLLING_INTERVAL);
   }
 

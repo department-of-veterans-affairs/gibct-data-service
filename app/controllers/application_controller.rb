@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
 
   # Cause authentication before every action.
   before_action :authenticate_user!, except: :home
-  before_action :set_cache_headers
 
   def home
     if current_user
@@ -39,5 +38,16 @@ class ApplicationController < ActionController::Base
   def alert_and_log(message, error = nil)
     Rails.logger.error message + error&.backtrace.to_s
     flash[:danger] = message
+  end
+
+  private
+
+  def set_preview_status
+    @preview_status = PreviewGenerationStatusInformation.last
+  end
+
+  def flash_preview_status
+    set_preview_status
+    flash.notice = @preview_status.current_progress if @preview_status.present?
   end
 end
