@@ -1,0 +1,30 @@
+<% form_id = "form_for_translation_#{translation.id}" %>
+
+<tr id="<%= dom_id translation %>">
+  <td>
+    <%= translation.raw_degree_level %>
+  </td>
+  <td>
+    <% if translation.errors.present? %>
+      <div class="alert alert-danger">
+        <%= translation.errors.full_messages.join(', ') %>
+      </div>
+    <% end %>
+    <%= form_with model: translation, html: { id: form_id, style: 'margin:0;' } do |form| %>
+      <%= form.collection_check_boxes :translations, YellowRibbonDegreeLevelTranslation::VALID_DEGREE_LEVELS, :itself, :itself do |b| %>
+        <div class="checkbox">
+          <%= b.label do %>
+            <%= b.check_box %>
+            <%= b.text %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </td>
+  <td>
+  </td>
+  <td>
+    <button class="btn btn-success" type="submit" form="<%= form_id %>">Save</button>
+    <%= link_to 'Cancel', yellow_ribbon_degree_level_translation_path(translation), class: 'btn btn-default', data: { 'turbo-stream': true } %>
+  </td>
+</tr>
