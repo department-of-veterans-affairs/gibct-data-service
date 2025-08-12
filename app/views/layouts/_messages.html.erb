@@ -10,7 +10,7 @@
 	</aside>
 <% end %>
 
-<div id="notice_flash">
+<div id="preview_status">
 	<% if notice.present? %>
 		<aside class="alert alert-info">
 			<% if notice.is_a? Hash %>
@@ -21,5 +21,17 @@
 				<%= notice.html_safe %>
 			<% end %>
 		</aside>
+	<% elsif preview_generation_started? %>
+		<aside class="alert alert-info">
+			<%= latest_preview_status.current_progress.html_safe %>
+		</aside>
 	<% end %>
 </div>
+
+<% if preview_generation_started? %>
+	<div
+		id="preview_status_poller"
+		data-controller="preview-status"
+		data-preview-status-url-value="<%= format_url(poll_preview_status_path) %>">
+	</div>
+<% end %>

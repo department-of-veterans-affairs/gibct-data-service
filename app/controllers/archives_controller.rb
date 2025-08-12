@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ArchivesController < ApplicationController
-  before_action :flash_preview_status, only: :index
-  
   TABLES = [
     InstitutionsArchive
   ].freeze

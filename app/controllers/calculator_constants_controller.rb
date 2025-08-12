@@ -3,8 +3,6 @@
 class CalculatorConstantsController < ApplicationController
   include CollectionUpdatable
 
-  before_action :flash_preview_status, only: :index
-
   def index
     if CalculatorConstant.versioning_enabled?
       previous_year = 1.year.ago.year

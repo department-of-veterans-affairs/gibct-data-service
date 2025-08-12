@@ -39,15 +39,4 @@ class ApplicationController < ActionController::Base
     Rails.logger.error message + error&.backtrace.to_s
     flash[:danger] = message
   end
-
-  private
-
-  def set_preview_status
-    @preview_status = PreviewGenerationStatusInformation.last
-  end
-
-  def flash_preview_status
-    set_preview_status
-    flash.notice = @preview_status.current_progress if @preview_status.present?
-  end
 end

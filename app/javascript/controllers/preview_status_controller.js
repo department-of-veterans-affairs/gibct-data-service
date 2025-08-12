@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static values = { completed: Boolean, url: String };
+  static values = { url: String };
 
   // TO-DO: When solid queue fully implemented, poll more frequently
   static POLLING_INTERVAL = 10_000;
@@ -18,11 +18,6 @@ export default class extends Controller {
   }
 
   async #updatePreviewStatus() {
-    if (this.completedValue) {
-      clearInterval(this.previewPoll);
-      return;
-    }
-
     try {
       const res = await fetch(this.urlValue, {
         headers: { Accept: "text/vnd.turbo-stream.html" },

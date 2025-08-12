@@ -22,14 +22,5 @@
 	<div class="container-fluid">
 		<%= yield %>
 	</div>
-
-  <% if preview_generation_started? %>
-    <div
-      id="preview_status_poller"
-      data-controller="preview-status"
-      data-preview-status-url-value="<%= format_url(dashboard_preview_status_path) %>"
-      data-preview-status-completed-value="<%= preview_generation_completed? %>">
-    </div>
-  <% end %>
 </body>
 </html>

@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class DashboardsController < ApplicationController
-  before_action :set_preview_status, only: :preview_status
-  before_action :flash_preview_status, only: :index
-
   def index
     @uploads = Upload.last_uploads_rows
     @production_versions = Version.production.newest.includes(:user).limit(1)
@@ -143,15 +140,6 @@ class DashboardsController < ApplicationController
     end
 
     redirect_to dashboards_path
-  end
-
-  def preview_status
-    return head :no_content unless @preview_status.present?
-    
-    flash.notice = nil
-    respond_to do |format|
-      format.turbo_stream { render template: 'dashboards/update' }
-    end
   end
 
   private

@@ -1,11 +1,11 @@
-<%= turbo_stream.replace "notice_flash" do %>
-  <div id="notice_flash">
+<%= turbo_stream.replace "preview_status" do %>
+  <div id="preview_status">
     <aside class="alert alert-info">
       <%= @preview_status&.current_progress.html_safe %>
     </aside>
   </div>
 <% end %>
 
-<% if preview_generation_completed? %>
+<% if @preview_generation_completed %>
   <%= turbo_stream.remove "preview_status_poller" %>
 <% end %>
