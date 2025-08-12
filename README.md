@@ -133,6 +133,7 @@ User.create(email: 'xxxxxx', password: 'xxxxxx')
 5. You should be able to access the GIDS dashboard at "http://localhost:4000"
 6. Add the following in vets-api/config/settings.local.yml:
 ```
+
 # Settings for GI Bill Data Service
 
 gids:
