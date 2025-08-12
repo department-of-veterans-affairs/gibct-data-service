@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   get '/dashboards/export_unaccrediteds' => 'dashboards#export_unaccrediteds', as: :dashboard_export_unaccrediteds, defaults: { format: 'csv' }
   get '/dashboards/geocoding_issues' => 'dashboards#geocoding_issues', as: :dashboard_geocoding_issues
   get '/dashboards/accreditation_issues' => 'dashboards#accreditation_issues', as: :dashboard_accreditation_issues
+  get 'dashboards/preview_status' => 'dashboards#preview_status', as: :dashboard_preview_status
   get '/unlock_fetches' => 'dashboards#unlock_fetches', as: :unlock_fetches
 
   resources :accreditation_type_keywords, only: [:index, :new, :create, :destroy]

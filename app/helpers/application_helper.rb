@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  include CommonInstitutionBuilder::VersionGeneration
+
   def controller_label_for_header
     case controller.controller_name
     when 'accreditation_type_keywords'
@@ -52,10 +54,39 @@ module ApplicationHelper
     end
   end
 
+  def format_url(url)
+    return url if development?
+
+    "/gids/#{url}"
+  end
+
   # rubocop:disable Rails/OutputSafety
   def javascript_importmap_tags_with_nonce
     tags = javascript_importmap_tags('main').to_s
     tags.gsub(/<script /, '<script nonce="**CSP_NONCE**" ').html_safe
   end
   # rubocop:enable Rails/OutputSafety
+
+  def preview_generation_started?
+    PreviewGenerationStatusInformation.exists?
+  end
+
+  def preview_generation_completed?
+    return unless preview_generation_started?
+
+    completed = false
+
+    pgsi = PreviewGenerationStatusInformation.last
+    if pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
+       pgsi.current_progress.start_with?('There was an error')
+      completed = true
+      PreviewGenerationStatusInformation.delete_all
+      # maintain the indexes and tables in the local, dev & staging envs.
+      # The production env times out and periodic maintenance should be run
+      # in production anyway.
+      PerformInsitutionTablesMaintenanceJob.perform_later unless production?
+    end
+
+    completed
+  end
 end

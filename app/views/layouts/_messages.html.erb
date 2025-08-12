@@ -10,14 +10,16 @@
 	</aside>
 <% end %>
 
-<% if notice.present? %>
-	<aside class="alert alert-info">
-		<% if notice.is_a? Hash %>
-			<% notice.each_pair do |label, notices| %>
-				<%= pretty_error(notices, label) %>
+<div id="notice_flash">
+	<% if notice.present? %>
+		<aside class="alert alert-info">
+			<% if notice.is_a? Hash %>
+				<% notice.each_pair do |label, notices| %>
+					<%= pretty_error(notices, label) %>
+				<% end %>
+			<% else %>
+				<%= notice.html_safe %>
 			<% end %>
-		<% else %>
-			<%= notice.html_safe %>
-		<% end %>
-	</aside>
-<% end %>
+		</aside>
+	<% end %>
+</div>
