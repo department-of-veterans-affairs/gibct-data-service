@@ -180,7 +180,7 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
-    faker (3.3.1)
+    faker (3.5.2)
       i18n (>= 1.8.11, < 2)
     faraday (1.10.3)
       faraday-em_http (~> 1.0)
@@ -598,7 +598,7 @@ DEPENDENCIES
   devise
   drb (~> 2.2, >= 2.2.1)
   factory_bot_rails (> 5)
-  faker (~> 3.3)
+  faker (~> 3.5)
   faraday
   faraday_middleware
   figaro
