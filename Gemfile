@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '7.1.5.1'
+gem 'rails', '7.1.5.2'
 
 gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
@@ -88,7 +88,7 @@ group :development, :test do
 
   gem 'capybara', '3.40.0'
   gem 'database_cleaner'
-  gem 'faker', '~> 3.3'
+  gem 'faker', '~> 3.5'
   gem 'parallel_tests'
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test
