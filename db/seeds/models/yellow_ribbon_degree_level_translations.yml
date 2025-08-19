@@ -1,0 +1,1052 @@
+- raw_degree_level: aas
+  translations:
+  - Associates
+- raw_degree_level: aas in accounting
+  translations:
+  - Associates
+- raw_degree_level: aas/bs - undergraduate
+  translations:
+  - Associates
+  - Undergraduate
+- raw_degree_level: aos - undergraduate
+  translations:
+  - Undergraduate
+- raw_degree_level: all
+  translations:
+  - All
+- raw_degree_level: all (arts & science)
+  translations:
+  - All
+- raw_degree_level: all (bachelor of arts)
+  translations:
+  - All
+- raw_degree_level: all (biological sciences division)
+  translations:
+  - All
+- raw_degree_level: all (brandeis school of law)
+  translations:
+  - All
+- raw_degree_level: all (chicago booth)
+  translations:
+  - All
+- raw_degree_level: all (college of arts and sciences)
+  translations:
+  - All
+- raw_degree_level: all (college of graduate studies)
+  translations:
+  - All
+- raw_degree_level: all (college of lifelong learning)
+  translations:
+  - All
+- raw_degree_level: all (college of undergraduate studies)
+  translations:
+  - All
+- raw_degree_level: all (college of veterinary medicine)
+  translations:
+  - All
+- raw_degree_level: all (dental school)
+  translations:
+  - All
+- raw_degree_level: all (divinity school)
+  translations:
+  - All
+- raw_degree_level: all (engineering school)
+  translations:
+  - All
+- raw_degree_level: all (financial planning program)
+  translations:
+  - All
+- raw_degree_level: all (fine arts)
+  translations:
+  - All
+- raw_degree_level: all (friendman school of nutrition science and policy)
+  translations:
+  - All
+- raw_degree_level: all (graham school of general studies)
+  translations:
+  - All
+- raw_degree_level: all (hsc programs)
+  translations:
+  - All
+- raw_degree_level: all (harris school of public policy)
+  translations:
+  - All
+- raw_degree_level: all (humanities division)
+  translations:
+  - All
+- raw_degree_level: all (jd, llm)
+  translations:
+  - All
+- raw_degree_level: all (juris doctor)
+  translations:
+  - All
+- raw_degree_level: all (law school)
+  translations:
+  - All
+- raw_degree_level: all (meadows school of arts)
+  translations:
+  - All
+- raw_degree_level: all (nursing school)
+  translations:
+  - All
+- raw_degree_level: all (peabody college)
+  translations:
+  - All
+- raw_degree_level: all (pharmacy)
+  translations:
+  - All
+- raw_degree_level: all (pritzker school of medicine)
+  translations:
+  - All
+- raw_degree_level: all (school of architecture - professional)
+  translations:
+  - All
+- raw_degree_level: all (school of architecture/urban planning)
+  translations:
+  - All
+- raw_degree_level: all (school of art & design)
+  translations:
+  - All
+- raw_degree_level: all (school of arts & sciences)
+  translations:
+  - All
+- raw_degree_level: all (school of business administration)
+  translations:
+  - All
+- raw_degree_level: all (school of business)
+  translations:
+  - All
+- raw_degree_level: all (school of education)
+  translations:
+  - All
+- raw_degree_level: all (school of engineering)
+  translations:
+  - All
+- raw_degree_level: all (school of information)
+  translations:
+  - All
+- raw_degree_level: all (school of kinesiology)
+  translations:
+  - All
+- raw_degree_level: all (school of law)
+  translations:
+  - All
+- raw_degree_level: all (school of literature, science, & arts)
+  translations:
+  - All
+- raw_degree_level: all (school of medicine)
+  translations:
+  - All
+- raw_degree_level: all (school of music, theatre, and dance)
+  translations:
+  - All
+- raw_degree_level: all (school of natural resources)
+  translations:
+  - All
+- raw_degree_level: all (school of nursing)
+  translations:
+  - All
+- raw_degree_level: all (school of nursing/health)
+  translations:
+  - All
+- raw_degree_level: all (school of pharmacy)
+  translations:
+  - All
+- raw_degree_level: all (school of physical sciences)
+  translations:
+  - All
+- raw_degree_level: all (school of public health)
+  translations:
+  - All
+- raw_degree_level: all (school of public policy)
+  translations:
+  - All
+- raw_degree_level: all (school of social services administration)
+  translations:
+  - All
+- raw_degree_level: all (school of social work)
+  translations:
+  - All
+- raw_degree_level: all (seminary)
+  translations:
+  - All
+- raw_degree_level: all (social sciences division)
+  translations:
+  - All
+- raw_degree_level: all (thayer school of engineering)
+  translations:
+  - All
+- raw_degree_level: all (the flethcher school of law and diplomacy)
+  translations:
+  - All
+- raw_degree_level: all medical
+  translations:
+  - All
+- raw_degree_level: associates
+  translations:
+  - Associates
+- raw_degree_level: associates (lakeland college japan - associate)
+  translations:
+  - Associates
+- raw_degree_level: bachelors
+  translations:
+  - Bachelors
+- raw_degree_level: certificate
+  translations:
+  - Certificate
+- raw_degree_level: certification
+  translations:
+  - Certificate
+- raw_degree_level: college
+  translations:
+  - Other
+- raw_degree_level: dentistry
+  translations:
+  - Other
+- raw_degree_level: diploma
+  translations:
+  - Other
+- raw_degree_level: doctoral
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (all)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (cmb)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (college of arts and sciences)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (college of business)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (college of education)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (dental school)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (education)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (law)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (leadership studies)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (los angeles college of chiropractic)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (medical school)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (national college of education)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (nursing)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (professional psychology)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (school of education)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (school of law)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (school of medicine)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (school of psychology)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral (st ambrose & accel-college of professional studies)
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral, school of law
+  translations:
+  - Doctoral
+- raw_degree_level: doctoral/graduate
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: doctoral/professional
+  translations:
+  - Doctoral
+  - Other
+- raw_degree_level: doctorate
+  translations:
+  - Doctoral
+- raw_degree_level: executive mba
+  translations:
+  - Masters
+- raw_degree_level: gradauate (natural sciences)
+  translations:
+  - Graduate
+- raw_degree_level: graduate
+  translations:
+  - Graduate
+- raw_degree_level: graduate & doctoral
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: graduate (all non-law)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (all students)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (all)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (architecture)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (breech school business admin)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (business & nursing education)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (business school)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (business)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (caspersen school of graduate studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (chester)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (college of arts and sciences)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (college of graduate studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (college of lifelong learning)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (cox school of business)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (cox school of engineering)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (dedman college)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (dedman school of law)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (doctoral)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (education)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (eduction)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (engineering)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (executive mba)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (graduate college)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (graduate studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (int’l education mgmt)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (int’l envirmental policy)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (intl policy studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (jd)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (law school)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (law)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (loyola college of arts & sciences)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (ma public administration)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (mba & masters)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (md&master)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (mfa)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (master of education degree/master of education degree)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (master of engineering program)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (masters)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (med/dent/law/pharm)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (national college of education)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (owen graduate school of management)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (peace corps programs)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (perkins school of theology)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (professional psychology)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (sit graduate institute)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of architecture)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of art)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of arts and sciences)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of behavioral science)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of business administration)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of business)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of communication)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of conflict transformation)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of continuing and professional studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of counseling)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of education)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of engineering)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of graduate & professional studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of jewish studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of law)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of management)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of music)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of nursing)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of occupational therapy)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of psychology)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of social work)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of teacher education)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (school of theology )
+  translations:
+  - Graduate
+- raw_degree_level: graduate (sellinger school)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (seminary)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (simmons school of ed & hd)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (social work)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (st ambrose & accel-college of professional studies)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (stuart school of business)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (t&i)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (tfl)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (tlm)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (the guildhall)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (theological school)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (tuck school of business)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (ucla anderson/mba)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (university college)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (all but school of dentistry)
+  translations:
+  - Graduate
+- raw_degree_level: graduate (except doctoral physical therapy)
+  translations:
+  - Graduate
+- raw_degree_level: graduate certificates
+  translations:
+  - Graduate
+- raw_degree_level: graduate jd
+  translations:
+  - Graduate
+- raw_degree_level: graduate mfa in creative writing/ mfa in interdisciplinary studies
+  translations:
+  - Graduate
+- raw_degree_level: graduate physician assistant
+  translations:
+  - Graduate
+- raw_degree_level: graduate school/continuing professional studies
+  translations:
+  - Graduate
+- raw_degree_level: graduate and professional
+  translations:
+  - Graduate
+  - Other
+- raw_degree_level: graduate(school of business and leadership)
+  translations:
+  - Graduate
+- raw_degree_level: graduate, doctoral
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate-nr
+  translations:
+  - Graduate
+- raw_degree_level: graduate/ doctoral/1st prof
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: graduate/doctoral
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (center for urban sciences)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (gallatin school)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (global public health)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (graduate arts & sciences)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (graduate school of arts and sciences)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (law school)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (school of continuing ed and professional studies)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (school of dentisty)
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: graduate/doctoral (school of nursing)
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: graduate/doctoral (silver school of social work)
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: graduate/doctoral (steinhardt school of education)
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/doctoral (tisch school of the arts)
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: graduate/doctorate
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: graduate/non-prof
+  translations:
+  - Graduate
+- raw_degree_level: graduate/ph.d
+  translations:
+  - Graduate
+- raw_degree_level: graduate/professional
+  translations:
+  - Graduate
+  - Other
+- raw_degree_level: graduate/undergraduate
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: graudate
+  translations:
+  - Graduate
+- raw_degree_level: graudate (tesol)
+  translations:
+  - Graduate
+- raw_degree_level: graudate/doctoral
+  translations:
+  - Graduate
+  - Doctoral
+- raw_degree_level: j.d/doctoral
+  translations:
+  - Doctoral
+- raw_degree_level: jd
+  translations:
+  - Doctoral
+- raw_degree_level: jd, emba, amba
+  translations:
+  - Doctoral
+- raw_degree_level: juris doctor
+  translations:
+  - Doctoral
+- raw_degree_level: juris doctor (all)
+  translations:
+  - Doctoral
+- raw_degree_level: juris doctorate
+  translations:
+  - Doctoral
+- raw_degree_level: llm/jd
+  translations:
+  - Doctoral
+  - Graduate
+- raw_degree_level: law
+  translations:
+  - Doctoral
+- raw_degree_level: law school
+  translations:
+  - Doctoral
+- raw_degree_level: md
+  translations:
+  - Doctoral
+- raw_degree_level: ms
+  translations:
+  - Masters
+- raw_degree_level: masters
+  translations:
+  - Masters
+- raw_degree_level: medical asst aas
+  translations:
+  - Associates
+- raw_degree_level: medical lab tech aas
+  translations:
+  - Associates
+- raw_degree_level: medicine
+  translations:
+  - Other
+- raw_degree_level: ncd
+  translations:
+  - Other
+- raw_degree_level: online
+  translations:
+  - Other
+- raw_degree_level: optometry
+  translations:
+  - Other
+- raw_degree_level: other professional programs
+  translations:
+  - Other
+- raw_degree_level: phd
+  translations:
+  - Other
+- raw_degree_level: pharmacy
+  translations:
+  - Other
+- raw_degree_level: post baccalaureate
+  translations:
+  - Other
+- raw_degree_level: private
+  translations:
+  - Other
+- raw_degree_level: professional
+  translations:
+  - Other
+- raw_degree_level: rt, ota, pta
+  translations:
+  - Other
+- raw_degree_level: seminary
+  translations:
+  - Other
+- raw_degree_level: traditional undergraduate
+  translations:
+  - Undergraduate
+- raw_degree_level: ug-ba-graduate
+  translations:
+  - Graduate
+- raw_degree_level: undergrad/graduate/doctoral
+  translations:
+  - Undergraduate
+  - Graduate
+  - Doctoral
+- raw_degree_level: undergraduate
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate & graduate
+  translations:
+  - Graduate
+  - Undergraduate
+- raw_degree_level: undergraduate & graduate (art institute of boston)
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate & graduate (online)
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate (aas)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (adn)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (accounting systems)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (administrative asst.)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (adult degree completion)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (adult education programs)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (all adult education programs)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (all uw oshkosh college)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (all)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (arts and sciences)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (associate degree)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (ba intl studies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (bachelors)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (business management)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (business technologies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (business)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (college of arts and sciences )
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (college of arts and sciences)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (college of cont. studies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (college of liberal arts)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (college of management and business)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (college)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (continuing studies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (day college)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (day)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (digital graphics)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (engineering)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (evening)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (flight school)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (game design)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (information technology)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (lesley college)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (liberal arts/science/engineering)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (massage therapy)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (medical assisting)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (misenheimer)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (nr)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (national college of education)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (office, project mang.)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (paralegal studies/cj)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (practical nursing)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (sit study abroad)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of adult studies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of arts & science)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of arts & sciences)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of business admin)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of business)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of computer information system)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of criminal justice)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of culinary arts & hospitality)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of culinary arts and hospitality)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of education)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of health science)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of health sciences)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of liberal arts)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of nursing)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of professional studies/trine virtual campus)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (school of undergraduate)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (sellinger school)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (st ambrose & accel-college of professional studies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (traditional - undergraduate)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (traditional)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (trinity arts and sciences)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (wec)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate (assos of occup studies)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate - college
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate - nys residents (vta eligible)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate - nys residents (non-vta eligible)
+  translations:
+  - Undergraduate
+- raw_degree_level: 'undergraduate : dc'
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate all (traditional campus)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate certificate
+  translations:
+  - Certificate
+- raw_degree_level: undergraduate and graduate
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate and masters
+  translations:
+  - Undergraduate
+  - Masters
+- raw_degree_level: undergraduate(day program)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(loyola college of arts & sciences)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(school of art science)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(school of business admin)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(school of business and leadership)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(school of computer info science)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(school of culinary art and hospitality mgt)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate(school of health science)
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate, biblical studies
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate, grad
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate, graduate
+  translations:
+  - Graduate
+  - Undergraduate
+- raw_degree_level: undergraduate-non nys residents
+  translations:
+  - Undergraduate
+- raw_degree_level: undergraduate/certificate
+  translations:
+  - Certificate
+  - Undergraduate
+- raw_degree_level: undergraduate/graduate
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate/graduate (cps)
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate/graduate (metropolitan school of professional studies)
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate/graduate (out of state)
+  translations:
+  - Undergraduate
+  - Graduate
+- raw_degree_level: undergraduate/graduate/doctoral
+  translations:
+  - Undergraduate
+  - Graduate
+  - Doctoral
+- raw_degree_level: 'undergraduate: dc'
+  translations:
+  - Undergraduate

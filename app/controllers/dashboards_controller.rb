@@ -41,7 +41,6 @@ class DashboardsController < ApplicationController
       send_data Group.export_as_zip(file_type), type: 'application/zip', filename: "#{file_type}.zip"
     else
       klass = csv_model(file_type)
-
       respond_to do |format|
         format.csv { send_data klass.export, type: 'text/csv', filename: "#{klass.name}.csv" }
       end
@@ -152,7 +151,8 @@ class DashboardsController < ApplicationController
   end
 
   def csv_model(csv_type)
-    model = CSV_TYPES_ALL_TABLES_CLASSES.select { |klass| klass.name == csv_type }.first
+    klass_names = CSV_TYPES_ALL_TABLES_CLASSES + ONLINE_TYPES_NAMES
+    model = klass_names.select { |klass| klass.name == csv_type }.first
     return model if model.present?
 
     raise(ArgumentError, "#{csv_type} is not a valid exportable CSV type") if model.blank?
@@ -232,10 +232,13 @@ class DashboardsController < ApplicationController
   end
 
   def unzip_csv(class_nm)
-    # Some downloads do are not a zip file, so skip and return true
+    # Some downloads are not a zip file, so skip and return true
     return true if class_nm.eql?('Hcm') || class_nm.eql?('EightKey') || class_nm.eql?('Mou') || class_nm.eql?('Vsoc')
 
-    ZipFileUtils::Unzipper.new.unzip_the_file
+    # Overwrite extracted file name if Ipeds
+    f_name = NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] if class_nm.starts_with?('Ipeds')
+
+    ZipFileUtils::Unzipper.new.unzip_the_file(f_name)
   end
 
   # Sometimes the file is an xls file and sometimes it is an xlsx file.

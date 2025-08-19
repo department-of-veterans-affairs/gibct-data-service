@@ -39,11 +39,13 @@ RSpec.describe DashboardsController, type: :controller do
       create_list :upload, 3, csv_name: 'crosswalk.csv', csv_type: 'Crosswalk'
       Upload.where(csv_type: 'Crosswalk')[1].update(ok: true)
 
+      allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
+
       get(:index)
     end
 
     it 'populates an array of uploads' do
-      expect(assigns(:uploads).length).to eq(UPLOAD_TYPES.length)
+      expect(assigns(:uploads).length).to eq(TRUE_UPLOAD_TYPES.length)
     end
 
     it 'returns http success' do
@@ -131,6 +133,14 @@ RSpec.describe DashboardsController, type: :controller do
     it 'redirects to index on error' do
       expect(get(:export, params: { csv_type: 'BlahBlah', format: :csv })).to redirect_to(action: :index)
       expect(get(:export, params: { csv_type: 'Weam', format: :xml })).to redirect_to(action: :index)
+    end
+
+    it 'deconverts column names if required' do
+      allow(Converters::OjtAppTypeConverter).to receive(:deconvert)
+
+      get(:export, params: { csv_type: 'Program', format: :csv })
+
+      expect(Converters::OjtAppTypeConverter).to have_received(:deconvert)
     end
   end
 

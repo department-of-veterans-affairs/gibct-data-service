@@ -16,6 +16,13 @@ module Common
       end
     end
 
+    # Currently only used by CalculatorConstantVersionsArchive to generate report of changes to constants over time
+    def export_version_history(start_year, end_year)
+      raise NotImplementedError, "#{klass} does not implement version history export" unless version_history_exportable?
+
+      generate_version_history(csv_headers_for_version_history, start_year:, end_year:)
+    end
+
     # simple version that takes incoming array of arrays and creates a CSV object with it
     def generate_csv(rows)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
@@ -94,6 +101,17 @@ module Common
       csv_headers
     end
 
+    def csv_headers_for_version_history
+      csv_headers = {}
+
+      klass.source_klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
+        key = info[:column]
+        csv_headers[key] = Common::Shared.display_csv_header(csv_column)
+      end
+
+      csv_headers
+    end
+
     def generate(csv_headers)
       CSV.generate(col_sep: defaults[:col_sep]) do |csv|
         csv << csv_headers.values
@@ -110,6 +128,15 @@ module Common
       end
     end
 
+    def generate_version_history(csv_headers, start_year:, end_year:)
+      CSV.generate(col_sep: defaults[:col_sep]) do |csv|
+        # version history requires extra columns of updated_by and date
+        csv << csv_headers.values.concat(%w[updated_by date])
+
+        klass == write_version_history_row(csv, csv_headers, start_year:, end_year:)
+      end
+    end
+
     def write_row(csv, csv_headers)
       klass.find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
         csv << csv_headers.keys.map { |k| format(k, record.public_send(k)) }
@@ -117,7 +144,7 @@ module Common
     end
 
     def write_versioned_row(csv, csv_headers)
-      raise(MissingAttributeError, "#{klass.name} is not versioned") unless klass.has_attribute?('version_id')
+      raise MissingAttributeError, "#{klass.name} is not versioned" unless klass.has_attribute?('version_id')
 
       klass.includes(:version)
            .find_each(batch_size: Settings.active_record.batch_size.find_each) do |record|
@@ -125,15 +152,61 @@ module Common
       end
     end
 
-    def format(key, value)
-      return "\"#{value}\"" if key == :ope && value.present?
-      return value.number if key == :version && value.present?
+    def write_version_history_row(csv, csv_headers, start_year:, end_year:)
+      # Query source klass where live data lives if current year included in range
+      if end_year >= Time.zone.now.year
+        # Do not query archives for current year
+        end_year = Time.zone.now.year - 1
+        write_live_data_to_version_history(csv, csv_headers)
+      end
 
-      value
+      klass.includes(version: :user)
+           .over_the_years(start_year, end_year)
+           .order(created_at: :desc, name: :asc)
+           .each do |record|
+        version = record.version
+        row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+        # version history requires extra columns of updated_by (email) and date
+        csv << [*row, version.user.email, version.completed_at&.to_fs(:db)]
+      end
+    end
+
+    def write_live_data_to_version_history(csv, csv_headers)
+      klass.source_klass
+           .includes(version: :user)
+           .order(:name)
+           .each do |record|
+        version = record.version
+        row = csv_headers.keys.map { |k| format(k, record.public_send(k)) }
+        # version history requires extra columns of updated_by (email) and date
+        csv << [*row, version.user.email, version.completed_at&.to_fs(:db)]
+      end
+    end
+
+    def format(key, value)
+      return value if value.blank?
+
+      # Should case list grow, a more dynamic approach to deconversion could be implemented
+      case key
+      when :ope
+        "\"#{value}\""
+      when :version
+        value.number
+      when :ojt_app_type
+        Converters::OjtAppTypeConverter.deconvert(value)
+      else
+        value
+      end
     end
 
     def format_ope(col)
       "=\"#{col}\""
+    end
+
+    VERSION_HISTORY_EXPORTABLE_KLASSES = [CalculatorConstantVersionsArchive].freeze
+
+    def version_history_exportable?
+      VERSION_HISTORY_EXPORTABLE_KLASSES.include?(klass)
     end
   end
   # rubocop:enable Metrics/ModuleLength

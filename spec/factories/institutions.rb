@@ -300,6 +300,13 @@ FactoryBot.define do
       version_id { Version.current_production.id }
     end
 
+    # this is a more widely accepted way of writing an association trait
+    # todo: refactor to use `association :version, factory: :production` instead of
+    #       using the trait :production_version
+    trait :associated_production_version do
+      association :version, factory: %i[version production]
+    end
+
     trait :preview_version do
       version_id { Version.current_preview.id }
     end

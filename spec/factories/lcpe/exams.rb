@@ -2,7 +2,9 @@
 
 FactoryBot.define do
   factory :lcpe_exam, class: 'Lcpe::Exam' do
-    facility_code { '57001151' }
+    association :weam, factory: %i[weam institution_builder]
+    association :institution, factory: %i[institution institution_builder associated_production_version]
+
     nexam_nm { 'AP-ADVANCED PLACEMENT EXAMS' }
 
     trait :preloaded do

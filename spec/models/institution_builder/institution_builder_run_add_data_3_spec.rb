@@ -129,6 +129,22 @@ RSpec.describe InstitutionBuilder, type: :model do
       end
     end
 
+    describe 'cleaning up unused YellowRibbonDegreeLevelTranslations' do
+      before do
+        create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'aas', translations: ['Other'])
+        create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'ugrad', translations: ['Undergraduate'])
+        create(:yellow_ribbon_program_source, :institution_builder, degree_level: 'ugrad')
+      end
+
+      it 'keeps the used one, and deletes the unused ones' do
+        expect(YellowRibbonDegreeLevelTranslation.count).to eq(2)
+        described_class.run(user)
+        expect(YellowRibbonDegreeLevelTranslation.count).to eq(1)
+        expect(YellowRibbonDegreeLevelTranslation.first.raw_degree_level).to eq('ugrad')
+        expect(YellowRibbonProgram.count).to eq(1)
+      end
+    end
+
     describe 'when adding School Closure data' do
       let(:institution) { institutions.find_by(facility_code: va_caution_flag.facility_code) }
       let(:va_caution_flag) { VaCautionFlag.first }
@@ -268,6 +284,18 @@ RSpec.describe InstitutionBuilder, type: :model do
         create :school_certifying_official, :invalid_priority, facility_code: weam.facility_code
         described_class.run(user)
         expect(VersionedSchoolCertifyingOfficial.count).to be_zero
+      end
+    end
+
+    describe 'when creating versioned_complaints' do
+      before do
+        create_list :complaint, 3
+      end
+
+      it 'properly generates versioned complaints with the right version id' do
+        expect(VersionedComplaint.count).to eq(0)
+        expect { described_class.run(user) }.to change(VersionedComplaint, :count).from(0).to(3)
+        expect(VersionedComplaint.pluck(:version_id)).to eq([Version.latest.id] * 3)
       end
     end
 

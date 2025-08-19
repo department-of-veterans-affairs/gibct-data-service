@@ -133,6 +133,7 @@ User.create(email: 'xxxxxx', password: 'xxxxxx')
 5. You should be able to access the GIDS dashboard at "http://localhost:4000"
 6. Add the following in vets-api/config/settings.local.yml:
 ```
+
 # Settings for GI Bill Data Service
 
 gids:
@@ -277,4 +278,4 @@ If there are database migrations to be run
 
 ## Contact
 
-If you have a question or comment about this project, file a GitHub Issue with your question in the Title, any context in the Comment, and add the `question` Label. For general questions, tag or assign to the product owner Marc Harbatkin (GitHub Handle: mphprogrammer). For design questions, tag or assign to the design lead,  Marc Harbatkin (GitHub Handle: mphprogrammer). For technical questions, tag or assign to the engineering lead, Marc Harbatkin (GitHub Handle: mphprogrammer).
+If you have a question or comment about this project, file a GitHub Issue with your question in the title, any context in the Comment, and add the `question` Label. For general questions, tag or assign to the product owner Marc Harbatkin (GitHub Handle: mphprogrammer). For design questions, tag or assign to the design lead,  Marc Harbatkin (GitHub Handle: mphprogrammer). For technical questions, tag or assign to the engineering lead, Marc Harbatkin (GitHub Handle: mphprogrammer).

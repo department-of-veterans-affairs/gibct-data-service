@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SeedUtils
+  # :nocov:
+
   module_function
 
   def seed_tables_with_group(group, user, options = {})
@@ -70,4 +72,19 @@ module SeedUtils
   def seed_table(klass, path, options = {})
     klass.load_with_roo(path, options)
   end
+
+  def seed_table_with_yaml(klass)
+    file_name = "#{klass.name.underscore.pluralize}.yml"
+    path = File.join(Rails.root, 'db', 'seeds', 'models', file_name)
+
+    puts "Loading #{klass.name} from #{file_name} ... "
+
+    seeds = YAML.load_file(path)
+    seeds.each do |attributes|
+      klass.create(attributes)
+    end
+
+    puts 'Done!'
+  end
+  # :nocov:
 end

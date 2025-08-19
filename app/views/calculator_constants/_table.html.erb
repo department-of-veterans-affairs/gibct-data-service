@@ -1,0 +1,26 @@
+<table class="table table-hover table-condensed table-bordered table-responsive calculator-constants-table">
+  <thead class="sub">
+    <% if @versioning_enabled %>
+      <tr>
+        <th rowspan="2">Name</th>
+        <th rowspan="2">Description<small style="font-weight: normal">&nbsp;&nbsp;click cell to edit</small></th>
+        <th rowspan="2">Benefit Rate</span></th>
+        <th colspan="2">Value</span></th>
+      </tr>
+      <tr>
+        <th><%= 1.year.ago.year %></th>
+        <th>Current</th>
+      </tr>
+    <% else %>
+      <tr>
+        <th>Name</th>
+        <th>Description<small style="font-weight: normal">&nbsp;&nbsp;click cell to edit</small></th>
+        <th>Value</span></th>
+      </tr>
+    <% end %>
+
+  </thead>
+  <tbody>
+    <%= render partial: "calculator_constant", collection: @calculator_constants, as: :constant %>
+  </tbody>
+</table>

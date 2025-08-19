@@ -58,7 +58,11 @@ class Upload < ApplicationRecord
 
   def self.last_uploads(for_display = false)
     csv_types = if for_display
-                  UPLOAD_TYPES_ALL_NAMES
+                  if CalculatorConstant.versioning_enabled?
+                    TRUE_UPLOAD_TYPES_ALL_NAMES
+                  else
+                    UPLOAD_TYPES_ALL_NAMES.reject { |name| name == 'CalculatorConstantVersion' }
+                  end
                 else
                   [*UPLOAD_TYPES_ALL_NAMES]
                 end
@@ -73,7 +77,12 @@ class Upload < ApplicationRecord
     upload_csv_types = uploads.map(&:csv_type)
 
     # add csv types that are missing from database to allow for uploads
-    UPLOAD_TYPES_ALL_NAMES.each do |klass_name|
+    names = if CalculatorConstant.versioning_enabled?
+              TRUE_UPLOAD_TYPES_ALL_NAMES
+            else
+              UPLOAD_TYPES_ALL_NAMES.reject { |name| name == 'CalculatorConstantVersion' }
+            end
+    names.each do |klass_name|
       next if upload_csv_types.include?(klass_name)
 
       missing_upload = Upload.new
@@ -118,7 +127,6 @@ class Upload < ApplicationRecord
   def lcpe_normalizable?
     top_most = csv_type&.split('::')&.first&.constantize
     subject = csv_type&.constantize
-
     top_most == Lcpe && subject.respond_to?(:normalize)
   rescue StandardError
     nil

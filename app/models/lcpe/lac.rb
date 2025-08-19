@@ -11,12 +11,12 @@ module Lcpe
       preload_id = Lcpe::PreloadDataset.fresh(klass.to_s).id
       select(
         '*',
-        "CONCAT(id, '@', #{preload_id}) enriched_id"
+        "CONCAT(id, 'v', #{preload_id}) enriched_id"
       )
     }
 
     scope :by_enriched_id, lambda { |enriched_id|
-      id = enriched_id.split('@').first
+      id = enriched_id.split('v').first
 
         with(enriched_query: with_enriched_id.where('id = ?', id))
           .select("#{table_name}.*", 'enriched_query.enriched_id')

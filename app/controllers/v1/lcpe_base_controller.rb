@@ -11,7 +11,7 @@ module V1
     private
 
     def validate_preload_version
-      preload_version = params[:id].split('@').last
+      preload_version = params[:id].split('v').last
       raise PreloadVersionStaleError unless preload_version == fresh_preload.id.to_s
     end
 
@@ -34,7 +34,7 @@ module V1
       response.set_header('Cache-Control', 'private')
       response.headers.delete('Pragma')
       response.set_header('Expires', 1.week.since.to_s)
-      response.set_header('ETag', "W/'#{preload_version}'")
+      response.set_header('ETag', "W/\"#{preload_version}\"")
     end
 
     # If additional filter params present, bypass versioning

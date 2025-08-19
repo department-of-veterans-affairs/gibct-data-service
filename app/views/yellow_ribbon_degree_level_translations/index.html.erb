@@ -1,0 +1,20 @@
+<div class="panel panel-default">
+  <div class="panel-heading">YRP Degree Levels</div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Raw Value (From YRP Input File)</th>
+          <th>Display Value</th>
+          <th>Created</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @translations.each do |translation| %>
+          <%= render partial: 'show_row', locals: { translation: translation } %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

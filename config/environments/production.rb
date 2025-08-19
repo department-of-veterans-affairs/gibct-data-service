@@ -80,10 +80,10 @@ Rails.application.configure do
   config.log_tags = [ :uuid, :host ]
 
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :solid_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
+  # config.active_job.queue_adapter = :solid_queue
   # config.active_job.queue_name_prefix = "gibct_data_service_production"
   
   config.action_mailer.perform_caching = false
