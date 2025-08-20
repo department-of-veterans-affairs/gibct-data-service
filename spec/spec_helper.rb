@@ -2,6 +2,10 @@
 
 require 'simplecov'
 require 'simplecov/single_file'
+require 'webmock/rspec'
+
+WebMock.disable_net_connect!
+
 SimpleCov.start do
   SimpleCov.minimum_coverage_by_file 90
 

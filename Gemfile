@@ -93,6 +93,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'simplecov-single_file', require: false, group: :test
   gem 'vcr', '~> 6.3'
+  gem 'webmock'
 end
 
 group :development do
