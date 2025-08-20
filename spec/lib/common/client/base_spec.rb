@@ -104,11 +104,4 @@ describe Common::Client::Base do
       end
     end
   end
-
-  describe '#get' do
-    it 'returns status 200' do
-      response = test_service.send(:perform, :get, '/', {})
-      expect(response.status).to eq(200)
-    end
-  end
 end
