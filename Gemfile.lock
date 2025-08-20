@@ -149,6 +149,9 @@ GEM
       deep_merge (~> 1.2, >= 1.2.1)
       ostruct
     connection_pool (2.5.0)
+    crack (1.0.0)
+      bigdecimal
+      rexml
     crass (1.0.6)
     csv (3.3.0)
     database_cleaner (2.1.0)
@@ -240,6 +243,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    hashdiff (1.2.0)
     headless (2.3.1)
     httparty (0.23.1)
       csv
@@ -562,6 +566,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webmock (3.25.1)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     websocket (1.2.10)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
@@ -657,6 +665,7 @@ DEPENDENCIES
   virtus (~> 2.0.0)
   watir (~> 7.3)
   web-console (~> 4.2)
+  webmock
   will_paginate
 
 BUNDLED WITH
