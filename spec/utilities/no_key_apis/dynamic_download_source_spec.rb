@@ -61,7 +61,7 @@ RSpec.describe NoKeyApis::DynamicDownloadSource do
 
   describe '#cache_key' do
     before do
-      stub_request(:get, "http://example.com/").to_return(status: 200, body: '', headers: {})
+      stub_request(:get, 'http://example.com/').to_return(status: 200, body: '', headers: {})
     end
 
     it 'returns the CACHE_KEY constant if defined in subclass' do
@@ -72,7 +72,7 @@ RSpec.describe NoKeyApis::DynamicDownloadSource do
 
   describe '#parse_html when the subclass does not implement it' do
     before do
-      stub_request(:get, "http://example.com/").to_return(status: 200, body: '', headers: {})
+      stub_request(:get, 'http://example.com/').to_return(status: 200, body: '', headers: {})
     end
 
     it 'raises NotImplementedError when not implemented in subclass' do
