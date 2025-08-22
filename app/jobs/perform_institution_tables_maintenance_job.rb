@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PerformInsitutionTablesMaintenanceJob < ApplicationJob
+class PerformInstitutionTablesMaintenanceJob < ApplicationJob
   queue_as :default
 
   def perform

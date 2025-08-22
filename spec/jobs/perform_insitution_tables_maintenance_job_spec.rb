@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PerformInsitutionTablesMaintenanceJob, type: :job do
+RSpec.describe PerformInstitutionTablesMaintenanceJob, type: :job do
   describe '#perform' do
     let(:job) { described_class.new }
 
