@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 
   # Cause authentication before every action.
   before_action :authenticate_user!, except: :home
+  before_action :set_cache_headers
 
   def home
     if current_user
