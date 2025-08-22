@@ -2,7 +2,7 @@
 
 module DashboardsHelper
   include CommonInstitutionBuilder::VersionGeneration
-  
+
   def latest_upload_class(upload)
     return '' if upload.ok?
     return 'danger' if UPLOAD_TYPES_REQUIRED_NAMES.include?(upload.csv_type)

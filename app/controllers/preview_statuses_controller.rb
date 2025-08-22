@@ -2,12 +2,12 @@
 
 class PreviewStatusesController < ApplicationController
   include CommonInstitutionBuilder::VersionGeneration
-  
+
   before_action :check_status, only: :poll
 
   def poll
-    return head :no_content unless @preview_status.present?
- 
+    return head :no_content if @preview_status.blank?
+
     respond_to do |format|
       format.turbo_stream { render template: 'messages/update' }
     end
@@ -21,7 +21,7 @@ class PreviewStatusesController < ApplicationController
   end
 
   def check_completion
-    return unless @preview_status.present?
+    return if @preview_status.blank?
 
     completed = false
 

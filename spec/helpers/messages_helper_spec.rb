@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe MessagesHelper, type: :helper do
   describe 'latest_preview_status' do
     before { PreviewGenerationStatusInformation.create(current_progress: 'Starting') }
