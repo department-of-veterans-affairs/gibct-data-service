@@ -32,7 +32,7 @@ RSpec.describe PreviewStatusesController, type: :controller do
       let!(:pgsi) { create(:preview_generation_status_information, trait) }
 
       before do
-        allow(PerformInstitutionTablesMaintenanceJob).to receive(:perform_later)
+        allow(InstitutionTablesMaintenanceJob).to receive(:perform_later)
         get :poll
       end
 
@@ -46,8 +46,8 @@ RSpec.describe PreviewStatusesController, type: :controller do
         expect(PreviewGenerationStatusInformation.exists?).to eq(false)
       end
 
-      it 'queues PerformInstitutionTablesMaintenanceJob' do
-        expect(PerformInstitutionTablesMaintenanceJob).to have_received(:perform_later)
+      it 'queues InstitutionTablesMaintenanceJob' do
+        expect(InstitutionTablesMaintenanceJob).to have_received(:perform_later)
       end
     end
 

@@ -32,7 +32,7 @@ class PreviewStatusesController < ApplicationController
       # maintain the indexes and tables in the local, dev & staging envs.
       # The production env times out and periodic maintenance should be run
       # in production anyway.
-      PerformInstitutionTablesMaintenanceJob.perform_later unless production?
+      InstitutionTablesMaintenanceJob.perform_later unless production?
     end
 
     completed
