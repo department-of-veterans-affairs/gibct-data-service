@@ -54,6 +54,7 @@ module ApplicationHelper
     end
   end
 
+  # Necessary for making server requests from stimulus controllers
   def format_url(url)
     return url if development?
 
