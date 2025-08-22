@@ -10,8 +10,8 @@ class DashboardsController < ApplicationController
 
   def build
     GeneratePreviewJob.perform_later(current_user)
-    # can we take out the unless condition?
-    PreviewGenerationStatusInformation.create!(current_progress: 'Preview Version being generated.') unless production?
+    psgi = PreviewGenerationStatusInformation.create!(current_progress: 'Preview Version being generated.')
+    flash.notice = psgi.current_progress
 
     redirect_to dashboards_path
   end

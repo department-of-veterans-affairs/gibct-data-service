@@ -16,7 +16,9 @@
 </head> 
 <body>
 	<%= render 'layouts/navbar' %>
-	<%= render 'layouts/messages' %>
+  <div id="global_messages" data-turbo-permanent>
+	  <%= render 'layouts/messages' %>
+  </div>
   <%= render '/layouts/header' %>
 
 	<div class="container-fluid">
