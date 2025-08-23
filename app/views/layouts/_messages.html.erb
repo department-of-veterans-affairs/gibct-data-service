@@ -10,23 +10,25 @@
 	</aside>
 <% end %>
 
-<div id="preview_status">
-	<% if notice.present? %>
-		<aside class="alert alert-info">
-			<% if notice.is_a? Hash %>
-				<% notice.each_pair do |label, notices| %>
-					<%= pretty_error(notices, label) %>
-				<% end %>
-			<% else %>
-				<%= notice.html_safe %>
+<% if notice.present? %>
+	<aside class="alert alert-info">
+		<% if notice.is_a? Hash %>
+			<% notice.each_pair do |label, notices| %>
+				<%= pretty_error(notices, label) %>
 			<% end %>
-		</aside>
-	<% elsif preview_generation_started? %>
-		<aside class="alert alert-info">
-			<%= latest_preview_status.current_progress.html_safe %>
-		</aside>
-	<% end %>
-</div>
+		<% else %>
+			<%= notice.html_safe %>
+		<% end %>
+	</aside>
+<% elsif preview_generation_started? %>
+  <div id="global_preview_status" data-turbo-permanent>
+		<div id="preview_status">
+			<aside class="alert alert-info">
+				<%= latest_preview_status.current_progress.html_safe %>
+			</aside>
+		</div>
+	</div>
+<% end %>
 
 <% if preview_generation_started? %>
 	<div
