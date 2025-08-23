@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # What has been observed is that sometimes publishing to production times out
-# on deleting insitutions and dependent rows. It's all wrapped in a transaction
-# online and this causes two problems. Rows don't get archived and the insitutions
+# on deleting institutions and dependent rows. It's all wrapped in a transaction
+# online and this causes two problems. Rows don't get archived and the institutions
 # and related data tables get filled up with data from obsolete versions. This
 # task is for cleaning that up when it happens. Note that access to a production
 # gibct instance is needed to run the rake task at the command line inside the

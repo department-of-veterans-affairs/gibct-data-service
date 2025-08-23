@@ -90,6 +90,20 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe 'format_url' do
+    let(:url) { 'example_path' }
+
+    it 'returns given url if environment development' do
+      allow(helper).to receive(:development?).and_return(true)
+      expect(helper.format_url(url)).to eq(url)
+    end
+
+    it 'prepends gids to url if environment not development' do
+      allow(helper).to receive(:development?).and_return(false)
+      expect(helper.format_url(url)).to eq("/gids/#{url}")
+    end
+  end
+
   describe 'javascript_importmap_tags_with_nonce' do
     it 'injects nonce value into javascript_importmap_tags helper' do
       tags = helper.javascript_importmap_tags_with_nonce

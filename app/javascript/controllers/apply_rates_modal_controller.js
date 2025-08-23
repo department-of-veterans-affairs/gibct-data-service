@@ -3,6 +3,7 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = [ "dialog", "select", "warning", "constantsList", "rateApplied", "ul", 
                      "confirm", "form", "applyButton" ];
+  static values = { baseUrl: String }
 
   show(event) {
     event.preventDefault();
@@ -62,6 +63,6 @@ export default class extends Controller {
   }
 
   #setFormUrl(id) {
-    this.formTarget.action = `/gids/calculator_constants/apply_rate_adjustments/${id}`;
+    this.formTarget.action = `${this.baseUrlValue}/${id}`;
   }
 }

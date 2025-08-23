@@ -26,6 +26,8 @@ Rails.application.routes.draw do
   get '/dashboards/accreditation_issues' => 'dashboards#accreditation_issues', as: :dashboard_accreditation_issues
   get '/unlock_fetches' => 'dashboards#unlock_fetches', as: :unlock_fetches
 
+  get 'preview_statuses/poll' => 'preview_statuses#poll', as: :poll_preview_status
+
   resources :accreditation_type_keywords, only: [:index, :new, :create, :destroy]
 
   resources :uploads, except: [:new, :destroy, :edit, :update] do

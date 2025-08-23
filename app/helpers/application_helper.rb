@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  include CommonInstitutionBuilder::VersionGeneration
+
   def controller_label_for_header
     case controller.controller_name
     when 'accreditation_type_keywords'
@@ -52,6 +54,13 @@ module ApplicationHelper
         )
       end
     end
+  end
+
+  # Necessary for making server requests from stimulus controllers
+  def format_url(url)
+    return url if development?
+
+    "/gids/#{url}"
   end
 
   # rubocop:disable Rails/OutputSafety

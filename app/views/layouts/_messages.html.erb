@@ -20,4 +20,20 @@
 			<%= notice.html_safe %>
 		<% end %>
 	</aside>
+<% elsif preview_generation_started? %>
+  <div id="global_preview_status" data-turbo-permanent>
+		<div id="preview_status">
+			<aside class="alert alert-info">
+				<%= latest_preview_status.current_progress.html_safe %>
+			</aside>
+		</div>
+	</div>
+<% end %>
+
+<% if preview_generation_started? %>
+	<div
+		id="preview_status_poller"
+		data-controller="preview-status"
+		data-preview-status-url-value="<%= format_url(poll_preview_status_path) %>">
+	</div>
 <% end %>
