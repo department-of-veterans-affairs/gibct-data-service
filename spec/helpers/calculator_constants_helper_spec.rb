@@ -45,4 +45,14 @@ RSpec.describe CalculatorConstantsHelper, type: :helper do
         .to eq([calculator_constant.name])
     end
   end
+
+  describe '#year_value?' do
+    it 'returns true for FISCAL_YEAR constant' do
+      expect(helper.year_value?(year_constant)).to be true
+    end
+
+    it 'returns false for nonyear constants' do
+      expect(helper.year_value?(nonyear_constant)).to be false
+    end
+  end
 end

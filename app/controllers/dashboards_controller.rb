@@ -6,13 +6,11 @@ class DashboardsController < ApplicationController
     @production_versions = Version.production.newest.includes(:user).limit(1)
     @preview_versions = Version.preview.newest.includes(:user).limit(1)
     @latest_uploads = Upload.since_last_version
-    flash_progress_if_needed
   end
 
   def build
     GeneratePreviewJob.perform_later(current_user)
-    # can we take out the unless condition?
-    PreviewGenerationStatusInformation.create!(current_progress: 'Preview Version being generated.') unless production?
+    PreviewGenerationStatusInformation.create!(current_progress: 'Preview Version being generated.')
 
     redirect_to dashboards_path
   end
@@ -170,15 +168,6 @@ class DashboardsController < ApplicationController
       "#{klass.name} finished fetching data from its api"
     end
   end
-
-  # :nocov:
-  def flash_progress_if_needed
-    if PreviewGenerationStatusInformation.exists?
-      pgsi = PreviewGenerationStatusInformation.last
-      flash.notice = pgsi.current_progress
-    end
-  end
-  # :nocov:
 
   def upload_file(class_nm, csv)
     if CSV_TYPES_NO_API_KEY_TABLE_NAMES.include?(class_nm)

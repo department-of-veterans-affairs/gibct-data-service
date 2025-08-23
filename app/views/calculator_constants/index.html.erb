@@ -1,6 +1,7 @@
 <div class="row row-space-6"
      data-controller="rates-form constants-form apply-rates-modal export-constants-modal"
-     data-action="turbo:load->rate-form#reset">
+     data-action="turbo:load->rate-form#reset"
+     data-apply-rates-modal-base-url-value="<%= format_url("/calculator_constants/apply_rate_adjustments") %>">
   <div class="col-md-8">
     <% if @constants_unpublished %>
       <aside class="alert alert-warning">

@@ -2,7 +2,7 @@
 
 namespace :otos do
   # run this task locally and push the codebase to production
-  desc 'task to fix insitutions geocoded by mailing address where it is different from physical address'
+  desc 'task to fix institutions geocoded by mailing address where it is different from physical address'
   task fix_institutions_geocoded_by_mailing_addy: :environment do
     latest_version = Version.last
     institutions_hash = {}
