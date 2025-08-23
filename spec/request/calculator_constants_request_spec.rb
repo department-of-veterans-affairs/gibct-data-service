@@ -8,7 +8,6 @@ RSpec.describe 'calculator_constants', type: :request do
   before do
     create(:version, :preview)
     create(:version, :production)
-    allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
   end
 
   it 'uses LINK_HOST in self link' do

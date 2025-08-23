@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
-# TO-DO: Inherit from ApplicationRecord after feature flag removed
-class CalculatorConstant < ImportableRecord
-  # TO-DO: Remove after feature flag removed, can live in CalculatorConstantVersion
-  CSV_CONVERTER_INFO = {
-    'name' => { column: :name, converter: Converters::UpcaseConverter },
-    'value' => { column: :float_value, converter: Converters::NumberConverter },
-    'description' => { column: :description, converter: Converters::BaseConverter }
-  }.freeze
-
+class CalculatorConstant < ApplicationRecord
   belongs_to :rate_adjustment, optional: true
 
   validates :name, uniqueness: true, presence: true
@@ -19,13 +11,6 @@ class CalculatorConstant < ImportableRecord
   delegate :benefit_type, to: :rate_adjustment, allow_nil: true
 
   default_scope { order('name') }
-
-  # :nocov:
-  # TO-DO: Remove after feature flag removed
-  def self.versioning_enabled?
-    VetsApi::Service.feature_enabled?('calculator_constants_versioning')
-  end
-  # :novcov:
 
   def self.unpublished?
     Upload.since_last_version.any? { |upload| upload.csv_type == name }

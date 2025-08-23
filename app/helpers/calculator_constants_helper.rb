@@ -19,8 +19,6 @@ module CalculatorConstantsHelper
     constants.select { |c| c.rate_adjustment_id == rate_adjustment.id }.map(&:name)
   end
 
-  private
-
   def year_value?(constant)
     constant.name == 'FISCALYEAR'
   end
