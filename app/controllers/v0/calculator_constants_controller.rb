@@ -9,9 +9,9 @@ module V0
       @links = { self: self_link }
       @meta = { version: @version }
       render json: @data,
-              each_serializer: CalculatorConstantSerializer,
-              meta: @meta,
-              links: @links
+             each_serializer: CalculatorConstantSerializer,
+             meta: @meta,
+             links: @links
     end
   end
 end
