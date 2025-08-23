@@ -27,11 +27,9 @@
         <% end%>
       </aside>
     <% end %>
-    <% if @versioning_enabled %>
-      <%= render partial: "rates_form" %>
-      <%= render partial: "apply_rates_modal" %>
-      <%= render partial: "export_constants_modal" %>
-    <% end %>
+    <%= render partial: "rates_form" %>
+    <%= render partial: "apply_rates_modal" %>
+    <%= render partial: "export_constants_modal" %>
     <%= render partial: "constants_form" %>
   </div>
 </div>
