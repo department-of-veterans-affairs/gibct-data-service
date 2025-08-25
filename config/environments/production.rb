@@ -83,7 +83,9 @@ Rails.application.configure do
   config.cache_store = :solid_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter = :solid_queue
+  if ENV['DEPLOYMENT_ENV'] == 'vagov-staging'
+    config.active_job.queue_adapter =  :solid_queue
+  end
   # config.active_job.queue_name_prefix = "gibct_data_service_production"
   
   config.action_mailer.perform_caching = false
