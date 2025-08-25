@@ -106,40 +106,6 @@ RSpec.describe DashboardsHelper, type: :helper do
     end
   end
 
-  describe 'preview_generation_started?' do
-    it 'returns true when rows exist on the preview generation status table' do
-      create :preview_generation_status_information
-      expect(helper.preview_generation_started?).to eq(true)
-    end
-
-    it 'returns false when no rows exist on the preview generation status table' do
-      PreviewGenerationStatusInformation.delete_all
-      expect(helper.preview_generation_started?).to eq(false)
-    end
-  end
-
-  describe 'preview_generation_completed?' do
-    it 'is falsey if the preview generation has not started' do
-      PreviewGenerationStatusInformation.delete_all
-      expect(helper.preview_generation_completed?).to be_nil
-    end
-
-    it 'returns false if the preview generation has started but not completed' do
-      create :preview_generation_status_information
-      expect(helper.preview_generation_completed?).to eq(false)
-    end
-
-    it 'returns true if the preview generation has started and completed' do
-      create(:preview_generation_status_information, :complete)
-      expect(helper.preview_generation_completed?).to eq(true)
-    end
-
-    it 'returns true if the preview generation has started and completed with an error' do
-      create(:preview_generation_status_information, :complete_error)
-      expect(helper.preview_generation_completed?).to eq(true)
-    end
-  end
-
   describe 'locked_fetches_exist?' do
     it 'returns true if there are failed fetches' do
       create(:upload, :failed_upload)

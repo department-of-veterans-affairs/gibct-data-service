@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
+  static targets = [ "input" ]
+
   // Convert to input field on click
   enableEditing(event) {
     const [p, input] = event.currentTarget.children;
@@ -28,5 +30,10 @@ export default class extends Controller {
     if (!event.currentTarget.value) {
       event.currentTarget.disabled = true;
     }
+  }
+
+  formatInput(event) {
+    const float = parseFloat(event.currentTarget.value);
+    event.currentTarget.value = float.toFixed(2);
   }
 }

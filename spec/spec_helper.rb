@@ -9,7 +9,7 @@ WebMock.disable_net_connect!
 SimpleCov.start do
   SimpleCov.minimum_coverage_by_file 90
 
-  add_filter '/spec/support/'
+  add_filter '/spec/'
 end
 
 # Loading of common sequences for factories (eg facility_code, ope)
