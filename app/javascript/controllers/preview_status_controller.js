@@ -19,13 +19,13 @@ export default class extends Controller {
 
   async #updatePreviewStatus() {
     try {
-      const res = await fetch(this.urlValue, {
+      const response = await fetch(this.urlValue, {
         headers: { Accept: "text/vnd.turbo-stream.html" },
         credentials: "same-origin",
         cache: "no-store"
       });
-      if (!res.ok) {
-        console.error(`Polling attempt failed: ${res.status} ${res.statusText}`);
+      if (!response.ok) {
+        console.error(`Polling attempt failed: ${response.status} ${response.statusText}`);
         return;
       }
       const html = await res.text();
