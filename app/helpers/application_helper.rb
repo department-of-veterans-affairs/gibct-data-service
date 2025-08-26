@@ -54,6 +54,13 @@ module ApplicationHelper
     end
   end
 
+  # Necessary for making server requests from stimulus controllers
+  def format_url(url)
+    return url if development?
+
+    "/gids/#{url}"
+  end
+
   # rubocop:disable Rails/OutputSafety
   def javascript_importmap_tags_with_nonce
     tags = javascript_importmap_tags('main').to_s
