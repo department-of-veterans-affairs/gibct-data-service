@@ -106,4 +106,5 @@ group :development do
   gem 'spring', platforms: :ruby
 end
 
+gem 'mission_control-jobs'
 gem 'solid_queue', '~> 1.1'

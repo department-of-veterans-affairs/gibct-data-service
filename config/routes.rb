@@ -54,6 +54,7 @@ Rails.application.routes.draw do
   end
 
   resources :yellow_ribbon_degree_level_translations, except: [:create, :new, :destroy], path: :degree_levels
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 
   post '/calculator_constants/apply_rate_adjustments/:rate_adjustment_id', to: 'calculator_constants#apply_rate_adjustments'
 
