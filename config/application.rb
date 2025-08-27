@@ -10,9 +10,7 @@ module GibctDataService
   class Application < Rails::Application
     config.load_defaults '7.0' # enables zeitwerk mode in CRuby
 
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    # Please, add to the `ignore` list any other `lib` subdirectories that do # not contain `.rb` files, or that should not be reloaded or eager loaded.  # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
     # Configuration for the application, engines, and railties goes here.
@@ -44,6 +42,8 @@ module GibctDataService
 
     # YAML Defaults for CSV
     config.csv_defaults = YAML.load_file(Rails.root.join('config', 'csv_file_defaults.yml'))
+
+    config.mission_control.jobs.http_basic_auth_enabled = false
 
     # Rails 7 upgrade - turn off warnings
     # https://stackoverflow.com/questions/76347365/how-do-i-set-legacy-connection-handling-to-false-in-my-rails-application
