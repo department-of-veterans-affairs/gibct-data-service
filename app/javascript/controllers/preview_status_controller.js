@@ -28,7 +28,7 @@ export default class extends Controller {
         console.error(`Polling attempt failed: ${response.status} ${response.statusText}`);
         return;
       }
-      const html = await res.text();
+      const html = await response.text();
       Turbo.renderStreamMessage(html);
     } catch(err) {
       console.error(err);
