@@ -10,7 +10,7 @@ class DashboardsController < ApplicationController
 
   def build
     GeneratePreviewJob.perform_later(current_user)
-    PreviewGenerationStatusInformation.create!(current_progress: 'Preview Version being generated.')
+    PreviewGenerationStatusInformation.create!(current_progress: 'Version being generated.')
 
     redirect_to dashboards_path
   end
