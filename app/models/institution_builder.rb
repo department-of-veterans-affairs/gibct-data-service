@@ -1318,9 +1318,7 @@ module InstitutionBuilder
     def self.log_info_status(message)
       Rails.logger.info "*** #{Time.now.utc} #{message}"
 
-      # PreviewGenerationStatusInformation.transaction(requires_new: true) do
-        PreviewGenerationStatusInformation.create!(current_progress: message)
-      # end
+      PreviewGenerationStatusInformation.create!(current_progress: message)
     end
   end
 end
