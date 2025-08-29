@@ -15,7 +15,7 @@ class PreviewStatusesController < ApplicationController
 
   def check_status
     # PreviewGenerationStatusInformation.connection_pool.with_connection do
-      @preview_status = PreviewGenerationStatusInformation.last
+      @preview_status = PreviewGenerationStatusInformation.latest
       @preview_generation_completed = @preview_status.nil? || check_completion
     # end
   end
