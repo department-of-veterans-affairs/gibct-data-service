@@ -68,7 +68,7 @@ module Archiver
     return if archive.blank?
 
     PreviewGenerationStatusInformation.create!(current_progress: "archiving #{source.table_name}")
-    
+
     cols = archive.column_names
     insert_cols = (cols.map { |col| '"' + col + '"' }).join(', ')
     select_cols = (cols.map { |col| 's.' + col }).join(', ')

@@ -7,6 +7,6 @@ class PreviewGenerationStatusInformation < ApplicationRecord
 
   # TO-DO: Add timestamps to table
   def self.latest
-    order(id: :asc).first
+    order(id: :desc).first
   end
 end
