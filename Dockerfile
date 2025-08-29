@@ -23,9 +23,9 @@ WORKDIR /srv/gi-bill-data-service/src
 # this stage is used for local development with docker-compose.yml
 ###
 FROM base AS development
-RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 && \
-    chmod +x /usr/local/bin/cc-test-reporter && \
-    cc-test-reporter --version
+# RUN curl -L -o /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 && \
+#     chmod +x /usr/local/bin/cc-test-reporter && \
+#     cc-test-reporter --version
 
 COPY --chown=gi-bill-data-service:gi-bill-data-service docker-entrypoint.sh ./
 USER gi-bill-data-service
