@@ -21,7 +21,7 @@ module DashboardsHelper
     return 'disabled' if preview_versions[0]&.generating?
 
     # We also want to disable while publishing is in progress
-    pgsi = PreviewGenerationStatusInformation.last
+    pgsi = PreviewGenerationStatusInformation.latest
     'disabled' unless
       pgsi.nil? ||
       pgsi.current_progress.start_with?(PUBLISH_COMPLETE_TEXT) ||
@@ -31,14 +31,14 @@ module DashboardsHelper
   def generating_in_progress?(preview_versions)
     return true if preview_versions[0]&.generating?
 
-    pgsi = PreviewGenerationStatusInformation.last
+    pgsi = PreviewGenerationStatusInformation.latest
     pgsi.nil? ? false : true
   end
 
   def appears_to_be_stuck?(preview_versions)
     preview_version = preview_versions[0]
     if preview_version.nil?
-      pgsi = PreviewGenerationStatusInformation.last
+      pgsi = PreviewGenerationStatusInformation.latest
       return pgsi.nil? ? false : true
     end
 

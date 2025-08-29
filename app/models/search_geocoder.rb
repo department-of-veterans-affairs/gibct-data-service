@@ -57,7 +57,8 @@ class SearchGeocoder
     "#{result.physical_city}, #{result.physical_state}, #{result.physical_zip}"
 
     message = "Geocoding #{idx} of #{@total_count}"
-    UpdatePreviewGenerationStatusJob.perform_later(message) if (idx % 10).eql?(0)
+
+    PreviewGenerationStatusInformation.create!(current_progress: message) if (idx % 10).eql?(0)
   end
 
   def parse_add_fields(res, field)
