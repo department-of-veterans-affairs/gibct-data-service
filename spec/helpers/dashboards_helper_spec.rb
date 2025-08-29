@@ -55,20 +55,17 @@ RSpec.describe DashboardsHelper, type: :helper do
   describe 'can_generate_preview' do
     it 'returns disabled when fetch is not in progress' do
       create :upload, :scorecard_finished
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(nil)
       expect(helper.can_generate_preview([preview_version1, preview_version2])).to eq('disabled')
     end
 
     it 'does not return disabled when fetch is in progress' do
       create :upload, :scorecard_in_progress
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(nil)
       expect(helper.can_generate_preview([prod_version1, prod_version2])).to eq(nil)
     end
 
     it 'returns disabled when publishing is in progress' do
       create :version, :production
-      pgsi = create :preview_generation_status_information, :publishing
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(pgsi)
+      create :preview_generation_status_information, :publishing
       expect(helper.can_generate_preview([])).to eq('disabled')
     end
   end
@@ -82,27 +79,23 @@ RSpec.describe DashboardsHelper, type: :helper do
 
     it 'returns false when no rows exist on the preview generation status table' do
       preview_version.completed_at = Time.now.utc
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(nil)
       expect(helper.generating_in_progress?([preview_version])).not_to eq(true)
     end
 
     it 'returns true when rows exist on the preview generation status table' do
       preview_version.completed_at = Time.now.utc
-      pgsi = create :preview_generation_status_information, :publishing
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(pgsi)
+      create :preview_generation_status_information, :publishing
       expect(helper.generating_in_progress?([preview_version])).to eq(true)
     end
   end
 
   describe 'appears_to_be_stuck?' do
     it 'returns false when no rows exist on the preview generation status or versions table' do
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(nil)
       expect(helper.appears_to_be_stuck?([])).to eq(false)
     end
 
     it 'returns true when rows exist on the preview generation status but not on the versions table' do
-      pgsi = create :preview_generation_status_information, :publishing
-      allow(PreviewGenerationStatusInformation).to receive(:last).and_return(pgsi)
+      create :preview_generation_status_information, :publishing
       expect(helper.appears_to_be_stuck?([])).to eq(true)
     end
 
