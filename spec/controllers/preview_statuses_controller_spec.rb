@@ -11,7 +11,7 @@ RSpec.describe PreviewStatusesController, type: :controller do
   describe 'GET poll' do
     login_user
 
-    context 'when preview generation not started' do
+    context 'when no version is actively being generation' do
       it 'sets preview status nil and completed to true' do
         get :poll
         expect(response).to have_http_status(:success)
