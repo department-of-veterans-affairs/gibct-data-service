@@ -28,6 +28,13 @@
   </div>
 </div>
 
+<div data-controller="generate-version-modal">
+  <%= render partial: "generate_version_modal" %>
+  <button data-action="click->generate-version-modal#show" class="btn dashboard-btn-warning btn-xs">Generate Version</button>
+</div>
+
+<button id="preview_opener" class="btn dashboard-btn-warning btn-xs" <%= can_generate_preview(@preview_versions) %>>Old Generate Version</button>
+
 <div id="preview_dialog" title="Generate New Preview Version and Publish" style="display: none;">
   <div id="preview_dialog_div">
     <p class="generate_preview_question">
@@ -63,8 +70,6 @@
     </div>
   </div>
 </div>
-
-<button id="preview_opener" class="btn dashboard-btn-warning btn-xs" <%= can_generate_preview(@preview_versions) %>>Generate Version</button>
 
 <% if generating_in_progress?(@preview_versions) && appears_to_be_stuck?(@preview_versions) %>
   &nbsp;&nbsp;
