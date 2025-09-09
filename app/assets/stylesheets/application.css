@@ -153,7 +153,6 @@
   text-decoration: underline;
 }
 
-#preview_dialog,
 #sequential-upload-dialog {
   display: flex;
   justify-content: center;
@@ -166,7 +165,6 @@
   justify-content: center;
 }
 
-#preview_dialog_div,
 #sequential-upload-dialog-div {
   min-width: 250px;
   text-align: center;
@@ -179,21 +177,47 @@
   gap: 5px;
 }
 
-.generate_preview_button_div {
-  text-align: center;
+#generate_version_buttons {
+  display: flex;
 }
 
-.generate_preview_table {
-  display: inline-block;
-  overflow-y: scroll;
-  max-height: 500px;
+#generate_version_modal {
+  display: flex;
+  justify-content: center;
 }
 
-.generate_preview_question {
-  text-align: center;
-  font-size: large;
-  margin-top: 1em;
-  margin-bottom: 1em;
+#generate_version_modal .modal-content {
+  width: fit-content;
+}
+
+#generate_version_modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+
+#generate_version_modal .modal-body p {
+  margin-bottom: 0px;
+}
+
+#generate_version_modal a {
+  align-self: center;
+}
+
+#generate_version_modal .table-wrapper {
+  max-height: 200px;
+  overflow-y: auto;
+  width: fit-content;
+}
+
+#generate_version_modal th,
+#generate_version_modal td {
+  white-space: nowrap;
+}
+
+#generate_version_modal td.comments {
+  white-space: normal;
+  width: 100%
 }
 
 #sequential-submit-btn-div {
