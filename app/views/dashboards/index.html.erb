@@ -38,7 +38,7 @@
     </button>
   </div>
 
-  <% if true %>
+  <% if generating_in_progress?(@preview_versions) && appears_to_be_stuck?(@preview_versions) %>
     &nbsp;&nbsp;
     <%= link_to 'Unlock', dashboard_unlock_generate_button_path, method: :post,
                 class: "btn dashboard-btn-info btn-xs",
