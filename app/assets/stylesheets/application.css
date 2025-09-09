@@ -206,13 +206,6 @@
   width: fit-content;
 }
 
-#generate_version_modal th {
-  background-color: #333333;
-  color: #fff;
-  position: sticky;
-  top: 0;
-}
-
 #generate_version_modal th,
 #generate_version_modal td {
   white-space: nowrap;
