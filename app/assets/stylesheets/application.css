@@ -177,6 +177,10 @@
   gap: 5px;
 }
 
+#generate_version_buttons {
+  display: flex;
+}
+
 #generate_version_modal {
   display: flex;
   justify-content: center;
