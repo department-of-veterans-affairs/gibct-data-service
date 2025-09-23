@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '7.1.5.2'
+gem 'rails', '8.0.3'
 
 gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
