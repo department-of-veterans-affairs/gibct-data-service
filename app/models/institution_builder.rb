@@ -738,7 +738,7 @@ module InstitutionBuilder
           SELECT yellow_ribbon_degree_level_translations.id
           FROM yellow_ribbon_degree_level_translations
           LEFT JOIN yellow_ribbon_programs
-          ON yellow_ribbon_degree_level_translations.raw_degree_level = yellow_ribbon_programs.degree_level
+          ON yellow_ribbon_degree_level_translations.raw_degree_level = LOWER(yellow_ribbon_programs.degree_level)
           WHERE yellow_ribbon_programs.id IS NULL
         )
       SQL
