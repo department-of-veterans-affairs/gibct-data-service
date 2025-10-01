@@ -66,7 +66,6 @@ RSpec.describe DashboardsHelper, type: :helper do
     it 'returns disabled when publishing is in progress' do
       create :version, :production
       create :preview_generation_status_information, :publishing
-
       expect(helper.can_generate_preview([])).to eq('disabled')
     end
   end

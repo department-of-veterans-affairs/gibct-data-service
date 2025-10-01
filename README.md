@@ -148,6 +148,16 @@ brew services restart postgres
 bundle exec rake db:drop db:create db:schema:load db:seed
 ```
 
+### Solid Queue
+
+Gibct uses [Solid Queue](https://github.com/rails/solid_queue) as the ActiveJob backend for storing and processing background jobs. No extra work is needed to set up Solid Queue other than to run your usual `rake db:migrate` task. In order to actually process jobs in a development environment you will need to run an additional command in a separate terminal window:
+
+```
+bin/jobs
+```
+
+This will start the Solid Queue worker process and jobs enqueued in your development environment will be processed just like they would be in staging/production. If you do not run `bin/jobs` and only use the web server (e.g. `bin/rails s`) then jobs will still be enqueued just fine, but they won't be worked on until the worker process is started. You can always check on the status of any jobs by going to `http://localhost:3000/jobs`.
+
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
 - `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!

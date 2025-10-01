@@ -984,7 +984,7 @@ module InstitutionBuilder
     end
 
     def self.geocode_using_csv_file
-      PerformInsitutionTablesMaintenanceJob.perform_later unless production?
+      InstitutionTablesMaintenanceJob.perform_later unless production?
       sleep 120 # Give the vacuuming a chancd to more or less complete
       CSV.foreach('sample_csvs/institution_long_lat_ung.csv', headers: true, col_sep: ',') do |row|
         Institution.where(
@@ -1318,7 +1318,7 @@ module InstitutionBuilder
     def self.log_info_status(message)
       Rails.logger.info "*** #{Time.now.utc} #{message}"
 
-      UpdatePreviewGenerationStatusJob.perform_later(message)
+      PreviewGenerationStatusInformation.create!(current_progress: message)
     end
   end
 end

@@ -1,7 +1,7 @@
 <%= turbo_stream.replace "preview_status" do %>
   <div id="preview_status">
     <aside class="alert alert-info">
-      <%= @preview_status&.current_progress.html_safe %>
+      <%= @preview_status&.current_progress&.html_safe %>
     </aside>
   </div>
 <% end %>
