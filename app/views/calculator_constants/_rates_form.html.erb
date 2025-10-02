@@ -1,6 +1,6 @@
 <%= form_with(url: rate_adjustments_path,
               id: "rate_adjustments_update",
-              data: { action: "turbo:submit-end->rates-form#toggleForm",
+              data: { action: "turbo:submit-end->rates-form#afterSubmit",
                       rates_form_target: "form" }) do %>
   <div class="panel panel-default">
     <div class="panel-heading" data-rates-form-target="heading">

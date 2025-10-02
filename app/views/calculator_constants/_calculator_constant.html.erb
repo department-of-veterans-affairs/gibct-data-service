@@ -15,7 +15,11 @@
           <% end %>>
       <option value=""></option>
       <% @rate_adjustments.each do |rate| %>
-        <option value=<%= rate.id %> <%= "selected" if constant.rate_adjustment == rate %>><%= rate.chapterize %></option>
+        <option value=<%= rate.id %>
+                <%= "selected" if constant.rate_adjustment == rate %>
+                data-rates-form-target="rateOption">
+          <%= rate.chapterize %>
+        </option>
       <% end %>
     </select>
   </td>

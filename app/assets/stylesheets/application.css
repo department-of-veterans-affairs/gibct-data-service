@@ -451,6 +451,18 @@ table.crosswalk-issues thead.sub th {
   width: 70px;
 }
 
+#rate_adjustments_update .rate-div span.rate-delete a {
+  color: #767676;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#rate_adjustments_update .rate-div span.rate-delete a:hover {
+  color: #c9302c;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 .equal {
   flex-wrap: wrap;
   display: flex;
