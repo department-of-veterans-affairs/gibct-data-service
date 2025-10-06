@@ -28,9 +28,20 @@
           Please save or discard changes to Rate Adjustments before updating Calculator Constants.
         </aside>
       </div>
-      <div id="rates-list">
+
+      <div id="rates-list" data-turbo-frame="rates_list">
         <%= render partial: "rate_adjustment", collection: @rate_adjustments %>
       </div>
+            <%= button_tag type: :button,
+                           hidden: true,
+                           class: "add-remove",
+                           data: { rates_form_target: "addRemoveButton",
+                                   action: "click->rates-form#toggleAddRemove" } do %>
+        <small>Add/Remove Rate Adjustments</small>
+      <% end  %>
+      <%= render partial: "new_rate_adjustment" %>
     </div>
   </div>
 <% end %>
+
+

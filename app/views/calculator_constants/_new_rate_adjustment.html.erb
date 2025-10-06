@@ -1,0 +1,14 @@
+<div class="form-inline"
+     id="new-rate"
+     hidden
+     data-rates-form-target="newRate">
+  <%= form_with url: build_rate_adjustments_path, method: :get, data: { turbo_frame: "rates_list" }, local: false do |f| %>
+    <%= f.label :benefit_type do %>
+      <small>New Chapter Number:</small>
+    <% end %>
+    <%= f.number_field :benefit_type, min: 0, step: 1, value: 99 %>
+    <%= button_tag type: "submit", class: "btn btn-xs btn-primary" do %>
+      <strong>&plus;</strong>
+    <% end %>
+  <% end %>
+</div>

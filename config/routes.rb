@@ -60,6 +60,7 @@ Rails.application.routes.draw do
 
   resources :rate_adjustments, only: [] do
     post :update, on: :collection
+    get :build, on: :collection
   end
 
   resources :storages, only: [:index, :edit, :update, :show] do

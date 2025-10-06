@@ -1,7 +1,9 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "input", "editButton", "updateButton", "heading", "warning", "rateOption" ];
+  static targets = [ "input", "editButton", "updateButton", "heading", "warning", "rateOption",
+                     "addRemoveButton", "percent", "ex", "newRate", "newRateInput", "rateTemplate",
+                      "ratesList" ];
 
   static BLUE = "rgb(243, 243, 255)";
   static GRAY = "rgb(245, 245, 245)";
@@ -11,8 +13,10 @@ export default class extends Controller {
     this.isEditing = false;
     // Save original input values so #cancel can revert changes without calling server
     this.originalInputs = {};
-    // Save rates selected for deletion before changes are committed
+    // Save rates selected for deletion/creation before changes are committed
     this.softDeletedRates = [];
+    this.softCreatedRates = [];
+    this.createdRatesCounter = 0;
     this.inputTargets.forEach(input => {
       this.originalInputs[input.name] = input.value;
     });
@@ -32,10 +36,18 @@ export default class extends Controller {
     });
     this.softDeletedRates = [];
     this.toggleForm();
+    // Toggle add/remove button if necessary
+    if (this.isAddingRemoving) {
+      this.toggleAddRemove();
+    }
   }
 
   afterSubmit() {
     this.toggleForm();
+    // Toggle add/remove button if necessary
+    if (this.isAddingRemoving) {
+      this.toggleAddRemove();
+    }
     this.#cleanConstantsTable();
   }
   
@@ -49,32 +61,68 @@ export default class extends Controller {
     this.#toggleHeading();
   }
 
-  // Remove rate from DOM but don't commit change until save selected
+  // Remove rate from DOM but don't commit change until form submitted
   softDelete(event) {
     event.preventDefault();
     const rateDiv = event.currentTarget.closest('.rate-div');
     this.softDeletedRates.push(rateDiv);
     rateDiv.style.display = "none";
-    this.#markForDestroy(rateDiv);
-    const spans = rateDiv.querySelectorAll("span");
-    this.#toggleSpans(spans);
+    // Create hidden input on rate-div to mark for destroy by backend
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'marked_for_destroy[]';
+    hiddenInput.value = rateDiv.dataset.rateId;
+    hiddenInput.dataset.markedForDestroy = "true";
+    rateDiv.appendChild(hiddenInput);
   }
 
-  toggleDelete(event) {
-    // Necessary to ignore focusout when clicking delete button
-    if (event.type === "focusout" && event.relatedTarget?.closest('.rate-delete')) {
-      return;
-    }
-    const spans = event.currentTarget.closest('.rate-div').querySelectorAll("span");
-    this.#toggleSpans(spans);
+  // Add rate to DOM but don't commit change until form submitted
+  softCreate(event) {
+    event.preventDefault();
+    // Clone div from template
+    const rateDiv = this.rateTemplateTarget.cloneNode(true);
+    rateDiv.removeAttribute("data-rates-form-target");
+    this.softCreatedRates.push(rateDiv);
+    rateDiv.hidden = false;
+    const input = rateDiv.querySelector("input");
+    // Generate unique ID
+    this.createdRatesCounter++;
+    input.id = `new_rate_${this.createdRatesCounter}`;
+    input.name = `rate_adjustments[${input.id}][rate]`;
+    const label = rateDiv.querySelector("label");
+    const benefitType = this.newRateInputTarget.value;
+    label.textContent = `Ch. ${benefitType}`;
+    label.setAttribute("for", input.id);
+    this.ratesListTarget.appendChild(rateDiv);
+    // Create hidden input on rate-div to mark for creation by backend
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'marked_for_create[]';
+    hiddenInput.value = input.id;
+    hiddenInput.dataset.markedForCreate = "true";
+    rateDiv.appendChild(hiddenInput);
+
+    const benefitTypeInput = document.createElement('input');
+    benefitTypeInput.type = 'hidden';
+    benefitTypeInput.name = `rate_adjustments[${input.id}][benefit_type]`;
+    benefitTypeInput.value = benefitType;
+    rateDiv.appendChild(benefitTypeInput);
+  }
+
+  toggleAddRemove() {
+    this.isAddingRemoving = true;
+    this.percentTargets.forEach(el => this.#toggleHiddenElement(el));
+    this.exTargets.forEach(el => this.#toggleHiddenElement(el));
+    this.#toggleHiddenElement(this.newRateTarget);
+    this.#toggleDisabledElement(this.addRemoveButtonTarget);
   }
 
   // Prevent CRUD actions to Calculator Constants if rates form still in edit mode
   warn(event) {
     if (this.isEditing) {
       event.preventDefault();
-      event.stopImmediatePropagation()
-      this.warningTarget.removeAttribute("hidden");
+      event.stopImmediatePropagation();
+      this.warningTarget.hidden = false;
     }
   }
 
@@ -84,19 +132,22 @@ export default class extends Controller {
     }
   }
 
-  // Toggle edit button on and save/cancel off, and vice versa
   #toggleButtons() {
-    this.editButtonTarget.disabled = !this.editButtonTarget.disabled;
-    this.updateButtonTargets.forEach(button => {
-      button.disabled = !button.disabled
-    });
+    this.#toggleDisabledElement(this.editButtonTarget);
+    this.updateButtonTargets.forEach(button => this.#toggleDisabledElement(button));
+    this.#toggleHiddenElement(this.addRemoveButtonTarget);
   }
 
-  // Toggle input fields enabled/disabled
   #toggleInputs() {
-    this.inputTargets.forEach(input => {
-      input.disabled = !input.disabled;
-    });
+    this.inputTargets.forEach(input => this.#toggleDisabledElement(input));
+  }
+
+  #toggleDisabledElement(el) {
+    el.disabled = !el.disabled;
+  }
+
+  #toggleHiddenElement(el) {
+    el.hidden = !el.hidden;
   }
 
   #toggleHeading() {
@@ -105,22 +156,7 @@ export default class extends Controller {
     this.headingTarget.style.backgroundColor = isBlue? GRAY : BLUE;
   }
 
-  #toggleSpans(spans) {
-    spans.forEach(span => {
-      const currentStyle = span.style.display;
-      span.style.display = currentStyle === "none" ? "block" : "none";
-    });
-  }
-
-  #markForDestroy(rateDiv) {
-    const hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'marked_for_destroy[]';
-    hiddenInput.value = rateDiv.dataset.rateId;
-    hiddenInput.dataset.markedForDestroy = "true";
-    rateDiv.appendChild(hiddenInput);
-  }
-
+  // If rates deletes, remove as option from select dropdown in constants table
   #cleanConstantsTable() {
     this.softDeletedRates.forEach((rateDiv) => {
       const rateId = rateDiv.dataset.rateId;
