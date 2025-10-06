@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  include CommonInstitutionBuilder::VersionGeneration
-
   def controller_label_for_header
     case controller.controller_name
     when 'accreditation_type_keywords'
