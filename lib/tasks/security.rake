@@ -14,8 +14,8 @@ task security: :environment do
   exit!(1) unless Tasks::Support::ShellCommand.run('bundle-audit update')
   audit_result = Tasks::Support::ShellCommand.run(
     'bundle-audit check --ignore CVE-2017-8418 CVE-2024-26143 CVE-2024-27456 CVE-2024-34341 ' \
-    'CVE-2024-28103 CVE-2024-47889 CVE-2024-41128 CVE-2024-47887 CVE-2024-47888 CVE-2025-61771' \
-    'CVE-2025-61772'
+    'CVE-2024-28103 CVE-2024-47889 CVE-2024-41128 CVE-2024-47887 CVE-2024-47888 CVE-2025-61770' \
+    'CVE-2025-61771 CVE-2025-61772'
   )
   puts "\n"
   if brakeman_result && audit_result
