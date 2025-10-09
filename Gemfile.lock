@@ -365,7 +365,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.16)
+    rack (3.2.2)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-session (2.1.1)
@@ -647,7 +647,7 @@ DEPENDENCIES
   pg
   pry-nav
   puma (~> 6.6.1)
-  rack (>= 3.1.10)
+  rack (>= 3.1.17)
   rack-cors
   rails (= 7.1.5.2)
   rails-controller-testing
