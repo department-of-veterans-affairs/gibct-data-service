@@ -283,7 +283,7 @@ If there are database migrations to be run
 1. Check console output of run to ensure the migration ran correctly
 
 ### Notes
-- If you do not have permission to run "Build with Parameters" jobs, contact your DSVA product owner.
+- If you do not have permission to run "Build with Parameters" jobs, contact your DSVA product owner
 - The `production` branch is kept around for references to older deployments, but is no longer in use by the deployment systems.
 
 ## Contact
