@@ -10,7 +10,7 @@
                        calculator_constants: @calculator_constants } %>
 <% end %>
 
-<%= @calculator_constants.each do |constant| %>
+<% @calculator_constants.each do |constant| %>
   <%= turbo_stream.replace dom_id(constant, :select) do %>
     <%= render partial: "calculator_constants/rate_adjustment_select",
                locals: { rate_adjustments: @rate_adjustments, constant: } %>
