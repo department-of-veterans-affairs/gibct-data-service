@@ -12,19 +12,9 @@
         <div class="modal-body">
           <p>Please select the benefit type for which you would like to apply rate adjustments. </p>
           <div class="form-group">
-            <%= label_tag "rate_adjustment_select", "Benefit Type: "%>
-            <select name="rate_adjustment_id"
-                    id="rate_adjustment_select"
-                    data-apply-rates-modal-target="select"
-                    data-action="change->apply-rates-modal#update">
-              <%= @rate_adjustments.each do |rate_adjustment| %>
-                <option value=<%= rate_adjustment.id %>
-                        data-rate=<%= rate_adjustment.rate %>
-                        data-constants=<%= constants_by_rate_adjustment(rate_adjustment:, constants: @calculator_constants).to_json %>>
-                  <%= rate_adjustment.chapterize %>
-                </option>
-              <% end %>
-            </select>
+            <%= render partial: "calculator_constants/apply_rates_select",
+                       locals: { rate_adjustments: @rate_adjustments,
+                                 calculator_constants: @calculator_constants } %>
           </div>
           <aside class="alert alert-warning" data-apply-rates-modal-target="warning">
             <p>Zero percent increase cannot be applied.</p>

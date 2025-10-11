@@ -1,28 +1,18 @@
-<% @updated.each do |rate_adjustment| %>
-  <%= turbo_stream.replace dom_id(rate_adjustment, :rate_input) do %>
-    <input type="number"
-      min="0.00"
-      step="0.01"
-      required
-      disabled
-      id="<%= dom_id(rate_adjustment, :rate_input)%>"
-      name="rate_adjustments[<%= rate_adjustment.id %>][rate]"
-      data-rates-form-target="input"
-      value="<%= decimalize(rate_adjustment.rate) %>" />
-  <% end %>
+<%= turbo_stream.replace "rate-adjustments-form" do %>
+  <%= render partial: "calculator_constants/rate_adjustments_form",
+             locals: { rate_adjustments: @rate_adjustments,
+                       calculator_constants: @calculator_constants } %>
 <% end %>
 
-<%= turbo_stream.replace "rate_adjustment_select"  do %>
-  <select name="rate_adjustment_id"
-          id="rate_adjustment_select"
-          data-apply-rates-modal-target="select"
-          data-action="change->apply-rates-modal#update">
-    <%= @rate_adjustments.each do |rate_adjustment| %>
-      <option value="<%= rate_adjustment.id %>"
-              data-rate="<%= rate_adjustment.rate %>"
-              data-constants='<%= constants_by_rate_adjustment(rate_adjustment:, constants: @calculator_constants).to_json %>'>
-        <%= rate_adjustment.chapterize %>
-      </option>
-    <% end %>
-  </select>
+<%= turbo_stream.replace "apply_rates_select" do %>
+  <%= render partial: "calculator_constants/apply_rates_select",
+             locals: { rate_adjustments: @rate_adjustments,
+                       calculator_constants: @calculator_constants } %>
+<% end %>
+
+<%= @calculator_constants.each do |constant| %>
+  <%= turbo_stream.replace dom_id(constant, :select) do %>
+    <%= render partial: "calculator_constants/rate_adjustment_select",
+               locals: { rate_adjustments: @rate_adjustments, constant: } %>
+  <% end %>
 <% end %>

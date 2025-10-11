@@ -1,0 +1,15 @@
+<select name="calculator_constants[<%= constant.id %>][rate_adjustment_id]"
+        id="<%= dom_id(constant, :select) %>"
+        <% if constant.benefit_type.nil? %>
+          disabled
+          selected
+          data-action="mouseenter->constants-form#enableSelect mouseout->constants-form#disableSelect"
+        <% end %>>
+  <option value=""></option>
+  <% rate_adjustments.each do |rate| %>
+    <option value="<%= rate.id %>"
+            <%= "selected" if constant.rate_adjustment == rate %>>
+      <%= rate.chapterize %>
+    </option>
+  <% end %>
+</select>

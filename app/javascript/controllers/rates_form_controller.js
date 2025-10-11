@@ -1,22 +1,20 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [ "input", "editButton", "updateButton", "heading", "warning", "rateOption",
-                     "addRemoveButton", "percent", "ex", "newRate", "newRateInput", "rateTemplate",
-                      "ratesList" ];
+  static targets = [ "input", "editButton", "updateButton", "heading", "warning", "chapterInput",
+                     "footer", "percent", "ex", "newRateForm", "addRemoveButton", "newRate",
+                     "rateDiv", "form" ];
 
   static BLUE = "rgb(243, 243, 255)";
   static GRAY = "rgb(245, 245, 245)";
 
   connect() {
-    this.#reset();
-    this.isEditing = false;
     // Save original input values so #cancel can revert changes without calling server
     this.originalInputs = {};
-    // Save rates selected for deletion/creation before changes are committed
+    // Save rates selected for deletion before changes are committed
     this.softDeletedRates = [];
-    this.softCreatedRates = [];
-    this.createdRatesCounter = 0;
+    // Track benefit types to validate uniqueness
+    this.benefitTypes = this.rateDivTargets.map(el => el.dataset.benefitType);
     this.inputTargets.forEach(input => {
       this.originalInputs[input.name] = input.value;
     });
@@ -35,30 +33,29 @@ export default class extends Controller {
       rateDiv.querySelector('input[data-marked-for-destroy]').remove();
     });
     this.softDeletedRates = [];
+    // Clear soft created rates
+    this.newRateTargets.forEach(el => el.remove());
     this.toggleForm();
     // Toggle add/remove button if necessary
-    if (this.isAddingRemoving) {
-      this.toggleAddRemove();
-    }
-  }
-
-  afterSubmit() {
-    this.toggleForm();
-    // Toggle add/remove button if necessary
-    if (this.isAddingRemoving) {
-      this.toggleAddRemove();
-    }
-    this.#cleanConstantsTable();
+    if (this.isAddingRemoving) this.toggleAddRemove();
+    if (this.#isWarning()) this.#toggleHiddenElement(this.warningTarget);
   }
   
   toggleForm() {
-    this.isEditing = !this.isEditing
-    if (this.hasWarningTarget) {
-      this.warningTarget.hidden = true
-    }
-    this.#toggleInputs();
-    this.#toggleButtons();
+    this.#toggleEditState();
+    this.#disableEachElement(this.inputTargets);
+    this.#toggleDisabledElement(this.editButtonTarget);
+    this.#disableEachElement(this.updateButtonTargets);
+    this.#toggleHiddenElement(this.footerTarget);
     this.#toggleHeading();
+  }
+
+  toggleAddRemove() {
+    this.isAddingRemoving = true;
+    this.#hideEachElement(this.percentTargets);
+    this.#hideEachElement(this.exTargets);
+    this.#toggleHiddenElement(this.newRateFormTarget);
+    this.#toggleDisabledElement(this.addRemoveButtonTarget);
   }
 
   // Remove rate from DOM but don't commit change until form submitted
@@ -66,88 +63,60 @@ export default class extends Controller {
     event.preventDefault();
     const rateDiv = event.currentTarget.closest('.rate-div');
     this.softDeletedRates.push(rateDiv);
-    rateDiv.style.display = "none";
-    // Create hidden input on rate-div to mark for destroy by backend
-    const hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'marked_for_destroy[]';
-    hiddenInput.value = rateDiv.dataset.rateId;
-    hiddenInput.dataset.markedForDestroy = "true";
-    rateDiv.appendChild(hiddenInput);
+    // Remove benefit type from list of unique benefit types
+    const idx = this.benefitTypes.indexOf(rateDiv.dataset.benefitType);
+    this.benefitTypes.splice(idx, 1);
+    // If new rate which hasn't been persisted, just remove from DOM
+    if (this.newRateTargets.includes(rateDiv)) {
+      rateDiv.remove();
+    } else {
+      // Otherwise hide and create hidden input on rate-div to mark for destroy by backend
+      rateDiv.style.display = "none";
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'marked_for_destroy[]';
+      hiddenInput.value = rateDiv.dataset.rateId;
+      hiddenInput.dataset.markedForDestroy = "true";
+      rateDiv.appendChild(hiddenInput);
+    }
   }
 
-  // Add rate to DOM but don't commit change until form submitted
+  // Frontend validation to prevent creation of non-unique benefit types
   softCreate(event) {
-    event.preventDefault();
-    // Clone div from template
-    const rateDiv = this.rateTemplateTarget.cloneNode(true);
-    rateDiv.removeAttribute("data-rates-form-target");
-    this.softCreatedRates.push(rateDiv);
-    rateDiv.hidden = false;
-    const input = rateDiv.querySelector("input");
-    // Generate unique ID
-    this.createdRatesCounter++;
-    input.id = `new_rate_${this.createdRatesCounter}`;
-    input.name = `rate_adjustments[${input.id}][rate]`;
-    const label = rateDiv.querySelector("label");
-    const benefitType = this.newRateInputTarget.value;
-    label.textContent = `Ch. ${benefitType}`;
-    label.setAttribute("for", input.id);
-    this.ratesListTarget.appendChild(rateDiv);
-    // Create hidden input on rate-div to mark for creation by backend
-    const hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'marked_for_create[]';
-    hiddenInput.value = input.id;
-    hiddenInput.dataset.markedForCreate = "true";
-    rateDiv.appendChild(hiddenInput);
-
-    const benefitTypeInput = document.createElement('input');
-    benefitTypeInput.type = 'hidden';
-    benefitTypeInput.name = `rate_adjustments[${input.id}][benefit_type]`;
-    benefitTypeInput.value = benefitType;
-    rateDiv.appendChild(benefitTypeInput);
+    const chapterValue = this.chapterInputTarget.value;
+    const isDuplicate = this.benefitTypes.includes(chapterValue);
+    if (isDuplicate) {
+      event.preventDefault();
+      this.chapterInputTarget.setCustomValidity("Chapter number must be unique");
+      this.newRateFormTarget.reportValidity();
+    } else {
+      this.benefitTypes.push(chapterValue);
+    }
   }
 
-  toggleAddRemove() {
-    this.isAddingRemoving = true;
-    this.percentTargets.forEach(el => this.#toggleHiddenElement(el));
-    this.exTargets.forEach(el => this.#toggleHiddenElement(el));
-    this.#toggleHiddenElement(this.newRateTarget);
-    this.#toggleDisabledElement(this.addRemoveButtonTarget);
+  clearValidity() {
+    this.chapterInputTarget.setCustomValidity("");
   }
 
   // Prevent CRUD actions to Calculator Constants if rates form still in edit mode
   warn(event) {
-    if (this.isEditing) {
+    if (this.#isEditing()) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      this.warningTarget.hidden = false;
+      this.#toggleHiddenElement(this.warningTarget);
     }
   }
 
-  #reset() {
-    if (this.editButtonTarget.disabled === true) {
-      this.toggleForm();
-    }
+  #isWarning() {
+    return !this.warningTarget.classList.contains("hidden");
   }
 
-  #toggleButtons() {
-    this.#toggleDisabledElement(this.editButtonTarget);
-    this.updateButtonTargets.forEach(button => this.#toggleDisabledElement(button));
-    this.#toggleHiddenElement(this.addRemoveButtonTarget);
+  #toggleEditState() {
+    this.formTarget.dataset.state = this.#isEditing() ? "viewing" : "editing";
   }
 
-  #toggleInputs() {
-    this.inputTargets.forEach(input => this.#toggleDisabledElement(input));
-  }
-
-  #toggleDisabledElement(el) {
-    el.disabled = !el.disabled;
-  }
-
-  #toggleHiddenElement(el) {
-    el.hidden = !el.hidden;
+  #isEditing() {
+    return this.formTarget.dataset.state === "editing";
   }
 
   #toggleHeading() {
@@ -156,16 +125,19 @@ export default class extends Controller {
     this.headingTarget.style.backgroundColor = isBlue? GRAY : BLUE;
   }
 
-  // If rates deletes, remove as option from select dropdown in constants table
-  #cleanConstantsTable() {
-    this.softDeletedRates.forEach((rateDiv) => {
-      const rateId = rateDiv.dataset.rateId;
-      this.rateOptionTargets.forEach(opt => {
-        if (opt.value === rateId) {
-          opt.remove();
-        }
-      })
-    });
-    this.softDeletedRates = [];
+  #toggleDisabledElement(el) {
+    el.disabled = !el.disabled;
+  }
+
+  #disableEachElement(els) {
+    els.forEach(el => this.#toggleDisabledElement(el));
+  }
+
+  #toggleHiddenElement(el) {
+    el.classList.toggle("hidden");
+  }
+
+  #hideEachElement(els) {
+    els.forEach(el => this.#toggleHiddenElement(el));
   }
 }

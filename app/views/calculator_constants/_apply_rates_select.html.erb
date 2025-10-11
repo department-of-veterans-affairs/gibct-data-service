@@ -1,0 +1,13 @@
+<%= label_tag "rate-adjustment-select", "Benefit Type: "%>
+<select name="rate_adjustment_id"
+        id="rate-adjustment-select"
+        data-apply-rates-modal-target="select"
+        data-action="change->apply-rates-modal#update">
+  <%= rate_adjustments.each do |rate_adjustment| %>
+    <option value=<%= rate_adjustment.id %>
+            data-rate=<%= rate_adjustment.rate %>
+            data-constants=<%= constants_by_rate_adjustment(rate_adjustment:, constants: calculator_constants).to_json %>>
+      <%= rate_adjustment.chapterize %>
+    </option>
+  <% end %>
+</select>
