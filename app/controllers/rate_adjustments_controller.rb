@@ -38,10 +38,11 @@ class RateAdjustmentsController < ApplicationController
   def process_marked_for_create
     return unless params[:marked_for_create].present?
 
-    params[:marked_for_create].each do |rate_params|
-      @collection_params.delete(rate_params[:id])
-      build_params = rate_params.permit(%i[benefit_type rate])
-      RateAdjustment.create(build_params)
+    params[:marked_for_create].each do |new_rate|
+      id = new_rate[:id]
+      rate = params.dig(:rate_adjustments, id, :rate)
+      benefit_type = new_rate[:benefit_type]
+      RateAdjustment.create(rate:, benefit_type:)
     end
   end
 

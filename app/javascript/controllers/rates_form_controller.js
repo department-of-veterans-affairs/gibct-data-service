@@ -14,7 +14,7 @@ export default class extends Controller {
     // Save rates selected for deletion before changes are committed
     this.softDeletedRates = [];
     // Track benefit types to validate uniqueness
-    this.benefitTypes = this.rateDivTargets.map(el => el.dataset.benefitType);
+    this.#setBenefitTypes();
     this.inputTargets.forEach(input => {
       this.originalInputs[input.name] = input.value;
     });
@@ -35,6 +35,7 @@ export default class extends Controller {
     this.softDeletedRates = [];
     // Clear soft created rates
     this.newRateTargets.forEach(el => el.remove());
+    this.#setBenefitTypes();
     this.toggleForm();
     // Toggle add/remove button if necessary
     if (this.isAddingRemoving) this.toggleAddRemove();
@@ -105,6 +106,10 @@ export default class extends Controller {
       event.stopImmediatePropagation();
       this.#toggleHiddenElement(this.warningTarget);
     }
+  }
+
+  #setBenefitTypes() {
+    this.benefitTypes = this.rateDivTargets.map(el => el.dataset.benefitType);
   }
 
   #isWarning() {
