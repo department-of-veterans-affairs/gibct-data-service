@@ -6,6 +6,10 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     uses: department-of-veterans-affairs/prt-github-workflows/.github/workflows/build-and-publish.yaml@main
