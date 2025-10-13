@@ -16,7 +16,7 @@ class RateAdjustmentsController < ApplicationController
 
   def build
     @rate_adjustment = RateAdjustment.new(build_params)
-    
+
     respond_to do |format|
       format.turbo_stream { render template: 'calculator_constants/build_rate_adjustment' }
     end
@@ -26,7 +26,7 @@ class RateAdjustmentsController < ApplicationController
 
   # Destroy records and remove from collection params
   def process_marked_for_destroy
-    return unless params[:marked_for_destroy].present?
+    return if params[:marked_for_destroy].blank?
 
     params[:marked_for_destroy].each do |rate_id|
       @collection_params.delete(rate_id)
@@ -36,7 +36,7 @@ class RateAdjustmentsController < ApplicationController
 
   # Create records and remove from collection params
   def process_marked_for_create
-    return unless params[:marked_for_create].present?
+    return if params[:marked_for_create].blank?
 
     params[:marked_for_create].each do |new_rate|
       id = new_rate[:id]
