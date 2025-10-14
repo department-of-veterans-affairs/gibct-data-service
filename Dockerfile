@@ -51,10 +51,7 @@ ENV SSL_CERT_DIR=/etc/ssl/certs
 USER root
 ENV BUNDLER_VERSION='2.6.0'
 
-# Copy all VA certs into Docker image
-COPY va-certs/*.crt /usr/local/share/ca-certificates/va/
-
-# Update system CA trust store
+# Reuse VA certs already installed in base and update system CA trust store
 RUN update-ca-certificates
 
 # Copy application code
