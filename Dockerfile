@@ -12,6 +12,13 @@ RUN groupadd -g $userid -r gi-bill-data-service && \
 RUN apt-get update -qq && apt-get install -y \
     build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
 
+# Clone platform-va-ca-certificate and copy certs
+WORKDIR /tmp
+RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
+    cp platform-va-ca-certificate/VA*.cer . && \
+    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
+    rm -rf /tmp/*
+
 RUN mkdir -p /srv/gi-bill-data-service/src && \
     chown -R gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service
 WORKDIR /srv/gi-bill-data-service/src
@@ -79,13 +86,6 @@ ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 RUN whoami
-
-# Clone platform-va-ca-certificate and copy certs
-WORKDIR /tmp
-RUN git clone --depth 1 https://github.com/department-of-veterans-affairs/platform-va-ca-certificate && \
-    cp platform-va-ca-certificate/VA*.cer . && \
-    /bin/bash platform-va-ca-certificate/debian-ubuntu/install-certs.sh && \
-    rm -rf /tmp/*
 
 WORKDIR /srv/gi-bill-data-service/src
 
