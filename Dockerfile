@@ -40,14 +40,10 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 
 ###
 # builder
-#
-# use --target=builder to stop here
-# this stage copies the app and is used for running tests/lints/stuff
-# usually run via the docker-compose.test.yml
 ###
 FROM development AS builder
 
-# Ensure SSL trust for bundler/rubygems
+# Ensure SSL trust for Ruby/Bundler
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 ENV SSL_CERT_DIR=/etc/ssl/certs
 
@@ -55,11 +51,22 @@ ENV SSL_CERT_DIR=/etc/ssl/certs
 USER root
 ENV BUNDLER_VERSION='2.6.0'
 
+# Copy all VA certs into Docker image
+COPY va-certs/*.crt /usr/local/share/ca-certificates/va/
+
+# Update system CA trust store
+RUN update-ca-certificates
+
+# Copy application code
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
+
+# Switch to app user for bundle install
 USER gi-bill-data-service
-RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
-RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN gem install bundler --no-document -v ${BUNDLER_VERSION} \
+    && bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts \
+    && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
@@ -73,6 +80,8 @@ FROM base AS k8s
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV SSL_CERT_DIR=/etc/ssl/certs
 
 COPY --from=builder $BUNDLE_APP_CONFIG $BUNDLE_APP_CONFIG
 COPY --from=builder --chown=gi-bill-data-service:gi-bill-data-service /srv/gi-bill-data-service/src ./
@@ -90,6 +99,8 @@ FROM base AS production
 
 ENV RAILS_ENV="production"
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV SSL_CERT_DIR=/etc/ssl/certs
 
 RUN whoami
 
