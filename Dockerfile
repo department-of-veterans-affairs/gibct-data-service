@@ -47,8 +47,13 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 ###
 FROM development AS builder
 
-ENV BUNDLER_VERSION='2.6.0'
+# Ensure SSL trust for bundler/rubygems
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV SSL_CERT_DIR=/etc/ssl/certs
+
+# Install Bundler as root first to avoid user SSL inheritance issues
+USER root
+ENV BUNDLER_VERSION='2.6.0'
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
