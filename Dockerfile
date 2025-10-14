@@ -10,7 +10,7 @@ SHELL ["/bin/bash", "-c"]
 RUN groupadd -g $userid -r gi-bill-data-service && \
     useradd -u $userid -r -g gi-bill-data-service -d /srv/gi-bill-data-service gi-bill-data-service
 RUN apt-get update -qq && apt-get install -y \
-    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file
+    build-essential git curl wget libpq-dev dumb-init shared-mime-info nodejs cron file ca-certificates
 
 # Clone platform-va-ca-certificate and copy certs
 WORKDIR /tmp
@@ -48,6 +48,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
 FROM development AS builder
 
 ENV BUNDLER_VERSION='2.6.0'
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
 ARG bundler_opts
 COPY --chown=gi-bill-data-service:gi-bill-data-service . .
