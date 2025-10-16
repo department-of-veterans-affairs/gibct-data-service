@@ -77,6 +77,8 @@ class DashboardExporterImporter
     log_and_puts("  Removing existing CSV file for #{table_name}")
 
     if !table_name.eql?('institutions_version')
+      table_name = tweak_lcpe(table_name) if table_name.start_with?('Lcpe')
+
       return unless File.exist?("#{@download_dir}/#{table_name}.csv")
 
       File.delete("#{@download_dir}/#{table_name}.csv")
@@ -114,6 +116,10 @@ class DashboardExporterImporter
   end
 
   def check_exists_for(table_name)
+    table_name = tweak_lcpe(table_name) if table_name.start_with?('Lcpe')
+
+    log_and_puts("      Checking existence for #{table_name}")
+
     if !table_name.eql?('institutions_version')
       File.exist?("#{@download_dir}/#{table_name}.csv")
     else
@@ -127,13 +133,19 @@ class DashboardExporterImporter
     log_out_and_back_in(table_name)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def upload_with_parameters(table_name, retry_count = 0)
     log_and_puts("         Uploading #{table_name}")
     button = @bsess.link(role: 'button', href: "#{@import_prefix}#{table_name}", visible_text: 'Upload')
     button.click
 
     @bsess.text_field(id: 'upload_skip_lines').set(0)
-    @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name}.csv")
+    if table_name.start_with('Lcpe')
+      tweaked_table_name = tweak_lcpe(table_name)
+      @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{tweaked_table_name}.csv")
+    else
+      @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name}.csv")
+    end
 
     @bsess
       .text_field(id: 'upload_comment')
@@ -153,6 +165,11 @@ class DashboardExporterImporter
       log_out_and_back_in(table_name)
       upload_with_parameters(table_name, 1)
     end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def tweak_lcpe(table_name)
+    table_name.gsub(':', '_')
   end
   # :nocov:
 end
