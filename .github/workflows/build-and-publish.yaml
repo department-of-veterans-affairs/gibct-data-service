@@ -12,5 +12,5 @@ permissions:
 
 jobs:
   build:
-    uses: department-of-veterans-affairs/prt-github-workflows/.github/workflows/build-and-publish.yaml@main
+    uses: department-of-veterans-affairs/vsp-github-actions/.github/workflows/build-and-publish.yaml@main
     secrets: inherit
