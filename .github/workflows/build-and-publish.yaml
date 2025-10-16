@@ -7,20 +7,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  actions: write
-  attestations: write
-  checks: write
   contents: write
-  deployments: write
-  discussions: write
-  issues: write
-  models: read
   packages: write
-  pages: write
-  pull-requests: write
-  repository-projects: write
-  statuses: write
-  security-events: write
+  id-token: write
 jobs:
   build:
     uses: department-of-veterans-affairs/vsp-github-actions/.github/workflows/build-and-publish.yaml@main
