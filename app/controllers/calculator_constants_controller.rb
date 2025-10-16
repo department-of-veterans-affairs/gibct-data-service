@@ -4,18 +4,13 @@ class CalculatorConstantsController < ApplicationController
   include CollectionUpdatable
 
   def index
-    if CalculatorConstant.versioning_enabled?
-      previous_year = 1.year.ago.year
+    previous_year = 1.year.ago.year
 
-      @versioning_enabled = true # TO-DO: remove after flag removed
-      @calculator_constants = CalculatorConstant.all
-      @constants_unpublished = CalculatorConstant.unpublished?
-      @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year)
-      @earliest_available_year = CalculatorConstantVersionsArchive.earliest_available_year
-      @rate_adjustments = RateAdjustment.by_chapter_number
-    else
-      @calculator_constants = CalculatorConstant.all
-    end
+    @calculator_constants = CalculatorConstant.all
+    @constants_unpublished = CalculatorConstant.unpublished?
+    @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year)
+    @earliest_available_year = CalculatorConstantVersionsArchive.earliest_available_year
+    @rate_adjustments = RateAdjustment.by_chapter_number
   end
 
   def update
@@ -29,15 +24,13 @@ class CalculatorConstantsController < ApplicationController
     end
 
     # We want creating/updating a calculator constant to behave like uploading a spreadsheet.
-    create_upload_row if CalculatorConstant.versioning_enabled?
+    create_upload_row
 
     redirect_to action: :index
   end
 
   # Apply rate adjustments to associated constants
   def apply_rate_adjustments
-    raise NotImplementedError, 'Versioning disabled' unless CalculatorConstant.versioning_enabled?
-
     updated = CalculatorConstant.where(rate_adjustment_id: rate_adjustment_id)
                                 .map(&:apply_rate_adjustment)
     flash[:success] = {
@@ -51,8 +44,6 @@ class CalculatorConstantsController < ApplicationController
   end
 
   def export
-    raise NotImplementedError, 'Versioning disabled' unless CalculatorConstant.versioning_enabled?
-
     start_year = params[:start_year].to_i
     end_year = params[:end_year].to_i
     export_name = "CalculatorConstants_#{start_year}_to_#{end_year}.csv"
