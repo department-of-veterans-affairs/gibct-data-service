@@ -118,8 +118,6 @@ class DashboardExporterImporter
   def check_exists_for(table_name)
     table_name = tweak_lcpe(table_name) if table_name.start_with?('Lcpe')
 
-    log_and_puts("      Checking existence for #{table_name}")
-
     if !table_name.eql?('institutions_version')
       File.exist?("#{@download_dir}/#{table_name}.csv")
     else
@@ -140,7 +138,7 @@ class DashboardExporterImporter
     button.click
 
     @bsess.text_field(id: 'upload_skip_lines').set(0)
-    if table_name.start_with('Lcpe')
+    if table_name.start_with?('Lcpe')
       tweaked_table_name = tweak_lcpe(table_name)
       @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{tweaked_table_name}.csv")
     else

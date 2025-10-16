@@ -108,7 +108,8 @@ module DashboardWatir
     def log_out_and_back_in(table_name)
       log_and_puts('*** Logging out')
       @bsess.link(text: 'Log Out').click if @bsess.link(text: 'Log Out').present?
-      @bsess = nil # close the browser session to free up memory
+      @bsess.close # close the browser session to free up memory
+      @bsess = nil 
       log_and_puts ''
       sleep(5)
 
