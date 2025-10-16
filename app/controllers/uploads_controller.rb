@@ -34,7 +34,7 @@ class UploadsController < ApplicationController
     rescue StandardError => e
       handle_upload_error(e)
 
-      return render :new unless sequential?
+      return redirect_to new_upload_path(@upload.csv_type) unless sequential?
 
       render json: { error: e }, status: :internal_server_error
     end
