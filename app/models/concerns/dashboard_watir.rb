@@ -121,7 +121,6 @@ module DashboardWatir
     end
 
     def log_and_puts(msg)
-      msg = "#{Time.now.getlocal} - #{msg}" if msg.size.positive?
       @eilogger.info(msg)
     end
   end

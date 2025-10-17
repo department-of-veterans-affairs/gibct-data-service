@@ -39,6 +39,13 @@ class DashboardExporterImporter
 
       next if TABLES_TO_SKIP.include? table_name
 
+      if table_name.start_with?('Sva') || table_name.start_with?('Scorecard')
+        log_and_puts("       Starting #{table_name}...")
+      else
+        log_and_puts("       Skipping #{table_name}")
+        next
+      end
+
       begin
         upload_csv_file_for(table_name)
       rescue Exception => e
@@ -151,10 +158,12 @@ class DashboardExporterImporter
 
     @bsess.form(id: 'new_upload').submit
 
-    if @bsess.link(text: 'View Dashboard').present?
+    upload_ok = wait_for_success_or_error
+
+    if upload_ok
       log_and_puts("         Successfully uploaded #{table_name}")
       @bsess.link(text: 'View Dashboard').click
-    else # retry once
+    else
       log_and_puts('    Could not find the dashboard link - most likely it failed')
       sleep(30)
       @bsess.goto(@dashboard_url)
@@ -169,6 +178,36 @@ class DashboardExporterImporter
   def tweak_lcpe(table_name)
     table_name.gsub(':', '_')
   end
+
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
+  def wait_for_success_or_error(timeout = 1800)
+    time_waited = 0
+
+    # rubocop:disable Style/WhileUntilDo
+    until @bsess.text.include?('The upload succeeded') ||
+          @bsess.text.include?('504 Gateway Time-out') ||
+          @bsess.text.include?('503 Service Unavailable') do
+      sleep(5)
+      time_waited += 5
+
+      if time_waited >= timeout
+        log_and_puts('    Timed out waiting for upload to complete')
+        break
+      end
+    end
+    # rubocop:enable Style/WhileUntilDo
+
+    return true if @bsess.text.include?('The upload succeeded')
+    return false if @bsess.text.include?('504 Gateway Time-out')
+    return false if @bsess.text.include?('503 Service Unavailable')
+
+    false
+  rescue Watir::Wait::TimeoutError
+    false
+  end
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
   # :nocov:
 end
 # rubocop:enable Metrics/ClassLength
