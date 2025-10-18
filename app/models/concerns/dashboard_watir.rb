@@ -109,7 +109,7 @@ module DashboardWatir
       log_and_puts('*** Logging out')
       @bsess.link(text: 'Log Out').click if @bsess.link(text: 'Log Out').present?
       @bsess.close # close the browser session to free up memory
-      @bsess = nil 
+      @bsess = nil
       log_and_puts ''
       sleep(5)
 
