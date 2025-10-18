@@ -39,13 +39,6 @@ class DashboardExporterImporter
 
       next if TABLES_TO_SKIP.include? table_name
 
-      if table_name.start_with?('Sva') || table_name.start_with?('Scorecard')
-        log_and_puts("       Starting #{table_name}...")
-      else
-        log_and_puts("       Skipping #{table_name}")
-        next
-      end
-
       begin
         upload_csv_file_for(table_name)
       rescue Exception => e
