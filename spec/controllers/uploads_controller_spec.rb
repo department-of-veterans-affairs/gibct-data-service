@@ -310,7 +310,7 @@ RSpec.describe UploadsController, type: :controller do
                      upload_file: upload_file, skip_lines: 0, comment: 'Test', csv_type: 'Blah'
                    }
                  })
-          ).to render_template(:new)
+          ).to redirect_to(new_upload_path('Blah'))
         end
       end
 
@@ -321,7 +321,7 @@ RSpec.describe UploadsController, type: :controller do
                  params: {
                    upload: { upload_file: nil, skip_lines: 0, comment: 'Test', csv_type: klass.name }
                  })
-          ).to render_template(:new)
+          ).to redirect_to(new_upload_path(klass.name))
         end
       end
     end
@@ -354,7 +354,7 @@ RSpec.describe UploadsController, type: :controller do
         expect(
           post(:create,
                params: { upload: { upload_file: file, skip_lines: 0, comment: 'Test', csv_type: klass.name } })
-        ).to render_template(:new)
+        ).to redirect_to(new_upload_path(klass.name))
         error_message = 'Unable to determine column separators, valid separators equal "|" and ","'
         expect(flash[:danger]).to include(error_message)
       end
