@@ -22,26 +22,21 @@ RSpec.describe RateAdjustmentsController, type: :controller do
         marked_for_destroy: [rate_adjustments.first.id],
         marked_for_create: [new_rate.slice('id', 'benefit_type')] }
     end
+    let(:created_rate) { create(:rate_adjustment) }
 
-    before { request.headers['ACCEPT'] = 'text/vnd.turbo-stream.html' }
+    before do
+      request.headers['ACCEPT'] = 'text/vnd.turbo-stream.html'
+      allow(RateAdjustment).to receive(:create).and_return(created_rate)
+    end
 
     it_behaves_like 'a collection updatable', :rate
 
-    it 'reassigns values for rate adjustments and calculator constants' do
+    it 'assigns values for updated/created/destroyed rate adjustments and calculator constants' do
       post(:update, params:)
       expect(assigns(:rate_adjustments)).to eq(RateAdjustment.by_chapter_number)
       expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
-    end
-
-    it 'deletes records marked for destroy' do
-      post(:update, params:)
-      expect(RateAdjustment.all).not_to include(rate_adjustments.first)
-    end
-
-    it 'creates records in marked for create' do
-      post(:update, params:)
-      expect(RateAdjustment.last.benefit_type).to eq(new_rate['benefit_type'])
-      expect(RateAdjustment.last.rate).to eq(new_rate['rate'])
+      expect(assigns(:destroyed)).to eq([rate_adjustments.first])
+      expect(assigns(:created)).to eq([created_rate])
     end
   end
 

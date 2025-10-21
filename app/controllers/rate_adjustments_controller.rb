@@ -4,8 +4,8 @@ class RateAdjustmentsController < ApplicationController
   include CollectionUpdatable
 
   def update
-    process_marked_for_destroy
-    process_marked_for_create
+    @destroyed = process_marked_for_destroy
+    @created = process_marked_for_create
     # Iterate over collection and update records if changes present
     update_collection
     @rate_adjustments = RateAdjustment.by_chapter_number
@@ -26,9 +26,9 @@ class RateAdjustmentsController < ApplicationController
 
   # Destroy records and remove from collection params
   def process_marked_for_destroy
-    return if params[:marked_for_destroy].blank?
+    return [] if params[:marked_for_destroy].blank?
 
-    params[:marked_for_destroy].each do |rate_id|
+    params[:marked_for_destroy].map do |rate_id|
       @collection_params.delete(rate_id)
       RateAdjustment.find(rate_id).destroy
     end
@@ -36,9 +36,9 @@ class RateAdjustmentsController < ApplicationController
 
   # Create records and remove from collection params
   def process_marked_for_create
-    return if params[:marked_for_create].blank?
+    return [] if params[:marked_for_create].blank?
 
-    params[:marked_for_create].each do |new_rate|
+    params[:marked_for_create].map do |new_rate|
       id = new_rate[:id]
       rate = params.dig(:rate_adjustments, id, :rate)
       benefit_type = new_rate[:benefit_type]

@@ -11,8 +11,14 @@
 <% end %>
 
 <% @calculator_constants.each do |constant| %>
-  <%= turbo_stream.replace dom_id(constant, :select) do %>
-    <%= render partial: "calculator_constants/rate_adjustment_select",
-               locals: { rate_adjustments: @rate_adjustments, constant: } %>
+  <% @created.each do |rate_adjustment| %>
+    <%= turbo_stream.append dom_id(constant, :select) do %>
+      <%= render partial: "calculator_constants/rate_adjustment_option",
+                locals: { rate_adjustment:, constant:, reset_selected: false } %>
+    <% end %>
+  <% end %>
+
+  <% @destroyed.each do |rate_adjustment| %>
+    <%= turbo_stream.remove "constant-#{constant.id}-rate-#{rate_adjustment.id}-option" %>
   <% end %>
 <% end %>
