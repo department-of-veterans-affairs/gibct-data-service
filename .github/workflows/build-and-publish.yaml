@@ -1,7 +1,6 @@
 name: "Build And Publish"
 run-name: "Build And Publish"
 
-# Trigger on push and also allow manual run
 on:
   push:
 
