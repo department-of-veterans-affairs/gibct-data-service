@@ -38,7 +38,7 @@ export default class extends Controller {
     this.#setBenefitTypes();
     this.toggleForm();
     // Toggle add/remove button if necessary
-    if (this.isAddingRemoving) this.toggleAddRemove();
+    if (this.#isAddingRemoving()) this.toggleAddRemove();
     if (this.#isWarning()) this.#toggleHiddenElement(this.warningTarget);
   }
   
@@ -52,7 +52,6 @@ export default class extends Controller {
   }
 
   toggleAddRemove() {
-    this.isAddingRemoving = true;
     this.#hideEachElement(this.percentTargets);
     this.#hideEachElement(this.exTargets);
     this.#toggleHiddenElement(this.newRateFormTarget);
@@ -115,6 +114,10 @@ export default class extends Controller {
   #isWarning() {
     return !this.warningTarget.classList.contains("hidden");
   }
+
+  #isAddingRemoving() {
+    return this.addRemoveButtonTarget.disabled === true;
+  };
 
   #toggleEditState() {
     this.formTarget.dataset.state = this.#isEditing() ? "viewing" : "editing";
