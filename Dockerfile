@@ -52,6 +52,18 @@ ENV PATH="/usr/local/bundle/bin:${PATH}"
 # Precompile assets for production
 ENV RAILS_ENV=production
 ENV NODE_ENV=production
+# Set dummy values for required configuration keys during asset precompilation
+ENV LINK_HOST=http://localhost:3000
+ENV SECRET_KEY_BASE=dummy_secret_key_base_for_asset_precompilation_only
+ENV GIBCT_URL=http://localhost:3002/gi-bill-comparison-tool
+ENV SAML_IDP_METADATA_FILE=/tmp/dummy.xml
+ENV SAML_CALLBACK_URL=http://localhost:3000/saml/auth/callback
+ENV SAML_IDP_SSO_URL=https://example.com/idp/sso
+ENV SAML_ISSUER=GIDS
+ENV GOVDELIVERY_URL=stage-tms.govdelivery.com
+ENV GOVDELIVERY_TOKEN=dummy_token
+ENV GOVDELIVERY_STAGING_SERVICE=false
+ENV DEPLOYMENT_ENV=vagov-dev
 RUN bundle exec rails assets:precompile
 
 ###
