@@ -49,6 +49,11 @@ RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
+# Precompile assets for production
+ENV RAILS_ENV=production
+ENV NODE_ENV=production
+RUN bundle exec rails assets:precompile
+
 ###
 # kubernetes focused build
 #
