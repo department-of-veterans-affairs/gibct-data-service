@@ -1,4 +1,8 @@
-<div class="rate-div" id="<%= dom_id(rate_adjustment, :rate_div) %>">
+<div class="rate-div"
+     id="<%= dom_id(rate_adjustment, :rate_div) %>"
+     data-rates-form-target="rateDiv"
+     data-rate-id="<%= rate_adjustment.id %>"
+     data-benefit-type="<%= rate_adjustment.benefit_type %>">
   <%= label_tag dom_id(rate_adjustment, :rate_input), rate_adjustment.chapterize %>
   <input type="number"
          min="0.00"
@@ -9,5 +13,11 @@
          name="rate_adjustments[<%= rate_adjustment.id %>][rate]"
          data-rates-form-target="input"
          value="<%= decimalize(rate_adjustment.rate) %>" />
-  <span>%</span>
+  <span class="rate-percent" data-rates-form-target="percent">%</span>
+  <span class="rate-delete hidden" data-rates-form-target="ex">
+    <%= button_tag class: "btn btn-xs btn-danger",
+                   data: { action: "click->rates-form#softDelete" } do %>
+      <strong>&minus;</strong>
+    <% end %>
+  </span>
 </div>
