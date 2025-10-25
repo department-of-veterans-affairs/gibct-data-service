@@ -1,0 +1,9 @@
+<%= turbo_stream.append "rates-list" do %>
+  <%= render partial: "calculator_constants/new_rate_adjustment",
+             locals: { rate_adjustment: @rate_adjustment } %>
+<% end %>
+
+<%= turbo_stream.replace "new-rate" do %>
+  <%= render partial: "calculator_constants/build_rate_adjustment_form",
+             locals: { override_hide: true } %>
+<% end %>

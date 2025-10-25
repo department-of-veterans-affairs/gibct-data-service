@@ -1,0 +1,25 @@
+<% new_id = "new_rate_#{SecureRandom.hex(4)}" %>
+
+<div class="rate-div"
+     data-rates-form-target="rateDiv newRate"
+     data-benefit-type="<%= rate_adjustment.benefit_type %>">
+  <%= label_tag "rate_input_#{new_id}", rate_adjustment.chapterize %>
+  <input type="number"
+         min="0.00"
+         step="0.01"
+         required
+         id="rate_input_<%= new_id %>"
+         name="rate_adjustments[<%= new_id %>][rate]"
+         data-rates-form-target="input"
+         value="<%= decimalize(rate_adjustment.rate) %>" />
+  <span class="rate-percent hidden" data-rates-form-target="percent">%</span>
+  <span class="rate-delete" data-rates-form-target="ex">
+    <%= button_tag class: "btn btn-xs btn-danger",
+                   data: { action: "click->rates-form#softDelete" } do %>
+      <strong>&minus;</strong>
+    <% end %>
+  </span>
+
+  <%= hidden_field_tag "marked_for_create[][id]", new_id %>
+  <%= hidden_field_tag "marked_for_create[][benefit_type]", rate_adjustment.benefit_type %>
+</div>
