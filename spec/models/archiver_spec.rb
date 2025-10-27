@@ -46,8 +46,6 @@ describe '::ARCHIVE_TYPES' do
     end
 
     it 'archives only approved institutions & related data & deletes all archivable data from the previous version' do
-      allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
-
       expect do
         Archiver.archive_previous_versions
       end.to change(InstitutionsArchive, :count).by(1)

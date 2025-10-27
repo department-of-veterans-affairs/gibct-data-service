@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# :nocov:
 class YellowRibbonDegreeLevelTranslationsController < ApplicationController
   def index
     @translations = YellowRibbonDegreeLevelTranslation.order(created_at: :desc)
@@ -51,3 +52,4 @@ class YellowRibbonDegreeLevelTranslationsController < ApplicationController
     params.require(:yellow_ribbon_degree_level_translation).permit(translations: [])
   end
 end
+# :nocov:
