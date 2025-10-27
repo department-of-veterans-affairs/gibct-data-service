@@ -92,7 +92,7 @@ module  NoKeyApis
     end
 
     def data_param_path(name)
-      Rails.root.join('app','utilities','no_key_apis','curl_params',name)
+      Rails.root.join('app', 'utilities', 'no_key_apis', 'curl_params', name)
     end
   end
 end
