@@ -133,7 +133,7 @@ RSpec.describe InstitutionBuilder, type: :model do
       before do
         create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'aas', translations: ['Other'])
         create(:yellow_ribbon_degree_level_translation, raw_degree_level: 'ugrad', translations: ['Undergraduate'])
-        create(:yellow_ribbon_program_source, :institution_builder, degree_level: 'ugrad')
+        create(:yellow_ribbon_program_source, :institution_builder, degree_level: 'UGrad')
       end
 
       it 'keeps the used one, and deletes the unused ones' do

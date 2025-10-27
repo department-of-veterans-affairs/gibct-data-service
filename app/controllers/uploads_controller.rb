@@ -34,7 +34,7 @@ class UploadsController < ApplicationController
     rescue StandardError => e
       handle_upload_error(e)
 
-      return render :new unless sequential?
+      return redirect_to new_upload_path(@upload.csv_type) unless sequential?
 
       render json: { error: e }, status: :internal_server_error
     end
@@ -214,8 +214,6 @@ class UploadsController < ApplicationController
 
   # Online Upload types cannot be created/updated via HTTP requests
   def exclude_online_types
-    return unless CalculatorConstant.versioning_enabled?
-
     csv_type = params[:csv_type] || params.dig(:upload, :csv_type)
     redirect_to dashboards_path if ONLINE_TYPES_NAMES.map(&:name).include?(csv_type)
   end

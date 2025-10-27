@@ -26,7 +26,7 @@
 # rake utils:default
 # rake utils:export_csv_files_from_production
 # rake utils:import_csv_files_to_localhost
-# rake utils:import_csv_files_to_staging
+# rake utils:import_csvs_to_staging
 ####################################################
 
 namespace :utils do

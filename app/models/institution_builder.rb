@@ -65,7 +65,7 @@ module InstitutionBuilder
       add_provider_type(version.id)
       VrrapBuilder.build(version.id)
       add_section1015(version.id)
-      add_calculator_constant_versions(version.id) if CalculatorConstant.versioning_enabled?
+      add_calculator_constant_versions(version.id)
       # TO-DO: enable public export
       # build_public_export(version.id) if production? || ENV['CI'].blank?
 
@@ -725,7 +725,7 @@ module InstitutionBuilder
           SELECT yellow_ribbon_degree_level_translations.id
           FROM yellow_ribbon_degree_level_translations
           LEFT JOIN yellow_ribbon_programs
-          ON yellow_ribbon_degree_level_translations.raw_degree_level = yellow_ribbon_programs.degree_level
+          ON yellow_ribbon_degree_level_translations.raw_degree_level = LOWER(yellow_ribbon_programs.degree_level)
           WHERE yellow_ribbon_programs.id IS NULL
         )
       SQL
