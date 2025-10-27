@@ -191,7 +191,7 @@ class DashboardsController < ApplicationController
         skipline =
           case class_nm
           when 'Hcm' then 2
-          when 'Mou' then 1
+          when 'Mou' then 3
           else 0
           end
 
