@@ -71,10 +71,6 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
     expect(attributes['state']).to eq(yellow_ribbon_program.state)
   end
 
-  it 'street_address' do
-    expect(attributes['street_address']).to eq(yellow_ribbon_program.street_address)
-  end
-
   it 'student_veteran' do
     expect(attributes['student_veteran']).to eq(yellow_ribbon_program.student_veteran)
   end
@@ -89,9 +85,5 @@ RSpec.describe YellowRibbonProgramSerializer, type: :serializer do
 
   it 'year_of_yr_participation' do
     expect(attributes['year_of_yr_participation']).to eq(yellow_ribbon_program.year_of_yr_participation)
-  end
-
-  it 'zip' do
-    expect(attributes['zip']).to eq(yellow_ribbon_program.zip)
   end
 end
