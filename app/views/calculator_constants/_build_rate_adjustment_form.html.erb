@@ -1,0 +1,22 @@
+<%= form_with url: build_rate_adjustments_path,
+              method: :post,
+              id: "new-rate",
+              class: "form-inline #{"hidden" unless local_assigns[:override_hide]}",
+              data: { action: "submit->rates-form#softCreate",
+                      rates_form_target: "newRateForm",
+                       } do |f| %>
+  <%= f.label :benefit_type do %>
+    <small>New Chapter Number:</small>
+  <% end %>
+  <%= f.number_field :benefit_type,
+                      min: 0,
+                      step: 1,
+                      placeholder: "99",
+                      required: true,
+                      data: { rates_form_target: "chapterInput",
+                              action: "input->rates-form#clearValidity" } %>
+  <%= button_tag type: "submit",
+                 class: "btn btn-xs btn-primary" do %>
+    <strong>&plus;</strong>
+  <% end %>
+<% end %>

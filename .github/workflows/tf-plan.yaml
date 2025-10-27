@@ -5,5 +5,5 @@ on: [pull_request]
 
 jobs:
   pr-tf-plan:
-    uses: department-of-veterans-affairs/prt-github-workflows/.github/workflows/tf-plan.yaml@main
+    uses: department-of-veterans-affairs/vsp-github-actions/.github/workflows/tf-plan.yaml@main
     secrets: inherit

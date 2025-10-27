@@ -4,12 +4,12 @@ class Mou < ImportableRecord
   STATUSES = /\A(probation - dod|title iv non-compliant)\z/i
 
   CSV_CONVERTER_INFO = {
-    'ope_id' => { column: :ope, converter: Converters::OpeConverter },
-    'institution_name' => { column: :institution, converter: Converters::InstitutionConverter },
+    'opeid' => { column: :ope, converter: Converters::OpeConverter },
+    'name' => { column: :institution, converter: Converters::InstitutionConverter },
     'trade_name' => { column: :trade_name, converter: Converters::BaseConverter },
     'city' => { column: :city, converter: Converters::BaseConverter },
     'state' => { column: :state, converter: Converters::BaseConverter },
-    'institution_type' => { column: :institution_type, converter: Converters::BaseConverter },
+    'type' => { column: :institution_type, converter: Converters::BaseConverter },
     'status' => { column: :status, converter: Converters::BaseConverter },
     'approval_date' => { column: :approval_date, converter: Converters::BaseConverter }
   }.freeze

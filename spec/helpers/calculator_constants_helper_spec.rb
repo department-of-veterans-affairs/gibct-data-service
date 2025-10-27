@@ -8,9 +8,7 @@ RSpec.describe CalculatorConstantsHelper, type: :helper do
 
   describe '#display_value_for' do
     it 'calls #decimalize on nonyear float values' do
-      allow(helper).to receive(:decimalize).with(nonyear_constant.float_value)
-      helper.display_value_for(nonyear_constant)
-      expect(helper).to have_received(:decimalize).with(nonyear_constant.float_value)
+      expect(helper.display_value_for(nonyear_constant)).to eq(format('%.2f', nonyear_constant.float_value))
     end
 
     it 'formats year values as integers' do

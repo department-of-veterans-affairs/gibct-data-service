@@ -14,7 +14,6 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
-    allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
   end
 
   describe 'archives archived model' do

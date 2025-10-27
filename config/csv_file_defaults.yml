@@ -17,7 +17,7 @@ EightKey:
   liberal_parsing: true
 
 Mou:
-  skip_lines: 1
+  skip_lines: 3
 
 Hcm:
   skip_lines: 2

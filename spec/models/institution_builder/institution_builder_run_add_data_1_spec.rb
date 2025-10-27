@@ -241,7 +241,6 @@ RSpec.describe InstitutionBuilder, type: :model do
 
     describe 'when adding CalculatorConstantVersion data' do
       before do
-        allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
         create :calculator_constant
         described_class.run(user)
       end

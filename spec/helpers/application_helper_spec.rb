@@ -25,12 +25,21 @@ RSpec.describe ApplicationHelper, type: :helper do
       allow(helper.controller).to receive(:controller_name).and_return('calculator_constants')
       expect(helper.controller_label_for_header).to eq('Calculator constants')
     end
+
+    it 'returns specific label if controller is YellowRibbonDegreeLevelTranslations' do
+      allow(helper.controller).to receive(:controller_name).and_return('yellow_ribbon_degree_level_translations')
+      expect(helper.controller_label_for_header).to eq('YRP Degree Levels')
+    end
   end
 
   describe 'active_link?' do
     it 'tells if a link is active' do
       expect(helper).to be_active_link('/dashboards')
       expect(helper).not_to be_active_link('/blah_blahs')
+    end
+
+    it 'returns false when route is unrecognized' do
+      expect(helper.active_link?('/bad_path')).to be false
     end
   end
 

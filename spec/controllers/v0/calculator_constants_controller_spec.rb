@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe V0::CalculatorConstantsController, type: :controller do
-  before { allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true) }
-
   describe 'GET #index' do
     it 'returns calculator constants' do
       create_list(:calculator_constant, 2)

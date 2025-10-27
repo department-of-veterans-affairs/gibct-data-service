@@ -33,7 +33,7 @@ module  NoKeyApis
       'IpedsIc' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIc') }],
       'IpedsIcAy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcAy') }],
       'IpedsIcPy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcPy') }],
-      'Mou' => [' -X GET', "'https://www.dodmou.com/Home/DownloadS3File?s3bucket=dodmou-private-ah9xbf&s3Key=participatinginstitutionslist%2Fproduction%2FInstitutionsList.xlsx'"],
+      'Mou' => [' -X POST', 'https://dhra.appianportalsgov.com/DoD-MOU/record/dataexport/download-grid'],
       'Vsoc' => [' -k -X GET', -> { VsocDownloadSource.fetch }]
     }.freeze
 
@@ -43,7 +43,7 @@ module  NoKeyApis
       @class_nm = class_nm
       rest_command, source = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
       url = url_from(source)
-      @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm}#{d_parm}"
+      @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm} #{d_parm}"
     end
 
     def download_csv
@@ -58,6 +58,7 @@ module  NoKeyApis
       # Vsoc uses the octet-stream header to pull down from source
       return '-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"' if @class_nm.eql?('Hcm')
       return '-H \'Content-Type: application/octet-stream\'' if @class_nm.eql?('Vsoc')
+      return '' if @class_nm.eql?('Mou')
 
       '-H \'Content-Type: application/json\''
     end
@@ -73,9 +74,14 @@ module  NoKeyApis
     end
 
     def d_parm
-      return '' unless @class_nm.start_with?('Accreditation')
-
-      " -d '{\"CSVChecked\":true,\"ExcelChecked\":false}'"
+      if @class_nm.start_with?('Accreditation')
+        "-d '{\"CSVChecked\":true,\"ExcelChecked\":false}'"
+      elsif @class_nm == 'Mou'
+        # this crazy param was copied directly from the browser dev tools, and does seem necessary to get the API call to work
+        "--data-raw #{File.read(data_param_path('mou_raw_data'))}"
+      else
+        ''
+      end
     end
 
     # If download source is a proc (and not url string), call proc to dynamically fetch url
@@ -83,6 +89,10 @@ module  NoKeyApis
       return source unless source.is_a?(Proc)
 
       source.call
+    end
+
+    def data_param_path(name)
+      Rails.root.join('app', 'utilities', 'no_key_apis', 'curl_params', name)
     end
   end
 end

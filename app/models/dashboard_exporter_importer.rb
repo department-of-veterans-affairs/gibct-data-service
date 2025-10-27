@@ -77,6 +77,8 @@ class DashboardExporterImporter
     log_and_puts("  Removing existing CSV file for #{table_name}")
 
     if !table_name.eql?('institutions_version')
+      table_name = tweak_lcpe(table_name) if table_name.start_with?('Lcpe')
+
       return unless File.exist?("#{@download_dir}/#{table_name}.csv")
 
       File.delete("#{@download_dir}/#{table_name}.csv")
@@ -114,6 +116,8 @@ class DashboardExporterImporter
   end
 
   def check_exists_for(table_name)
+    table_name = tweak_lcpe(table_name) if table_name.start_with?('Lcpe')
+
     if !table_name.eql?('institutions_version')
       File.exist?("#{@download_dir}/#{table_name}.csv")
     else
@@ -127,13 +131,19 @@ class DashboardExporterImporter
     log_out_and_back_in(table_name)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def upload_with_parameters(table_name, retry_count = 0)
     log_and_puts("         Uploading #{table_name}")
     button = @bsess.link(role: 'button', href: "#{@import_prefix}#{table_name}", visible_text: 'Upload')
     button.click
 
     @bsess.text_field(id: 'upload_skip_lines').set(0)
-    @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name}.csv")
+    if table_name.start_with?('Lcpe')
+      tweaked_table_name = tweak_lcpe(table_name)
+      @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{tweaked_table_name}.csv")
+    else
+      @bsess.file_field(id: 'upload_upload_file').set("#{@download_dir}/#{table_name}.csv")
+    end
 
     @bsess
       .text_field(id: 'upload_comment')
@@ -141,10 +151,12 @@ class DashboardExporterImporter
 
     @bsess.form(id: 'new_upload').submit
 
-    if @bsess.link(text: 'View Dashboard').present?
+    upload_ok = wait_for_success_or_error
+
+    if upload_ok
       log_and_puts("         Successfully uploaded #{table_name}")
       @bsess.link(text: 'View Dashboard').click
-    else # retry once
+    else
       log_and_puts('    Could not find the dashboard link - most likely it failed')
       sleep(30)
       @bsess.goto(@dashboard_url)
@@ -154,6 +166,41 @@ class DashboardExporterImporter
       upload_with_parameters(table_name, 1)
     end
   end
+  # rubocop:enable Metrics/MethodLength
+
+  def tweak_lcpe(table_name)
+    table_name.gsub(':', '_')
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
+  def wait_for_success_or_error(timeout = 1800)
+    time_waited = 0
+
+    # rubocop:disable Style/WhileUntilDo
+    until @bsess.text.include?('The upload succeeded') ||
+          @bsess.text.include?('504 Gateway Time-out') ||
+          @bsess.text.include?('503 Service Unavailable') do
+      sleep(5)
+      time_waited += 5
+
+      if time_waited >= timeout
+        log_and_puts('    Timed out waiting for upload to complete')
+        break
+      end
+    end
+    # rubocop:enable Style/WhileUntilDo
+
+    return true if @bsess.text.include?('The upload succeeded')
+    return false if @bsess.text.include?('504 Gateway Time-out')
+    return false if @bsess.text.include?('503 Service Unavailable')
+
+    false
+  rescue Watir::Wait::TimeoutError
+    false
+  end
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
   # :nocov:
 end
 # rubocop:enable Metrics/ClassLength

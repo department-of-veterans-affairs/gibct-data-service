@@ -1,0 +1,24 @@
+<%= turbo_stream.replace "rate-adjustments-form" do %>
+  <%= render partial: "calculator_constants/rate_adjustments_form",
+             locals: { rate_adjustments: @rate_adjustments,
+                       calculator_constants: @calculator_constants } %>
+<% end %>
+
+<%= turbo_stream.replace "apply-rates-modal" do %>
+  <%= render partial: "calculator_constants/apply_rates_modal",
+             locals: { rate_adjustments: @rate_adjustments,
+                       calculator_constants: @calculator_constants } %>
+<% end %>
+
+<% @calculator_constants.each do |constant| %>
+  <% @created.each do |rate_adjustment| %>
+    <%= turbo_stream.append dom_id(constant, :select) do %>
+      <%= render partial: "calculator_constants/rate_adjustment_option",
+                locals: { rate_adjustment:, constant:, reset_selected: false } %>
+    <% end %>
+  <% end %>
+
+  <% @destroyed.each do |rate_adjustment| %>
+    <%= turbo_stream.remove "constant-#{constant.id}-rate-#{rate_adjustment.id}-option" %>
+  <% end %>
+<% end %>
