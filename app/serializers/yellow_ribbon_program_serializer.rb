@@ -18,12 +18,10 @@ class YellowRibbonProgramSerializer < ActiveModel::Serializer
              :name_of_institution,
              :online_only,
              :state,
-             :street_address,
              :student_veteran,
              :student_veteran_link,
              :ungeocodable,
-             :year_of_yr_participation,
-             :zip
+             :year_of_yr_participation
 
   def display_degree_levels
     values = YellowRibbonDegreeLevelTranslation.find_by(raw_degree_level: object.degree_level.downcase)&.translations

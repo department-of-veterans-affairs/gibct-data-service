@@ -11,7 +11,6 @@ FactoryBot.define do
     facility_code { generate :facility_code }
     number_of_students { 99_999 }
     state { 'CO' }
-    street_address { '1234 University Drive' }
     version { Version.current_production.id }
 
     trait :institution_builder do
@@ -22,7 +21,6 @@ FactoryBot.define do
       city { 'Florence' }
       number_of_students { 1 }
       state { 'KY' }
-      zip { '41042' }
     end
   end
 end
