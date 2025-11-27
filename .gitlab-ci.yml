@@ -10,20 +10,18 @@ variables:
 lint:
   stage: lint
   tags:
-    - docker
-  image: ruby:3.3
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - vendor/bundle
+    - shell
+  variables:
+    DOCKER_HOST: "unix:///var/run/docker.sock"
   before_script:
-    - apt-get update -qq && apt-get install -y -qq git
-    - bundle config set --local path 'vendor/bundle'
-    - bundle install --jobs $(nproc)
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin registry.gitlab.local:5050
   script:
-    - bundle exec bundle-audit check --update
-    - bundle exec rubocop --parallel
-    - bundle exec brakeman --ensure-latest --confidence-level=2
+    - docker compose -f docker-compose.test.yml build
+    - docker compose -f docker-compose.test.yml run --rm gibct bash -c "bundle exec bundle-audit check --update"
+    - docker compose -f docker-compose.test.yml run --rm gibct bash -c "bundle exec rubocop --parallel"
+    - docker compose -f docker-compose.test.yml run --rm gibct bash -c "bundle exec brakeman --ensure-latest --confidence-level=2"
+  after_script:
+    - docker compose -f docker-compose.test.yml down || true
 
 build-test-image:
   stage: test
@@ -55,7 +53,7 @@ test:
     - docker compose -f docker-compose.test.yml down --remove-orphans || true
     - docker compose -f docker-compose.test.yml up -d postgres
     - sleep 10
-    - docker compose -f docker-compose.test.yml run --rm gibct bash -c "bundle exec rails db:setup db:migrate"
+    - docker compose -f docker-compose.test.yml run --rm gibct bash -c "bundle exec rails db:prepare"
     - docker compose -f docker-compose.test.yml run --rm gibct bash -c "bundle exec rspec"
   after_script:
     - docker compose -f docker-compose.test.yml down || true
