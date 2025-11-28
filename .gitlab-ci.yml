@@ -5,7 +5,7 @@ stages:
   - deploy
 
 variables:
-  DOCKER_IMAGE: "registry.gitlab.local:5050/noah/gibct-data-service"
+  REGISTRY_IMAGE: "registry.gitlab.local:5050/noah/gibct-data-service"
 
 lint:
   stage: lint
@@ -13,6 +13,7 @@ lint:
     - shell
   variables:
     DOCKER_HOST: "unix:///var/run/docker.sock"
+    DOCKER_IMAGE: "latest"
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin registry.gitlab.local:5050
   script:
@@ -69,9 +70,9 @@ build:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin registry.gitlab.local:5050
   script:
-    - docker build --target k8s -t ${DOCKER_IMAGE}:${CI_COMMIT_SHA} -t ${DOCKER_IMAGE}:latest .
-    - docker push ${DOCKER_IMAGE}:${CI_COMMIT_SHA}
-    - docker push ${DOCKER_IMAGE}:latest
+    - docker build --target k8s -t ${REGISTRY_IMAGE}:${CI_COMMIT_SHA} -t ${REGISTRY_IMAGE}:latest .
+    - docker push ${REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+    - docker push ${REGISTRY_IMAGE}:latest
   only:
     - master
 
