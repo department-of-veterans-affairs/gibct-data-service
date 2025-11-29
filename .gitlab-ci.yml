@@ -6,6 +6,7 @@ stages:
 
 variables:
   REGISTRY_IMAGE: "registry.gitlab.local:5050/noah/gibct-data-service"
+  TEST_IMAGE: "registry.gitlab.local:5050/noah/gibct-data-service/test:${CI_COMMIT_SHA}"
 
 lint:
   stage: lint
@@ -24,23 +25,8 @@ lint:
   after_script:
     - docker compose -f docker-compose.test.yml down || true
 
-build-test-image:
-  stage: test
-  tags:
-    - shell
-  variables:
-    DOCKER_HOST: "unix:///var/run/docker.sock"
-    TEST_IMAGE: "registry.gitlab.local:5050/noah/gibct-data-service/test:${CI_COMMIT_SHA}"
-  before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin registry.gitlab.local:5050
-  script:
-    - docker compose -f docker-compose.test.yml build
-    - docker tag gibct:latest ${TEST_IMAGE}
-    - docker push ${TEST_IMAGE}
-
 test:
   stage: test
-  needs: [build-test-image]
   tags:
     - shell
   variables:
@@ -49,8 +35,6 @@ test:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin registry.gitlab.local:5050
   script:
-    - docker pull ${TEST_IMAGE}
-    - docker tag ${TEST_IMAGE} gibct:latest
     - docker compose -f docker-compose.test.yml down --remove-orphans || true
     - docker compose -f docker-compose.test.yml up -d postgres
     - sleep 10
