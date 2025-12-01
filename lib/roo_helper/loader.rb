@@ -202,8 +202,14 @@ module RooHelper
       file_headers.each do |header|
         file_header = header.strip
         key = file_options[:liberal_parsing] ? file_header.gsub('"', '').strip : file_header
-        col_info = converter_info(sheet_klass, key)
-        column = col_info.blank? ? file_header.downcase.to_sym : col_info[:column]
+        # Strip BOM (Byte Order Mark) when determining column mapping
+        # The BOM may appear as raw bytes or as garbled characters when read with wrong encoding
+        key_cleaned = key.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+        key_cleaned = key_cleaned.gsub(/\A\xEF\xBB\xBF/, '')     # UTF-8 BOM (raw bytes)
+        key_cleaned = key_cleaned.gsub(/\A\uFEFF/, '')            # UTF-16/UTF-32 BOM
+        key_cleaned = key_cleaned.sub(/\Aï»¿/, '')               # UTF-8 BOM misread as ISO-8859-1
+        col_info = converter_info(sheet_klass, key_cleaned)
+        column = col_info.blank? ? key_cleaned.downcase.to_sym : col_info[:column]
         headers_mapping[column] = file_header
       end
       headers_mapping
