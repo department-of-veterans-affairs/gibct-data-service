@@ -18,14 +18,14 @@ RSpec.describe GeneratePublicExportJob, type: :job do
       end
 
       it 'just returns' do
-        job.perform(version.id)
+        job.perform
         expect(VersionPublicExport).not_to have_received(:build)
       end
     end
 
     context 'without an existing export' do
       it 'creates an export' do
-        expect { job.perform(version.id) }.to change(VersionPublicExport, :count).by(1)
+        expect { job.perform }.to change(VersionPublicExport, :count).by(1)
       end
     end
   end
