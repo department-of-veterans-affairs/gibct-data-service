@@ -1,0 +1,55 @@
+<div class="panel panel-default"
+     id="rate-adjustments-form"
+     data-controller="toggle">
+  <%= form_with(url: rate_adjustments_path, id: "rate_adjustments_update") do %>
+    <div class="panel-heading" data-toggle-target="feature" data-side-effect="active">
+      <div>Rate Adjustments</div>
+      <div class="rates-btns">
+        <%= button_tag "Edit",
+                        type: "button",
+                        class: "btn",
+                        id: "rates-edit-btn",
+                        data: { action: "click->toggle#enable",
+                                toggle_target: "feature",
+                                side_effect: "disabled" } %>
+        <%= button_tag "Save",
+                       type: "submit",
+                       class: "btn",
+                       id: "rates-save-btn",
+                       disabled: true,
+                       data: { toggle_target: "feature",
+                               side_effect: "disabled" } %>
+        <%= button_tag "Cancel",
+                       type: "button",
+                       class: "btn",
+                       id: "rates-cancel-btn",
+                       disabled: true,
+                       data: { action: "click->toggle#disable",
+                               toggle_target: "feature",
+                               side_effect: "disabled" } %>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="rates-alert">
+        <aside class="alert alert-warning hidden" data-rates-form-target="warning">
+          Please save or discard changes to Rate Adjustments before updating Calculator Constants.
+        </aside>
+      </div>
+      <div id="rates-list">
+        <%= render partial: "rate_adjustment", collection: @rate_adjustments %>
+      </div>
+    </div>
+  <% end %>
+  <div class="panel-footer"
+       id="rate_adjustments_add_remove"
+       data-toggle-target="feature"
+       data-side-effect="hidden"
+       hidden>
+    <%= button_tag type: :button,
+                   class: "add-remove",
+                   data: {  } do %>
+      <small>Add/Remove Rate Adjustments</small>
+    <% end  %>
+    <!--<%= render partial: "calculator_constants/build_rate_adjustment_form" %>-->
+  </div>
+</div>
