@@ -1,0 +1,132 @@
+name: "Comment a Plan on a PR"
+
+on: [pull_request]
+
+jobs:
+  setup:
+    name: Setup Deploy Jobs
+    runs-on: ubuntu-latest
+    outputs:
+      mymatrix: ${{ steps.dataStep.outputs.myoutput }}
+      files_exists: ${{ steps.check_files.outputs.files_exists }}
+    steps:
+      - id: debug
+        run: |
+          env
+
+      - uses: actions/checkout@v4
+
+      - id: dataStep
+        run: |
+          ENVIRONMENTS=$(cat cicd.yaml | yq -o=json .environments)
+          echo "myoutput=$(jq -cn --argjson environments "$ENVIRONMENTS" '{environment: $environments}')" >> $GITHUB_OUTPUT
+          
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "terraform"
+
+  plan-env-matrix:
+    name: Plan Env ${{ matrix.environment }}
+    needs: setup
+    if: needs.setup.outputs.files_exists == 'true'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+      repository-projects: write
+      
+    defaults:
+      run:
+        working-directory: ./terraform
+
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJson(needs.setup.outputs.mymatrix) }}
+
+    steps:
+    - name: Configure AWS Credentials with OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: us-gov-west-1
+        role-to-assume: arn:aws-us-gov:iam::008577686731:role/prt-gha-oidc-role
+    - uses: actions/checkout@v3
+    - uses: hashicorp/setup-terraform@v3
+    
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: create workspace
+      run: |
+        terraform workspace select -or-create ${{ matrix.environment }}
+    
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+    
+    - name: Terraform Plan
+      id: plan
+      env:
+        GITHUB_TOKEN: ${{ secrets.S_GITHUB_TOKEN }}
+      run: |
+        touch terraform.json
+        yq -o=json -i '.environment = "${{ matrix.environment }}"' terraform.json
+        yq -o=json -i ".version = \"${GITHUB_REF_NAME}\"" terraform.json
+        yq -o=json -i ".sha = \"${GITHUB_SHA}\"" terraform.json
+        yq -o=json -i ".repo = \"${GITHUB_REPOSITORY}\"" terraform.json
+        
+        if [[ -f ./vars/${{ matrix.environment }}.tfvars ]]; then TF_ARGS="-var-file ./vars/${{ matrix.environment }}.tfvars"; fi
+
+        terraform plan -input=false -no-color \
+          -var environment="${{ matrix.environment }}" \
+          ${TF_ARGS} \
+          -var-file terraform.json
+      continue-on-error: true
+    
+    - uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        GITHUB_TOKEN: ${{ secrets.S_GITHUB_TOKEN }}
+
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+          <details><summary>Validation Output</summary>
+    
+          \`\`\`\n
+          ${{ steps.validate.outputs.stdout }}
+          \`\`\`
+    
+          </details>
+    
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+    
+          <details><summary>Show Plan</summary>
+    
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+    
+          </details>
+    
+          *Pusher: @${{ github.actor }}, Environment \`${{ matrix.environment }}\`, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+    
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
