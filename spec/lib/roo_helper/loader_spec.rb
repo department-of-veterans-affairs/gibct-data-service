@@ -151,13 +151,13 @@ describe RooHelper::Loader do
 
     it 'maps headers with UTF-8 BOM misread as ISO-8859-1 correctly' do
       # UTF-8 BOM misread as ISO-8859-1: ï»¿
-      file_headers = ["ï»¿UnitId", 'InstNm']
+      file_headers = ['ï»¿UnitId', 'InstNm']
       headers_mapping = {}
       file_options = { liberal_parsing: false }
 
       result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
 
-      expect(result[:cross]).to eq("ï»¿UnitId")
+      expect(result[:cross]).to eq('ï»¿UnitId')
       expect(result[:institution]).to eq('InstNm')
     end
 
@@ -173,7 +173,7 @@ describe RooHelper::Loader do
     end
 
     it 'maps headers without BOM normally' do
-      file_headers = ['UnitId', 'InstNm', 'Addr']
+      file_headers = %w[UnitId InstNm Addr]
       headers_mapping = {}
       file_options = { liberal_parsing: false }
 
