@@ -153,7 +153,6 @@
   text-decoration: underline;
 }
 
-#preview_dialog,
 #sequential-upload-dialog {
   display: flex;
   justify-content: center;
@@ -166,7 +165,6 @@
   justify-content: center;
 }
 
-#preview_dialog_div,
 #sequential-upload-dialog-div {
   min-width: 250px;
   text-align: center;
@@ -179,21 +177,47 @@
   gap: 5px;
 }
 
-.generate_preview_button_div {
-  text-align: center;
+#generate_version_buttons {
+  display: flex;
 }
 
-.generate_preview_table {
-  display: inline-block;
-  overflow-y: scroll;
-  max-height: 500px;
+#generate_version_modal {
+  display: flex;
+  justify-content: center;
 }
 
-.generate_preview_question {
-  text-align: center;
-  font-size: large;
-  margin-top: 1em;
-  margin-bottom: 1em;
+#generate_version_modal .modal-content {
+  width: fit-content;
+}
+
+#generate_version_modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+
+#generate_version_modal .modal-body p {
+  margin-bottom: 0px;
+}
+
+#generate_version_modal a {
+  align-self: center;
+}
+
+#generate_version_modal .table-wrapper {
+  max-height: 200px;
+  overflow-y: auto;
+  width: fit-content;
+}
+
+#generate_version_modal th,
+#generate_version_modal td {
+  white-space: nowrap;
+}
+
+#generate_version_modal td.comments {
+  white-space: normal;
+  width: 100%
 }
 
 #sequential-submit-btn-div {
@@ -359,11 +383,18 @@ table.crosswalk-issues thead.sub th {
   margin-left:1rem;
 }
 
+.hidden {
+  display: none !important;
+}
+
 #rate_adjustments_update .panel-heading {
   font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: #333;
+  background-color: #f5f5f5;
+  border-color: #ddd;
 }
 
 #rate_adjustments_update .panel-heading .rates-btns button {
@@ -403,6 +434,57 @@ table.crosswalk-issues thead.sub th {
   cursor: auto;
 }
 
+#rate_adjustments_add_remove.panel-footer {
+  border-top: none;
+  background-color: #fff;
+  padding-top: 0px;
+}
+
+#rate_adjustments_add_remove.panel-footer button.add-remove {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #337ab7;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#rate_adjustments_add_remove button.add-remove:disabled {
+  color: gray;
+  text-decoration: none;
+  cursor:auto;
+}
+
+#rate_adjustments_add_remove #new-rate {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+}
+
+#rate_adjustments_add_remove form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#rate_adjustments_add_remove label {
+  margin-bottom: 0px;
+}
+
+#rate_adjustments_add_remove input {
+  width: 70px;
+}
+
+#rate_adjustments_update #new-rate input {
+  width: 70px;
+}
+
+#rate_adjustments_update #new-rate label {
+  margin-bottom: 0;
+}
+
 #rate_adjustments_update #rates-list {
   display: flex;
   flex-wrap: wrap;
@@ -423,8 +505,17 @@ table.crosswalk-issues thead.sub th {
   width: 60px;
 }
 
+#rate_adjustments_update .new-rate label {
+  width: 70px;
+  font-weight: normal;
+}
+
 #rate_adjustments_update .rate-div input {
   width: 70px;
+}
+
+#rate_adjustments_update .new-rate input {
+  width: 60px;
 }
 
 .equal {

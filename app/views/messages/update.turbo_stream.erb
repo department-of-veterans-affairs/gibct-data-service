@@ -1,9 +1,11 @@
-<%= turbo_stream.replace "preview_status" do %>
-  <div id="preview_status">
-    <aside class="alert alert-info">
-      <%= @preview_status&.current_progress.html_safe %>
-    </aside>
-  </div>
+<% if @preview_status.present? %>
+  <%= turbo_stream.replace "preview_status" do %>
+    <div id="preview_status">
+      <aside class="alert alert-info">
+        <%= @preview_status.current_progress.html_safe %>
+      </aside>
+    </div>
+  <% end %>
 <% end %>
 
 <% if @preview_generation_completed %>
