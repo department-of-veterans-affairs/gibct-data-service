@@ -38,6 +38,33 @@ describe Common::Shared do
       header = 'a header to  &  test'
       expect(described_class.convert_csv_header(header)).to eq('a_header_to_&_test')
     end
+
+    it 'strips UTF-8 and UTF-16/UTF-32 BOM characters' do
+      # UTF-8 BOM (raw bytes): \xEF\xBB\xBF
+      header_with_utf8_bom = "\xEF\xBB\xBFUnitId"
+      expect(described_class.convert_csv_header(header_with_utf8_bom)).to eq('UnitId')
+
+      # Unicode BOM: \uFEFF (UTF-16/UTF-32)
+      header_with_unicode_bom = "\uFEFFUnitId"
+      expect(described_class.convert_csv_header(header_with_unicode_bom)).to eq('UnitId')
+    end
+
+    it 'strips UTF-8 BOM misread as ISO-8859-1' do
+      # UTF-8 BOM misread as ISO-8859-1: ï»¿
+      header_with_bom = 'ï»¿UnitId'
+      expect(described_class.convert_csv_header(header_with_bom)).to eq('UnitId')
+    end
+
+    it 'handles BOM with spaces and dashes correctly' do
+      # BOM followed by header with spaces/dashes
+      header_with_bom = "\xEF\xBB\xBFUnit-Id Header"
+      expect(described_class.convert_csv_header(header_with_bom)).to eq('Unit_Id_Header')
+    end
+
+    it 'handles headers without BOM normally' do
+      header = 'UnitId'
+      expect(described_class.convert_csv_header(header)).to eq('UnitId')
+    end
   end
 
   describe 'display_csv_header' do
