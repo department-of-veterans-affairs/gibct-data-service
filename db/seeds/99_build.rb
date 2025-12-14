@@ -1,19 +1,10 @@
-if ENV['CI'].blank?
-  user = User.first
+return unless ENV['CI'].blank?
 
-  puts 'Building Institutions'
-  InstitutionBuilder.run(user)
+user = User.first
 
-  version = Version.current_preview
-  if version
-    puts "Setting version: #{version.number} as production"
-    version.update(production: true)
+puts 'Building Institutions'
+InstitutionBuilder.run(user)
 
-    puts 'Building CrosswalkIssues'
-    CrosswalkIssue.rebuild
-
-    puts "Done ... Woo Hoo!!"
-  else
-    puts "Error occurred - check the logs"
-  end
-end
+puts 'Building CrosswalkIssues'
+CrosswalkIssue.rebuild
+puts "Done ... Woo Hoo!!"
