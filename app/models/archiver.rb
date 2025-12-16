@@ -57,9 +57,12 @@ module Archiver
   def self.create_archives(source, archive, production_version)
     return if archive.blank?
 
+    Rails.logger.info "\n\n\n*** Archiving #{source.table_name}"
     PreviewGenerationStatusInformation.create!(current_progress: "archiving #{source.table_name}")
 
     base_query = build_archive_query(source, production_version)
+    Rails.logger.info "base query: #{base_query}"
+    Rails.logger.info "query as sql: #{base_query.to_sql}"
     archive_columns = archive.column_names
 
     base_query.find_in_batches(batch_size: 1000) do |records|
@@ -68,6 +71,7 @@ module Archiver
       archive.insert_all(attributes) if attributes.present?
       # rubocop:enable Rails/SkipsModelValidations
     end
+    Rails.logger.info "*** Done archiving #{source.table_name}"
   end
 
   def self.build_archive_query(source, production_version)
