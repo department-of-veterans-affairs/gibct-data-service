@@ -158,6 +158,12 @@ bin/jobs
 
 This will start the Solid Queue worker process and jobs enqueued in your development environment will be processed just like they would be in staging/production. If you do not run `bin/jobs` and only use the web server (e.g. `bin/rails s`) then jobs will still be enqueued just fine, but they won't be worked on until the worker process is started. You can always check on the status of any jobs by going to `http://localhost:3000/jobs`.
 
+To start both the server and solid queue at the same time run this in your terminal window:
+
+```
+bin/dev
+```
+
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.
 - `bundle exec guard` - Runs the guard test server that reruns your tests after files are saved. Useful for TDD!

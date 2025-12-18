@@ -97,13 +97,15 @@ group :development, :test do
 end
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 4.2', platforms: :ruby
-
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'foreman'
+
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', platforms: :ruby
+
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 4.2', platforms: :ruby
 end
 
 gem 'mission_control-jobs'
