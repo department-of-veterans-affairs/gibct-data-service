@@ -2,14 +2,6 @@
 
 module  NoKeyApis
   class NoKeyApiDownloader
-    # the most recent IPED data files are from 2022. This should be checked periodically.
-    # the most recent Hcm data files are from 2020.  This should be checked periodically.
-    # changes will need to be made to both hashes when these change
-
-    # HCM has changed to xls from xlsx. Every quarter the file is updated and this needs to be checked
-    # as part of that. API_DOWNLOAD_CONVERSION_NAMES, API_NO_KEY_DOWNLOAD_SOURCES and o_parm need to be
-    # changed accordingly. This will also affect the dashboards_controller upload_files method
-
     API_DOWNLOAD_CONVERSION_NAMES = {
       'AccreditationInstituteCampus' => 'tmp/InstitutionCampus.csv',
       'Hcm' => 'tmp/hcm.xls',
@@ -28,7 +20,7 @@ module  NoKeyApis
       'AccreditationInstituteCampus' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'AccreditationRecord' => [' -X POST', 'https://ope.ed.gov/dapip/api/downloadFiles/accreditationDataFiles'],
       'EightKey' => [' -X GET', 'https://www.ed.gov/sites/ed/files/documents/military/8-keys-sites.xls'],
-      'Hcm' => ['', 'https://studentaid.gov/sites/default/files/Schools-on-HCM-December-2024.xls'],
+      'Hcm' => ['', -> { HcmUrlFetcher.fetch_latest_url }],
       'IpedsHd' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsHd') }],
       'IpedsIc' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIc') }],
       'IpedsIcAy' => [' -X GET', -> { IpedsDownloadSource.fetch('IpedsIcAy') }],
@@ -42,7 +34,8 @@ module  NoKeyApis
     def initialize(class_nm)
       @class_nm = class_nm
       rest_command, source = API_NO_KEY_DOWNLOAD_SOURCES[@class_nm]
-      url = url_from(source)
+      @url = url_from(source)
+      Rails.logger.info("\n\n\n***Curl command: #{rest_command} #{url} #{h_parm} #{o_parm} #{d_parm} ***\n\n\n")
       @curl_command = "curl#{rest_command} #{url} #{h_parm} #{o_parm} #{d_parm}"
     end
 
@@ -65,7 +58,13 @@ module  NoKeyApis
 
     def o_parm
       case @class_nm
-      when 'Hcm' then '-o tmp/hcm.xls'
+      # hcm has been tricky because it gets updated periodically and the extension changes.
+      # The information is hidden behind some javascripting, so the html cannot easily be scraped.
+      # an api was discovered that can bring back the list of available files and the most
+      # recent file is always the first as of this refactor
+      when 'Hcm'
+        ext = @url.end_with?('.xlsx') ? 'xlsx' : 'xls'
+        "-o tmp/hcm.#{ext}"
       when 'EightKey' then '-o tmp/eight_key.xls'
       when 'Mou' then '-o tmp/mou.xlsx'
       when 'Vsoc' then '-o tmp/vsoc.csv'
