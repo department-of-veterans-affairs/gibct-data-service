@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/vets-json-schema
-  revision: 0277d5bcddf48894d22b45f3618bca33e82a8ca4
+  revision: 531d9b1ef4f1738b825953b5e5a7e3d6fe1e1eec
   branch: master
   specs:
-    vets_json_schema (22.0.1)
+    vets_json_schema (25.2.37)
       multi_json (~> 1.0)
       script_utils (= 0.0.4)
 
@@ -313,7 +313,7 @@ GEM
       stimulus-rails
       turbo-rails
     msgpack (1.7.5)
-    multi_json (1.15.0)
+    multi_json (1.18.0)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
     multipart-post (2.4.1)
