@@ -9,5 +9,9 @@
 <% end %>
 
 <% if @preview_generation_completed %>
+  <%= turbo_stream.replace "versions" do %>
+    <%= render partial: "dashboards/versions_table", locals: { production_versions: @production_versions } %>
+  <% end %>
+
   <%= turbo_stream.remove "preview_status_poller" %>
 <% end %>

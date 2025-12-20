@@ -69,10 +69,6 @@ module InstitutionBuilder
       # TO-DO: enable public export
       # build_public_export(version.id) if production? || ENV['CI'].blank?
 
-      # Do not build in unless production or local environment
-      # Ultimately we're pulling this out and putting it in a batch job overnite
-      # GeneratePublicExportJob.perform_later(version.id) if production? || ENV['CI']
-
       rate_institutions(version.id) if
         ENV['DEPLOYMENT_ENV'].eql?('vagov-dev') || ENV['DEPLOYMENT_ENV'].eql?('vagov-staging')
 
@@ -92,7 +88,7 @@ module InstitutionBuilder
       begin
         Institution.transaction do
           # to fix 'cancelling statement due to statement timeout' issue
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600s';")
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '1200s';")
           if staging?
             # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
             # rubocop:disable Rails/SkipsModelValidations
