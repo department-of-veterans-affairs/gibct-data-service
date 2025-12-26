@@ -4,9 +4,9 @@ require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_exportable_by_version_history'
 
 RSpec.describe CalculatorConstantVersionsArchive, type: :model do
-  it_behaves_like 'an exportable model by version history'
-
   before { stub_const("#{described_class.name}::EARLIEST_AVAILABLE_YEAR", 2022) }
+
+  it_behaves_like 'an exportable model by version history'
 
   describe '.circa' do
     before do

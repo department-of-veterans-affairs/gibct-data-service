@@ -55,6 +55,8 @@ RSpec.describe CalculatorConstantsHelper, type: :helper do
   end
 
   describe '#earliest_constants_year' do
-    expect(helper.earliest_constants_year).to eq(CalculatorConstantVersionsArchive::EARLIEST_AVAILABLE_YEAR)
+    it 'returns 2025' do
+      expect(helper.earliest_constants_year).to eq(CalculatorConstantVersionsArchive::EARLIEST_AVAILABLE_YEAR)
+    end
   end
 end
