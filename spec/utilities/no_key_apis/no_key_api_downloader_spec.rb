@@ -16,6 +16,11 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
   before { allow(HTTParty).to receive(:get).and_return(ipeds_response) }
 
   describe '#initialize' do
+    before do
+      stub_request(:get, 'https://studentaid.gov/data-center/school/hcm.json')
+        .to_return(status: 200, body: '{"some": "json"}', headers: { 'Content-Type' => 'application/json' })
+    end
+
     %w[Accreditation AccreditationAction AccreditationInstituteCampus AccreditationRecord].each do |class_nm|
       it "sets the accreditation curl command correctly for #{class_nm}" do
         nkad = described_class.new(class_nm)
@@ -71,7 +76,7 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
 
   describe '#download_csv' do
     it 'calls Open3 to run the curl command and download the file' do
-      nkad = described_class.new('Hcm')
+      nkad = described_class.new('EightKey')
 
       allow(Open3)
         .to receive(:capture3)
