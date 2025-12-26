@@ -9,7 +9,6 @@ class CalculatorConstantsController < ApplicationController
     @calculator_constants = CalculatorConstant.all
     @constants_unpublished = CalculatorConstant.unpublished?
     @previous_constants = CalculatorConstantVersionsArchive.circa(previous_year)
-    @earliest_available_year = CalculatorConstantVersionsArchive.earliest_available_year
     @rate_adjustments = RateAdjustment.by_chapter_number
   end
 
