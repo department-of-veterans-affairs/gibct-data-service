@@ -53,4 +53,8 @@ RSpec.describe CalculatorConstantsHelper, type: :helper do
       expect(helper.year_value?(nonyear_constant)).to be false
     end
   end
+
+  describe '#earliest_constants_year' do
+    expect(helper.earliest_constants_year).to eq(CalculatorConstantVersionsArchive::EARLIEST_AVAILABLE_YEAR)
+  end
 end
