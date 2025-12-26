@@ -7,7 +7,7 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
   belongs_to :version
 
   # Year versioning first implemented for CalculatorConstants
-  EARLIEST_AVAILABLE_YEAR = 2024
+  EARLIEST_AVAILABLE_YEAR = 2025
   SOURCE_TABLE = 'calculator_constant_versions'
 
   class << self
