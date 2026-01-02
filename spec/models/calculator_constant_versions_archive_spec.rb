@@ -45,13 +45,13 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       end
 
       it 'returns published constants instead of archive when querying previous year' do
-        expect(described_class.circa(previous_year).first).to be_a(CalculatorConstantVersion)
+        expect(described_class.circa(previous_year).first).to be_a(described_class.live_version_klass)
       end
 
       it 'returns archived constant once a version has been generated in new year' do
         Version.current_production.destroy
         create(:version, :production, :from_year, year: Time.zone.now.year)
-        expect(described_class.circa(previous_year).first).to be_a(CalculatorConstantVersionsArchive)
+        expect(described_class.circa(previous_year).first).to be_a(described_class)
       end
     end
   end

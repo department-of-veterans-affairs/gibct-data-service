@@ -13,10 +13,8 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
   class << self
     def circa(year)
       v_current = Version.current_production
-      # If year is same as current version, return published constants instead of archive
-      if year == v_current&.completed_at&.year
-        return live_version_klass.where(version_id: v_current.id)
-      end
+      # If query year is same as year of current version, return published constants instead of archive
+      return live_version_klass.where(version_id: v_current.id) if year == v_current&.completed_at&.year
 
       version = Version.latest_from_year(year)
       return CalculatorConstantVersionsArchive.none if version.nil?
