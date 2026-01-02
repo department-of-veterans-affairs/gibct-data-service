@@ -8,11 +8,15 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
 
   # Year versioning first implemented for CalculatorConstants
   EARLIEST_AVAILABLE_YEAR = 2025
-  SOURCE_TABLE = 'calculator_constant_versions'
+  LIVE_VERSION_TABLE = 'calculator_constant_versions'
 
   class << self
-    # Current year yields zero results because latest from current year has yet to be archived
     def circa(year)
+      # If querying current year, return published calc constants instead of archive
+      if year == Time.zone.now.year
+        return live_version_klass.where(version_id: Version.current_production.id)
+      end
+
       version = Version.latest_from_year(year)
       return CalculatorConstantVersionsArchive.none if version.nil?
 
@@ -32,8 +36,8 @@ class CalculatorConstantVersionsArchive < ApplicationRecord
       CalculatorConstantVersionsArchive.where(version_id: version_ids)
     end
 
-    def source_klass
-      SOURCE_TABLE.classify.constantize
+    def live_version_klass
+      LIVE_VERSION_TABLE.classify.constantize
     end
 
     private

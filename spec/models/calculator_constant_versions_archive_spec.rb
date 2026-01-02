@@ -9,15 +9,12 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
   it_behaves_like 'an exportable model by version history'
 
   describe '.circa' do
-    before do
-      create_list(:calculator_constant_versions_archive, 2, year: 2023)
-      create_list(:calculator_constant_versions_archive, 2, year: 2024)
-    end
-
     it 'returns most recently versioned records as of a specific year' do
+      create_list(:calculator_constant_versions_archive, 2, year: 2023)
       v2023 = create(:version, :production, :from_year, year: 2023)
       records_2023 = create_list(:calculator_constant_versions_archive, 2, version: v2023)
 
+      create_list(:calculator_constant_versions_archive, 2, year: 2024)
       v2024 = create(:version, :production, :from_year, year: 2024)
       records_2024 = create_list(:calculator_constant_versions_archive, 2, version: v2024)
 
@@ -26,7 +23,28 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
     end
 
     it 'returns empty query if no version exists' do
-      expect(described_class.circa(2019)).to eq(described_class.none)
+      create_list(:calculator_constant_versions_archive, 2, year: 2023)
+      expect(described_class.circa(2022)).to eq(described_class.none)
+    end
+
+    context 'when querying current year or year recently changed' do
+      let(:current_year) { Time.zone.now.year }
+
+      it 'returns live version instead of archive if querying current year' do
+        version = create(:version, :production, :from_year, year: current_year)
+        current_versions = create_list(:calculator_constant_version, 2, version:)
+        circa = described_class.circa(current_year)
+        expect(circa).to eq(current_versions)
+        expect(circa.first).to be_a(CalculatorConstantVersion)
+      end
+
+      it 'returns live version instead of archive if version has yet to be generated for new year' do
+        # TO-DO: Install timecop gem
+        allow(Time.zone.now).to receive(:year).and_return(current_year) 
+        v2023 = create(:version, :production, :from_year, year: 2023)
+        current_versions = create_list(:calculator_constant_version, 2, version: v2023)
+        circa = described_class.circa(current_year)
+      end
     end
   end
 
@@ -61,9 +79,9 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
     end
   end
 
-  describe '.source_klass' do
+  describe '.live_version_klass' do
     it 'returns CalculatorConstantVersion' do
-      expect(described_class.source_klass).to eq(CalculatorConstantVersion)
+      expect(described_class.live_version_klass).to eq(CalculatorConstantVersion)
     end
   end
 end
