@@ -9,7 +9,7 @@ class Hcm < ImportableRecord
     'country' => { column: :country, converter: Converters::BaseConverter },
     'institution_type' => { column: :institution_type, converter: Converters::BaseConverter },
     'stop_pay/monitor_method' => { column: :hcm_type, converter: Converters::BaseConverter },
-    'method_reason_desc' => { column: :hcm_reason, converter: Converters::BaseConverter }
+    'reason_on_description' => { column: :hcm_reason, converter: Converters::BaseConverter }
   }.freeze
 
   validates :ope, :hcm_type, :hcm_reason, presence: true

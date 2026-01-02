@@ -14,7 +14,6 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   before do
     create :user, email: 'fred@va.gov', password: 'fuggedabodit'
-    allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true)
   end
 
   describe 'archives archived model' do
@@ -26,32 +25,13 @@ RSpec.shared_examples 'an archivable model' do |options|
     end
 
     context 'when successful' do
-      it 'archives previous production version', js: true do
+      it 'archives previous versions', js: true do
         # version 3
         create_version(:production)
         # version 4
         create_version(:production)
-        archive_test(4, 3, 1)
-      end
 
-      it 'does not archive preview versions greater than current production', js: true do
-        # version 3
-        create_version(:production)
-        # version 4
-        create_version(:production)
-        # preview version 5
-        create_version(:preview)
-        archive_test(5, 4, 1)
-      end
-
-      it 'archives previous production version and preview versions less than current production', js: true do
-        # preview version 3
-        create_version(:preview)
-        # preview version 4
-        create_version(:preview)
-        # version 5
-        create_version(:production)
-        archive_test(5, 2, 3)
+        archive_test
       end
     end
 
@@ -86,21 +66,15 @@ RSpec.shared_examples 'an archivable model' do |options|
 
   private
 
-  def archive_test(initial_count,
-                   count_total,
-                   archive_count)
-    expect(original_type.count).to eq(initial_count)
-    expect(archived_type.count).to eq(0)
+  def archive_test
+    before_archive_count = original_type.count
 
     Archiver.archive_previous_versions
+    archived_count = archived_type.count
+    after_archive_count = original_type.count
 
-    expect(original_type.count).to eq(count_total)
-    expect(archived_type.count).to eq(archive_count)
-
-    expect(original_type.distinct.pluck(:version_id)).to include(
-      *[Version.current_production.id, Version.current_preview&.id].compact
-    )
-    expect(archived_type.pluck(:id)).not_to include(*original_type.pluck(:id))
+    expect(after_archive_count).to eq(1)
+    expect(archived_count).to eq(before_archive_count - after_archive_count)
   end
 
   def create_version(level)

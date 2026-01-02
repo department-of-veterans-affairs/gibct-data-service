@@ -120,4 +120,79 @@ describe RooHelper::Loader do
         .to raise_error(StandardError, error_message)
     end
   end
+
+  describe 'non_scorecard_header_mappings' do
+    let(:ipeds_hd) { IpedsHd }
+
+    it 'maps headers with UTF-8 BOM (raw bytes) correctly' do
+      # UTF-8 BOM: \xEF\xBB\xBF
+      file_headers = ["\xEF\xBB\xBFUnitId", 'InstNm', 'Addr']
+      headers_mapping = {}
+      file_options = { liberal_parsing: false }
+
+      result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
+
+      expect(result[:cross]).to eq("\xEF\xBB\xBFUnitId")
+      expect(result[:institution]).to eq('InstNm')
+      expect(result[:addr]).to eq('Addr')
+    end
+
+    it 'maps headers with UTF-16/UTF-32 BOM correctly' do
+      # Unicode BOM: \uFEFF
+      file_headers = ["\uFEFFUnitId", 'InstNm']
+      headers_mapping = {}
+      file_options = { liberal_parsing: false }
+
+      result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
+
+      expect(result[:cross]).to eq("\uFEFFUnitId")
+      expect(result[:institution]).to eq('InstNm')
+    end
+
+    it 'maps headers with UTF-8 BOM misread as ISO-8859-1 correctly' do
+      # UTF-8 BOM misread as ISO-8859-1: ï»¿
+      file_headers = ['ï»¿UnitId', 'InstNm']
+      headers_mapping = {}
+      file_options = { liberal_parsing: false }
+
+      result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
+
+      expect(result[:cross]).to eq('ï»¿UnitId')
+      expect(result[:institution]).to eq('InstNm')
+    end
+
+    it 'maps headers with BOM when liberal_parsing is enabled' do
+      file_headers = ["\xEF\xBB\xBF\"UnitId\"", 'InstNm']
+      headers_mapping = {}
+      file_options = { liberal_parsing: true }
+
+      result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
+
+      expect(result[:cross]).to eq("\xEF\xBB\xBF\"UnitId\"")
+      expect(result[:institution]).to eq('InstNm')
+    end
+
+    it 'maps headers without BOM normally' do
+      file_headers = %w[UnitId InstNm Addr]
+      headers_mapping = {}
+      file_options = { liberal_parsing: false }
+
+      result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
+
+      expect(result[:cross]).to eq('UnitId')
+      expect(result[:institution]).to eq('InstNm')
+      expect(result[:addr]).to eq('Addr')
+    end
+
+    it 'handles unknown headers by downcasing them' do
+      file_headers = ["\xEF\xBB\xBFUnitId", 'UnknownHeader']
+      headers_mapping = {}
+      file_options = { liberal_parsing: false }
+
+      result = ipeds_hd.send(:non_scorecard_header_mappings, file_headers, headers_mapping, ipeds_hd, file_options)
+
+      expect(result[:cross]).to eq("\xEF\xBB\xBFUnitId")
+      expect(result[:unknownheader]).to eq('UnknownHeader')
+    end
+  end
 end

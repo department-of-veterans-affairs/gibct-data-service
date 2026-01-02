@@ -191,7 +191,7 @@ class DashboardsController < ApplicationController
         skipline =
           case class_nm
           when 'Hcm' then 2
-          when 'Mou' then 1
+          when 'Mou' then 3
           else 0
           end
 
@@ -232,10 +232,11 @@ class DashboardsController < ApplicationController
 
   # Sometimes the file is an xls file and sometimes it is an xlsx file.
   def hcm_spreadsheet_processing(class_nm)
-    if NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm].end_with?('.xls')
+    if NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm].end_with?('.xls') &&
+       File.exist?('tmp/hcm.xls')
       FileTypeConverters::XlsToCsv.new('tmp/hcm.xls', 'tmp/hcm.csv').convert_xls_to_csv
     else
-      NoKeyApis::NoKeyApiDownloader::API_DOWNLOAD_CONVERSION_NAMES[class_nm] || "tmp/#{params[:csv_type]}s.csv"
+      FileTypeConverters::XlsxToCsv.new('tmp/hcm.xlsx', 'tmp/hcm.csv').convert_xlsx_to_csv
     end
   end
 end

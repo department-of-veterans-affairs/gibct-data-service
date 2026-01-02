@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
   <title>GibctDataService</title>
+  <!-- 
+    Disable turbo-prefetch. When the user hovers over one of the fetch buttons, it causes the process to kick off.
+    The api is invoked to retrieve the data from the remote source and loaded into the database. This is problematic
+    for a variety of reasons.
+  -->
+  <meta name="turbo-prefetch" content="false">
+  <!-- -->
+
   <%= stylesheet_link_tag    'application', media: 'all' %>
 
   <!-- Load legacy Sprockets assets (e.g. jQuery, Bootstrap) -->
