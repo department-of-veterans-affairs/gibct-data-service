@@ -3,8 +3,8 @@
 RSpec.shared_examples 'an exportable model by version history' do
   let(:name) { described_class.name.underscore }
   let(:factory_name) { name.to_sym }
-  let(:source_klass) { described_class.source_klass }
-  let(:source_factory) { source_klass.name.underscore.to_sym }
+  let(:live_version_klass) { described_class.live_version_klass }
+  let(:source_factory) { live_version_klass.name.underscore.to_sym }
   let(:current_year) { Time.zone.now.year }
 
   before do
@@ -22,7 +22,7 @@ RSpec.shared_examples 'an exportable model by version history' do
   end
 
   describe '.export_version_history' do
-    let(:mapping) { source_klass::CSV_CONVERTER_INFO }
+    let(:mapping) { live_version_klass::CSV_CONVERTER_INFO }
     let(:col_sep) { Common::Shared.file_type_defaults(described_class.name)[:col_sep] }
 
     it 'raises NotImplementedError unless klass included in VERSION_HISTORY_EXPORTABLE_TABLES' do
@@ -69,7 +69,7 @@ RSpec.shared_examples 'an exportable model by version history' do
       rows = CSV.parse(rows.join("\n"), col_sep: col_sep)
       check_headers(header_row)
 
-      live_data = source_klass.all.to_a
+      live_data = live_version_klass.all.to_a
       archived_data = described_class.where('created_at >= ?', Time.zone.local(start_year, 1, 1))
                                      .order(created_at: :desc)
                                      .to_a
