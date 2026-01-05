@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_07_173208) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_06_133745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -2172,40 +2172,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_07_173208) do
 
   create_table "yellow_ribbon_program_sources", id: :serial, force: :cascade do |t|
     t.string "facility_code"
-    t.string "school_name_in_yr_database"
-    t.string "school_name_in_weams"
     t.string "campus"
-    t.string "street_address"
     t.string "city"
     t.string "state"
-    t.string "zip"
-    t.string "public_private"
     t.string "degree_level"
     t.string "division_professional_school"
     t.integer "number_of_students"
     t.decimal "contribution_amount", precision: 12, scale: 2
-    t.boolean "updated_for_2011_2012"
-    t.boolean "missed_deadline"
-    t.boolean "ineligible"
     t.date "date_agreement_received"
-    t.date "date_yr_signed_by_yr_official"
-    t.date "amendment_date"
-    t.boolean "flight_school"
-    t.date "date_confirmation_sent"
-    t.boolean "consolidated_agreement"
-    t.boolean "new_school"
-    t.boolean "open_ended_agreement"
-    t.boolean "modified"
-    t.boolean "withdrawn"
-    t.string "sco_name"
-    t.string "sco_telephone_number"
-    t.string "sco_email_address"
-    t.string "sfr_name"
-    t.string "sfr_telephone_number"
-    t.string "sfr_email_address"
-    t.string "initials_yr_processor"
     t.string "year_of_yr_participation"
-    t.text "notes"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["facility_code"], name: "index_yellow_ribbon_program_sources_on_facility_code"
@@ -2220,37 +2195,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_07_173208) do
     t.decimal "contribution_amount", precision: 12, scale: 2
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.date "amendment_date"
     t.string "campus"
     t.string "city"
-    t.boolean "consolidated_agreement"
     t.date "date_agreement_received"
-    t.date "date_confirmation_sent"
-    t.date "date_yr_signed_by_yr_official"
     t.string "facility_code"
-    t.boolean "flight_school"
-    t.boolean "ineligible"
-    t.string "initials_yr_processor"
-    t.boolean "missed_deadline"
-    t.boolean "modified"
-    t.boolean "new_school"
-    t.text "notes"
-    t.boolean "open_ended_agreement"
-    t.string "public_private"
-    t.string "school_name_in_weams"
-    t.string "school_name_in_yr_database"
-    t.string "sco_email_address"
-    t.string "sco_name"
-    t.string "sco_telephone_number"
-    t.string "sfr_email_address"
-    t.string "sfr_name"
-    t.string "sfr_telephone_number"
     t.string "state"
-    t.string "street_address"
-    t.boolean "updated_for_2011_2012"
-    t.boolean "withdrawn"
     t.string "year_of_yr_participation"
-    t.string "zip"
     t.index ["institution_id"], name: "index_yellow_ribbon_programs_on_institution_id"
     t.index ["version"], name: "index_yellow_ribbon_programs_on_version"
   end
