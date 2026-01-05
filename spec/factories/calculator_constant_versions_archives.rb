@@ -15,7 +15,7 @@ FactoryBot.define do
     version { nil }
 
     after(:build) do |archive, evaluator|
-      archive.version ||= create(:version, :production, :from_year, year: evaluator.year)
+      archive.version ||= create(:version, :from_year, year: evaluator.year)
     end
   end
 end

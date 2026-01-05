@@ -9,8 +9,12 @@
 <% end %>
 
 <% if @preview_generation_completed %>
-  <%= turbo_stream.replace "versions" do %>
-    <%= render partial: "dashboards/versions_table", locals: { production_versions: @production_versions } %>
+  <%= turbo_stream.replace "versions_table" do %>
+    <%= render 'dashboards/versions_table', production_versions: @production_versions %>
+  <% end %>
+
+  <%= turbo_stream.replace "generate_version_buttons" do %>
+    <%= render 'dashboards/generate_version_buttons', preview_versions: @preview_versions %>
   <% end %>
 
   <%= turbo_stream.remove "preview_status_poller" %>

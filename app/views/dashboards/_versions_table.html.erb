@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "versions" do %>
+<div id="versions_table">
   <input type="hidden" id="VersionId" name="VersionId" value="<%= production_versions.first.id %>" />
   <table class="table table-hover table-condensed table-bordered table-responsive">
     <thead>
@@ -15,4 +15,4 @@
       <%= render partial: "dashboards/version", collection: production_versions, as: :version %>
     </tbody>
   </table>
-<% end %>
+</div>

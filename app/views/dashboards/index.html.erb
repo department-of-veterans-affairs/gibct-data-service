@@ -16,25 +16,9 @@
   </div>
 </div>
 
-<div id="generate_version_buttons">
-  <div data-controller="generate-version-modal">
-    <%= render partial: "generate_version_modal" %>
-    <button data-action="click->generate-version-modal#show"
-            class="btn dashboard-btn-warning btn-xs"
-            <%= can_generate_preview(@preview_versions) %>>
-              Generate Version
-    </button>
-  </div>
-
-  <% if generating_in_progress?(@preview_versions) && appears_to_be_stuck?(@preview_versions) %>
-    &nbsp;&nbsp;
-    <%= link_to 'Unlock', dashboard_unlock_generate_button_path, method: :post,
-                class: "btn dashboard-btn-info btn-xs",
-                role: "button",
-                id: "unlock_generate-button"
-    %>
-    &nbsp;&nbsp;(Use this when Generate Version is stuck)
-  <% end %>
+<div data-controller="generate-version-modal">
+  <%= render partial: "generate_version_modal" %>
+  <%= render "generate_version_buttons", preview_versions: @preview_versions %>
 </div>
 
 <%= render partial: 'issues' %>

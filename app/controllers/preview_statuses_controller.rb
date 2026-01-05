@@ -6,7 +6,10 @@ class PreviewStatusesController < ApplicationController
   def poll
     @preview_status = PreviewGenerationStatusInformation.latest
     @preview_generation_completed = @preview_status.nil? || check_completion
-    @production_versions = Version.production.newest.includes(:user).limit(1) if @preview_generation_completed
+    if @preview_generation_completed
+      @production_versions = Version.production.newest.includes(:user).limit(1)
+      @preview_versions = Version.preview.newest.includes(:user).limit(1)
+    end
 
     respond_to do |format|
       format.turbo_stream { render template: 'messages/update' }

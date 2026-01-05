@@ -22,4 +22,8 @@ module CalculatorConstantsHelper
   def year_value?(constant)
     constant.name == 'FISCALYEAR'
   end
+
+  def earliest_constants_year
+    CalculatorConstantVersionsArchive::EARLIEST_AVAILABLE_YEAR
+  end
 end
