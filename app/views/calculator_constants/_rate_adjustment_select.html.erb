@@ -1,0 +1,13 @@
+<select name="calculator_constants[<%= constant.id %>][rate_adjustment_id]"
+        id="<%= dom_id(constant, :select) %>"
+        <% if constant.benefit_type.nil? %>
+          disabled
+          selected
+          data-action="mouseenter->constants-form#enableSelect mouseout->constants-form#disableSelect"
+        <% end %>>
+  <option value=""></option>
+  <% rate_adjustments.each do |rate_adjustment| %>
+    <%= render partial: "calculator_constants/rate_adjustment_option",
+               locals: { rate_adjustment:, constant:, reset_selected: true } %>
+  <% end %>
+</select>

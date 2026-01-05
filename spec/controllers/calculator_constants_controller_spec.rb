@@ -7,8 +7,6 @@ require 'controllers/shared_examples/shared_examples_for_authentication'
 require 'controllers/shared_examples/shared_examples_for_collection_updatable'
 
 RSpec.describe CalculatorConstantsController, type: :controller do
-  before { allow(CalculatorConstant).to receive(:versioning_enabled?).and_return(true) }
-
   it_behaves_like 'an authenticating controller', :index, 'calculator_constants'
 
   describe 'GET #index' do
@@ -21,7 +19,6 @@ RSpec.describe CalculatorConstantsController, type: :controller do
       expect(assigns(:calculator_constants)).to eq(CalculatorConstant.all)
       expect(assigns(:constants_unpublished)).to eq(CalculatorConstant.unpublished?)
       expect(assigns(:previous_constants)).to eq(CalculatorConstantVersionsArchive.circa(previous_year))
-      expect(assigns(:earliest_available_year)).to eq(CalculatorConstantVersionsArchive.earliest_available_year)
       expect(assigns(:rate_adjustments)).to eq(RateAdjustment.by_chapter_number)
     end
   end

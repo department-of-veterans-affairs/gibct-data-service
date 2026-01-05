@@ -29,8 +29,14 @@ module Common
     #
     # replace all spaces and dashes with underscores
     # then reduce duplicate underscores in a row to a single underscore
+    # Also strips BOM (Byte Order Mark) characters that may appear at the start of CSV files
     def self.convert_csv_header(header)
-      header.gsub(/\s+|-+/, '_').gsub(/_+/, '_')
+      # Remove BOM characters (UTF-8, UTF-16, UTF-32)
+      cleaned = header.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+      cleaned = cleaned.gsub(/\A\xEF\xBB\xBF/, '') # UTF-8 BOM (raw bytes)
+      cleaned = cleaned.gsub(/\A\uFEFF/, '')        # UTF-16/UTF-32 BOM
+      cleaned = cleaned.sub(/\Aï»¿/, '')            # UTF-8 BOM misread as ISO-8859-1
+      cleaned.gsub(/\s+|-+/, '_').gsub(/_+/, '_')
     end
 
     def self.display_csv_header(header)

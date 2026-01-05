@@ -4,19 +4,18 @@ require 'rails_helper'
 require 'models/shared_examples/shared_examples_for_exportable_by_version_history'
 
 RSpec.describe CalculatorConstantVersionsArchive, type: :model do
+  before { stub_const("#{described_class.name}::EARLIEST_AVAILABLE_YEAR", 2022) }
+
   it_behaves_like 'an exportable model by version history'
 
   describe '.circa' do
-    before do
-      create_list(:calculator_constant_versions_archive, 2, year: 2023)
-      create_list(:calculator_constant_versions_archive, 2, year: 2024)
-    end
-
     it 'returns most recently versioned records as of a specific year' do
-      v2023 = create(:version, :production, :from_year, year: 2023)
+      create_list(:calculator_constant_versions_archive, 2, year: 2023)
+      v2023 = create(:version, :from_year, year: 2023)
       records_2023 = create_list(:calculator_constant_versions_archive, 2, version: v2023)
 
-      v2024 = create(:version, :production, :from_year, year: 2024)
+      create_list(:calculator_constant_versions_archive, 2, year: 2024)
+      v2024 = create(:version, :from_year, year: 2024)
       records_2024 = create_list(:calculator_constant_versions_archive, 2, version: v2024)
 
       expect(described_class.circa(2023)).to eq(records_2023)
@@ -24,7 +23,36 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
     end
 
     it 'returns empty query if no version exists' do
-      expect(described_class.circa(2019)).to eq(described_class.none)
+      create_list(:calculator_constant_versions_archive, 2, year: 2023)
+      expect(described_class.circa(2022)).to eq(described_class.none)
+    end
+
+    it 'returns published constants instead of archive if querying current year' do
+      current_year = Time.zone.now.year
+      version = create(:version, :production, :from_year, year: current_year)
+      published_constants = create_list(:calculator_constant_version, 2, version:)
+      expect(described_class.circa(current_year)).to eq(published_constants)
+    end
+
+    # Edge case immediately after New Years
+    context 'when year changed but new version has yet to be generated' do
+      let(:previous_year) { Time.zone.now.year - 1 }
+
+      before do
+        create(:calculator_constant_versions_archive, year: previous_year)
+        version = create(:version, :production, :from_year, year: previous_year)
+        create(:calculator_constant_version, version:)
+      end
+
+      it 'returns published constants instead of archive when querying previous year' do
+        expect(described_class.circa(previous_year).first).to be_a(described_class.live_version_klass)
+      end
+
+      it 'returns archived constant once a version has been generated in new year' do
+        Version.current_production.destroy
+        create(:version, :production, :from_year, year: Time.zone.now.year)
+        expect(described_class.circa(previous_year).first).to be_a(described_class)
+      end
     end
   end
 
@@ -33,14 +61,6 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
       create_list(:calculator_constant_versions_archive, 2, year: 2022)
       create_list(:calculator_constant_versions_archive, 2, year: 2023)
       create_list(:calculator_constant_versions_archive, 2, year: 2024)
-    end
-
-    it 'returns empty query if earliest available year same as current year' do
-      # TO-DO: Install timecop gem
-      frozen_time = Time.current.change(year: described_class::EARLIEST_AVAILABLE_YEAR)
-      allow(Time.zone).to receive(:now).and_return(frozen_time)
-      allow(described_class).to receive(:earliest_available_year).and_return(described_class::EARLIEST_AVAILABLE_YEAR)
-      expect(described_class.over_the_years(2022, 2024)).to eq(described_class.none)
     end
 
     it 'returns most recently versioned records over a range of years' do
@@ -67,40 +87,9 @@ RSpec.describe CalculatorConstantVersionsArchive, type: :model do
     end
   end
 
-  describe '.earliest_available_year' do
-    it 'returns year where versioning first implemented for record' do
-      # TO-DO: Install timecop gem
-      frozen_time = Time.current.change(year: 2024)
-      allow(Time.zone).to receive(:now).and_return(frozen_time)
-
-      create(:calculator_constant_versions_archive, year: 2021)
-      create(:calculator_constant_versions_archive, year: 2022)
-      create(:calculator_constant_versions_archive, year: 2023)
-
-      expect(described_class.earliest_available_year).to eq(2021)
-    end
-
-    it 'returns EARLIEST_AVAILABLE_YEAR if environment production' do
-      # TO-DO: Install timecop gem
-      frozen_time = Time.current.change(year: 2025)
-      allow(Time.zone).to receive(:now).and_return(frozen_time)
-      allow(Settings).to receive(:environment).and_return('vagov-prod')
-
-      create(:calculator_constant_versions_archive, year: 2021)
-      create(:calculator_constant_versions_archive, year: 2022)
-      create(:calculator_constant_versions_archive, year: 2023)
-
-      expect(described_class.earliest_available_year).to eq(described_class::EARLIEST_AVAILABLE_YEAR)
-    end
-
-    it 'returns EARLIEST_AVAILABLE_YEAR if no records available (outside production)' do
-      expect(described_class.earliest_available_year).to eq(described_class::EARLIEST_AVAILABLE_YEAR)
-    end
-  end
-
-  describe '.source_klass' do
+  describe '.live_version_klass' do
     it 'returns CalculatorConstantVersion' do
-      expect(described_class.source_klass).to eq(CalculatorConstantVersion)
+      expect(described_class.live_version_klass).to eq(CalculatorConstantVersion)
     end
   end
 end

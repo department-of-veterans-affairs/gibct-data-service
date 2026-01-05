@@ -104,7 +104,7 @@ module Common
     def csv_headers_for_version_history
       csv_headers = {}
 
-      klass.source_klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
+      klass.live_version_klass::CSV_CONVERTER_INFO.each_pair do |csv_column, info|
         key = info[:column]
         csv_headers[key] = Common::Shared.display_csv_header(csv_column)
       end
@@ -172,7 +172,7 @@ module Common
     end
 
     def write_live_data_to_version_history(csv, csv_headers)
-      klass.source_klass
+      klass.live_version_klass
            .includes(version: :user)
            .order(:name)
            .each do |record|

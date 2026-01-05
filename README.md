@@ -1,4 +1,4 @@
-# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=testing/gibct-data-service/master)](http://jenkins.vfs.va.gov/job/builds/job/gi-bill-data-service/)[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/department-of-veterans-affairs/gibct-data-service)[![Maintainability](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/maintainability)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/test_coverage)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/test_coverage) [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](LICENSE.md)
+# Gibct Data Service [![Build Status](https://dev.va.gov/jenkins/buildStatus/icon?job=testing/gibct-data-service/master)](http://jenkins.vfs.va.gov/job/builds/job/gi-bill-data-service/)[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/department-of-veterans-affairs/gibct-data-service)[![Maintainability](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/maintainability)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a11398be6058464c5178/test_coverage)](https://codeclimate.com/github/department-of-veterans-affairs/gibct-data-service/test_coverage) [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](LICENSE.md) 
 
 ## Introduction
 The GIBCT Data Service (**GIDS**) compiles data from a variety of federal CSV-formatted sources into a set of
@@ -157,6 +157,12 @@ bin/jobs
 ```
 
 This will start the Solid Queue worker process and jobs enqueued in your development environment will be processed just like they would be in staging/production. If you do not run `bin/jobs` and only use the web server (e.g. `bin/rails s`) then jobs will still be enqueued just fine, but they won't be worked on until the worker process is started. You can always check on the status of any jobs by going to `http://localhost:3000/jobs`.
+
+To start both the server and solid queue at the same time run this in your terminal window:
+
+```
+bin/dev
+```
 
 ## Commands
 - `bundle exec rake lint` - Run the full suite of linters on the codebase.

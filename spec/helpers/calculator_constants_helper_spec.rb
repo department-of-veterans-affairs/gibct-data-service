@@ -8,9 +8,7 @@ RSpec.describe CalculatorConstantsHelper, type: :helper do
 
   describe '#display_value_for' do
     it 'calls #decimalize on nonyear float values' do
-      allow(helper).to receive(:decimalize).with(nonyear_constant.float_value)
-      helper.display_value_for(nonyear_constant)
-      expect(helper).to have_received(:decimalize).with(nonyear_constant.float_value)
+      expect(helper.display_value_for(nonyear_constant)).to eq(format('%.2f', nonyear_constant.float_value))
     end
 
     it 'formats year values as integers' do
@@ -53,6 +51,12 @@ RSpec.describe CalculatorConstantsHelper, type: :helper do
 
     it 'returns false for nonyear constants' do
       expect(helper.year_value?(nonyear_constant)).to be false
+    end
+  end
+
+  describe '#earliest_constants_year' do
+    it 'returns 2025' do
+      expect(helper.earliest_constants_year).to eq(CalculatorConstantVersionsArchive::EARLIEST_AVAILABLE_YEAR)
     end
   end
 end
