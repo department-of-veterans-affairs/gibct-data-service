@@ -116,9 +116,7 @@ class DashboardWeamImporter
       end
     end
 
-    # rubocop:disable Style/SymbolProc
     @workfiles.each { |file| file.close }
-    # rubocop:enable Style/SymbolProc
   end
 
   def calculate_lines_per_subfile
