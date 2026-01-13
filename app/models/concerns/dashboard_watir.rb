@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module DashboardWatir
   extend ActiveSupport::Concern
 
@@ -15,6 +16,10 @@ module DashboardWatir
     STAGE_URL ||= 'https://staging.va.gov/gids/user/sign_in'
     STAGE_DASHBOARD ||= 'https://staging.va.gov/gids/dashboards'
     STAGE_IMPORT_PREFIX ||= '/gids/uploads/new/'
+
+    DEVELOPMENT_URL ||= 'https://dev.va.gov/gids/user/sign_in'
+    DEVELOPMENT_DASHBOARD ||= 'https://dev.va.gov/gids/dashboards'
+    DEVELOPMENT_IMPORT_PREFIX ||= '/gids/uploads/new/'
 
     TIMEOUT ||= 600 # seconds
 
@@ -48,6 +53,10 @@ module DashboardWatir
         @login_url = LOCAL_URL
         @dashboard_url = LOCAL_DASHBOARD
         @import_prefix = LOCAL_IMPORT_PREFIX
+      when 'd', 'dev', 'development'
+        @login_url = DEVELOPMENT_URL
+        @dashboard_url = DEVELOPMENT_DASHBOARD
+        @import_prefix = DEVELOPMENT_IMPORT_PREFIX
       when 'production', 'prod', 'p'
         @login_url = PROD_URL
       else
@@ -125,4 +134,5 @@ module DashboardWatir
     end
   end
   # rubocop:enable Metrics/BlockLength
+  # rubocop:enable Metrics/ModuleLength
 end

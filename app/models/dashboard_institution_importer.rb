@@ -112,12 +112,15 @@ class DashboardInstitutionImporter
     end
   end
 
-  # Weam has approx 75k lines, split into n files so that we don't run out of memory in Staging
+  # Institution has approx 75k lines, split into n files so that we don't run out of memory in Development/Staging
   def split_institutions_file
     INSTITUTION_FILES.each_key do |file_number|
       @workfiles[file_number] = File.open("#{@download_dir}/InstitutionVersion_#{file_number + 1}.csv", 'w')
     end
 
+    # The insitutions download file has the version number in tha name right before the extension
+    # If more than one got downloaded, use the one with the highest number. Note this breaks on
+    # 999 -> 1000 or 9999 -> 10000 ...
     file = Dir.glob("#{download_dir}/institutions_version*.csv").last
     lines_per_subfile = calculate_lines_per_subfile(file)
 
@@ -133,9 +136,7 @@ class DashboardInstitutionImporter
       end
     end
 
-    # rubocop:disable Style/SymbolProc
     @workfiles.each { |f| f.close }
-    # rubocop:enable Style/SymbolProc
   end
 
   def calculate_lines_per_subfile(file)
