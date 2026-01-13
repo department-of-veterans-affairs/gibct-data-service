@@ -7,7 +7,10 @@ class DashboardExporterImporter
 
   TABLES_TO_SKIP = %w[CipCode InstitutionSchoolRating VrrapProvider].freeze
 
-  def initialize(user, pass, load_env = nil)
+  attr_accessor :restart_idx
+
+  def initialize(user, pass, load_env, restart_table = nil)
+    @restart_idx = restart_table.nil? ? 0 : set_restart_idx(restart_table)
     common_initialize_watir(user, pass, load_env)
   end
 
@@ -34,10 +37,11 @@ class DashboardExporterImporter
   def upload_all_table_data
     login_to_dashboard
 
-    CSV_TYPES_ALL_TABLES_CLASSES.each do |table_class|
+    CSV_TYPES_ALL_TABLES_CLASSES.each_with_index do |table_class, idx|
       table_name = table_class.to_s
 
       next if TABLES_TO_SKIP.include? table_name
+      next unless idx >= @restart_idx
 
       begin
         upload_csv_file_for(table_name)
@@ -62,6 +66,11 @@ class DashboardExporterImporter
   # rubocop:enable Lint/RescueException
 
   private
+
+  def set_restart_idx(restart_table)
+    table_names = CSV_TYPES_ALL_TABLES_CLASSES.map { |table| table.to_s }
+    @restart_idx = table_names.index(restart_table)
+  end
 
   def set_logger
     logger_time = Time.now.getlocal.strftime('%Y%m%d_%H%M%S')

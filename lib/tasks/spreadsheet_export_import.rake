@@ -2,32 +2,43 @@
 
 ####################################################
 # This rake task enables you to refresh the local
-# and staging environments with the latest changes
-# to the spreadsheets that drive the versioning.
+# and development and staging environments with the
+# latest changes to the spreadsheets that drive the
+# versioning.
 # It's intended to be run from an Ubuntu VM or a
 # bare metal Ubuntu machine.
 ####################################################
 # Edit your .bashrc file and add the following lines
 # export LOCAL_USER="your local gids userid"
 # export LOCAL_PASS="your local gids password"
+# export DEV_USER="your development gids userid"
+# export DEV_PASS="your development gids password"
 # export STAGE_USER="your staging gids userid"
 # export STAGE_PASS="your staging gids password"
 # export PROD_USER="your prod gids userid"
 # export PROD_PASS="your prod gids password"
 # don't forget to source your.bashrc file when done!
 #
-# 4 tasks:
+# 5 tasks:
 # 1) export from production
 # 2) import to localhost
 # 3) import to staging
 # 4) default which runs 1 & 3
+# 5) import to development (aws) - this one came later
 #
 # To run one of the rake tasks from the command line:
 # rake utils:default
 # rake utils:export_csv_files_from_production
 # rake utils:import_csv_files_to_localhost
+# rake utils:import_csvs_to_development
 # rake utils:import_csvs_to_staging
-####################################################
+#
+# For importing, sometimes you need/want to restart the import from a particular table
+# ARGV[1] is the table name to resume the import job with and is optional
+#   refer to config/initializers/csv_types.rb for valid table names
+#
+# ARGV[0] is the rake task itself which is not what you want
+####################################################################
 
 namespace :utils do
   desc 'Export from production and import to staging'
@@ -43,7 +54,7 @@ namespace :utils do
   # Note that the vets-api and gibct need to be running locally for this to work
   desc 'Import all csv files to localhost'
   task import_csvs_to_localhost: :environment do
-    dei = DashboardExporterImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local')
+    dei = DashboardExporterImporter.new(ENV['LOCAL_USER'], ENV['LOCAL_PASS'], 'local', ARGV[1])
     dei.upload_all_table_data
     dei.finalize
   end
@@ -55,9 +66,23 @@ namespace :utils do
     dii.finalize
   end
 
+  desc 'Import all csv files to development (aws)'
+  task import_csvs_to_development: :environment do
+    dei = DashboardExporterImporter.new(ENV['DEV_USER'], ENV['DEV_PASS'], 'dev', ARGV[1])
+    dei.upload_all_table_data
+    dei.finalize
+  end
+
+  desc 'Import the Institution CSV to development (aws)'
+  task import_institution_csv_to_development: :environment do
+    dii = DashboardInstitutionImporter.new(ENV['DEV_USER'], ENV['DEV_PASS'], 'dev')
+    dii.upload_institution_csv_file
+    dii.finalize
+  end
+
   desc 'Import all csv files to staging'
   task import_csvs_to_staging: :environment do
-    dei = DashboardExporterImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging')
+    dei = DashboardExporterImporter.new(ENV['STAGE_USER'], ENV['STAGE_PASS'], 'staging', ARGV[1])
     dei.upload_all_table_data
     dei.finalize
   end
