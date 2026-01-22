@@ -140,7 +140,7 @@ class DashboardInstitutionImporter
   end
 
   def calculate_lines_per_subfile(file)
-    linecount = `wc -l < #{file}`.to_i
+    linecount = File.foreach(file).count
     # It's necessary to add some lines to the total count to account for the header row in each file
     # Not doing this causes an array out of bounds error when trying to write to the last file
     (linecount + INSTITUTION_FILES.size).div(INSTITUTION_FILES.size)
