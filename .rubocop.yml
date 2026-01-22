@@ -246,6 +246,9 @@ RSpec/LeakyConstantDeclaration:
 RSpec/NestedGroups:
   Max: 4
 
+RSpec/MessageSpies:
+  Enabled: false
+
 # Determined to be too benign and/or numerous to justify changing
 RSpec/MultipleExpectations:
   Enabled: false
