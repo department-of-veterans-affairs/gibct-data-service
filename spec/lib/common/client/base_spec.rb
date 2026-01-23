@@ -57,7 +57,6 @@ describe Common::Client::Base do
   end
 
   # rubocop:disable RSpec/SubjectStub
-  # rubocop:disable RSpec/MessageSpies
   describe '#perform' do
     let(:path) { '/' }
     let(:params) { {} }
@@ -267,6 +266,5 @@ describe Common::Client::Base do
         .to raise_error(Common::Client::Errors::NotAuthenticated)
     end
   end
-  # rubocop:enable RSpec/MessageSpies
   # rubocop:enable RSpec/SubjectStub
 end

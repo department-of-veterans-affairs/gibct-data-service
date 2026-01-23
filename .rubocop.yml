@@ -32,8 +32,7 @@ Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/SymbolProc:
-  Exclude:
-    - "lib/roo_helper/loader.rb"  
+  Enabled: false
 
 # This cop forces you to put a return at the beginning of a block of code rather than having an if statement
 # whose body carries to the end of the function. For example:
@@ -246,6 +245,9 @@ RSpec/LeakyConstantDeclaration:
 
 RSpec/NestedGroups:
   Max: 4
+
+RSpec/MessageSpies:
+  Enabled: false
 
 # Determined to be too benign and/or numerous to justify changing
 RSpec/MultipleExpectations:

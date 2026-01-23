@@ -11,10 +11,8 @@ module HcmUrlFetcher
     Rails.logger.info "Fetching HCM URL from #{HCM_JSON_URL}"
     response = conn.get(HCM_JSON_URL)
     unless response.success?
-      # :nocov:
       Rails.logger.error "Failed to fetch HCM URL: #{response.status} - #{response.reason_phrase}"
       return DEFAULT_URL
-      # :nocov:
     end
 
     json = JSON.parse(response.body)
@@ -26,9 +24,7 @@ module HcmUrlFetcher
 
     href.start_with?('http') ? href : "#{BASE_URL}#{href}"
   rescue StandardError => e
-    # :nocov:
     Rails.logger.error "Failed to fetch HCM URL: #{e.message}"
     DEFAULT_URL
-    # :nocov:
   end
 end

@@ -116,13 +116,11 @@ class DashboardWeamImporter
       end
     end
 
-    # rubocop:disable Style/SymbolProc
     @workfiles.each { |file| file.close }
-    # rubocop:enable Style/SymbolProc
   end
 
   def calculate_lines_per_subfile
-    linecount = `wc -l < #{@download_dir}/Weam.csv`.to_i
+    linecount = File.foreach("#{@download_dir}/Weam.csv").count
     # It's necessary to add some lines to the total count to account for the header row in each file
     # Not doing this causes an array out of bounds error when trying to write to the last file
     (linecount + WEAM_FILES.size).div(WEAM_FILES.size)

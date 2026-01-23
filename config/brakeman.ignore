@@ -1,22 +1,155 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Missing Encryption",
-      "warning_code": 109,
-      "fingerprint": "6a26086cd2400fbbfb831b2f8d7291e320bcc2b36984d2abc359e41b3b63212b",
-      "check_name": "ForceSSL",
-      "message": "The application does not force use of HTTPS: `config.force_ssl` is not enabled",
-      "file": "config/environments/production.rb",
-      "line": 1,
-      "link": "https://brakemanscanner.org/docs/warning_types/missing_encryption/",
-      "code": null,
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "38c825e527239d81823b792ab9084eb4351d5e731083fa9a7f609d34e4cbbe8f",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/dashboards/_version.html.erb",
+      "line": 11,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(\"Show GIBCT\", (Unresolved Model).new.gibct_link, :target => \"_blank\", :rel => \"noopener noreferrer\", :class => \"btn dashboard-btn-success btn-xs\", :role => \"button\")",
+      "render_path": [
+        {
+          "type": "template",
+          "name": "dashboards/_versions_table",
+          "line": 15,
+          "file": "app/views/dashboards/_versions_table.html.erb",
+          "rendered": {
+            "name": "dashboards/_version",
+            "file": "app/views/dashboards/_version.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "dashboards/_version"
+      },
+      "user_input": "(Unresolved Model).new.gibct_link",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "54c71a820ef183388fa94bffe63adaa34c76c8f8a44d4453fff6178cf24dc67e",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/models/dashboard_exporter_importer.rb",
+      "line": 82,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "`gnome-terminal --title=\"Tail log #{Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")}\" -- bash -c \"tail -f #{Rails.root.join(\"log\", \"export_import_#{Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")}.log\")}; exec bash -i\"`",
       "render_path": null,
-      "location": null,
-      "user_input": null,
-      "confidence": "High",
-      "note": "We terminate SSL before traffic gets to the gi data service elb and traffic from the elb to the service is over http."
+      "location": {
+        "type": "method",
+        "class": "DashboardExporterImporter",
+        "method": "set_logger"
+      },
+      "user_input": "Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Denial of Service",
+      "warning_code": 76,
+      "fingerprint": "608e27e0f4dc186258464c75db90711d09b67f2745475aba1642cbabc87099fb",
+      "check_name": "RegexDoS",
+      "message": "Model attribute used in regular expression",
+      "file": "app/models/calculator_constant.rb",
+      "line": 44,
+      "link": "https://brakemanscanner.org/docs/warning_types/denial_of_service/",
+      "code": "/(?:Chapter|Ch\\.?) (#{RateAdjustment.pluck(:benefit_type).join(\"|\")})/",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CalculatorConstant",
+        "method": "matched_benefit_types"
+      },
+      "user_input": "RateAdjustment.pluck(:benefit_type).join(\"|\")",
+      "confidence": "Medium",
+      "cwe_id": [
+        20,
+        185
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "73a80c17389b3906bdaa6c46e2b842343a0616f86ffaec53436eef065e15fc26",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/utilities/no_key_apis/no_key_api_downloader.rb",
+      "line": 43,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "Open3.capture3(\"curl#{rest_command} #{url} #{h_parm} #{o_parm} #{d_parm}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "NoKeyApis::NoKeyApiDownloader",
+        "method": "download_csv"
+      },
+      "user_input": "rest_command",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "b50fa272244dad3808a69f40815073723c39452d7a052e1a58e9082bdab5637b",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/models/dashboard_institution_importer.rb",
+      "line": 73,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "`gnome-terminal --title=\"Tail log #{Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")}\" -- bash -c \"tail -f #{Rails.root.join(\"log\", \"import_institution_#{Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")}.log\")}; exec bash -i\"`",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "DashboardInstitutionImporter",
+        "method": "set_logger"
+      },
+      "user_input": "Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "ba8d1fec86ca7fd5ec7ed9d9cd55d233e484162efd58f7b9c5440a6b381291de",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/models/dashboard_weam_importer.rb",
+      "line": 66,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "`gnome-terminal --title=\"Tail log #{Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")}\" -- bash -c \"tail -f #{Rails.root.join(\"log\", \"import_weam_#{Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")}.log\")}; exec bash -i\"`",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "DashboardWeamImporter",
+        "method": "set_logger"
+      },
+      "user_input": "Time.now.getlocal.strftime(\"%Y%m%d_%H%M%S\")",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
+      ],
+      "note": ""
     }
   ],
-  "updated": "2019-10-21 15:40:56 -0400",
-  "brakeman_version": "4.6.1"
+  "updated": "2026-01-21 15:04:44 -0600",
+  "brakeman_version": "6.1.2"
 }
