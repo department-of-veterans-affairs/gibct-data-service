@@ -28,7 +28,8 @@ Rails.application.configure do
   # Compress JavaScripts and CSS.
   # Do we want to switch to the Terser gem?
   # https://stackoverflow.com/questions/75315372/when-running-rake-assetsprecompile-rails-env-production-over-es6-syntax-pipelin
-  config.assets.js_compressor = :terser
+  # Disable JS compression during Docker build to avoid mini_racer segfault on some platforms
+  config.assets.js_compressor = ENV['RAILS_ASSETS_PRECOMPILE'] == '1' ? nil : :terser
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.

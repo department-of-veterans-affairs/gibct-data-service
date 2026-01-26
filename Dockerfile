@@ -58,6 +58,7 @@ RUN LINK_HOST=https://example.com \
     GOVDELIVERY_TOKEN=dummy \
     GOVDELIVERY_STAGING_SERVICE=true \
     DEPLOYMENT_ENV=vagov-dev \
+    NODE_OPTIONS="--max-old-space-size=2048" \
     bundle exec rake assets:precompile RAILS_ENV=production RAILS_RELATIVE_URL_ROOT=/gids
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
