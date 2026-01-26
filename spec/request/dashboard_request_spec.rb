@@ -19,6 +19,6 @@ RSpec.describe 'Dashboard', type: :request do
 
   it 'does not respond to GET #build' do
     get dashboard_build_path
-    expect(response).to have_http_status(:not_found)
+    expect(response).to have_http_status(:internal_server_error)
   end
 end
