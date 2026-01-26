@@ -5,7 +5,10 @@ require 'models/shared_examples/shared_examples_for_loadable'
 require 'models/shared_examples/shared_examples_for_exportable'
 
 RSpec.describe ArfGiBill, type: :model do
-  before { create(:weam) }
+  before do
+    create(:weam, facility_code: '11000101')
+    create(:weam, facility_code: '11000201')
+  end
 
   it_behaves_like 'a loadable model', skip_lines: 0
   it_behaves_like 'an exportable model', skip_lines: 0

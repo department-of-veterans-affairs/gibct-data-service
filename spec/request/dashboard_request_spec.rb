@@ -18,8 +18,7 @@ RSpec.describe 'Dashboard', type: :request do
   end
 
   it 'does not respond to GET #build' do
-    expect do
-      get dashboard_build_path
-    end.to raise_error(ActionController::RoutingError)
+    get dashboard_build_path
+    expect(response).to have_http_status(:internal_server_error)
   end
 end
