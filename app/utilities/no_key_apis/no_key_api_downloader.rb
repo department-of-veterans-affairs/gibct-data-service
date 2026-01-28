@@ -51,7 +51,12 @@ module  NoKeyApis
       # Vsoc uses the octet-stream header to pull down from source
       return '-H "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"' if @class_nm.eql?('Hcm')
       return '-H \'Content-Type: application/octet-stream\'' if @class_nm.eql?('Vsoc')
-      return '' if @class_nm.eql?('Mou')
+
+      if @class_nm.eql?('Mou')
+        str = '-H \'accept: text/html,application/xhtml+xml,application/xml\''
+        str += ' -H \'content-type: application/x-www-form-urlencoded\''
+        return str
+      end
 
       '-H \'Content-Type: application/json\''
     end
