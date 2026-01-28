@@ -64,7 +64,6 @@ group :development, :test do
 
   # Linters
   gem 'libv8-node', '21.7.2.0'
-  gem 'mini_racer'
   gem 'rubocop', require: false
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
