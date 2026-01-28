@@ -47,6 +47,20 @@ COPY --chown=gi-bill-data-service:gi-bill-data-service . .
 USER gi-bill-data-service
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION}
 RUN bundle install --binstubs="${BUNDLE_APP_CONFIG}/bin" $bundler_opts && find ${BUNDLE_APP_CONFIG}/cache -type f -name \*.gem -delete
+RUN LINK_HOST=https://example.com \
+    SECRET_KEY_BASE=dummy_key_for_asset_compilation \
+    GIBCT_URL=https://example.com \
+    SAML_IDP_METADATA_FILE=. \
+    SAML_CALLBACK_URL=https://example.com/saml/auth/callback \
+    SAML_IDP_SSO_URL=https://example.com/idp/sso \
+    SAML_ISSUER=GIDS \
+    GOVDELIVERY_URL=example.com \
+    GOVDELIVERY_TOKEN=dummy \
+    GOVDELIVERY_STAGING_SERVICE=true \
+    DEPLOYMENT_ENV=vagov-dev \
+    NODE_OPTIONS="--max-old-space-size=2048" \
+    RAILS_ASSETS_PRECOMPILE=1 \
+    bundle exec rake assets:precompile RAILS_ENV=production RAILS_RELATIVE_URL_ROOT=/gids
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 ###
