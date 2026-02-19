@@ -641,7 +641,6 @@ DEPENDENCIES
   json (>= 2.3.0)
   json_matchers
   libv8-node (= 21.7.2.0)
-  mini_racer
   mission_control-jobs
   mutex_m (~> 0.3.0)
   net-imap (~> 0.5.8)
