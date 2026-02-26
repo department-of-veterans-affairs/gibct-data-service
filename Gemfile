@@ -29,7 +29,7 @@ gem 'jquery-ui-rails', '>= 8.0.0'
 gem 'json', '>= 2.3.0'
 gem 'mutex_m', '~> 0.3.0' # ruby 3.4.0 warning said to add
 gem 'net-imap', '~> 0.5.8' # ruby 3.4.0 warning said to add
-gem 'nokogiri', '~> 1.18.9'
+gem 'nokogiri', '~> 1.19.1'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 gem 'pg' # Use postgresql as the database for Active Record
 gem 'puma', '~> 6.6.1'
