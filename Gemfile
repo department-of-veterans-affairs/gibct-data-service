@@ -65,9 +65,9 @@ group :development, :test do
 
   # Linters
   gem 'libv8-node', '21.7.2.0'
-  gem 'rubocop', require: false
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
+  gem 'rubocop', '1.63.5', require: false
+  gem 'rubocop-rails', '2.27.0'
+  gem 'rubocop-rspec', '2.29.2'
   gem 'scss_lint', require: false
 
   # Security scanners
