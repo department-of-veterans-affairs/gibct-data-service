@@ -27,6 +27,7 @@ gem 'importmap-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails', '>= 8.0.0'
 gem 'json', '>= 2.3.0'
+gem 'mail', '~> 2.8.1'
 gem 'mutex_m', '~> 0.3.0' # ruby 3.4.0 warning said to add
 gem 'net-imap', '~> 0.5.8' # ruby 3.4.0 warning said to add
 gem 'newrelic_rpm'
