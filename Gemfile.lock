@@ -366,7 +366,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.3)
+    rack (3.2.5)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-session (2.1.1)
@@ -641,7 +641,6 @@ DEPENDENCIES
   json (>= 2.3.0)
   json_matchers
   libv8-node (= 21.7.2.0)
-  mini_racer
   mission_control-jobs
   mutex_m (~> 0.3.0)
   net-imap (~> 0.5.8)
@@ -652,7 +651,7 @@ DEPENDENCIES
   pg
   pry-nav
   puma (~> 6.6.1)
-  rack (>= 3.1.17)
+  rack (>= 3.1.20)
   rack-cors
   rails (= 7.1.5.2)
   rails-controller-testing
