@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
 
@@ -220,7 +220,11 @@ Rails/FilePath:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - "spec/fixtures/**/*"
+
+RSpec/SpecFilePathSuffix:
   Exclude:
     - "spec/fixtures/**/*"
 
