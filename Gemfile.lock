@@ -676,9 +676,9 @@ DEPENDENCIES
   roo (~> 2.10)
   roo-xls (~> 1.2)
   rspec-rails
-  rubocop (= 1.63.5)
-  rubocop-rails (= 2.27.0)
-  rubocop-rspec (= 2.29.2)
+  rubocop
+  rubocop-rails
+  rubocop-rspec
   ruby-saml (>= 1.18.0)
   rubyzip (~> 2.4)
   sass-rails (= 6.0)
