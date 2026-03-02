@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '7.1.5.2'
+gem 'rails', '7.2.2.2'
 
 gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
@@ -16,7 +16,7 @@ gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
 gem 'devise' # Use devise for authentication
 gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
-gem 'faraday'
+gem 'faraday', '~> 1.10.5'
 gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.9'
@@ -30,11 +30,11 @@ gem 'json', '>= 2.3.0'
 gem 'mutex_m', '~> 0.3.0' # ruby 3.4.0 warning said to add
 gem 'net-imap', '~> 0.5.8' # ruby 3.4.0 warning said to add
 gem 'newrelic_rpm'
-gem 'nokogiri', '~> 1.18.9'
+gem 'nokogiri', '~> 1.19.1'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 gem 'pg' # Use postgresql as the database for Active Record
 gem 'puma', '~> 6.6.1'
-gem 'rack', '>= 3.1.17'
+gem 'rack', '>= 3.1.20'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'rainbow'
