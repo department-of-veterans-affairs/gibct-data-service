@@ -220,11 +220,7 @@ Rails/FilePath:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
-RSpec/SpecFilePathFormat:
-  Exclude:
-    - "spec/fixtures/**/*"
-
-RSpec/SpecFilePathSuffix:
+RSpec/FilePath:
   Exclude:
     - "spec/fixtures/**/*"
 
