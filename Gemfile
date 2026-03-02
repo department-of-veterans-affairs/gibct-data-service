@@ -16,7 +16,7 @@ gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
 gem 'devise' # Use devise for authentication
 gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
-gem 'faraday'
+gem 'faraday', '~> 1.10.5'
 gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.9'
