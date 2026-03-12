@@ -88,7 +88,10 @@ module InstitutionBuilder
       begin
         Institution.transaction do
           # to fix 'cancelling statement due to statement timeout' issue
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '1200s';")
+          ActiveRecord::Base.connection.execute(<<~SQL)
+            SET LOCAL statement_timeout = '1200s';
+            SET LOCAL idle_in_transaction_session_timeout = '0';
+          SQL
           if staging?
             # Skipping validation here because of the scale of this query (it will timeout updating all 70k records)
             # rubocop:disable Rails/SkipsModelValidations
