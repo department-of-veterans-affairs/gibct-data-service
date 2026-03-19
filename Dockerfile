@@ -27,6 +27,13 @@ FROM base AS development
 #     chmod +x /usr/local/bin/cc-test-reporter && \
 #     cc-test-reporter --version
 
+# Install Chromium for headless browser testing
+RUN apt-get update -qq && apt-get install -y \
+    chromium fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN gem install ferrum
+
 COPY --chown=gi-bill-data-service:gi-bill-data-service docker-entrypoint.sh ./
 USER gi-bill-data-service
 ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
