@@ -22,7 +22,7 @@ RSpec.shared_examples 'an authenticating controller' do |action, destination, pa
 
         click_button 'Log in'
 
-        expect(page).to have_content('Invalid Email or password')
+        expect(page).to have_content('Invalid email or password')
       end
     end
 
