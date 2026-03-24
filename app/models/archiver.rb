@@ -51,6 +51,7 @@ module Archiver # rubocop:disable Metrics/ModuleLength
 
       #{report}
     HERE
+    metrics.clear
   end
 
   def self.archive_previous_versions # rubocop:disable Metrics/AbcSize
