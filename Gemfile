@@ -14,7 +14,7 @@ gem 'cancancan', '~> 3.6' # Use cancancan for authorization
 gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
-gem 'devise' # Use devise for authentication
+gem 'devise', '>= 5.0.3' # Use devise for authentication
 gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
 gem 'faraday', '~> 1.10.5'
 gem 'faraday_middleware'

@@ -52,7 +52,7 @@ La Verne,99999,All,All,318010005,30,CA,Online,02/05/2019,2019/2020
 Jacksonville,99999,Undergraduate,School of Education,3197211,99999,FL,NULL,10/05/2019,2019/2020
 Jacksonville,3000,Graduate,College of Education,31972110,99999,FL,NULL,10/05/2019,2019/2020
 JOPLIN,2500,Doctoral,Medicine & Biosciences,32128025,10,MO,Joplin,08/05/2019,2019/2020
-Seattle,10000,Doctoral/Graduate,"MIT, DNP, LEMBA",10, P.O. Box 2522000",NULL,
+Seattle,10000,Doctoral/Graduate,MIT, DNP, LEMBA,10, P.O. Box 2522000,NULL,
 st paul,99999,All,Graduate School of Prof Psychology,31000723,99999,MN,NULL,01/01/1900,2019/2020
 Tempe,9420,Undergraduate,All,11905103,90,AZ,Tempe,,2019/2020
 Tempe,5245,Undergraduate,Online,11905103,99999,AZ,Tempe,,2019/2020
@@ -172,7 +172,7 @@ Denver,5000,Graduate,All,31814206,999999,CO,Sturm College of Law,11/05/2017,2017
 Elon,5000,Graduate,School of Business,31000533,1,NC,NULL,03/05/2018,2018/2019
 Kansas City,4000,All,All,34000316,10,KS,NULL,,2017/2018
 Nashville,99999,Graduate,College of Professional Studies,31902942,99999,TN,NULL,06/05/2017,2019/2020
-Winston Salem,2000,"Graduate, Doctoral",All,31910733,,,,
+Winston Salem,2000,Graduate, Doctoral,All,31910733,,,,
 Philadelphia,3214,Undergraduate,All,31825538,20,PA,NULL,,2017/2018
 Philadelphia,2000,Graduate,All,31825538,50,PA,NULL,,2017/2018
 La Jolla,4500,Undergraduate,All,11802305,3,CA,San Diego,12/05/2017,2017/2018
@@ -186,7 +186,7 @@ Richmond,9999,All,All,24520917,2000,KY,Richmond,,2017/2018
 Kettering,99999,All,All,249G2435,2000,OH,Dayton/Kettering,,2017/2018
 Los Angeles,10000,Graduate,Medicine,31505105,5,CA,NULL,,2019/2020
 Los Angeles,10000,Graduate,Dentistry,31505150,3,CA,NULL,11/05/2017,2017/2018
-Los Angeles,99999,Undergraduate,"Bachelor of Science, Bachelor of Arts",31014905,,,,
+Los Angeles,99999,Undergraduate,Bachelor of Science, Bachelor of Arts,31014905,,,,
 Dallas,20000,Certificate,BMET,34042343,48,TX,NULL,,2017/2018
 Blanding,99999,All,All,11001844,99999,UT,,,
 Fayetteville,7500,Doctoral,Doctor of Physical Therapy,31005433,10,NC,NULL,,2019/2020
@@ -263,7 +263,7 @@ Arlington,99999,All,All,31024146,20,VA,Arlington,,2016/2017
 Southaven,99999,All,All,25900924,99999,MS,,,
 Marylhurst,99999,All,All,31909137,99999,OR,NULL,,2016/2017
 New Orleans,4000,All,All,31000518,18,LA,NULL,11/05/2016,2016/2017
-Washington,10000,"Graduate, Doctoral",Nursing & Health Studies,31405209,,,,
+Washington,10000,Graduate, Doctoral,Nursing & Health Studies,31405209,,,,
 Washington,5000,Undergraduate,School of Foreign Service,31405209,99999,DC,,,
 Fairview Heights,5000,Undergraduate,All,24901013,99999,IL,Fairview Heights,,2016/2017
 St. Louis,5000,Undergraduate,All,24961025,99999,MO,NULL,,2016/2017
@@ -462,12 +462,12 @@ APO,20000,All,All,31806910,20,AE,,,
 APO,20000,All,All,31806910,20,AE,,,
 APO,20000,All,All,31806910,20,AE,Mannheim,02/05/2012,NULL
 APO,99999,All,All,31806910,7000,AE,,,
-FPO,99999,All,All,31806910,7000,AE, Box 102",Naples,
-APO,20000,All,All,31806910,20,AE, Box 370",Ramstein,
+FPO,99999,All,All,31806910,7000,AE, Box 102,Naples,
+APO,20000,All,All,31806910,20,AE, Box 370,Ramstein,
 FPO,20000,All,All,31806910,20,AE,,,
 FPO,20000,All,All,31806910,20,AE,,,
-APO,20000,All,All,31806910,20,AE, Box 120",Spangdahlem,
-APO,20000,All,All,31806910,20,AE, Box 46",Wiesbaden,
+APO,20000,All,All,31806910,20,AE, Box 120,Spangdahlem,
+APO,20000,All,All,31806910,20,AE, Box 46,Wiesbaden,
 Singapore,20000,All,All,31806910,20,AE,,,
 Singapore,20000,All,All,31806910,20,AE,UNISIM,02/05/2012,NULL
 NAS Pensacola,20000,All,All,31808010,20,FL,Pensacola,02/05/2012,NULL
@@ -479,7 +479,7 @@ Fort Carson,20000,All,All,31918106,20,CO,,,
 Fort Carson,20000,All,All,31918106,20,CO,Schriever,02/05/2012,NULL
 Phoenix,20000,All,All,31003903,20,AZ,Sky Harbor,02/05/2012,NULL
 Albuquerque,20000,All,All,31002531,20,NM,Albuquerque,02/05/2012,NULL
-Altus AFB,20000,All,All,31807036,20,OK, Rm 240",Altus AFB,
+Altus AFB,20000,All,All,31807036,20,OK, Rm 240,Altus AFB,
 Andrews AFB,20000,All,All,31003420,20,MD,,,
 Atlanta,99999,All,All,31813411,7000,GA, Dept 208,,
 Marietta,20000,All,All,31813411,20,GA,,,
@@ -556,7 +556,7 @@ Robins AFB,20000,All,All,31813311,20,GA,Robins AFB,02/05/2012,NULL
 Randolph AFB,20000,All,All,31028343,20,TX,San Antonio,02/05/2012,NULL
 San Diego,20000,All,All,31822605,20,CA,,,
 Savannah,20000,All,All,31813111,20,GA,Savannah,02/05/2012,NULL
-Schofield Barracks,20000,All,All,31834164,20,HI, Room 202",Schofield Barracks,
+Schofield Barracks,20000,All,All,31834164,20,HI, Room 202,Schofield Barracks,
 Renton,20000,All,All,31401847,20,WA,,,
 Seymour Johnson AFB,20000,All,All,31909133,20,NC,Seymour Johnson AFB,02/05/2012,NULL
 Shaw AFB,20000,All,All,31010140,20,SC,Shaw AFB,02/05/2012,NULL
@@ -570,7 +570,7 @@ Vance AFB,20000,All,All,31806036,20,OK,,,
 Vandenberg AFB,20000,All,All,31802305,20,CA,Vandenberg AFB,02/05/2012,NULL
 Port Hueneme,20000,All,All,31822705,20,CA,,,
 Victorville,20000,All,All,31801505,20,CA,,,
-Oak Harbor,20000,All,All,31328047,20,WA,",Whidbey Island,
+Oak Harbor,20000,All,All,31328047,20,WA,,Whidbey Island,
 White Sands Miss.Rng,99999,All,All,31002831,99999,NM,,,
 Boston,99999,Graduate,All,31001221,99999,MA,Boston,,NULL
 Boston,99999,Undergraduate,All,31001221,99999,MA,Boston,,NULL
@@ -613,7 +613,7 @@ Bluefield,100000,Undergraduate,All,11901148,99999,WV,NULL,,NULL
 Bluffton,8000,All,All,31000435,99999,OH,NULL,,NULL
 Boise,8000,All,All,11991112,5,ID,Boise,,2016/2017
 Boston,5663,All,All,31014721,20,MA,NULL,03/05/2012,NULL
-Boston,5000,"Undergraduate, Biblical Studies",Bible College,31925121,,,,
+Boston,5000,Undergraduate, Biblical Studies,Bible College,31925121,,,,
 Chestnut Hill,6000,All,All,31916121,85,MA,NULL,,2017/2018
 Boston,3500,All,All,31809021,52,MA,NULL,,2016/2017
 Brunswick,99999,Undergraduate,All,31000219,99999,ME,NULL,06/05/2012,2016/2017
@@ -675,7 +675,7 @@ Meridian,99999,All,All,24901612,99999,ID,Boise (Formerly Utah Career College) Me
 Orem,99999,All,All,24810444,99999,UT,Orem (Formerly Utah Career College),09/05/2012,NULL
 Santa Barbara,99999,All,All,21959105,99999,CA,Santa Barbara,04/05/2012,NULL
 Mendota Heights,99999,All,All,21900123,99999,MN,Mendota Heights,04/05/2012,NULL
-Atlanta,99999,Undergraduate,All,24917411,99999,GA, Suite 130",Atlanta,
+Atlanta,99999,Undergraduate,All,24917411,99999,GA, Suite 130,Atlanta,
 Cincinnati,99999,Undergraduate,All,24800835,99999,OH,Cincinnati,09/05/2012,NULL
 Boise,99999,Undergraduate,All,21001612,99999,ID,Boise,09/05/2012,NULL
 Phoenix,99999,Undergraduate,All,21004003,99999,AZ,,,
@@ -767,7 +767,7 @@ Clemson,3500,Undergraduate,All,11802140,45,SC,NULL,11/05/2012,NULL
 Clemson,5000,Graduate,All,11802140,5,SC,NULL,11/05/2012,NULL
 Cleveland,16000,Undergraduate,All,31002935,99999,OH,NULL,,2017/2018
 Cleveland,20000,All,All,31514735,5,OH,NULL,,NULL
-Cleveland,29500,"JD, EMBA, AMBA",Law & Business Schools,10, KB 1300",NULL,
+Cleveland,29500,JD, EMBA, AMBA,Law & Business Schools,10, KB 1300,NULL,
 Conway,5000,All,All,11801540,35,SC,,,
 Cedar Rapids,14000,Undergraduate,All,31000515,35,IA,,,
 Hartsville,5000,Undergraduate,All,31804040,50,SC,,,NULL
@@ -804,7 +804,7 @@ Miramar,99999,All,All,21064210,99999,FL,Chamberlain College of Nursing,,NULL
 Memphis,99999,All,All,21079442,99999,TN,,,
 Nashville,99999,All,All,21079542,99999,TN,Nashville,08/05/2012,NULL
 Henderson,99999,All,All,21112028,99999,NV,,,
-Bellevue,99999,All,All,21410647,99999,WA, Suite 230",Bellevue,
+Bellevue,99999,All,All,21410647,99999,WA, Suite 230,Bellevue,
 Federal Way,99999,All,All,21410947,99999,WA,Federal Way,,NULL
 Westminster,99999,All,All,21822106,99999,CO,Westminster,,NULL
 Orlando,99999,All,All,24200810,99999,FL,,04/04/2012,NULL
@@ -868,7 +868,7 @@ Pittsburgh,3500,Undergraduate,All,31925138,10,PA,NULL,10/05/2012,NULL
 Pittsburgh,3500,Doctoral,All,31925138,10,PA,NULL,10/05/2012,NULL
 Pittsburgh,3500,Graduate,All,31925138,10,PA,NULL,10/05/2012,NULL
 Pittsburgh,10000,Undergraduate,All,31025438,35,PA,NULL,,2019/2020
-Pittsburgh,10000,Graduate,"Non-Heinz, Non-Tepper, Non-INI",20,,,
+Pittsburgh,10000,Graduate,Non-Heinz, Non-Tepper, Non-INI,20,,,
 Rolla,99999,All,All,31122925,99999,MO,Rolla,,NULL
 Pittsburgh,17000,Graduate,Heinz College,31025438,30,PA,NULL,,2019/2020
 Pittsburgh,15000,Graduate,Tepper School of Business,31025438,30,PA,NULL,,2019/2020
@@ -901,7 +901,7 @@ Cleveland,18200,Doctoral,Weatherhead School of Mgmt.,31513635,2,OH,NULL,,2018/20
 Cleveland,14800,Graduate,Frances Payne Bolton School of Nursing,31513635,5,OH,NULL,10/05/2018,2018/2019
 Cleveland,12500,Graduate,Mandel School of Applied Social Science (MSASS),31513635,20,OH,NULL,,2018/2019
 Cleveland,16200,Graduate,School of Law -JD Program,31513635,15,OH,NULL,,2018/2019
-Cleveland,12500,Undergraduate,"CAS, CSE, FPB,31513635,10900 Euclid Avenue,NULL,
+Cleveland,12500,Undergraduate,CAS, CSE, FPB,31513635,10900 Euclid Avenue,NULL,
 Castleton,3000,Undergraduate,All,13000145,5,VT,NULL,,NULL
 Cazenovia,10000,Undergraduate,Cazenovia College,31918132,99999,NY,NULL,03/04/2012,NULL
 Allentown,5000,All,All,31992138,50,PA,NULL,08/05/2012,NULL
@@ -917,17 +917,17 @@ Ocala,99999,Undergraduate,All,14909410,15,FL,,,NULL
 Auburn,1000,Undergraduate,All,14904419,10,ME,NULL,09/05/2012,NULL
 Fayette,6000,Undergraduate,College of Liberal Arts & Sciences,31962125,25,MO,,02/05/2012,NULL
 Aberdeen Proving Ground,500,Graduate,College of Graduate Studies,11002420,100,MD,Aberdeen,03/04/2018,2018/2019
-Joint Base Andrews,500,Graduate,College Graduate Studies,11004920,100,MD,"JB Andrews,,
-Ft. Riley,500,Graduate,College of Graduate Studies,11005016,100,KS,"Ft. Riley,,
-Ft. Leavenworth,500,Graduate,College of Graduate Studies,11005616,100,KS,"Ft. Leavenworth,,
-Fort Meade,500,Graduate,College of Graduate Studies,11006520,100,MD,"Ft. Meade,,
-Ft. Lee,500,Graduate,College of Humanites & Social & Behavioral Sciences,11007646,100,VA,"Ft. Lee,,
+Joint Base Andrews,500,Graduate,College Graduate Studies,11004920,100,MD,JB Andrews,,
+Ft. Riley,500,Graduate,College of Graduate Studies,11005016,100,KS,Ft. Riley,,
+Ft. Leavenworth,500,Graduate,College of Graduate Studies,11005616,100,KS,Ft. Leavenworth,,
+Fort Meade,500,Graduate,College of Graduate Studies,11006520,100,MD,Ft. Meade,,
+Ft. Lee,500,Graduate,College of Humanites & Social & Behavioral Sciences,11007646,100,VA,Ft. Lee,,
 Ft. Lee,500,Graduate (College of Graduate Studies),College of Graduate Studies,11007646,100,VA,,,
-Ft . Polk,500,Graduate,College of Graduate Studies,11026218,100,LA,"Ft. Polk,,
+Ft . Polk,500,Graduate,College of Graduate Studies,11026218,100,LA,Ft. Polk,,
 Schofield Barracks,500,Graduate,All,11801264,200,HI,,,
-Schofield Barracks,500,Graduate,College of Graduate Studies,11801364,100,HI,"Schofield,,
+Schofield Barracks,500,Graduate,College of Graduate Studies,11801364,100,HI,Schofield,,
 Inglewood,2500,All,School of Social Work,31060105,10,CA,Los Angeles Campus,11/05/2012,NULL
-Schofield Barracks,500,Graduate,College of Education & Human Services,11801364,100,HI,"Schofield,,
+Schofield Barracks,500,Graduate,College of Education & Human Services,11801364,100,HI,Schofield,,
 Joint Base Pearl Harbor-Hickham,500,Graduate,College of Graduate Studies,11801564,100,HI,Hickam,03/04/2018,2018/2019
 Mount Pleasnt,500,Graduate,College of Business Administration,11805122,100,MI,NULL,11/05/2012,NULL
 Fort McPherson,500,Graduate,All,11812211,100,GA,,,NULL
@@ -972,9 +972,9 @@ New York,5000,Graduate,Occupational Therapy,31937132,6,NY,NULL,,2018/2019
 New York,6000,Graduate,Physical Therapy,31937132,6,NY,NULL,,2018/2019
 New York,10000,Graduate,Mailman School of Public Health,31937132,4,NY,NULL,,2018/2019
 New York,8500,Graduate,School of Social Work,31937132,10,NY,NULL,,2018/2019
-Atlanta,500,Graduate,College of Graduate Studies,11812511,100,GA,"Atlanta,,
-Oceanside,500,Graduate,College of Education and Human Services,11926105,100,CA,"Camp Pendleton,,
-Oceanside,500,Graduate,College Graduate Studies,11926105,100,CA,"Camp Pendleton,,
+Atlanta,500,Graduate,College of Graduate Studies,11812511,100,GA,Atlanta,,
+Oceanside,500,Graduate,College of Education and Human Services,11926105,100,CA,Camp Pendleton,,
+Oceanside,500,Graduate,College Graduate Studies,11926105,100,CA,Camp Pendleton,,
 Richmond,500,Graduate(College of Graduate Studies),College of Graduate Studies,31008346,100,VA,,,NULL
 Richmond,500,Graduate(Education & Human Services),College of Education & Human Services,31008346,100,VA,,,NULL
 Richmond,500,Graduate(College of Humanities&Social&Behavioral Sciences,College of Humanities&Social&Behavioral Sciences,31008346,100,VA,,,NULL
@@ -1015,7 +1015,7 @@ Hanover,99999,Graduate/Doctoral (Graduate Arts & Sciences),Graduate Arts & Scien
 Hanover,99999,All (Thayer School of Engineering),Thayer School of Engineering,31000129,99999,NH,NULL,10/05/2012,2019/2020
 Hanover,20000,Doctoral (Medical School),Medical School,31005029,99999,NH,NULL,01/01/1900,2019/2020
 Hanover,20000,Graduate (Tuck School of Business),Tuck School of Business,31006029,99999,NH,NULL,05/04/2017,2017/2018
-Grand Rapids,99999,All,"Business, Health, Technology",99999,,,
+Grand Rapids,99999,All,Business, Health, Technology,99999,,,
 Davidson,10000,Undergraduate,All,31000333,14,NC,NULL,12/04/2019,2019/2020
 Elkins,10000,Undergraduate,All,31900048,99999,WV,NULL,,NULL
 Bowling Green,99999,Undergraduate,All,21924417,99999,KY,NULL,,NULL
@@ -1208,7 +1208,7 @@ Bellevue,99999,All,All,21410647,99999,WA,Keller Graduate School of Management,,N
 Federal Way,99999,All,All,21410947,99999,WA,Keller Graduate School of Management,,NULL
 Irvine,99999,All,All,21800105,99999,CA,,,
 Decatur,99999,All,All,21803411,99999,GA,Keller Graduate School of Management-Decatur,08/05/2012,NULL
-King of Prussia,99999,All,All,219B3138,99999,PA, Ste. 3201",King of Prussia,
+King of Prussia,99999,All,All,219B3138,99999,PA, Ste. 3201,King of Prussia,
 Long Beach,99999,All,All,21800805,99999,CA,Long Beach,,NULL
 North Brunswick,99999,All,All,21900130,99999,NJ,North Brunswick,,NULL
 Oakland,99999,All,All,21803405,99999,CA,Oakland,,NULL
@@ -1312,7 +1312,7 @@ Buffalo,99999,All,All,31383032,99999,NY,NULL,03/05/2012,NULL
 Layton,1500,Undergraduate,All,24801344,3,UT,Layton,,NULL
 Murray,1500,Undergraduate,All,24920444,3,UT,Murray,,NULL
 Salt Lake City,1500,Undergraduate,All,24801144,3,UT,Salt Lake City,,NULL
-Greenville,1500,"Undergraduate, Graduate",All,11808133,,,,
+Greenville,1500,Undergraduate, Graduate,All,11808133,,,,
 Ada,99999,All,All,11001836,99999,OK,,,NULL
 Johnson City,99999,All,All,11804042,99999,TN,NULL,,NULL
 Marshall,1500,Undergraduate,All,31003543,250,TX,NULL,10/05/2012,NULL
@@ -1345,7 +1345,7 @@ California,14750,Graduate,All,31900220,99999,MD,S. Maryland,09/05/2018,2018/2019
 California,22700,Undergraduate,All,31900220,99999,MD,S. Maryland,09/05/2018,2018/2019
 Williams Bay,5000,All,All,31011749,99999,WI,,,
 Georgetown,9500,Undergraduate,All,31000417,100,KY,NULL,04/06/2012,NULL
-Washington,5000,"Graduate, Doctoral",Graduate School of Arts & Sciences,31405209,,,,
+Washington,5000,Graduate, Doctoral,Graduate School of Arts & Sciences,31405209,,,,
 Washington,5000,Undergraduate,Georgetown College,31405209,99999,DC,,,
 Washington,15000,Graduate,School of Foreign Service,31405209,99999,DC,,,
 Elon,14000,Graduate,School of Law,31000533,10,NC,,,
@@ -1368,7 +1368,7 @@ Eglin AFB,20000,All,All,31801710,20,FL,Fort Walton Beach,02/05/2012,NULL
 Redstone Arsenal,20000,All,All,31802501,20,AL,,,
 Jacksonville,20000,All,All,31806010,20,FL,Jacksonville,02/05/2012,NULL
 Jacksonville,20000,All,All,31806010,20,FL,Mayport,02/05/2012,NULL
-Jacksonville,20000,All,All,31806010,20,FL, Suite 7",NAS Jacksonville,
+Jacksonville,20000,All,All,31806010,20,FL, Suite 7,NAS Jacksonville,
 McLean,99999,All,All,24850646,99999,VA,,,
 Newport News,99999,All,All,24851446,99999,VA,Newport News,,NULL
 Portland,99999,All,All,24901437,99999,OR,Portland,,NULL
@@ -1427,7 +1427,7 @@ Berlin,20000,All,All,31806910,20,AE,Berlin,02/05/2012,NULL
 APO,20000,All,All,31806910,20,AE,,,
 APO,20000,All,All,31806910,20,AE,,,
 APO,20000,All,All,31806910,20,AE,,,
-APO,20000,All,All,31806910,20,AE, Box 160",Incirlik,
+APO,20000,All,All,31806910,20,AE, Box 160,Incirlik,
 APO,99999,All,All,31806910,7000,- State -,Iraq-Balad,,NULL
 APO,99999,All,All,31806910,99999,AE,,,
 Tampa,99999,All,All,21836010,99999,FL,Tampa (not On-Line),09/05/2012,
@@ -1839,7 +1839,7 @@ Pocatello,3190,Undergraduate,Open,11995112,5,ID,,,
 Jacksonville,7030,Undergraduate,All,31001313,20,IL,,05/04/2012,NULL
 Jacksonville,7030,Graduate,All,31001313,5,IL,,05/04/2012,NULL
 Chicago,99999,Undergraduate,All,31935113,50,IL,,,
-Chicago,6000,Graduate,"All (Main campus, including Stuart/ID)",31935113,,,,
+Chicago,6000,Graduate,All (Main campus, including Stuart/ID),31935113,,,,
 Chicago,5000,Graduate,Stuart School of Business,31043213,25,IL,,,NULL
 Chicago,12750,Graduate,Chicago-Kent College of Law,31043213,15,IL,Chicago-Kent Law,,NULL
 Chicago,5000,Graduate (Stuart School of Business),Stuart School of Business,31043213,20,IL,,,NULL
@@ -2013,8 +2013,8 @@ Nashville,99999,All,All,24003742,99999,TN,Nashville,04/05/2012,NULL
 Newburgh,99999,All,All,24911414,99999,IN,Newburgh,04/05/2012,NULL
 Norfolk,99999,All,All,21803346,99999,VA,Norfolk,04/05/2012,NULL
 North Charleston,99999,All,All,24008440,99999,SC,North Charleston,04/05/2012,NULL
-Norwood,99999,All,All,24005121,99999,MA,"Norwood,,
-Norwood,99999,All,All,24008835,99999,OH,"Norwood,,
+Norwood,99999,All,All,24005121,99999,MA,Norwood,,
+Norwood,99999,All,All,24008835,99999,OH,Norwood,,
 Oakland,99999,All,All,21115605,99999,CA,,,
 Orange,99999,All,All,21115605,99999,CA,Orange,,NULL
 Orland Park,99999,All,All,21965113,99999,IL,Orland Park,04/05/2012,NULL
@@ -2186,7 +2186,7 @@ Galesburg,10500,Undergraduate,All,31944113,10,IL,NULL,10/05/2012,NULL
 Grand Rapids,2000,Undergraduate,All,31104922,10,MI,,,
 Philadelphia,5500,Graduate,All,31007638,100,PA,NULL,01/05/2015,NULL
 Philadelphia,10500,Undergraduate,All,31007638,100,PA,NULL,01/05/2015,NULL
-Riverside,8390,All,"CAS, Business, Education",80,,,
+Riverside,8390,All,CAS, Business, Education,80,,,
 Scranton,99999,All,College,34927438,99999,PA,,02/05/2012,NULL
 Easton,10000,Undergraduate,All,31007838,10,PA,NULL,11/05/2012,NULL
 LaGrange,99999,Undergraduate,All,31000811,99999,GA,,,NULL
@@ -2455,7 +2455,7 @@ Albany,99999,Undergraduate (Paralegal Studies/CJ),Paralegal Studies/CJ,24918632,
 Albany,99999,Undergraduate (Massage Therapy),Massage Therapy,24918632,99999,NY,,,NULL
 Albany,99999,Undergraduate (Game Design),Game Design,24918632,99999,NY,,,NULL
 Albany,99999,Undergraduate (Information Technology),Information Technology,24918632,99999,NY,,,NULL
-Albany,99999,"Undergraduate (Office, Project Mang.)","Office, Project Mang.",99999,,,
+Albany,99999,Undergraduate (Office, Project Mang.),Office, Project Mang.,99999,,,
 Albany,99999,Undergraduate (Accounting Systems),Accounting Systems,24918632,99999,NY,,,NULL
 Albany,99999,Undergraduate (Administrative Asst.),Administrative Asst.,24918632,99999,NY,,,NULL
 Albany,99999,Undergraduate (Business Technologies),Business Technologies,24918632,99999,NY,,,NULL
@@ -3097,7 +3097,7 @@ Colchester,99999,Undergraduate,All,31000445,50,VT,,01/05/2012,NULL
 Colchester,99999,Graduate,All,31000445,25,VT,,01/05/2012,NULL
 Jersey City,99999,All,All,31902130,99999,NJ,Jersey City,,NULL
 Miami Gardens,1000,Doctoral,All,31814010,5,FL,,04/04/2012,NULL
-Miami Gardens,10000,"All (JD, LLM)",School of Law,31814110,,,,
+Miami Gardens,10000,All (JD, LLM),School of Law,31814110,,,,
 Miami Gardens,1000,Graduate,All,31814010,20,FL,,04/04/2012,NULL
 Miami Gardens,2000,Undergraduate,All,31814010,75,FL,,04/04/2012,NULL
 Chicago,99999,All,All,31936113,99999,IL,NULL,09/05/2012,NULL
@@ -3141,7 +3141,7 @@ Jacksonville,99999,All,All,249A9410,99999,FL,Jacksonville,08/05/2012,NULL
 Melville,99999,All,All,24800332,99999,NY,Melville,08/05/2012,NULL
 Tampa,99999,All,All,249C1410,99999,FL,,,
 Bakersfield,6000,Undergraduate,All,24802305,99999,CA,NULL,,NULL
-Bakersfield,99999,Undergraduate,"SBBC-Rancho Mirage, CA",24802305,,,,
+Bakersfield,99999,Undergraduate,SBBC-Rancho Mirage, CA,24802305,,,,
 Santa Barbara,6000,Undergraduate,All,21804905,99999,CA,NULL,,NULL
 Santa Maria,6000,Undergraduate,All,21805105,99999,CA,NULL,,NULL
 Ventura,6000,Undergraduate,All,21804805,99999,CA,NULL,,NULL
@@ -3162,7 +3162,7 @@ New York,16809,All,School of Visual Arts,21357932,50,NY,NULL,,2019/2020
 Kerrville,4500,Undergraduate,All,31987143,300,TX,NULL,,NULL
 Seattle,12500,Undergraduate,All,31390047,99999,WA,,,
 Seattle,5000,Graduate,All,31808047,50,WA,,,
-Seattle,14000,Undergraduate,"CAS, CSE, CoN,31808047,"901 12th Avenue,,
+Seattle,14000,Undergraduate,CAS, CSE, CoN,31808047,901 12th Avenue,,
 Shawnee,99999,Graduate,College for Working Adults,31944036,99999,OK,(Shawnee),,NULL
 Tulsa,99999,Undergraduate,CAS - Programs,31000336,99999,OK,CAS,,NULL
 Tulsa,99999,Undergraduate,College for Working Adults,31000336,99999,OK,CWA,,NULL
@@ -3218,7 +3218,7 @@ Falls Church,99999,Undergraduate (School of Business Admin),School of Business A
 Falls Church,99999,Undergraduate (School of Health Science),School of Health Science,21803146,99999,VA,Falls Church,09/04/2012,NULL
 Falls Church,99999,Undergraduate (School of Arts & Science),School of Arts & Science,21803146,99999,VA,Falls Church,09/04/2012,NULL
 Falls Church,99999,Graduate,All,21803146,99999,VA,Falls Church,09/04/2012,NULL
-Seattle,5000,"Doctoral, School of Law",School of Law,31808147,,,,
+Seattle,5000,Doctoral, School of Law,School of Law,31808147,,,,
 Selma,99999,All,All,31955101,7,AL,,,NULL
 Selma,99999,All,All,31955101,7,AL,,,
 South Orange,10225.5,Undergraduate,All,31805030,99999,NJ,NULL,,2018/2019
@@ -3338,7 +3338,7 @@ Minneapolis,10000,Undergraduate,All,31911123,99999,MN,Minneapolis,,NULL
 Minneapolis,8500,Graduate,All,31911123,99999,MN,Minneapolis,,NULL
 Austin,10000,All,All,319M1143,250,TX,Austin,,2017/2018
 Shawnee,4000,Undergraduate,College of Arts & Sciences,31944036,999999,OK,Shawnee,12/05/2014,NULL
-Fenton,99999,"RT, OTA, PTA",All,99999,,,
+Fenton,99999,RT, OTA, PTA,All,99999,,,
 St. Louis,2000,Undergraduate,All,24946025,99999,MO,NULL,,NULL
 St. Louis,30000,All,Professional,31600925,5,MO,St. Louis,,NULL
 Sioux City,99999,All,All,32840015,99999,IA,,02/04/2012,NULL
@@ -3441,8 +3441,8 @@ Lexington,8500,All,All,21921117,99999,KY,LexingtonCampus,,NULL
 Louisville,8000,All,All,21919117,99999,KY,LouisvilleCampus,,NULL
 Louisville,8500,Graduate,All,21919117,99999,KY,LouisvilleCampus,,NULL
 Louisville,2000,Doctoral,All,21919117,99999,KY,LouisvilleCampus,,NULL
-Buffalo,800,Undergraduate,"Schools of Natural & Social Sciences, Education, Professions,11304632,"1300 Elmwood Avenue,,
-Buffalo,700,Graduate,"Schools of Natural & Social Sciences, Education, Professions,11304632,"1300 Elmwood Avenue,,
+Buffalo,800,Undergraduate,Schools of Natural & Social Sciences, Education, Professions,11304632,1300 Elmwood Avenue,,
+Buffalo,700,Graduate,Schools of Natural & Social Sciences, Education, Professions,11304632,1300 Elmwood Avenue,,
 Plattsburgh,99999,Undergraduate,All,13945332,99999,NY,at Plattsburgh,,NULL
 Troy,99999,Doctoral,Esteves School of Education,319C8132,99999,NY,NULL,10/05/2018,2018/2019
 Troy,99999,Graduate,School of Management,319C8132,99999,NY,NULL,10/05/2018,2018/2019
@@ -3529,7 +3529,7 @@ Morrow,99999,All,All,21903111,99999,GA,,,
 Nashville,99999,All,All,21900142,99999,TN,Nashville Campus,,NULL
 Newport News,99999,All,All,21954446,99999,VA,,,
 Raleigh,99999,All,All,21904133,99999,NC,North Raleigh Campus,,NULL
-Herdon,99999,"Undergraduate, Grad",All,21912146,,,,
+Herdon,99999,Undergraduate, Grad,All,21912146,,,,
 Owings Mill,99999,All,All,21901520,99999,MD,,,
 Palm Beach Gardens,99999,All,All,219B0110,99999,FL,,,
 Pittsburgh,99999,All,All,21941338,99999,PA,Penn Center West Campus,,NULL
@@ -3641,7 +3641,7 @@ Sterling,99999,All,All,21927946,99999,VA,,,
 Arlington,99999,All,All,21953246,99999,VA,Washington,02/05/2012,NULL
 Sterling,99999,All,All,31927946,99999,VA,,,
 Milwaukee,99999,All,All,21002249,99999,WI,,,
-York,99999,All,All,249B4438,99999,PA,"York,,
+York,99999,All,All,249B4438,99999,PA,York,,
 Minneapolis,99999,All,All,21014423,99999,MN,Minnesota,09/05/2012,NULL
 Denver,99999,All,All,21919106,99999,CO,Colorado,09/05/2012,NULL
 Fort Worth,99999,All,All,21040643,99999,TX,,,
@@ -3752,7 +3752,7 @@ Davis-Monthan AFB,99999,All,All,11800103,99999,AZ,Tucson,,NULL
 Montgomery,99999,All,All,11800101,99999,AL,,,
 Phenix City,99999,All,All,11800501,99999,AL,Phenix City,,2016/2017
 Ft. Walton Beach,99999,All,All,11801110,99999,FL,,,
-Tyndall AFB,99999,All,All,11801510,99999,FL, Tyndall AFB",Panama City,
+Tyndall AFB,99999,All,All,11801510,99999,FL, Tyndall AFB,Panama City,
 Orlando,99999,All,All,11801810,99999,FL,,,
 Troy,99999,All,All,11800001,99999,AL,Troy,,2016/2017
 Sacramento,99999,Undergraduate,Bachelor of Science & Bachelor of Arts,31101205,250,CA,,,
@@ -3906,7 +3906,7 @@ Burlington,99999,Undergraduate,All,11801245,99999,VT,,,
 Burlington,10000,Graduate,Medical School,11801245,5,VT,,,
 Burlington,5000,Graduate,Graduate College,11801245,2,VT,,,
 Charlottesville,2500,Graduate,UVA School of Law,11810146,99999,VA,NULL,10/05/2019,2019/2020
-Springfield,99999,Doctoral,"Law, Business, Engineering",20,,,
+Springfield,99999,Doctoral,Law, Business, Engineering,20,,,
 Charlottesville,2500,Graduate,Darden Graduate School of Business,11810146,99999,VA,NULL,10/05/2019,2019/2020
 Charlottesville,2500,Graduate,Batten School of Leadership,11810146,99999,VA,NULL,10/05/2019,2019/2020
 Pensacola,99999,All,All,11963110,250,FL,NULL,07/05/2012,NULL
@@ -3973,8 +3973,8 @@ Pittsburg,99999,All,All,21841238,99999,PA,Pittsburgh Campus,10/05/2012,NULL
 Harrisburg,99999,All,All,21841538,99999,PA,Harrisburg Campus,10/05/2012,NULL
 Ann Arbor,99999,All (School of Art & Design),School of Art & Design,11804122,99999,MI,,,
 Ann Arbor,99999,All (School of Education),School of Education,11804122,99999,MI,,,
-Ann Arbor,99999,"All (School of Literature, Science, & Arts)","School of Literature, & Arts",MI,,
-Ann Arbor,99999,"All (School of Music, Theatre, and Dance)","School of Music, and Dance",MI,,
+Ann Arbor,99999,All (School of Literature, Science, & Arts),School of Literature, & Arts,MI,,
+Ann Arbor,99999,All (School of Music, Theatre, and Dance),School of Music, and Dance,MI,,
 Ann Arbor,99999,All (School of Natural Resources),School of Natural Resources,11804122,99999,MI,,,
 Ann Arbor,99999,All (School of Public Policy),School of Public Policy,11804122,99999,MI,,,
 Ann Arbor,99999,All (School of Engineering),School of Engineering,11804122,99999,MI,,,
@@ -4046,7 +4046,7 @@ Omaha,500,Graduate,School of Allied Health,11801327,99999,NE,Medical Center,,NUL
 Omaha,500,All,College of Graduate Studies,11801327,99999,NE,Medical Center,,NULL
 Omaha,1000,Doctoral,School of Allied Health,11801327,99999,NE,Medical Center,,NULL
 Omaha,4000,Doctoral,College of Pharmacy,11801327,99999,NE,Medical Center,,NULL
-Springfield,99999,Graduate,"Law, Business, Engineering",20,,,
+Springfield,99999,Graduate,Law, Business, Engineering,20,,,
 Omaha,4000,Doctoral,College of Medicine,11801327,99999,NE,Medical Center,01/01/1900,NULL
 Omaha,4000,Doctoral,College of Dentistry,11801327,99999,NE,Medical Center,,NULL
 Omaha,99999,Undergraduate,All,11801327,99999,NE,Medical Center,,NULL
@@ -4386,7 +4386,7 @@ Topeka,1000,All,All,11001916,5,KS,NULL,,NULL
 Topeka,99999,Graduate,School of Law,11001916,99999,KS,NULL,,NULL
 Washington,10000,Undergraduate,All,31004838,99999,PA,,,NULL
 Lexington,99999,Undergraduate,All,31001446,99999999,VA,Lexington,06/04/2017,2017/2018
-Lexington,99999,Graduate,"Wash. & Lee Univ. , School of Law",31001446,,,,
+Lexington,99999,Graduate,Wash. & Lee Univ. , School of Law,31001446,,,,
 Takoma Park,99999,Undergraduate,Traditional Undergraduate,31001320,50,MD,,10/04/2012,NULL
 Takoma Park,99999,Undergraduate,School of Graduate/Professional Studies,31001320,25,MD,,10/04/2012,NULL
 Takoma Park,99999,Graduate,School of Graduate/Professional studies,31001320,25,MD,,10/04/2012,NULL
@@ -4443,8 +4443,8 @@ Edwards AFB,99999,Graduate,All,31008005,99999,CA,,,
 Fort Sam Houston,99999,Graduate,All,31029643,99999,TX,,,
 Orlando,99999,Undergraduate,All,31055710,99999,FL,,,
 Orlando,99999,Graduate,All,31055710,99999,FL,,,
-El Segundo,99999,Undergraduate,All,31803605,99999,CA, Room C2-302",Los Angeles AFB,
-El Segundo,99999,Graduate,All,31803605,99999,CA, Room C2-302",Los Angeles AFB,
+El Segundo,99999,Undergraduate,All,31803605,99999,CA, Room C2-302,Los Angeles AFB,
+El Segundo,99999,Graduate,All,31803605,99999,CA, Room C2-302,Los Angeles AFB,
 Greenwood Village,99999,Graduate,All,31812106,99999,CO,,,
 Fort Stewart,99999,Graduate,All,31821011,99999,GA,,,
 Hunter AAF,99999,Graduate,All,31821011,99999,GA,Hunter AAF,,NULL
@@ -4461,14 +4461,14 @@ Andrew Air Force Base,99999,Graduate,All,31022120,99999,MD,,,
 Beaufort,99999,Graduate,All,31009240,99999,SC,,,
 Brooks City Base,99999,Graduate,All,31029643,99999,TX,,,
 Washington,99999,Graduate,All,31001909,99999,DC,,,
-Camp LeJeune,99999,Graduate,All,31012033,99999,NC, PO Box 10026 NH",Camp Lejeune,
+Camp LeJeune,99999,Graduate,All,31012033,99999,NC, PO Box 10026 NH,Camp Lejeune,
 N. Charleston,99999,Undergraduate,All,31007040,99999,SC,,,
 N. Charleston,99999,Graduate,All,3100740,99999,SC,,,
 Charleston AFB,99999,Graduate,All,31007040,99999,SC,,,
 Columbia,99999,Graduate,All,31802040,99999,SC,,,
 Columbia,99999,Undergraduate,All,31802040,99999,SC,,,
 Fort Bliss,99999,Graduate,All,31023443,99999,TX,,,
-Fort Bragg,99999,Graduate,All,31009833,99999,NC, PO Box 71728",Fort Bragg,
+Fort Bragg,99999,Graduate,All,31009833,99999,NC, PO Box 71728,Fort Bragg,
 Fort Jackson,99999,Graduate,All,31009740,99999,SC,,,
 Fort Leavenworth,99999,Graduate,All,31006516,99999,KS,Fort Leavenworth,,NULL
 Ft. Leonard Wood,99999,Graduate,All,31114025,99999,MO,,,
@@ -4485,13 +4485,13 @@ Ft. Sill,99999,Graduate,All,21941436,99999,OK,,,
 Elgin,99999,Graduate,All,31045613,99999,IL,,,
 Greenville,99999,Undergraduate,All,31010040,99999,SC,,,
 Greenville,99999,Graduate,All,31010040,99999,SC,,,
-Hill AFB,99999,Graduate,All,31001444,99999,UT, Suite 114",Hill AFB,
+Hill AFB,99999,Graduate,All,31001444,99999,UT, Suite 114,Hill AFB,
 Jacksonville,99999,Graduate,All,31057110,99999,FL,,,
-Jacksonville,99999,Graduate,All,31057110,99999,FL, Naval Air Station",Jacksonville NAS,
+Jacksonville,99999,Graduate,All,31057110,99999,FL, Naval Air Station,Jacksonville NAS,
 Kansas City,99999,Undergraduate,All,31953025,99999,MO,,,
 Kansas City,99999,Graduate,All,31953025,99999,MO,,,
 Albuquerque,99999,Graduate,All,31002031,99999,NM,Kirtland AFB,,NULL
-Lackland AFB,99999,Graduate,All,31029643,99999,TX, 1550 Wurtsmith St.",Lackland AFB,
+Lackland AFB,99999,Graduate,All,31029643,99999,TX, 1550 Wurtsmith St.,Lackland AFB,
 McConnell AFB,99999,Graduate,All,31004416,99999,KS,,,
 Memphis NSA,99999,Graduate,All,31008942,99999,TN,,,
 Space Coast (Merritt Island),99999,Graduate,All,31057610,99999,FL,,,
@@ -5023,8 +5023,8 @@ Wilmington,500,All,All,24900433,8,NC,Wilmington,07/05/2012,NULL
 Springfield,3000,Graduate,Professional School,24932025,99999,MO,NULL,,NULL
 Knoxville,99999,All,All,21007942,99999,TN,,,
 Knoxville,99999,All,All,21800124,99999,TN,Jackson,10/05/2012,NULL
-Wilmington,99999,All,All,21020208,99999,DE,"Wilmington,,
-Mission,99999,All,All,21042843,99999,TX,"McAllen,,
+Wilmington,99999,All,All,21020208,99999,DE,Wilmington,,
+Mission,99999,All,All,21042843,99999,TX,McAllen,,
 Topeka,3000,Graduate,Professional School,24900816,99999,KS,NULL,,NULL
 Fort Collins,99999,All,All,21804306,99999,CO,Fort Collins Campus,10/05/2012,NULL
 Rogers,3000,Graduate,Professional School,14925704,99999,AR,NULL,,NULL
@@ -5047,14 +5047,14 @@ Mount Pleasant,500,Graduate,College of Graduate Studies,11805122,100,MI,NULL,11/
 Daytona Beach,2055,Undergraduate,All,31900110,100,FL,NULL,10/05/2012,NULL
 Boiling Springs,4000,Undergraduate,Gardner-Webb University,31009233,99999,NC,NULL,,NULL
 Binghamton,1000,All,All,11997132,5,NY,NULL,11/05/2012,NULL
-Alexandria,500,Graduate,College of Graduate Studies,11007946,100,VA,"Alexandria,,
+Alexandria,500,Graduate,College of Graduate Studies,11007946,100,VA,Alexandria,,
 St. Louis,10983,Graduate,All,31966125,30,MO,NULL,,NULL
 Montpelier,99999,Undergraduate,All,14800045,99999,VT,NULL,11/05/2012,NULL
 St. Louis,10983,Doctoral,All,31966125,5,MO,NULL,,NULL
-Alexandria,500,Graduate,College of Education and Human Services,11007946,100,VA,"Alexandria,,
-Alexandria,500,Graduate,College of Humanities and Social Behavior Sciences,11007946,100,VA,"Alexandria,,
-Atlanta,500,Graduate,College of Education and Human Services,11812511,100,GA,"Atlanta,,
-Atlanta,500,Graduate,College of Humanities and Social Behavior Sciences,11812511,100,GA,"Atlanta,,
+Alexandria,500,Graduate,College of Education and Human Services,11007946,100,VA,Alexandria,,
+Alexandria,500,Graduate,College of Humanities and Social Behavior Sciences,11007946,100,VA,Alexandria,,
+Atlanta,500,Graduate,College of Education and Human Services,11812511,100,GA,Atlanta,,
+Atlanta,500,Graduate,College of Humanities and Social Behavior Sciences,11812511,100,GA,Atlanta,,
 Erie,2500,All,All,249A2438,99999,PA,NULL,11/05/2012,
 Lafayette,99999,Undergraduate,All,11000918,30,LA,Lafayette,11/05/2012,NULL
 Fort Worth,4000,All,All,34038143,99999,TX,Fort Worth Campus,12/05/2012,NULL
@@ -5063,7 +5063,7 @@ Birmingham,99999,Undergraduate,All,11001801,99999,AL,Birmingham,11/05/2012,2016/
 Nashville,99999,Graduate,College of Entertainment & the Arts,31902942,99999,TN,NULL,06/05/2017,2019/2020
 Nashville,99999,Graduate,College of Engineering,31902942,99999,TN,NULL,06/05/2017,2019/2020
 Raleigh,787.5,Undergraduate,All,31002233,5,NC,NULL,11/05/2012,NULL
-Columbus,500,Graduate,College of Graduate Studies,11003535,100,OH,"Columbus,,
+Columbus,500,Graduate,College of Graduate Studies,11003535,100,OH,Columbus,,
 Tampa,2500,All,School of Health Sciences & Rehabilitation Studies,31057710,10,FL,Tampa Campus,11/05/2012,NULL
 Tampa,2500,All,School of Social Work,31057710,10,FL,Tampa Campus,11/05/2012,NULL
 Tampa,2500,All,School of Exercise Science & Sports Studies,31057710,10,FL,Tampa Campus,11/05/2012,NULL
@@ -5111,7 +5111,7 @@ Birmingham,2000,Graduate,School of Health Prof,31000501,99999,AL,NULL,10/05/2013
 Crookston,1000,All,All,11802723,10,MN,Crookston,,NULL
 Monessen,99999,Undergraduate,All,24966438,99999,PA,NULL,,NULL
 Jackson,447,Executive MBA,Else School of Business,31004124,10,MS,NULL,,2018/2019
-Baltimore,2000,Graduate,"School of Arts & Sciences, Nursing, Education",20,,,
+Baltimore,2000,Graduate,School of Arts & Sciences, Nursing, Education,20,,,
 Alhambra,99999,Undergraduate,All,24800805,300,CA,Los Angeles,,NULL
 Texarkana,99999,All,All,11021143,35,TX,Texarkana,,NULL
 Romeoville,8000,Undergraduate,SPCE (Prof & Cont Ed),31906113,99999,IL,Illinois,,NULL
@@ -5126,7 +5126,7 @@ HAMMOND,99999,All,All,11000818,40,LA,NULL,,NULL
 Boston,1500,All,School of Human Services,31907121,10,MA,Boston Campus,11/05/2012,NULL
 N Charleston,2500,All,School of Health & Recreation,31001240,10,SC,Charleston Campus,11/05/2012,NULL
 N Charleston,2500,All,School of Health Sciences & Rehabilitation Studies,31001240,10,SC,Charleston Campus,11/05/2012,NULL
-Ft. Lee,500,Graduate,College of Graduate Studies,11007646,100,VA,"Ft. Lee,,
+Ft. Lee,500,Graduate,College of Graduate Studies,11007646,100,VA,Ft. Lee,,
 N Charleston,2500,All,School of Social Work,31001240,10,SC,Charleston Campus,11/05/2012,NULL
 N Charleston,2500,All,School of Exeercise Science & Sports Studies,31001240,10,SC,Charleston Campus,11/05/2012,NULL
 N Charleston,1500,All,School of Human Services,31001240,10,SC,Charleston Campus,11/05/2012,NULL
@@ -5143,7 +5143,7 @@ Atlanta,2000,Doctoral,Physical Therapy,31820711,4,GA,College of Pharmacy,,NULL
 Macon,1450,Undergraduate,Business,31820411,20,GA,Macon Campus,,NULL
 Macon,1450,Undergraduate,Education,31820411,20,GA,Macon Campus,,NULL
 Macon,1450,Undergraduate,Continuing and Professional Studies,31820411,20,GA,Macon Campus,,NULL
-Arlington,500,Graduate,College of Graduate Studies,11851446,100,VA,"Pentagon,,
+Arlington,500,Graduate,College of Graduate Studies,11851446,100,VA,Pentagon,,
 San Diego,5000,Graduate/Doctoral,School of Education,31012705,1000,CA,,,
 San Diego,5000,All,School of Continuing Studies,31012705,1000,CA,,,
 Santa Ana,5000,Graduate/Doctoral,School of Education,31012405,1000,CA,,,
@@ -5162,8 +5162,8 @@ Milwaukee,2500,All,School of Social Work,31011449,10,WI,,,
 Milwaukee,2500,All,School of Exercise Science & Sports Studies,31011449,10,WI,,,
 Heathrow,40000,All,All,31064110,99999,FL,,,
 Milwaukee,1500,All,School of Human Services,31011449,10,WI,,,
-Seymour Johnson AFB,500,Graduate,College of Graduate Studies,11007433,100,NC,"Seymour Johnson,,
-Wright Patterson AFB,500,Graduate,College of Graduate Studies,11004835,100,OH,"Wright Patterson,,
+Seymour Johnson AFB,500,Graduate,College of Graduate Studies,11007433,100,NC,Seymour Johnson,,
+Wright Patterson AFB,500,Graduate,College of Graduate Studies,11004835,100,OH,Wright Patterson,,
 Johnsbury,2500,All,School of Health & Recreation,31013045,10,VT,Johnsbury Campus,11/05/2012,NULL
 Johnsbury,2500,All,School of Health Sciences & Rehabilitation Studies,31013045,10,VT,Johnsbury Campus,11/05/2012,NULL
 Johnsbury,2500,All,School of Social Work,31013045,10,VT,Johnsbury Campus,11/05/2012,NULL
@@ -5195,10 +5195,10 @@ Macon,1500,Undergraduate,All,24956911,99999,GA,Macon,,NULL
 Charleston,99999,Graduate,All,21000140,99999,SC,Charleston,11/05/2016,2016/2017
 Kansas City,1500,All,All,24936025,99999,KS,Kansas City,,NULL
 Hancock,27,Undergraduate,College of Arts and Sciences,31001622,99999,MI,NULL,,2017/2018
-Richmond,500,Graduate,College of Graduate Studies,11008346,100,VA,"Richmond,,
+Richmond,500,Graduate,College of Graduate Studies,11008346,100,VA,Richmond,,
 Gurnee,99999,All,All,31040113,99999,IL,Lake County,05/05/2014,2013/2014
 Osage Beach,99999,All,All,31120625,99999,MO,Lake of the Ozarks,,NULL
-Richmond,500,Graduate,College of Education and Human Services,11008346,100,VA,"Richmond,,
+Richmond,500,Graduate,College of Education and Human Services,11008346,100,VA,Richmond,,
 Springfield,99999,All,All,21127025,99999,MO,Springfield,04/05/2012,NULL
 Grove City,99999,All,All,24010435,99999,OH,NULL,08/05/2012,NULL
 Cedar Rapids,99999,All,All,21000615,99999,IA,,,
@@ -5206,7 +5206,7 @@ Clive,99999,All,All,21000515,99999,IA,,,
 Oakland,5000,All,All,31140505,99999,CA,,,
 Milwaukee,6000,Undergraduate,All,31009049,99999,WI,NULL,08/05/2012,NULL
 Culver City,99999,All,All,21115105,99999,CA,Culver City,04/05/2012,NULL
-Richmond,500,Graduate,College of Humanities & Social & Behavioral Sciences,11008346,100,VA,"Richmond,,
+Richmond,500,Graduate,College of Humanities & Social & Behavioral Sciences,11008346,100,VA,Richmond,,
 Casper,5973,Undergraduate,All,14903450,5,WY,Casper,,NULL
 Inglewood,2500,All,School of Health & Recreation,31060105,10,CA,Los Angeles Campus,11/05/2012,NULL
 Inglewood,2500,All,School of Health Sciences & Rehabilitation Studies,301060105,10,CA,Los Angeles Campus,11/05/2012,NULL
@@ -5220,7 +5220,7 @@ San Diego,1500,All,School of Human Services,31009205,10,CA,San Diego Campus,11/0
 Tampa,2500,All,School of Arts Sciences & Professional Studies,31057710,10,FL,Tampa Campus,11/05/2012,NULL
 Tampa,2500,All,School of Health & Recreation,31057710,10,FL,Tampa Campus,11/05/2012,NULL
 Scottsdale,99999,All,All,21005303,99999,AZ,,,
-New York,10000,Graduate/Doctoral,"Wagner, Public Service",31800132,,,,
+New York,10000,Graduate/Doctoral,Wagner, Public Service,31800132,,,,
 Atlanta,11413,Graduate,Professional,31000911,99999,GA,Atlanta,,NULL
 Norcross,99999,All,All,24916611,99999,GA,Norcross,,NULL
 Durham,99999,All,All,11801029,40,NH,Durham,,NULL
@@ -5231,7 +5231,7 @@ Newtown,99999,Undergraduate,All,149C4438,99999,PA,NULL,,NULL
 Ottawa,2000,Undergraduate,All other campuses,31810016,50000,KS,NULL,,2018/2019
 Ottawa,3000,Graduate,All Campuses,31810016,25000,KS,NULL,,2018/2019
 Salisbury,4000,All,Catawba College,31000233,15,NC,NULL,,NULL
-"Los Angeles,",10000,Graduate,Engineering,31505105,,,,
+Los Angeles,,10000,Graduate,Engineering,31505105,,,,
 Hilo,99999,Undergraduate,All,14920164,15,HI,Hilo,,NULL
 Lewisburg,2500,Doctoral,WVSOM,11506848,12,WV,NULL,,NULL
 South Portland,400,Undergraduate,College,14903419,10,ME,NULL,,NULL
@@ -5252,8 +5252,8 @@ Hilo,6644,Undergraduate,All,11914164,3,HI,Hilo,,NULL
 Santa Clara,1000,All,All,31836105,5,CA,San Jose,,NULL
 Redlands,5000,All,School of Continuing Studies,31505005,1000,CA,NULL,,NULL
 Tampa,5000,Masters,MBA,31871010,10,FL,NULL,,NULL
-Temecula,99999,Associates,College,24600005,99999,CA,"Temecula,,
-Orlando,99999,Associates,College,24200510,99999,FL,"Orlando,,
+Temecula,99999,Associates,College,24600005,99999,CA,Temecula,,
+Orlando,99999,Associates,College,24200510,99999,FL,Orlando,,
 Bluffton,99999,Associates,All,24113540,0,SC,,,
 Tampa,5000,Undergraduate,Bachelor of Science,31871210,10,FL,NULL,,NULL
 Tampa,5000,Undergraduate,Bachelors of Arts,31871110,4,FL,NULL,,NULL
@@ -5310,7 +5310,7 @@ Murray,20000,Undergraduate,All,11510117,150,KY,NULL,04/05/2012,NULL
 Murray,25000,Graduate,All,11510117,50,KY,NULL,04/05/2012,NULL
 Pinehurst,3000,Undergraduate,College,14914433,5,NC,NULL,,2018/2019
 Washington,99999,Law,Columbus School of Law,31000109,25,DC,,,
-Ft. Myer,500,Graduate,College of Graduate Studies,11007846,100,VA,"Ft. Myer,,
+Ft. Myer,500,Graduate,College of Graduate Studies,11007846,100,VA,Ft. Myer,,
 Glenside,99999,All,All,31995138,99999,PA,NULL,11/05/2012,NULL
 Draper,99999,Undergraduate,All,21001444,99999,UT,,,
 Draper,99999,Doctoral,All,21001444,99999,UT,,,
@@ -5596,7 +5596,7 @@ Ft. Belvoir,99999,All,All,11008246,99999,VA,,,
 Cleveland,9500,Graduate,Weatherhead MSM Finance,31513635,5,OH,NULL,,2018/2019
 Cleveland,9500,Graduate,Weatherhead - MSM ORSC,31513635,5,OH,NULL,,2018/2019
 Cleveland,13500,Graduate,Weatherhead - MPOD,31513635,5,OH,NULL,,2018/2019
-Cleveland,12500,Graduate,"CAS, CSE, FPB,31513635,10900 Euclid Avenue,NULL,
+Cleveland,12500,Graduate,CAS, CSE, FPB,31513635,10900 Euclid Avenue,NULL,
 Shreveport,99999,All,All,11800918,99999,LA,NULL,10/05/2013,NULL
 Birmingham,99999,Graduate,School of Nursing,31000501,99999,AL,NULL,10/05/2013,NULL
 Birmingham,2000,Graduate,School of Law,31000501,99999,AL,NULL,10/05/2013,NULL
@@ -5810,7 +5810,7 @@ Winston-Salem,2147,Doctoral,College,11902133,1,NC,,,
 North Chicago,2000,All,All,31043313,7,IL,NULL,12/05/2017,2017/2018
 Honolulu,10000,Doctoral,School of Law,11913164,3,HI,Manoa,,NULL
 Philidelphia,5739,Doctoral,School of Medicine,31810038,6,PA,NULL,,2016/2017
-Philadelphia,1000,Graduate,"Theatre, Film, and Media Arts",5,,,
+Philadelphia,1000,Graduate,Theatre, Film, and Media Arts,5,,,
 Philadelphia,1500,Graduate,College of Education,11900238,5,PA,NULL,05/05/2017,2017/2018
 Philadelphia,2000,Graduate,College of Liberal Arts,11900238,5,PA,NULL,05/05/2017,2017/2018
 Philadelphia,1000,Professional,School of Pharmacy,11900238,2,PA,NULL,05/05/2017,2017/2018
@@ -5818,7 +5818,7 @@ Orlando,1500,All,All,24833910,99999,FL,Orlando,,NULL
 Tonkawa,99999,Undergraduate,All,14001336,99999,OK,NULL,,NULL
 Frankfort,1000,All,All,11505717,10,KY,,,
 Victorville,20000,All,All,31013305,20,CA,,,
-"Columbus, AFB",20000,All,All,31903224,, 926,,
+Columbus, AFB,20000,All,All,31903224,, 926,,
 Fort Huachuca,20000,All,All,31002903,20,AZ,,,
 Tucson,20000,All,All,31002803,20,AZ,,,
 Daytona Beach,18768.83,All,All,31806810,850,FL,Worldwide Online,,2017/2018
