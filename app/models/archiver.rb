@@ -38,6 +38,8 @@ module Archiver # rubocop:disable Metrics/ModuleLength
     report = metrics.map do |name, values|
       <<~HERE
         + #{name}:
+          - start: #{values['start']}
+          - end: #{values['finish']}
           - duration: #{values['duration']}
           - records: #{values['records']}
           - avg_per_record: #{values.fetch('avg_per_record', 'N/A')}
