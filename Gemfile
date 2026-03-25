@@ -8,7 +8,7 @@ gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
 gem 'activerecord-session_store' # Switch to AR session storage in case of failure pushing to GIBCT
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
-gem 'bcrypt', '~> 3.1.20'
+gem 'bcrypt', '>= 3.1.22'
 gem 'bootsnap', require: false
 gem 'cancancan', '~> 3.6' # Use cancancan for authorization
 gem 'cgi', '>= 0.4.2'
