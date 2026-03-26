@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/department-of-veterans-affairs/govdelivery-tms-ruby.git
+  revision: 933fc6187e0dab7a51629eca25a4ed22feab946f
+  tag: v4.2.0
+  specs:
+    govdelivery-tms (4.1.0)
+      activesupport (>= 5.2.4.3, < 9.0.0)
+      faraday
+      mime-types
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/vets-json-schema
   revision: 0277d5bcddf48894d22b45f3618bca33e82a8ca4
   branch: master
@@ -204,7 +214,7 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
-    faraday-retry (1.0.3)
+    faraday-retry (1.0.4)
     faraday_middleware (1.2.1)
       faraday (~> 1.0)
     ffi (1.15.5)
@@ -223,11 +233,6 @@ GEM
       csv (>= 3.0.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    govdelivery-tms (2.8.4)
-      activesupport
-      faraday
-      faraday_middleware
-      mime-types
     guard (2.18.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -293,9 +298,10 @@ GEM
     marcel (1.1.0)
     matrix (0.4.2)
     method_source (1.1.0)
-    mime-types (3.5.2)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.0305)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2026.0317)
     mini_mime (1.1.5)
     minitest (5.27.0)
     mission_control-jobs (1.1.0)
@@ -633,7 +639,7 @@ DEPENDENCIES
   font-awesome-rails (= 4.7.0.9)
   foreman
   geocoder (~> 1.8)
-  govdelivery-tms (= 2.8.4)
+  govdelivery-tms!
   guard-rspec
   headless (~> 2.3.1)
   httparty
