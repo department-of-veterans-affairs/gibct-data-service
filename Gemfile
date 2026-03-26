@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '7.2.2.2'
+gem 'rails', '7.2.3.1'
 
 gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
@@ -21,7 +21,8 @@ gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.9'
 gem 'geocoder', '~> 1.8'
-gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+gem 'govdelivery-tms', git: 'https://github.com/department-of-veterans-affairs/govdelivery-tms-ruby.git', tag: 'v4.2.0',
+                       require: 'govdelivery/tms/mail/delivery_method'
 gem 'httparty'
 gem 'importmap-rails'
 gem 'jquery-rails'
