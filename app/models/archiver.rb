@@ -111,15 +111,12 @@ module Archiver # rubocop:disable Metrics/ModuleLength
     base_query = build_archive_query(source, production_version)
     Rails.logger.info "base query: #{base_query}"
     Rails.logger.info "query as sql: #{base_query.to_sql}"
-    archive_columns = archive.column_names
 
     benchmark_start("create_#{archive.table_name}")
     orig_count = archive.count
-    base_query.find_in_batches(batch_size: 1000) do |records|
-      attributes = records.map { |record| record.attributes.slice(*archive_columns) }
-      # rubocop:disable Rails/SkipsModelValidations
-      archive.insert_all(attributes) if attributes.present?
-      # rubocop:enable Rails/SkipsModelValidations
+    base_query.in_batches(of: 1000) do |relation|
+      attributes = relation.as_json(only: archive.column_names)
+      archive.insert_all(attributes) if attributes.present? # rubocop:disable Rails/SkipsModelValidations
     end
 
     benchmark_end("create_#{archive.table_name}", archive.count - orig_count)
