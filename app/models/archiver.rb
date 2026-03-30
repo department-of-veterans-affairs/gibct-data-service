@@ -46,6 +46,7 @@ module Archiver # rubocop:disable Metrics/ModuleLength
       HERE
     end.join("\n")
     Rails.logger.info(<<~HERE)
+
       ========== ARCHIVE BENCHMARKS ==========
       + Total Archive Time: #{total}
 
@@ -54,7 +55,7 @@ module Archiver # rubocop:disable Metrics/ModuleLength
     metrics.clear
   end
 
-  def self.archive_previous_versions # rubocop:disable Metrics/AbcSize
+  def self.archive_previous_versions
     # don't bother if nothing to archive. Also note that during the initial buildout, there is no previous version
     # The below previous_version will exception out and cause all the work to be rolled back.
     return unless Version.current_production && Version.previous_production
@@ -63,15 +64,8 @@ module Archiver # rubocop:disable Metrics/ModuleLength
 
     benchmark_start('archive_total')
     Rails.logger.info "\n\n\n*** Starting Archive process"
-    Rails.logger.info 'Getting default timeout parameter'
-    get_timeout_parameter
-
     begin
       ApplicationRecord.transaction do
-        Rails.logger.info 'Inside transaction, setting local default timeout parameter'
-        ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '600000'")
-        get_timeout_parameter
-
         ARCHIVE_TYPES.each do |archivable|
           create_archives(archivable[:source], archivable[:archive], production_version)
           source = if archivable[:source].has_attribute?(:institution_id)
@@ -96,8 +90,7 @@ module Archiver # rubocop:disable Metrics/ModuleLength
     end
 
     benchmark_end('archive_total')
-    Rails.logger.info 'Done archiving, getting default timeout parameter'
-    get_timeout_parameter
+    Rails.logger.info 'Done archiving'
     Rails.logger.info "*** End of Archiving process\n\n\n"
     print_metrics_report
   end
@@ -145,11 +138,5 @@ module Archiver # rubocop:disable Metrics/ModuleLength
     Raven.extra_context(production_version: production_version)
     Raven.capture_exception(exception) if ENV['SENTRY_DSN'].present?
     Rails.logger.error "#{notice}: #{exception.message}"
-  end
-
-  def self.get_timeout_parameter
-    get_timeout_sql = "select setting from pg_settings where name = 'statement_timeout'"
-    timeout_result = ActiveRecord::Base.connection.execute(get_timeout_sql).first
-    Rails.logger.info "timeout parameter is currently: #{timeout_result['setting']}"
   end
 end
