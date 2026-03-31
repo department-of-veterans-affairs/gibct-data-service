@@ -2,26 +2,27 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '7.1.5.2'
+gem 'rails', '7.2.3.1'
 
 gem 'active_model_serializers', '~> 0.10.15' # JSON API
 gem 'activerecord-import' # Mass importing of CSV data
 gem 'activerecord-session_store' # Switch to AR session storage in case of failure pushing to GIBCT
 gem 'base64', '~> 0.2.0' # ruby 3.4.0 warning said to add
-gem 'bcrypt', '~> 3.1.20'
+gem 'bcrypt', '>= 3.1.22'
 gem 'bootsnap', require: false
 gem 'cancancan', '~> 3.6' # Use cancancan for authorization
 gem 'cgi', '>= 0.4.2'
 gem 'config'
 gem 'csv', '~> 3.3' # ruby 3.4.0 warning said to add
-gem 'devise' # Use devise for authentication
+gem 'devise', '>= 5.0.3' # Use devise for authentication
 gem 'drb', '~> 2.2', '>= 2.2.1' # ruby 3.4.0 warning said to add
-gem 'faraday'
+gem 'faraday', '~> 1.10.5'
 gem 'faraday_middleware'
 gem 'figaro'
 gem 'font-awesome-rails', '4.7.0.9'
 gem 'geocoder', '~> 1.8'
-gem 'govdelivery-tms', '2.8.4', require: 'govdelivery/tms/mail/delivery_method'
+gem 'govdelivery-tms', git: 'https://github.com/department-of-veterans-affairs/govdelivery-tms-ruby.git', tag: 'v4.2.0',
+                       require: 'govdelivery/tms/mail/delivery_method'
 gem 'httparty'
 gem 'importmap-rails'
 gem 'jquery-rails'
@@ -29,12 +30,11 @@ gem 'jquery-ui-rails', '>= 8.0.0'
 gem 'json', '>= 2.3.0'
 gem 'mutex_m', '~> 0.3.0' # ruby 3.4.0 warning said to add
 gem 'net-imap', '~> 0.5.8' # ruby 3.4.0 warning said to add
-gem 'newrelic_rpm'
-gem 'nokogiri', '~> 1.18.9'
+gem 'nokogiri', '~> 1.19.1'
 gem 'oj' # Amazon Linux `json` gem causes conflicts, but `multi_json` will prefer `oj` if installed
 gem 'pg' # Use postgresql as the database for Active Record
 gem 'puma', '~> 6.6.1'
-gem 'rack', '>= 3.1.17'
+gem 'rack', '>= 3.1.20'
 gem 'rack-cors', require: 'rack/cors' # CORS
 gem 'rails-html-sanitizer', '>= 1.4.4'
 gem 'rainbow'

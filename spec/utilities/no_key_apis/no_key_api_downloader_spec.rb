@@ -62,6 +62,15 @@ RSpec.describe NoKeyApis::NoKeyApiDownloader do
       expect(nkad.curl_command).not_to include('-d')
     end
 
+    it 'sets the curl command correctly for Mou' do
+      nkad = described_class.new('Mou')
+      expect(nkad.class_nm).to eq('Mou')
+      expect(nkad.curl_command).to include('tmp/mou.xls')
+      expect(nkad.curl_command).to include('accept: text/html,application/xhtml+xml,application/xml')
+      expect(nkad.curl_command).to include('content-type: application/x-www-form-urlencoded')
+      expect(nkad.curl_command).to include('--data-raw')
+    end
+
     context 'with Vsoc downloads' do
       before { allow(HTTParty).to receive(:get).and_return(vsoc_response) }
 
