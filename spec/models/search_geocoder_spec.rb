@@ -6,7 +6,7 @@ RSpec.describe SearchGeocoder, type: :model do
   let(:version) { create(:version, :preview) }
 
   before do
-    allow(Kernel).to receive(:sleep) # stub rate limiting
+    allow(Kernel).to receive(:sleep) # stub out rate limiting
     # rubocop:disable Style/ColonMethodCall
     Geocoder::configure(:lookup => :test)
     Geocoder::Lookup::Test.add_stub(
