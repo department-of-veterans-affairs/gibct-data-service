@@ -89,6 +89,7 @@ module GeocoderLogic
       throw_geocode_exception(data) if geocode_type.eql?('exception_test')
 
       timed_out = false
+      sleep 1 # nominatim enforces 1 request per second
       geocoded = Geocoder.send geocode_type.to_sym, data
     rescue Timeout::Error
       Rails.logger.info "  Geocode.#{geocode_type} timed out with #{data} retrying"

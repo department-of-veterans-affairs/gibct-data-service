@@ -112,8 +112,13 @@ module Archiver # rubocop:disable Metrics/ModuleLength
     insert_cols = cols.map { |col| "\"#{col}\"" }.join(', ')
     select_cols = cols.map { |col| "s.#{col}" }.join(', ')
 
-    sql = "INSERT INTO #{archive.table_name}(#{insert_cols}) SELECT #{select_cols} FROM (#{base_query.to_sql}) s"
-    ApplicationRecord.connection.execute(sql)
+    base_query.in_batches(of: 5_000) do |relation|
+      sql = <<~SQL
+        INSERT INTO #{archive.table_name}(#{insert_cols})
+        SELECT #{select_cols} FROM (#{relation.to_sql}) s
+      SQL
+      ApplicationRecord.connection.execute(sql)
+    end
 
     benchmark_end("create_#{archive.table_name}", archive.count - orig_count)
     Rails.logger.info "*** Done archiving #{source.table_name}"

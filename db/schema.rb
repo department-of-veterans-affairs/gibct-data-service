@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_06_133745) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_01_143403) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "cube"
   enable_extension "earthdistance"
@@ -116,7 +116,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_06_133745) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["version_id"], name: "index_calculator_constant_versions_archives_on_version_id"
   end
 
   create_table "calculator_constants", id: :serial, force: :cascade do |t|
@@ -348,8 +347,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_06_133745) do
     t.integer "length_in_weeks"
     t.integer "institution_id"
     t.string "ojt_app_type"
-    t.index ["description", "version"], name: "index_institution_programs_archives"
-    t.index ["institution_id"], name: "index_institution_programs_archives_on_institution_id"
   end
 
   create_table "institution_ratings", force: :cascade do |t|
@@ -2229,7 +2226,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_06_133745) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "version"
     t.bigint "version_id"
-    t.index ["version", "zip_code"], name: "zipcode_rates_archives_version_zip_code_idx"
   end
 
   add_foreign_key "accreditation_records", "accreditation_type_keywords", on_delete: :nullify, validate: false
