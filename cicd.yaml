@@ -1,2 +1,3 @@
 environments:
   - rm-sbx
+  - dev
