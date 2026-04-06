@@ -1,39 +1,6 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 4,
-      "fingerprint": "38c825e527239d81823b792ab9084eb4351d5e731083fa9a7f609d34e4cbbe8f",
-      "check_name": "LinkToHref",
-      "message": "Potentially unsafe model attribute in `link_to` href",
-      "file": "app/views/dashboards/_version.html.erb",
-      "line": 11,
-      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(\"Show GIBCT\", (Unresolved Model).new.gibct_link, :target => \"_blank\", :rel => \"noopener noreferrer\", :class => \"btn dashboard-btn-success btn-xs\", :role => \"button\")",
-      "render_path": [
-        {
-          "type": "template",
-          "name": "dashboards/_versions_table",
-          "line": 15,
-          "file": "app/views/dashboards/_versions_table.html.erb",
-          "rendered": {
-            "name": "dashboards/_version",
-            "file": "app/views/dashboards/_version.html.erb"
-          }
-        }
-      ],
-      "location": {
-        "type": "template",
-        "template": "dashboards/_version"
-      },
-      "user_input": "(Unresolved Model).new.gibct_link",
-      "confidence": "Weak",
-      "cwe_id": [
-        79
-      ],
-      "note": ""
-    },
-    {
       "warning_type": "Command Injection",
       "warning_code": 14,
       "fingerprint": "54c71a820ef183388fa94bffe63adaa34c76c8f8a44d4453fff6178cf24dc67e",
@@ -148,8 +115,12 @@
         77
       ],
       "note": ""
+    },
+    {
+      "fingerprint": "84e20b1bda2920ee117ec462ac731c03fa4b0f8f3ce87a9984faa388c324965f",
+      "note": "False positive - table_name and column_names are AR metadata, not user input"
     }
-  ],
+   ],
   "updated": "2026-01-21 15:04:44 -0600",
   "brakeman_version": "6.1.2"
 }
