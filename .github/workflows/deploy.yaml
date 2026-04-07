@@ -15,5 +15,12 @@ on:
 
 jobs:
   Deploy-Envs:
-    uses: department-of-veterans-affairs/prt-github-workflows/.github/workflows/deploy-all.yaml@main
-    secrets: inherit
+    uses: department-of-veterans-affairs/gibct-data-service/.github/workflows/deploy-template.yml@main
+    with:
+      ecr_repository: "gibct-data-service"
+      manifests_directory: "gibct-data-service"
+      auto_deploy_envs: "dev"
+      commit_sha: ${{ github.sha }}
+    secrets:
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
