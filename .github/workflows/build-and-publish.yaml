@@ -32,7 +32,7 @@ jobs:
     uses: department-of-veterans-affairs/gibct-data-service/.github/workflows/deploy-template.yml@master
     with:
       ecr_repository: "gibct-data-service"
-      manifests_directory: "gibct-data-service"
+      manifests_directory: "gi-bill-data-service"
       auto_deploy_envs: "dev"
       commit_sha: ${{ github.sha }}
     secrets:
