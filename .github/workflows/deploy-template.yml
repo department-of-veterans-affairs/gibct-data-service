@@ -1,0 +1,99 @@
+name: Release and Update Manifests
+
+on:
+  workflow_call:
+    inputs:
+      ecr_repository:
+        required: true
+        type: string
+      manifests_directory:
+        required: true
+        type: string
+      auto_deploy_envs:
+        required: true
+        type: string
+      commit_sha:
+        required: true
+        type: string
+    secrets:
+      aws_access_key_id:
+        required: true
+      aws_secret_access_key:
+        required: true
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  prepare-values:
+    runs-on: ubuntu-latest
+    outputs:
+      environments: ${{ steps.set-environments.outputs.environments }}
+    steps:
+      - name: Set to auto deploy environments on push to master
+        run: |
+          echo "environments=${{inputs.auto_deploy_envs}}" >> $GITHUB_ENV
+      - name: Set output
+        id: set-environments
+        run: |
+          echo "environments=${{ env.environments }}" >> $GITHUB_OUTPUT
+  release:
+    needs: [prepare-values]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ASSUME_ROLE }}
+          aws-region: "us-gov-west-1"
+
+      - name: Log into ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Get bot token from Parameter Store
+        uses: marvinpinto/action-inject-ssm-secrets@latest
+        with:
+          ssm_parameter: /devops/VA_VSP_BOT_GITHUB_TOKEN
+          env_variable_name: VA_VSP_BOT_GITHUB_TOKEN
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq
+          chmod +x yq
+          sudo mv yq /usr/local/bin/
+          yq --version
+
+      - name: Check out Manifest Repo
+        uses: actions/checkout@v6
+        with:
+          repository: department-of-veterans-affairs/vsp-infra-application-manifests
+          token: ${{ env.VA_VSP_BOT_GITHUB_TOKEN }}
+          fetch-depth: 1
+          path: vsp-infra-application-manifests
+          ref: refs/heads/main
+
+      - name: Update gi-bill-data-service image tag in Manifest repo
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          ECR_REPOSITORY: dsva/${{inputs.ecr_repository}}
+        run: |
+          cd vsp-infra-application-manifests/apps/${{inputs.manifests_directory}}
+          envs=( ${{ needs.prepare-values.outputs.environments }} )
+          for env in ${envs[*]};
+          do
+            yq e -i '(."gi-bill-data-service".image.tag) |= "${{ inputs.commit_sha }}"' $env/values.yaml
+          done
+          git diff
+
+      - name: Add and Commit file
+        uses: EndBug/add-and-commit@v9
+        with:
+          new_branch: main
+          add: "*"
+          cwd: vsp-infra-application-manifests/apps
+          author_name: va-vsp-bot
+          author_email: 70344339+va-vsp-bot@users.noreply.github.com
+          message: "Release ${{ needs.prepare-values.outputs.environments }} for ${{inputs.ecr_repository}} : ${{ inputs.commit_sha }}."
