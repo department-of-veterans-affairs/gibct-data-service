@@ -75,16 +75,36 @@ jobs:
           path: vsp-infra-application-manifests
           ref: refs/heads/main
 
+      - name: Look up ECR image tag for commit
+        id: ecr-tag
+        env:
+          ECR_REPOSITORY: dsva/${{inputs.ecr_repository}}
+          COMMIT_SHA: ${{ inputs.commit_sha }}
+        run: |
+          SHORT_SHA=${COMMIT_SHA:0:8}
+          IMAGE_TAG=$(aws ecr describe-images \
+            --repository-name "$ECR_REPOSITORY" \
+            --region us-gov-west-1 \
+            --query "imageDetails[].imageTags[]" \
+            --output text | tr '\t' '\n' | grep "$SHORT_SHA" | head -1)
+          if [ -z "$IMAGE_TAG" ]; then
+            echo "ERROR: No image tag found containing $SHORT_SHA"
+            exit 1
+          fi
+          echo "Found image tag: $IMAGE_TAG"
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
       - name: Update gi-bill-data-service image tag in Manifest repo
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           ECR_REPOSITORY: dsva/${{inputs.ecr_repository}}
+          IMAGE_TAG: ${{ steps.ecr-tag.outputs.image_tag }}
         run: |
           cd vsp-infra-application-manifests/apps/${{inputs.manifests_directory}}
           envs=( ${{ needs.prepare-values.outputs.environments }} )
           for env in ${envs[*]};
           do
-            yq e -i '(."gi-bill-data-service".image.tag) |= "${{ inputs.commit_sha }}"' $env/values.yaml
+            yq e -i '(."gi-bill-data-service".image.tag) |= "'"$IMAGE_TAG"'"' $env/values.yaml
           done
           git diff
 

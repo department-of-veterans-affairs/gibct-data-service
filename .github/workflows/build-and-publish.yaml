@@ -25,3 +25,18 @@ jobs:
   build:
     uses: department-of-veterans-affairs/vsp-github-actions/.github/workflows/build-and-publish.yaml@main
     secrets: inherit
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    uses: department-of-veterans-affairs/gibct-data-service/.github/workflows/deploy-template.yml@master
+    with:
+      ecr_repository: "gibct-data-service"
+      manifests_directory: "gibct-data-service"
+      auto_deploy_envs: "dev"
+      commit_sha: ${{ github.sha }}
+    secrets:
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    
