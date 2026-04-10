@@ -1,8 +1,8 @@
-name: Code Checks
+name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master] # future proofing if we get around to renaming master to main
   pull_request:
     types: [opened, reopened, synchronize]
 
@@ -51,6 +51,7 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    needs: linting_and_security
     permissions: write-all
     env:
       CI: true
@@ -116,3 +117,43 @@ jobs:
         run: |
           docker compose -f docker-compose.test.yml down
           rm -rf data || true
+
+  # only run on push. Skip for pull requests
+  build:
+    name: Build
+    needs: tests
+    if: github.event_name == 'push'
+    permissions:
+      actions: write
+      attestations: write
+      checks: write
+      contents: write
+      deployments: write
+      discussions: write
+      issues: write
+      models: read
+      packages: write
+      pages: write
+      pull-requests: write
+      repository-projects: write
+      statuses: write
+      security-events: write
+      id-token: write
+    uses: department-of-veterans-affairs/vsp-github-actions/.github/workflows/build-and-publish.yaml@main
+    secrets: inherit
+
+  deploy:
+    name: Deploy
+    needs: build # build has a gate on push, so this won't run when build doesn't run (pull requests)
+    permissions:
+      id-token: write
+      contents: read
+    uses: department-of-veterans-affairs/gibct-data-service/.github/workflows/deploy-template.yml@master
+    with:
+      ecr_repository: "gibct-data-service"
+      manifests_directory: "gi-bill-data-service"
+      auto_deploy_envs: "dev"
+      commit_sha: ${{ github.sha }}
+    secrets:
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
